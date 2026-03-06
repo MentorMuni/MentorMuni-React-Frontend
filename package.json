@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "homepage": "https://rahul93sharma.github.io/MentorMuni",
+  "homepage": "https://mentormuni.com/MentorMuni-React-Frontend",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
