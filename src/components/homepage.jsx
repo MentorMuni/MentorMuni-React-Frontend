@@ -1,8 +1,10 @@
 
 import React, { useEffect, useState } from 'react';
 import { ArrowRight, Users, Target, Zap, Briefcase, FileText, MessageSquare, Mail, Phone, Check, ClipboardCheck, TrendingUp } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
+  const navigate = useNavigate();
   const [heroSrc, setHeroSrc] = useState(null);
   useEffect(() => {
     import('../assets/hero-brand-banner.png').then((m) => setHeroSrc(m.default));
@@ -39,18 +41,18 @@ const HomePage = () => {
                 <strong className="text-white">MentorMuni</strong> is your placement prep partner. Start with free AI tools—readiness, ATS score, mocks—then level up with <strong className="text-indigo-300">mentor-led programs</strong>.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <button 
-                  onClick={() => window.location.href = '/start-assessment'}
+                <Link 
+                  to="/start-assessment"
                   className="bg-white text-slate-900 px-8 py-4 rounded-xl font-bold transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] inline-flex items-center justify-center gap-2 group"
                 >
                   Start free assessment <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </button>
-                <button 
-                  onClick={() => window.location.href = '/learning-paths'}
+                </Link>
+                <Link 
+                  to="/learning-paths"
                   className="border-2 border-slate-500 text-slate-200 hover:border-white hover:text-white hover:bg-white/5 px-8 py-4 rounded-xl font-bold transition-all inline-flex items-center justify-center gap-2"
                 >
                   Explore learning paths
-                </button>
+                </Link>
               </div>
               <div className="pt-6 border-t border-slate-700/80 space-y-2">
                 <p className="text-sm text-slate-500">Trusted by students preparing for campus & off-campus placements</p>
@@ -84,43 +86,43 @@ const HomePage = () => {
             <p className="text-slate-400">Free tools + mentor-led programs</p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <a href="/start-assessment" data-aos className="group relative bg-gradient-to-b from-slate-800/60 to-slate-800/30 border border-slate-700 rounded-2xl p-8 hover:border-indigo-500/60 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 flex flex-col">
+            <Link to="/start-assessment" data-aos className="group relative bg-gradient-to-b from-slate-800/60 to-slate-800/30 border border-slate-700 rounded-2xl p-8 hover:border-indigo-500/60 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 flex flex-col">
               <div className="w-14 h-14 rounded-2xl bg-indigo-500/20 flex items-center justify-center mb-6 group-hover:bg-indigo-500/30 transition-colors">
                 <ClipboardCheck className="w-7 h-7 text-indigo-400" />
               </div>
               <h3 className="text-xl font-bold text-white mb-2">Interview readiness</h3>
               <p className="text-slate-400 text-sm leading-relaxed flex-grow">AI-powered assessment tailored to your role. Know your strengths and gaps in minutes.</p>
               <span className="mt-4 inline-flex items-center gap-1 text-indigo-400 font-semibold text-sm group-hover:gap-2 transition-all">Start assessment <ArrowRight className="w-4 h-4" /></span>
-            </a>
-            <a href="/resume-analyzer" data-aos className="group relative bg-gradient-to-b from-slate-800/60 to-slate-800/30 border border-slate-700 rounded-2xl p-8 hover:border-cyan-500/60 hover:shadow-xl hover:shadow-cyan-500/10 transition-all duration-300 flex flex-col">
+            </Link>
+            <Link to="/resume-analyzer" data-aos className="group relative bg-gradient-to-b from-slate-800/60 to-slate-800/30 border border-slate-700 rounded-2xl p-8 hover:border-cyan-500/60 hover:shadow-xl hover:shadow-cyan-500/10 transition-all duration-300 flex flex-col">
               <div className="w-14 h-14 rounded-2xl bg-cyan-500/20 flex items-center justify-center mb-6 group-hover:bg-cyan-500/30 transition-colors">
                 <FileText className="w-7 h-7 text-cyan-400" />
               </div>
               <h3 className="text-xl font-bold text-white mb-2">ATS score</h3>
               <p className="text-slate-400 text-sm leading-relaxed flex-grow">Get your resume scored for ATS compatibility and role fit. Improve before you apply.</p>
               <span className="mt-4 inline-flex items-center gap-1 text-cyan-400 font-semibold text-sm group-hover:gap-2 transition-all">Analyze resume <ArrowRight className="w-4 h-4" /></span>
-            </a>
-            <a href="/mock-interviews" data-aos className="group relative bg-gradient-to-b from-slate-800/60 to-slate-800/30 border border-slate-700 rounded-2xl p-8 hover:border-emerald-500/60 hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col">
+            </Link>
+            <Link to="/mock-interviews" data-aos className="group relative bg-gradient-to-b from-slate-800/60 to-slate-800/30 border border-slate-700 rounded-2xl p-8 hover:border-emerald-500/60 hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col">
               <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 flex items-center justify-center mb-6 group-hover:bg-emerald-500/30 transition-colors">
                 <MessageSquare className="w-7 h-7 text-emerald-400" />
               </div>
               <h3 className="text-xl font-bold text-white mb-2">AI mock interviews</h3>
               <p className="text-slate-400 text-sm leading-relaxed flex-grow">Practice with AI-driven mock interviews and get actionable feedback to improve.</p>
               <span className="mt-4 inline-flex items-center gap-1 text-emerald-400 font-semibold text-sm group-hover:gap-2 transition-all">Practice now <ArrowRight className="w-4 h-4" /></span>
-            </a>
-            <a href="/skill-gap-analyzer" data-aos className="group relative bg-gradient-to-b from-slate-800/60 to-slate-800/30 border border-slate-700 rounded-2xl p-8 hover:border-purple-500/60 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 flex flex-col">
+            </Link>
+            <Link to="/skill-gap-analyzer" data-aos className="group relative bg-gradient-to-b from-slate-800/60 to-slate-800/30 border border-slate-700 rounded-2xl p-8 hover:border-purple-500/60 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 flex flex-col">
               <div className="w-14 h-14 rounded-2xl bg-purple-500/20 flex items-center justify-center mb-6 group-hover:bg-purple-500/30 transition-colors">
                 <TrendingUp className="w-7 h-7 text-purple-400" />
               </div>
               <h3 className="text-xl font-bold text-white mb-2">Career gap analysis</h3>
               <p className="text-slate-400 text-sm leading-relaxed flex-grow">See gaps between your skills and your target role. Get a clear roadmap to close them.</p>
               <span className="mt-4 inline-flex items-center gap-1 text-purple-400 font-semibold text-sm group-hover:gap-2 transition-all">Analyze gap <ArrowRight className="w-4 h-4" /></span>
-            </a>
+            </Link>
           </div>
           <div className="mt-10 text-center" data-aos>
-            <a href="/learning-paths" className="inline-flex items-center gap-2 px-6 py-4 rounded-2xl bg-indigo-500/15 border-2 border-indigo-500/40 text-indigo-300 font-semibold hover:bg-indigo-500/25 hover:border-indigo-400/50 transition-all">
+            <Link to="/learning-paths" className="inline-flex items-center gap-2 px-6 py-4 rounded-2xl bg-indigo-500/15 border-2 border-indigo-500/40 text-indigo-300 font-semibold hover:bg-indigo-500/25 hover:border-indigo-400/50 transition-all">
               <Zap className="w-5 h-5" /> Learning paths with mentor guidance – learn from experts
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -148,11 +150,11 @@ const HomePage = () => {
               <p className="text-slate-400 text-sm leading-relaxed">
                 Placement season ready. Get interview-ready before graduation with AI practice, mentor-led paths, and DSA & system design prep.
               </p>
-              <a href="/start-assessment" className="mt-4 inline-flex items-center gap-1 text-indigo-400 text-sm font-semibold group-hover:gap-2 transition-all">Start free <ArrowRight className="w-4 h-4" /></a>
+              <Link to="/start-assessment" className="mt-4 inline-flex items-center gap-1 text-indigo-400 text-sm font-semibold group-hover:gap-2 transition-all">Start free <ArrowRight className="w-4 h-4" /></Link>
             </div>
 
             {/* Card 2 */}
-            <a href="/skill-gap-analyzer" data-aos className="group block bg-gradient-to-br from-slate-800/50 to-slate-800/20 border border-slate-700 rounded-2xl p-8 hover:border-cyan-500/50 transition-all hover:shadow-lg hover:shadow-cyan-500/10">
+            <Link to="/skill-gap-analyzer" data-aos className="group block bg-gradient-to-br from-slate-800/50 to-slate-800/20 border border-slate-700 rounded-2xl p-8 hover:border-cyan-500/50 transition-all hover:shadow-lg hover:shadow-cyan-500/10">
               <div className="w-12 h-12 bg-cyan-600/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-cyan-600/30 transition-all">
                 <Target className="w-6 h-6 text-cyan-400" />
               </div>
@@ -161,10 +163,10 @@ const HomePage = () => {
                 Refresh your fundamentals and gain confidence. Score well in technical assessments.
               </p>
               <span className="mt-4 inline-flex items-center gap-1 text-cyan-400 text-sm font-semibold group-hover:gap-2 transition-all">Find your gaps <ArrowRight className="w-4 h-4" /></span>
-            </a>
+            </Link>
 
             {/* Card 3 */}
-            <a href="/learning-paths" data-aos className="group block bg-gradient-to-br from-slate-800/50 to-slate-800/20 border border-slate-700 rounded-2xl p-8 hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/10">
+            <Link to="/learning-paths" data-aos className="group block bg-gradient-to-br from-slate-800/50 to-slate-800/20 border border-slate-700 rounded-2xl p-8 hover:border-purple-500/50 transition-all hover:shadow-lg hover:shadow-purple-500/10">
               <div className="w-12 h-12 bg-purple-600/20 rounded-lg flex items-center justify-center mb-4 group-hover:bg-purple-600/30 transition-all">
                 <Briefcase className="w-6 h-6 text-purple-400" />
               </div>
@@ -173,7 +175,7 @@ const HomePage = () => {
                 Transition into tech confidently with structured guidance and real-world practice.
               </p>
               <span className="mt-4 inline-flex items-center gap-1 text-purple-400 text-sm font-semibold group-hover:gap-2 transition-all">Explore paths <ArrowRight className="w-4 h-4" /></span>
-            </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -196,7 +198,7 @@ const HomePage = () => {
                 </div>
                 <h3 className="text-xl font-bold mb-2">Try free tools</h3>
                 <p className="text-slate-400 text-sm">Assessment, ATS score, mocks — no signup. See where you stand.</p>
-                <a href="/start-assessment" className="mt-2 inline-flex items-center gap-1 text-indigo-400 font-semibold text-sm">Start free <ArrowRight className="w-4 h-4" /></a>
+                <Link to="/start-assessment" className="mt-2 inline-flex items-center gap-1 text-indigo-400 font-semibold text-sm">Start free <ArrowRight className="w-4 h-4" /></Link>
               </div>
             </div>
 
@@ -207,7 +209,7 @@ const HomePage = () => {
                 </div>
                 <h3 className="text-xl font-bold mb-2">Explore learning paths</h3>
                 <p className="text-slate-400 text-sm">Mentor-led DSA, system design, interview prep.</p>
-                <a href="/learning-paths" className="mt-2 inline-flex items-center gap-1 text-cyan-400 font-semibold text-sm">Explore <ArrowRight className="w-4 h-4" /></a>
+                <Link to="/learning-paths" className="mt-2 inline-flex items-center gap-1 text-cyan-400 font-semibold text-sm">Explore <ArrowRight className="w-4 h-4" /></Link>
               </div>
             </div>
 
@@ -218,7 +220,7 @@ const HomePage = () => {
                 </div>
                 <h3 className="text-xl font-bold mb-2">Enroll in full program</h3>
                 <p className="text-slate-400 text-sm">One fee: classes, mocks, 1:1 mentorship, placement support.</p>
-                <a href="/upgrade" className="mt-2 inline-flex items-center gap-1 text-emerald-400 font-semibold text-sm">Enroll now <ArrowRight className="w-4 h-4" /></a>
+                <Link to="/upgrade" className="mt-2 inline-flex items-center gap-1 text-emerald-400 font-semibold text-sm">Enroll now <ArrowRight className="w-4 h-4" /></Link>
               </div>
             </div>
           </div>
@@ -230,9 +232,9 @@ const HomePage = () => {
         <div className="max-w-3xl mx-auto text-center" data-aos>
           <h2 className="text-2xl md:text-3xl font-black text-white mb-3">How to enroll</h2>
           <p className="text-slate-400 mb-8">Join the Complete Placement Program—full details and next steps are on our Enroll page. Click below and we’ll get you started.</p>
-          <a href="/upgrade" className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-xl font-bold transition-all shadow-lg shadow-emerald-500/20">
+          <Link to="/upgrade" className="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white px-8 py-4 rounded-xl font-bold transition-all shadow-lg shadow-emerald-500/20">
             Enroll now — program details
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -282,18 +284,18 @@ const HomePage = () => {
           </p>
           <p className="text-sm text-slate-500 mb-10">Free to start. No card required.</p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button 
-              onClick={() => window.location.href = '/start-assessment'}
+            <Link 
+              to="/start-assessment"
               className="bg-white text-slate-900 px-8 py-4 rounded-xl font-bold transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] inline-flex items-center justify-center gap-2 group"
             >
               Start free assessment <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
-            <button 
-              onClick={() => window.location.href = '/upgrade'}
+            </Link>
+            <Link 
+              to="/upgrade"
               className="border-2 border-slate-500 text-slate-200 hover:border-white hover:text-white px-8 py-4 rounded-xl font-bold transition-all"
             >
               Enroll
-            </button>
+            </Link>
           </div>
         </div>
       </section>
@@ -306,10 +308,10 @@ const HomePage = () => {
             <div>
               <h4 className="font-bold text-white mb-4">Platform</h4>
               <ul className="space-y-3 text-slate-400 text-sm">
-                <li><a href="/start-assessment" className="hover:text-white transition-colors">Assessment</a></li>
-                <li><a href="/mock-interviews" className="hover:text-white transition-colors">Mock Interviews</a></li>
-                <li><a href="/skill-gap-analyzer" className="hover:text-white transition-colors">Skill Analyzer</a></li>
-                <li><a href="/resume-analyzer" className="hover:text-white transition-colors">Resume Analyzer</a></li>
+                <li><Link to="/start-assessment" className="hover:text-white transition-colors">Assessment</Link></li>
+                <li><Link to="/mock-interviews" className="hover:text-white transition-colors">Mock Interviews</Link></li>
+                <li><Link to="/skill-gap-analyzer" className="hover:text-white transition-colors">Skill Analyzer</Link></li>
+                <li><Link to="/resume-analyzer" className="hover:text-white transition-colors">Resume Analyzer</Link></li>
               </ul>
             </div>
 
@@ -317,11 +319,11 @@ const HomePage = () => {
             <div>
               <h4 className="font-bold text-white mb-4">Learning</h4>
               <ul className="space-y-3 text-slate-400 text-sm">
-                <li><a href="/upgrade" className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors">Enroll</a></li>
-                <li><a href="/placement-tracks" className="hover:text-white transition-colors">Placement Tracks</a></li>
-                <li><a href="/free-tutorials" className="hover:text-white transition-colors">Free Tutorials</a></li>
-                <li><a href="/learning-paths" className="hover:text-white transition-colors">Learning Paths</a></li>
-                <li><a href="/outcomes" className="hover:text-white transition-colors">Success Stories</a></li>
+                <li><Link to="/upgrade" className="text-emerald-400 hover:text-emerald-300 font-medium transition-colors">Enroll</Link></li>
+                <li><Link to="/placement-tracks" className="hover:text-white transition-colors">Placement Tracks</Link></li>
+                <li><Link to="/free-tutorials" className="hover:text-white transition-colors">Free Tutorials</Link></li>
+                <li><Link to="/learning-paths" className="hover:text-white transition-colors">Learning Paths</Link></li>
+                <li><Link to="/outcomes" className="hover:text-white transition-colors">Success Stories</Link></li>
               </ul>
             </div>
 
@@ -342,7 +344,7 @@ const HomePage = () => {
               <ul className="space-y-3 text-slate-400 text-sm">
                 <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
                 <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-                <li><a href="/contact" className="hover:text-white transition-colors">Contact</a></li>
+                <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
                 <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
               </ul>
             </div>
