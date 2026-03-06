@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, X, ChevronDown, Rocket, Users, Zap } from 'lucide-react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
 import LearningPathsDropdown from './LearningPathsDropdown';
 
@@ -64,8 +64,8 @@ const Navbar = () => {
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center gap-2">
           {/* Home */}
-          <a 
-            href="/" 
+          <Link 
+            to="/" 
             className={`px-3 py-2 text-sm font-semibold rounded-lg transition-all ${
               isActive('/') && location.pathname === '/' 
                 ? 'text-indigo-400 bg-indigo-400/10' 
@@ -73,11 +73,11 @@ const Navbar = () => {
             }`}
           >
             Home
-          </a>
+          </Link>
 
           {/* Start Assessment - Primary CTA Button */}
-          <a 
-            href="/start-assessment" 
+          <Link 
+            to="/start-assessment" 
             className={`px-4 py-2 text-sm font-bold rounded-lg transition-all flex items-center gap-1 ${
               isActive('/start-assessment') || isActive('/readiness') || isActive('/interview-ready')
                 ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/50 hover:bg-indigo-700'
@@ -86,7 +86,7 @@ const Navbar = () => {
           >
             <Rocket size={16} />
             Start Assessment
-          </a>
+          </Link>
 
           {/* Learning Paths - Our USP, prominent placement */}
           <LearningPathsDropdown 
@@ -96,8 +96,8 @@ const Navbar = () => {
           />
 
           {/* Success Stories */}
-          <a 
-            href="/success-stories" 
+          <Link 
+            to="/success-stories" 
             className={`px-3 py-2 text-sm font-semibold rounded-lg transition-all ${
               isActive('/success-stories') || isActive('/outcomes')
                 ? 'text-indigo-400 bg-indigo-400/10' 
@@ -105,11 +105,11 @@ const Navbar = () => {
             }`}
           >
             Success Stories
-          </a>
+          </Link>
 
           {/* Enroll / Pricing */}
-          <a 
-            href="/upgrade" 
+          <Link 
+            to="/upgrade" 
             className={`px-3 py-2 text-sm font-semibold rounded-lg transition-all ${
               isActive('/upgrade') || isActive('/pricing')
                 ? 'text-emerald-400 bg-emerald-400/10' 
@@ -117,11 +117,11 @@ const Navbar = () => {
             }`}
           >
             Enroll
-          </a>
+          </Link>
 
           {/* For Recruiters */}
-          <a 
-            href="/for-recruiters" 
+          <Link 
+            to="/for-recruiters" 
             className={`px-3 py-2 text-sm font-semibold rounded-lg transition-all ${
               isActive('/for-recruiters')
                 ? 'text-blue-400 bg-blue-400/10' 
@@ -129,11 +129,11 @@ const Navbar = () => {
             }`}
           >
             For Recruiters
-          </a>
+          </Link>
 
           {/* Contact */}
-          <a 
-            href="/contact" 
+          <Link 
+            to="/contact" 
             className={`px-3 py-2 text-sm font-semibold rounded-lg transition-all ${
               isActive('/contact')
                 ? 'text-indigo-400 bg-indigo-400/10' 
@@ -141,7 +141,7 @@ const Navbar = () => {
             }`}
           >
             Contact
-          </a>
+          </Link>
 
           {/* Dashboard - Only show if authenticated */}
           {isAuthenticated && (
@@ -154,12 +154,12 @@ const Navbar = () => {
                 <ChevronDown size={15} />
               </button>
               <div className="absolute right-0 mt-0 w-48 bg-slate-800/95 backdrop-blur border border-white/10 rounded-xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all p-2 space-y-2">
-                <a href="/dashboard" className="block px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
+                <Link to="/dashboard" className="block px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
                   My Dashboard
-                </a>
-                <a href="#profile" className="block px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
+                </Link>
+                <Link to="/profile" className="block px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/10 rounded-lg transition-colors">
                   Profile
-                </a>
+                </Link>
                 <button className="block w-full text-left px-4 py-2 text-sm font-semibold text-slate-300 hover:text-white hover:bg-red-500/10 rounded-lg transition-colors">
                   Sign Out
                 </button>
@@ -181,22 +181,22 @@ const Navbar = () => {
       {isOpen && (
         <div className="md:hidden bg-slate-800/90 backdrop-blur border-t border-white/5 max-h-[calc(100vh-80px)] overflow-y-auto">
           <nav className="flex flex-col p-4 space-y-3">
-            <a 
-              href="/" 
+            <Link 
+              to="/" 
               onClick={() => setIsOpen(false)}
               className="px-4 py-3 text-base font-semibold text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
             >
               Home
-            </a>
+            </Link>
 
-            <a 
-              href="/start-assessment" 
+            <Link 
+              to="/start-assessment" 
               onClick={() => setIsOpen(false)}
               className="px-4 py-3 text-base font-bold rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-500 text-white hover:shadow-lg transition-all flex items-center gap-2"
             >
               <Rocket size={18} />
               Start Assessment
-            </a>
+            </Link>
 
             {/* Mobile Learning Paths Accordion */}
             <div className="border-t border-white/10 pt-3">
@@ -212,9 +212,9 @@ const Navbar = () => {
               {isLearningPathsOpen && (
                 <div className="pl-2 space-y-2 mt-3 max-h-96 overflow-y-auto">
                   {learningPathsItems.map((item) => (
-                    <a
+                    <Link
                       key={item.id}
-                      href={item.href}
+                      to={item.href}
                       onClick={() => {
                         setIsOpen(false);
                         setIsLearningPathsOpen(false);
@@ -228,55 +228,55 @@ const Navbar = () => {
                           <p className="text-xs text-slate-500 mt-0.5 line-clamp-1">{item.description}</p>
                         </div>
                       </div>
-                    </a>
+                    </Link>
                   ))}
                 </div>
               )}
             </div>
 
-            <a 
-              href="/success-stories" 
+            <Link 
+              to="/success-stories" 
               onClick={() => setIsOpen(false)}
               className="px-4 py-3 text-base font-semibold text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
             >
               Success Stories
-            </a>
+            </Link>
 
-            <a 
-              href="/upgrade" 
+            <Link 
+              to="/upgrade" 
               onClick={() => setIsOpen(false)}
               className="px-4 py-3 text-base font-semibold text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
             >
               Enroll
-            </a>
+            </Link>
 
-            <a 
-              href="/for-recruiters" 
+            <Link 
+              to="/for-recruiters" 
               onClick={() => setIsOpen(false)}
               className="px-4 py-3 text-base font-semibold text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
             >
               For Recruiters
-            </a>
+            </Link>
 
-            <a 
-              href="/contact" 
+            <Link 
+              to="/contact" 
               onClick={() => setIsOpen(false)}
               className="px-4 py-3 text-base font-semibold text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors"
             >
               Contact
-            </a>
+            </Link>
 
             {isAuthenticated && (
               <>
                 <div className="border-t border-white/10 pt-3">
-                  <a 
-                    href="/dashboard" 
+                  <Link 
+                    to="/dashboard" 
                     onClick={() => setIsOpen(false)}
                     className="px-4 py-3 text-base font-semibold text-emerald-400 hover:text-emerald-300 hover:bg-emerald-600/20 rounded-lg transition-colors flex items-center gap-2"
                   >
                     <Users size={18} />
                     My Dashboard
-                  </a>
+                  </Link>
                 </div>
               </>
             )}

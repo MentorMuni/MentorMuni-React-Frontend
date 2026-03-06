@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { ChevronDown, Zap } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const LearningPathsDropdown = ({ isActive, learningPathsItems, variant }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -132,9 +133,9 @@ const LearningPathsDropdown = ({ isActive, learningPathsItems, variant }) => {
             {/* Grid Layout - Responsive */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5">
               {learningPathsItems.map((item) => (
-                <a
+                <Link
                   key={item.id}
-                  href={item.href}
+                  to={item.href}
                   onClick={() => {
                     setIsOpen(false);
                     if (closeTimeoutRef.current) {
@@ -155,7 +156,7 @@ const LearningPathsDropdown = ({ isActive, learningPathsItems, variant }) => {
                   <p className="text-xs text-slate-300 group-hover/item:text-slate-200 transition-colors line-clamp-2">
                     {item.description}
                   </p>
-                </a>
+                </Link>
               ))}
             </div>
 
