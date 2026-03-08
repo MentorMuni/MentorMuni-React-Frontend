@@ -1,10 +1,10 @@
-
 import React, { useEffect, useState } from 'react';
 import { ArrowRight, Users, Target, Zap, Briefcase, FileText, MessageSquare, Mail, Phone, Check, ClipboardCheck, TrendingUp } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import MentorMuniChatbot from './MentorMuniChatbot';
+import AboutMentorMuniVideo from './AboutMentorMuniVideo';
 
 const HomePage = () => {
-  const navigate = useNavigate();
   const [heroSrc, setHeroSrc] = useState(null);
   useEffect(() => {
     import('../assets/hero-brand-banner.png').then((m) => setHeroSrc(m.default));
@@ -77,6 +77,9 @@ const HomePage = () => {
           </div>
         </main>
       </section>
+
+      {/* === MEET MENTORMUNI — VIDEO === */}
+      <AboutMentorMuniVideo />
 
       {/* === OUR MAIN OFFERINGS (Pillars) === */}
       <section className="py-16 md:py-20 px-6">
@@ -405,6 +408,8 @@ const HomePage = () => {
           animation: float 6s ease-in-out infinite;
         }
       `}</style>
+
+      <MentorMuniChatbot />
     </div>
   );
 };
