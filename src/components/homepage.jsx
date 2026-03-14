@@ -6,6 +6,7 @@ import AboutMentorMuniVideo from './AboutMentorMuniVideo';
 import FreeUsageBanner from './FreeUsageBanner';
 import HeroSection from './HeroSection';
 import ProblemDrivenFeatures from './ProblemDrivenFeatures';
+import HowItWorksSection from './HowItWorksSection';
 import CareerReadinessJourney from './CareerReadinessJourney';
 import FreeTrialBanner from './FreeTrialBanner';
 import ImpactStats from './ImpactStats';
@@ -30,6 +31,9 @@ const HomePage = () => {
 
       {/* === Problem-Driven Features Section === */}
       <ProblemDrivenFeatures />
+
+      {/* === How It Works Section === */}
+      <HowItWorksSection />
 
       {/* === Career Readiness Journey Section === */}
       <CareerReadinessJourney />
