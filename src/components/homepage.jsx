@@ -7,12 +7,15 @@ import FreeUsageBanner from './FreeUsageBanner';
 import HeroSection from './HeroSection';
 import ProblemDrivenFeatures from './ProblemDrivenFeatures';
 import HowItWorksSection from './HowItWorksSection';
+import CareerRoadmap from './CareerRoadmap';
 import CareerReadinessJourney from './CareerReadinessJourney';
 import FreeTrialBanner from './FreeTrialBanner';
 import ImpactStats from './ImpactStats';
 import SuccessStories from './SuccessStories';
 import MentorSection from './MentorSection';
 import CareerSwitchPaths from './CareerSwitchPaths';
+import JobRolesSection from './JobRolesSection';
+import CommunitySection from './CommunitySection';
 
 const HomePage = () => {
   return (
@@ -35,6 +38,9 @@ const HomePage = () => {
 
       {/* === How It Works Section === */}
       <HowItWorksSection />
+
+      {/* === Career Roadmap Section === */}
+      <CareerRoadmap />
 
       {/* === Career Readiness Journey Section === */}
       <CareerReadinessJourney />
@@ -100,6 +106,12 @@ const HomePage = () => {
 
       {/* === Career Switch Paths === */}
       <CareerSwitchPaths />
+
+      {/* === Job Roles Section === */}
+      <JobRolesSection />
+
+      {/* === Community Section === */}
+      <CommunitySection />
 
       {/* === WHO IT'S FOR === */}
       <section className="py-12 md:py-16 px-6 bg-slate-900/40 border-y border-slate-800/60">
