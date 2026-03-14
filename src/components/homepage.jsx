@@ -20,7 +20,7 @@ import FAQSection from './FAQSection';
 
 const HomePage = () => {
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans antialiased overflow-hidden">
+    <div className="min-h-screen section-main text-on-dark font-sans antialiased overflow-hidden">
       <DarkModeToggle />
       
       {/* === Landing page: ordered sections for transformation narrative === */}
