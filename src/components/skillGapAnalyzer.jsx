@@ -1,6 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { TrendingUp, Target, Zap, ArrowRight, AlertCircle, Loader, RefreshCw } from 'lucide-react';
 import { API_BASE } from '../config';
+import AIAnalysisLoader from './AIAnalysisLoader';
+import FreeUsageCounter, { useFreeUsageTracker } from './FreeUsageCounter';
+import UpgradePromptModal from './UpgradePromptModal';
 import GapSummaryCard from './SkillGap/GapSummaryCard';
 import MissingSkillsSection from './SkillGap/MissingSkillsSection';
 import RecommendedCoursesSection from './SkillGap/RecommendedCoursesSection';
@@ -18,6 +21,9 @@ import MonetizationOffer from './SkillGap/MonetizationOffer';
  * - Renders results with 4 analysis sections
  */
 const SkillGapAnalyzer = () => {
+  // Initialize free usage tracker and modal
+  const { incrementUsage, getUsageInfo } = useFreeUsageTracker('skill_gap_analyzer');
+  
   // ==================== STATE ====================
   const [formData, setFormData] = useState({
     current_role: '',
@@ -27,6 +33,7 @@ const SkillGapAnalyzer = () => {
     self_skills: [],
   });
 
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [roles, setRoles] = useState([]);
   const [rolesLoading, setRolesLoading] = useState(true);
   const [rolesError, setRolesError] = useState(null);
@@ -191,6 +198,12 @@ const SkillGapAnalyzer = () => {
       if (data.success) {
         setAnalysisResult(data.data);
         setFormStep(2);
+        
+        // Increment free usage tracker and check if limit reached
+        const { isLimitReached } = incrementUsage();
+        if (isLimitReached) {
+          setShowUpgradeModal(true);
+        }
         console.log('✓ Analysis completed');
       } else {
         setError(data.error || 'Analysis failed. Please try again.');
@@ -287,6 +300,15 @@ const SkillGapAnalyzer = () => {
 
         <div className="bg-slate-800/50 backdrop-blur p-8 rounded-2xl border border-slate-700">
           <h2 className="text-3xl font-bold mb-6">Skill Gap Analysis</h2>
+
+          {/* Free Usage Counter */}
+          <div className="mb-6 p-4 bg-gradient-to-r from-indigo-600/20 to-cyan-600/20 border border-indigo-500/30 rounded-lg">
+            <FreeUsageCounter
+              toolName="skill_gap_analyzer"
+              onLimitReached={() => setShowUpgradeModal(true)}
+              compact={false}
+            />
+          </div>
 
           {/* Roles Loading Error Banner */}
           {rolesError && (
@@ -551,8 +573,31 @@ const SkillGapAnalyzer = () => {
 
   // ==================== RENDER ====================
   if (formStep === 0) return <IntroSection />;
-  if (formStep === 1) return <FormSection />;
-  if (formStep === 2) return <ResultsSection />;
+  if (formStep === 1) {
+    if (analyzing) {
+      return (
+        <AIAnalysisLoader
+          onComplete={() => {
+            // Loader completes, results will be displayed automatically
+          }}
+          duration={4000}
+        />
+      );
+    }
+    return <FormSection />;
+  }
+  if (formStep === 2) {
+    return (
+      <>
+        <ResultsSection />
+        <UpgradePromptModal
+          isOpen={showUpgradeModal}
+          onClose={() => setShowUpgradeModal(false)}
+          toolName="Skill Gap Analyzer"
+        />
+      </>
+    );
+  }
 };
 
 export default SkillGapAnalyzer;

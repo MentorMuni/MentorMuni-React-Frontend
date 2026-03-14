@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle, CheckCircle, ChevronRight, Lock, Mail, Phone, Check } from 'lucide-react';
 import { API_BASE } from '../config';
+import AIAnalysisLoader from './AIAnalysisLoader';
+import FreeUsageCounter, { useFreeUsageTracker } from './FreeUsageCounter';
+import UpgradePromptModal from './UpgradePromptModal';
 const FREE_TIER_LIMIT = 1;
 
 const InputField = ({ label, type, name, value, onChange, placeholder, error, maxLength, showCharCount }) => (
@@ -56,9 +59,13 @@ const InputField = ({ label, type, name, value, onChange, placeholder, error, ma
 );
 
 const InterviewReady = () => {
+  // Initialize free usage tracker and modal
+  const { incrementUsage, getUsageInfo } = useFreeUsageTracker('interview_readiness');
+  
   const [step, setStep] = useState(0); // 0: landing, 1: contact-info, 1b: otp-verify, 2: user-category, 3: profile, 4: quiz, 5: results, 6: auth-check, 7: signup/signin, 8: payment-plans
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
   const [otpSent, setOtpSent] = useState(false);
   
@@ -363,6 +370,13 @@ const InterviewReady = () => {
     setTimeout(() => {
       setResult(mockResult);
       setStep(5);
+      
+      // Increment free usage tracker and check if limit reached
+      const { isLimitReached } = incrementUsage();
+      if (isLimitReached) {
+        setShowUpgradeModal(true);
+      }
+      
       setLoading(false);
     }, 1500);
   };
@@ -853,6 +867,15 @@ const InterviewReady = () => {
               <ProgressBar />
             </div>
 
+            {/* Free Usage Counter */}
+            <div className="mb-8 p-4 bg-gradient-to-r from-indigo-600/20 to-cyan-600/20 border border-indigo-500/30 rounded-lg">
+              <FreeUsageCounter
+                toolName="interview_readiness"
+                onLimitReached={() => setShowUpgradeModal(true)}
+                compact={false}
+              />
+            </div>
+
             <div className="space-y-8 mb-8 max-h-[60vh] overflow-y-auto pr-4">
               {questions.map((q, i) => (
                 <div key={i} className="border-b border-white/5 pb-8 last:border-0">
@@ -905,6 +928,18 @@ const InterviewReady = () => {
           </div>
         </div>
       </div>
+    );
+  }
+
+  // ========== STEP 5: LOADING STATE ==========
+  if (step === 5 && loading && !result) {
+    return (
+      <AIAnalysisLoader
+        onComplete={() => {
+          // Loader completes, results will be displayed automatically
+        }}
+        duration={4000}
+      />
     );
   }
 
@@ -1424,7 +1459,16 @@ const InterviewReady = () => {
     );
   }
 
-  return null;
+  return (
+    <>
+      {null}
+      <UpgradePromptModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        toolName="Interview Readiness Check"
+      />
+    </>
+  );
 };
 
 export default InterviewReady;

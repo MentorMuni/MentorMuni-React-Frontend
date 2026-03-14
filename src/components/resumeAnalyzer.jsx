@@ -1,8 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Upload, X, Loader, CheckCircle, AlertCircle, ArrowRight } from 'lucide-react';
 import { API_BASE } from '../config';
+import AIAnalysisLoader from './AIAnalysisLoader';
+import FreeUsageCounter, { useFreeUsageTracker } from './FreeUsageCounter';
+import UpgradePromptModal from './UpgradePromptModal';
 
 const ResumeAnalyzer = () => {
+  const { incrementUsage, getUsageInfo } = useFreeUsageTracker('resume_analyzer');
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [file, setFile] = useState(null);
   const [dragActive, setDragActive] = useState(false);
   const [selectedRole, setSelectedRole] = useState('');
@@ -257,6 +262,12 @@ const ResumeAnalyzer = () => {
           scoreInterpretation: data.data.score_interpretation,
           suspiciousFlag: data.data.suspicious_flag || false
         });
+        
+        // Increment free usage tracker and check if limit reached
+        const { isLimitReached } = incrementUsage();
+        if (isLimitReached) {
+          setShowUpgradeModal(true);
+        }
       } else {
         throw new Error(data.error || 'Analysis failed');
       }
@@ -374,11 +385,20 @@ const ResumeAnalyzer = () => {
               </div>
             </div>
           </div>
-        )}
+        </div>
 
         {!results ? (
           // Upload & Analyze Section
           <div className="space-y-8">
+            {/* Free Usage Counter */}
+            <div className="bg-gradient-to-r from-indigo-600/20 to-cyan-600/20 border border-indigo-500/30 rounded-xl p-6">
+              <FreeUsageCounter
+                toolName="resume_analyzer"
+                onLimitReached={() => setShowUpgradeModal(true)}
+                compact={false}
+              />
+            </div>
+
             {/* Upload Section */}
             <div
               onDragEnter={handleDrag}
@@ -493,6 +513,14 @@ const ResumeAnalyzer = () => {
               )}
             </button>
           </div>
+        ) : isAnalyzing ? (
+          // AI Analysis Loader
+          <AIAnalysisLoader
+            onComplete={() => {
+              // Loader completes, results will be displayed automatically
+            }}
+            duration={4000}
+          />
         ) : (
           // Results Section
           <div className="space-y-8">
@@ -759,6 +787,13 @@ const ResumeAnalyzer = () => {
           </div>
         )}
       </div>
+
+      {/* Upgrade Modal */}
+      <UpgradePromptModal
+        isOpen={showUpgradeModal}
+        onClose={() => setShowUpgradeModal(false)}
+        toolName="Resume Analyzer"
+      />
     </div>
   );
 };

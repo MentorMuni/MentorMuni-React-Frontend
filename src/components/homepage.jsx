@@ -12,6 +12,7 @@ import FreeTrialBanner from './FreeTrialBanner';
 import ImpactStats from './ImpactStats';
 import SuccessStories from './SuccessStories';
 import MentorSection from './MentorSection';
+import CareerSwitchPaths from './CareerSwitchPaths';
 
 const HomePage = () => {
   return (
