@@ -5,7 +5,12 @@ import MentorMuniChatbot from './MentorMuniChatbot';
 import AboutMentorMuniVideo from './AboutMentorMuniVideo';
 import FreeUsageBanner from './FreeUsageBanner';
 import HeroSection from './HeroSection';
-import CareerJourney from './CareerJourney';
+import ProblemDrivenFeatures from './ProblemDrivenFeatures';
+import CareerReadinessJourney from './CareerReadinessJourney';
+import FreeTrialBanner from './FreeTrialBanner';
+import ImpactStats from './ImpactStats';
+import SuccessStories from './SuccessStories';
+import MentorSection from './MentorSection';
 
 const HomePage = () => {
   return (
@@ -17,57 +22,20 @@ const HomePage = () => {
       {/* === HERO SECTION === */}
       <HeroSection />
 
+      {/* === Free Trial Benefits Banner === */}
+      <FreeTrialBanner />
+
       {/* === MEET MENTORMUNI — VIDEO === */}
       <AboutMentorMuniVideo />
 
-      {/* === OUR MAIN OFFERINGS (Pillars) === */}
-      <section className="py-16 md:py-20 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-10" data-aos>
-            <h2 className="text-2xl md:text-3xl font-black text-white mb-2">What we do</h2>
-            <p className="text-slate-400">Free tools + mentor-led programs</p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Link to="/start-assessment" data-aos className="group relative bg-gradient-to-b from-slate-800/60 to-slate-800/30 border border-slate-700 rounded-2xl p-8 hover:border-indigo-500/60 hover:shadow-xl hover:shadow-indigo-500/10 transition-all duration-300 flex flex-col">
-              <div className="w-14 h-14 rounded-2xl bg-indigo-500/20 flex items-center justify-center mb-6 group-hover:bg-indigo-500/30 transition-colors">
-                <ClipboardCheck className="w-7 h-7 text-indigo-400" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">Interview readiness</h3>
-              <p className="text-slate-400 text-sm leading-relaxed flex-grow">AI-powered assessment tailored to your role. Know your strengths and gaps in minutes.</p>
-              <span className="mt-4 inline-flex items-center gap-1 text-indigo-400 font-semibold text-sm group-hover:gap-2 transition-all">Start assessment <ArrowRight className="w-4 h-4" /></span>
-            </Link>
-            <Link to="/resume-analyzer" data-aos className="group relative bg-gradient-to-b from-slate-800/60 to-slate-800/30 border border-slate-700 rounded-2xl p-8 hover:border-cyan-500/60 hover:shadow-xl hover:shadow-cyan-500/10 transition-all duration-300 flex flex-col">
-              <div className="w-14 h-14 rounded-2xl bg-cyan-500/20 flex items-center justify-center mb-6 group-hover:bg-cyan-500/30 transition-colors">
-                <FileText className="w-7 h-7 text-cyan-400" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">ATS score</h3>
-              <p className="text-slate-400 text-sm leading-relaxed flex-grow">Get your resume scored for ATS compatibility and role fit. Improve before you apply.</p>
-              <span className="mt-4 inline-flex items-center gap-1 text-cyan-400 font-semibold text-sm group-hover:gap-2 transition-all">Analyze resume <ArrowRight className="w-4 h-4" /></span>
-            </Link>
-            <Link to="/mock-interviews" data-aos className="group relative bg-gradient-to-b from-slate-800/60 to-slate-800/30 border border-slate-700 rounded-2xl p-8 hover:border-emerald-500/60 hover:shadow-xl hover:shadow-emerald-500/10 transition-all duration-300 flex flex-col">
-              <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 flex items-center justify-center mb-6 group-hover:bg-emerald-500/30 transition-colors">
-                <MessageSquare className="w-7 h-7 text-emerald-400" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">AI mock interviews</h3>
-              <p className="text-slate-400 text-sm leading-relaxed flex-grow">Practice with AI-driven mock interviews and get actionable feedback to improve.</p>
-              <span className="mt-4 inline-flex items-center gap-1 text-emerald-400 font-semibold text-sm group-hover:gap-2 transition-all">Practice now <ArrowRight className="w-4 h-4" /></span>
-            </Link>
-            <Link to="/skill-gap-analyzer" data-aos className="group relative bg-gradient-to-b from-slate-800/60 to-slate-800/30 border border-slate-700 rounded-2xl p-8 hover:border-purple-500/60 hover:shadow-xl hover:shadow-purple-500/10 transition-all duration-300 flex flex-col">
-              <div className="w-14 h-14 rounded-2xl bg-purple-500/20 flex items-center justify-center mb-6 group-hover:bg-purple-500/30 transition-colors">
-                <TrendingUp className="w-7 h-7 text-purple-400" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">Career gap analysis</h3>
-              <p className="text-slate-400 text-sm leading-relaxed flex-grow">See gaps between your skills and your target role. Get a clear roadmap to close them.</p>
-              <span className="mt-4 inline-flex items-center gap-1 text-purple-400 font-semibold text-sm group-hover:gap-2 transition-all">Analyze gap <ArrowRight className="w-4 h-4" /></span>
-            </Link>
-          </div>
-          <div className="mt-10 text-center" data-aos>
-            <Link to="/learning-paths" className="inline-flex items-center gap-2 px-6 py-4 rounded-2xl bg-indigo-500/15 border-2 border-indigo-500/40 text-indigo-300 font-semibold hover:bg-indigo-500/25 hover:border-indigo-400/50 transition-all">
-              <Zap className="w-5 h-5" /> Learning paths with mentor guidance – learn from experts
-            </Link>
-          </div>
-        </div>
-      </section>
+      {/* === Problem-Driven Features Section === */}
+      <ProblemDrivenFeatures />
+
+      {/* === Career Readiness Journey Section === */}
+      <CareerReadinessJourney />
+
+      {/* === Impact Stats Section === */}
+      <ImpactStats />
 
       {/* === WHO IT'S FOR === */}
       <section className="py-16 md:py-20 px-6 bg-gradient-to-b from-transparent to-slate-900/30">
@@ -122,10 +90,10 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* === Career Journey Section === */}
-      <CareerJourney />
+      {/* === Mentor Section === */}
+      <MentorSection />
 
-      {/* === HOW TO ENROLL === */}
+      {/* === WHO IT'S FOR === */}
       <section className="py-12 md:py-16 px-6 bg-slate-900/40 border-y border-slate-800/60">
         <div className="max-w-3xl mx-auto text-center" data-aos>
           <h2 className="text-2xl md:text-3xl font-black text-white mb-3">How to enroll</h2>
@@ -135,6 +103,9 @@ const HomePage = () => {
           </Link>
         </div>
       </section>
+
+      {/* === Success Stories Section === */}
+      <SuccessStories />
 
       {/* === OUTCOMES === */}
       <section className="py-16 md:py-20 px-6">

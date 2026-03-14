@@ -10,6 +10,9 @@ const InterviewReady = lazy(() => import("./components/interviewready"));
 const OutcomesPage = lazy(() => import("./components/outcomes"));
 const Pricing = lazy(() => import("./components/pricing"));
 const MentorDashboard = lazy(() => import("./components/mentordashboard"));
+const HowItWorks = lazy(() => import("./components/HowItWorks"));
+const Tools = lazy(() => import("./components/Tools"));
+const Mentorship = lazy(() => import("./components/Mentorship"));
 const JavaTutorial = lazy(() => import("./components/javaTutorial"));
 const SqlTutorial = lazy(() => import("./components/sqlTutorial"));
 const PythonTutorial = lazy(() => import("./components/pythonTutorial"));
@@ -40,6 +43,9 @@ function App() {
           <Suspense fallback={<PageFallback />}>
             <Routes>
               <Route path="/" element={<HomePage />} />
+              <Route path="/how-it-works" element={<HowItWorks />} />
+              <Route path="/tools" element={<Tools />} />
+              <Route path="/mentorship" element={<Mentorship />} />
               <Route path="/start-assessment" element={<InterviewReady />} />
               <Route path="/readiness" element={<InterviewReady />} />
               <Route path="/interview-ready" element={<InterviewReady />} />

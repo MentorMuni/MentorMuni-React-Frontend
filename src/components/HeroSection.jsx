@@ -33,17 +33,17 @@ const HeroSection = () => {
             <div className="space-y-4">
               <h1 className="text-5xl sm:text-6xl md:text-7xl font-black leading-[1.1] tracking-tight">
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-indigo-300">
-                  Crack Your Next Tech Interview
+                  Get Job Ready in Tech
                 </span>
               </h1>
-              <p className="text-xl md:text-2xl font-bold text-indigo-300">
-                with AI-Powered Career Analysis
+              <p className="text-xl md:text-2xl font-bold text-blue-300">
+                Prepare for interviews, land your role
               </p>
             </div>
 
             {/* Subheadline - Value Proposition */}
             <p className="text-lg text-slate-300 leading-relaxed">
-              Analyze your resume, discover your skill gaps, and measure your interview readiness in minutes. Get personalized roadmaps to land your dream tech job.
+              AI analyzes your resume, skills, and interview readiness in under 3 minutes. Get a personalized roadmap to bridge the gap between where you are and where you want to be.
             </p>
 
             {/* Trust Message */}
