@@ -55,64 +55,64 @@ const JobRolesSection = () => {
 
   const colorMap = {
     indigo: {
-      bg: "bg-indigo-50",
-      border: "border-indigo-200",
-      icon: "bg-indigo-100 text-indigo-600",
-      badge: "bg-indigo-100 text-indigo-700",
+      bg: "card-dark",
+      border: "border-indigo-500/20",
+      icon: "text-indigo-400",
+      badge: "bg-indigo-500/20 text-indigo-300",
       button: "from-indigo-600 to-blue-600",
-      hover: "hover:border-indigo-400 hover:shadow-indigo-200"
+      hover: "hover:border-indigo-400/50"
     },
     cyan: {
-      bg: "bg-cyan-50",
-      border: "border-cyan-200",
-      icon: "bg-cyan-100 text-cyan-600",
-      badge: "bg-cyan-100 text-cyan-700",
+      bg: "card-dark",
+      border: "border-cyan-500/20",
+      icon: "text-cyan-400",
+      badge: "bg-cyan-500/20 text-cyan-300",
       button: "from-cyan-600 to-blue-600",
-      hover: "hover:border-cyan-400 hover:shadow-cyan-200"
+      hover: "hover:border-cyan-400/50"
     },
     purple: {
-      bg: "bg-purple-50",
-      border: "border-purple-200",
-      icon: "bg-purple-100 text-purple-600",
-      badge: "bg-purple-100 text-purple-700",
+      bg: "card-dark",
+      border: "border-purple-500/20",
+      icon: "text-purple-400",
+      badge: "bg-purple-500/20 text-purple-300",
       button: "from-purple-600 to-pink-600",
-      hover: "hover:border-purple-400 hover:shadow-purple-200"
+      hover: "hover:border-purple-400/50"
     },
     blue: {
-      bg: "bg-blue-50",
-      border: "border-blue-200",
-      icon: "bg-blue-100 text-blue-600",
-      badge: "bg-blue-100 text-blue-700",
+      bg: "card-dark",
+      border: "border-blue-500/20",
+      icon: "text-blue-400",
+      badge: "bg-blue-500/20 text-blue-300",
       button: "from-blue-600 to-cyan-600",
-      hover: "hover:border-blue-400 hover:shadow-blue-200"
+      hover: "hover:border-blue-400/50"
     },
     amber: {
-      bg: "bg-amber-50",
-      border: "border-amber-200",
-      icon: "bg-amber-100 text-amber-600",
-      badge: "bg-amber-100 text-amber-700",
+      bg: "card-dark",
+      border: "border-amber-500/20",
+      icon: "text-amber-400",
+      badge: "bg-amber-500/20 text-amber-300",
       button: "from-amber-600 to-orange-600",
-      hover: "hover:border-amber-400 hover:shadow-amber-200"
+      hover: "hover:border-amber-400/50"
     },
     rose: {
-      bg: "bg-rose-50",
-      border: "border-rose-200",
-      icon: "bg-rose-100 text-rose-600",
-      badge: "bg-rose-100 text-rose-700",
+      bg: "card-dark",
+      border: "border-rose-500/20",
+      icon: "text-rose-400",
+      badge: "bg-rose-500/20 text-rose-300",
       button: "from-rose-600 to-pink-600",
-      hover: "hover:border-rose-400 hover:shadow-rose-200"
+      hover: "hover:border-rose-400/50"
     }
   };
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-b from-white to-slate-50">
+    <section className="py-20 px-6 section-dark">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-black text-on-dark mb-4">
             Prepare for These Roles
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <p className="text-lg text-on-dark-sub max-w-2xl mx-auto">
             Choose a career path and start preparing for in-demand tech jobs.
           </p>
         </div>
@@ -126,18 +126,18 @@ const JobRolesSection = () => {
             return (
               <div
                 key={role.id}
-                className={`${colors.bg} border-2 ${colors.border} rounded-xl p-8 transition-all duration-300 ${colors.hover} hover:shadow-xl hover:-translate-y-2 group cursor-pointer`}
+                className={`${colors.bg} border ${colors.border} rounded-xl p-8 transition-all duration-300 ${colors.hover} hover:shadow-xl hover:-translate-y-2 group cursor-pointer`}
               >
                 {/* Icon Circle */}
-                <div className={`${colors.icon} w-16 h-16 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`}>
-                  <Icon className="w-8 h-8" strokeWidth={1.5} />
+                <div className={`w-16 h-16 rounded-lg flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300`} style={{ background: 'rgba(99,102,241,0.06)' }}>
+                  <Icon className={`w-8 h-8 ${colors.icon}`} strokeWidth={1.5} />
                 </div>
 
                 {/* Content */}
-                <h3 className="text-xl font-bold text-slate-900 mb-3">
+                <h3 className="text-xl font-bold text-on-dark mb-3">
                   {role.title}
                 </h3>
-                <p className="text-slate-600 text-sm mb-6 leading-relaxed">
+                <p className="text-on-dark-sub text-sm mb-6 leading-relaxed">
                   {role.description}
                 </p>
 
@@ -164,21 +164,21 @@ const JobRolesSection = () => {
         </div>
 
         {/* Bottom CTA Section */}
-        <div className="text-center pt-12 border-t border-slate-200">
-          <p className="text-slate-600 mb-8 max-w-2xl mx-auto">
+        <div className="text-center pt-12" style={{ borderTop: '1px solid var(--border-color)' }}>
+          <p className="text-on-dark-sub mb-8 max-w-2xl mx-auto">
             Not sure which role is right for you? Use our free tools to assess your current skills and discover the best career path.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="/#/skill-gap-analyzer"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white font-bold rounded-lg hover:shadow-lg hover:shadow-orange-500/30 hover:-translate-y-1 transition-all duration-300 active:scale-95"
+              className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-white font-bold rounded-lg hover:shadow-lg hover:-translate-y-1 transition-all duration-300 active:scale-95"
             >
               <span>Explore Tools & Get Started</span>
               <ArrowRight className="w-5 h-5" />
             </a>
             <a
               href="/#/interview-readiness"
-              className="inline-flex items-center gap-2 px-8 py-4 border-2 border-indigo-600 text-indigo-600 font-bold rounded-lg hover:bg-indigo-50 transition-all duration-300"
+              className="inline-flex items-center gap-2 px-8 py-4 border border-primary text-primary font-bold rounded-lg hover:bg-primary/10 transition-all duration-300"
             >
               Check My Readiness (Free)
             </a>

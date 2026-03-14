@@ -179,6 +179,7 @@ const HomePage = () => {
       {/* 9. PRICING SECTION */}
       <PricingSection />
       {/* 10. FAQ SECTION */}
+      <FAQSection />
 
       {/* === FOOTER === */}
       <footer className="bg-slate-900/50 border-t border-slate-800 py-16 px-6">
