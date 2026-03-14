@@ -1,82 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ArrowRight, Users, Target, Zap, Briefcase, FileText, MessageSquare, Mail, Phone, Check, ClipboardCheck, TrendingUp } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MentorMuniChatbot from './MentorMuniChatbot';
 import AboutMentorMuniVideo from './AboutMentorMuniVideo';
+import FreeUsageBanner from './FreeUsageBanner';
+import HeroSection from './HeroSection';
+import CareerJourney from './CareerJourney';
 
 const HomePage = () => {
-  const [heroSrc, setHeroSrc] = useState(null);
-  useEffect(() => {
-    import('../assets/hero-brand-banner.png').then((m) => setHeroSrc(m.default));
-  }, []);
-
   return (
     <div className="min-h-screen bg-[#0B0F19] text-[#F1F5F9] font-sans antialiased overflow-hidden">
       
-      {/* === 2-SEC HOOK: Free placement tools (no data-aos = visible immediately) === */}
-      <div className="bg-emerald-500/10 border-b border-emerald-500/20 py-2.5 px-4 text-center">
-        <p className="text-sm md:text-base text-emerald-200 font-semibold">
-          🎯 Free placement tools — ATS score, interview readiness, mock interviews. Try in 2 mins, no card required.
-        </p>
-      </div>
+      {/* === Free Usage Banner === */}
+      <FreeUsageBanner />
 
-      {/* === HERO SECTION (no data-aos = visible on first paint) === */}
-      <section className="relative min-h-[85vh] flex items-center overflow-hidden">
-        {/* Decorative blobs – stay behind content with z-0 */}
-        <div className="absolute inset-0 z-0 opacity-25 pointer-events-none" aria-hidden="true">
-          <div className="absolute top-0 left-0 w-96 h-96 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-          <div className="absolute top-1/4 right-0 w-80 h-80 bg-cyan-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
-          <div className="absolute bottom-0 left-1/3 w-72 h-72 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
-        </div>
-        <main className="relative z-10 max-w-7xl mx-auto px-6 py-12 md:py-20 w-full">
-          <div className="grid lg:grid-cols-2 gap-14 lg:gap-24 items-center">
-            <div className="space-y-6">
-              <p className="text-base text-cyan-300 font-semibold">Free tools for placement checks — then level up with mentors.</p>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl xl:text-7xl font-black leading-[1.1] tracking-tight">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-200 to-indigo-300">
-                  Know exactly where you stand.
-                </span>
-              </h1>
-              <p className="text-lg text-slate-400 leading-relaxed max-w-xl">
-                <strong className="text-white">MentorMuni</strong> is your placement prep partner. Start with free AI tools—readiness, ATS score, mocks—then level up with <strong className="text-indigo-300">mentor-led programs</strong>.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link 
-                  to="/start-assessment"
-                  className="bg-white text-slate-900 px-8 py-4 rounded-xl font-bold transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] inline-flex items-center justify-center gap-2 group"
-                >
-                  Start free assessment <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Link>
-                <Link 
-                  to="/learning-paths"
-                  className="border-2 border-slate-500 text-slate-200 hover:border-white hover:text-white hover:bg-white/5 px-8 py-4 rounded-xl font-bold transition-all inline-flex items-center justify-center gap-2"
-                >
-                  Explore learning paths
-                </Link>
-              </div>
-              <div className="pt-6 border-t border-slate-700/80 space-y-2">
-                <p className="text-sm text-slate-500">Trusted by students preparing for campus & off-campus placements</p>
-                <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-slate-500">
-                  <span className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> Interview readiness</span>
-                  <span className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> ATS score</span>
-                  <span className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> AI mock interviews</span>
-                  <span className="flex items-center gap-2"><Check className="w-4 h-4 text-emerald-400" /> Mentor-led learning</span>
-                </div>
-              </div>
-            </div>
-            <div className="hidden lg:flex items-center justify-center relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/10 to-cyan-600/10 rounded-3xl blur-2xl"></div>
-              <div className="relative animate-float w-full max-w-md min-h-[200px]">
-                {heroSrc ? (
-                  <img src={heroSrc} alt="MentorMuni – Guiding your journey to knowledge" className="w-full h-auto drop-shadow-2xl rounded-2xl" loading="eager" decoding="async" />
-                ) : (
-                  <div className="w-full aspect-video rounded-2xl bg-slate-800/50 border border-slate-700/50" />
-                )}
-              </div>
-            </div>
-          </div>
-        </main>
-      </section>
+      {/* === HERO SECTION === */}
+      <HeroSection />
 
       {/* === MEET MENTORMUNI — VIDEO === */}
       <AboutMentorMuniVideo />
@@ -183,52 +122,8 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* === HOW IT WORKS === */}
-      <section className="py-12 md:py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-10" data-aos>
-            <h2 className="text-2xl md:text-3xl font-black text-white mb-2">How it works</h2>
-            <p className="text-slate-400">Try free → See gaps → Enroll for full program</p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 relative">
-            <div className="hidden md:block absolute top-12 left-0 right-0 h-1 bg-gradient-to-r from-indigo-600/20 via-cyan-600/20 to-transparent"></div>
-
-            <div data-aos className="relative group">
-              <div className="flex flex-col items-center text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-indigo-600 to-indigo-700 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform relative z-10">
-                  <span className="text-2xl font-black">1</span>
-                </div>
-                <h3 className="text-xl font-bold mb-2">Try free tools</h3>
-                <p className="text-slate-400 text-sm">Assessment, ATS score, mocks — no signup. See where you stand.</p>
-                <Link to="/start-assessment" className="mt-2 inline-flex items-center gap-1 text-indigo-400 font-semibold text-sm">Start free <ArrowRight className="w-4 h-4" /></Link>
-              </div>
-            </div>
-
-            <div data-aos className="relative group">
-              <div className="flex flex-col items-center text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-cyan-600 to-cyan-700 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform relative z-10">
-                  <span className="text-2xl font-black">2</span>
-                </div>
-                <h3 className="text-xl font-bold mb-2">Explore learning paths</h3>
-                <p className="text-slate-400 text-sm">Mentor-led DSA, system design, interview prep.</p>
-                <Link to="/learning-paths" className="mt-2 inline-flex items-center gap-1 text-cyan-400 font-semibold text-sm">Explore <ArrowRight className="w-4 h-4" /></Link>
-              </div>
-            </div>
-
-            <div data-aos className="relative group">
-              <div className="flex flex-col items-center text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-emerald-600 to-emerald-700 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform relative z-10">
-                  <span className="text-2xl font-black">3</span>
-                </div>
-                <h3 className="text-xl font-bold mb-2">Enroll in full program</h3>
-                <p className="text-slate-400 text-sm">One fee: classes, mocks, 1:1 mentorship, placement support.</p>
-                <Link to="/upgrade" className="mt-2 inline-flex items-center gap-1 text-emerald-400 font-semibold text-sm">Enroll now <ArrowRight className="w-4 h-4" /></Link>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* === Career Journey Section === */}
+      <CareerJourney />
 
       {/* === HOW TO ENROLL === */}
       <section className="py-12 md:py-16 px-6 bg-slate-900/40 border-y border-slate-800/60">
