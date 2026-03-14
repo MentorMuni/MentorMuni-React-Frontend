@@ -48,50 +48,35 @@ const FAQSection = () => {
   ];
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-b from-white to-slate-50">
+    <section className="py-20 px-6 section-dark">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 rounded-full text-indigo-700 font-semibold text-sm mb-6">
-            <HelpCircle className="w-4 h-4" />
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-on-dark font-semibold text-sm mb-6" style={{ background: 'rgba(99,102,241,0.06)' }}>
+            <HelpCircle className="w-4 h-4 text-primary" />
             Common Questions
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4">
-            Frequently Asked Questions
-          </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
-            Everything you need to know about MentorMuni and how we help you prepare for your next tech job.
-          </p>
+          <h2 className="text-4xl md:text-5xl font-black text-on-dark mb-4">Frequently Asked Questions</h2>
+          <p className="text-lg text-on-dark-sub max-w-2xl mx-auto">Everything you need to know about MentorMuni and how we help you prepare for your next tech job.</p>
         </div>
 
         {/* FAQ Accordion */}
         <div className="space-y-4">
           {faqs.map((faq) => (
-            <div
-              key={faq.id}
-              className="bg-white border-2 border-slate-200 rounded-lg overflow-hidden transition-all duration-300 hover:border-indigo-300 hover:shadow-md"
-            >
+            <div key={faq.id} className="card-dark rounded-lg overflow-hidden transition-all duration-300">
               {/* Question Button */}
               <button
                 onClick={() => setExpandedId(expandedId === faq.id ? null : faq.id)}
-                className="w-full px-6 py-5 flex items-center justify-between text-left hover:bg-slate-50 transition-colors"
+                className="w-full px-6 py-5 flex items-center justify-between text-left"
               >
-                <h3 className="text-lg font-bold text-slate-900 pr-4">
-                  {faq.question}
-                </h3>
-                <ChevronDown
-                  className={`w-6 h-6 text-indigo-600 flex-shrink-0 transition-transform duration-300 ${
-                    expandedId === faq.id ? 'rotate-180' : ''
-                  }`}
-                />
+                <h3 className="text-lg font-bold text-on-dark pr-4">{faq.question}</h3>
+                <ChevronDown className={`w-6 h-6 text-primary flex-shrink-0 transition-transform duration-300 ${expandedId === faq.id ? 'rotate-180' : ''}`} />
               </button>
 
               {/* Answer */}
               {expandedId === faq.id && (
-                <div className="px-6 py-5 bg-slate-50 border-t border-slate-200">
-                  <p className="text-slate-700 leading-relaxed">
-                    {faq.answer}
-                  </p>
+                <div className="px-6 py-5" style={{ borderTop: '1px solid var(--border-color)' }}>
+                  <p className="text-on-dark-sub leading-relaxed">{faq.answer}</p>
                 </div>
               )}
             </div>
@@ -100,13 +85,8 @@ const FAQSection = () => {
 
         {/* Bottom CTA */}
         <div className="mt-16 text-center">
-          <p className="text-slate-600 mb-6">
-            Still have questions? We're here to help!
-          </p>
-          <a
-            href="/#/contact"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-lg hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
-          >
+          <p className="text-on-dark-sub mb-6">Still have questions? We're here to help!</p>
+          <a href="/#/contact" className="btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-lg font-bold">
             <span>Contact Our Team</span>
           </a>
         </div>

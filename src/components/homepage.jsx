@@ -34,7 +34,6 @@ const HomePage = () => {
       <MentorProfiles />
       <FreeUsageCTA />
       <PricingSection />
-      <FAQSection />
 
       {/* === WHO IT'S FOR === */}
       <section className="py-16 md:py-20 px-6 bg-gradient-to-b from-transparent to-slate-900/30">
@@ -179,9 +178,7 @@ const HomePage = () => {
 
       {/* 9. PRICING SECTION */}
       <PricingSection />
-
       {/* 10. FAQ SECTION */}
-      <FAQSection />
 
       {/* === FOOTER === */}
       <footer className="bg-slate-900/50 border-t border-slate-800 py-16 px-6">
