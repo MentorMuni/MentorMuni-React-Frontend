@@ -2,6 +2,7 @@ import React from 'react';
 import { Mail, Phone, ArrowRight, Users, Target, Briefcase } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MentorMuniChatbot from './MentorMuniChatbot';
+import DarkModeToggle from './DarkModeToggle';
 import HeroSection from './HeroSection';
 import TrustIndicators from './TrustIndicators';
 import HowItWorks from './HowItWorks';
@@ -20,6 +21,7 @@ import FAQSection from './FAQSection';
 const HomePage = () => {
   return (
     <div className="min-h-screen bg-white text-slate-900 font-sans antialiased overflow-hidden">
+      <DarkModeToggle />
       
       {/* === Landing page: ordered sections for transformation narrative === */}
       <HeroSection />
