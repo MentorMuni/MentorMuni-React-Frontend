@@ -1,0 +1,38 @@
+/* Design tokens for MentorMuni */
+:root{
+  --primary: #6366F1; /* indigo */
+  --secondary: #8B5CF6; /* purple */
+  --accent: #F97316; /* orange */
+
+  --text-primary: #F9FAFB; /* headings on dark */
+  --text-secondary: #D1D5DB; /* body on dark */
+  --text-muted: #9CA3AF; /* muted on dark */
+
+  --main-bg: #0B0F19;
+  --secondary-bg: #111827;
+  --card-bg: #1F2937;
+  --border-color: #374151;
+}
+
+/* Utility helpers for components */
+.bg-soft { background-color: var(--secondary-bg); }
+.text-primary { color: var(--primary); }
+.text-accent { color: var(--accent); }
+.text-on-dark { color: var(--text-primary); }
+.text-on-dark-sub { color: var(--text-secondary); }
+.text-muted { color: var(--text-muted); }
+
+/* Section helpers */
+.section-dark { background-color: var(--secondary-bg); color: var(--text-primary); }
+.section-main { background-color: var(--main-bg); color: var(--text-primary); }
+.section-soft { background-color: var(--secondary-bg); color: var(--text-primary); }
+
+/* Card helpers */
+.card-dark { background-color: var(--card-bg); color: var(--text-primary); border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-radius: 16px }
+.card-elevated { background-color: rgba(31,41,55,0.6); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.03); box-shadow: 0 10px 30px rgba(0,0,0,0.45); border-radius: 16px }
+
+/* Ensure buttons use tokens */
+.btn-primary{ background-color: var(--accent); color: white; }
+.btn-primary:hover{ filter: brightness(0.95); }
+.btn-secondary{ border-color: var(--primary); color: var(--primary); background: transparent }
+.btn-secondary:hover{ background: rgba(79,70,229,0.06); }

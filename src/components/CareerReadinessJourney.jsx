@@ -70,14 +70,14 @@ const CareerReadinessJourney = () => {
   };
 
   return (
-    <section className="py-16 md:py-24 px-6 bg-slate-900/50 border-y border-slate-800/50">
+    <section className="py-16 md:py-24 px-6 section-dark border-y" style={{ borderColor: 'var(--border-color)' }}>
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
+          <h2 className="text-3xl md:text-4xl font-black text-on-dark mb-4">
             Your Path to Becoming Job Ready
           </h2>
-          <p className="text-lg text-slate-300 max-w-2xl mx-auto">
+          <p className="text-lg text-on-dark-sub max-w-2xl mx-auto">
             A structured 4-step diagnostic journey designed to transform you into a job-ready tech professional
           </p>
         </div>
@@ -85,7 +85,7 @@ const CareerReadinessJourney = () => {
         {/* Steps Timeline */}
         <div className="grid md:grid-cols-4 gap-6 relative">
           {/* Connection Line (Desktop) */}
-          <div className="hidden md:block absolute top-24 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500/30 via-cyan-500/30 via-purple-500/30 to-emerald-500/30"></div>
+          <div className="hidden md:block absolute top-24 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-emerald-500/20 opacity-60"></div>
 
           {/* Steps */}
           {steps.map((step, index) => {
@@ -95,35 +95,35 @@ const CareerReadinessJourney = () => {
             return (
               <div key={index} className="relative">
                 {/* Step Badge */}
-                <div className="flex justify-center mb-6">
-                  <div className={`w-16 h-16 ${style.badge} rounded-full flex items-center justify-center font-black text-white text-xl shadow-lg relative z-10`}>
-                    {step.number}
+                  <div className="flex justify-center mb-6">
+                    <div className={`w-16 h-16 rounded-full flex items-center justify-center font-black text-on-dark text-xl shadow-lg relative z-10`} style={{ background: `linear-gradient(135deg, var(--primary), var(--secondary))` }}>
+                      {step.number}
+                    </div>
                   </div>
-                </div>
 
                 {/* Step Card */}
                 <Link 
                   to={step.href}
-                  className={`bg-gradient-to-br from-slate-800/60 to-slate-800/20 border ${style.card} rounded-2xl p-6 hover:shadow-xl transition-all duration-300 flex flex-col h-full group`}
+                  className={`card-dark ${style.card || ''} rounded-2xl p-6 hover:shadow-xl transition-all duration-300 flex flex-col h-full group`}
                 >
                   {/* Icon */}
-                  <div className={`w-10 h-10 ${style.icon} rounded-lg flex items-center justify-center mb-4`}>
-                    <Icon className="w-5 h-5" />
+                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center mb-4`} style={{ background: 'rgba(99,102,241,0.08)' }}>
+                    <Icon className="w-5 h-5 text-primary" />
                   </div>
 
                   {/* Title */}
-                  <h3 className="text-lg font-bold text-white mb-2">
+                  <h3 className="text-lg font-bold text-on-dark mb-2">
                     {step.title}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-slate-400 text-sm leading-relaxed mb-6 flex-grow">
+                  <p className="text-on-dark-sub text-sm leading-relaxed mb-6 flex-grow">
                     {step.description}
                   </p>
 
                   {/* CTA */}
-                  <div className={`inline-flex items-center gap-2 ${style.cta} font-semibold text-sm group-hover:gap-3 transition-all`}>
-                    Start here <ArrowRight className="w-4 h-4" />
+                  <div className={`inline-flex items-center gap-2 text-primary font-semibold text-sm group-hover:gap-3 transition-all`}>
+                    Start here <ArrowRight className="w-4 h-4 text-primary" />
                   </div>
                 </Link>
               </div>

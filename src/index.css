@@ -1,7 +1,14 @@
 @import "tailwindcss";
+@import "./styles/design-tokens.css";
 
 /* Prevent white flash before React loads */
 html, body {
-  background-color: #ffffff;
-  color: #0f172a;
+  background-color: var(--main-bg);
+  color: var(--text-primary);
+}
+
+/* Prefer tokens for body */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }

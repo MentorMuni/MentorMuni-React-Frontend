@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import CTAButtons from './CTAButtons';
 import { Check } from 'lucide-react';
+// TrustIndicators and CompanyLogos are rendered on the homepage directly beneath the Hero
 
 const HeroSection = () => {
   const [heroSrc, setHeroSrc] = useState(null);
@@ -11,7 +12,7 @@ const HeroSection = () => {
   }, []);
 
   return (
-    <section className="relative min-h-[90vh] flex items-center overflow-hidden">
+    <section className="relative min-h-[90vh] flex items-center overflow-hidden section-main">
       {/* Decorative Gradient Blobs */}
       <div className="absolute inset-0 z-0 opacity-25 pointer-events-none" aria-hidden="true">
         <div className="absolute top-0 left-0 w-96 h-96 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
@@ -76,6 +77,7 @@ const HeroSection = () => {
                 secondaryText="Analyze My Resume"
                 secondaryHref="/resume-analyzer"
               />
+              {/* Trust indicators and company logos moved to homepage to avoid duplication */}
             </div>
 
             {/* Social Proof / Quick Stats */}
