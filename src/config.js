@@ -1,5 +1,10 @@
 /**
- * App config - use env in production (Railway, etc.)
- * VITE_API_URL is set at build time for the frontend.
+ * Backend API base URL for all API calls.
+ * Set VITE_API_URL in .env to override (e.g. http://localhost:5000 for local dev).
+ *
+ * CORS: The browser blocks cross-origin requests unless the backend sends
+ * Access-Control-Allow-Origin. Enable CORS on the Flask backend (e.g. flask-cors)
+ * for your frontend origin (e.g. Vite dev server or production domain).
  */
-export const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const PRODUCTION_API_URL = 'https://mentormuni-python-backend-production.up.railway.app';
+export const API_BASE = import.meta.env.VITE_API_URL ?? PRODUCTION_API_URL;

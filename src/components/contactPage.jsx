@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, RotateCcw, Loader2, MessageSquare, Check } from 'lucide-react';
+import { API_BASE } from '../config';
 
 const ContactPage = () => {
   const [formData, setFormData] = useState({
@@ -40,19 +41,38 @@ const ContactPage = () => {
     setSubmitStatus({ type: '', message: '' });
 
     try {
-      // Simulate API call - replace with actual backend endpoint
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      console.log('Form submitted:', formData);
-      setSubmitStatus({
-        type: 'success',
-        message: '✅ Thank you! A MentorMuni counselor will reach out shortly.'
+      const response = await fetch(`${API_BASE}/api/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          message: formData.message.trim()
+        })
       });
-      handleReset();
+
+      const data = response.ok ? await response.json().catch(() => ({})) : null;
+
+      if (response.ok && (data?.success !== false)) {
+        setSubmitStatus({
+          type: 'success',
+          message: '✅ Thank you! A MentorMuni counselor will reach out shortly.'
+        });
+        handleReset();
+      } else {
+        const msg = data?.message || (response.status === 404
+          ? 'Contact endpoint not configured on server. Please email us at hello@mentormuni.com'
+          : 'Failed to send message. Please try again or email us at hello@mentormuni.com');
+        setSubmitStatus({ type: 'error', message: `⚠️ ${msg}` });
+      }
     } catch (err) {
+      const isCorsOrNetwork = err.message?.includes('Failed to fetch') || err.message?.includes('NetworkError');
       setSubmitStatus({
         type: 'error',
-        message: '⚠️ Failed to send message. Please try again or email us at hello@mentormuni.com'
+        message: isCorsOrNetwork
+          ? '⚠️ Cannot reach server (check CORS and network). Please email us at hello@mentormuni.com'
+          : '⚠️ Failed to send message. Please try again or email us at hello@mentormuni.com'
       });
     } finally {
       setIsSubmitting(false);
