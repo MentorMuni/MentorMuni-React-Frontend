@@ -29,6 +29,7 @@ const PlacementTracks = lazy(() => import("./components/placementTracks"));
 const FreeTutorials = lazy(() => import("./components/freeTutorials"));
 const ResumeAnalyzer = lazy(() => import("./components/resumeAnalyzer"));
 const ContactPage = lazy(() => import("./components/contactPage"));
+const DesignSystemDemo = lazy(() => import("./components/DesignSystemDemo"));
 
 function PageFallback() {
   return <div className="min-h-[60vh] bg-[#0B0F19]" />;
@@ -77,6 +78,8 @@ function App() {
               <Route path="/quantum-computing" element={<QuantumComputingTutorial />} />
               <Route path="/courses/quantum-computing" element={<QuantumComputingTutorial />} />
               <Route path="/courses/devops-roadmap-for-beginners" element={<DevOpsRoadmap />} />
+              {/* Design System Demo - For Development Only */}
+              <Route path="/design-system" element={<DesignSystemDemo />} />
             </Routes>
           </Suspense>
         </main>

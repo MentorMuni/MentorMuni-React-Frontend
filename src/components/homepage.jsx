@@ -98,6 +98,9 @@ const HomePage = () => {
       {/* === Mentor Section === */}
       <MentorSection />
 
+      {/* === Career Switch Paths === */}
+      <CareerSwitchPaths />
+
       {/* === WHO IT'S FOR === */}
       <section className="py-12 md:py-16 px-6 bg-slate-900/40 border-y border-slate-800/60">
         <div className="max-w-3xl mx-auto text-center" data-aos>
