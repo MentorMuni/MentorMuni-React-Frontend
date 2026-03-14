@@ -1,52 +1,38 @@
 import React from 'react';
-import { ArrowRight, Users, Target, Zap, Briefcase, FileText, MessageSquare, Mail, Phone, Check, ClipboardCheck, TrendingUp } from 'lucide-react';
+import { Mail, Phone, ArrowRight, Users, Target, Briefcase } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import MentorMuniChatbot from './MentorMuniChatbot';
-import AboutMentorMuniVideo from './AboutMentorMuniVideo';
-import FreeUsageBanner from './FreeUsageBanner';
 import HeroSection from './HeroSection';
-import ProblemDrivenFeatures from './ProblemDrivenFeatures';
-import HowItWorksSection from './HowItWorksSection';
-import CareerRoadmap from './CareerRoadmap';
-import CareerReadinessJourney from './CareerReadinessJourney';
-import FreeTrialBanner from './FreeTrialBanner';
-import ImpactStats from './ImpactStats';
-import SuccessStories from './SuccessStories';
-import MentorSection from './MentorSection';
+import TrustIndicators from './TrustIndicators';
+import HowItWorks from './HowItWorks';
+import CareerDiagnostic from './CareerDiagnostic';
 import CareerSwitchPaths from './CareerSwitchPaths';
+import CareerTransformationSection from './CareerTransformationSection';
+import SuccessStories from './SuccessStories';
+import MentorProfiles from './MentorProfiles';
+import FreeUsageCTA from './FreeUsageCTA';
+import PricingSection from './PricingSection';
+import MentorSection from './MentorSection';
 import JobRolesSection from './JobRolesSection';
 import CommunitySection from './CommunitySection';
+import FAQSection from './FAQSection';
 
 const HomePage = () => {
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-[#F1F5F9] font-sans antialiased overflow-hidden">
+    <div className="min-h-screen bg-white text-slate-900 font-sans antialiased overflow-hidden">
       
-      {/* === Free Usage Banner === */}
-      <FreeUsageBanner />
-
-      {/* === HERO SECTION === */}
+      {/* === Landing page: ordered sections for transformation narrative === */}
       <HeroSection />
-
-      {/* === Free Trial Benefits Banner === */}
-      <FreeTrialBanner />
-
-      {/* === MEET MENTORMUNI — VIDEO === */}
-      <AboutMentorMuniVideo />
-
-      {/* === Problem-Driven Features Section === */}
-      <ProblemDrivenFeatures />
-
-      {/* === How It Works Section === */}
-      <HowItWorksSection />
-
-      {/* === Career Roadmap Section === */}
-      <CareerRoadmap />
-
-      {/* === Career Readiness Journey Section === */}
-      <CareerReadinessJourney />
-
-      {/* === Impact Stats Section === */}
-      <ImpactStats />
+      <TrustIndicators />
+      <HowItWorks />
+      <CareerTransformationSection />
+      <CareerDiagnostic />
+      <CareerSwitchPaths />
+      <SuccessStories />
+      <MentorProfiles />
+      <FreeUsageCTA />
+      <PricingSection />
+      <FAQSection />
 
       {/* === WHO IT'S FOR === */}
       <section className="py-16 md:py-20 px-6 bg-gradient-to-b from-transparent to-slate-900/30">
@@ -189,6 +175,12 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* 9. PRICING SECTION */}
+      <PricingSection />
+
+      {/* 10. FAQ SECTION */}
+      <FAQSection />
+
       {/* === FOOTER === */}
       <footer className="bg-slate-900/50 border-t border-slate-800 py-16 px-6">
         <div className="max-w-6xl mx-auto">
@@ -197,10 +189,10 @@ const HomePage = () => {
             <div>
               <h4 className="font-bold text-white mb-4">Platform</h4>
               <ul className="space-y-3 text-slate-400 text-sm">
-                <li><Link to="/start-assessment" className="hover:text-white transition-colors">Assessment</Link></li>
+                <li><Link to="/start-assessment" className="hover:text-white transition-colors">Are You Ready for Your Next Tech Interview?</Link></li>
                 <li><Link to="/mock-interviews" className="hover:text-white transition-colors">Mock Interviews</Link></li>
-                <li><Link to="/skill-gap-analyzer" className="hover:text-white transition-colors">Skill Analyzer</Link></li>
-                <li><Link to="/resume-analyzer" className="hover:text-white transition-colors">Resume Analyzer</Link></li>
+                <li><Link to="/skill-gap-analyzer" className="hover:text-white transition-colors">Discover the Skills You Need to Land a Tech Job</Link></li>
+                <li><Link to="/resume-analyzer" className="hover:text-white transition-colors">Why Your Resume Isn't Getting Interview Calls</Link></li>
               </ul>
             </div>
 

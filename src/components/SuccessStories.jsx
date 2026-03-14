@@ -1,5 +1,4 @@
-import React from 'react';
-import { Star, ArrowRight } from 'lucide-react';
+import { Star } from 'lucide-react';
 
 const SuccessStories = () => {
   const stories = [

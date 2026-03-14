@@ -1,3 +1,24 @@
+// Minimal design tokens for MentorMuni
+const designSystem = {
+  colors: {
+    primary: '#4F46E5', // indigo-600
+    primaryDark: '#3730A3',
+    secondary: '#7C3AED', // purple-600
+    accent: '#F97316', // orange-500
+    bg: '#F8FAFC',
+    surface: '#FFFFFF',
+    text: '#0F172A',
+  },
+  spacing: {
+    container: 'max-w-6xl mx-auto px-4 sm:px-6 lg:px-8',
+  },
+  typography: {
+    heading: 'Inter, system-ui, -apple-system',
+    body: 'Inter, system-ui, -apple-system',
+  },
+};
+
+export default designSystem;
 /**
  * MentorMuni Design System
  * Centralized configuration for colors, typography, and spacing

@@ -2,7 +2,7 @@ import React from 'react';
 import { ArrowRight, Code, BarChart3, Zap, Database, Smartphone, Shield, Briefcase } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
-export default function CareerSwitchPaths() {
+const CareerSwitchPaths = () => {
   const careerPaths = [
     {
       title: 'Manual Testing → QA Engineer',
@@ -186,3 +186,6 @@ export default function CareerSwitchPaths() {
     </section>
   );
 }
+
+export default CareerSwitchPaths;
+
