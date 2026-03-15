@@ -1,0 +1,9 @@
+export { default as LandingHero } from './LandingHero';
+export { default as TrustSection } from './TrustSection';
+export { default as HowItWorksSteps } from './HowItWorksSteps';
+export { default as DashboardPreview } from './DashboardPreview';
+export { default as AIMockSection } from './AIMockSection';
+export { default as SuccessStoriesCards } from './SuccessStoriesCards';
+export { default as MentorProfilesCards } from './MentorProfilesCards';
+export { default as FinalCTA } from './FinalCTA';
+export { default as LandingFooter } from './LandingFooter';

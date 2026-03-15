@@ -1,25 +1,60 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
+import { Check, ArrowRight } from 'lucide-react';
 
-const Plan = ({title, price, bullets}) => (
-  <div className="p-6 rounded-lg shadow bg-white">
-    <div className="text-lg font-semibold">{title}</div>
-    <div className="mt-2 text-3xl font-bold">{price}</div>
-    <ul className="mt-4 text-sm text-gray-600 space-y-1">
-      {bullets.map((b,i) => <li key={i}>• {b}</li>)}
+const Plan = ({ title, price, bullets, cta, href, primary }) => (
+  <div className="card-dark rounded-xl p-6 md:p-8 flex flex-col">
+    <div className="text-lg font-bold text-white">{title}</div>
+    <div className="mt-2 text-3xl font-black text-white">{price}</div>
+    <ul className="mt-4 text-sm text-slate-400 space-y-2 flex-grow">
+      {bullets.map((b, i) => (
+        <li key={i} className="flex items-center gap-2">
+          <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+          {b}
+        </li>
+      ))}
     </ul>
-    <button className="mt-6 px-4 py-2 bg-indigo-600 text-white rounded">Choose</button>
+    <Link
+      to={href}
+      className={`mt-6 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-semibold transition-all ${
+        primary
+          ? 'bg-indigo-600 hover:bg-indigo-500 text-white'
+          : 'border border-slate-500 text-slate-300 hover:border-slate-400 hover:text-white'
+      }`}
+    >
+      {cta}
+      <ArrowRight className="w-4 h-4" />
+    </Link>
   </div>
 );
 
-export default function PricingSection(){
+export default function PricingSection() {
   return (
-    <section className="py-12 bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h3 className="text-2xl font-bold">Pricing</h3>
-        <p className="text-gray-600 mt-2">Freemium diagnostic funnel — upgrade for mentorship and unlimited analysis.</p>
-        <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Plan title="Free" price="$0" bullets={["3 Resume Analyses", "3 Interview Checks", "Limited Roadmaps"]} />
-          <Plan title="Premium" price="$19/mo" bullets={["Unlimited analyses", "Mentor sessions", "Mock interviews"]} />
+    <section className="py-16 md:py-20 px-6 section-dark border-t border-slate-800/60">
+      <div className="max-w-6xl mx-auto">
+        <div className="text-center mb-12">
+          <h2 className="text-3xl md:text-4xl font-black text-on-dark">Pricing</h2>
+          <p className="mt-2 text-on-dark-sub max-w-xl mx-auto">
+            Freemium diagnostic funnel — upgrade for mentorship and unlimited analysis.
+          </p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8">
+          <Plan
+            title="Free"
+            price="$0"
+            bullets={['3 Resume Analyses', '3 Interview Readiness checks', 'Limited roadmaps']}
+            cta="Get started free"
+            href="/start-assessment"
+            primary={true}
+          />
+          <Plan
+            title="Premium"
+            price="$19/mo"
+            bullets={['Unlimited analyses', 'Mentor sessions', 'Mock interviews']}
+            cta="View plans"
+            href="/upgrade"
+            primary={false}
+          />
         </div>
       </div>
     </section>

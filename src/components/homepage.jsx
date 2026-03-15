@@ -10,8 +10,6 @@ import CareerDiagnostic from './CareerDiagnostic';
 import CareerSwitchPaths from './CareerSwitchPaths';
 import CareerTransformationSection from './CareerTransformationSection';
 import SuccessStories from './SuccessStories';
-import MentorProfiles from './MentorProfiles';
-import FreeUsageCTA from './FreeUsageCTA';
 import PricingSection from './PricingSection';
 import MentorSection from './MentorSection';
 import JobRolesSection from './JobRolesSection';
@@ -31,8 +29,6 @@ const HomePage = () => {
       <CareerDiagnostic />
       <CareerSwitchPaths />
       <SuccessStories />
-      <MentorProfiles />
-      <FreeUsageCTA />
       <PricingSection />
 
       {/* === WHO IT'S FOR === */}
@@ -91,16 +87,13 @@ const HomePage = () => {
       {/* === Mentor Section === */}
       <MentorSection />
 
-      {/* === Career Switch Paths === */}
-      <CareerSwitchPaths />
-
       {/* === Job Roles Section === */}
       <JobRolesSection />
 
       {/* === Community Section === */}
       <CommunitySection />
 
-      {/* === WHO IT'S FOR === */}
+      {/* === How to enroll === */}
       <section className="py-12 md:py-16 px-6 bg-slate-900/40 border-y border-slate-800/60">
         <div className="max-w-3xl mx-auto text-center" data-aos>
           <h2 className="text-2xl md:text-3xl font-black text-white mb-3">How to enroll</h2>
@@ -111,10 +104,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* === Success Stories Section === */}
-      <SuccessStories />
-
-      {/* === OUTCOMES === */}
+      {/* === Outcomes / stats === */}
       <section className="py-16 md:py-20 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-12" data-aos>
@@ -148,7 +138,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* === CTA === */}
+      {/* === Final CTA === */}
       <section className="relative py-20 md:py-28 px-6 overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-indigo-900/25 via-purple-900/25 to-cyan-900/25" />
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500/20 rounded-full blur-3xl" />
@@ -176,9 +166,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* 9. PRICING SECTION */}
       <PricingSection />
-      {/* 10. FAQ SECTION */}
       <FAQSection />
 
       {/* === FOOTER === */}
@@ -189,10 +177,10 @@ const HomePage = () => {
             <div>
               <h4 className="font-bold text-white mb-4">Platform</h4>
               <ul className="space-y-3 text-slate-400 text-sm">
-                <li><Link to="/start-assessment" className="hover:text-white transition-colors">Are You Ready for Your Next Tech Interview?</Link></li>
+                <li><Link to="/start-assessment" className="hover:text-white transition-colors">Interview Readiness</Link></li>
                 <li><Link to="/mock-interviews" className="hover:text-white transition-colors">Mock Interviews</Link></li>
-                <li><Link to="/skill-gap-analyzer" className="hover:text-white transition-colors">Discover the Skills You Need to Land a Tech Job</Link></li>
-                <li><Link to="/resume-analyzer" className="hover:text-white transition-colors">Why Your Resume Isn't Getting Interview Calls</Link></li>
+                <li><Link to="/skill-gap-analyzer" className="hover:text-white transition-colors">Skill Gap Analyzer</Link></li>
+                <li><Link to="/resume-analyzer" className="hover:text-white transition-colors">Resume Analyzer</Link></li>
               </ul>
             </div>
 
@@ -212,10 +200,10 @@ const HomePage = () => {
             <div>
               <h4 className="font-bold text-white mb-4">Resources</h4>
               <ul className="space-y-3 text-slate-400 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">FAQ</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Community</a></li>
+                <li><Link to="/" className="hover:text-white transition-colors">Blog</Link></li>
+                <li><Link to="/" className="hover:text-white transition-colors">Documentation</Link></li>
+                <li><a href="#faq" className="hover:text-white transition-colors">FAQ</a></li>
+                <li><Link to="/" className="hover:text-white transition-colors">Community</Link></li>
               </ul>
             </div>
 
@@ -223,10 +211,10 @@ const HomePage = () => {
             <div>
               <h4 className="font-bold text-white mb-4">Company</h4>
               <ul className="space-y-3 text-slate-400 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
+                <li><Link to="/contact" className="hover:text-white transition-colors">About</Link></li>
+                <li><Link to="/contact" className="hover:text-white transition-colors">Careers</Link></li>
                 <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>
-                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><Link to="/contact" className="hover:text-white transition-colors">Privacy</Link></li>
               </ul>
             </div>
 
@@ -250,9 +238,9 @@ const HomePage = () => {
           <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-slate-500 text-sm">
             <p>© 2026 MentorMuni. All rights reserved.</p>
             <div className="flex gap-6 mt-4 md:mt-0">
-              <a href="#" className="hover:text-white transition-colors">Terms</a>
-              <a href="#" className="hover:text-white transition-colors">Privacy</a>
-              <a href="#" className="hover:text-white transition-colors">Cookies</a>
+              <Link to="/contact" className="hover:text-white transition-colors">Terms</Link>
+              <Link to="/contact" className="hover:text-white transition-colors">Privacy</Link>
+              <Link to="/contact" className="hover:text-white transition-colors">Cookies</Link>
             </div>
           </div>
         </div>
