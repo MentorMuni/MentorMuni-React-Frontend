@@ -7,14 +7,10 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  // Navigation items in order for the new structure
   const navItems = [
-    { label: 'Home', path: '/', exact: true },
     { label: 'How It Works', path: '/how-it-works', exact: false },
-    { label: 'Tools', path: '/tools', exact: false },
-    { label: 'Mentorship', path: '/mentorship', exact: false },
+    { label: 'Mentors', path: '/mentorship', exact: false },
     { label: 'Success Stories', path: '/success-stories', exact: false },
-    { label: 'Pricing', path: '/pricing', exact: false }
   ];
 
   // Check if a nav item is active
@@ -96,14 +92,20 @@ const Navbar = () => {
             ))}
           </nav>
 
-          {/* Primary CTA Button (Desktop) */}
-          <div className="hidden lg:block">
+          {/* Pricing ghost + primary CTA (Desktop) */}
+          <div className="hidden lg:flex items-center gap-3">
+            <Link
+              to="/pricing"
+              className="px-4 py-2 text-sm font-semibold rounded-lg border border-white/15 text-slate-300 hover:text-white hover:border-white/30 transition-all"
+            >
+              Pricing
+            </Link>
             <Link
               to="/start-assessment"
-              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105 active:scale-95"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold shadow-lg transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
             >
-              Check Interview Readiness
-              <span className="text-xs bg-emerald-500 px-2 py-0.5 rounded-full font-semibold">Free</span>
+              Check My Score
+              <span className="text-xs bg-white/20 px-1.5 py-0.5 rounded-full font-semibold">Free</span>
             </Link>
           </div>
 
@@ -144,10 +146,9 @@ const Navbar = () => {
               <Link
                 to="/start-assessment"
                 onClick={handleNavClick}
-                className="px-4 py-3 text-base font-bold rounded-lg bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white shadow-lg transition-all flex items-center justify-center gap-2 w-full"
+                className="px-4 py-3 text-base font-bold rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg transition-all flex items-center justify-center gap-2 w-full"
               >
-                Check Interview Readiness
-                <span className="text-xs bg-emerald-500 px-2 py-0.5 rounded-full font-semibold">Free</span>
+                Check My Score — Free
               </Link>
             </nav>
           </div>
