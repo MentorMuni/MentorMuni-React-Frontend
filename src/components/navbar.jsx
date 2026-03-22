@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
-import logo from '../assets/logo.png';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -71,7 +70,12 @@ const Navbar = () => {
           
           {/* Logo */}
           <Link to="/" className="flex-shrink-0 flex items-center gap-3 group">
-            <img src={logo} alt="MentorMuni Logo" className="h-8 w-auto group-hover:scale-110 transition-transform" />
+            <img
+              src="/MentorMuni-React-Frontend/mentormuni-logo.png"
+              alt="MentorMuni Logo"
+              className="h-9 w-9 rounded-full object-cover group-hover:scale-110 transition-transform"
+              style={{ mixBlendMode: 'screen' }}
+            />
             <span className="font-bold text-xl text-white hidden sm:inline">MentorMuni</span>
           </Link>
 

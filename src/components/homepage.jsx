@@ -272,14 +272,40 @@ const HomePage = () => {
           {/* ── Left: copy ── */}
           <div>
             {/* Eyebrow pill */}
+            <style>{`
+              @keyframes mm-pill-shimmer {
+                0%   { transform: translateX(-120%) skewX(-15deg); opacity: 0; }
+                10%  { opacity: 1; }
+                90%  { opacity: 1; }
+                100% { transform: translateX(320%) skewX(-15deg); opacity: 0; }
+              }
+              @keyframes mm-pill-border {
+                0%,100% { border-color: rgba(99,102,241,0.20); }
+                50%      { border-color: rgba(99,102,241,0.50); }
+              }
+            `}</style>
             <motion.div
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4 }}
-              className="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full px-4 py-1.5 mb-6"
+              className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 mb-6 relative overflow-hidden"
+              style={{
+                background: 'rgba(99,102,241,0.08)',
+                border: '1px solid rgba(99,102,241,0.20)',
+                animation: 'mm-pill-border 3s ease-in-out infinite',
+              }}
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
-              <span className="text-xs font-semibold text-indigo-300 tracking-wide">Interview Readiness Platform for Engineering Students</span>
+              {/* shimmer sweep */}
+              <span style={{
+                position: 'absolute', top: 0, left: 0, height: '100%', width: '35%',
+                background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent)',
+                animation: 'mm-pill-shimmer 4s ease-in-out infinite',
+                pointerEvents: 'none',
+              }} />
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse shrink-0 relative z-10" />
+              <span className="text-xs font-semibold text-indigo-300 tracking-wide relative z-10">
+                Interview Readiness Platform for 3rd and 4th Year Engineering Students
+              </span>
             </motion.div>
 
             {/* Headline */}
@@ -387,12 +413,12 @@ const HomePage = () => {
             </motion.div>
           </div>
 
-          {/* ── Right: brand image ── */}
+          {/* ── Right: brand image + feature pills ── */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
-            className="hidden lg:flex flex-col items-center justify-center w-full"
+            className="hidden lg:flex flex-row items-start justify-center gap-4 w-full"
             style={{ marginTop: 80 }}
           >
             <style>{`
@@ -408,51 +434,78 @@ const HomePage = () => {
                 0%, 100% { transform: translateY(0px); }
                 50%       { transform: translateY(-4px); }
               }
+              @keyframes mm-fp {
+                0%        { opacity: 0; transform: translateX(10px) scale(0.90); }
+                12%, 68%  { opacity: 1; transform: translateX(0)    scale(1);    }
+                80%,100%  { opacity: 0; transform: translateX(8px)  scale(0.92); }
+              }
             `}</style>
 
-            {/* Free 1-on-1 badge */}
-            <Link
-              to="/waitlist"
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 10,
-                background: 'linear-gradient(135deg, rgba(5,11,24,0.95), rgba(15,26,48,0.98))',
-                border: '1px solid rgba(74,222,128,0.35)',
-                borderRadius: 14, padding: '10px 18px',
-                textDecoration: 'none', marginBottom: 18,
-                animation: 'mm-glow 2s ease-in-out infinite, mm-badge-float 3s ease-in-out infinite',
-                cursor: 'pointer',
-              }}
-            >
-              {/* Pulsing dot */}
-              <span style={{
-                width: 9, height: 9, borderRadius: '50%',
-                background: '#4ade80', flexShrink: 0,
-                animation: 'mm-dot-blink 1.2s ease-in-out infinite',
-                boxShadow: '0 0 8px rgba(74,222,128,0.7)',
-              }} />
-
-              {/* Text */}
-              <span>
-                <span style={{ fontSize: 13, fontWeight: 800, color: '#fff', display: 'block', lineHeight: 1.2 }}>
-                  Free 1-on-1 Mentorship Session
+            {/* Left: Free 1-on-1 badge + image */}
+            <div className="flex flex-col items-center shrink-0">
+              {/* Free 1-on-1 badge */}
+              <Link
+                to="/waitlist"
+                style={{
+                  display: 'inline-flex', alignItems: 'center', gap: 10,
+                  background: 'linear-gradient(135deg, rgba(5,11,24,0.95), rgba(15,26,48,0.98))',
+                  border: '1px solid rgba(74,222,128,0.35)',
+                  borderRadius: 14, padding: '10px 18px',
+                  textDecoration: 'none', marginBottom: 18,
+                  animation: 'mm-glow 2s ease-in-out infinite, mm-badge-float 3s ease-in-out infinite',
+                  cursor: 'pointer',
+                }}
+              >
+                <span style={{
+                  width: 9, height: 9, borderRadius: '50%',
+                  background: '#4ade80', flexShrink: 0,
+                  animation: 'mm-dot-blink 1.2s ease-in-out infinite',
+                  boxShadow: '0 0 8px rgba(74,222,128,0.7)',
+                }} />
+                <span>
+                  <span style={{ fontSize: 13, fontWeight: 800, color: '#fff', display: 'block', lineHeight: 1.2 }}>
+                    Free 1-on-1 Mentorship Session
+                  </span>
+                  <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', fontWeight: 500 }}>
+                    Limited slots · Book yours before they fill up
+                  </span>
                 </span>
-                <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', fontWeight: 500 }}>
-                  Limited slots · Book yours before they fill up
-                </span>
-              </span>
+                <span style={{ marginLeft: 4, fontSize: 14, color: '#4ade80', fontWeight: 700, flexShrink: 0 }}>→</span>
+              </Link>
 
-              {/* Arrow */}
-              <span style={{
-                marginLeft: 4, fontSize: 14, color: '#4ade80', fontWeight: 700, flexShrink: 0,
-              }}>→</span>
-            </Link>
+              <img
+                src="/MentorMuni-React-Frontend/mentormuni-brand-banner-new.png"
+                alt="MentorMuni — Guiding Your Journey to Knowledge"
+                className="w-full rounded-2xl"
+                style={{ maxWidth: 400, boxShadow: '0 24px 64px rgba(0,0,0,0.45)' }}
+              />
+            </div>
 
-            <img
-              src="/MentorMuni-React-Frontend/mentormuni-brand-banner-new.png"
-              alt="MentorMuni — Guiding Your Journey to Knowledge"
-              className="w-full rounded-2xl"
-              style={{ maxWidth: 442, boxShadow: '0 24px 64px rgba(0,0,0,0.45)' }}
-            />
+            {/* Right: randomly flashing feature pills */}
+            <div className="flex flex-col gap-3 shrink-0" style={{ marginTop: 72, width: 168 }}>
+              {[
+                { icon: '📊', text: 'Readiness Score',     color: '#818cf8', bg: 'rgba(99,102,241,0.10)',  border: 'rgba(99,102,241,0.28)',  delay: '0s',   dur: '6s'   },
+                { icon: '🤖', text: 'AI Mock Interview',   color: '#c4b5fd', bg: 'rgba(139,92,246,0.10)', border: 'rgba(139,92,246,0.28)', delay: '2.2s', dur: '7s'   },
+                { icon: '📄', text: 'Resume Analyser',     color: '#f9a8d4', bg: 'rgba(236,72,153,0.10)', border: 'rgba(236,72,153,0.25)', delay: '1s',   dur: '8s'   },
+                { icon: '👨‍🏫', text: '1-on-1 Mentorship',  color: '#fcd34d', bg: 'rgba(245,158,11,0.10)', border: 'rgba(245,158,11,0.25)', delay: '3.5s', dur: '6.5s' },
+                { icon: '📚', text: 'Free Study Material', color: '#86efac', bg: 'rgba(74,222,128,0.09)',  border: 'rgba(74,222,128,0.25)', delay: '4.8s', dur: '7.5s' },
+              ].map((p, i) => (
+                <div
+                  key={i}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 8,
+                    padding: '8px 13px', borderRadius: 10,
+                    background: p.bg, border: `1px solid ${p.border}`,
+                    backdropFilter: 'blur(8px)',
+                    animation: `mm-fp ${p.dur} ${p.delay} ease-in-out infinite`,
+                    opacity: 0,
+                  }}
+                >
+                  <span style={{ fontSize: 15 }}>{p.icon}</span>
+                  <span style={{ fontSize: 11, fontWeight: 700, color: p.color, whiteSpace: 'nowrap' }}>{p.text}</span>
+                </div>
+              ))}
+            </div>
           </motion.div>
         </div>
       </section>
