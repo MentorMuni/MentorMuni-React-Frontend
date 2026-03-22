@@ -9,7 +9,7 @@ const Navbar = () => {
 
   const navItems = [
     { label: 'How It Works', path: '/how-it-works', exact: false },
-    { label: 'Mentors', path: '/mentorship', exact: false },
+    { label: 'Mentors', path: '/mentors', exact: false },
     { label: 'Success Stories', path: '/success-stories', exact: false },
   ];
 
@@ -65,7 +65,7 @@ const Navbar = () => {
   };
 
   return (
-    <header className="sticky top-0 z-[100] bg-gradient-to-r from-slate-900 via-slate-900 to-slate-900/95 backdrop-blur-md border-b border-indigo-500/10 shadow-lg">
+    <header className="sticky top-0 z-[100] bg-[#050b18]/95 backdrop-blur-md border-b border-indigo-500/10 shadow-lg">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="h-20 flex items-center justify-between">
           
@@ -92,13 +92,13 @@ const Navbar = () => {
             ))}
           </nav>
 
-          {/* Pricing ghost + primary CTA (Desktop) */}
+          {/* Waitlist + primary CTA (Desktop) */}
           <div className="hidden lg:flex items-center gap-3">
             <Link
-              to="/pricing"
-              className="px-4 py-2 text-sm font-semibold rounded-lg border border-white/15 text-slate-300 hover:text-white hover:border-white/30 transition-all"
+              to="/waitlist"
+              className="px-4 py-2 text-sm font-semibold rounded-lg border border-indigo-500/40 text-indigo-400 hover:text-indigo-300 hover:border-indigo-400/60 hover:bg-indigo-500/10 transition-all"
             >
-              Pricing
+              Join Waitlist
             </Link>
             <Link
               to="/start-assessment"
@@ -142,7 +142,14 @@ const Navbar = () => {
               {/* Divider */}
               <div className="border-t border-slate-700 my-2"></div>
 
-              {/* Mobile CTA Button */}
+              {/* Mobile CTA Buttons */}
+              <Link
+                to="/waitlist"
+                onClick={handleNavClick}
+                className="px-4 py-3 text-base font-semibold rounded-lg border border-indigo-500/40 text-indigo-400 flex items-center justify-center w-full transition-all"
+              >
+                Join Waitlist
+              </Link>
               <Link
                 to="/start-assessment"
                 onClick={handleNavClick}

@@ -40,7 +40,7 @@ export default function MentorProfilesCards() {
         </div>
         <div className="text-center mt-10">
           <Link
-            to="/mentorship"
+            to="/mentors"
             className="inline-flex items-center gap-2 text-primary font-semibold hover:underline"
           >
             <Users className="w-5 h-5" /> Explore mentors <ArrowRight className="w-4 h-4" />

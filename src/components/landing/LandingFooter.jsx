@@ -11,7 +11,7 @@ const FOOTER_LINKS = {
   ],
   Learning: [
     { label: 'Learning Paths', to: '/learning-paths' },
-    { label: 'Mentorship', to: '/mentorship' },
+    { label: 'Mentorship', to: '/mentors' },
     { label: 'Pricing', to: '/pricing' },
   ],
   Company: [

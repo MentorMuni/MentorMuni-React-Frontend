@@ -1,255 +1,422 @@
-import React, { useEffect } from 'react';
-import { Rocket, Target, Users, Sparkles, Mail, Phone } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-const OutcomesPage = () => {
+/* ─── Shared reveal helper ─────────────────────────────────── */
+const REVEAL_BASE = {
+  opacity: 0,
+  transform: 'translateY(20px)',
+  transition: 'opacity 0.5s ease, transform 0.5s ease',
+};
+
+function useReveal(delay = 0, threshold = 0.12) {
+  const ref = useRef(null);
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+    const el = ref.current;
+    if (!el) return;
+    el.style.transitionDelay = `${delay}ms`;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          el.style.opacity = '1';
+          el.style.transform = 'translateY(0)';
+          io.disconnect();
+        }
+      },
+      { threshold }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, [delay, threshold]);
+  return ref;
+}
+
+/* ─── Stat card ────────────────────────────────────────────── */
+function StatCard({ icon, value, label }) {
+  return (
+    <div style={{
+      background: '#0f1a30', border: '1px solid rgba(255,255,255,0.07)',
+      borderRadius: 10, padding: '24px 16px', textAlign: 'center',
+    }}>
+      <div style={{ fontSize: 28, marginBottom: 10 }}>{icon}</div>
+      <p style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 6, letterSpacing: '-0.3px' }}>{value}</p>
+      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>{label}</p>
+    </div>
+  );
+}
+
+/* ─── Beta feedback card ───────────────────────────────────── */
+function FeedbackCard({ quote, initial, avBg, name, tag }) {
+  return (
+    <div style={{
+      background: '#0f1a30', border: '1px solid rgba(255,255,255,0.07)',
+      borderRadius: 12, padding: '24px 22px',
+    }}>
+      <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.70)', lineHeight: 1.75, marginBottom: 20, fontStyle: 'italic' }}>
+        "{quote}"
+      </p>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <div style={{
+          width: 38, height: 38, borderRadius: '50%', background: avBg,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontWeight: 700, fontSize: 14, color: '#fff', flexShrink: 0,
+        }}>
+          {initial}
+        </div>
+        <div>
+          <p style={{ fontWeight: 600, fontSize: 14, color: '#fff', marginBottom: 2 }}>{name}</p>
+          <p style={{ fontSize: 12, color: '#4ade80', fontWeight: 500 }}>{tag}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Role card ────────────────────────────────────────────── */
+function RoleCard({ title, companies, focus }) {
+  return (
+    <div style={{
+      background: '#0f1a30', border: '1px solid rgba(255,255,255,0.07)',
+      borderRadius: 12, padding: '20px 20px',
+    }}>
+      <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#818cf8', marginBottom: 8 }}>
+        TARGET ROLE
+      </p>
+      <h3 style={{ fontSize: 17, fontWeight: 700, color: '#fff', marginBottom: 8 }}>{title}</h3>
+      <p style={{ fontSize: 13, color: '#a78bfa', fontWeight: 500, marginBottom: 6 }}>{companies}</p>
+      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.40)' }}>{focus}</p>
+    </div>
+  );
+}
+
+/* ─── Commitment row ───────────────────────────────────────── */
+function CommitRow({ bold, rest }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 14 }}>
+      <div style={{
+        width: 26, height: 26, borderRadius: '50%', flexShrink: 0,
+        background: 'rgba(74,222,128,0.15)', border: '1px solid rgba(74,222,128,0.3)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center', marginTop: 1,
+      }}>
+        <span style={{ color: '#4ade80', fontSize: 13, fontWeight: 700 }}>✓</span>
+      </div>
+      <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.65 }}>
+        <span style={{ color: '#fff', fontWeight: 600 }}>{bold}</span>{rest}
+      </p>
+    </div>
+  );
+}
+
+/* ─── Shared section label ─────────────────────────────────── */
+function SectionLabel({ children }) {
+  return (
+    <p style={{
+      fontSize: 11, fontWeight: 600, letterSpacing: '0.12em',
+      textTransform: 'uppercase', color: 'rgba(255,255,255,0.30)',
+      textAlign: 'center', marginBottom: 28,
+    }}>
+      {children}
+    </p>
+  );
+}
+
+/* ─── CTA buttons shared ───────────────────────────────────── */
+function CTAButtons({ navigate }) {
+  return (
+    <>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginTop: 28, flexWrap: 'wrap' }}>
+        <button
+          onClick={() => navigate('/start-assessment')}
+          onMouseEnter={e => { e.currentTarget.style.background = '#4f46e5'; e.currentTarget.style.transform = 'scale(1.02)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = '#6366f1'; e.currentTarget.style.transform = 'scale(1)'; }}
+          style={{ background: '#6366f1', color: '#fff', border: 'none', padding: '13px 32px', borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s, transform 0.15s', whiteSpace: 'nowrap' }}
+        >
+          Check My Score — Free →
+        </button>
+        <button
+          onClick={() => navigate('/waitlist')}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; e.currentTarget.style.color = '#fff'; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; e.currentTarget.style.color = 'rgba(255,255,255,0.5)'; }}
+          style={{ background: 'transparent', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.12)', padding: '13px 24px', borderRadius: 9, fontSize: 14, fontWeight: 500, cursor: 'pointer', transition: 'border-color 0.15s, color 0.15s', whiteSpace: 'nowrap' }}
+        >
+          Join the waitlist
+        </button>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginTop: 16, flexWrap: 'wrap' }}>
+        {['Free always', '5 minutes', 'No signup'].map(t => (
+          <span key={t} style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', gap: 5 }}>
+            <span style={{ color: '#4ade80' }}>✓</span>{t}
+          </span>
+        ))}
+      </div>
+    </>
+  );
+}
+
+/* ─── Main page ─────────────────────────────────────────────── */
+export default function SuccessStories() {
+  const navigate = useNavigate();
+
+  const heroRef      = useReveal(0);
+  const statsRef     = useReveal(50);
+  const foundingRef  = useReveal(0);
+  const feedbackRef  = useReveal(0);
+  const rolesRef     = useReveal(0);
+  const commitRef    = useReveal(0);
+  const ctaRef       = useReveal(0);
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-[#F1F5F9] font-sans antialiased">
-      <main>
-        {/* HERO SECTION - matches homepage section style */}
-        <section className="relative py-20 px-6 overflow-hidden">
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute top-0 left-0 w-72 h-72 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
-            <div className="absolute top-0 right-0 w-72 h-72 bg-cyan-600 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
+    <div style={{ background: '#050b18', minHeight: '100vh', color: '#fff', fontFamily: 'Inter, system-ui, sans-serif' }}>
+      <style>{`
+        @keyframes ss-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+        @media(max-width:640px){
+          .ss-4col { grid-template-columns: 1fr 1fr !important; }
+          .ss-2col, .ss-3col { grid-template-columns: 1fr !important; }
+          .ss-steps { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
+
+      {/* ══════ SECTION 1 — HERO ══════ */}
+      <section
+        ref={heroRef}
+        style={{ ...REVEAL_BASE, padding: '80px 24px 64px', textAlign: 'center' }}
+      >
+        <div style={{ maxWidth: 620, margin: '0 auto' }}>
+          {/* Pill */}
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(245,158,11,0.10)', border: '1px solid rgba(245,158,11,0.25)', borderRadius: 20, padding: '5px 16px', marginBottom: 28 }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#f59e0b', display: 'inline-block', animation: 'ss-pulse 1.5s ease-in-out infinite', boxShadow: '0 0 6px #f59e0b', flexShrink: 0 }} />
+            <span style={{ fontSize: 12, fontWeight: 500, color: '#fbbf24' }}>Founding batch — only spots available per batch</span>
           </div>
-          <div className="relative max-w-4xl mx-auto text-center">
-            <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-6">
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 via-cyan-400 to-indigo-400">
-                Our Commitment
-              </span>
-            </h1>
-            <p className="text-xl text-slate-400 leading-relaxed">
-              We've just started. Be among our first success stories — we're ready to help you get placed.
+
+          {/* H1 */}
+          <h1 style={{ fontSize: 'clamp(28px, 5vw, 38px)', fontWeight: 800, letterSpacing: '-0.5px', lineHeight: 1.18, marginBottom: 18, color: '#fff' }}>
+            The first success stories are being{' '}
+            <span style={{ background: 'linear-gradient(90deg,#6366f1,#a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+              written right now.
+            </span>
+          </h1>
+
+          {/* Sub */}
+          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.50)', lineHeight: 1.75, maxWidth: 480, margin: '0 auto' }}>
+            We're in our founding batch. Students who join now get the most attention, the lowest price, and their story featured here. Here's what we commit to every student.
+          </p>
+        </div>
+      </section>
+
+      {/* ══════ SECTION 2 — STAT CARDS ══════ */}
+      <section style={{ padding: '0 24px 72px' }}>
+        <div
+          ref={statsRef}
+          style={{ ...REVEAL_BASE, maxWidth: 840, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14 }}
+          className="ss-4col"
+        >
+          <StatCard icon="🎯" value="Founding" label="Your story shapes MentorMuni" />
+          <StatCard icon="💯" value="100%"     label="Dedicated to your success" />
+          <StatCard icon="👤" value="1:1"      label="Personal mentorship only" />
+          <StatCard icon="🤖" value="AI+"      label="AI + human, not either/or" />
+        </div>
+      </section>
+
+      {/* ══════ SECTION 3 — FOUNDING MEMBER CARD ══════ */}
+      <section style={{ padding: '0 24px 72px', display: 'flex', justifyContent: 'center' }}>
+        <div
+          ref={foundingRef}
+          style={{
+            ...REVEAL_BASE, maxWidth: 640, width: '100%',
+            background: 'rgba(99,102,241,0.08)',
+            border: '1.5px solid rgba(99,102,241,0.25)',
+            borderRadius: 14, padding: '32px 28px',
+          }}
+        >
+          <p style={{ fontSize: 12, fontWeight: 600, color: '#818cf8', marginBottom: 10, letterSpacing: '0.02em' }}>✦ Founding member opportunity</p>
+          <h2 style={{ fontSize: 21, fontWeight: 700, color: '#fff', marginBottom: 10, lineHeight: 1.35 }}>
+            Be one of the first 100 students. Your success story goes here.
+          </h2>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, marginBottom: 28 }}>
+            Founding batch students get the lowest price MentorMuni will ever offer, maximum mentor attention, and their placement story featured on this page permanently.
+          </p>
+
+          {/* 3-step mini grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 28 }} className="ss-steps">
+            {[
+              'Take the free assessment — know your gaps',
+              'Get matched to your mentor in 24 hours',
+              'Your story featured here when you\'re placed',
+            ].map((text, i) => (
+              <div key={i} style={{ textAlign: 'center' }}>
+                <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#6366f1', color: '#fff', fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
+                  {i + 1}
+                </div>
+                <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.5 }}>{text}</p>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+            <button
+              onClick={() => navigate('/waitlist')}
+              onMouseEnter={e => { e.currentTarget.style.background = '#4f46e5'; e.currentTarget.style.transform = 'scale(1.02)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = '#6366f1'; e.currentTarget.style.transform = 'scale(1)'; }}
+              style={{ background: '#6366f1', color: '#fff', border: 'none', padding: '13px 36px', borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s, transform 0.15s' }}
+            >
+              Join the founding batch →
+            </button>
+            <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', justifyContent: 'center' }}>
+              {['Start free', 'No commitment', '8 spots left'].map(t => (
+                <span key={t} style={{ fontSize: 12, color: 'rgba(255,255,255,0.28)', display: 'flex', alignItems: 'center', gap: 5 }}>
+                  <span style={{ color: '#4ade80' }}>✓</span>{t}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════ SECTION 4 — BETA FEEDBACK ══════ */}
+      <section style={{ padding: '0 24px 72px' }}>
+        <div style={{ maxWidth: 820, margin: '0 auto' }}>
+          <div ref={feedbackRef} style={REVEAL_BASE}>
+            <SectionLabel>Early feedback from beta users</SectionLabel>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16, marginBottom: 16 }} className="ss-2col">
+              <FeedbackCard
+                quote="I did 3 AI mock interviews and the feedback was more specific than anything I got from seniors. It told me exactly which answers were weak and why."
+                initial="V" avBg="#4f46e5"
+                name="4th year student"
+                tag="Beta user · VIT Vellore"
+              />
+              <FeedbackCard
+                quote="The gap analysis showed me System Design was my blind spot. Three weeks of focused prep and I can now explain load balancing clearly in an interview."
+                initial="R" avBg="#0891b2"
+                name="Final year student"
+                tag="Beta user · NIT Trichy"
+              />
+            </div>
+            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.30)', textAlign: 'center' }}>
+              Names withheld at students' request · Real feedback from beta users · Placement outcomes in progress
             </p>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* STATS GRID - same card style as homepage */}
-        <section className="max-w-6xl mx-auto px-6 -mt-8">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <StatCard
-              icon={<Rocket className="w-6 h-6 text-orange-400" />}
-              title="Just Started"
-              label="Fresh & focused on you"
-              accent="orange"
-            />
-            <StatCard
-              icon={<Target className="w-6 h-6 text-rose-400" />}
-              title="100%"
-              label="Dedicated to your success"
-              accent="rose"
-            />
-            <StatCard
-              icon={<Users className="w-6 h-6 text-indigo-400" />}
-              title="1:1"
-              label="Personal mentorship"
-              accent="indigo"
-            />
-            <StatCard
-              icon={<Sparkles className="w-6 h-6 text-amber-400" />}
-              title="AI-Powered"
-              label="Smart interview prep"
-              accent="amber"
-            />
+      {/* ══════ SECTION 5 — TARGET ROLES ══════ */}
+      <section style={{ padding: '0 24px 72px' }}>
+        <div style={{ maxWidth: 820, margin: '0 auto' }}>
+          <div ref={rolesRef} style={REVEAL_BASE}>
+            <SectionLabel>Roles we prepare you for</SectionLabel>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 14 }} className="ss-3col">
+              <RoleCard title="Software Engineer"        companies="TCS · Cognizant · HCL · Infosys"     focus="DSA + System Design focus" />
+              <RoleCard title="Associate Consultant"     companies="Deloitte · Capgemini · Accenture"    focus="Technical + HR round prep" />
+              <RoleCard title="Programmer Analyst"       companies="Cognizant · Wipro · Infosys"         focus="DSA + System Design focus" />
+            </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        {/* ROLES & COMPANIES - same section/card style as homepage */}
-        <section className="py-20 px-6 bg-gradient-to-b from-transparent to-slate-900/30">
-          <div className="max-w-6xl mx-auto">
-            <div className="mb-12">
-              <h2 className="text-4xl md:text-5xl font-black mb-4">Target Roles & Companies</h2>
-              <p className="text-xl text-slate-400 max-w-2xl">
-                We prepare you for roles at top companies — TCS, Cognizant, Deloitte, HCL, Wipro, Infosys, and more.
+      {/* ══════ SECTION 6 — COMMITMENT CARD ══════ */}
+      <section style={{ padding: '0 24px 72px', display: 'flex', justifyContent: 'center' }}>
+        <div
+          ref={commitRef}
+          style={{
+            ...REVEAL_BASE, maxWidth: 640, width: '100%',
+            background: '#0f1a30',
+            border: '1px solid rgba(255,255,255,0.07)',
+            borderRadius: 14, padding: '32px 28px',
+          }}
+        >
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: '#fff', textAlign: 'center', marginBottom: 24 }}>
+            Our commitment to every founding student
+          </h2>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            <CommitRow bold="Money-back guarantee —" rest=" complete the programme, don't get placed, full refund." />
+            <CommitRow bold="Mentor matched in 24 hours" rest=" based on your exact score and role." />
+            <CommitRow bold="WhatsApp access throughout —" rest=" reachable all week, not just in sessions." />
+            <CommitRow bold="Support until you're placed —" rest=" we don't stop at end of programme." />
+            <CommitRow bold="Your story featured here —" rest=" when placed, your journey goes on this page." />
+          </div>
+        </div>
+      </section>
+
+      {/* ══════ SECTION 7 — BOTTOM CTA ══════ */}
+      <section
+        ref={ctaRef}
+        style={{
+          ...REVEAL_BASE,
+          background: 'rgba(99,102,241,0.07)',
+          borderTop: '1px solid rgba(99,102,241,0.15)',
+          padding: '64px 24px',
+          textAlign: 'center',
+        }}
+      >
+        <div style={{ maxWidth: 460, margin: '0 auto' }}>
+          <h2 style={{ fontSize: 24, fontWeight: 700, color: '#fff', marginBottom: 12 }}>
+            Be the first success story.
+          </h2>
+          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.50)', lineHeight: 1.7 }}>
+            Start with the free assessment. See your gaps. Then decide if the founding batch is right for you.
+          </p>
+          <CTAButtons navigate={navigate} />
+        </div>
+      </section>
+
+      {/* ══════ SECTION 8 — FOOTER ══════ */}
+      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '56px 24px 32px' }}>
+        <div style={{ maxWidth: 960, margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 32, marginBottom: 40 }} className="ss-footer-grid">
+            <style>{`@media(max-width:640px){ .ss-footer-grid{ grid-template-columns:1fr 1fr !important; } }`}</style>
+
+            {/* Brand */}
+            <div>
+              <p style={{ fontWeight: 700, color: '#fff', fontSize: 15, marginBottom: 8 }}>MentorMuni</p>
+              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', lineHeight: 1.6, marginBottom: 14, maxWidth: 220 }}>
+                Know your interview readiness. Improve it. Crack it.
               </p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <a href="mailto:enroll@mentormuni.com" style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', textDecoration: 'none' }}>enroll@mentormuni.com</a>
+                <a href="tel:+919146421302"            style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', textDecoration: 'none' }}>+91 91464 21302</a>
+              </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <OutcomeCard
-                role="Software Engineer"
-                companies="TCS • Cognizant • HCL"
-                focus="Interview-ready roadmap"
-                accent="indigo"
-              />
-              <OutcomeCard
-                role="Associate Consultant"
-                companies="Deloitte • Capgemini"
-                focus="Technical + HR round prep"
-                accent="cyan"
-              />
-              <OutcomeCard
-                role="Programmer Analyst"
-                companies="Cognizant • Infosys • Wipro"
-                focus="DSA + System Design focus"
-                accent="purple"
-              />
+            {/* Platform */}
+            <div>
+              <p style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.40)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>Platform</p>
+              {[['Assessment', '/start-assessment'], ['Mock Interviews', '/mock-interviews'], ['Skill Analyser', '/skill-gap-analyzer'], ['Resume Analyser', '/resume-analyzer']].map(([label, to]) => (
+                <div key={to} style={{ marginBottom: 10 }}>
+                  <Link to={to} style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none' }}>{label}</Link>
+                </div>
+              ))}
             </div>
-          </div>
-        </section>
 
-        {/* TESTIMONIALS - dark block consistent with homepage CTA section */}
-        <section className="py-20 px-6">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-black mb-12 text-center">Why Join Us Now</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <TestimonialCard
-                quote="I cracked Cognizant with Muni's live problem-solving and mentor feedback. Couldn't have done it alone!"
-                author="Prisha S."
-                company="Cognizant"
-              />
-              <TestimonialCard
-                quote="Great environment for placements — personal attention, AI tools, and resume feedback help."
-                author="Siddharth K."
-                company="TCS"
-              />
+            {/* Learning */}
+            <div>
+              <p style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.40)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>Learning</p>
+              {[['Placement Tracks', '/placement-tracks'], ['Free Tutorials', '/free-tutorials'], ['Learning Paths', '/learning-paths'], ['Success Stories', '/success-stories']].map(([label, to]) => (
+                <div key={to} style={{ marginBottom: 10 }}>
+                  <Link to={to} style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none' }}>{label}</Link>
+                </div>
+              ))}
             </div>
-          </div>
-        </section>
-      </main>
 
-      {/* FOOTER - matches homepage footer */}
-      <footer className="bg-slate-900/50 border-t border-slate-800 py-16 px-6">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-5 gap-12 mb-12">
+            {/* Company */}
             <div>
-              <h4 className="font-bold text-white mb-4">Platform</h4>
-              <ul className="space-y-3 text-slate-400 text-sm">
-                <li><a href="/start-assessment" className="hover:text-white transition-colors">Assessment</a></li>
-                <li><a href="/mock-interviews" className="hover:text-white transition-colors">Mock Interviews</a></li>
-                <li><a href="/skill-gap-analyzer" className="hover:text-white transition-colors">Skill Analyzer</a></li>
-                <li><a href="/resume-analyzer" className="hover:text-white transition-colors">Resume Analyzer</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-white mb-4">Learning</h4>
-              <ul className="space-y-3 text-slate-400 text-sm">
-                <li><a href="/placement-tracks" className="hover:text-white transition-colors">Placement Tracks</a></li>
-                <li><a href="/free-tutorials" className="hover:text-white transition-colors">Free Tutorials</a></li>
-                <li><a href="/learning-paths" className="hover:text-white transition-colors">Learning Paths</a></li>
-                <li><a href="/success-stories" className="hover:text-white transition-colors">Success Stories</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-white mb-4">Resources</h4>
-              <ul className="space-y-3 text-slate-400 text-sm">
-                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Documentation</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">FAQ</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-white mb-4">Company</h4>
-              <ul className="space-y-3 text-slate-400 text-sm">
-                <li><a href="/contact" className="hover:text-white transition-colors">About Us</a></li>
-                <li><a href="#" className="hover:text-white transition-colors">Careers</a></li>
-                <li><a href="/contact" className="hover:text-white transition-colors">Contact</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-bold text-white mb-4">Contact</h4>
-              <ul className="space-y-3 text-slate-400 text-sm">
-                <li className="flex items-center gap-2 hover:text-white transition-colors">
-                  <Mail className="w-4 h-4" />
-                  <a href="mailto:enroll@mentormuni.com">enroll@mentormuni.com</a>
-                </li>
-                <li className="flex items-center gap-2 hover:text-white transition-colors">
-                  <Phone className="w-4 h-4" />
-                  <a href="tel:+919146421302">+91 91464 21302</a>
-                </li>
-              </ul>
+              <p style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.40)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>Company</p>
+              {[['About Us', '/contact'], ['Careers', '/contact'], ['Contact', '/contact'], ['For Recruiters', '/for-recruiters']].map(([label, to]) => (
+                <div key={label} style={{ marginBottom: 10 }}>
+                  <Link to={to} style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none' }}>{label}</Link>
+                </div>
+              ))}
             </div>
           </div>
-          <div className="border-t border-slate-800 pt-8 flex flex-col md:flex-row justify-between items-center text-slate-500 text-sm">
-            <p>© {new Date().getFullYear()} MentorMuni. All rights reserved.</p>
-            <div className="flex gap-6 mt-4 md:mt-0">
-              <a href="#" className="hover:text-white transition-colors">Terms</a>
-              <a href="#" className="hover:text-white transition-colors">Privacy</a>
-              <a href="#" className="hover:text-white transition-colors">Cookies</a>
+
+          {/* Bottom bar */}
+          <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)' }}>© {new Date().getFullYear()} MentorMuni. All rights reserved.</p>
+            <div style={{ display: 'flex', gap: 20 }}>
+              {['Terms', 'Privacy', 'Cookies'].map(t => (
+                <Link key={t} to="/contact" style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', textDecoration: 'none' }}>{t}</Link>
+              ))}
             </div>
           </div>
         </div>
       </footer>
-
-      <style>{`
-        @keyframes blob {
-          0%, 100% { transform: translate(0, 0) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
-        }
-        .animate-blob { animation: blob 7s infinite; }
-        .animation-delay-2000 { animation-delay: 2s; }
-      `}</style>
     </div>
   );
-};
-
-/* --- SUB-COMPONENTS - match homepage card styles --- */
-
-const statCardClasses = {
-  indigo: 'bg-indigo-600/20 group-hover:bg-indigo-600/30',
-  cyan: 'bg-cyan-600/20 group-hover:bg-cyan-600/30',
-  purple: 'bg-purple-600/20 group-hover:bg-purple-600/30',
-  orange: 'bg-orange-600/20 group-hover:bg-orange-600/30',
-  rose: 'bg-rose-600/20 group-hover:bg-rose-600/30',
-  amber: 'bg-amber-600/20 group-hover:bg-amber-600/30',
-};
-
-const StatCard = ({ icon, title, label, accent }) => {
-  const iconBg = statCardClasses[accent] || statCardClasses.indigo;
-  return (
-    <div className="group bg-gradient-to-br from-slate-800/50 to-slate-800/20 border border-slate-700 rounded-2xl p-8 hover:border-slate-500/50 transition-all hover:shadow-lg hover:shadow-slate-500/10 flex flex-col items-center text-center">
-      <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 transition-all ${iconBg}`}>
-        {icon}
-      </div>
-      <span className="text-xl font-black text-white mb-1">{title}</span>
-      <span className="text-sm text-slate-400">{label}</span>
-    </div>
-  );
-};
-
-const OutcomeCard = ({ role, companies, focus, accent }) => {
-  const cardHover = accent === 'cyan'
-    ? 'hover:border-cyan-500/50 hover:shadow-cyan-500/10'
-    : accent === 'purple'
-    ? 'hover:border-purple-500/50 hover:shadow-purple-500/10'
-    : 'hover:border-indigo-500/50 hover:shadow-indigo-500/10';
-  const iconBg = accent === 'cyan'
-    ? 'bg-cyan-600/20 group-hover:bg-cyan-600/30'
-    : accent === 'purple'
-    ? 'bg-purple-600/20 group-hover:bg-purple-600/30'
-    : 'bg-indigo-600/20 group-hover:bg-indigo-600/30';
-  return (
-    <div className={`group bg-gradient-to-br from-slate-800/50 to-slate-800/20 border border-slate-700 rounded-2xl p-8 transition-all hover:shadow-lg ${cardHover}`}>
-      <div className={`w-12 h-12 rounded-lg flex items-center justify-center mb-4 transition-all ${iconBg}`}>
-        <span className="text-2xl font-black text-slate-500">→</span>
-      </div>
-      <span className="inline-block px-3 py-1 bg-indigo-600/20 text-indigo-400 text-[10px] font-bold uppercase tracking-widest rounded-full mb-4">
-        Target Role
-      </span>
-      <h4 className="text-xl font-bold text-white mb-2">{role}</h4>
-      <p className="text-indigo-400 font-semibold text-sm mb-4">{companies}</p>
-      <p className="text-slate-400 text-sm">{focus}</p>
-    </div>
-  );
-};
-
-const TestimonialCard = ({ quote, author, company }) => (
-  <div className="bg-gradient-to-br from-slate-800/50 to-slate-800/20 border border-slate-700 rounded-2xl p-10 relative hover:border-indigo-500/30 transition-all">
-    <span className="absolute top-6 left-8 text-6xl text-slate-700 font-serif leading-none">"</span>
-    <p className="text-lg italic text-slate-300 relative z-10 mb-8">{quote}</p>
-    <div className="flex items-center gap-3">
-      <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center font-bold text-white">
-        {author[0]}
-      </div>
-      <div>
-        <p className="font-bold text-white leading-none mb-1">{author}</p>
-        <p className="text-xs text-indigo-400 font-bold uppercase tracking-tighter">{company}</p>
-      </div>
-    </div>
-  </div>
-);
-
-export default OutcomesPage;
+}

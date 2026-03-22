@@ -8,11 +8,14 @@ import "./index.css";
 // Lazy-load all other pages so only Home + Navbar load on first visit
 const InterviewReady = lazy(() => import("./components/interviewready"));
 const OutcomesPage = lazy(() => import("./components/outcomes"));
-const Pricing = lazy(() => import("./components/pricing"));
+const Pricing   = lazy(() => import("./components/pricing"));
+const Waitlist  = lazy(() => import("./components/waitlist"));
+const ResultPage = lazy(() => import("./components/result"));
 const MentorDashboard = lazy(() => import("./components/mentordashboard"));
 const HowItWorks = lazy(() => import("./components/HowItWorks"));
 const Tools = lazy(() => import("./components/Tools"));
 const Mentorship = lazy(() => import("./components/Mentorship"));
+const Mentors    = lazy(() => import("./components/Mentors"));
 const JavaTutorial = lazy(() => import("./components/javaTutorial"));
 const SqlTutorial = lazy(() => import("./components/sqlTutorial"));
 const PythonTutorial = lazy(() => import("./components/pythonTutorial"));
@@ -33,13 +36,13 @@ const DesignSystemDemo = lazy(() => import("./components/DesignSystemDemo"));
 const CareerHealthDashboard = lazy(() => import("./components/CareerHealthDashboard"));
 
 function PageFallback() {
-  return <div className="min-h-[60vh] bg-[#0B0F19]" />;
+  return <div className="min-h-[60vh] bg-[#050b18]" />;
 }
 
 function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen bg-[#0B0F19]">
+      <div className="flex flex-col min-h-screen bg-[#050b18]">
         <Navbar />
         <main className="flex-grow relative z-0">
           <Suspense fallback={<PageFallback />}>
@@ -47,7 +50,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/tools" element={<Tools />} />
-              <Route path="/mentorship" element={<Mentorship />} />
+              <Route path="/mentors" element={<Mentors />} />
               <Route path="/start-assessment" element={<InterviewReady />} />
               <Route path="/readiness" element={<InterviewReady />} />
               <Route path="/interview-ready" element={<InterviewReady />} />
@@ -61,6 +64,8 @@ function App() {
               <Route path="/outcomes" element={<OutcomesPage />} />
               <Route path="/upgrade" element={<Pricing />} />
               <Route path="/pricing" element={<Pricing />} />
+              <Route path="/waitlist" element={<Waitlist />} />
+              <Route path="/result" element={<ResultPage />} />
               <Route path="/for-recruiters" element={<ForRecruiters />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/dashboard" element={<MentorDashboard />} />

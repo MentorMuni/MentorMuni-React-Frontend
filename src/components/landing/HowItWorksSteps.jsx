@@ -6,7 +6,7 @@ const STEPS = [
   { icon: ClipboardCheck, title: 'Take Interview Readiness Test', href: '/start-assessment' },
   { icon: BarChart3, title: 'Get Placement Readiness Score' },
   { icon: Mic, title: 'Practice AI Mock Interviews', href: '/mock-interviews' },
-  { icon: Users, title: 'Get Mentorship from Industry Experts', href: '/mentorship' },
+  { icon: Users, title: 'Get Mentorship from Industry Experts', href: '/mentors' },
   { icon: Trophy, title: 'Crack Placement Interviews' },
 ];
 
