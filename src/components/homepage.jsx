@@ -301,47 +301,43 @@ const HomePage = () => {
             </motion.h1>
 
             {/* Hook sub-copy */}
-            <motion.p
+            <motion.div
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.12 }}
-              className="text-base text-slate-300 leading-relaxed mb-5 max-w-lg"
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="mb-5 max-w-[480px] space-y-2"
             >
-              <span className="text-white font-semibold">72% of engineering students fail their first campus interview</span>
-              {' — '}not from lack of knowledge, but from lack of interview practice. MentorMuni measures your readiness across every key area and shows you exactly where to focus your preparation.
-            </motion.p>
-
-            {/* 3 key points */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.18 }}
-              className="space-y-2.5 mb-6"
-            >
-              {[
-                'Interview performance is a practised skill — your college curriculum does not teach it',
-                'Competition has intensified — 15+ applicants per IT opening in 2025',
-                '75% of resumes are filtered by software before a recruiter ever reads them',
-              ].map(p => (
-                <div key={p} className="flex items-start gap-2.5">
-                  <span className="w-1 h-1 rounded-full bg-slate-500 shrink-0 mt-2" />
-                  <p className="text-sm text-slate-400 leading-snug">{p}</p>
-                </div>
-              ))}
+              <p className="text-lg leading-relaxed" style={{ color: 'rgba(255,255,255,0.60)' }}>
+                <span className="text-white font-semibold">
+                  MentorMuni builds a focused path only for you
+                </span>
+                {' '}— based on your strengths, your gaps, and your interview timeline.
+              </p>
+              <p className="text-sm leading-relaxed" style={{ color: 'rgba(255,255,255,0.40)' }}>
+                <span className="text-indigo-400 font-semibold">AI-powered mock interviews</span>
+                {' '}and{' '}
+                <span className="text-indigo-400 font-semibold">real mentor feedback</span>
+                {' '}to help you become job-ready.
+              </p>
             </motion.div>
 
-            {/* Solution statement */}
+            {/* 3 outcome points */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.22 }}
-              className="flex items-center gap-2 bg-green-500/8 border border-green-500/20 rounded-xl px-4 py-3 mb-6"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.18 }}
+              className="flex flex-col gap-2.5 mb-8"
             >
-              <span className="w-2 h-2 rounded-full bg-green-400 shrink-0" />
-              <p className="text-sm text-slate-300">
-                <span className="text-green-400 font-semibold">Students who identify their specific gaps prepare more effectively</span>
-                {' '}— and walk into interviews with measurable confidence.
-              </p>
+              {[
+                'A readiness score built around your profile — not a one-size-fits-all test',
+                'Strengths and gaps specific to your role, skills, and target companies',
+                'A week-by-week preparation path designed for your interview timeline',
+              ].map((text, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0" style={{ background: '#6366f1' }} />
+                  <span className="text-sm" style={{ color: 'rgba(255,255,255,0.60)' }}>{text}</span>
+                </div>
+              ))}
             </motion.div>
 
             {/* CTAs */}
@@ -396,13 +392,66 @@ const HomePage = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
-            className="hidden lg:flex items-center justify-center w-full"
+            className="hidden lg:flex flex-col items-center justify-center w-full"
+            style={{ marginTop: 80 }}
           >
+            <style>{`
+              @keyframes mm-glow {
+                0%, 100% { box-shadow: 0 0 10px 2px rgba(74,222,128,0.35), 0 0 0 1px rgba(74,222,128,0.3); }
+                50%       { box-shadow: 0 0 22px 6px rgba(74,222,128,0.55), 0 0 0 1px rgba(74,222,128,0.5); }
+              }
+              @keyframes mm-dot-blink {
+                0%, 100% { opacity: 1; transform: scale(1); }
+                50%       { opacity: 0.4; transform: scale(0.75); }
+              }
+              @keyframes mm-badge-float {
+                0%, 100% { transform: translateY(0px); }
+                50%       { transform: translateY(-4px); }
+              }
+            `}</style>
+
+            {/* Free 1-on-1 badge */}
+            <Link
+              to="/waitlist"
+              style={{
+                display: 'inline-flex', alignItems: 'center', gap: 10,
+                background: 'linear-gradient(135deg, rgba(5,11,24,0.95), rgba(15,26,48,0.98))',
+                border: '1px solid rgba(74,222,128,0.35)',
+                borderRadius: 14, padding: '10px 18px',
+                textDecoration: 'none', marginBottom: 18,
+                animation: 'mm-glow 2s ease-in-out infinite, mm-badge-float 3s ease-in-out infinite',
+                cursor: 'pointer',
+              }}
+            >
+              {/* Pulsing dot */}
+              <span style={{
+                width: 9, height: 9, borderRadius: '50%',
+                background: '#4ade80', flexShrink: 0,
+                animation: 'mm-dot-blink 1.2s ease-in-out infinite',
+                boxShadow: '0 0 8px rgba(74,222,128,0.7)',
+              }} />
+
+              {/* Text */}
+              <span>
+                <span style={{ fontSize: 13, fontWeight: 800, color: '#fff', display: 'block', lineHeight: 1.2 }}>
+                  Free 1-on-1 Mentorship Session
+                </span>
+                <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.45)', fontWeight: 500 }}>
+                  Limited slots · Book yours before they fill up
+                </span>
+              </span>
+
+              {/* Arrow */}
+              <span style={{
+                marginLeft: 4, fontSize: 14, color: '#4ade80', fontWeight: 700, flexShrink: 0,
+              }}>→</span>
+            </Link>
+
             <img
               src="/MentorMuni-React-Frontend/mentormuni-brand-banner-new.png"
               alt="MentorMuni — Guiding Your Journey to Knowledge"
               className="w-full rounded-2xl"
-              style={{ marginTop: 130, maxWidth: 442, boxShadow: '0 24px 64px rgba(0,0,0,0.45)' }}
+              style={{ maxWidth: 442, boxShadow: '0 24px 64px rgba(0,0,0,0.45)' }}
             />
           </motion.div>
         </div>

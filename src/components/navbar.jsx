@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
 import logo from '../assets/logo.png';
@@ -94,6 +94,18 @@ const Navbar = () => {
 
           {/* Waitlist + primary CTA (Desktop) */}
           <div className="hidden lg:flex items-center gap-3">
+            <style>{`
+              @keyframes nb-shimmer {
+                0%   { transform: translateX(-100%) skewX(-15deg); }
+                100% { transform: translateX(220%) skewX(-15deg); }
+              }
+              @keyframes nb-ring {
+                0%,100% { box-shadow: 0 0 0 0 rgba(99,102,241,0.55), 0 4px 14px rgba(99,102,241,0.35); }
+                50%      { box-shadow: 0 0 0 5px rgba(99,102,241,0), 0 4px 20px rgba(99,102,241,0.55); }
+              }
+              .nb-cta { animation: nb-ring 2s ease-in-out infinite; }
+              .nb-cta:hover .nb-shine { animation: nb-shimmer 0.55s ease forwards; }
+            `}</style>
             <Link
               to="/waitlist"
               className="px-4 py-2 text-sm font-semibold rounded-lg border border-indigo-500/40 text-indigo-400 hover:text-indigo-300 hover:border-indigo-400/60 hover:bg-indigo-500/10 transition-all"
@@ -102,9 +114,16 @@ const Navbar = () => {
             </Link>
             <Link
               to="/start-assessment"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold shadow-lg transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+              className="nb-cta relative inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
             >
-              Check My Score
+              {/* shimmer sweep on hover */}
+              <span className="nb-shine pointer-events-none absolute inset-0 w-1/3 bg-white/20 blur-sm" style={{ transform: 'translateX(-100%) skewX(-15deg)' }} />
+              {/* pulsing dot */}
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400" />
+              </span>
+              Check My Interview Readiness
               <span className="text-xs bg-white/20 px-1.5 py-0.5 rounded-full font-semibold">Free</span>
             </Link>
           </div>
@@ -155,7 +174,7 @@ const Navbar = () => {
                 onClick={handleNavClick}
                 className="px-4 py-3 text-base font-bold rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg transition-all flex items-center justify-center gap-2 w-full"
               >
-                Check My Score — Free
+                Check My Interview Readiness — Free
               </Link>
             </nav>
           </div>
