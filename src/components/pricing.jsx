@@ -36,7 +36,7 @@ const PLANS = [
     features: [
       { yes: true, text: 'AI mock interviews — unlimited' },
       { yes: true, text: 'Real interview with industry expert' },
-      { yes: true, text: 'Sessions by recently placed students — how they did it' },
+      { yes: true, text: 'Industry mentor sessions — 10+ years experience' },
       { yes: true, text: '1-on-1 mentor with WhatsApp access' },
       { yes: true, text: 'Resume + LinkedIn review' },
       { yes: true, text: 'Week-by-week personalised roadmap' },
@@ -56,7 +56,7 @@ const PLANS = [
     desc: 'Everything in Complete, plus direct referrals to hiring managers.',
     features: [
       { yes: true, text: 'Everything in Complete program' },
-      { yes: true, text: 'Direct referrals to 50+ companies' },
+      { yes: true, text: 'Mentor network connections + referral guidance' },
       { yes: true, text: 'Priority mentor — daily check-in' },
       { yes: true, text: 'Salary negotiation coaching' },
       { yes: true, text: 'LinkedIn profile full rewrite' },
@@ -126,10 +126,10 @@ const PricingPage = () => {
       {/* ── Hero ── */}
       <section className="max-w-3xl mx-auto px-6 pt-16 pb-10 text-center">
 
-        {/* Guarantee badge */}
+        {/* Support badge */}
         <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-500/25 text-emerald-400 px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
           <ShieldCheck size={15} />
-          Money-back guarantee if you complete the program and don't get placed
+          Full mentorship support until you get placed
         </div>
 
         <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-3 leading-tight">
@@ -236,27 +236,27 @@ const PricingPage = () => {
         </div>
       </section>
 
-      {/* ── Testimonials ── */}
-      <section className="max-w-5xl mx-auto px-6 mb-16">
-        <h2 className="text-xl font-bold text-white mb-1 text-center">Students who enrolled — real outcomes</h2>
-        <p className="text-slate-400 text-sm text-center mb-8">Names, colleges, companies, packages. Nothing made up.</p>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          {TESTIMONIALS.map((t) => (
-            <div key={t.name} className="bg-white/[0.03] border border-white/8 rounded-2xl p-5 flex flex-col">
-              <p className="text-sm text-slate-300 leading-relaxed flex-1 mb-4">{t.quote}</p>
-              <div className="flex items-center gap-3">
-                <div className={`w-10 h-10 rounded-full ${t.bg} flex items-center justify-center text-xs font-bold text-white shrink-0`}>
-                  {t.init}
-                </div>
-                <div>
-                  <p className="text-sm font-semibold text-white leading-none mb-0.5">{t.name}</p>
-                  <p className="text-xs text-slate-500">{t.college}</p>
-                  <p className="text-xs text-green-400 font-medium mt-0.5">✓ {t.placed} · {t.lpa}</p>
-                </div>
+      {/* ── Founding batch honest section ── */}
+      <section className="max-w-3xl mx-auto px-6 mb-16">
+        <div className="bg-amber-500/5 border border-amber-500/20 rounded-2xl p-6 text-center">
+          <span className="text-xs font-bold text-amber-400 uppercase tracking-widest block mb-3">Honest note — we're a new platform</span>
+          <h2 className="text-lg font-bold text-white mb-2">No placement stories yet. That's exactly why the founding batch price exists.</h2>
+          <p className="text-slate-400 text-sm leading-relaxed max-w-xl mx-auto mb-5">
+            We're starting with our first batch of students in April 2025. We can't show you "Rahul from NIT got ₹7 LPA" because we haven't run the programme yet. What we can offer instead: the lowest price we'll ever charge, maximum mentor attention per student, and a money-back guarantee — so the risk is entirely on us.
+          </p>
+          <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto">
+            {[
+              { icon: '🎯', label: 'Founding batch price', sub: 'Lowest MentorMuni will ever charge' },
+              { icon: '👤', label: 'Small batch', sub: 'More attention per student' },
+              { icon: '💰', label: 'Money-back', sub: 'If you complete and don\'t get placed' },
+            ].map(c => (
+              <div key={c.label} className="bg-white/[0.03] border border-white/8 rounded-xl p-3">
+                <span className="text-xl block mb-1">{c.icon}</span>
+                <p className="text-xs font-bold text-white mb-0.5">{c.label}</p>
+                <p className="text-[10px] text-slate-500 leading-snug">{c.sub}</p>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 

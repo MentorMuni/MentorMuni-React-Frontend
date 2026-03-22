@@ -25,7 +25,7 @@ const STEPS = [
     number: 'STEP 02',
     numberColor: '#a78bfa',
     title: 'Get matched with the right mentor',
-    body: "Based on your score, role, and target companies, we match you with a mentor who has been through exactly what you're facing. Not a random tutor — someone who was a fresher in your situation and got placed.",
+    body: "Based on your score, role, and target companies, we match you with a mentor who fits your exact gaps and timeline — not a random assignment from a list.",
     emoji: '🧑‍💼',
     circleBg: 'rgba(139,92,246,0.15)',
     circleBorder: 'rgba(139,92,246,0.5)',
@@ -35,7 +35,7 @@ const STEPS = [
     items: [
       { bold: null, rest: 'Mentor matched to your role + target stack' },
       { bold: null, rest: 'WhatsApp access — ask anything, anytime' },
-      { bold: null, rest: 'Sessions from students placed in last 6 months' },
+      { bold: null, rest: 'Industry professionals with 10+ years experience' },
     ],
     connectorGradient: 'linear-gradient(180deg, rgba(139,92,246,0.5), rgba(236,72,153,0.5))',
   },
@@ -61,7 +61,7 @@ const STEPS = [
     number: 'STEP 04',
     numberColor: '#4ade80',
     title: 'Apply with confidence. Get placed.',
-    body: "Your mentor stays with you through applications, follow-ups, and offer negotiation. You don't walk into interviews alone anymore. Average time from enrollment to first offer: 6 weeks.",
+    body: "Your mentor stays with you through applications, follow-ups, and offer negotiation. You don't walk into interviews alone anymore. We support you until you get the offer.",
     emoji: '🎯',
     circleBg: 'rgba(74,222,128,0.15)',
     circleBorder: 'rgba(74,222,128,0.5)',
@@ -421,46 +421,33 @@ export default function HowItWorks() {
               fontStyle: 'italic',
             }}
           >
-            After the skill gap analysis I finally knew exactly what to study. The AI mock interviews were scary accurate. Got placed at TCS in 5 weeks.
+            After the skill gap analysis I finally knew exactly what to focus on. The AI mock interviews gave me feedback I'd never gotten from seniors or online practice — specific, uncomfortable, and actually useful.
           </p>
 
           {/* Person row */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-            {/* Avatar */}
             <div
               style={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                background: '#1e3a5f',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#fff',
-                fontSize: 13,
-                fontWeight: 600,
-                flexShrink: 0,
+                width: 40, height: 40, borderRadius: '50%',
+                background: '#1e3a5f', display: 'flex',
+                alignItems: 'center', justifyContent: 'center',
+                color: '#fff', fontSize: 13, fontWeight: 600, flexShrink: 0,
               }}
             >
-              RS
+              V
             </div>
             <div>
-              <span style={{ fontWeight: 500, color: '#ffffff', fontSize: 14 }}>Rahul Sharma</span>
-              <span style={{ color: 'rgba(255,255,255,0.40)', fontSize: 13, marginLeft: 6 }}>NIT Trichy</span>
+              <span style={{ fontWeight: 500, color: '#ffffff', fontSize: 14 }}>4th year student</span>
+              <span style={{ color: 'rgba(255,255,255,0.40)', fontSize: 13, marginLeft: 6 }}>VIT Vellore</span>
             </div>
             <div
               style={{
-                background: 'rgba(74,222,128,0.12)',
-                color: '#4ade80',
-                borderRadius: 6,
-                fontSize: 11,
-                padding: '2px 10px',
-                fontWeight: 500,
-                marginLeft: 'auto',
-                whiteSpace: 'nowrap',
+                background: 'rgba(99,102,241,0.12)', color: '#a78bfa',
+                borderRadius: 6, fontSize: 11, padding: '2px 10px',
+                fontWeight: 500, marginLeft: 'auto', whiteSpace: 'nowrap',
               }}
             >
-              Placed at TCS · ₹7 LPA
+              Beta tester · placement outcome in progress
             </div>
           </div>
         </div>

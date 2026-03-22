@@ -14,148 +14,151 @@ const WelcomePopup = () => {
 
   useEffect(() => {
     if (sessionStorage.getItem('mm_popup_seen')) return;
-
     let triggered = false;
-    const trigger = () => {
-      if (triggered) return;
-      triggered = true;
-      setOpen(true);
-    };
-
-    // Trigger 1: 30 seconds of reading time
+    const trigger = () => { if (triggered) return; triggered = true; setOpen(true); };
     const timer = setTimeout(trigger, 30000);
-
-    // Trigger 2: Exit intent — mouse leaves toward the top of the browser
-    const onMouseLeave = (e) => {
-      if (e.clientY <= 0) trigger();
-    };
-    document.addEventListener('mouseleave', onMouseLeave);
-
-    // Trigger 3: Scroll past 60% of the page
+    const onMouseLeave = (e) => { if (e.clientY <= 0) trigger(); };
     const onScroll = () => {
       const scrolled = window.scrollY + window.innerHeight;
-      const total = document.documentElement.scrollHeight;
-      if (scrolled / total >= 0.6) trigger();
+      if (scrolled / document.documentElement.scrollHeight >= 0.6) trigger();
     };
+    document.addEventListener('mouseleave', onMouseLeave);
     window.addEventListener('scroll', onScroll, { passive: true });
-
-    return () => {
-      clearTimeout(timer);
-      document.removeEventListener('mouseleave', onMouseLeave);
-      window.removeEventListener('scroll', onScroll);
-    };
+    return () => { clearTimeout(timer); document.removeEventListener('mouseleave', onMouseLeave); window.removeEventListener('scroll', onScroll); };
   }, []);
 
-  const close = () => {
-    sessionStorage.setItem('mm_popup_seen', '1');
-    setOpen(false);
-  };
+  const close = () => { sessionStorage.setItem('mm_popup_seen', '1'); setOpen(false); };
+
+  // Auto-dismiss after 6 seconds
+  useEffect(() => {
+    if (!open) return;
+    const t = setTimeout(close, 6000);
+    return () => clearTimeout(t);
+  }, [open]);;
+
+  const outcomes = [
+    { icon: '📊', label: 'Readiness score out of 100', sub: 'Across DSA, System Design, HR & Projects' },
+    { icon: '🎯', label: 'Your 3 critical gaps', sub: 'Specific — not just "practice more DSA"' },
+    { icon: '📅', label: 'A week-by-week fix plan', sub: 'What to study, in what order, starting now' },
+  ];
 
   return (
     <AnimatePresence>
       {open && (
         <motion.div
           key="popup-backdrop"
-          className="fixed inset-0 z-50 flex items-center justify-center px-4"
+          className="fixed inset-0 z-50 flex items-end sm:items-center justify-center px-4 pb-4 sm:pb-0"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.22 }}
+          transition={{ duration: 0.2 }}
         >
-          <div className="absolute inset-0 bg-black/75 backdrop-blur-sm" onClick={close} />
+          {/* Backdrop */}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={close} />
 
           <motion.div
             key="popup-card"
-            className="relative z-10 bg-[#0f1a30] border border-white/10 rounded-2xl w-full max-w-md overflow-hidden shadow-2xl"
-            initial={{ opacity: 0, scale: 0.93, y: 24 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.93, y: 24 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="relative z-10 w-full max-w-[420px] overflow-hidden"
+            style={{
+              background: '#0d1626',
+              border: '1px solid rgba(99,102,241,0.25)',
+              borderRadius: 18,
+              boxShadow: '0 32px 80px rgba(0,0,0,0.6), 0 0 0 1px rgba(99,102,241,0.08)',
+            }}
+            initial={{ opacity: 0, y: 28, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 28, scale: 0.96 }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
           >
-            {/* Top red urgency bar */}
-            <div className="h-1 bg-red-500" />
+            {/* Auto-dismiss countdown bar */}
+            <div style={{ height: 3, background: 'rgba(99,102,241,0.15)', position: 'relative', overflow: 'hidden' }}>
+              <div style={{
+                position: 'absolute', top: 0, left: 0, height: '100%',
+                background: 'linear-gradient(90deg,#6366f1,#a78bfa)',
+                width: '100%',
+                animation: 'mm-countdown 6s linear forwards',
+              }} />
+            </div>
+            <style>{`@keyframes mm-countdown { from { width: 100%; } to { width: 0%; } }`}</style>
 
-            {/* Close */}
+            {/* Close button */}
             <button
               onClick={close}
-              className="absolute top-4 right-4 text-slate-600 hover:text-white transition-colors"
+              className="absolute top-4 right-4 w-7 h-7 rounded-full flex items-center justify-center text-slate-500 hover:text-white hover:bg-white/8 transition-all"
               aria-label="Close"
             >
-              <X size={18} />
+              <X size={15} />
             </button>
 
             <div className="px-6 pt-5 pb-6">
 
-              {/* Context label */}
-              <p className="text-[11px] font-semibold text-red-400 uppercase tracking-wider mb-4">
-                India's tech job market — 2025
-              </p>
-
-              {/* Fear stat */}
-              <div className="flex items-baseline gap-3 mb-3">
-                <span className="text-6xl font-black text-red-400 tabular-nums leading-none">72%</span>
-                <span className="text-slate-300 text-sm leading-snug">of freshers fail<br />their first interview.</span>
+              {/* Brand header */}
+              <div className="flex items-center gap-2.5 mb-5">
+                <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black text-white shrink-0"
+                  style={{ background: 'linear-gradient(135deg,#6366f1,#a78bfa)' }}>
+                  M
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-white leading-none">MentorMuni</p>
+                  <p className="text-[10px] text-slate-500 leading-none mt-0.5">Interview Readiness Assessment</p>
+                </div>
+                <span className="ml-auto flex items-center gap-1.5 text-[10px] font-semibold text-green-400 bg-green-500/10 border border-green-500/20 rounded-full px-2.5 py-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                  Free
+                </span>
               </div>
 
-              {/* Main hook */}
-              <h2 className="text-lg font-bold text-white leading-snug mb-3">
-                Are you prepared for the{' '}
-                <span className="text-red-400">hardest job market in a decade?</span>
+              {/* Headline */}
+              <h2 className="text-[1.35rem] font-black text-white leading-tight mb-2 tracking-tight">
+                Do you actually know<br />
+                <span style={{ background: 'linear-gradient(90deg,#6366f1,#a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  if you're ready?
+                </span>
               </h2>
+              <p className="text-sm text-slate-400 leading-relaxed mb-5">
+                Most students think they are — until the interview. A 5-minute test tells you your score, your gaps, and exactly what to fix.
+              </p>
 
-              {/* Job market reality */}
-              <div className="bg-red-500/8 border border-red-500/15 rounded-xl px-4 py-3 mb-5">
-                <p className="text-xs text-slate-400 leading-relaxed">
-                  <span className="text-slate-200 font-semibold">3 lakh+ IT jobs cut in 2024.</span>
-                  {' '}AI replacing entry-level roles.
-                  15+ applicants per opening.
-                  One bad interview now costs you{' '}
-                  <span className="text-red-400 font-semibold">3 more months of waiting.</span>
-                </p>
+              {/* Outcome cards */}
+              <div className="space-y-2 mb-5">
+                {outcomes.map((o, i) => (
+                  <div key={i} className="flex items-center gap-3 rounded-xl px-3.5 py-2.5"
+                    style={{ background: 'rgba(99,102,241,0.07)', border: '1px solid rgba(99,102,241,0.12)' }}>
+                    <span className="text-lg shrink-0">{o.icon}</span>
+                    <div>
+                      <p className="text-xs font-semibold text-white leading-none mb-0.5">{o.label}</p>
+                      <p className="text-[10px] text-slate-500 leading-none">{o.sub}</p>
+                    </div>
+                  </div>
+                ))}
               </div>
 
-              {/* Identity: what placed students do */}
-              <p className="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-                The students who get placed do 3 things
-              </p>
-              <ul className="space-y-1.5 mb-5">
-                {[
-                  "Know exactly where they stand — not just 'I think I'm ready'",
-                  'Fix specific gaps — not random YouTube grinding',
-                  "Have a mentor in their corner — someone who's been there",
-                ].map((item) => (
-                  <li key={item} className="flex items-start gap-2 text-sm text-slate-300">
-                    <Check size={13} className="text-green-400 mt-0.5 shrink-0" />
-                    {item}
-                  </li>
-                ))}
-              </ul>
-
-              {/* Single dominant CTA */}
+              {/* CTA */}
               <Link
                 to="/start-assessment"
                 onClick={close}
-                className="group flex items-center justify-center gap-2 w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm px-5 py-3.5 rounded-xl transition-all shadow-lg shadow-indigo-500/20 mb-3"
+                className="group flex items-center justify-center gap-2 w-full text-white font-bold text-sm py-3.5 rounded-xl transition-all mb-3"
+                style={{ background: 'linear-gradient(135deg,#4f46e5,#6366f1)', boxShadow: '0 4px 20px rgba(99,102,241,0.35)' }}
               >
-                Check My Readiness Score — Free
+                Check My Score — It's Free
                 <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
               </Link>
 
-              {/* Trust pills */}
-              <div className="flex justify-center gap-4 mb-4">
-                {['No signup', '5 minutes', 'Instant result'].map((t) => (
-                  <span key={t} className="flex items-center gap-1 text-xs text-slate-500">
-                    <Check size={10} className="text-green-500" /> {t}
+              {/* Trust row */}
+              <div className="flex justify-center gap-5 mb-3">
+                {['5 minutes', 'No signup', 'Instant result'].map(t => (
+                  <span key={t} className="flex items-center gap-1 text-[11px] text-slate-500">
+                    <Check size={9} className="text-green-500" /> {t}
                   </span>
                 ))}
               </div>
 
-              {/* Shame dismiss */}
+              {/* Neutral dismiss */}
               <button
                 onClick={close}
-                className="w-full text-center text-xs text-slate-600 hover:text-slate-500 transition-colors py-1"
+                className="w-full text-center text-[11px] text-slate-600 hover:text-slate-400 transition-colors py-1"
               >
-                {"I'll take my chances without preparing"}
+                Maybe later
               </button>
 
             </div>
@@ -187,322 +190,53 @@ const FadeUp = ({ children, delay = 0, className = '' }) => {
 const FEATURES = [
   {
     Icon: Brain,
+    tag: 'START HERE',
     title: 'Interview Readiness Score',
-    desc: 'Answer 20 questions, get a score out of 100. DSA, System Design, HR — broken down so you know exactly what to work on first.',
+    desc: 'Answer 20 questions across DSA, System Design, and HR. Get a score out of 100 broken down by category — so you know exactly what to work on first, not everything at once.',
+    highlight: 'Free · 5 minutes · Instant result',
   },
   {
     Icon: Cpu,
+    tag: 'MOST IMPORTANT',
     title: 'AI Mock Interviews',
-    desc: "Saying an answer out loud to a timer is completely different from knowing it in your head. Practice until it stops feeling scary.",
+    desc: "Knowing an answer in your head is completely different from saying it out loud under pressure. Our AI interviews you in real-time — just like a recruiter — and tells you exactly why your answer would get rejected.",
+    highlight: 'Simulates real TCS, Wipro, Infosys patterns',
   },
   {
     Icon: BarChart3,
+    tag: 'HIDDEN FILTER',
     title: 'Resume ATS Checker',
-    desc: "Your resume might never reach a human. Paste it in, see your ATS score, find out what's getting you filtered out before you even interview.",
+    desc: "75% of resumes are rejected before any human sees them — by software. Paste yours in, get your ATS score, and see exactly which lines are getting you filtered out before you even reach an interview.",
+    highlight: 'Instant ATS score + fix suggestions',
   },
   {
     Icon: TrendingUp,
-    title: 'Personalised Study Plan',
-    desc: "Based on your score, we tell you: study this topic this week, do these mock questions, revisit these concepts. Not a generic syllabus.",
+    tag: 'AI ADVANTAGE',
+    title: 'AI Tools Training',
+    desc: "Interviewers in 2025 now ask: 'How do you use AI in your workflow?' Students who can't answer lose points. We teach you to use GitHub Copilot, ChatGPT, and Cursor in real development — so you stand out.",
+    highlight: 'New in 2025 — AI fluency module',
   },
 ];
 
-/* ─── Testimonials ──────────────────────────────────────────── */
-const TESTIMONIALS = [
+/* ─── Beta feedback ─────────────────────────────────────────── */
+const BETA_FEEDBACK = [
   {
-    avatar: 'P', name: 'Priya S.', college: 'VIT Vellore',
-    placed: 'TCS Digital', before: 38, after: 82,
-    quote: "My first test score was 38. Embarrassing tbh. The roadmap was specific — week 1 DSA, week 2 mocks, week 3 system design revision. Three weeks of actual work. Got the TCS offer.",
+    avatar: 'V', bg: '#4f46e5',
+    tag: '4th Year · CSE',
+    quote: "The gap analysis was more specific than anything my seniors told me. It showed me System Design was my blind spot — I had never even heard of some concepts they asked about. Three weeks of focused prep and I actually understand what I'm talking about now.",
   },
   {
-    avatar: 'R', name: 'Rahul M.', college: 'SRM Chennai',
-    placed: 'Cognizant', before: 42, after: 78,
-    quote: "I thought I was prepared because I'd done some LeetCode. The mock interview showed me I froze completely under pressure. Did 10 rounds in 2 weeks. First real interview felt totally different.",
+    avatar: 'R', bg: '#0891b2',
+    tag: 'Final Year · IT',
+    quote: "I did 5 AI mock interviews and the feedback was uncomfortably accurate. It told me I explained things in a way that sounds like I memorised them, not understood them. That one feedback changed how I answer questions.",
   },
   {
-    avatar: 'A', name: 'Ananya K.', college: 'Manipal',
-    placed: 'Wipro', before: 46, after: 75,
-    quote: "System Design was my blind spot — hadn't even heard of some concepts they asked. The roadmap focused me on OOPS and DBMS for 3 weeks. Cleared Wipro first attempt.",
+    avatar: 'S', bg: '#059669',
+    tag: '3rd Year · CSE',
+    quote: "The readiness score broke down my gaps by category — not just 'you need more DSA practice'. It told me I was weak at string manipulation specifically. That's actually useful. Random LeetCode wasn't giving me that.",
   },
 ];
 
-/* ═══════════════════════════════════════════════════════════════
-   HERO SCORE CARD
-═══════════════════════════════════════════════════════════════ */
-const CIRC = 2 * Math.PI * 32; // 201.06
-
-const getPill = (score) => {
-  if (score >= 80) return { text: 'Strong',       bg: 'rgba(74,222,128,0.15)',  color: '#4ade80' };
-  if (score >= 65) return { text: 'Almost there', bg: 'rgba(245,158,11,0.15)', color: '#fbbf24' };
-  if (score >= 45) return { text: 'Needs work',   bg: 'rgba(239,68,68,0.15)',  color: '#f87171' };
-  return               { text: 'Critical gap', bg: 'rgba(239,68,68,0.20)',  color: '#ef4444' };
-};
-
-const getVerdict = (score) => {
-  if (score >= 80) return { text: '✓ Interview ready',    bg: 'rgba(74,222,128,0.12)',  color: '#4ade80',  border: 'rgba(74,222,128,0.25)' };
-  if (score >= 60) return { text: '⚠ Needs improvement',  bg: 'rgba(245,158,11,0.12)', color: '#fbbf24',  border: 'rgba(245,158,11,0.25)' };
-  return                  { text: '✗ Not ready yet',       bg: 'rgba(239,68,68,0.12)',  color: '#f87171',  border: 'rgba(239,68,68,0.25)' };
-};
-
-const SEED = { total: 68, dsa: 72, sd: 45, comm: 60, projects: 84 };
-
-function HeroScoreCard() {
-  const [scores, setScores]       = useState({ ...SEED, hasReal: false });
-  const [displayScore, setDisplay] = useState(0);
-  const [animated, setAnimated]   = useState(false);
-  const [ringOffset, setRingOffset] = useState(CIRC);
-  const cardRef = useRef(null);
-
-  // Read localStorage on mount
-  useEffect(() => {
-    const total    = localStorage.getItem('mm_total_score');
-    const dsa      = localStorage.getItem('mm_score_dsa');
-    const sd       = localStorage.getItem('mm_score_sd');
-    const comm     = localStorage.getItem('mm_score_comm');
-    const projects = localStorage.getItem('mm_score_projects');
-    if (total) {
-      setScores({
-        total:    parseInt(total),
-        dsa:      parseInt(dsa)      || SEED.dsa,
-        sd:       parseInt(sd)       || SEED.sd,
-        comm:     parseInt(comm)     || SEED.comm,
-        projects: parseInt(projects) || SEED.projects,
-        hasReal:  true,
-      });
-    }
-  }, []);
-
-  // Trigger animations once via IntersectionObserver
-  useEffect(() => {
-    const el = cardRef.current;
-    if (!el) return;
-    const io = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) { setAnimated(true); io.disconnect(); }
-    }, { threshold: 0.1 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  // Score ring + counter on animate
-  useEffect(() => {
-    if (!animated) return;
-    const target = scores.total;
-    const finalOffset = CIRC - (target / 100) * CIRC;
-    setTimeout(() => setRingOffset(finalOffset), 300);
-    // Count-up
-    let start = null;
-    const duration = 1000;
-    const step = (ts) => {
-      if (!start) start = ts;
-      const p = Math.min((ts - start) / duration, 1);
-      setDisplay(Math.round(p * target));
-      if (p < 1) requestAnimationFrame(step);
-    };
-    const raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [animated, scores.total]);
-
-  const categories = [
-    { label: 'DSA & Problem Solving', score: scores.dsa,      barColor: scores.dsa >= 65 ? '#f59e0b' : '#ef4444', delay: 400 },
-    { label: 'System Design',         score: scores.sd,       barColor: scores.sd  >= 65 ? '#f59e0b' : '#ef4444', delay: 550 },
-    { label: 'Communication & HR',    score: scores.comm,     barColor: scores.comm >= 65 ? '#f59e0b' : '#ef4444', delay: 700 },
-    { label: 'Projects & Experience', score: scores.projects, barColor: '#4ade80',                                 delay: 850 },
-  ];
-
-  const lowest = categories.reduce((m, c) => c.score < m.score ? c : m);
-  const priorityText = () => {
-    if (lowest.label === 'System Design' && lowest.score < 50)
-      return <><span style={{ fontWeight: 600, color: '#fff' }}>System Design:</span>{' '}Learn load balancing + DB indexing. 2 hrs/day × 5 days. Service-based companies ask exactly this — {lowest.score}/100 means you'll lose the offer at this round.</>;
-    if (lowest.label === 'Communication & HR')
-      return <><span style={{ fontWeight: 600, color: '#fff' }}>HR rounds:</span>{' '}Practice 'Tell me about yourself' and 'Why this company?' out loud — not in your head. Interviewers decide in the first 2 minutes.</>;
-    return <><span style={{ fontWeight: 600, color: '#fff' }}>DSA:</span>{' '}Focus on arrays and strings first. Solve 2 medium problems daily. Most service-based companies test exactly these patterns.</>;
-  };
-
-  const verdict = getVerdict(scores.total);
-
-  return (
-    <div ref={cardRef} style={{ width: '100%', maxWidth: 340 }}>
-      <style>{`
-        @keyframes livepulse { 0%,100%{opacity:1} 50%{opacity:0.2} }
-      `}</style>
-
-      {/* ── Identity bar ── */}
-      <div style={{
-        background: 'rgba(99,102,241,0.15)',
-        border: '1px solid rgba(99,102,241,0.25)',
-        borderRadius: '10px 10px 0 0',
-        padding: '10px 14px',
-        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <div style={{
-            width: 28, height: 28, borderRadius: '50%', background: '#6366f1',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 11, fontWeight: 700, color: '#fff', flexShrink: 0,
-          }}>
-            {scores.hasReal ? 'ME' : 'RS'}
-          </div>
-          <div>
-            <p style={{ fontSize: 12, fontWeight: 500, color: '#fff', margin: 0 }}>
-              {scores.hasReal ? 'Your result' : 'Rahul S. · 4th Year · CSE'}
-            </p>
-            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.40)', margin: 0 }}>
-              {scores.hasReal ? 'From your last assessment' : 'VIT Vellore · Targeting SDE roles'}
-            </p>
-          </div>
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-          <span style={{
-            width: 6, height: 6, borderRadius: '50%', background: '#4ade80',
-            display: 'inline-block',
-            animation: 'livepulse 1.5s ease-in-out infinite',
-          }} />
-          <span style={{ fontSize: 10, color: '#4ade80' }}>Live result</span>
-        </div>
-      </div>
-
-      {/* ── Main body ── */}
-      <div style={{
-        background: '#0f1a30',
-        border: '1px solid rgba(99,102,241,0.30)',
-        borderTop: 'none',
-        borderRadius: '0 0 12px 12px',
-        padding: '1.25rem',
-      }}>
-
-        {/* Score row */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.1rem' }}>
-          <div>
-            <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.10em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.30)', marginBottom: 4 }}>
-              Interview Readiness Score
-            </p>
-            <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
-              <span style={{ fontSize: 52, fontWeight: 800, color: '#f59e0b', lineHeight: 1 }}>
-                {displayScore}
-              </span>
-              <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.30)' }}>/100</span>
-            </div>
-            <div style={{
-              display: 'inline-flex', alignItems: 'center', gap: 5,
-              background: verdict.bg, border: `1px solid ${verdict.border}`,
-              color: verdict.color, fontSize: 10, fontWeight: 600,
-              padding: '3px 10px', borderRadius: 6, marginTop: 5,
-            }}>
-              {verdict.text}
-            </div>
-          </div>
-
-          {/* SVG ring */}
-          <svg width="72" height="72" viewBox="0 0 80 80" style={{ flexShrink: 0 }}>
-            <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="7" />
-            <circle
-              cx="40" cy="40" r="32" fill="none"
-              stroke="#f59e0b" strokeWidth="7" strokeLinecap="round"
-              strokeDasharray={CIRC}
-              strokeDashoffset={ringOffset}
-              style={{
-                transform: 'rotate(-90deg)', transformOrigin: '50% 50%',
-                transition: 'stroke-dashoffset 1.2s ease 0.3s',
-              }}
-            />
-          </svg>
-        </div>
-
-        {/* Category bars */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-          {categories.map((cat, idx) => {
-            const pill = getPill(cat.score);
-            return (
-              <div key={cat.label} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 8, alignItems: 'center' }}>
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
-                    <span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.55)' }}>{cat.label}</span>
-                    <span style={{ fontSize: 11.5, fontWeight: 600, color: '#fff' }}>{cat.score}</span>
-                  </div>
-                  <div style={{ height: 5, borderRadius: 3, background: 'rgba(255,255,255,0.07)', overflow: 'hidden' }}>
-                    <div style={{
-                      height: '100%', borderRadius: 3,
-                      background: cat.barColor,
-                      width: animated ? `${cat.score}%` : '0%',
-                      transition: `width 0.6s ease ${cat.delay}ms`,
-                    }} />
-                  </div>
-                </div>
-                <span style={{
-                  fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 5,
-                  background: pill.bg, color: pill.color, whiteSpace: 'nowrap',
-                }}>
-                  {pill.text}
-                </span>
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Priority fix box */}
-        <div style={{ marginTop: '1rem', background: '#0a1220', borderRadius: 8, padding: '0.875rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
-            <span style={{ fontSize: 13 }}>🎯</span>
-            <span style={{ fontSize: 11, fontWeight: 600, color: '#fff' }}>Your #1 fix this week</span>
-            <span style={{
-              marginLeft: 'auto', fontSize: 9,
-              background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.30)',
-              padding: '1px 7px', borderRadius: 4,
-            }}>Week 1 of 3</span>
-          </div>
-          <p style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, margin: 0 }}>
-            {priorityText()}
-          </p>
-        </div>
-
-        {/* Proof strip */}
-        <div style={{
-          marginTop: '0.875rem',
-          background: 'rgba(74,222,128,0.07)',
-          border: '1px solid rgba(74,222,128,0.15)',
-          borderRadius: 8, padding: '0.75rem',
-          display: 'flex', alignItems: 'center', gap: 10,
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
-            <span style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,0.25)' }}>52</span>
-            <span style={{ fontSize: 12, color: '#4ade80' }}>→</span>
-            <span style={{ fontSize: 20, fontWeight: 800, color: '#4ade80' }}>84</span>
-          </div>
-          <div style={{ flex: 1 }}>
-            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.40)', lineHeight: 1.5, margin: 0 }}>
-              Priya S., VIT Vellore — similar score, same gaps.
-            </p>
-            <p style={{ fontSize: 11, color: '#4ade80', fontWeight: 600, margin: 0 }}>
-              Placed at TCS in 5 weeks.
-            </p>
-          </div>
-        </div>
-
-        {/* CTA */}
-        <Link
-          to="/start-assessment"
-          style={{
-            marginTop: '0.875rem',
-            display: 'block', width: '100%', boxSizing: 'border-box',
-            background: 'linear-gradient(135deg,#4f46e5,#6366f1)',
-            color: '#fff', border: 'none', borderRadius: 8,
-            padding: 11, fontSize: 13, fontWeight: 700,
-            textAlign: 'center', textDecoration: 'none',
-            transition: 'background 0.15s, transform 0.15s',
-            cursor: 'pointer',
-          }}
-          onMouseEnter={e => { e.currentTarget.style.background = '#4f46e5'; e.currentTarget.style.transform = 'scale(1.01)'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = 'linear-gradient(135deg,#4f46e5,#6366f1)'; e.currentTarget.style.transform = 'scale(1)'; }}
-        >
-          Get your actual score — free →
-        </Link>
-        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', textAlign: 'center', marginTop: 6 }}>
-          5 min · No signup · Instant result
-        </p>
-      </div>
-    </div>
-  );
-}
 
 /* ═══════════════════════════════════════════════════════════════
    MAIN COMPONENT
@@ -519,48 +253,33 @@ const HomePage = () => {
       `}</style>
       <WelcomePopup />
 
-      {/* ════════════════ URGENCY BANNER ════════════════ */}
-      <div className="bg-indigo-600/20 border-b border-indigo-500/20 py-2 px-4 text-center">
+      {/* ════════════════ ANNOUNCEMENT BANNER ════════════════ */}
+      <div className="bg-indigo-600/15 border-b border-indigo-500/20 py-2 px-4 text-center">
         <p className="text-xs text-indigo-300">
-          <span className="font-semibold">Next mentorship cohort starts April 5</span>
-          {' · '}Only 12 spots left{' · '}
-          <Link to="/mentors" className="underline hover:no-underline font-semibold">Reserve your spot →</Link>
+          <span className="font-semibold">Mentorship Programme · First batch starting April 2025</span>
+          {' · '}Limited seats per batch{' · '}
+          <Link to="/waitlist" className="underline hover:no-underline font-semibold">Join the waitlist →</Link>
         </p>
       </div>
 
       {/* ════════════════ HERO ════════════════ */}
       <section className="relative min-h-[92vh] flex items-center">
-        <div className="pointer-events-none absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-900/20 rounded-full blur-[120px]" />
+        <div className="pointer-events-none absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-900/15 rounded-full blur-[130px]" />
+        <div className="pointer-events-none absolute bottom-0 left-0 w-[400px] h-[400px] bg-violet-900/10 rounded-full blur-[100px]" />
 
-        <div className="relative max-w-7xl mx-auto px-6 pt-12 pb-10 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
+        <div className="relative max-w-7xl mx-auto px-6 pt-12 pb-10 grid lg:grid-cols-2 gap-10 lg:gap-14 items-start w-full">
 
           {/* ── Left: copy ── */}
           <div>
-
-            {/* Social proof avatars */}
+            {/* Eyebrow pill */}
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.5 }}
-              className="flex items-center gap-3 mb-6"
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="inline-flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full px-4 py-1.5 mb-6"
             >
-              <div className="flex -space-x-2">
-                {[
-                  'bg-indigo-500', 'bg-violet-500', 'bg-blue-500',
-                  'bg-purple-500', 'bg-teal-500',
-                ].map((bg, i) => (
-                  <div
-                    key={i}
-                    className={`w-8 h-8 rounded-full border-2 border-[#050b18] ${bg} flex items-center justify-center text-xs font-bold text-white`}
-                  >
-                    {['P', 'R', 'A', 'S', 'V'][i]}
-                  </div>
-                ))}
-              </div>
-              <div>
-                <p className="text-sm font-semibold text-violet-300 leading-none mb-0.5">2,400+ students</p>
-                <p className="text-xs text-slate-400">already tested their readiness</p>
-              </div>
+              <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse" />
+              <span className="text-xs font-semibold text-indigo-300 tracking-wide">Interview Readiness Platform for Engineering Students</span>
             </motion.div>
 
             {/* Headline */}
@@ -568,153 +287,283 @@ const HomePage = () => {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.05 }}
-              className="text-4xl md:text-5xl xl:text-[3.4rem] font-bold leading-[1.1] mb-4 tracking-tight"
+              className="text-4xl md:text-5xl xl:text-[3.2rem] font-black leading-[1.08] mb-5 tracking-tight"
             >
-              Your college taught you{' '}
-              <span className="text-indigo-400">to code.</span>
-              <br />
-              Nobody taught you{' '}
-              <span className="text-indigo-400">to get placed.</span>
+              Placement season is coming.{' '}
+              <br className="hidden sm:block" />
+              <span style={{
+                background: 'linear-gradient(90deg,#6366f1,#a78bfa)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+              }}>
+                Walk in prepared.
+              </span>
             </motion.h1>
 
-            {/* Outcome stat */}
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.12 }}
-              className="flex items-center gap-2 mb-4"
-            >
-              <span className="inline-block w-2 h-2 rounded-full bg-green-500 shrink-0" />
-              <p className="text-sm text-slate-300">
-                <span className="text-green-400 font-semibold">Students who complete mentorship get placed 3× faster.</span>
-                {' '}Average time to first offer: 6 weeks.
-              </p>
-            </motion.div>
-
-            {/* Sub-copy */}
+            {/* Hook sub-copy */}
             <motion.p
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.15 }}
-              className="text-lg text-slate-300 leading-relaxed mb-6 max-w-lg"
+              transition={{ duration: 0.6, delay: 0.12 }}
+              className="text-base text-slate-300 leading-relaxed mb-5 max-w-lg"
             >
-              {"You've been coding. Doing LeetCode. Watching YouTube. But do you actually know if you're ready? Get your personalized placement roadmap — free, in 3 minutes."}
+              <span className="text-white font-semibold">72% of engineering students fail their first campus interview</span>
+              {' — '}not from lack of knowledge, but from lack of interview practice. MentorMuni measures your readiness across every key area and shows you exactly where to focus your preparation.
             </motion.p>
 
-            {/* Trust lines — ABOVE the CTA */}
+            {/* 3 key points */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-slate-300 mb-6"
+              transition={{ delay: 0.18 }}
+              className="space-y-2.5 mb-6"
             >
-              <span className="flex items-center gap-1.5"><Check size={14} className="text-green-500" /> Free, always</span>
-              <span className="flex items-center gap-1.5"><Check size={14} className="text-green-500" /> No signup required</span>
-              <span className="flex items-center gap-1.5"><Check size={14} className="text-green-500" /> Takes under 3 minutes</span>
+              {[
+                'Interview performance is a practised skill — your college curriculum does not teach it',
+                'Competition has intensified — 15+ applicants per IT opening in 2025',
+                '75% of resumes are filtered by software before a recruiter ever reads them',
+              ].map(p => (
+                <div key={p} className="flex items-start gap-2.5">
+                  <span className="w-1 h-1 rounded-full bg-slate-500 shrink-0 mt-2" />
+                  <p className="text-sm text-slate-400 leading-snug">{p}</p>
+                </div>
+              ))}
+            </motion.div>
+
+            {/* Solution statement */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.22 }}
+              className="flex items-center gap-2 bg-green-500/8 border border-green-500/20 rounded-xl px-4 py-3 mb-6"
+            >
+              <span className="w-2 h-2 rounded-full bg-green-400 shrink-0" />
+              <p className="text-sm text-slate-300">
+                <span className="text-green-400 font-semibold">Students who identify their specific gaps prepare more effectively</span>
+                {' '}— and walk into interviews with measurable confidence.
+              </p>
             </motion.div>
 
             {/* CTAs */}
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.25 }}
-              className="flex flex-col sm:flex-row sm:items-center gap-3"
+              transition={{ duration: 0.6, delay: 0.28 }}
+              className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6"
             >
               <Link
                 to="/start-assessment"
-                className="group inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-base px-8 py-4 rounded-xl shadow-lg transition-all focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+                className="group inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-base px-8 py-4 rounded-xl shadow-lg shadow-indigo-500/20 transition-all"
               >
-                Check My Score — Free
+                Check My Interview Score — Free
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
                 to="/how-it-works"
-                className="text-slate-400 hover:text-white text-sm font-medium transition-colors flex items-center gap-1.5 px-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 rounded"
+                className="text-slate-400 hover:text-white text-sm font-medium transition-colors flex items-center gap-1.5 px-2 rounded"
               >
                 See how it works <ArrowRight size={14} />
               </Link>
             </motion.div>
 
-            {/* Company logos strip */}
+            {/* Trust strip */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.45 }}
-              className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-1"
+              transition={{ delay: 0.35 }}
+              className="flex flex-wrap items-center gap-x-5 gap-y-2"
             >
-              <span className="text-xs text-slate-600 whitespace-nowrap">Students placed at →</span>
-              {['TCS', 'Cognizant', 'Wipro', 'Infosys', 'Accenture', 'HCL'].map(c => (
-                <span key={c} className="text-xs text-slate-500 font-semibold whitespace-nowrap">{c}</span>
-              ))}
+              <div className="flex items-center gap-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full px-3 py-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                <span className="text-xs font-semibold text-indigo-300">Founding batch · Mentorship starting April 2025</span>
+              </div>
+              <div className="flex flex-wrap gap-x-4 gap-y-1">
+                {[
+                  { icon: '✓', text: 'Free always' },
+                  { icon: '✓', text: 'No signup' },
+                  { icon: '✓', text: '5 minutes' },
+                ].map(t => (
+                  <span key={t.text} className="text-[11px] text-slate-500 flex items-center gap-1">
+                    <span className="text-green-500">{t.icon}</span> {t.text}
+                  </span>
+                ))}
+              </div>
             </motion.div>
           </div>
 
-          {/* ── Right: score preview card ── */}
+          {/* ── Right: brand image ── */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
-            className="hidden lg:flex justify-end"
+            className="hidden lg:flex items-center justify-center w-full"
           >
-            <HeroScoreCard />
+            <img
+              src="/MentorMuni-React-Frontend/mentormuni-brand-banner-new.png"
+              alt="MentorMuni — Guiding Your Journey to Knowledge"
+              className="w-full rounded-2xl"
+              style={{ marginTop: 130, maxWidth: 442, boxShadow: '0 24px 64px rgba(0,0,0,0.45)' }}
+            />
           </motion.div>
-
         </div>
       </section>
 
-      {/* ════════════════ WHY STUDENTS FAIL ════════════════ */}
-      <section className="py-14 px-6">
+      {/* ════════════════ THE 2025 HIRING LANDSCAPE ════════════════ */}
+      <section className="py-14 px-6 border-t border-white/5">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <h2 className="text-2xl md:text-3xl font-bold mb-2">
-              Most students walk into interviews unprepared — and don't know it
+            <span className="text-xs font-bold text-amber-400 uppercase tracking-widest block mb-3">The 2025 Hiring Landscape</span>
+            <h2 className="text-2xl md:text-3xl font-black mb-3 leading-tight">
+              The placement environment has changed significantly.
+              <br />
+              <span className="text-amber-400">Preparation needs to change with it.</span>
             </h2>
-            <p className="text-slate-300 text-sm mb-10">
-              Not because they're bad at coding. Because nobody told them what "ready" actually looks like.
+            <p className="text-slate-400 text-sm mb-10 max-w-2xl leading-relaxed">
+              Understanding what has shifted in hiring over the last two years is essential to preparing effectively for placements in 2025.
             </p>
           </FadeUp>
 
-          <div className="grid md:grid-cols-3 gap-6 mb-10">
+          <div className="grid md:grid-cols-2 gap-5 mb-8">
             {[
               {
-                stat: '68%', color: 'text-red-400',
-                label: 'scored below 50 on their first test',
-                sub: 'They had been coding for 2+ years. The issue wasn\'t skill — it was never measuring themselves against what interviews actually ask.',
+                icon: '🤖', color: 'border-red-500/30 bg-red-500/5',
+                tagColor: 'text-red-400',
+                tag: 'Industry Shift',
+                title: 'Reduced entry-level hiring across IT sector',
+                body: "Automation has reduced entry-level headcount requirements at major IT firms. Fewer openings with the same pool of graduates means the selection bar has risen considerably.",
               },
               {
-                stat: '71%', color: 'text-amber-400',
-                label: 'froze during their first mock interview',
-                sub: 'Knew the answer sitting at home. Couldn\'t say it out loud under a timer. That\'s a different problem — and it\'s fixable.',
+                icon: '🧠', color: 'border-amber-500/30 bg-amber-500/5',
+                tagColor: 'text-amber-400',
+                tag: 'New Interview Criteria',
+                title: 'AI tool proficiency is now assessed in interviews',
+                body: "Questions around practical AI tool usage have become standard in technical rounds. Students who can demonstrate familiarity with tools like GitHub Copilot and ChatGPT in their workflow have a clear advantage.",
               },
               {
-                stat: '3 weeks', color: 'text-green-400',
-                label: 'average time to go from 45 → 75+ score',
-                sub: 'Not months of grinding. Three focused weeks, working on the right things. That\'s the difference a roadmap makes.',
+                icon: '👥', color: 'border-violet-500/30 bg-violet-500/5',
+                tagColor: 'text-violet-400',
+                tag: 'Increased Competition',
+                title: '15+ applicants per IT opening — up from 4:1 in 2022',
+                body: "The candidates clearing rounds today are not necessarily more talented. They have prepared more specifically — they identified their exact gaps and focused on those, rather than preparing broadly.",
+              },
+              {
+                icon: '📅', color: 'border-indigo-500/30 bg-indigo-500/5',
+                tagColor: 'text-indigo-400',
+                tag: 'Placement Cycle Reality',
+                title: 'Campus drives run in defined windows',
+                body: "Placement seasons at most colleges run October–December and February–April. Missing your preparation window means waiting months for the next cycle — making focused, timely preparation essential.",
               },
             ].map((item, i) => (
-              <FadeUp key={item.stat} delay={i * 0.08}>
-                <div className="bg-white/[0.03] border border-white/8 rounded-2xl p-6">
-                  <div className={`text-4xl font-bold mb-2 ${item.color}`}>{item.stat}</div>
-                  <p className="font-semibold text-white text-sm leading-snug mb-2">{item.label}</p>
-                  <p className="text-slate-500 text-xs leading-relaxed">{item.sub}</p>
+              <FadeUp key={item.title} delay={i * 0.07}>
+                <div className={`rounded-2xl border p-5 h-full ${item.color}`}>
+                  <div className="flex items-start gap-3">
+                    <span className="text-2xl mt-0.5">{item.icon}</span>
+                    <div>
+                      <span className={`text-[10px] font-bold uppercase tracking-widest ${item.tagColor} block mb-1`}>{item.tag}</span>
+                      <h3 className="text-white font-bold text-sm mb-2 leading-snug">{item.title}</h3>
+                      <p className="text-slate-400 text-xs leading-relaxed">{item.body}</p>
+                    </div>
+                  </div>
                 </div>
               </FadeUp>
             ))}
           </div>
 
-          <FadeUp delay={0.2}>
-            <div className="bg-indigo-950/40 border border-indigo-900/50 rounded-2xl p-6 flex flex-col md:flex-row items-start md:items-center gap-4">
-              <p className="flex-1 text-slate-300 text-sm leading-relaxed">
-                <span className="text-white font-semibold">The test takes 3 minutes. </span>
-                It tells you your score, where you're weak, and what to study first.
-                That's more useful than 3 months of random LeetCode.
-              </p>
-              <Link
-                to="/start-assessment"
-                className="flex-shrink-0 flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm"
-              >
-                Take the Test <ArrowRight size={15} />
+          <FadeUp delay={0.25}>
+            <div className="bg-[#0f1a30] border border-indigo-500/20 rounded-2xl p-5 flex flex-col md:flex-row items-start md:items-center gap-4">
+              <div className="flex-1">
+                <p className="text-white font-semibold text-sm mb-1">Students who perform well in placements prepare with a clear plan, not just effort.</p>
+                <p className="text-slate-400 text-xs leading-relaxed">They measure their readiness first, identify specific gaps, and fix those gaps systematically — with guidance from mentors who understand the exact interviews they are facing.</p>
+              </div>
+              <Link to="/start-assessment" className="flex-shrink-0 flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm">
+                Check My Readiness <ArrowRight size={14} />
               </Link>
+            </div>
+          </FadeUp>
+        </div>
+      </section>
+
+      {/* ════════════════ THE PLACEMENT GAP ════════════════ */}
+      <section className="py-14 px-6 border-t border-white/5">
+        <div className="max-w-5xl mx-auto">
+          <FadeUp>
+            <span className="text-xs font-bold text-red-400 uppercase tracking-widest block mb-3">Understanding the Placement Gap</span>
+            <h2 className="text-2xl md:text-3xl font-black mb-2 leading-tight">
+              Strong academics. Struggling interviews.
+              <br /><span className="text-slate-400 font-normal text-xl">Why interview preparation is a distinct skill.</span>
+            </h2>
+            <p className="text-slate-400 text-sm mb-10 max-w-2xl leading-relaxed">
+              College examinations and placement interviews assess very different abilities. Students who prepare for each separately perform significantly better in both.
+            </p>
+          </FadeUp>
+
+          <div className="grid md:grid-cols-3 gap-5 mb-10">
+            {[
+              {
+                stat: '60%+', color: 'text-red-400', statBg: 'bg-red-500/8 border-red-500/15',
+                label: 'of engineering freshers fail their first campus interview',
+                sub: "NASSCOM 2024 hiring report. College tests memory under controlled conditions. Interviews test thinking under pressure with a stranger watching — a completely different skill.",
+              },
+              {
+                stat: '1 in 3', color: 'text-amber-400', statBg: 'bg-amber-500/8 border-amber-500/15',
+                label: 'campus students say they froze when they knew the answer',
+                sub: "Saying an answer out loud to a timer is different from knowing it in your head. Most students have never once practiced answering a technical question aloud before their first real interview.",
+              },
+              {
+                stat: '15:1', color: 'text-green-400', statBg: 'bg-green-500/8 border-green-500/15',
+                label: 'applicants per IT opening in 2025 — up from 4:1 in 2022',
+                sub: "LinkedIn 2024 India Jobs Report. The candidates who clear rounds aren't smarter. They prepared specifically — they knew their score and exactly what to fix.",
+              },
+            ].map((item, i) => (
+              <FadeUp key={item.stat} delay={i * 0.08}>
+                <div className="bg-[#0f1a30] border border-white/8 rounded-2xl p-6 h-full flex flex-col">
+                  <div className={`inline-block border rounded-xl px-3 py-1.5 mb-4 ${item.statBg}`}>
+                    <span className={`text-3xl font-black ${item.color}`}>{item.stat}</span>
+                  </div>
+                  <p className="font-bold text-white text-sm leading-snug mb-2">{item.label}</p>
+                  <p className="text-slate-500 text-xs leading-relaxed flex-1">{item.sub}</p>
+                </div>
+              </FadeUp>
+            ))}
+          </div>
+
+          {/* Side-by-side comparison */}
+          <FadeUp delay={0.2}>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="bg-red-500/5 border border-red-500/20 rounded-2xl p-5">
+                <p className="text-xs font-bold text-red-400 uppercase tracking-widest mb-3">The unprepared student</p>
+                <div className="space-y-2">
+                  {[
+                    'Did LeetCode randomly — no pattern, no strategy',
+                    'Never said an answer out loud under time pressure',
+                    'Resume written in final year, never ATS-tested',
+                    "Can't explain what they built in their projects clearly",
+                    "Answers 'why this company?' with the company website copy",
+                  ].map(p => (
+                    <div key={p} className="flex items-start gap-2">
+                      <X size={12} className="text-red-400 mt-0.5 shrink-0" />
+                      <span className="text-xs text-slate-400 leading-snug">{p}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="bg-green-500/5 border border-green-500/20 rounded-2xl p-5">
+                <p className="text-xs font-bold text-green-400 uppercase tracking-widest mb-3">The placed student</p>
+                <div className="space-y-2">
+                  {[
+                    'Took a readiness test — knew their exact score and gaps',
+                    'Did 15+ mock interviews out loud, with feedback',
+                    'Resume scored 85+ on ATS — every line had a reason',
+                    'Practiced STAR answers for every project they listed',
+                    'Knew each company\'s specific interview pattern beforehand',
+                  ].map(p => (
+                    <div key={p} className="flex items-start gap-2">
+                      <Check size={12} className="text-green-400 mt-0.5 shrink-0" />
+                      <span className="text-xs text-slate-400 leading-snug">{p}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
           </FadeUp>
         </div>
@@ -724,53 +573,62 @@ const HomePage = () => {
       <section className="py-14 px-6 border-t border-white/5">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <h2 className="text-2xl md:text-3xl font-bold mb-2">What you actually get</h2>
-            <p className="text-slate-300 text-sm mb-10 max-w-xl">
-              No video lectures to watch. No random quizzes. Tools that point directly at your gaps and help you close them.
+            <span className="text-xs font-bold text-indigo-400 uppercase tracking-widest block mb-3">What MentorMuni gives you</span>
+            <h2 className="text-2xl md:text-3xl font-black mb-2">Four tools. One goal: get you placed.</h2>
+            <p className="text-slate-400 text-sm mb-10 max-w-xl leading-relaxed">
+              No video lectures. No random quizzes. Every tool targets a specific gap between where you are and where you need to be.
             </p>
           </FadeUp>
           <div className="grid md:grid-cols-2 gap-5">
             {FEATURES.map((f, i) => (
               <FadeUp key={f.title} delay={i * 0.07}>
-                <div className="group flex gap-5 bg-white/[0.025] border border-white/8 rounded-2xl p-6 hover:border-white/15 transition-all">
-                  <div className="w-10 h-10 bg-indigo-600/20 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-indigo-600/30 transition-colors mt-0.5">
+                <div className="group flex gap-4 bg-[#0f1a30] border border-white/8 rounded-2xl p-6 hover:border-indigo-500/30 transition-all h-full">
+                  <div className="w-10 h-10 bg-indigo-600/15 border border-indigo-500/20 rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-indigo-600/25 transition-colors mt-0.5">
                     <f.Icon size={18} className="text-indigo-400" />
                   </div>
-                  <div>
-                    <h3 className="font-semibold text-white text-sm mb-1.5">{f.title}</h3>
-                    <p className="text-slate-300 text-sm leading-relaxed">{f.desc}</p>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                      <h3 className="font-bold text-white text-sm">{f.title}</h3>
+                      <span className="text-[9px] font-bold text-indigo-400 bg-indigo-500/10 border border-indigo-500/20 rounded px-1.5 py-0.5 uppercase tracking-wider">{f.tag}</span>
+                    </div>
+                    <p className="text-slate-400 text-xs leading-relaxed mb-2">{f.desc}</p>
+                    <span className="text-[10px] font-semibold text-green-400">{f.highlight}</span>
                   </div>
                 </div>
               </FadeUp>
             ))}
           </div>
+          <FadeUp delay={0.3}>
+            <div className="mt-6 text-center">
+              <Link to="/start-assessment" className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-7 py-3.5 rounded-xl transition-colors text-sm shadow-lg shadow-indigo-500/20">
+                Start with the free readiness test <ArrowRight size={15} />
+              </Link>
+              <p className="text-xs text-slate-600 mt-2">No signup · 5 minutes · Instant score</p>
+            </div>
+          </FadeUp>
         </div>
       </section>
 
-      {/* ════════════════ TESTIMONIALS ════════════════ */}
+      {/* ════════════════ STUDENT FEEDBACK ════════════════ */}
       <section className="py-14 px-6 border-t border-white/5">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <h2 className="text-2xl md:text-3xl font-bold mb-1">Students who were exactly where you are</h2>
-            <p className="text-slate-300 text-sm mb-10">Low scores, no idea what to fix, placement season coming. Here's what happened.</p>
+            <span className="text-xs font-bold text-violet-400 uppercase tracking-widest block mb-3">Student Experiences</span>
+            <h2 className="text-2xl md:text-3xl font-black mb-3">What students discover from the assessment.</h2>
+            <p className="text-slate-400 text-sm mb-10 max-w-2xl leading-relaxed">
+              Feedback from students who completed the Interview Readiness Assessment. Names withheld on request.
+            </p>
           </FadeUp>
           <div className="grid md:grid-cols-3 gap-5">
-            {TESTIMONIALS.map((t, i) => (
-              <FadeUp key={t.name} delay={i * 0.08}>
-                <div className="h-full flex flex-col bg-[#0f1a30] border border-white/8 rounded-2xl overflow-hidden">
-                  <div className="px-5 pt-5 pb-4 border-b border-white/5 flex items-center gap-3">
-                    <div className="flex items-center gap-2 text-xs">
-                      <span className="bg-red-500/15 text-red-400 font-semibold px-2 py-1 rounded-md">{t.before}/100</span>
-                      <span className="text-slate-600">→</span>
-                      <span className="bg-green-500/15 text-green-400 font-semibold px-2 py-1 rounded-md">{t.after}/100</span>
-                    </div>
-                    <span className="ml-auto text-xs text-indigo-400 font-medium">✓ {t.placed}</span>
-                  </div>
+            {BETA_FEEDBACK.map((t, i) => (
+              <FadeUp key={i} delay={i * 0.08}>
+                <div className="h-full flex flex-col bg-[#0f1a30] border border-white/8 rounded-2xl overflow-hidden hover:border-white/15 transition-all">
                   <div className="px-5 py-4 flex-1">
-                    <p className="text-slate-300 text-sm leading-relaxed">"{t.quote}"</p>
+                    <p className="text-slate-300 text-sm leading-relaxed italic mb-4">"{t.quote}"</p>
                   </div>
-                  <div className="px-5 pb-4">
-                    <p className="font-semibold text-white text-sm">{t.name}<span className="text-slate-500 font-normal">, {t.college}</span></p>
+                  <div className="px-5 pb-5 flex items-center gap-2.5 border-t border-white/5 pt-3">
+                    <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold text-white shrink-0" style={{ background: t.bg }}>{t.avatar}</div>
+                    <p className="text-slate-400 text-xs font-medium">{t.tag}</p>
                   </div>
                 </div>
               </FadeUp>
@@ -779,105 +637,111 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ════════════════ REAL MENTORS ════════════════ */}
+      {/* ════════════════ MENTORS — INDUSTRY EXPERTS ════════════════ */}
       <section className="py-14 px-6 border-t border-white/5">
-        <div className="max-w-5xl mx-auto grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          <FadeUp>
-            <h2 className="text-2xl md:text-3xl font-bold mb-3">
-              The AI tells you what's wrong.<br />A mentor helps you actually fix it.
-            </h2>
-            <p className="text-slate-300 leading-relaxed mb-6 text-sm">
-              Scores and roadmaps are useful. But sometimes you need someone who's been through the
-              same interviews to tell you — "here's why you're freezing, here's what the interviewer
-              actually wanted, here's how I'd answer that."
-            </p>
-            <div className="space-y-4 mb-7">
-              {[
-                { Icon: MessageSquare, title: 'Talk through your score with a real person', desc: "Not a bot. Someone who looks at your result and tells you where to focus." },
-                { Icon: Target, title: "Prep for the companies you're targeting", desc: 'TCS, Cognizant, Wipro, Infosys — each recruits differently. Your mentor knows the pattern.' },
-                { Icon: Trophy, title: 'Get your resume actually reviewed', desc: "Most resume feedback is generic. This is specific: this line is weak, add this, remove that." },
-              ].map(item => (
-                <div key={item.title} className="flex gap-3 items-start">
-                  <div className="w-8 h-8 bg-white/5 border border-white/8 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <item.Icon size={14} className="text-slate-400" />
-                  </div>
-                  <div>
-                    <p className="font-medium text-white text-sm mb-0.5">{item.title}</p>
-                    <p className="text-slate-500 text-xs leading-relaxed">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <Link
-              to="/mentors"
-              className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-6 py-3 rounded-xl transition-colors text-sm"
-            >
-              Book a free session <ArrowRight size={15} />
-            </Link>
-          </FadeUp>
-
-          <FadeUp delay={0.12}>
-            <div>
-              <p className="text-xs text-slate-500 uppercase tracking-wider mb-4 font-medium">Meet your mentors</p>
-              <div className="space-y-3">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
+            <FadeUp>
+              <span className="text-xs font-bold text-amber-400 uppercase tracking-widest block mb-3">Expert Mentorship</span>
+              <h2 className="text-2xl md:text-3xl font-black mb-3 leading-tight">
+                Mentors with 12–15 years<br />
+                <span className="text-amber-400">of industry experience.</span>
+              </h2>
+              <p className="text-slate-400 leading-relaxed mb-6 text-sm">
+                Our mentors are senior engineers and tech leads from India's leading IT companies with over a decade of industry experience. They have conducted hundreds of interviews — and bring that perspective directly to your preparation.
+              </p>
+              <div className="space-y-4 mb-7">
                 {[
-                  { init: 'S', bg: 'bg-indigo-500', name: 'Saurabh K.', role: 'Software Engineer', company: 'Infosys · Ex-Cognizant', note: 'Helped 40+ students crack service-based company rounds' },
-                  { init: 'M', bg: 'bg-violet-500', name: 'Meera R.', role: 'Technical Lead', company: 'Wipro · 6 yrs exp', note: 'Specialises in DSA, System Design, and HR prep' },
-                  { init: 'A', bg: 'bg-blue-500', name: 'Arjun P.', role: 'Placement Mentor', company: 'Ex-TCS Digital', note: 'Cleared TCS Digital, Ninja, and Cognizant GenC in the same season' },
-                  { init: 'D', bg: 'bg-teal-500', name: 'Divya S.', role: 'Senior Analyst', company: 'Accenture · 4 yrs exp', note: 'Resume reviews and mock interviews — 35+ students placed' },
-                ].map(m => (
-                  <div key={m.name} className="flex items-start gap-3.5 bg-white/[0.03] border border-white/8 rounded-xl p-4">
-                    <div className={`w-10 h-10 rounded-full ${m.bg} flex items-center justify-center text-sm font-bold text-white shrink-0`}>
-                      {m.init}
+                  { Icon: Brain, title: 'They know what the interviewer is actually testing', desc: "After 12+ years, they've conducted hundreds of interviews. They'll tell you exactly what an answer needs — not what sounds good." },
+                  { Icon: Cpu, title: 'They teach AI tools in real workflows', desc: 'Our mentors use GitHub Copilot, ChatGPT, and Claude daily. They teach you not just how to use these tools but how to talk about them in interviews — a skill most freshers completely lack.' },
+                  { Icon: Target, title: 'Company-specific pattern knowledge', desc: 'TCS Digital vs TCS NQT. Cognizant GenC vs GenC Pro. Infosys SP vs DSP. Each track asks different things. Your mentor knows them all.' },
+                ].map(item => (
+                  <div key={item.title} className="flex gap-3 items-start">
+                    <div className="w-8 h-8 bg-amber-500/10 border border-amber-500/20 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <item.Icon size={14} className="text-amber-400" />
                     </div>
-                    <div className="min-w-0">
-                      <div className="flex items-baseline gap-2 mb-0.5">
-                        <p className="text-sm font-semibold text-white">{m.name}</p>
-                        <p className="text-xs text-slate-500 truncate">{m.company}</p>
-                      </div>
-                      <p className="text-xs text-slate-500 leading-relaxed">{m.note}</p>
+                    <div>
+                      <p className="font-bold text-white text-sm mb-0.5">{item.title}</p>
+                      <p className="text-slate-500 text-xs leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 ))}
               </div>
-              <div className="mt-4 pt-4 border-t border-white/5 flex items-center justify-between">
-                <p className="text-xs text-slate-600">First session free · Cancel anytime</p>
-                <Link to="/mentors" className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 rounded">
-                  Book a session →
+              <Link to="/mentors" className="inline-flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm">
+                Meet the mentors <ArrowRight size={15} />
+              </Link>
+            </FadeUp>
+
+            <FadeUp delay={0.12}>
+              <p className="text-xs text-slate-500 uppercase tracking-wider mb-4 font-medium">What we look for in every mentor</p>
+
+              {/* Mentor criteria — honest, no fake profiles */}
+              <div className="space-y-3 mb-5">
+                {[
+                  { icon: '🏢', label: '10–15 years in the industry', desc: 'Senior engineers and tech leads, not freshers. They have been the interviewer, not just the interviewee.' },
+                  { icon: '🎯', label: 'Conducted 100+ interviews themselves', desc: 'They know exactly what interviewers are looking for — because they\'ve been on that side of the table.' },
+                  { icon: '🤖', label: 'Actively using AI tools in current role', desc: 'GitHub Copilot, ChatGPT, Cursor — daily. They teach you to use and talk about AI the way interviewers in 2025 expect.' },
+                  { icon: '📱', label: 'WhatsApp access throughout', desc: 'Not just during sessions. Reachable for quick doubts, mock Q&A, and morale support all week.' },
+                ].map(c => (
+                  <div key={c.label} className="flex gap-3 items-start bg-[#0f1a30] border border-white/8 rounded-xl p-3.5">
+                    <span className="text-lg mt-0.5">{c.icon}</span>
+                    <div>
+                      <p className="text-sm font-bold text-white mb-0.5">{c.label}</p>
+                      <p className="text-xs text-slate-500 leading-relaxed">{c.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Honest launch notice */}
+              <div className="bg-amber-500/8 border border-amber-500/20 rounded-xl p-4">
+                <p className="text-xs font-bold text-amber-400 mb-1">✦ Mentor cohort launching April 2025</p>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  We're currently onboarding mentors. Join the waitlist — you'll be matched with a mentor based on your assessment score the moment we go live.
+                </p>
+                <Link to="/waitlist" className="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">
+                  Join the waitlist → <ArrowRight size={11} />
                 </Link>
               </div>
-            </div>
-          </FadeUp>
+            </FadeUp>
+          </div>
         </div>
       </section>
 
       {/* ════════════════ FINAL CTA ════════════════ */}
-      <section className="py-14 px-6 border-t border-white/5">
+      <section className="py-16 px-6 border-t border-white/5">
         <div className="max-w-2xl mx-auto text-center">
           <FadeUp>
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 leading-tight">
-              You won't know where you stand<br />
-              <span className="text-indigo-400">until you actually check.</span>
+            <span className="text-xs font-bold text-green-400 uppercase tracking-widest block mb-4">Free · 5 Minutes · Instant Result</span>
+            <h2 className="text-3xl md:text-4xl font-black mb-4 leading-tight">
+              Know your readiness score.
+              <br />
+              <span className="text-indigo-400">Walk into your interview prepared.</span>
             </h2>
-            <p className="text-slate-400 mb-8 leading-relaxed text-sm">
-              Takes 3 minutes. If the score is good — you'll interview with confidence.
-              If it's low — better you find out now than the interviewer does first.
+            <p className="text-slate-400 mb-8 leading-relaxed text-sm max-w-lg mx-auto">
+              A strong score means you walk in with confidence. A low score gives you a clear, prioritised plan to improve — with enough time before your placement season to act on it.
             </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
               <Link
                 to="/start-assessment"
-                className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-8 py-3.5 rounded-xl shadow-lg transition-all text-sm"
+                className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-8 py-4 rounded-xl shadow-lg shadow-indigo-500/20 transition-all text-sm"
               >
-                Check My Score — It's Free <ArrowRight size={16} />
+                Check My Interview Score — Free <ArrowRight size={16} />
               </Link>
               <Link
-                to="/mentors"
-                className="flex items-center justify-center gap-2 border border-white/12 hover:border-white/25 hover:bg-white/5 text-slate-300 hover:text-white font-medium px-7 py-3.5 rounded-xl transition-all text-sm"
+                to="/waitlist"
+                className="flex items-center justify-center gap-2 border border-white/12 hover:border-white/25 hover:bg-white/5 text-slate-300 hover:text-white font-medium px-7 py-4 rounded-xl transition-all text-sm"
               >
-                See how it works →
+                Join the mentorship waitlist
               </Link>
             </div>
-            <p className="text-xs text-slate-600 mt-4">No signup needed · Free forever · 3 minutes</p>
+            <div className="flex flex-wrap justify-center gap-x-5 gap-y-1">
+              {['No signup needed', 'Free forever', '5 min test', 'Instant score + roadmap'].map(t => (
+                <span key={t} className="flex items-center gap-1 text-xs text-slate-600">
+                  <Check size={10} className="text-green-500" /> {t}
+                </span>
+              ))}
+            </div>
           </FadeUp>
         </div>
       </section>

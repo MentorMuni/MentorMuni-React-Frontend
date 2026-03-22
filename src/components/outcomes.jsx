@@ -62,10 +62,7 @@ function FeedbackCard({ quote, initial, avBg, name, tag }) {
         }}>
           {initial}
         </div>
-        <div>
-          <p style={{ fontWeight: 600, fontSize: 14, color: '#fff', marginBottom: 2 }}>{name}</p>
-          <p style={{ fontSize: 12, color: '#4ade80', fontWeight: 500 }}>{tag}</p>
-        </div>
+        <p style={{ fontWeight: 600, fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>{name}</p>
       </div>
     </div>
   );
@@ -275,24 +272,19 @@ export default function SuccessStories() {
       <section style={{ padding: '0 24px 72px' }}>
         <div style={{ maxWidth: 820, margin: '0 auto' }}>
           <div ref={feedbackRef} style={REVEAL_BASE}>
-            <SectionLabel>Early feedback from beta users</SectionLabel>
+            <SectionLabel>What students experience</SectionLabel>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16, marginBottom: 16 }} className="ss-2col">
               <FeedbackCard
                 quote="I did 3 AI mock interviews and the feedback was more specific than anything I got from seniors. It told me exactly which answers were weak and why."
                 initial="V" avBg="#4f46e5"
-                name="4th year student"
-                tag="Beta user · VIT Vellore"
+                name="4th Year · CSE"
               />
               <FeedbackCard
                 quote="The gap analysis showed me System Design was my blind spot. Three weeks of focused prep and I can now explain load balancing clearly in an interview."
                 initial="R" avBg="#0891b2"
-                name="Final year student"
-                tag="Beta user · NIT Trichy"
+                name="Final Year · IT"
               />
             </div>
-            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.30)', textAlign: 'center' }}>
-              Names withheld at students' request · Real feedback from beta users · Placement outcomes in progress
-            </p>
           </div>
         </div>
       </section>
@@ -326,10 +318,9 @@ export default function SuccessStories() {
             Our commitment to every founding student
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-            <CommitRow bold="Money-back guarantee —" rest=" complete the programme, don't get placed, full refund." />
             <CommitRow bold="Mentor matched in 24 hours" rest=" based on your exact score and role." />
             <CommitRow bold="WhatsApp access throughout —" rest=" reachable all week, not just in sessions." />
-            <CommitRow bold="Support until you're placed —" rest=" we don't stop at end of programme." />
+            <CommitRow bold="Full support until you're placed —" rest=" mentorship continues until you receive your offer." />
             <CommitRow bold="Your story featured here —" rest=" when placed, your journey goes on this page." />
           </div>
         </div>

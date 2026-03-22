@@ -198,13 +198,13 @@ const TIMELINE_STEPS = [
 ];
 
 const TEASER_CARDS = [
-  { initials: 'RS', avColor: 'rgba(99,102,241,0.4)', name: 'R. Sharma', role: 'Software Engineer', badge: 'TCS · DSA · Java', stat: '23 students · 91% placed', lockMsg: 'Take the assessment to unlock your match' },
-  { initials: 'PK', avColor: 'rgba(8,145,178,0.4)', name: 'P. Kulkarni', role: 'Frontend Developer', badge: 'Infosys · React · JS', stat: '18 students · 88% placed', lockMsg: 'Score 60–80 unlocks this mentor match' },
-  { initials: 'AM', avColor: 'rgba(21,128,61,0.4)', name: 'A. Mehta', role: 'Backend Engineer', badge: 'Wipro · .NET · SQL', stat: '31 students · 94% placed', lockMsg: 'Score 80+ unlocks senior mentor match' },
+  { initials: 'RS', avColor: 'rgba(99,102,241,0.4)', name: 'Mentor A', role: 'Software Engineer', badge: 'Service sector · DSA · Java', stat: '12+ yrs industry exp', lockMsg: 'Take the assessment to unlock your match' },
+  { initials: 'PK', avColor: 'rgba(8,145,178,0.4)', name: 'Mentor B', role: 'Frontend Developer', badge: 'Product company · React · JS', stat: '10+ yrs industry exp', lockMsg: 'Score 60–80 unlocks this mentor match' },
+  { initials: 'AM', avColor: 'rgba(21,128,61,0.4)', name: 'Mentor C', role: 'Backend Engineer', badge: 'Service sector · .NET · SQL', stat: '15+ yrs industry exp', lockMsg: 'Score 80+ unlocks senior mentor match' },
 ];
 
 const FEATURE_CARDS = [
-  { icon: '🎓', title: 'Was a fresher — recently', body: 'Every mentor cracked their first placement in the last 1–3 years. They know exactly what\'s changed in interviews.' },
+  { icon: '🏢', title: '10–15 years in the industry', body: 'Our mentors are senior engineers and tech leads. They\'ve been the interviewer — so they know exactly what the panel is actually evaluating.' },
   { icon: '📊', title: 'Sees your score first', body: 'Your gap report is shared before session one. No wasted time — they arrive with a plan already built.' },
   { icon: '💬', title: 'WhatsApp throughout', body: 'Not just 1-hour sessions. Reachable on WhatsApp for quick doubts, mock Q&A, and morale support.' },
   { icon: '🏆', title: 'Stays till you\'re placed', body: "Your mentor's job isn't done at end of programme — they stay through offers, follow-ups, and negotiations." },
