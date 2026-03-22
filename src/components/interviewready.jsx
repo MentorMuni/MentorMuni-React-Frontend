@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { AlertCircle, CheckCircle, ChevronRight, Lock, Mail, Phone, Check, Zap, ShieldCheck, Map, ArrowRight, Users, Star, Clock } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { API_BASE } from '../config';
 import AIAnalysisLoader from './AIAnalysisLoader';
 import FreeUsageCounter, { useFreeUsageTracker } from './FreeUsageCounter';
 import UpgradePromptModal from './UpgradePromptModal';
 const FREE_TIER_LIMIT = 1;
+
+/** HashRouter: #/start-assessment?entry=tools */
+function readToolsEntryFromHash() {
+  if (typeof window === 'undefined') return false;
+  try {
+    const h = window.location.hash || '';
+    const qi = h.indexOf('?');
+    if (qi === -1) return false;
+    return new URLSearchParams(h.slice(qi + 1)).get('entry') === 'tools';
+  } catch {
+    return false;
+  }
+}
 
 const InputField = ({ label, type, name, value, onChange, placeholder, error, maxLength, showCharCount }) => (
   <div className="space-y-2">
@@ -60,10 +73,15 @@ const InputField = ({ label, type, name, value, onChange, placeholder, error, ma
 );
 
 const InterviewReady = () => {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [fromToolsEntry] = useState(() => readToolsEntryFromHash());
+
   // Initialize free usage tracker and modal
   const { incrementUsage, getUsageInfo } = useFreeUsageTracker('interview_readiness');
-  
-  const [step, setStep] = useState(0); // 0: landing, 2: role, 3: tech stack, 4: quiz, 5: results, 1: contact-save (post-results), 6: auth-check, 7: signup/signin, 8: payment-plans
+
+  // 0: landing, 2: role, … — skip landing when opened from Tools (?entry=tools)
+  const [step, setStep] = useState(() => (readToolsEntryFromHash() ? 2 : 0));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
@@ -120,6 +138,13 @@ const InterviewReady = () => {
   useEffect(() => {
     checkBackendHealth();
   }, []);
+
+  // Client navigation to ?entry=tools after mount (e.g. in-app link)
+  useEffect(() => {
+    if (searchParams.get('entry') === 'tools') {
+      setStep((s) => (s === 0 ? 2 : s));
+    }
+  }, [searchParams]);
 
   const checkBackendHealth = async () => {
     try {
@@ -769,7 +794,7 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen bg-[#050b18] py-10 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-[#0f1a30] border border-white/8 rounded-3xl shadow-2xl p-8 md:p-10">
+          <div className="bg-[#0f1a30] rounded-3xl shadow-2xl p-8 md:p-10 border border-white/8">
 
             {/* ── Progress bar ── */}
             <div className="mb-8">
@@ -839,7 +864,7 @@ const InterviewReady = () => {
             <div className="flex gap-3">
               <button
                 type="button"
-                onClick={() => setStep(0)}
+                onClick={() => (fromToolsEntry ? navigate('/interview-readiness-tools') : setStep(0))}
                 className="px-6 py-3 font-bold text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all border border-white/8 hover:border-white/20 text-sm"
               >
                 ← Back

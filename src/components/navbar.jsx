@@ -1,15 +1,62 @@
-import React, { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Menu, X, ChevronDown, BarChart2, Mic, FileSearch, Cpu } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
+
+const TOOLS = [
+  {
+    icon: BarChart2,
+    color: 'text-indigo-400',
+    bg: 'bg-indigo-500/10',
+    title: 'Interview Readiness Score',
+    desc: 'Get your score across DSA, System Design & HR',
+    href: '/interview-readiness-tools',
+  },
+  {
+    icon: Mic,
+    color: 'text-violet-400',
+    bg: 'bg-violet-500/10',
+    title: 'AI Mock Interviews',
+    desc: 'Practice with real-time AI interviewer feedback',
+    href: '/mock-interviews',
+  },
+  {
+    icon: FileSearch,
+    color: 'text-pink-400',
+    bg: 'bg-pink-500/10',
+    title: 'Resume ATS Checker',
+    desc: 'See your ATS score and fix what gets you filtered',
+    href: '/resume-analyzer',
+  },
+  {
+    icon: Cpu,
+    color: 'text-amber-400',
+    bg: 'bg-amber-500/10',
+    title: 'AI Tools Knowledge Base',
+    desc: 'Learn GitHub Copilot, ChatGPT & Cursor for interviews',
+    href: '/ai-tools',
+  },
+];
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [toolsOpen, setToolsOpen] = useState(false);
+  const toolsRef = useRef(null);
   const location = useLocation();
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (toolsRef.current && !toolsRef.current.contains(e.target)) {
+        setToolsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const navItems = [
     { label: 'How It Works', path: '/how-it-works', exact: false },
     { label: 'Mentors', path: '/mentors', exact: false },
-    { label: 'Success Stories', path: '/success-stories', exact: false },
+    { label: 'Outcomes', path: '/outcomes', exact: false },
   ];
 
   // Check if a nav item is active
@@ -94,6 +141,54 @@ const Navbar = () => {
                 {item.label}
               </Link>
             ))}
+
+            {/* Tools dropdown */}
+            <div ref={toolsRef} className="relative">
+              <button
+                onClick={() => setToolsOpen(v => !v)}
+                className={`flex items-center gap-1 px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
+                  toolsOpen ? 'text-indigo-300 bg-indigo-500/15 border border-indigo-500/30' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                }`}
+              >
+                Tools
+                <ChevronDown size={14} className={`transition-transform duration-200 ${toolsOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {toolsOpen && (
+                <div className="absolute top-full left-0 mt-2 w-72 rounded-xl border border-indigo-500/20 bg-[#0b1120]/98 backdrop-blur-xl shadow-2xl shadow-black/50 overflow-hidden z-50">
+                  <div className="p-2">
+                    {TOOLS.map((tool) => {
+                      const Icon = tool.icon;
+                      return (
+                        <Link
+                          key={tool.href}
+                          to={tool.href}
+                          onClick={() => setToolsOpen(false)}
+                          className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition-colors group"
+                        >
+                          <span className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${tool.bg}`}>
+                            <Icon size={15} className={tool.color} />
+                          </span>
+                          <span>
+                            <span className="block text-sm font-semibold text-white group-hover:text-indigo-300 transition-colors">{tool.title}</span>
+                            <span className="block text-xs text-slate-500 leading-snug mt-0.5">{tool.desc}</span>
+                          </span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                  <div className="border-t border-white/5 px-4 py-2.5 bg-indigo-500/5">
+                    <Link
+                      to="/interview-readiness-tools"
+                      onClick={() => setToolsOpen(false)}
+                      className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
+                    >
+                      Start with a free readiness check →
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* Waitlist + primary CTA (Desktop) */}
@@ -161,6 +256,27 @@ const Navbar = () => {
                   {item.label}
                 </Link>
               ))}
+
+              {/* Tools section */}
+              <div className="border-t border-slate-700 my-2 pt-2">
+                <p className="px-4 py-1 text-xs font-bold text-slate-500 uppercase tracking-widest">Tools</p>
+                {TOOLS.map((tool) => {
+                  const Icon = tool.icon;
+                  return (
+                    <Link
+                      key={tool.href}
+                      to={tool.href}
+                      onClick={handleNavClick}
+                      className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all"
+                    >
+                      <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${tool.bg}`}>
+                        <Icon size={13} className={tool.color} />
+                      </span>
+                      <span className="text-sm font-semibold">{tool.title}</span>
+                    </Link>
+                  );
+                })}
+              </div>
 
               {/* Divider */}
               <div className="border-t border-slate-700 my-2"></div>

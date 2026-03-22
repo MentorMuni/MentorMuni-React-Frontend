@@ -33,7 +33,7 @@ export default function SuccessStoriesCards() {
     <section className="py-20 md:py-28 px-6 bg-white">
       <div className="max-w-6xl mx-auto">
         <h2 className="font-display text-3xl md:text-4xl font-bold text-slate-900 text-center mb-4">
-          Student Success Stories
+          Outcomes
         </h2>
         <p className="text-slate-600 text-center text-lg max-w-2xl mx-auto mb-16">
           Real students. Real placements. Real results.

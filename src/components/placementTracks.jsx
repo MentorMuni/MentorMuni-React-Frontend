@@ -114,12 +114,6 @@ const PlacementTracks = () => {
       <div className="max-w-6xl mx-auto px-6 py-20">
         {!showCurriculum ? (
           <>
-            <a 
-              href="/learning-paths"
-              className="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 font-semibold mb-8 transition-colors"
-            >
-              ← Back to Learning Paths
-            </a>
             <div className="text-center mb-16">
               <h1 className="text-5xl md:text-6xl font-black mb-4">Placement Tracks</h1>
               <p className="text-xl text-slate-300">

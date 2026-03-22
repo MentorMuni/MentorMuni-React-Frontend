@@ -920,7 +920,7 @@ const HomePage = () => {
                 <li><Link to="/free-tutorials" className="hover:text-slate-300 transition-colors">Free Tutorials</Link></li>
                 <li><Link to="/learning-paths" className="hover:text-slate-300 transition-colors">Learning Paths</Link></li>
                 <li><Link to="/placement-tracks" className="hover:text-slate-300 transition-colors">Placement Tracks</Link></li>
-                <li><Link to="/success-stories" className="hover:text-slate-300 transition-colors">Success Stories</Link></li>
+                <li><Link to="/outcomes" className="hover:text-slate-300 transition-colors">Outcomes</Link></li>
               </ul>
             </div>
             <div>

@@ -43,7 +43,7 @@ const SuccessStories = () => {
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-            Student Success Stories
+            Outcomes
           </h2>
           <p className="text-lg text-slate-300 max-w-2xl mx-auto">
             Real students, real transformations, real results. See how MentorMuni helped them break into tech.

@@ -1,238 +1,437 @@
-import React, { useState, useEffect } from 'react'
-import { UploadCloud, FileText, XCircle } from 'lucide-react'
+import React, { useState, useRef } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  UploadCloud, FileText, X, ChevronRight, CheckCircle,
+  AlertCircle, Zap, Target, TrendingUp, Shield,
+} from 'lucide-react';
 
+/* ─── ROLE OPTIONS ───────────────────────────────────────────── */
+const ROLES = [
+  'Software Engineer',
+  'Frontend Developer',
+  'Backend Developer',
+  'Full Stack Developer',
+  'Data Analyst',
+  'Data Scientist',
+  'DevOps Engineer',
+  'QA / Test Engineer',
+  'Product Manager',
+  'Android Developer',
+];
+
+/* ─── SCORE RING ─────────────────────────────────────────────── */
+function ScoreRing({ score, size = 140 }) {
+  const r = 52;
+  const circ = 2 * Math.PI * r;
+  const progress = (score / 100) * circ;
+  const color = score >= 75 ? '#4ade80' : score >= 55 ? '#facc15' : '#f87171';
+  const label = score >= 75 ? 'Strong' : score >= 55 ? 'Moderate' : 'Needs Work';
+
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <svg width={size} height={size} viewBox="0 0 120 120">
+        <circle cx="60" cy="60" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="10" />
+        <circle
+          cx="60" cy="60" r={r} fill="none"
+          stroke={color} strokeWidth="10"
+          strokeDasharray={`${progress} ${circ}`}
+          strokeLinecap="round"
+          transform="rotate(-90 60 60)"
+          style={{ transition: 'stroke-dasharray 0.8s ease' }}
+        />
+        <text x="60" y="55" textAnchor="middle" fill="white" fontSize="22" fontWeight="900" fontFamily="sans-serif">{score}</text>
+        <text x="60" y="71" textAnchor="middle" fill="rgba(255,255,255,0.45)" fontSize="9" fontFamily="sans-serif">out of 100</text>
+      </svg>
+      <span className="text-sm font-bold" style={{ color }}>{label}</span>
+    </div>
+  );
+}
+
+/* ─── BAR METRIC ─────────────────────────────────────────────── */
+function BarMetric({ label, value, color }) {
+  return (
+    <div>
+      <div className="flex justify-between items-center mb-1.5">
+        <span className="text-xs font-semibold text-slate-300">{label}</span>
+        <span className="text-xs font-bold text-white">{value}%</span>
+      </div>
+      <div className="h-1.5 rounded-full bg-white/8 overflow-hidden">
+        <div
+          className="h-full rounded-full transition-all duration-700"
+          style={{ width: `${value}%`, background: color }}
+        />
+      </div>
+    </div>
+  );
+}
+
+/* ─── MAIN PAGE ──────────────────────────────────────────────── */
 export default function ResumeAnalyzer() {
-	const [file, setFile] = useState(null)
-	const [role, setRole] = useState('')
-	const [analyzing, setAnalyzing] = useState(false)
-	const [result, setResult] = useState(null)
-	const [freeRemaining, setFreeRemaining] = useState(10)
+  const [file, setFile] = useState(null);
+  const [role, setRole] = useState('');
+  const [dragging, setDragging] = useState(false);
+  const [analyzing, setAnalyzing] = useState(false);
+  const [result, setResult] = useState(null);
+  const inputRef = useRef(null);
 
-	useEffect(() => {
-		let t
-		if (analyzing) {
-			t = setTimeout(() => {
-				const score = Math.max(45, Math.min(92, 60 + Math.floor(Math.random() * 30)))
-				setResult({
-					score,
-					summary: score > 75 ? 'Strong match for the selected role with minor wording fixes.' : 'Your resume needs clearer achievements and more role-specific keywords.',
-					suggestions: [
-						'Use metrics to show impact (e.g. increased performance by 30%).',
-						'Add role-specific keywords in summary and skills.',
-						'Turn responsibilities into achievement-focused bullets.',
-					],
-					highlights: {
-						strengths: ['Concise project descriptions', 'Relevant internships'],
-						weaknesses: ['Few technical keywords', 'No quantified impact'],
-					},
-				})
-				setAnalyzing(false)
-				setFreeRemaining(r => Math.max(0, r - 1))
-			}, 1000 + Math.random() * 800)
-		}
-		return () => clearTimeout(t)
-	}, [analyzing])
+  function handleFile(f) {
+    if (!f) return;
+    if (f.size > 5 * 1024 * 1024) { alert('File too large. Max 5MB.'); return; }
+    const ext = f.name.split('.').pop().toLowerCase();
+    if (!['pdf', 'doc', 'docx'].includes(ext)) { alert('Only PDF or DOCX files are supported.'); return; }
+    setFile(f);
+    setResult(null);
+  }
 
-	function onFileChange(e) {
-		const f = e.target.files && e.target.files[0]
-		if (!f) return
-		if (f.size > 5 * 1024 * 1024) {
-			alert('File too large. Max 5MB.')
-			return
-		}
-		setFile(f)
-		setResult(null)
-	}
+  function onInputChange(e) { handleFile(e.target.files?.[0]); }
+  function onDrop(e) {
+    e.preventDefault(); setDragging(false);
+    handleFile(e.dataTransfer.files?.[0]);
+  }
 
-	function removeFile() {
-		setFile(null)
-		setResult(null)
-	}
+  function runAnalysis() {
+    if (!file || !role || analyzing) return;
+    setAnalyzing(true);
+    setResult(null);
+    setTimeout(() => {
+      const score = Math.max(48, Math.min(91, 58 + Math.floor(Math.random() * 32)));
+      setResult({
+        score,
+        ats: Math.max(42, score - Math.floor(Math.random() * 12)),
+        keywords: Math.max(38, score - Math.floor(Math.random() * 18)),
+        formatting: Math.min(96, score + Math.floor(Math.random() * 12)),
+        impact: Math.max(35, score - Math.floor(Math.random() * 22)),
+        summary: score > 74
+          ? 'Your resume is well-structured and aligns closely with the target role. A few quick wins below will push your score further.'
+          : 'Your resume has a good foundation but is missing key signals that ATS systems and recruiters look for in this role.',
+        matched: ['Java', 'REST APIs', 'Git', 'Problem Solving', 'OOP Concepts'],
+        missing: ['System Design', 'SQL/Database', 'CI/CD', 'Docker'],
+        fixes: [
+          'Add metrics to project bullets — "Built X that reduced Y by Z%" scores significantly higher.',
+          `Include ${role}-specific keywords from job descriptions in your skills and summary sections.`,
+          'Quantify internship contributions — numbers make achievements credible and memorable.',
+          'Add a 2-line professional summary at the top tailored to your target role.',
+        ],
+        strengths: ['Clean formatting', 'Relevant project section', 'Internship experience listed'],
+      });
+      setAnalyzing(false);
+    }, 1800 + Math.random() * 600);
+  }
 
-	function runAnalysis() {
-		if (!file || !role) return
-		setAnalyzing(true)
-		setResult(null)
-	}
+  const canAnalyze = file && role && !analyzing;
 
-	const roleOptions = [
-		'Full Stack Developer',
-		'Frontend Developer',
-		'Backend Developer',
-		'QA Engineer',
-		'Data Analyst',
-	]
+  return (
+    <div className="bg-[#050b18] text-white min-h-screen">
 
-	return (
-		<div className="min-h-screen bg-slate-900 py-12">
-			<div className="mx-auto max-w-[1100px] space-y-8 px-6">
-				{/* SECTION 1 — HEADER */}
-				<header className="text-center">
-					<h1 className="text-4xl md:text-5xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-blue-400">Resume Analyzer</h1>
-					<p className="mt-3 text-sm text-slate-400 max-w-2xl mx-auto">Optimize your resume with AI-powered ATS scoring and keyword matching tailored to your target role.</p>
-					<div className="mt-4 inline-block bg-slate-800 border border-slate-700 text-slate-300 px-3 py-1 rounded-full text-sm">Free Analyses Remaining: {freeRemaining}/10</div>
-				</header>
+      {/* ── Hero ── */}
+      <section className="relative overflow-hidden border-b border-white/5">
+        <div className="pointer-events-none absolute inset-0">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-900/15 rounded-full blur-[120px]" />
+          <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-violet-900/10 rounded-full blur-[100px]" />
+        </div>
+        <div className="relative max-w-5xl mx-auto px-6 pt-12 pb-10">
+          <div className="flex items-center gap-2 mb-4">
+            <span className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse" />
+            <span className="text-xs font-bold text-pink-400 uppercase tracking-widest">Free Tool</span>
+          </div>
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div>
+              <h1 className="text-3xl md:text-4xl font-black mb-2 leading-tight tracking-tight">
+                Resume{' '}
+                <span style={{ background: 'linear-gradient(90deg,#ec4899,#a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                  ATS Checker
+                </span>
+              </h1>
+              <p className="text-slate-400 text-sm max-w-xl leading-relaxed">
+                75% of resumes are rejected before a human sees them. Upload yours and see your ATS score, keyword gaps, and exactly what to fix.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-3 shrink-0">
+              {[
+                { icon: Shield,     color: 'text-green-400',  label: 'ATS Score' },
+                { icon: Target,     color: 'text-indigo-400', label: 'Keyword Match' },
+                { icon: TrendingUp, color: 'text-amber-400',  label: 'Fix Suggestions' },
+              ].map(({ icon: Icon, color, label }) => (
+                <div key={label} className="flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5">
+                  <Icon size={13} className={color} />
+                  <span className="text-xs font-semibold text-slate-300">{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
 
-				{/* SECTION 2 — UPLOAD CARD */}
-				<section className="bg-slate-800 border border-slate-700 rounded-lg p-6 text-slate-300">
-					<div className="mx-auto max-w-xl">
-						<label className="flex flex-col items-center justify-center gap-4 p-8 border-2 border-dashed border-slate-700 rounded-md cursor-pointer hover:bg-slate-700/50 transition">
-							<UploadCloud className="w-10 h-10 text-slate-300" />
-							<div className="text-lg font-semibold">Upload Your Resume</div>
-							<div className="text-sm text-slate-400">Drag and drop your PDF or DOCX file here</div>
-							<input type="file" accept=".pdf,.doc,.docx" onChange={onFileChange} className="sr-only" />
-							<div className="mt-2">
-								<button
-									type="button"
-									onClick={() => document.querySelector('input[type=file]').click()}
-									className="mt-2 inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-purple-500 to-blue-500 text-white rounded-md hover:scale-[1.02] transition"
-								>
-									Browse File
-								</button>
-							</div>
-						</label>
+      {/* ── Main ── */}
+      <div className="max-w-5xl mx-auto px-6 py-10">
+        <div className="grid lg:grid-cols-[1fr_420px] gap-8 items-start">
 
-						<div className="mt-3 text-xs text-slate-400">Max file size: 5MB (PDF or DOCX only)</div>
+          {/* ─── LEFT: Form ─── */}
+          <div className="flex flex-col gap-5">
 
-						{file && (
-							<div className="mt-4 bg-slate-700 border border-slate-700 rounded-md p-3 flex items-center justify-between text-slate-300">
-								<div className="flex items-center gap-3">
-									<FileText className="w-5 h-5 text-indigo-300" />
-									<div>
-										<div className="font-medium">{file.name}</div>
-										<div className="text-xs text-slate-400">{(file.size / 1024).toFixed(0)} KB</div>
-									</div>
-								</div>
-								<button onClick={removeFile} className="text-slate-300 hover:text-white"><XCircle className="w-5 h-5" /></button>
-							</div>
-						)}
-					</div>
-				</section>
+            {/* Upload zone */}
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden">
+              <div className="px-5 pt-5 pb-4 border-b border-white/8">
+                <h2 className="text-sm font-black text-white">Upload Resume</h2>
+                <p className="text-xs text-slate-500 mt-0.5">PDF or DOCX · Max 5MB</p>
+              </div>
+              <div className="p-5">
+                {!file ? (
+                  <div
+                    onDragOver={e => { e.preventDefault(); setDragging(true); }}
+                    onDragLeave={() => setDragging(false)}
+                    onDrop={onDrop}
+                    onClick={() => inputRef.current?.click()}
+                    className={`flex flex-col items-center justify-center gap-4 py-12 rounded-xl border-2 border-dashed cursor-pointer transition-all ${
+                      dragging
+                        ? 'border-indigo-400 bg-indigo-500/10'
+                        : 'border-white/15 hover:border-indigo-500/40 hover:bg-indigo-500/5'
+                    }`}
+                  >
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/20">
+                      <UploadCloud size={24} className="text-indigo-400" />
+                    </div>
+                    <div className="text-center">
+                      <p className="text-sm font-semibold text-white">
+                        {dragging ? 'Drop your file here' : 'Drag & drop your resume'}
+                      </p>
+                      <p className="text-xs text-slate-500 mt-1">or click to browse from your device</p>
+                    </div>
+                    <button
+                      type="button"
+                      className="px-5 py-2 text-sm font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-colors"
+                    >
+                      Choose File
+                    </button>
+                    <input ref={inputRef} type="file" accept=".pdf,.doc,.docx" onChange={onInputChange} className="sr-only" />
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-3 p-4 rounded-xl border border-indigo-500/25 bg-indigo-500/8">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/15">
+                      <FileText size={18} className="text-indigo-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-white truncate">{file.name}</p>
+                      <p className="text-xs text-slate-500">{(file.size / 1024).toFixed(0)} KB · Ready to analyse</p>
+                    </div>
+                    <button
+                      onClick={() => { setFile(null); setResult(null); }}
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg hover:bg-white/10 text-slate-500 hover:text-white transition-colors"
+                    >
+                      <X size={15} />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
 
-				{/* SECTION 3 — TARGET ROLE */}
-				<section className="bg-slate-800 border border-slate-700 rounded-lg p-4 text-slate-300">
-					<div className="max-w-xl mx-auto">
-						<label className="block text-sm font-semibold mb-2">Target Role</label>
-						<select value={role} onChange={e => setRole(e.target.value)} className="w-full bg-slate-800 border border-slate-700 rounded-md p-3 text-slate-300">
-							<option value="">Select a role...</option>
-							{roleOptions.map((r) => (
-								<option key={r} value={r}>{r}</option>
-							))}
-						</select>
-					</div>
-				</section>
+            {/* Role selector */}
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden">
+              <div className="px-5 pt-5 pb-4 border-b border-white/8">
+                <h2 className="text-sm font-black text-white">Target Role</h2>
+                <p className="text-xs text-slate-500 mt-0.5">We match keywords specific to this role</p>
+              </div>
+              <div className="p-5">
+                <div className="flex flex-wrap gap-2">
+                  {ROLES.map(r => (
+                    <button
+                      key={r}
+                      onClick={() => setRole(r)}
+                      className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                        role === r
+                          ? 'bg-indigo-600 text-white border border-indigo-500'
+                          : 'bg-white/5 border border-white/10 text-slate-400 hover:border-indigo-500/40 hover:text-white'
+                      }`}
+                    >
+                      {r}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
 
-				{/* SECTION 4 — ACTION BUTTON */}
-				<div className="text-center">
-					<button
-						onClick={runAnalysis}
-						disabled={!file || !role || analyzing}
-						className={`inline-flex items-center gap-3 px-6 py-3 rounded-md text-white font-semibold ${(!file || !role || analyzing) ? 'opacity-60 cursor-not-allowed' : 'bg-gradient-to-r from-purple-500 to-blue-500 hover:scale-[1.02] shadow-lg'}`}
-					>
-						{analyzing ? 'Analyzing…' : 'Analyze Resume →'}
-					</button>
-				</div>
+            {/* Analyse button */}
+            <button
+              onClick={runAnalysis}
+              disabled={!canAnalyze}
+              className={`w-full flex items-center justify-center gap-2.5 py-4 rounded-xl font-bold text-base transition-all ${
+                canAnalyze
+                  ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20'
+                  : 'bg-white/5 border border-white/10 text-slate-600 cursor-not-allowed'
+              }`}
+            >
+              {analyzing ? (
+                <>
+                  <span className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                  Analysing your resume…
+                </>
+              ) : (
+                <>
+                  <Zap size={17} />
+                  Check My ATS Score — Free
+                </>
+              )}
+            </button>
 
-				{/* SECTION 5 — RESULTS (Gaming-style Dashboard) */}
-				<section className="space-y-6">
-					{/* ANALYZING STATUS BAR */}
-					{(analyzing || result) && (
-						<div className="flex justify-between items-center rounded-xl bg-slate-800 border border-slate-700 p-4 text-slate-300 shadow-lg shadow-purple-500/10">
-							<div>
-								<div className="text-xs text-slate-400">Analyzing For</div>
-								<div className="font-bold">{role || 'QA Engineer'}</div>
-							</div>
-							<div className="text-center">
-								<div className="text-xs text-slate-400">Confidence</div>
-								<div className="font-bold">{result ? `${Math.min(100, Math.round((result.score||66)))}%` : '50%'}</div>
-							</div>
-							<div className="text-right">
-								<div className="text-xs text-slate-400">Remaining</div>
-								<div className="font-bold">{freeRemaining}/10</div>
-							</div>
-						</div>
-					)}
+            {!file && !role && (
+              <p className="text-xs text-slate-600 text-center">Upload your resume and select a role to get started</p>
+            )}
+          </div>
 
-										{/* SCORE DASHBOARD CARDS (show only after analysis completes) */}
-																				{result && (
-																					<>
-																						<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-																							{/* CARD 1 - Overall Score */}
-																							<div className="rounded-2xl p-6 shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-br from-purple-700 to-purple-500 text-slate-900">
-																								<div className="text-5xl font-black text-white mb-2">{result ? result.score : 78}</div>
-																								<div className="text-sm font-semibold text-white/90">Overall Score</div>
-																							</div>
+          {/* ─── RIGHT: Results ─── */}
+          <div className="flex flex-col gap-5">
+            {!result && !analyzing && (
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-8 flex flex-col items-center justify-center gap-4 text-center min-h-[320px]">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 border border-white/10">
+                  <Target size={22} className="text-slate-600" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-400">Your results will appear here</p>
+                  <p className="text-xs text-slate-600 mt-1 max-w-[220px]">Upload your resume and pick a role to see your ATS score and fix suggestions</p>
+                </div>
+              </div>
+            )}
 
-																							{/* CARD 2 - ATS Score with circular indicator */}
-																							<div className="rounded-2xl p-6 shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-br from-indigo-700 to-cyan-500 text-slate-900 flex flex-col items-center">
-																								<div className="relative w-36 h-36 mb-4">
-																									<svg className="w-full h-full transform -rotate-90">
-																										<circle cx="80" cy="80" r="70" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="8" />
-																										<circle cx="80" cy="80" r="70" fill="none" stroke="url(#g2)" strokeWidth="8" strokeDasharray={`${((result?.score||66)/100)*440} 440`} strokeLinecap="round" />
-																										<defs>
-																											<linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
-																												<stop offset="0%" stopColor="#6366f1" />
-																												<stop offset="100%" stopColor="#06b6d4" />
-																											</linearGradient>
-																										</defs>
-																									</svg>
-																									<div className="absolute inset-0 flex flex-col items-center justify-center">
-																										<div className="text-3xl font-black text-white">{result ? result.score : 66}</div>
-																										<div className="text-xs text-white/80">ATS Score</div>
-																									</div>
-																								</div>
-																								<div className="text-sm text-white/90 text-center">ATS Compatibility</div>
-																							</div>
+            {analyzing && (
+              <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-8 flex flex-col items-center justify-center gap-5 min-h-[320px]">
+                <div className="relative h-16 w-16">
+                  <div className="absolute inset-0 rounded-full border-2 border-indigo-500/20" />
+                  <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-indigo-400 animate-spin" />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <FileText size={20} className="text-indigo-400" />
+                  </div>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm font-bold text-white">Scanning your resume…</p>
+                  <p className="text-xs text-slate-500 mt-1">Checking ATS compatibility and keyword match</p>
+                </div>
+                <div className="flex gap-1.5">
+                  {[0, 1, 2].map(i => (
+                    <span key={i} className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+                  ))}
+                </div>
+              </div>
+            )}
 
-																							{/* CARD 3 - Market Readiness */}
-																							<div className="rounded-2xl p-6 shadow-xl hover:scale-105 transition-all duration-300 bg-gradient-to-br from-amber-600 to-orange-400 text-slate-900">
-																								<div className="text-5xl font-black text-white mb-2">{result ? Math.max(0, Math.round((result.score||0)*0.5)) : 39}</div>
-																								<div className="text-sm font-semibold text-white/90">Market Readiness</div>
-																								<div className="text-xs text-white/80 mt-2">Weak Market</div>
-																							</div>
-																						</div>
+            {result && (
+              <>
+                {/* Score card */}
+                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+                  <div className="flex items-center justify-between mb-5">
+                    <div>
+                      <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">ATS Score</p>
+                      <p className="text-xs text-slate-500 max-w-[200px] leading-relaxed">{result.summary}</p>
+                    </div>
+                    <ScoreRing score={result.score} />
+                  </div>
+                  <div className="flex flex-col gap-3 pt-4 border-t border-white/8">
+                    <BarMetric label="ATS Compatibility"  value={result.ats}        color="linear-gradient(90deg,#6366f1,#a78bfa)" />
+                    <BarMetric label="Keyword Match"       value={result.keywords}   color="linear-gradient(90deg,#06b6d4,#3b82f6)" />
+                    <BarMetric label="Formatting Score"    value={result.formatting} color="linear-gradient(90deg,#4ade80,#22d3ee)" />
+                    <BarMetric label="Impact & Metrics"    value={result.impact}     color="linear-gradient(90deg,#f59e0b,#ef4444)" />
+                  </div>
+                </div>
 
-																						{/* SKILL MATCH + ASSESSMENT */}
-																						<div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-																							<div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
-																								<h4 className="font-bold text-lg mb-4">Skill Match</h4>
-																								<div className="w-full bg-slate-700 rounded-full h-3">
-																									<div className="bg-gradient-to-r from-indigo-500 to-cyan-500 h-3 rounded-full" style={{ width: `${(result ? (result.score || 53.33) : 53.33)}%` }} />
-																								</div>
-																								<p className="text-sm text-slate-400 mt-3">Your resume matches {(result ? (result.score || 53.33) : 53.33).toFixed(2)}% of {role || 'QA engineer'} job descriptions.</p>
-																							</div>
+                {/* Fix suggestions */}
+                <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5">
+                  <div className="flex items-center gap-2 mb-4">
+                    <AlertCircle size={15} className="text-amber-400" />
+                    <h3 className="text-sm font-black text-amber-300">Suggested Fixes</h3>
+                  </div>
+                  <div className="flex flex-col gap-3">
+                    {result.fixes.map((fix, i) => (
+                      <div key={i} className="flex items-start gap-2.5">
+                        <span className="mt-1 text-[10px] font-black text-amber-500 bg-amber-500/15 rounded px-1.5 py-0.5 shrink-0">{i + 1}</span>
+                        <p className="text-xs text-slate-400 leading-relaxed">{fix}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-																							<div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
-																								<h4 className="font-bold text-lg mb-4">Assessment</h4>
-																								<div className="text-2xl font-black mb-2">Good</div>
-																								<p className="text-sm text-slate-400">Your resume is competitive. Consider adding more specific metrics.</p>
-																								<div className="mt-4 text-sm text-slate-400">Experience Level: <span className="font-semibold text-slate-200">Fresher</span></div>
-																							</div>
-																						</div>
+                {/* Keywords */}
+                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+                  <h3 className="text-sm font-black text-white mb-4">Keyword Analysis</h3>
+                  <div className="mb-3">
+                    <p className="text-xs font-semibold text-green-400 mb-2">✓ Matched in your resume</p>
+                    <div className="flex flex-wrap gap-2">
+                      {result.matched.map(k => (
+                        <span key={k} className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400">{k}</span>
+                      ))}
+                    </div>
+                  </div>
+                  <div>
+                    <p className="text-xs font-semibold text-red-400 mb-2">✗ Missing — add these</p>
+                    <div className="flex flex-wrap gap-2">
+                      {result.missing.map(k => (
+                        <span key={k} className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400">{k}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
 
-																						{/* MATCHED SKILLS */}
-																						<div className="bg-slate-800 border border-slate-700 rounded-xl p-6">
-																							<h4 className="font-bold text-lg mb-4">Matched Skills (5)</h4>
-																							<div className="flex flex-wrap gap-3">
-																								{['selenium','automation frameworks','java','test automation','regression testing'].map((s) => (
-																									<span key={s} className="bg-green-500/20 text-green-300 rounded-full px-4 py-1 text-sm">{s}</span>
-																								))}
-																							</div>
-																						</div>
+                {/* Strengths */}
+                <div className="rounded-2xl border border-green-500/20 bg-green-500/5 p-5">
+                  <div className="flex items-center gap-2 mb-3">
+                    <CheckCircle size={14} className="text-green-400" />
+                    <h3 className="text-sm font-black text-green-300">What's working</h3>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    {result.strengths.map((s, i) => (
+                      <div key={i} className="flex items-center gap-2">
+                        <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-green-400" />
+                        <span className="text-xs text-slate-400">{s}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      </div>
 
-																						{/* STRENGTH AREAS */}
-																						<div className="bg-green-500/10 border border-green-500/30 rounded-xl p-6">
-																							<h4 className="font-bold text-lg mb-4">Strength Areas</h4>
-																							<ul className="list-disc pl-5 text-sm text-slate-900">
-																								{['QA Automation Testing','Selenium WebDriver','API Testing','Test Framework Design'].map((a) => (
-																									<li key={a} className="mb-2">{a}</li>
-																								))}
-																							</ul>
-																						</div>
-																					</>
-																				)}
-								</section>
-			</div>
-		</div>
-	)
+      {/* ── Why ATS Matters ── */}
+      <section className="border-t border-white/5 py-14 px-6">
+        <div className="max-w-5xl mx-auto">
+          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-3">Why this matters</span>
+          <h2 className="text-xl font-black mb-6">What ATS filtering means for your application</h2>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {[
+              { stat: '75%',   color: 'text-red-400',    border: 'border-red-500/20',    bg: 'bg-red-500/5',    label: 'Resumes rejected by ATS before a recruiter reads them' },
+              { stat: '6 sec', color: 'text-amber-400',  border: 'border-amber-500/20',  bg: 'bg-amber-500/5',  label: 'Average time a recruiter spends scanning a resume that makes it through' },
+              { stat: '3×',    color: 'text-green-400',  border: 'border-green-500/20',  bg: 'bg-green-500/5',  label: 'More interview callbacks when resumes are ATS-optimised with role keywords' },
+            ].map(({ stat, color, border, bg, label }) => (
+              <div key={stat} className={`rounded-xl border ${border} ${bg} p-5`}>
+                <div className={`text-3xl font-black mb-2 ${color}`}>{stat}</div>
+                <p className="text-xs text-slate-400 leading-relaxed">{label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section className="py-12 px-6 border-t border-white/5">
+        <div className="max-w-2xl mx-auto text-center">
+          <h2 className="text-xl font-black mb-2">Also check your interview readiness</h2>
+          <p className="text-slate-400 text-sm mb-6">A strong resume gets you the interview — preparation gets you the offer.</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link
+              to="/start-assessment"
+              className="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-indigo-500/20 transition-all text-sm"
+            >
+              Check Interview Readiness — Free <ChevronRight size={15} />
+            </Link>
+            <Link
+              to="/mock-interviews"
+              className="inline-flex items-center justify-center gap-2 border border-indigo-500/40 text-indigo-400 hover:text-white hover:border-indigo-400 font-semibold px-6 py-3 rounded-xl transition-all text-sm"
+            >
+              Try AI Mock Interview
+            </Link>
+          </div>
+        </div>
+      </section>
+
+    </div>
+  );
 }

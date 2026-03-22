@@ -1,0 +1,142 @@
+import React from 'react';
+import { Link } from 'react-router-dom';
+import {
+  ArrowRight,
+  BarChart3,
+  ClipboardCheck,
+  Clock,
+  Layers,
+  Sparkles,
+  ChevronRight,
+} from 'lucide-react';
+
+/**
+ * Tools entry for Interview Readiness — matches MentorMuni global theme (#050b18, indigo/violet).
+ * Same assessment as /start-assessment?entry=tools (skips marketing landing).
+ */
+export default function InterviewReadinessToolsPage() {
+  const steps = [
+    {
+      n: '01',
+      title: 'Answer targeted questions',
+      body: 'DSA, System Design, HR — matched to how campus drives actually evaluate you.',
+    },
+    {
+      n: '02',
+      title: 'See your score & gaps',
+      body: 'A single readiness score with a breakdown — not a vague “you’re good at coding.”',
+    },
+    {
+      n: '03',
+      title: 'Know what to fix first',
+      body: 'Prioritised gaps so you prep efficiently before placement season peaks.',
+    },
+  ];
+
+  return (
+    <div className="min-h-screen bg-[#050b18] text-white relative overflow-hidden">
+      {/* Ambient glow — same language as homepage / mock interviews */}
+      <div className="pointer-events-none fixed inset-0">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-900/15 rounded-full blur-[130px]" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-violet-900/10 rounded-full blur-[100px]" />
+      </div>
+
+      <div className="relative z-10 max-w-4xl mx-auto px-6 pt-10 pb-16 md:pt-14 md:pb-24">
+        {/* Breadcrumb */}
+        <nav className="flex items-center gap-2 text-xs font-medium mb-8">
+          <Link to="/tools" className="text-indigo-400 hover:text-indigo-300 transition-colors">
+            Tools
+          </Link>
+          <ChevronRight size={12} className="text-slate-600" />
+          <span className="text-slate-400">Interview Readiness</span>
+        </nav>
+
+        <div className="flex flex-col lg:flex-row lg:items-start lg:gap-12">
+          {/* Left column */}
+          <div className="flex-1 mb-10 lg:mb-0">
+            <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/25 bg-indigo-500/10 px-3 py-1.5 mb-6">
+              <Sparkles size={13} className="text-indigo-400" />
+              <span className="text-[11px] font-bold uppercase tracking-widest text-indigo-300">
+                Tools · Assessment
+              </span>
+            </div>
+
+            <h1 className="text-3xl sm:text-4xl md:text-[2.65rem] font-black leading-[1.1] tracking-tight mb-4">
+              Interview Readiness{' '}
+              <span
+                style={{
+                  background: 'linear-gradient(90deg,#6366f1,#a78bfa)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                Check
+              </span>
+            </h1>
+
+            <p className="text-slate-400 text-sm sm:text-base leading-relaxed max-w-md mb-8">
+              A focused entry from Tools for the same free assessment. About five minutes, no signup — a score
+              out of 100 and a clear view of where you stand before your next drive.
+            </p>
+
+            <div className="flex flex-wrap gap-3 mb-8">
+              {[
+                { icon: Clock, text: '~5 min' },
+                { icon: Layers, text: 'DSA · SD · HR' },
+                { icon: BarChart3, text: 'Score + gaps' },
+              ].map(({ icon: Icon, text }) => (
+                <span
+                  key={text}
+                  className="inline-flex items-center gap-2 rounded-lg border border-white/10 bg-white/5 px-3 py-2 text-xs font-semibold text-slate-300"
+                >
+                  <Icon size={14} className="text-indigo-400" />
+                  {text}
+                </span>
+              ))}
+            </div>
+
+            <Link
+              to="/start-assessment?entry=tools"
+              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-500/25 transition-all"
+            >
+              Start the assessment
+              <ArrowRight size={17} className="group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+          </div>
+
+          {/* Right column — steps card */}
+          <div className="w-full lg:w-[380px] shrink-0">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 shadow-xl shadow-black/20">
+              <div className="flex items-center gap-2 mb-5 pb-4 border-b border-white/10">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-500/10 border border-indigo-500/20">
+                  <ClipboardCheck size={18} className="text-indigo-400" />
+                </div>
+                <span className="text-sm font-bold text-white">What happens next</span>
+              </div>
+              <ol className="space-y-5">
+                {steps.map((s) => (
+                  <li key={s.n} className="flex gap-4">
+                    <span className="font-mono text-[11px] font-bold text-indigo-400/80 w-8 shrink-0 pt-0.5">
+                      {s.n}
+                    </span>
+                    <div>
+                      <p className="text-sm font-semibold text-slate-100 mb-1">{s.title}</p>
+                      <p className="text-xs text-slate-500 leading-relaxed">{s.body}</p>
+                    </div>
+                  </li>
+                ))}
+              </ol>
+              <Link
+                to="/start-assessment?entry=tools"
+                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-indigo-500/40 text-indigo-400 hover:text-white hover:bg-indigo-500/10 hover:border-indigo-400/60 py-3 text-sm font-semibold transition-all"
+              >
+                Continue to assessment
+                <ChevronRight size={16} />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

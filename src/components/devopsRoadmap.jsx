@@ -59,12 +59,6 @@ const DevOpsRoadmap = () => {
           </div>
 
           <nav className="hidden md:flex items-center gap-2">
-            <a
-              href="/learning-paths"
-              className="px-3 py-2 text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/5 rounded-lg transition-all"
-            >
-              ← Back to Learning Paths
-            </a>
           </nav>
 
           {/* Mobile Menu Button */}

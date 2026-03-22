@@ -1,71 +1,148 @@
 import React from 'react';
-import { Video, Calendar, Award, ArrowRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import {
+  Video,
+  Calendar,
+  Award,
+  ArrowRight,
+  ChevronRight,
+  Mic,
+  Sparkles,
+  Target,
+} from 'lucide-react';
 
 const MockInterviews = () => {
+  const features = [
+    {
+      icon: Calendar,
+      title: 'Schedule a Session',
+      desc: 'Book mock interviews with experienced mentors and get structured, actionable feedback.',
+      cta: 'Join waitlist',
+      href: '/waitlist',
+    },
+    {
+      icon: Video,
+      title: 'Live Practice',
+      desc: 'AI-powered questions and real-time evaluation so you hear how you sound under pressure.',
+      cta: 'Check readiness first',
+      href: '/start-assessment',
+    },
+    {
+      icon: Award,
+      title: 'Track Progress',
+      desc: 'See strengths and gaps across DSA, system design, and HR — not generic scores.',
+      cta: 'See how it works',
+      href: '/how-it-works',
+    },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
-      <div className="max-w-6xl mx-auto px-6 py-20">
-        <a 
-          href="/learning-paths"
-          className="inline-flex items-center gap-2 text-indigo-400 hover:text-indigo-300 font-semibold mb-8 transition-colors"
-        >
-          ← Back to Learning Paths
-        </a>
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <Video size={40} className="text-indigo-400" />
-            <h1 className="text-5xl font-bold">Mock Interviews</h1>
-          </div>
-          <p className="text-xl text-slate-300 mb-8">
-            Practice with real-time evaluation and expert feedback
-          </p>
-        </div>
+    <div className="min-h-screen bg-[#050b18] text-white">
+      {/* Ambient background — matches homepage / resume analyzer */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-900/15 rounded-full blur-[130px]" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-violet-900/10 rounded-full blur-[100px]" />
+      </div>
 
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
-          <div className="bg-slate-800/50 backdrop-blur p-8 rounded-2xl border border-slate-700 hover:border-indigo-500 transition-colors">
-            <Calendar size={32} className="text-indigo-400 mb-4" />
-            <h3 className="text-xl font-bold mb-3">Schedule a Session</h3>
-            <p className="text-slate-400 mb-6">
-              Book mock interviews with experienced mentors and get real-time feedback.
-            </p>
-            <button className="text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-2">
-              Learn More <ArrowRight size={16} />
-            </button>
+      <div className="relative">
+        {/* Hero */}
+        <section className="border-b border-white/5">
+          <div className="max-w-5xl mx-auto px-6 pt-14 pb-12">
+            <div className="flex items-center gap-2 mb-4">
+              <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
+              <span className="text-xs font-bold text-violet-400 uppercase tracking-widest">Interview Prep</span>
+            </div>
+            <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+              <div>
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/20">
+                    <Mic size={22} className="text-indigo-400" />
+                  </div>
+                  <h1 className="text-3xl md:text-4xl font-black tracking-tight">
+                    Mock{' '}
+                    <span
+                      style={{
+                        background: 'linear-gradient(90deg,#6366f1,#a78bfa)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                      }}
+                    >
+                      Interviews
+                    </span>
+                  </h1>
+                </div>
+                <p className="text-slate-400 text-base max-w-xl leading-relaxed">
+                  Practice with real-time evaluation and feedback aligned to campus and off-campus tech rounds — same visual language as the rest of MentorMuni.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2 shrink-0">
+                {[
+                  { icon: Sparkles, label: 'AI + mentor path' },
+                  { icon: Target, label: 'Role-matched' },
+                ].map(({ icon: Icon, label }) => (
+                  <div
+                    key={label}
+                    className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5"
+                  >
+                    <Icon size={13} className="text-indigo-400" />
+                    <span className="text-xs font-semibold text-slate-300">{label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Feature cards */}
+        <div className="max-w-5xl mx-auto px-6 py-12">
+          <div className="grid md:grid-cols-3 gap-5 mb-12">
+            {features.map(({ icon: Icon, title, desc, cta, href }) => (
+              <div
+                key={title}
+                className="group rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition-all hover:border-indigo-500/30 hover:bg-indigo-500/[0.04]"
+              >
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-500/10 border border-indigo-500/15 mb-4">
+                  <Icon size={20} className="text-indigo-400" />
+                </div>
+                <h3 className="text-lg font-bold text-white mb-2">{title}</h3>
+                <p className="text-sm text-slate-400 leading-relaxed mb-5">{desc}</p>
+                <Link
+                  to={href}
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
+                >
+                  {cta} <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+              </div>
+            ))}
           </div>
 
-          <div className="bg-slate-800/50 backdrop-blur p-8 rounded-2xl border border-slate-700 hover:border-indigo-500 transition-colors">
-            <Video size={32} className="text-indigo-400 mb-4" />
-            <h3 className="text-xl font-bold mb-3">Live Practice</h3>
-            <p className="text-slate-400 mb-6">
-              Practice with AI-powered real-time question generation and instant evaluation.
-            </p>
-            <button className="text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-2">
-              Start Now <ArrowRight size={16} />
-            </button>
-          </div>
-
-          <div className="bg-slate-800/50 backdrop-blur p-8 rounded-2xl border border-slate-700 hover:border-indigo-500 transition-colors">
-            <Award size={32} className="text-indigo-400 mb-4" />
-            <h3 className="text-xl font-bold mb-3">Get Certified</h3>
-            <p className="text-slate-400 mb-6">
-              Complete interview preparations and receive certificates recognized by industry.
-            </p>
-            <button className="text-indigo-400 hover:text-indigo-300 font-semibold flex items-center gap-2">
-              Explore <ArrowRight size={16} />
-            </button>
-          </div>
-        </div>
-
-        <div className="bg-gradient-to-r from-indigo-600 to-cyan-600 p-1 rounded-2xl">
-          <div className="bg-slate-900 p-12 rounded-2xl text-center">
-            <h2 className="text-3xl font-bold mb-4">Coming Soon</h2>
-            <p className="text-slate-300 mb-8 max-w-2xl mx-auto">
-              Full mock interview platform with live mentors, AI evaluation, and performance analytics. 
-              Be among the first to experience our improved interview prep.
-            </p>
-            <button className="bg-gradient-to-r from-indigo-600 to-cyan-600 px-8 py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-indigo-500/50 transition-all">
-              Notify Me
-            </button>
+          {/* Coming soon — indigo theme only (no cyan strip) */}
+          <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/[0.06] overflow-hidden">
+            <div className="px-6 py-10 md:px-10 md:py-12 text-center">
+              <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/25 bg-indigo-500/10 px-3 py-1 text-xs font-bold text-indigo-300 mb-4">
+                <Sparkles size={12} />
+                Coming soon
+              </div>
+              <h2 className="text-2xl md:text-3xl font-black text-white mb-3">Full mock interview platform</h2>
+              <p className="text-slate-400 text-sm max-w-2xl mx-auto leading-relaxed mb-8">
+                Live mentors, AI evaluation, and performance analytics — built for engineering students in India. Be among the first to get access.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <Link
+                  to="/waitlist"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-500/20 transition-all"
+                >
+                  Join the waitlist
+                  <ChevronRight size={16} />
+                </Link>
+                <Link
+                  to="/start-assessment"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-500/40 text-indigo-400 hover:text-white hover:border-indigo-400/60 px-6 py-3 text-sm font-semibold transition-all"
+                >
+                  Check interview readiness — Free
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -72,12 +72,6 @@ const FreeTutorials = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
       <div className="max-w-7xl mx-auto px-6 py-20">
-        <a 
-          href="/learning-paths"
-          className="inline-flex items-center gap-2 text-cyan-400 hover:text-cyan-300 font-semibold mb-8 transition-colors"
-        >
-          ← Back to Learning Paths
-        </a>
         <div className="text-center mb-16">
           <div className="flex items-center justify-center gap-3 mb-4">
             <BookOpen size={40} className="text-cyan-400" />

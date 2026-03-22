@@ -225,12 +225,7 @@ const SkillGapAnalyzer = () => {
   const IntroSection = () => (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
       <div className="max-w-6xl mx-auto px-6 py-20">
-        <a 
-          href="/learning-paths"
-          className="inline-flex items-center gap-2 text-emerald-400 hover:text-emerald-300 font-semibold mb-8 transition-colors"
-        >
-          ← Back to Learning Paths
-        </a>
+
 
         <div className="text-center mb-16">
           <div className="flex items-center justify-center gap-3 mb-4">

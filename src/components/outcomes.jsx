@@ -186,15 +186,15 @@ export default function SuccessStories() {
 
           {/* H1 */}
           <h1 style={{ fontSize: 'clamp(28px, 5vw, 38px)', fontWeight: 800, letterSpacing: '-0.5px', lineHeight: 1.18, marginBottom: 18, color: '#fff' }}>
-            The first success stories are being{' '}
+            The first outcomes from our founding batch are{' '}
             <span style={{ background: 'linear-gradient(90deg,#6366f1,#a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
-              written right now.
+              taking shape now.
             </span>
           </h1>
 
           {/* Sub */}
           <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.50)', lineHeight: 1.75, maxWidth: 480, margin: '0 auto' }}>
-            We're in our founding batch. Students who join now get the most attention, the lowest price, and their story featured here. Here's what we commit to every student.
+            We're in our founding batch. Students who join now get focused mentor attention, clear pricing, and visibility of their progress here. Here's what we commit to every student.
           </p>
         </div>
       </section>
@@ -206,10 +206,10 @@ export default function SuccessStories() {
           style={{ ...REVEAL_BASE, maxWidth: 840, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14 }}
           className="ss-4col"
         >
-          <StatCard icon="🎯" value="Founding" label="Your story shapes MentorMuni" />
-          <StatCard icon="💯" value="100%"     label="Dedicated to your success" />
-          <StatCard icon="👤" value="1:1"      label="Personal mentorship only" />
-          <StatCard icon="🤖" value="AI+"      label="AI + human, not either/or" />
+          <StatCard icon="📋" value="Structured" label="Prep aligned to campus drives, role tracks, and typical interview rounds" />
+          <StatCard icon="📊" value="Measurable" label="Readiness score and gap report — track progress with clear metrics" />
+          <StatCard icon="👥" value="Mentors" label="1:1 sessions for doubt-clearing and strategy — not chatbot-only learning" />
+          <StatCard icon="⚙️" value="AI + human" label="AI mock interviews and ATS-style checks; mentors review gaps and next steps" />
         </div>
       </section>
 
@@ -226,10 +226,10 @@ export default function SuccessStories() {
         >
           <p style={{ fontSize: 12, fontWeight: 600, color: '#818cf8', marginBottom: 10, letterSpacing: '0.02em' }}>✦ Founding member opportunity</p>
           <h2 style={{ fontSize: 21, fontWeight: 700, color: '#fff', marginBottom: 10, lineHeight: 1.35 }}>
-            Be one of the first 100 students. Your success story goes here.
+            Be one of the first 100 students. Your outcome can be featured here.
           </h2>
           <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, marginBottom: 28 }}>
-            Founding batch students get the lowest price MentorMuni will ever offer, maximum mentor attention, and their placement story featured on this page permanently.
+            Founding batch students get the lowest price MentorMuni will ever offer, maximum mentor attention, and their placement outcome featured on this page when they’re placed.
           </p>
 
           {/* 3-step mini grid */}
@@ -237,7 +237,7 @@ export default function SuccessStories() {
             {[
               'Take the free assessment — know your gaps',
               'Get matched to your mentor in 24 hours',
-              'Your story featured here when you\'re placed',
+              'Your outcome listed here when you\'re placed',
             ].map((text, i) => (
               <div key={i} style={{ textAlign: 'center' }}>
                 <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#6366f1', color: '#fff', fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
@@ -321,7 +321,7 @@ export default function SuccessStories() {
             <CommitRow bold="Mentor matched in 24 hours" rest=" based on your exact score and role." />
             <CommitRow bold="WhatsApp access throughout —" rest=" reachable all week, not just in sessions." />
             <CommitRow bold="Full support until you're placed —" rest=" mentorship continues until you receive your offer." />
-            <CommitRow bold="Your story featured here —" rest=" when placed, your journey goes on this page." />
+            <CommitRow bold="Your outcome featured here —" rest=" when placed, your journey is listed on this page." />
           </div>
         </div>
       </section>
@@ -339,7 +339,7 @@ export default function SuccessStories() {
       >
         <div style={{ maxWidth: 460, margin: '0 auto' }}>
           <h2 style={{ fontSize: 24, fontWeight: 700, color: '#fff', marginBottom: 12 }}>
-            Be the first success story.
+            Be among the first outcomes we feature.
           </h2>
           <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.50)', lineHeight: 1.7 }}>
             Start with the free assessment. See your gaps. Then decide if the founding batch is right for you.
@@ -379,7 +379,7 @@ export default function SuccessStories() {
             {/* Learning */}
             <div>
               <p style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.40)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>Learning</p>
-              {[['Placement Tracks', '/placement-tracks'], ['Free Tutorials', '/free-tutorials'], ['Learning Paths', '/learning-paths'], ['Success Stories', '/success-stories']].map(([label, to]) => (
+              {[['Placement Tracks', '/placement-tracks'], ['Free Tutorials', '/free-tutorials'], ['Learning Paths', '/learning-paths'], ['Outcomes', '/outcomes']].map(([label, to]) => (
                 <div key={to} style={{ marginBottom: 10 }}>
                   <Link to={to} style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none' }}>{label}</Link>
                 </div>

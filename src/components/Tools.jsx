@@ -28,7 +28,7 @@ const Tools = () => {
       description: "Evaluate your interview preparation with AI-powered mock interviews and get instant feedback.",
       icon: ClipboardCheck,
       color: "purple",
-      href: "/start-assessment",
+      href: "/interview-readiness-tools",
       highlights: ["Mock Interviews", "Real-time Feedback", "Score Tracking"]
     },
     {

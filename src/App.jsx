@@ -34,6 +34,8 @@ const ResumeAnalyzer = lazy(() => import("./components/resumeAnalyzer"));
 const ContactPage = lazy(() => import("./components/contactPage"));
 const DesignSystemDemo = lazy(() => import("./components/DesignSystemDemo"));
 const CareerHealthDashboard = lazy(() => import("./components/CareerHealthDashboard"));
+const AIToolsKnowledgeBase = lazy(() => import("./components/AIToolsKnowledgeBase"));
+const InterviewReadinessToolsPage = lazy(() => import("./components/InterviewReadinessToolsPage"));
 
 function PageFallback() {
   return <div className="min-h-[60vh] bg-[#050b18]" />;
@@ -49,6 +51,9 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
+              {/* Specific /tools/* routes must be listed before /tools so they match first */}
+              <Route path="/tools/interview-readiness" element={<InterviewReadinessToolsPage />} />
+              <Route path="/interview-readiness-tools" element={<InterviewReadinessToolsPage />} />
               <Route path="/tools" element={<Tools />} />
               <Route path="/mentors" element={<Mentors />} />
               <Route path="/start-assessment" element={<InterviewReady />} />
@@ -87,6 +92,7 @@ function App() {
               {/* User Dashboard Routes */}
               <Route path="/career-health" element={<CareerHealthDashboard />} />
               <Route path="/dashboard/health" element={<CareerHealthDashboard />} />
+              <Route path="/ai-tools" element={<AIToolsKnowledgeBase />} />
               {/* Design System Demo - For Development Only */}
               <Route path="/design-system" element={<DesignSystemDemo />} />
             </Routes>
