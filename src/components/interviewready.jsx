@@ -284,25 +284,19 @@ const InterviewReady = () => {
       return;
     }
 
-    // Check usage limit
-    if (usageInfo.remaining_attempts <= 0) {
-      setStep(6); // Premium upgrade screen
-      return;
-    }
-
     setLoading(true);
     setError(null);
 
     const payload = {
-      user_category: profile.userCategory,
+      user_type: profile.userCategory,
       primary_skill: profile.primarySkill.trim(),
-      email: profile.email.trim(),
-      contact_number: profile.contactNumber.trim(),
-      otp_verified: otpVerified
+      target_role: profile.targetRole?.trim() || undefined,
+      email: profile.email?.trim() || undefined,
+      phone: profile.contactNumber?.trim() || undefined,
     };
 
     try {
-      const res = await fetch(`${API_BASE}/generate-questions`, {
+      const res = await fetch(`${API_BASE}/interview-ready/plan`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -311,29 +305,28 @@ const InterviewReady = () => {
       const data = await res.json();
 
       if (!res.ok) {
-        if (res.status === 403) {
-          setStep(6); // Premium upgrade screen
+        if (res.status === 429) {
+          setStep(6);
           setLoading(false);
           return;
         }
-        setError(data.error || 'Failed to generate questions');
+        setError(data.detail || data.error || 'Failed to generate questions');
         setLoading(false);
         return;
       }
 
-      if (!data.success || !data.evaluation_plan) {
-        setError('Invalid response from server');
+      if (!data.evaluation_plan || !data.evaluation_plan.length) {
+        setError('No questions returned from server. Please try again.');
         setLoading(false);
         return;
       }
 
       setQuestions(data.evaluation_plan.map(q => q.question));
       setEvaluationData(data.evaluation_plan);
-      setUsageInfo(data.usage_info || usageInfo);
       setStep(4);
     } catch (err) {
       console.error('Error:', err);
-      setError(`Cannot connect to backend. Ensure the server is running at ${API_BASE}`);
+      setError(`Cannot connect to backend (${API_BASE}). Please try again.`);
     } finally {
       setLoading(false);
     }
@@ -343,47 +336,51 @@ const InterviewReady = () => {
     setLoading(true);
     setError(null);
 
-    const total = questions.length;
-    const correctCount = questions.filter(
-      (_, i) => answers[i] === evaluationData[i].correct_answer
-    ).length;
-    const score = Math.round((correctCount / total) * 100);
+    try {
+      const payload = {
+        questions: evaluationData.map(q => q.question),
+        answers: evaluationData.map((_, i) => answers[i] || ''),
+        correct_answers: evaluationData.map(q => q.correct_answer),
+        study_topics: evaluationData.map(q => q.study_topic),
+      };
 
-    let readinessLabel = '';
-    if (score >= 80) {
-      readinessLabel = 'Excellent! Ready for Interviews';
-    } else if (score >= 60) {
-      readinessLabel = 'Good! Keep Practicing';
-    } else {
-      readinessLabel = 'Keep Preparing';
-    }
+      const res = await fetch(`${API_BASE}/interview-ready/evaluate`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
 
-    const mockResult = {
-      readiness_percentage: score,
-      readiness_label: readinessLabel,
-      summary: `You answered ${correctCount} out of ${total} questions correctly.`,
-      userCategory: profile.userCategory,
-      techStack: profile.primarySkill,
-      strengths: evaluationData
-        .filter((_, i) => answers[i] === evaluationData[i].correct_answer)
-        .map(q => q.study_topic),
-      gaps: evaluationData
-        .filter((_, i) => answers[i] !== evaluationData[i].correct_answer)
-        .map(q => q.study_topic)
-    };
+      const data = await res.json();
 
-    setTimeout(() => {
-      setResult(mockResult);
-      setStep(5);
-      
-      // Increment free usage tracker and check if limit reached
-      const { isLimitReached } = incrementUsage();
-      if (isLimitReached) {
-        setShowUpgradeModal(true);
+      if (!res.ok) {
+        setError(data.detail || data.error || 'Failed to evaluate answers. Please try again.');
+        setLoading(false);
+        return;
       }
-      
+
+      const evalResult = {
+        readiness_percentage: data.readiness_percentage,
+        readiness_label: data.readiness_label,
+        summary: `${data.readiness_label} — ${data.readiness_percentage}% readiness score`,
+        userCategory: profile.userCategory,
+        techStack: profile.primarySkill,
+        strengths: data.strengths || [],
+        gaps: data.gaps || [],
+        learning_recommendations: data.learning_recommendations || [],
+      };
+
+      setResult(evalResult);
+      setStep(5);
+
+      const { isLimitReached } = incrementUsage();
+      if (isLimitReached) setShowUpgradeModal(true);
+
+    } catch (err) {
+      console.error('Evaluate error:', err);
+      setError('Cannot connect to backend. Please try again.');
+    } finally {
       setLoading(false);
-    }, 1500);
+    }
   };
 
   const resetAll = () => {

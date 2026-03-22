@@ -6,5 +6,5 @@
  * Access-Control-Allow-Origin. Enable CORS on the Flask backend (e.g. flask-cors)
  * for your frontend origin (e.g. Vite dev server or production domain).
  */
-const PRODUCTION_API_URL = 'https://mentormuni-python-backend-production.up.railway.app';
+const PRODUCTION_API_URL = 'https://mentormuniapi-production.up.railway.app';
 export const API_BASE = import.meta.env.VITE_API_URL ?? PRODUCTION_API_URL;

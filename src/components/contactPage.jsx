@@ -41,7 +41,7 @@ const ContactPage = () => {
     setSubmitStatus({ type: '', message: '' });
 
     try {
-      const response = await fetch(`${API_BASE}/api/contact`, {
+      const response = await fetch(`${API_BASE}/contact/submit`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

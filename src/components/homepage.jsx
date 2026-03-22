@@ -227,6 +227,284 @@ const TESTIMONIALS = [
 ];
 
 /* ═══════════════════════════════════════════════════════════════
+   HERO SCORE CARD
+═══════════════════════════════════════════════════════════════ */
+const CIRC = 2 * Math.PI * 32; // 201.06
+
+const getPill = (score) => {
+  if (score >= 80) return { text: 'Strong',       bg: 'rgba(74,222,128,0.15)',  color: '#4ade80' };
+  if (score >= 65) return { text: 'Almost there', bg: 'rgba(245,158,11,0.15)', color: '#fbbf24' };
+  if (score >= 45) return { text: 'Needs work',   bg: 'rgba(239,68,68,0.15)',  color: '#f87171' };
+  return               { text: 'Critical gap', bg: 'rgba(239,68,68,0.20)',  color: '#ef4444' };
+};
+
+const getVerdict = (score) => {
+  if (score >= 80) return { text: '✓ Interview ready',    bg: 'rgba(74,222,128,0.12)',  color: '#4ade80',  border: 'rgba(74,222,128,0.25)' };
+  if (score >= 60) return { text: '⚠ Needs improvement',  bg: 'rgba(245,158,11,0.12)', color: '#fbbf24',  border: 'rgba(245,158,11,0.25)' };
+  return                  { text: '✗ Not ready yet',       bg: 'rgba(239,68,68,0.12)',  color: '#f87171',  border: 'rgba(239,68,68,0.25)' };
+};
+
+const SEED = { total: 68, dsa: 72, sd: 45, comm: 60, projects: 84 };
+
+function HeroScoreCard() {
+  const [scores, setScores]       = useState({ ...SEED, hasReal: false });
+  const [displayScore, setDisplay] = useState(0);
+  const [animated, setAnimated]   = useState(false);
+  const [ringOffset, setRingOffset] = useState(CIRC);
+  const cardRef = useRef(null);
+
+  // Read localStorage on mount
+  useEffect(() => {
+    const total    = localStorage.getItem('mm_total_score');
+    const dsa      = localStorage.getItem('mm_score_dsa');
+    const sd       = localStorage.getItem('mm_score_sd');
+    const comm     = localStorage.getItem('mm_score_comm');
+    const projects = localStorage.getItem('mm_score_projects');
+    if (total) {
+      setScores({
+        total:    parseInt(total),
+        dsa:      parseInt(dsa)      || SEED.dsa,
+        sd:       parseInt(sd)       || SEED.sd,
+        comm:     parseInt(comm)     || SEED.comm,
+        projects: parseInt(projects) || SEED.projects,
+        hasReal:  true,
+      });
+    }
+  }, []);
+
+  // Trigger animations once via IntersectionObserver
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
+    const io = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) { setAnimated(true); io.disconnect(); }
+    }, { threshold: 0.1 });
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Score ring + counter on animate
+  useEffect(() => {
+    if (!animated) return;
+    const target = scores.total;
+    const finalOffset = CIRC - (target / 100) * CIRC;
+    setTimeout(() => setRingOffset(finalOffset), 300);
+    // Count-up
+    let start = null;
+    const duration = 1000;
+    const step = (ts) => {
+      if (!start) start = ts;
+      const p = Math.min((ts - start) / duration, 1);
+      setDisplay(Math.round(p * target));
+      if (p < 1) requestAnimationFrame(step);
+    };
+    const raf = requestAnimationFrame(step);
+    return () => cancelAnimationFrame(raf);
+  }, [animated, scores.total]);
+
+  const categories = [
+    { label: 'DSA & Problem Solving', score: scores.dsa,      barColor: scores.dsa >= 65 ? '#f59e0b' : '#ef4444', delay: 400 },
+    { label: 'System Design',         score: scores.sd,       barColor: scores.sd  >= 65 ? '#f59e0b' : '#ef4444', delay: 550 },
+    { label: 'Communication & HR',    score: scores.comm,     barColor: scores.comm >= 65 ? '#f59e0b' : '#ef4444', delay: 700 },
+    { label: 'Projects & Experience', score: scores.projects, barColor: '#4ade80',                                 delay: 850 },
+  ];
+
+  const lowest = categories.reduce((m, c) => c.score < m.score ? c : m);
+  const priorityText = () => {
+    if (lowest.label === 'System Design' && lowest.score < 50)
+      return <><span style={{ fontWeight: 600, color: '#fff' }}>System Design:</span>{' '}Learn load balancing + DB indexing. 2 hrs/day × 5 days. Service-based companies ask exactly this — {lowest.score}/100 means you'll lose the offer at this round.</>;
+    if (lowest.label === 'Communication & HR')
+      return <><span style={{ fontWeight: 600, color: '#fff' }}>HR rounds:</span>{' '}Practice 'Tell me about yourself' and 'Why this company?' out loud — not in your head. Interviewers decide in the first 2 minutes.</>;
+    return <><span style={{ fontWeight: 600, color: '#fff' }}>DSA:</span>{' '}Focus on arrays and strings first. Solve 2 medium problems daily. Most service-based companies test exactly these patterns.</>;
+  };
+
+  const verdict = getVerdict(scores.total);
+
+  return (
+    <div ref={cardRef} style={{ width: '100%', maxWidth: 340 }}>
+      <style>{`
+        @keyframes livepulse { 0%,100%{opacity:1} 50%{opacity:0.2} }
+      `}</style>
+
+      {/* ── Identity bar ── */}
+      <div style={{
+        background: 'rgba(99,102,241,0.15)',
+        border: '1px solid rgba(99,102,241,0.25)',
+        borderRadius: '10px 10px 0 0',
+        padding: '10px 14px',
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <div style={{
+            width: 28, height: 28, borderRadius: '50%', background: '#6366f1',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: 11, fontWeight: 700, color: '#fff', flexShrink: 0,
+          }}>
+            {scores.hasReal ? 'ME' : 'RS'}
+          </div>
+          <div>
+            <p style={{ fontSize: 12, fontWeight: 500, color: '#fff', margin: 0 }}>
+              {scores.hasReal ? 'Your result' : 'Rahul S. · 4th Year · CSE'}
+            </p>
+            <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.40)', margin: 0 }}>
+              {scores.hasReal ? 'From your last assessment' : 'VIT Vellore · Targeting SDE roles'}
+            </p>
+          </div>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <span style={{
+            width: 6, height: 6, borderRadius: '50%', background: '#4ade80',
+            display: 'inline-block',
+            animation: 'livepulse 1.5s ease-in-out infinite',
+          }} />
+          <span style={{ fontSize: 10, color: '#4ade80' }}>Live result</span>
+        </div>
+      </div>
+
+      {/* ── Main body ── */}
+      <div style={{
+        background: '#0f1a30',
+        border: '1px solid rgba(99,102,241,0.30)',
+        borderTop: 'none',
+        borderRadius: '0 0 12px 12px',
+        padding: '1.25rem',
+      }}>
+
+        {/* Score row */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.1rem' }}>
+          <div>
+            <p style={{ fontSize: 10, fontWeight: 600, letterSpacing: '0.10em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.30)', marginBottom: 4 }}>
+              Interview Readiness Score
+            </p>
+            <div style={{ display: 'flex', alignItems: 'baseline', gap: 4 }}>
+              <span style={{ fontSize: 52, fontWeight: 800, color: '#f59e0b', lineHeight: 1 }}>
+                {displayScore}
+              </span>
+              <span style={{ fontSize: 14, color: 'rgba(255,255,255,0.30)' }}>/100</span>
+            </div>
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 5,
+              background: verdict.bg, border: `1px solid ${verdict.border}`,
+              color: verdict.color, fontSize: 10, fontWeight: 600,
+              padding: '3px 10px', borderRadius: 6, marginTop: 5,
+            }}>
+              {verdict.text}
+            </div>
+          </div>
+
+          {/* SVG ring */}
+          <svg width="72" height="72" viewBox="0 0 80 80" style={{ flexShrink: 0 }}>
+            <circle cx="40" cy="40" r="32" fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="7" />
+            <circle
+              cx="40" cy="40" r="32" fill="none"
+              stroke="#f59e0b" strokeWidth="7" strokeLinecap="round"
+              strokeDasharray={CIRC}
+              strokeDashoffset={ringOffset}
+              style={{
+                transform: 'rotate(-90deg)', transformOrigin: '50% 50%',
+                transition: 'stroke-dashoffset 1.2s ease 0.3s',
+              }}
+            />
+          </svg>
+        </div>
+
+        {/* Category bars */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {categories.map((cat, idx) => {
+            const pill = getPill(cat.score);
+            return (
+              <div key={cat.label} style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: 8, alignItems: 'center' }}>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
+                    <span style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.55)' }}>{cat.label}</span>
+                    <span style={{ fontSize: 11.5, fontWeight: 600, color: '#fff' }}>{cat.score}</span>
+                  </div>
+                  <div style={{ height: 5, borderRadius: 3, background: 'rgba(255,255,255,0.07)', overflow: 'hidden' }}>
+                    <div style={{
+                      height: '100%', borderRadius: 3,
+                      background: cat.barColor,
+                      width: animated ? `${cat.score}%` : '0%',
+                      transition: `width 0.6s ease ${cat.delay}ms`,
+                    }} />
+                  </div>
+                </div>
+                <span style={{
+                  fontSize: 10, fontWeight: 600, padding: '2px 8px', borderRadius: 5,
+                  background: pill.bg, color: pill.color, whiteSpace: 'nowrap',
+                }}>
+                  {pill.text}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Priority fix box */}
+        <div style={{ marginTop: '1rem', background: '#0a1220', borderRadius: 8, padding: '0.875rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+            <span style={{ fontSize: 13 }}>🎯</span>
+            <span style={{ fontSize: 11, fontWeight: 600, color: '#fff' }}>Your #1 fix this week</span>
+            <span style={{
+              marginLeft: 'auto', fontSize: 9,
+              background: 'rgba(255,255,255,0.06)', color: 'rgba(255,255,255,0.30)',
+              padding: '1px 7px', borderRadius: 4,
+            }}>Week 1 of 3</span>
+          </div>
+          <p style={{ fontSize: 11.5, color: 'rgba(255,255,255,0.45)', lineHeight: 1.6, margin: 0 }}>
+            {priorityText()}
+          </p>
+        </div>
+
+        {/* Proof strip */}
+        <div style={{
+          marginTop: '0.875rem',
+          background: 'rgba(74,222,128,0.07)',
+          border: '1px solid rgba(74,222,128,0.15)',
+          borderRadius: 8, padding: '0.75rem',
+          display: 'flex', alignItems: 'center', gap: 10,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0 }}>
+            <span style={{ fontSize: 14, fontWeight: 700, color: 'rgba(255,255,255,0.25)' }}>52</span>
+            <span style={{ fontSize: 12, color: '#4ade80' }}>→</span>
+            <span style={{ fontSize: 20, fontWeight: 800, color: '#4ade80' }}>84</span>
+          </div>
+          <div style={{ flex: 1 }}>
+            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.40)', lineHeight: 1.5, margin: 0 }}>
+              Priya S., VIT Vellore — similar score, same gaps.
+            </p>
+            <p style={{ fontSize: 11, color: '#4ade80', fontWeight: 600, margin: 0 }}>
+              Placed at TCS in 5 weeks.
+            </p>
+          </div>
+        </div>
+
+        {/* CTA */}
+        <Link
+          to="/start-assessment"
+          style={{
+            marginTop: '0.875rem',
+            display: 'block', width: '100%', boxSizing: 'border-box',
+            background: 'linear-gradient(135deg,#4f46e5,#6366f1)',
+            color: '#fff', border: 'none', borderRadius: 8,
+            padding: 11, fontSize: 13, fontWeight: 700,
+            textAlign: 'center', textDecoration: 'none',
+            transition: 'background 0.15s, transform 0.15s',
+            cursor: 'pointer',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.background = '#4f46e5'; e.currentTarget.style.transform = 'scale(1.01)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = 'linear-gradient(135deg,#4f46e5,#6366f1)'; e.currentTarget.style.transform = 'scale(1)'; }}
+        >
+          Get your actual score — free →
+        </Link>
+        <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.25)', textAlign: 'center', marginTop: 6 }}>
+          5 min · No signup · Instant result
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
    MAIN COMPONENT
 ═══════════════════════════════════════════════════════════════ */
 const HomePage = () => {
@@ -254,7 +532,7 @@ const HomePage = () => {
       <section className="relative min-h-[92vh] flex items-center">
         <div className="pointer-events-none absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-900/20 rounded-full blur-[120px]" />
 
-        <div className="relative max-w-7xl mx-auto px-6 pt-12 pb-20 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
+        <div className="relative max-w-7xl mx-auto px-6 pt-12 pb-10 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full">
 
           {/* ── Left: copy ── */}
           <div>
@@ -280,7 +558,7 @@ const HomePage = () => {
                 ))}
               </div>
               <div>
-                <p className="text-sm font-semibold text-violet-300 leading-none mb-0.5">100+ students</p>
+                <p className="text-sm font-semibold text-violet-300 leading-none mb-0.5">2,400+ students</p>
                 <p className="text-xs text-slate-400">already tested their readiness</p>
               </div>
             </motion.div>
@@ -350,7 +628,7 @@ const HomePage = () => {
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
               </Link>
               <Link
-                to="/mentors"
+                to="/how-it-works"
                 className="text-slate-400 hover:text-white text-sm font-medium transition-colors flex items-center gap-1.5 px-2 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500 rounded"
               >
                 See how it works <ArrowRight size={14} />
@@ -378,46 +656,7 @@ const HomePage = () => {
             transition={{ duration: 0.7, delay: 0.3 }}
             className="hidden lg:flex justify-end"
           >
-            <div className="w-full max-w-xs bg-[#0f1a30] border border-white/10 rounded-2xl p-6 shadow-2xl">
-              <div className="flex items-center justify-between mb-5">
-                <div>
-                  <p className="text-[11px] text-slate-500 uppercase tracking-wider mb-0.5">Example Result</p>
-                  <p className="text-sm font-semibold text-white">Interview Readiness Report</p>
-                </div>
-                <div className="text-right">
-                  <p className="text-3xl font-black text-amber-400 leading-none">68</p>
-                  <p className="text-xs text-slate-500">/100</p>
-                </div>
-              </div>
-
-              <div className="space-y-3 mb-5">
-                {[
-                  { label: 'DSA & Problem Solving', status: 'Needs work', color: 'text-red-400', dot: 'bg-red-500' },
-                  { label: 'System Design', status: 'Critical gap', color: 'text-red-400', dot: 'bg-red-500' },
-                  { label: 'Communication & HR', status: 'Almost there', color: 'text-amber-400', dot: 'bg-amber-500' },
-                ].map(item => (
-                  <div key={item.label} className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className={`w-2 h-2 rounded-full shrink-0 ${item.dot}`} />
-                      <span className="text-xs text-slate-300">{item.label}</span>
-                    </div>
-                    <span className={`text-xs font-medium ${item.color}`}>{item.status}</span>
-                  </div>
-                ))}
-              </div>
-
-              <div className="bg-indigo-500/10 border border-indigo-500/20 rounded-xl p-3 mb-4">
-                <p className="text-xs text-indigo-300 font-semibold mb-1">Your #1 priority this week</p>
-                <p className="text-xs text-slate-400">Complete 15 medium DSA problems — arrays and strings first.</p>
-              </div>
-
-              <Link
-                to="/start-assessment"
-                className="block text-center text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
-              >
-                Get your actual score →
-              </Link>
-            </div>
+            <HeroScoreCard />
           </motion.div>
 
         </div>
