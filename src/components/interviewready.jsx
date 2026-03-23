@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle, ChevronRight, Lock, Mail, Phone, Check, Zap, ShieldCheck, Map, ArrowRight, Users, Star, Clock } from 'lucide-react';
+import { AlertCircle, CheckCircle, ChevronRight, Lock, Mail, Phone, Check, Zap, ShieldCheck, Map, ArrowRight, Star, Clock } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { API_BASE } from '../config';
 import AIAnalysisLoader from './AIAnalysisLoader';
@@ -456,63 +456,9 @@ const InterviewReady = () => {
 
           {/* Subheadline — specific, not fluffy */}
           <p className="text-center text-lg text-slate-300 leading-relaxed mb-8 max-w-xl mx-auto">
-            5 questions tailored to your role and tech stack. Get your readiness score, your weak spots,
+            Questions tailored to your role and tech stack. Get your readiness score, your weak spots,
             and a personalized study plan — in 5 minutes.
           </p>
-
-          {/* 3-stat row */}
-          <div className="grid grid-cols-3 gap-3 mb-8">
-            {[
-              { value: '100+', label: 'students tested', Icon: Users },
-              { value: '94%', label: 'found gaps they missed', Icon: AlertCircle },
-              { value: '6 wks', label: 'avg. time to first offer', Icon: Clock },
-            ].map(({ value, label, Icon }) => (
-              <div key={label} className="bg-white/[0.03] border border-white/8 rounded-xl p-4 text-center">
-                <Icon size={14} className="text-violet-400 mx-auto mb-1.5" />
-                <p className="text-xl font-black text-violet-300 leading-none mb-1">{value}</p>
-                <p className="text-xs text-slate-400 leading-tight">{label}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Journey steps preview */}
-          <div className="bg-white/[0.03] border border-white/8 rounded-2xl p-5 mb-6">
-            <p className="text-xs text-slate-500 uppercase tracking-wider mb-3 font-medium">What happens next</p>
-            <div className="flex items-center gap-1 flex-wrap">
-              {[
-                'Pick your role',
-                'Your tech stack',
-                '5 questions',
-                'Your score + plan',
-                'Save your report',
-              ].map((s, i, arr) => (
-                <React.Fragment key={s}>
-                  <span className="flex items-center gap-1.5 text-xs text-slate-300">
-                    <span className="w-5 h-5 rounded-full bg-violet-600/25 border border-violet-500/40 text-violet-400 text-[10px] font-bold flex items-center justify-center shrink-0">{i + 1}</span>
-                    {s}
-                  </span>
-                  {i < arr.length - 1 && <ChevronRight size={12} className="text-slate-700 shrink-0" />}
-                </React.Fragment>
-              ))}
-            </div>
-          </div>
-
-          {/* Sample question preview */}
-          <div className="bg-white/[0.03] border border-white/8 rounded-2xl p-5 mb-6 relative overflow-hidden">
-            <p className="text-xs text-slate-500 uppercase tracking-wider mb-3 font-medium">Example question</p>
-            <div className="flex items-start gap-3 mb-4">
-              <span className="w-6 h-6 rounded-full bg-violet-600/25 border border-violet-500/40 text-violet-400 text-[10px] font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
-              <p className="text-sm text-white font-medium leading-relaxed">
-                Can you explain the difference between a HashMap and a TreeMap, and when would you choose one over the other?
-              </p>
-            </div>
-            <div className="flex gap-3">
-              <div className="flex-1 py-2.5 rounded-xl border-2 border-emerald-500/30 bg-emerald-500/10 text-center text-sm font-bold text-emerald-400">Yes, I can</div>
-              <div className="flex-1 py-2.5 rounded-xl border-2 border-white/10 bg-white/5 text-center text-sm font-bold text-slate-400">Not sure</div>
-            </div>
-            {/* blur overlay to tease */}
-            <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-[#0B0F19] to-transparent" />
-          </div>
 
           {/* Feature cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
@@ -529,30 +475,6 @@ const InterviewReady = () => {
                 <p className="text-slate-300 text-sm leading-relaxed">{desc}</p>
               </div>
             ))}
-          </div>
-
-          {/* Featured student testimonial */}
-          <div className="bg-white/[0.03] border border-white/8 rounded-2xl p-5 mb-8">
-            <div className="flex items-start gap-4">
-              <div className="w-11 h-11 rounded-full bg-indigo-500 flex items-center justify-center text-base font-bold text-white shrink-0">R</div>
-              <div>
-                <p className="text-sm text-slate-300 leading-relaxed mb-2">
-                  "Scored 42 on my first attempt. The gap analysis pointed me straight at System Design and OS basics — two topics I'd completely skipped. Six weeks later I cleared Infosys and got the offer."
-                </p>
-                <div className="flex items-center gap-2 flex-wrap">
-                  <p className="text-xs font-semibold text-white">Rahul V.</p>
-                  <span className="text-slate-600 text-xs">·</span>
-                  <p className="text-xs text-slate-500">NIT Trichy</p>
-                  <span className="text-slate-600 text-xs">·</span>
-                  <span className="text-xs text-green-400 font-medium">✓ Placed at Infosys · ₹6.5 LPA</span>
-                </div>
-                <div className="flex items-center gap-2 mt-2">
-                  <span className="text-xs bg-red-500/15 text-red-400 font-semibold px-2 py-0.5 rounded">42/100</span>
-                  <ChevronRight size={12} className="text-slate-600" />
-                  <span className="text-xs bg-green-500/15 text-green-400 font-semibold px-2 py-0.5 rounded">79/100</span>
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Trust pills — ABOVE the CTA */}
@@ -577,9 +499,6 @@ const InterviewReady = () => {
             Check My Readiness Score — Free
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </button>
-          <p className="text-center text-xs text-slate-600">
-            Join 100+ students who already know where they stand
-          </p>
 
         </div>
       </div>

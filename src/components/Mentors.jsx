@@ -162,7 +162,7 @@ const TIMELINE_STEPS = [
     cardBg: 'rgba(99,102,241,0.08)', cardBorder: 'rgba(99,102,241,0.2)', dotColor: '#6366f1',
     connectorGradient: 'linear-gradient(180deg,rgba(99,102,241,0.5),rgba(236,72,153,0.5))',
     title: 'You take the free assessment',
-    body: '5 questions tailored to your role and tech stack. Score across DSA, System Design, Communication, and Projects.',
+    body: 'Questions tailored to your role and tech stack. Score across DSA, System Design, Communication, and Projects.',
     items: [
       'Score 80+ → matched to senior engineer mentor for advanced prep',
       'Score 50–79 → matched to recently placed mentor who fixed same gaps',
