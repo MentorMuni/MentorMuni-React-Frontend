@@ -7,6 +7,7 @@ import {
   BarChart3, Cpu, TrendingUp,
   MessageSquare, GraduationCap, Building2, Users,
   Mail, Phone, Check, X,
+  BookOpen, Code2, Layers, Sparkles, CalendarClock,
 } from 'lucide-react';
 
 /* ─── Welcome popup ─────────────────────────────────────────── */
@@ -308,7 +309,7 @@ const HomePage = () => {
               }} />
               <span className="w-1.5 h-1.5 rounded-full bg-indigo-400 animate-pulse shrink-0 relative z-10" />
               <span className="text-xs font-semibold text-indigo-300 tracking-wide relative z-10">
-                Interview Readiness Platform for 3rd and 4th Year Engineering Students
+                Interview readiness for 2nd–4th year engineering students
               </span>
             </motion.div>
 
@@ -512,6 +513,145 @@ const HomePage = () => {
               ))}
             </div>
           </motion.div>
+        </div>
+      </section>
+
+      {/* ════════════════ 2ND & 3RD YEAR — EARLY INTERVIEW PREP (indigo / violet — matches site) ════════════════ */}
+      <section className="relative py-16 px-6 border-t border-white/5 overflow-hidden">
+        <div className="pointer-events-none absolute -top-24 right-0 h-80 w-80 rounded-full bg-indigo-600/15 blur-[100px]" />
+        <div className="pointer-events-none absolute bottom-0 left-1/4 h-64 w-64 rounded-full bg-violet-600/12 blur-[90px]" />
+        <div className="max-w-5xl mx-auto relative">
+          <div className="grid lg:grid-cols-[1.05fr_1fr] gap-10 lg:gap-14 items-center">
+            <FadeUp>
+              <div className="flex flex-wrap items-center gap-2 mb-4">
+                <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1.5">
+                  <GraduationCap size={14} className="text-indigo-400" />
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-indigo-200/90">2nd year</span>
+                </div>
+                <div className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/10 px-3 py-1.5">
+                  <GraduationCap size={14} className="text-violet-400" />
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-violet-200/90">3rd year</span>
+                </div>
+              </div>
+              <h2 className="text-2xl md:text-3xl font-black text-white leading-tight mb-3">
+                Prep for the topics you&apos;re studying —{' '}
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-violet-300 to-fuchsia-300">
+                  not someday, from now.
+                </span>
+              </h2>
+              <div className="grid sm:grid-cols-2 gap-3 mb-5 max-w-xl">
+                <div className="rounded-xl border border-indigo-500/25 bg-indigo-500/[0.06] px-3.5 py-3">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-indigo-300 mb-1">2nd year focus</p>
+                  <p className="text-xs text-slate-400 leading-snug">
+                    Foundations, core subjects, first projects — see how interview-style thinking maps to what you&apos;re in class now.
+                  </p>
+                </div>
+                <div className="rounded-xl border border-violet-500/25 bg-violet-500/[0.06] px-3.5 py-3">
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-violet-300 mb-1">3rd year focus</p>
+                  <p className="text-xs text-slate-400 leading-snug">
+                    Internships &amp; sharper tech rounds — benchmark DSA, stack, and HR on the timeline ahead of drives.
+                  </p>
+                </div>
+              </div>
+              <p className="text-slate-400 text-sm leading-relaxed mb-5 max-w-xl">
+                Interviews reward{' '}
+                <span className="text-slate-300">clarity on what you already cover</span> (DSA, core CS, projects) — and honest gaps.
+                Map how interview-ready you are on the stack you&apos;re preparing, then double down where it counts.
+              </p>
+              <ul className="space-y-2.5 mb-7">
+                {[
+                  { Icon: BookOpen, text: 'See readiness against the topics on your plate — not generic advice', accent: 'indigo' },
+                  { Icon: Layers, text: 'Know what to fix first while you still have semesters ahead', accent: 'violet' },
+                  { Icon: CalendarClock, text: '~5 minutes · Free · No signup — check in anytime as your prep evolves', accent: 'indigo' },
+                ].map(({ Icon, text, accent }) => (
+                  <li key={text} className="flex items-start gap-3 text-sm text-slate-400">
+                    <span
+                      className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg border ${
+                        accent === 'violet'
+                          ? 'border-violet-500/25 bg-violet-500/10'
+                          : 'border-indigo-500/25 bg-indigo-500/10'
+                      }`}
+                    >
+                      <Icon size={14} className={accent === 'violet' ? 'text-violet-400' : 'text-indigo-400'} />
+                    </span>
+                    <span>{text}</span>
+                  </li>
+                ))}
+              </ul>
+              <button
+                type="button"
+                onClick={goToStartAssessment}
+                className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-900/35 transition-all hover:from-indigo-500 hover:to-violet-500"
+              >
+                Check prep on my topics — free
+                <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
+              </button>
+              <p className="mt-3 text-[11px] text-slate-600">
+                When you start, choose the profile that fits your goal —{' '}
+                <span className="text-indigo-400/90">3rd Year Student</span> for internship-focused prep (works for many 2nd-year
+                students mapping early), or <span className="text-violet-400/90">4th Year</span> when placement season is live.
+              </p>
+            </FadeUp>
+
+            <FadeUp delay={0.12}>
+              <div className="relative">
+                <div
+                  className="absolute -inset-px rounded-3xl bg-gradient-to-br from-indigo-500/35 via-violet-500/25 to-fuchsia-500/20 opacity-90 blur-sm"
+                  aria-hidden
+                />
+                <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0f1a30]/95 p-6 shadow-2xl shadow-black/40 backdrop-blur-sm">
+                  <div className="mb-4 flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <Sparkles size={16} className="text-amber-400" />
+                      <span className="text-xs font-bold text-white">Your prep map</span>
+                    </div>
+                    <span className="rounded-full border border-indigo-500/25 bg-indigo-500/10 px-2.5 py-0.5 text-[10px] font-semibold text-indigo-200">
+                      Sample snapshot
+                    </span>
+                  </div>
+                  <p className="mb-5 text-[11px] leading-relaxed text-slate-500">
+                    The real assessment scores you across skills you select — here&apos;s how topic focus can look.
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {[
+                      { icon: Code2, label: 'DSA & problem solving', w: 72, hue: 'from-indigo-500 to-violet-400' },
+                      { icon: Layers, label: 'OS / DBMS / CN', w: 58, hue: 'from-violet-500 to-fuchsia-400' },
+                      { icon: Cpu, label: 'Projects & stack', w: 65, hue: 'from-indigo-400 to-cyan-400' },
+                      { icon: MessageSquare, label: 'HR & communication', w: 48, hue: 'from-fuchsia-500 to-pink-400' },
+                    ].map((row, i) => (
+                      <div
+                        key={row.label}
+                        className="rounded-2xl border border-white/8 bg-white/[0.03] p-3 transition-transform hover:scale-[1.02]"
+                        style={{ animationDelay: `${i * 80}ms` }}
+                      >
+                        <div className="mb-2 flex items-center gap-2">
+                          <row.icon size={14} className="text-slate-400" />
+                          <span className="text-[10px] font-semibold leading-tight text-slate-300">{row.label}</span>
+                        </div>
+                        <div className="h-1.5 overflow-hidden rounded-full bg-white/10">
+                          <div
+                            className={`h-full rounded-full bg-gradient-to-r ${row.hue}`}
+                            style={{ width: `${row.w}%` }}
+                          />
+                        </div>
+                        <p className="mt-1.5 text-[9px] text-slate-600">Directional — your report is personalized</p>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 flex flex-wrap gap-2 border-t border-white/5 pt-4">
+                    {['OOPs', 'SQL', 'Git', 'Aptitude', 'System basics'].map((tag) => (
+                      <span
+                        key={tag}
+                        className="rounded-lg border border-white/10 bg-white/[0.04] px-2.5 py-1 text-[10px] font-medium text-slate-400"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </FadeUp>
+          </div>
         </div>
       </section>
 
