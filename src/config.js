@@ -9,3 +9,7 @@
 const PRODUCTION_API_URL = 'https://mentormuniapi-production.up.railway.app';
 /** Override with VITE_API_URL for local backend. If POST /interview-ready/plan returns 500, fix the server (LLM keys, quotas, timeouts). */
 export const API_BASE = import.meta.env.VITE_API_URL ?? PRODUCTION_API_URL;
+
+/** Full URL for POST resume ATS analysis (multipart: file + target_role). Override with VITE_RESUME_ATS_URL. */
+export const RESUME_ATS_URL =
+  import.meta.env.VITE_RESUME_ATS_URL ?? `${API_BASE}/api/resume/ats`;

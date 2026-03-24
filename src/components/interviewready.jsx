@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import {
   AlertCircle, CheckCircle, ChevronRight, Lock, Mail, Phone, Check, Zap, ShieldCheck, Map, ArrowRight, Star, Clock,
   TrendingUp, Target, Sparkles, BarChart3, AlertTriangle, CheckCircle2, Lightbulb, Cpu, User,
-  Share2, Linkedin, Trophy,
+  Share2, Linkedin, Trophy, Building2, Briefcase,
 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { API_BASE } from '../config';
@@ -300,7 +300,10 @@ const InterviewReady = () => {
     userCategory: '',
     primarySkill: '',
     email: '',
-    contactNumber: ''
+    contactNumber: '',
+    collegeName: '',
+    experienceYears: '',
+    currentOrganization: '',
   });
 
   const [questions, setQuestions] = useState([]);
@@ -479,6 +482,53 @@ const InterviewReady = () => {
     }
   };
 
+  const validateContext = () => {
+    const errors = {};
+    if (profile.userCategory === 'professional') {
+      const raw = String(profile.experienceYears ?? '').trim();
+      if (!raw) {
+        errors.experienceYears = 'Enter years of experience';
+      } else {
+        const n = parseFloat(raw, 10);
+        if (Number.isNaN(n) || n < 0 || n > 50) {
+          errors.experienceYears = 'Enter a number between 0 and 50';
+        }
+      }
+      if (!profile.currentOrganization?.trim()) {
+        errors.currentOrganization = 'Current organization is required';
+      }
+    } else if (profile.userCategory && profile.userCategory !== 'professional') {
+      if (!profile.collegeName?.trim()) {
+        errors.collegeName = 'College or university name is required';
+      }
+    }
+
+    const emailStr = String(profile.email ?? '').trim();
+    if (!emailStr) {
+      errors.email = 'Email is required';
+    } else if (!validateEmail(emailStr)) {
+      errors.email = 'Invalid email format';
+    }
+
+    const phoneStr = String(profile.contactNumber ?? '').trim();
+    if (!phoneStr) {
+      errors.phone = 'Phone number is required';
+    } else if (!validatePhone(phoneStr)) {
+      errors.phone = 'Enter a valid phone number (at least 10 digits)';
+    }
+
+    setValidationErrors((prev) => {
+      const next = { ...prev };
+      delete next.collegeName;
+      delete next.experienceYears;
+      delete next.currentOrganization;
+      delete next.email;
+      delete next.phone;
+      return { ...next, ...errors };
+    });
+    return Object.keys(errors).length === 0;
+  };
+
   const validateForm = () => {
     const errors = {};
 
@@ -507,15 +557,25 @@ const InterviewReady = () => {
     setError(null);
 
     const primarySkill = profile.primarySkill.trim().slice(0, PLAN_PRIMARY_SKILL_MAX);
+    const expParsed =
+      profile.userCategory === 'professional'
+        ? Math.min(50, Math.max(0, parseFloat(String(profile.experienceYears).trim(), 10) || 0))
+        : 0;
     const payload = {
       user_type:
         API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'student',
       primary_skill: primarySkill,
-      experience_years: profile.userCategory === 'professional' ? 1 : 0,
+      experience_years: expParsed,
       target_role: profile.targetRole?.trim() || undefined,
       email: profile.email?.trim() || undefined,
       phone: profile.contactNumber?.trim() || undefined,
     };
+    if (profile.userCategory === 'professional' && profile.currentOrganization?.trim()) {
+      payload.current_organization = profile.currentOrganization.trim();
+    }
+    if (profile.userCategory && profile.userCategory !== 'professional' && profile.collegeName?.trim()) {
+      payload.college_name = profile.collegeName.trim();
+    }
 
     const controller = new AbortController();
     const timeoutId = window.setTimeout(() => controller.abort(), PLAN_FETCH_TIMEOUT_MS);
@@ -532,7 +592,7 @@ const InterviewReady = () => {
 
       if (!res.ok) {
         if (res.status === 429) {
-          setStep(6);
+          setStep(7);
           return;
         }
         const msg = formatPlanApiError(data);
@@ -550,7 +610,7 @@ const InterviewReady = () => {
 
       setQuestions(data.evaluation_plan.map((q) => q.question));
       setEvaluationData(data.evaluation_plan);
-      setStep(4);
+      setStep(5);
     } catch (err) {
       console.error('Plan request:', err);
       if (err.name === 'AbortError') {
@@ -604,7 +664,7 @@ const InterviewReady = () => {
       };
 
       setResult(evalResult);
-      setStep(5);
+      setStep(6);
 
       const { isLimitReached } = incrementUsage();
       if (isLimitReached) setShowUpgradeModal(true);
@@ -619,7 +679,15 @@ const InterviewReady = () => {
 
   const resetAll = () => {
     setStep(0);
-    setProfile({ userCategory: '', primarySkill: '', email: '', contactNumber: '' });
+    setProfile({
+      userCategory: '',
+      primarySkill: '',
+      email: '',
+      contactNumber: '',
+      collegeName: '',
+      experienceYears: '',
+      currentOrganization: '',
+    });
     setContactInfo({ email: '', phone: '' });
     setAnswers({});
     setValidationErrors({});
@@ -920,7 +988,7 @@ const InterviewReady = () => {
       },
     ];
 
-    const ASSESSMENT_STEPS = 5;
+    const ASSESSMENT_STEPS = 6;
     const currentStepIndex = 1;
 
     return (
@@ -959,8 +1027,17 @@ const InterviewReady = () => {
                   <button
                     key={option.value}
                     onClick={() => {
-                      setProfile({...profile, userCategory: option.value});
-                      setValidationErrors({...validationErrors, userCategory: ''});
+                      setProfile((p) => {
+                        const next = { ...p, userCategory: option.value };
+                        if (option.value === 'professional') {
+                          next.collegeName = '';
+                        } else {
+                          next.experienceYears = '';
+                          next.currentOrganization = '';
+                        }
+                        return next;
+                      });
+                      setValidationErrors({ ...validationErrors, userCategory: '' });
                     }}
                     className={`p-5 rounded-2xl text-left transition-all border-2 group relative ${
                       selected
@@ -1007,7 +1084,7 @@ const InterviewReady = () => {
                     : 'cursor-not-allowed border border-white/8 bg-white/[0.04] text-slate-600'
                 }`}
               >
-                Continue to Skills
+                Continue
                 <ChevronRight size={16} />
               </button>
             </div>
@@ -1018,10 +1095,235 @@ const InterviewReady = () => {
     );
   }
 
-  // ========== STEP 3: SKILLS / TECH STACK ==========
+  // ========== STEP 3: CONTEXT (COLLEGE VS PROFESSIONAL) ==========
   if (step === 3) {
-    const ASSESSMENT_STEPS = 5;
+    const ASSESSMENT_STEPS = 6;
     const currentStepIndex = 2;
+    const isPro = profile.userCategory === 'professional';
+    const roleLabel =
+      DISPLAY_ROLE_BY_CATEGORY[profile.userCategory] ||
+      profile.userCategory.replace(/_/g, ' ');
+
+    return (
+      <div className="min-h-screen bg-[#050b18] py-10 px-4 sm:px-6 lg:px-8 font-sans">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-[#0f1a30] rounded-3xl shadow-2xl p-8 md:p-10 border border-white/8 animate-in slide-in-from-bottom-4 duration-500">
+            <div className="mb-6">
+              <div
+                className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden"
+                role="progressbar"
+                aria-label="Assessment progress"
+                aria-valuenow={currentStepIndex}
+                aria-valuemin={1}
+                aria-valuemax={ASSESSMENT_STEPS}
+              >
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400 transition-[width] duration-300"
+                  style={{ width: `${(currentStepIndex / ASSESSMENT_STEPS) * 100}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="mb-6 flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1.5 text-xs font-semibold text-indigo-200">
+                Profile: <span className="ml-1 text-white">{roleLabel}</span>
+              </span>
+            </div>
+
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight">
+              {isPro ? 'Your experience & organization' : 'Your college or university'}
+            </h2>
+            <p className="text-slate-400 text-base mb-8 leading-relaxed max-w-2xl">
+              {isPro
+                ? 'We use this to calibrate question difficulty and seniority—same as how real interviews adapt to your level.'
+                : 'Helps us tailor examples and expectations to your academic context (campus drives, coursework, projects).'}
+            </p>
+
+            <div className="space-y-6">
+              {isPro ? (
+                <>
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-2 text-sm font-bold text-slate-200">
+                      <Briefcase size={16} className="text-indigo-400" />
+                      Years of experience <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                      type="number"
+                      min={0}
+                      max={50}
+                      step={0.5}
+                      inputMode="decimal"
+                      value={profile.experienceYears}
+                      onChange={(e) => {
+                        setProfile((p) => ({ ...p, experienceYears: e.target.value }));
+                        setValidationErrors((prev) =>
+                          prev.experienceYears ? { ...prev, experienceYears: '' } : prev
+                        );
+                      }}
+                      placeholder="e.g. 2.5"
+                      className={`w-full rounded-xl border bg-white/5 px-4 py-3 text-white outline-none transition-all placeholder:text-slate-500 ${
+                        validationErrors.experienceYears
+                          ? 'border-red-500/50 bg-red-500/10'
+                          : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30'
+                      }`}
+                    />
+                    {validationErrors.experienceYears && (
+                      <div className="flex items-center gap-2 text-xs font-medium text-red-400">
+                        <AlertCircle size={14} />
+                        {validationErrors.experienceYears}
+                      </div>
+                    )}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-2 text-sm font-bold text-slate-200">
+                      <Building2 size={16} className="text-indigo-400" />
+                      Current organization <span className="text-red-400">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      value={profile.currentOrganization}
+                      onChange={(e) => {
+                        setProfile((p) => ({ ...p, currentOrganization: e.target.value }));
+                        setValidationErrors((prev) =>
+                          prev.currentOrganization ? { ...prev, currentOrganization: '' } : prev
+                        );
+                      }}
+                      placeholder="Company or employer name"
+                      className={`w-full rounded-xl border bg-white/5 px-4 py-3 text-white outline-none transition-all placeholder:text-slate-500 ${
+                        validationErrors.currentOrganization
+                          ? 'border-red-500/50 bg-red-500/10'
+                          : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30'
+                      }`}
+                    />
+                    {validationErrors.currentOrganization && (
+                      <div className="flex items-center gap-2 text-xs font-medium text-red-400">
+                        <AlertCircle size={14} />
+                        {validationErrors.currentOrganization}
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div className="space-y-2">
+                  <label className="flex items-center gap-2 text-sm font-bold text-slate-200">
+                    <Building2 size={16} className="text-indigo-400" />
+                    College / university name <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={profile.collegeName}
+                    onChange={(e) => {
+                      setProfile((p) => ({ ...p, collegeName: e.target.value }));
+                      setValidationErrors((prev) => (prev.collegeName ? { ...prev, collegeName: '' } : prev));
+                    }}
+                    placeholder="e.g. IIT Madras, VIT Vellore, state university…"
+                    className={`w-full rounded-xl border bg-white/5 px-4 py-3 text-white outline-none transition-all placeholder:text-slate-500 ${
+                      validationErrors.collegeName
+                        ? 'border-red-500/50 bg-red-500/10'
+                        : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30'
+                    }`}
+                  />
+                  {validationErrors.collegeName && (
+                    <div className="flex items-center gap-2 text-xs font-medium text-red-400">
+                      <AlertCircle size={14} />
+                      {validationErrors.collegeName}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-8 space-y-5 rounded-2xl border border-white/10 bg-white/[0.03] p-5 md:p-6">
+              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Email &amp; phone</p>
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-sm font-bold text-slate-200">
+                  <Mail size={16} className="text-indigo-400" />
+                  Email address <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  value={profile.email}
+                  onChange={(e) => {
+                    setProfile((p) => ({ ...p, email: e.target.value }));
+                    setValidationErrors((prev) => (prev.email ? { ...prev, email: '' } : prev));
+                  }}
+                  placeholder="you@example.com"
+                  className={`w-full rounded-xl border bg-white/5 px-4 py-3 text-white outline-none transition-all placeholder:text-slate-500 ${
+                    validationErrors.email
+                      ? 'border-red-500/50 bg-red-500/10'
+                      : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30'
+                  }`}
+                />
+                {validationErrors.email && (
+                  <div className="flex items-center gap-2 text-xs font-medium text-red-400">
+                    <AlertCircle size={14} />
+                    {validationErrors.email}
+                  </div>
+                )}
+              </div>
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-sm font-bold text-slate-200">
+                  <Phone size={16} className="text-indigo-400" />
+                  Phone number <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="tel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  value={profile.contactNumber}
+                  onChange={(e) => {
+                    setProfile((p) => ({ ...p, contactNumber: e.target.value }));
+                    setValidationErrors((prev) => (prev.phone ? { ...prev, phone: '' } : prev));
+                  }}
+                  placeholder="+91 9876543210"
+                  className={`w-full rounded-xl border bg-white/5 px-4 py-3 text-white outline-none transition-all placeholder:text-slate-500 ${
+                    validationErrors.phone
+                      ? 'border-red-500/50 bg-red-500/10'
+                      : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30'
+                  }`}
+                />
+                {validationErrors.phone && (
+                  <div className="flex items-center gap-2 text-xs font-medium text-red-400">
+                    <AlertCircle size={14} />
+                    {validationErrors.phone}
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-slate-500">For your report and follow-up only.</p>
+            </div>
+
+            <div className="mt-8 flex gap-3">
+              <button
+                type="button"
+                onClick={() => setStep(2)}
+                className="rounded-xl border border-white/8 px-6 py-3 text-sm font-bold text-slate-400 transition-all hover:border-white/20 hover:bg-white/5 hover:text-white"
+              >
+                ← Back
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  if (!validateContext()) return;
+                  setStep(4);
+                }}
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-500/25 transition-all hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98]"
+              >
+                Continue to skills
+                <ChevronRight size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ========== STEP 4: SKILLS / TECH STACK ==========
+  if (step === 4) {
+    const ASSESSMENT_STEPS = 6;
+    const currentStepIndex = 3;
 
     const roleLabel =
       DISPLAY_ROLE_BY_CATEGORY[profile.userCategory] ||
@@ -1114,7 +1416,7 @@ const InterviewReady = () => {
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
-                  onClick={() => setStep(2)}
+                  onClick={() => setStep(3)}
                   className="rounded-xl border border-white/8 px-6 py-3 text-sm font-bold text-slate-400 transition-all hover:border-white/20 hover:bg-white/5 hover:text-white"
                 >
                   ← Back
@@ -1141,8 +1443,8 @@ const InterviewReady = () => {
     );
   }
 
-  // ========== STEP 4: QUIZ ==========
-  if (step === 4) {
+  // ========== STEP 5: QUIZ ==========
+  if (step === 5) {
     return (
       <div className="min-h-screen bg-[#050b18] py-12 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-3xl mx-auto">
@@ -1231,8 +1533,8 @@ const InterviewReady = () => {
     );
   }
 
-  // ========== STEP 5: LOADING STATE ==========
-  if (step === 5 && loading && !result) {
+  // ========== STEP 6: LOADING STATE ==========
+  if (step === 6 && loading && !result) {
     return (
       <AIAnalysisLoader
         onComplete={() => {
@@ -1243,8 +1545,8 @@ const InterviewReady = () => {
     );
   }
 
-  // ========== STEP 5: RESULTS ==========
-  if (step === 5 && result) {
+  // ========== STEP 6: RESULTS ==========
+  if (step === 6 && result) {
     const pct = result.readiness_percentage;
     const strengthCount = result.strengths?.length || 0;
     const gapCount = result.gaps?.length || 0;
@@ -1566,7 +1868,13 @@ const InterviewReady = () => {
                   onClick={() => {
                     setStep(2);
                     setAnswers({});
-                    setProfile({ ...profile, primarySkill: '' });
+                    setProfile({
+                      ...profile,
+                      primarySkill: '',
+                      collegeName: '',
+                      experienceYears: '',
+                      currentOrganization: '',
+                    });
                   }}
                   className="w-full rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 py-4 text-base font-bold text-white shadow-lg shadow-indigo-500/25 transition-all hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98]"
                 >
@@ -1576,7 +1884,7 @@ const InterviewReady = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    setStep(6);
+                    setStep(7);
                     setAuthMode(null);
                   }}
                   className="w-full rounded-2xl bg-indigo-600 py-4 text-base font-bold text-white shadow-lg shadow-indigo-500/20 transition-all hover:bg-indigo-500 active:scale-[0.98]"
@@ -1598,8 +1906,8 @@ const InterviewReady = () => {
     );
   }
 
-  // ========== STEP 6: AUTHENTICATION CHECK ==========
-  if (step === 6) {
+  // ========== STEP 7: AUTHENTICATION CHECK ==========
+  if (step === 7) {
     return (
       <div className="min-h-screen bg-[#050b18] py-12 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-2xl mx-auto">
@@ -1620,7 +1928,7 @@ const InterviewReady = () => {
               <button 
                 onClick={() => {
                   setAuthMode('signin');
-                  setStep(7);
+                  setStep(8);
                 }}
                 className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95"
               >
@@ -1629,7 +1937,7 @@ const InterviewReady = () => {
               <button 
                 onClick={() => {
                   setAuthMode('signup');
-                  setStep(7);
+                  setStep(8);
                 }}
                 className="w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-slate-300 font-bold py-4 rounded-2xl transition-all"
               >
@@ -1648,8 +1956,8 @@ const InterviewReady = () => {
     );
   }
 
-  // ========== STEP 7: SIGNUP / SIGNIN ==========
-  if (step === 7) {
+  // ========== STEP 8: SIGNUP / SIGNIN ==========
+  if (step === 8) {
     if (authMode === 'signin') {
       return (
         <div className="min-h-screen bg-[#050b18] py-12 px-4 sm:px-6 lg:px-8 font-sans">
@@ -1660,7 +1968,7 @@ const InterviewReady = () => {
 
               <form onSubmit={(e) => {
                 e.preventDefault();
-                setStep(8);
+                setStep(9);
                 setIsUserSignedUp(true);
               }} className="space-y-6">
                 <div>
@@ -1690,7 +1998,7 @@ const InterviewReady = () => {
                 <div className="flex gap-4">
                   <button 
                     type="button"
-                    onClick={() => setStep(6)}
+                    onClick={() => setStep(7)}
                     className="flex-1 py-3 font-bold text-slate-300 hover:text-white hover:bg-white/5 rounded-2xl transition-all border border-white/10"
                   >
                     Back
@@ -1723,7 +2031,7 @@ const InterviewReady = () => {
 
             <form onSubmit={(e) => {
               e.preventDefault();
-              setStep(8);
+              setStep(9);
               setIsUserSignedUp(true);
             }} className="space-y-6">
               <div>
@@ -1789,7 +2097,7 @@ const InterviewReady = () => {
               <div className="flex gap-4">
                 <button 
                   type="button"
-                  onClick={() => setStep(6)}
+                  onClick={() => setStep(7)}
                   className="flex-1 py-3 font-bold text-slate-300 hover:text-white hover:bg-white/5 rounded-2xl transition-all border border-white/10"
                 >
                   Back
@@ -1812,8 +2120,8 @@ const InterviewReady = () => {
     );
   }
 
-  // ========== STEP 8: PAYMENT PLANS ==========
-  if (step === 8 && isUserSignedUp) {
+  // ========== STEP 9: PAYMENT PLANS ==========
+  if (step === 9 && isUserSignedUp) {
     const plans = [
       {
         id: 'plan1',
@@ -1959,7 +2267,7 @@ const InterviewReady = () => {
 
           <div className="flex gap-4 justify-center mt-8">
             <button
-              onClick={() => setStep(5)}
+              onClick={() => setStep(6)}
               className="bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 font-bold py-3 px-8 rounded-2xl transition-all"
             >
               ← Back
@@ -1977,7 +2285,7 @@ const InterviewReady = () => {
   }
 
   // ========== LOADING STATE ==========
-  if (loading && step !== 6 && step !== 7 && step !== 8) {
+  if (loading && step !== 7 && step !== 8 && step !== 9) {
     return (
       <div className="min-h-screen bg-[#050b18] py-12 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-2xl mx-auto">

@@ -4,6 +4,93 @@ import {
   UploadCloud, FileText, X, ChevronRight, CheckCircle,
   AlertCircle, Zap, Target, TrendingUp, Shield,
 } from 'lucide-react';
+import { RESUME_ATS_URL } from '../config';
+
+/**
+ * Backend: POST RESUME_ATS_URL — multipart/form-data
+ *   - file: the resume (.pdf, .doc, .docx)
+ *   - target_role: string (e.g. "Software Engineer")
+ *
+ * Server extracts text, scores ATS / keywords / formatting / impact, returns JSON (snake_case ok).
+ * See normalizeAtsResponse() for field mapping.
+ */
+
+const ATS_ALLOWED_EXTENSIONS = new Set(['pdf', 'doc', 'docx']);
+const ATS_ALLOWED_MIME = new Set([
+  'application/pdf',
+  'application/msword', // .doc
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // .docx
+]);
+const ATS_MAX_BYTES = 5 * 1024 * 1024;
+const ATS_ACCEPT_ATTR =
+  '.pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+
+function clampPct(n, fallback = 0) {
+  const x = Number(n);
+  if (!Number.isFinite(x)) return fallback;
+  return Math.max(0, Math.min(100, Math.round(x)));
+}
+
+function asStringArray(v) {
+  if (Array.isArray(v)) return v.map((x) => String(x).trim()).filter(Boolean);
+  if (typeof v === 'string' && v.trim()) return [v.trim()];
+  return [];
+}
+
+/** Maps API JSON (camelCase or snake_case) to UI result shape */
+function normalizeAtsResponse(raw) {
+  if (!raw || typeof raw !== 'object') {
+    throw new Error('Invalid response from server');
+  }
+
+  const overall = raw.overall_score ?? raw.score ?? raw.total_score ?? raw.ats_score;
+  const ats = raw.ats ?? raw.ats_compatibility ?? raw.ats_score;
+  const keywords = raw.keywords ?? raw.keyword_match ?? raw.keyword_score;
+  const formatting = raw.formatting ?? raw.formatting_score;
+  const impact = raw.impact ?? raw.impact_score;
+
+  const sub = [ats, keywords, formatting, impact].filter((x) => Number.isFinite(Number(x)));
+  const avgFallback = sub.length ? Math.round(sub.reduce((a, b) => a + Number(b), 0) / sub.length) : 55;
+
+  const score = clampPct(overall ?? avgFallback, avgFallback);
+  const summary =
+    String(raw.summary ?? raw.message ?? raw.overview ?? '').trim() ||
+    'Here is your ATS-style analysis and keyword feedback for the selected role.';
+
+  return {
+    score,
+    ats: clampPct(ats ?? score - 8, 50),
+    keywords: clampPct(keywords ?? score - 5, 45),
+    formatting: clampPct(formatting ?? score + 5, 60),
+    impact: clampPct(impact ?? score - 10, 45),
+    summary,
+    matched: asStringArray(raw.matched ?? raw.matched_keywords ?? raw.keywords_found),
+    missing: asStringArray(raw.missing ?? raw.missing_keywords ?? raw.keyword_gaps ?? raw.gaps),
+    fixes: asStringArray(raw.fixes ?? raw.recommendations ?? raw.suggestions ?? raw.to_do),
+    strengths: asStringArray(raw.strengths ?? raw.positives ?? raw.whats_working),
+  };
+}
+
+async function parseJsonResponse(res) {
+  const text = await res.text();
+  if (!text) return {};
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { _parseError: true, detail: text.slice(0, 200) };
+  }
+}
+
+function errorMessageFromBody(data, status) {
+  if (!data || typeof data !== 'object') return `Request failed (${status})`;
+  if (data.detail) {
+    if (typeof data.detail === 'string') return data.detail;
+    if (Array.isArray(data.detail)) {
+      return data.detail.map((d) => (typeof d === 'string' ? d : d.msg || JSON.stringify(d))).join(' ');
+    }
+  }
+  return data.message || data.error || `Request failed (${status})`;
+}
 
 /* ─── ROLE OPTIONS ───────────────────────────────────────────── */
 const ROLES = [
@@ -72,15 +159,32 @@ export default function ResumeAnalyzer() {
   const [dragging, setDragging] = useState(false);
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState(null);
+  const [fileError, setFileError] = useState(null);
+  const [apiError, setApiError] = useState(null);
   const inputRef = useRef(null);
+
+  function isAllowedResumeFile(f) {
+    const ext = (f.name.split('.').pop() || '').toLowerCase();
+    if (!ATS_ALLOWED_EXTENSIONS.has(ext)) return false;
+    // Extension is required; MIME can be missing or octet-stream for some .doc uploads
+    if (!f.type || f.type === 'application/octet-stream') return true;
+    return ATS_ALLOWED_MIME.has(f.type);
+  }
 
   function handleFile(f) {
     if (!f) return;
-    if (f.size > 5 * 1024 * 1024) { alert('File too large. Max 5MB.'); return; }
-    const ext = f.name.split('.').pop().toLowerCase();
-    if (!['pdf', 'doc', 'docx'].includes(ext)) { alert('Only PDF or DOCX files are supported.'); return; }
+    setFileError(null);
+    if (f.size > ATS_MAX_BYTES) {
+      setFileError('File too large. Maximum size is 5MB.');
+      return;
+    }
+    if (!isAllowedResumeFile(f)) {
+      setFileError('Only PDF, DOC, or DOCX files are allowed. Please convert other formats and try again.');
+      return;
+    }
     setFile(f);
     setResult(null);
+    setApiError(null);
   }
 
   function onInputChange(e) { handleFile(e.target.files?.[0]); }
@@ -89,33 +193,55 @@ export default function ResumeAnalyzer() {
     handleFile(e.dataTransfer.files?.[0]);
   }
 
-  function runAnalysis() {
+  async function runAnalysis() {
     if (!file || !role || analyzing) return;
     setAnalyzing(true);
     setResult(null);
-    setTimeout(() => {
-      const score = Math.max(48, Math.min(91, 58 + Math.floor(Math.random() * 32)));
-      setResult({
-        score,
-        ats: Math.max(42, score - Math.floor(Math.random() * 12)),
-        keywords: Math.max(38, score - Math.floor(Math.random() * 18)),
-        formatting: Math.min(96, score + Math.floor(Math.random() * 12)),
-        impact: Math.max(35, score - Math.floor(Math.random() * 22)),
-        summary: score > 74
-          ? 'Your resume is well-structured and aligns closely with the target role. A few quick wins below will push your score further.'
-          : 'Your resume has a good foundation but is missing key signals that ATS systems and recruiters look for in this role.',
-        matched: ['Java', 'REST APIs', 'Git', 'Problem Solving', 'OOP Concepts'],
-        missing: ['System Design', 'SQL/Database', 'CI/CD', 'Docker'],
-        fixes: [
-          'Add metrics to project bullets — "Built X that reduced Y by Z%" scores significantly higher.',
-          `Include ${role}-specific keywords from job descriptions in your skills and summary sections.`,
-          'Quantify internship contributions — numbers make achievements credible and memorable.',
-          'Add a 2-line professional summary at the top tailored to your target role.',
-        ],
-        strengths: ['Clean formatting', 'Relevant project section', 'Internship experience listed'],
+    setApiError(null);
+
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    formData.append('target_role', role);
+
+    try {
+      const res = await fetch(RESUME_ATS_URL, {
+        method: 'POST',
+        body: formData,
       });
+
+      const data = await parseJsonResponse(res);
+
+      if (!res.ok) {
+        setApiError(errorMessageFromBody(data, res.status));
+        return;
+      }
+
+      if (data._parseError) {
+        setApiError('Unexpected response from server. Please try again.');
+        return;
+      }
+
+      const normalized = normalizeAtsResponse(data);
+      if (!normalized.fixes.length) {
+        normalized.fixes = [
+          'Add measurable outcomes to your bullets (%, revenue, latency, users).',
+          `Align skills and summary with common ${role} job descriptions.`,
+          'Use clear section headings so ATS parsers can segment your resume.',
+        ];
+      }
+      if (!normalized.matched.length) normalized.matched = ['—'];
+      if (!normalized.missing.length) normalized.missing = ['—'];
+      if (!normalized.strengths.length) normalized.strengths = ['—'];
+      setResult(normalized);
+    } catch (err) {
+      setApiError(
+        err?.message?.includes('Failed to fetch')
+          ? 'Cannot reach the server. Check your network or try again later.'
+          : err?.message || 'Something went wrong. Please try again.'
+      );
+    } finally {
       setAnalyzing(false);
-    }, 1800 + Math.random() * 600);
+    }
   }
 
   const canAnalyze = file && role && !analyzing;
@@ -173,7 +299,7 @@ export default function ResumeAnalyzer() {
             <div className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden">
               <div className="px-5 pt-5 pb-4 border-b border-white/8">
                 <h2 className="text-sm font-black text-white">Upload Resume</h2>
-                <p className="text-xs text-slate-500 mt-0.5">PDF or DOCX · Max 5MB</p>
+                <p className="text-xs text-slate-500 mt-0.5">PDF, DOC, or DOCX only · Max 5MB</p>
               </div>
               <div className="p-5">
                 {!file ? (
@@ -203,7 +329,10 @@ export default function ResumeAnalyzer() {
                     >
                       Choose File
                     </button>
-                    <input ref={inputRef} type="file" accept=".pdf,.doc,.docx" onChange={onInputChange} className="sr-only" />
+                    <input ref={inputRef} type="file" accept={ATS_ACCEPT_ATTR} onChange={onInputChange} className="sr-only" />
+                    {fileError && (
+                      <p className="text-xs font-medium text-red-400 text-center max-w-sm">{fileError}</p>
+                    )}
                   </div>
                 ) : (
                   <div className="flex items-center gap-3 p-4 rounded-xl border border-indigo-500/25 bg-indigo-500/8">
@@ -215,7 +344,7 @@ export default function ResumeAnalyzer() {
                       <p className="text-xs text-slate-500">{(file.size / 1024).toFixed(0)} KB · Ready to analyse</p>
                     </div>
                     <button
-                      onClick={() => { setFile(null); setResult(null); }}
+                      onClick={() => { setFile(null); setResult(null); setFileError(null); }}
                       className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg hover:bg-white/10 text-slate-500 hover:text-white transition-colors"
                     >
                       <X size={15} />
@@ -272,6 +401,15 @@ export default function ResumeAnalyzer() {
                 </>
               )}
             </button>
+
+            {apiError && (
+              <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                <div className="flex gap-2">
+                  <AlertCircle size={18} className="shrink-0 mt-0.5 text-red-400" />
+                  <span className="leading-relaxed">{apiError}</span>
+                </div>
+              </div>
+            )}
 
             {!file && !role && (
               <p className="text-xs text-slate-600 text-center">Upload your resume and select a role to get started</p>
