@@ -1,11 +1,94 @@
 import React, { useState, useEffect } from 'react';
-import { AlertCircle, CheckCircle, ChevronRight, Lock, Mail, Phone, Check, Zap, ShieldCheck, Map, ArrowRight, Star, Clock } from 'lucide-react';
+import { motion } from 'framer-motion';
+import {
+  AlertCircle, CheckCircle, ChevronRight, Lock, Mail, Phone, Check, Zap, ShieldCheck, Map, ArrowRight, Star, Clock,
+  TrendingUp, Target, Sparkles, BarChart3, AlertTriangle, CheckCircle2, Lightbulb, Cpu, User,
+  Share2, Linkedin, Trophy,
+} from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { API_BASE } from '../config';
 import AIAnalysisLoader from './AIAnalysisLoader';
-import FreeUsageCounter, { useFreeUsageTracker } from './FreeUsageCounter';
+import { useFreeUsageTracker } from './FreeUsageCounter';
 import UpgradePromptModal from './UpgradePromptModal';
 const FREE_TIER_LIMIT = 1;
+
+/** Same as Swagger: generate_plan_interview_ready_plan_post → POST /interview-ready/plan */
+const INTERVIEW_PLAN_PATH = '/interview-ready/plan';
+
+/**
+ * PlanRequest.user_type — must match backend validation exactly:
+ * student | working professional | 3rd Year Student | 4th Year Student
+ */
+const API_USER_TYPE_BY_CATEGORY = {
+  '3rd_year': '3rd Year Student',
+  '4th_year': '4th Year Student',
+  'recent_graduate': 'student',
+  professional: 'working professional',
+};
+
+/** Pretty labels for UI only (not sent to API) */
+const DISPLAY_ROLE_BY_CATEGORY = {
+  '3rd_year': '3rd Year Student',
+  '4th_year': '4th Year Student',
+  'recent_graduate': 'Recent Graduate',
+  professional: 'Working Professional',
+};
+
+/** PlanRequest.primary_skill maxLength in OpenAPI schema */
+const PLAN_PRIMARY_SKILL_MAX = 100;
+
+function formatPlanApiError(data) {
+  if (!data) return 'Failed to generate questions';
+  if (typeof data.detail === 'string') return data.detail;
+  if (Array.isArray(data.detail)) {
+    return data.detail
+      .map((d) => (typeof d === 'string' ? d : d.msg || JSON.stringify(d)))
+      .join(' ');
+  }
+  return data.error || data.message || 'Failed to generate questions';
+}
+
+/** Avoid crash when server returns HTML or plain text on 5xx */
+async function parseResponseJson(res) {
+  const text = await res.text();
+  if (!text) return {};
+  try {
+    return JSON.parse(text);
+  } catch {
+    return {
+      detail: `Unexpected response from server. ${text.slice(0, 180)}${text.length > 180 ? '…' : ''}`,
+    };
+  }
+}
+
+const PLAN_FETCH_TIMEOUT_MS = 120000;
+
+/** User-facing copy only — never show raw HTTP status codes (e.g. 500) in the UI */
+function explainPlanHttpError(status, apiMessage) {
+  const base = (apiMessage || '').trim();
+
+  if (status === 429) {
+    return base || 'Too many requests. Please wait and try again.';
+  }
+
+  if (status === 500 || status === 502 || status === 503 || status === 504) {
+    if (/failed to generate plan/i.test(base)) {
+      return "We couldn't generate your questions right now. Please try again in a minute. If this keeps happening, the assessment service may need maintenance.";
+    }
+    return "Something went wrong on our side. Please try again in a few minutes.";
+  }
+
+  if (status >= 500) {
+    return 'Service is temporarily unavailable. Please try again later.';
+  }
+
+  // 4xx: show API validation / business message when useful
+  if (status === 422 || status === 400) {
+    return base || 'Please check your input and try again.';
+  }
+
+  return base || 'Something went wrong. Please try again.';
+}
 
 /** HashRouter: #/start-assessment?entry=tools */
 function readToolsEntryFromHash() {
@@ -71,6 +154,119 @@ const InputField = ({ label, type, name, value, onChange, placeholder, error, ma
     )}
   </div>
 );
+
+const resultsListContainer = {
+  hidden: { opacity: 0 },
+  show: { opacity: 1, transition: { staggerChildren: 0.07, delayChildren: 0.1 } },
+};
+const resultsListItem = {
+  hidden: { opacity: 0, x: -16 },
+  show: { opacity: 1, x: 0, transition: { type: 'spring', stiffness: 320, damping: 28 } },
+};
+
+/** SVG ring + animated stroke (readiness %) */
+function ReadinessScoreRing({ pct }) {
+  const size = 216;
+  const stroke = 12;
+  const r = (size - stroke) / 2;
+  const c = 2 * Math.PI * r;
+  const offset = c * (1 - pct / 100);
+  const tier =
+    pct >= 75 ? { from: '#34d399', to: '#10b981', glow: 'rgba(16,185,129,0.45)' } :
+    pct >= 50 ? { from: '#fbbf24', to: '#f59e0b', glow: 'rgba(245,158,11,0.4)' } :
+    { from: '#fb7185', to: '#f43f5e', glow: 'rgba(244,63,94,0.35)' };
+
+  return (
+    <div className="relative mx-auto flex h-[240px] w-[240px] items-center justify-center">
+      <div
+        className="absolute inset-0 rounded-full blur-2xl opacity-60"
+        style={{ background: `radial-gradient(circle, ${tier.glow} 0%, transparent 70%)` }}
+      />
+      <svg width={size} height={size} className="-rotate-90 transform drop-shadow-lg">
+        <defs>
+          <linearGradient id="readinessRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor={tier.from} />
+            <stop offset="100%" stopColor={tier.to} />
+          </linearGradient>
+        </defs>
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={stroke} />
+        <motion.circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          stroke="url(#readinessRingGrad)"
+          strokeWidth={stroke}
+          strokeLinecap="round"
+          strokeDasharray={c}
+          initial={{ strokeDashoffset: c }}
+          animate={{ strokeDashoffset: offset }}
+          transition={{ duration: 1.35, ease: [0.22, 1, 0.36, 1] }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+        <motion.span
+          initial={{ scale: 0.5, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ delay: 0.35, type: 'spring', stiffness: 260, damping: 18 }}
+          className="text-5xl font-black tabular-nums tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-white to-slate-300"
+        >
+          {pct}%
+        </motion.span>
+        <span className="mt-1 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">Readiness</span>
+      </div>
+    </div>
+  );
+}
+
+function FactorBar({ label, value, icon: Icon, variant = 'indigo', delay = 0 }) {
+  const v = Math.min(100, Math.max(0, value));
+  const grad =
+    variant === 'emerald'
+      ? 'linear-gradient(90deg, #10b981, #34d399)'
+      : variant === 'amber'
+        ? 'linear-gradient(90deg, #f59e0b, #fbbf24)'
+        : 'linear-gradient(90deg, #6366f1, #22d3ee)';
+  const iconCls =
+    variant === 'emerald' ? 'text-emerald-400' : variant === 'amber' ? 'text-amber-400' : 'text-indigo-400';
+  return (
+    <div className="space-y-1.5">
+      <div className="flex items-center justify-between gap-2 text-xs">
+        <span className="flex items-center gap-1.5 font-semibold text-slate-300">
+          {Icon && <Icon size={13} className={iconCls} />}
+          {label}
+        </span>
+        <span className="tabular-nums text-slate-500">{Math.round(v)}%</span>
+      </div>
+      <div className="h-2 overflow-hidden rounded-full bg-white/[0.06]">
+        <motion.div
+          className="h-full rounded-full"
+          initial={{ width: 0 }}
+          animate={{ width: `${v}%` }}
+          transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
+          style={{ background: grad }}
+        />
+      </div>
+    </div>
+  );
+}
+
+/** Public link to start the same assessment (HashRouter + Vite base). */
+function getInterviewReadinessShareUrl() {
+  if (typeof window === 'undefined') return '';
+  const base = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '/');
+  return `${window.location.origin}${base}#/start-assessment`;
+}
+
+function buildWhatsAppChallengeMessage(pct, readinessLabel) {
+  const url = getInterviewReadinessShareUrl();
+  return (
+    `I scored ${pct}% on MentorMuni Interview Readiness (${readinessLabel}).\n\n` +
+    `Think you can beat me? Same free 5-minute quiz — no signup.\n\n` +
+    `Challenge your batchmates:\n${url}\n\n` +
+    `Placement prep · Engineering students`
+  );
+}
 
 const InterviewReady = () => {
   const navigate = useNavigate();
@@ -292,10 +488,8 @@ const InterviewReady = () => {
 
     if (!profile.primarySkill.trim()) {
       errors.primarySkill = 'Primary tech stack is required';
-    } else if (profile.primarySkill.trim().length < 2) {
-      errors.primarySkill = 'Tech stack must be at least 2 characters';
-    } else if (profile.primarySkill.trim().length > 2000) {
-      errors.primarySkill = 'Tech stack cannot exceed 2000 characters';
+    } else if (profile.primarySkill.trim().length > PLAN_PRIMARY_SKILL_MAX) {
+      errors.primarySkill = `Keep your stack to ${PLAN_PRIMARY_SKILL_MAX} characters or less (API limit)`;
     }
 
     setValidationErrors(errors);
@@ -312,47 +506,62 @@ const InterviewReady = () => {
     setLoading(true);
     setError(null);
 
+    const primarySkill = profile.primarySkill.trim().slice(0, PLAN_PRIMARY_SKILL_MAX);
     const payload = {
-      user_type: profile.userCategory,
-      primary_skill: profile.primarySkill.trim(),
+      user_type:
+        API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'student',
+      primary_skill: primarySkill,
+      experience_years: profile.userCategory === 'professional' ? 1 : 0,
       target_role: profile.targetRole?.trim() || undefined,
       email: profile.email?.trim() || undefined,
       phone: profile.contactNumber?.trim() || undefined,
     };
 
+    const controller = new AbortController();
+    const timeoutId = window.setTimeout(() => controller.abort(), PLAN_FETCH_TIMEOUT_MS);
+
     try {
-      const res = await fetch(`${API_BASE}/interview-ready/plan`, {
+      const res = await fetch(`${API_BASE}${INTERVIEW_PLAN_PATH}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify(payload),
+        signal: controller.signal,
       });
 
-      const data = await res.json();
+      const data = await parseResponseJson(res);
 
       if (!res.ok) {
         if (res.status === 429) {
           setStep(6);
-          setLoading(false);
           return;
         }
-        setError(data.detail || data.error || 'Failed to generate questions');
-        setLoading(false);
+        const msg = formatPlanApiError(data);
+        if (import.meta.env.DEV) {
+          console.warn('[interview-ready/plan] error', res.status, data);
+        }
+        setError(explainPlanHttpError(res.status, msg));
         return;
       }
 
       if (!data.evaluation_plan || !data.evaluation_plan.length) {
         setError('No questions returned from server. Please try again.');
-        setLoading(false);
         return;
       }
 
-      setQuestions(data.evaluation_plan.map(q => q.question));
+      setQuestions(data.evaluation_plan.map((q) => q.question));
       setEvaluationData(data.evaluation_plan);
       setStep(4);
     } catch (err) {
-      console.error('Error:', err);
-      setError(`Cannot connect to backend (${API_BASE}). Please try again.`);
+      console.error('Plan request:', err);
+      if (err.name === 'AbortError') {
+        setError(
+          `No response after ${PLAN_FETCH_TIMEOUT_MS / 1000}s. Generating questions can be slow — try again, or check your network.`
+        );
+      } else {
+        setError(`Cannot reach ${API_BASE}. Check your connection or try again later.`);
+      }
     } finally {
+      window.clearTimeout(timeoutId);
       setLoading(false);
     }
   };
@@ -422,14 +631,17 @@ const InterviewReady = () => {
     setReportSent(false);
   };
 
-  const ProgressBar = () => (
-    <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden mb-8">
-      <div 
-        className="bg-gradient-to-r from-indigo-500 to-cyan-500 h-full transition-all duration-500 ease-out"
-        style={{ width: `${(Object.keys(answers).length / questions.length) * 100}%` }}
-      />
-    </div>
-  );
+  const ProgressBar = () => {
+    const total = questions.length || 1;
+    return (
+      <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden mb-8">
+        <div
+          className="h-full bg-gradient-to-r from-indigo-500 to-cyan-500 transition-all duration-500 ease-out"
+          style={{ width: `${(Object.keys(answers).length / total) * 100}%` }}
+        />
+      </div>
+    );
+  };
 
   // ========== STEP 0: LANDING ==========
   if (step === 0) {
@@ -708,40 +920,37 @@ const InterviewReady = () => {
       },
     ];
 
-    const STEP_LABELS = ['Role', 'Skills', 'Questions', 'Score', 'Roadmap'];
+    const ASSESSMENT_STEPS = 5;
+    const currentStepIndex = 1;
 
     return (
       <div className="min-h-screen bg-[#050b18] py-10 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-4xl mx-auto">
           <div className="bg-[#0f1a30] rounded-3xl shadow-2xl p-8 md:p-10 border border-white/8">
 
-            {/* ── Progress bar ── */}
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-3">
-                <p className="text-xs font-semibold text-violet-400">Step 1 of 5</p>
-                <p className="text-xs text-slate-500">Interview Readiness Check</p>
-              </div>
-              <div className="flex items-center gap-1.5">
-                {STEP_LABELS.map((label, i) => (
-                  <React.Fragment key={label}>
-                    <div className="flex flex-col items-center gap-1">
-                      <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all ${
-                        i === 0 ? 'bg-gradient-to-br from-indigo-600 to-violet-600 text-white shadow-sm shadow-indigo-500/30' : 'bg-white/5 border border-white/10 text-slate-500'
-                      }`}>
-                        {i === 0 ? <Check size={12} /> : i + 1}
-                      </div>
-                      <span className={`text-[10px] font-medium hidden sm:block ${i === 0 ? 'text-violet-400' : 'text-slate-600'}`}>{label}</span>
-                    </div>
-                    {i < STEP_LABELS.length - 1 && (
-                      <div className={`flex-1 h-px mb-4 ${i < 0 ? 'bg-indigo-600' : 'bg-white/8'}`} />
-                    )}
-                  </React.Fragment>
-                ))}
+            {/* Progress bar only — no step numbers or labels */}
+            <div className="mb-6">
+              <div
+                className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden"
+                role="progressbar"
+                aria-label="Assessment progress"
+                aria-valuenow={currentStepIndex}
+                aria-valuemin={1}
+                aria-valuemax={ASSESSMENT_STEPS}
+              >
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400 transition-[width] duration-300"
+                  style={{ width: `${(currentStepIndex / ASSESSMENT_STEPS) * 100}%` }}
+                />
               </div>
             </div>
 
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-1">Who are you?</h2>
-            <p className="text-slate-300 text-base mb-8">Select your role to get questions matched to your situation.</p>
+            <h2 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight">
+              Select your professional profile
+            </h2>
+            <p className="text-slate-400 text-base mb-8 leading-relaxed">
+              Choose the option that best reflects your current stage. We’ll tailor questions to your context.
+            </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               {ROLES.map(option => {
@@ -789,12 +998,13 @@ const InterviewReady = () => {
                 ← Back
               </button>
               <button
+                type="button"
                 disabled={!profile.userCategory}
                 onClick={() => setStep(3)}
-                className={`flex-1 flex items-center justify-center gap-2 font-bold py-3 rounded-xl transition-all text-sm ${
+                className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all ${
                   profile.userCategory
-                    ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20 active:scale-[0.98]'
-                    : 'bg-white/5 text-slate-600 cursor-not-allowed border border-white/8'
+                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-lg shadow-indigo-500/25 hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98]'
+                    : 'cursor-not-allowed border border-white/8 bg-white/[0.04] text-slate-600'
                 }`}
               >
                 Continue to Skills
@@ -808,29 +1018,60 @@ const InterviewReady = () => {
     );
   }
 
-  // ========== STEP 3: PROFILE FORM ==========
+  // ========== STEP 3: SKILLS / TECH STACK ==========
   if (step === 3) {
+    const ASSESSMENT_STEPS = 5;
+    const currentStepIndex = 2;
+
+    const roleLabel =
+      DISPLAY_ROLE_BY_CATEGORY[profile.userCategory] ||
+      profile.userCategory.replace(/_/g, ' ');
+
     return (
-      <div className="min-h-screen bg-[#050b18] py-12 px-4 sm:px-6 lg:px-8 font-sans">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-[#0f1a30] border border-white/10 rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
-            <div className="mb-8">
-              <div className="flex items-start justify-between mb-4 gap-4 flex-wrap">
-                <div>
-                  <h2 className="text-3xl font-black text-white">What's Your Tech Stack?</h2>
-                  <p className="text-slate-400 text-base mt-2">
-                    Tell us about your primary technologies for <span className="text-indigo-400 font-semibold">{profile.userCategory.replace('_', ' ')}</span>
-                  </p>
-                </div>
-                <div className="text-sm font-bold text-cyan-400 bg-cyan-500/20 border border-cyan-500/50 px-4 py-2 rounded-full whitespace-nowrap">
-                  {usageInfo.remaining_attempts}/{FREE_TIER_LIMIT} attempts left
-                </div>
+      <div className="min-h-screen bg-[#050b18] py-10 px-4 sm:px-6 lg:px-8 font-sans">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-[#0f1a30] rounded-3xl shadow-2xl p-8 md:p-10 border border-white/8 animate-in slide-in-from-bottom-4 duration-500">
+            {/* Progress — matches role step */}
+            <div className="mb-6">
+              <div
+                className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden"
+                role="progressbar"
+                aria-label="Assessment progress"
+                aria-valuenow={currentStepIndex}
+                aria-valuemin={1}
+                aria-valuemax={ASSESSMENT_STEPS}
+              >
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400 transition-[width] duration-300"
+                  style={{ width: `${(currentStepIndex / ASSESSMENT_STEPS) * 100}%` }}
+                />
               </div>
             </div>
-            
+
+            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+              <div className="min-w-0">
+                <h2 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight">
+                  Your skills &amp; tech stack
+                </h2>
+                <p className="text-slate-400 text-base leading-relaxed max-w-2xl">
+                  We&apos;ll call the plan API to build <span className="text-slate-300 font-semibold">15 Yes/No questions</span>{' '}
+                  matched to your stack. List the languages, frameworks, and tools you&apos;re most comfortable discussing (
+                  {PLAN_PRIMARY_SKILL_MAX} characters max).
+                </p>
+              </div>
+              <div className="flex shrink-0 flex-wrap items-center gap-2 sm:justify-end">
+                <span className="inline-flex items-center rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1.5 text-xs font-semibold text-indigo-200">
+                  Profile: <span className="ml-1 text-white">{roleLabel}</span>
+                </span>
+                <span className="inline-flex items-center rounded-full border border-cyan-500/35 bg-cyan-500/10 px-3 py-1.5 text-xs font-bold text-cyan-300">
+                  {usageInfo.remaining_attempts}/{FREE_TIER_LIMIT} free runs
+                </span>
+              </div>
+            </div>
+
             <form onSubmit={handleGetReadinessPlan} className="space-y-6">
               <InputField
-                label="Primary Tech Stack / Skills"
+                label="Primary technologies"
                 type="textarea"
                 name="primarySkill"
                 value={profile.primarySkill}
@@ -839,41 +1080,58 @@ const InterviewReady = () => {
                   setProfile((prev) => ({ ...prev, primarySkill: v }));
                   setValidationErrors((prev) => (prev.primarySkill ? { ...prev, primarySkill: '' } : prev));
                 }}
-                placeholder="e.g. React, Node.js, Python, Java, Django, Express.js, TypeScript, etc."
+                placeholder="e.g. React, TypeScript, Node.js, PostgreSQL"
                 error={validationErrors.primarySkill}
-                maxLength={2000}
+                maxLength={PLAN_PRIMARY_SKILL_MAX}
                 showCharCount={true}
                 autoComplete="off"
               />
 
-              <div className="bg-cyan-500/10 border border-cyan-500/30 rounded-xl p-4">
-                <p className="text-sm text-cyan-400">
-                  <span className="font-semibold">Pro Tip:</span> List the technologies you work with most frequently. Separate multiple technologies with commas for better accuracy.
+              <div className="rounded-xl border border-cyan-500/25 bg-cyan-500/[0.06] p-4">
+                <p className="text-sm leading-relaxed text-cyan-100/90">
+                  <span className="font-semibold text-cyan-300">Tip:</span> Separate items with commas. Mention what you&apos;d
+                  talk about in a technical interview — we match question difficulty to this list.
                 </p>
               </div>
 
               {error && (
-                <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-400 text-sm font-medium flex items-start gap-3">
-                  <AlertCircle size={18} className="flex-shrink-0 mt-0.5" />
-                  <div>{error}</div>
+                <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm font-medium text-red-300">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle size={18} className="mt-0.5 flex-shrink-0 text-red-400" />
+                    <div className="min-w-0 flex-1 leading-relaxed">{error}</div>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={loading || usageInfo.remaining_attempts <= 0}
+                    onClick={() => handleGetReadinessPlan({ preventDefault() {} })}
+                    className="mt-3 w-full rounded-lg border border-red-500/40 bg-red-500/10 py-2 text-xs font-bold text-red-200 transition-colors hover:bg-red-500/20 disabled:opacity-50 sm:w-auto sm:px-4"
+                  >
+                    Try again
+                  </button>
                 </div>
               )}
 
-              <div className="flex gap-4 pt-2">
-                <button 
-                  type="button" 
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
                   onClick={() => setStep(2)}
-                  className="flex-1 py-3 font-bold text-slate-300 hover:text-white hover:bg-white/5 rounded-2xl transition-all border border-white/10 hover:border-white/20"
+                  className="rounded-xl border border-white/8 px-6 py-3 text-sm font-bold text-slate-400 transition-all hover:border-white/20 hover:bg-white/5 hover:text-white"
                 >
-                  Back
+                  ← Back
                 </button>
-                <button 
+                <button
                   type="submit"
                   disabled={loading || usageInfo.remaining_attempts <= 0}
-                  className="flex-[2] bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 disabled:from-slate-600 disabled:to-slate-700 text-white font-bold py-3 rounded-2xl shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-500/25 transition-all hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98] disabled:cursor-not-allowed disabled:from-slate-600 disabled:to-slate-700 disabled:shadow-none"
                 >
-                  Start Assessment
-                  <ChevronRight size={18} />
+                  {loading ? (
+                    'Preparing your questions…'
+                  ) : (
+                    <>
+                      Generate questions &amp; continue
+                      <ChevronRight size={18} />
+                    </>
+                  )}
                 </button>
               </div>
             </form>
@@ -892,8 +1150,23 @@ const InterviewReady = () => {
             <div className="mb-8">
               <div className="flex justify-between items-end mb-6 gap-4 flex-wrap">
                 <div>
-                  <h2 className="text-3xl font-black text-white">Interview Readiness Quiz</h2>
-                  <p className="text-slate-400 text-sm mt-2">Based on <span className="text-cyan-400 font-semibold">{profile.primarySkill.split(',')[0].trim()}</span> for <span className="text-indigo-400 font-semibold">{profile.userCategory.replace('_', ' ')}</span></p>
+                  <div className="mb-2 flex flex-wrap items-center gap-2">
+                    <h2 className="text-3xl font-black text-white">Interview Readiness Quiz</h2>
+                    <span className="rounded-full border border-indigo-500/40 bg-indigo-500/15 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-indigo-300">
+                      Yes / No · {questions.length} questions
+                    </span>
+                  </div>
+                  <p className="text-slate-400 text-sm mt-1">
+                    Based on{' '}
+                    <span className="font-semibold text-cyan-400">
+                      {(profile.primarySkill || '').split(',')[0].trim() || 'your stack'}
+                    </span>{' '}
+                    for{' '}
+                    <span className="font-semibold text-indigo-400">
+                      {DISPLAY_ROLE_BY_CATEGORY[profile.userCategory] ||
+                        profile.userCategory.replace(/_/g, ' ')}
+                    </span>
+                  </p>
                 </div>
                 <div className="text-right bg-white/5 border border-white/10 rounded-xl px-4 py-3 min-w-fit">
                   <div className="text-2xl font-black bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">{Object.keys(answers).length}/{questions.length}</div>
@@ -901,15 +1174,6 @@ const InterviewReady = () => {
                 </div>
               </div>
               <ProgressBar />
-            </div>
-
-            {/* Free Usage Counter */}
-            <div className="mb-8 p-4 bg-gradient-to-r from-indigo-600/20 to-cyan-600/20 border border-indigo-500/30 rounded-lg">
-              <FreeUsageCounter
-                toolName="interview_readiness"
-                onLimitReached={() => setShowUpgradeModal(true)}
-                compact={false}
-              />
             </div>
 
             <div className="space-y-8 mb-8 max-h-[60vh] overflow-y-auto pr-4">
@@ -981,149 +1245,354 @@ const InterviewReady = () => {
 
   // ========== STEP 5: RESULTS ==========
   if (step === 5 && result) {
+    const pct = result.readiness_percentage;
+    const strengthCount = result.strengths?.length || 0;
+    const gapCount = result.gaps?.length || 0;
+    const topicTotal = Math.max(strengthCount + gapCount, 1);
+    const strengthSignal = Math.round((strengthCount / topicTotal) * 100);
+    const gapPressure = Math.round((gapCount / topicTotal) * 100);
+    const band =
+      pct >= 75
+        ? { label: 'Strong band', sub: 'Keep momentum — polish the last gaps.' }
+        : pct >= 50
+          ? { label: 'Growth band', sub: 'Structured practice moves this score quickly.' }
+          : { label: 'Build band', sub: 'High upside — lock fundamentals below.' };
+
     return (
-      <div className="min-h-screen bg-[#050b18] py-12 px-4 sm:px-6 lg:px-8 font-sans">
-        <div className="max-w-3xl mx-auto space-y-6 animate-in zoom-in-95 duration-700">
-          <div className="bg-[#0f1a30] border border-white/10 rounded-3xl shadow-2xl p-8 backdrop-blur text-center">
-            <div className="mb-8">
-              <div className={`text-7xl font-black mb-6 bg-clip-text text-transparent bg-gradient-to-r ${result.readiness_percentage >= 70 ? 'from-emerald-400 to-emerald-500' : 'from-amber-400 to-amber-500'}`}>
-                {result.readiness_percentage}%
+      <div className="min-h-screen bg-[#050b18] py-10 px-4 sm:px-6 lg:px-8 font-sans">
+        <div className="max-w-3xl mx-auto space-y-6">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0f1a30] p-6 shadow-2xl shadow-black/40 sm:p-10"
+          >
+            <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-indigo-600/15 blur-3xl" />
+            <div className="pointer-events-none absolute -bottom-20 -left-20 h-56 w-56 rounded-full bg-cyan-500/10 blur-3xl" />
+
+            <div className="relative grid gap-10 lg:grid-cols-[1fr_1.15fr] lg:items-center lg:text-left">
+              <div className="flex flex-col items-center lg:items-start">
+                <ReadinessScoreRing pct={pct} />
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.5 }}
+                  className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-slate-400"
+                >
+                  <Sparkles size={12} className="text-amber-400" />
+                  {band.label}
+                </motion.div>
+                <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">{result.readiness_label}</h2>
+                <p className="mt-2 max-w-md text-slate-400">{band.sub}</p>
+                <p className="mt-3 text-sm leading-relaxed text-slate-500">{result.summary}</p>
               </div>
-              <h2 className="text-4xl font-black text-white mb-3">{result.readiness_label}</h2>
-              <p className="text-slate-300 text-lg">{result.summary}</p>
+
+              <div className="space-y-5">
+                <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+                  <p className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
+                    <BarChart3 size={14} className="text-indigo-400" />
+                    Score factors
+                  </p>
+                  <div className="space-y-4">
+                    <FactorBar label="Overall readiness index" value={pct} icon={Target} variant="indigo" delay={0.1} />
+                    <FactorBar
+                      label="Strength coverage (topics you showed)"
+                      value={strengthSignal}
+                      icon={TrendingUp}
+                      variant="emerald"
+                      delay={0.2}
+                    />
+                    <FactorBar
+                      label="Gap surface (topics to close)"
+                      value={gapPressure}
+                      icon={AlertTriangle}
+                      variant="amber"
+                      delay={0.3}
+                    />
+                  </div>
+                  <p className="mt-3 text-[10px] leading-relaxed text-slate-600">
+                    Bars derive from your score + how many strength vs gap topics the model returned — use them as a
+                    directional snapshot, not a second exam.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  {[
+                    { icon: User, label: 'Role', value: result.userCategory.replace('_', ' ') },
+                    { icon: Cpu, label: 'Stack', value: result.techStack || '—' },
+                    { icon: BarChart3, label: 'Attempts', value: `${usageInfo.current_usage}/${FREE_TIER_LIMIT}` },
+                  ].map((row, i) => (
+                    <motion.div
+                      key={row.label}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.35 + i * 0.06 }}
+                      className="rounded-xl border border-white/10 bg-white/[0.03] p-4 text-left"
+                    >
+                      <div className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
+                        <row.icon size={14} className="text-indigo-400" />
+                        {row.label}
+                      </div>
+                      <p className="text-sm font-semibold capitalize text-white">{row.value}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8 text-sm text-slate-300">
-              <p className="font-semibold text-white mb-3">Assessment Details:</p>
-              <div className="space-y-2">
-                <p>Role: <span className="font-medium text-slate-200">{result.userCategory.replace('_', ' ')}</span></p>
-                <p>Tech Stack: <span className="font-medium text-slate-200">{result.techStack}</span></p>
-                <p>Attempts Used: <span className="font-medium text-slate-200">{usageInfo.current_usage}/{FREE_TIER_LIMIT}</span></p>
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45 }}
+              className="relative mt-10 rounded-2xl border border-indigo-500/35 bg-gradient-to-br from-indigo-600/15 to-violet-600/10 p-6 text-left"
+            >
+              <div className="absolute right-4 top-4 opacity-20">
+                <Lightbulb size={56} className="text-indigo-300" />
               </div>
-            </div>
-
-            {/* Mentorship funnel — contextual based on score */}
-            <div className="bg-[#0f1a30] border border-indigo-500/30 rounded-2xl p-6 text-left mt-2">
-              <p className="text-xs text-slate-500 uppercase tracking-wider mb-2 font-medium">What this means for you</p>
-              <h3 className="text-lg font-bold text-white mb-1 leading-snug">
-                {result.readiness_percentage < 50
-                  ? "Students at this score level improve by 30+ points in 3 weeks with a mentor."
-                  : result.readiness_percentage < 75
-                  ? "You're close — a focused 2-week plan with a mentor can push you past 75."
-                  : "You're scoring well. A mentor session can sharpen the last few gaps before campus drives."}
+              <p className="text-xs font-bold uppercase tracking-wider text-indigo-300/90">What this means for you</p>
+              <h3 className="relative mt-2 max-w-xl text-lg font-bold leading-snug text-white">
+                {pct < 50
+                  ? 'Students at this score level often improve by 30+ points in a few weeks with guided practice.'
+                  : pct < 75
+                    ? "You're close — a focused plan can push you past 75 before drives."
+                    : "You're in a strong range — sharpen the last gaps before interviews."}
               </h3>
-              <p className="text-sm text-slate-400 mb-4">First session is free. No commitment needed.</p>
-              <div className="flex flex-col sm:flex-row gap-3">
+              <p className="relative mt-2 text-sm text-slate-400">First mentor session is free. No commitment.</p>
+              <div className="relative mt-4 flex flex-col gap-3 sm:flex-row">
                 <Link
                   to="/mentors"
-                  className="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-3 rounded-xl text-sm transition-all"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all hover:bg-indigo-500"
                 >
-                  Book Free Intro Call <ArrowRight size={15} />
+                  Book free intro call <ArrowRight size={15} />
                 </Link>
                 <Link
                   to="/learning-paths"
-                  className="inline-flex items-center justify-center gap-2 border border-white/10 hover:border-white/20 text-slate-300 hover:text-white font-medium px-5 py-3 rounded-xl text-sm transition-all"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 px-5 py-3 text-sm font-medium text-slate-200 transition-all hover:border-white/25 hover:bg-white/5"
                 >
-                  Browse Learning Paths
+                  Browse learning paths
                 </Link>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
-          {/* Email-save — value first, contact second */}
-          <div className="bg-white/[0.03] border border-white/8 rounded-2xl p-6">
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.15 }}
+            className="rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/[0.08] via-white/[0.03] to-[#0a1224] p-6"
+          >
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20">
+                <Trophy className="text-emerald-400" size={22} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2">
+                  <Share2 size={16} className="text-slate-500" />
+                  <p className="text-sm font-bold text-white">Challenge your friends</p>
+                </div>
+                <p className="mt-1 text-sm text-slate-400">
+                  Dare your squad to beat your {pct}% — same free ~5 min interview readiness check. Bragging rights
+                  optional, placement prep mandatory.
+                </p>
+                <div className="mt-4 flex flex-wrap gap-3">
+                  <a
+                    href={`https://wa.me/?text=${encodeURIComponent(buildWhatsAppChallengeMessage(pct, result.readiness_label))}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/25 transition hover:bg-[#20bd5a]"
+                  >
+                    Share on WhatsApp
+                  </a>
+                  <a
+                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(getInterviewReadinessShareUrl())}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0A66C2] px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 transition hover:bg-[#095195]"
+                  >
+                    <Linkedin size={18} aria-hidden />
+                    Share on LinkedIn
+                  </a>
+                </div>
+                <p className="mt-3 text-[11px] text-slate-500">
+                  LinkedIn shares the assessment link — add your score in the post so friends know what to beat.
+                </p>
+              </div>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="rounded-2xl border border-white/8 bg-white/[0.03] p-6"
+          >
             {reportSent ? (
-              <div className="text-center py-2">
-                <CheckCircle size={28} className="text-green-400 mx-auto mb-2" />
-                <p className="text-white font-semibold text-sm">Report sent! Check your inbox.</p>
+              <div className="py-2 text-center">
+                <CheckCircle size={28} className="mx-auto mb-2 text-green-400" />
+                <p className="text-sm font-semibold text-white">Report sent! Check your inbox.</p>
               </div>
             ) : (
               <>
-                <p className="text-sm font-semibold text-white mb-1">Get your full report in your inbox</p>
-                <p className="text-xs text-slate-500 mb-3">Score breakdown, study plan, and resource links — sent once, no spam.</p>
+                <p className="mb-1 text-sm font-semibold text-white">Get your full report in your inbox</p>
+                <p className="mb-3 text-xs text-slate-500">Score breakdown, study plan, and resource links — sent once, no spam.</p>
                 <div className="flex gap-2">
                   <input
                     type="email"
                     value={reportEmail}
                     onChange={(e) => setReportEmail(e.target.value)}
                     placeholder="your@email.com"
-                    className="flex-1 px-4 py-2.5 rounded-xl border border-white/10 bg-white/5 text-white placeholder-slate-500 text-sm outline-none focus:border-indigo-500 transition-colors"
+                    className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white outline-none transition-colors placeholder:text-slate-500 focus:border-indigo-500"
                   />
                   <button
-                    onClick={() => { if (reportEmail.includes('@')) setReportSent(true); }}
-                    className="px-4 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm rounded-xl transition-all whitespace-nowrap"
+                    type="button"
+                    onClick={() => {
+                      if (reportEmail.includes('@')) setReportSent(true);
+                    }}
+                    className="whitespace-nowrap rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-indigo-500"
                   >
                     Send Report
                   </button>
                 </div>
               </>
             )}
-          </div>
+          </motion.div>
 
-          <div className="grid grid-cols-1 gap-6">
+          {result.learning_recommendations && result.learning_recommendations.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-2xl border border-cyan-500/25 bg-gradient-to-br from-cyan-500/10 to-indigo-500/5 p-6"
+            >
+              <h3 className="mb-4 flex items-center gap-2 text-lg font-black text-cyan-200">
+                <Lightbulb size={20} className="text-cyan-400" />
+                Personalized next steps
+              </h3>
+              <div className="space-y-3">
+                {result.learning_recommendations.map((rec, i) =>
+                  typeof rec === 'string' ? (
+                    <motion.p
+                      key={i}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.05 * i }}
+                      className="rounded-xl border border-white/10 bg-black/20 p-4 text-left text-sm text-slate-300"
+                    >
+                      {rec}
+                    </motion.p>
+                  ) : (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, x: -8 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.05 * i }}
+                      className="rounded-xl border border-white/10 bg-black/20 p-4 text-left"
+                    >
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-indigo-300">
+                        {rec.priority || 'Focus'}
+                      </p>
+                      <p className="mt-1 font-semibold text-white">{rec.topic}</p>
+                      {rec.why && <p className="mt-1 text-sm text-slate-400">{rec.why}</p>}
+                    </motion.div>
+                  )
+                )}
+              </div>
+            </motion.div>
+          )}
+
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {result.strengths && result.strengths.length > 0 && (
-              <div className="bg-gradient-to-br from-emerald-600/20 to-emerald-700/20 border border-emerald-500/30 rounded-2xl shadow-lg p-6 backdrop-blur">
-                <h3 className="text-emerald-400 font-black text-lg flex items-center mb-4">
-                  Your Strengths
+              <div className="rounded-2xl border border-emerald-500/35 bg-gradient-to-br from-emerald-600/20 via-emerald-900/10 to-transparent p-6 shadow-lg shadow-emerald-950/20">
+                <h3 className="mb-4 flex items-center gap-2 text-lg font-black text-emerald-300">
+                  <CheckCircle2 size={22} className="text-emerald-400" />
+                  Your strengths
                 </h3>
-                <div className="flex flex-wrap gap-2">
+                <motion.div
+                  variants={resultsListContainer}
+                  initial="hidden"
+                  animate="show"
+                  className="flex flex-col gap-2"
+                >
                   {result.strengths.map((strength, i) => (
-                    <span key={i} className="bg-emerald-500/20 border border-emerald-500/50 text-emerald-300 px-4 py-2 rounded-lg text-sm font-medium">
-                      {strength}
-                    </span>
+                    <motion.div
+                      key={i}
+                      variants={resultsListItem}
+                      className="flex items-start gap-3 rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-left text-sm font-medium text-emerald-100"
+                    >
+                      <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-400" />
+                      <span>{strength}</span>
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               </div>
             )}
 
             {result.gaps && result.gaps.length > 0 && (
-              <div className="bg-gradient-to-br from-amber-600/20 to-amber-700/20 border border-amber-500/30 rounded-2xl shadow-lg p-6 backdrop-blur">
-                <h3 className="text-amber-400 font-black text-lg flex items-center mb-4">
-                  Areas to Improve
+              <div className="rounded-2xl border border-amber-500/35 bg-gradient-to-br from-amber-600/15 via-amber-900/10 to-transparent p-6 shadow-lg shadow-amber-950/20">
+                <h3 className="mb-4 flex items-center gap-2 text-lg font-black text-amber-300">
+                  <AlertTriangle size={22} className="text-amber-400" />
+                  Areas to improve
                 </h3>
-                <div className="flex flex-wrap gap-2">
+                <motion.div
+                  variants={resultsListContainer}
+                  initial="hidden"
+                  animate="show"
+                  className="flex flex-col gap-2"
+                >
                   {result.gaps.map((gap, i) => (
-                    <span key={i} className="bg-amber-500/20 border border-amber-500/50 text-amber-300 px-4 py-2 rounded-lg text-sm font-medium">
-                      {gap}
-                    </span>
+                    <motion.div
+                      key={i}
+                      variants={resultsListItem}
+                      className="flex items-start gap-3 rounded-xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-left text-sm font-medium text-amber-100"
+                    >
+                      <Target size={16} className="mt-0.5 shrink-0 text-amber-400" />
+                      <span>{gap}</span>
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               </div>
             )}
           </div>
 
-          <div className="bg-[#0f1a30] border border-white/10 rounded-3xl shadow-2xl p-8 backdrop-blur">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.35 }}
+            className="rounded-3xl border border-white/10 bg-[#0f1a30] p-8 shadow-2xl"
+          >
             <div className="space-y-3">
               {usageInfo.remaining_attempts > 0 ? (
-                <button 
+                <button
+                  type="button"
                   onClick={() => {
                     setStep(2);
                     setAnswers({});
-                    setProfile({...profile, primarySkill: ''});
+                    setProfile({ ...profile, primarySkill: '' });
                   }}
-                  className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95"
+                  className="w-full rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 py-4 text-base font-bold text-white shadow-lg shadow-indigo-500/25 transition-all hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98]"
                 >
-                  Try Another Category
+                  Try another category
                 </button>
               ) : (
-                <button 
+                <button
+                  type="button"
                   onClick={() => {
                     setStep(6);
                     setAuthMode(null);
                   }}
-                  className="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-2xl shadow-lg shadow-indigo-500/20 transition-all active:scale-95"
+                  className="w-full rounded-2xl bg-indigo-600 py-4 text-base font-bold text-white shadow-lg shadow-indigo-500/20 transition-all hover:bg-indigo-500 active:scale-[0.98]"
                 >
-                  Unlock Premium - Get More Interviews
+                  Unlock premium — get more interviews
                 </button>
               )}
-              <button 
+              <button
+                type="button"
                 onClick={resetAll}
-                className="w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-slate-300 font-bold py-4 rounded-2xl transition-all"
+                className="w-full rounded-2xl border border-white/10 bg-white/5 py-4 text-base font-bold text-slate-300 transition-all hover:border-white/20 hover:bg-white/10"
               >
-                Start Fresh
+                Start fresh
               </button>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     );

@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import {
   ArrowRight, Brain, Target, Trophy,
   BarChart3, Cpu, TrendingUp,
@@ -134,15 +135,18 @@ const WelcomePopup = () => {
               </div>
 
               {/* CTA */}
-              <Link
-                to="/start-assessment"
-                onClick={close}
+              <button
+                type="button"
+                onClick={() => {
+                  close();
+                  goToStartAssessment();
+                }}
                 className="group flex items-center justify-center gap-2 w-full text-white font-bold text-sm py-3.5 rounded-xl transition-all mb-3"
                 style={{ background: 'linear-gradient(135deg,#4f46e5,#6366f1)', boxShadow: '0 4px 20px rgba(99,102,241,0.35)' }}
               >
                 Check My Score — It's Free
                 <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
-              </Link>
+              </button>
 
               {/* Trust row */}
               <div className="flex justify-center gap-5 mb-3">
@@ -373,13 +377,14 @@ const HomePage = () => {
               transition={{ duration: 0.6, delay: 0.28 }}
               className="flex flex-col sm:flex-row sm:items-center gap-3 mb-6"
             >
-              <Link
-                to="/start-assessment"
+              <button
+                type="button"
+                onClick={goToStartAssessment}
                 className="group inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-base px-8 py-4 rounded-xl shadow-lg shadow-indigo-500/20 transition-all"
               >
                 Check My Interview Score — Free
                 <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-              </Link>
+              </button>
               <Link
                 to="/how-it-works"
                 className="text-slate-400 hover:text-white text-sm font-medium transition-colors flex items-center gap-1.5 px-2 rounded"
@@ -577,9 +582,13 @@ const HomePage = () => {
                 <p className="text-white font-semibold text-sm mb-1">Students who perform well in placements prepare with a clear plan, not just effort.</p>
                 <p className="text-slate-400 text-xs leading-relaxed">They measure their readiness first, identify specific gaps, and fix those gaps systematically — with guidance from mentors who understand the exact interviews they are facing.</p>
               </div>
-              <Link to="/start-assessment" className="flex-shrink-0 flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm">
+              <button
+                type="button"
+                onClick={goToStartAssessment}
+                className="flex-shrink-0 flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold px-5 py-2.5 rounded-xl transition-colors text-sm"
+              >
                 Check My Readiness <ArrowRight size={14} />
-              </Link>
+              </button>
             </div>
           </FadeUp>
         </div>
@@ -702,9 +711,13 @@ const HomePage = () => {
           </div>
           <FadeUp delay={0.3}>
             <div className="mt-6 text-center">
-              <Link to="/start-assessment" className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-7 py-3.5 rounded-xl transition-colors text-sm shadow-lg shadow-indigo-500/20">
+              <button
+                type="button"
+                onClick={goToStartAssessment}
+                className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-7 py-3.5 rounded-xl transition-colors text-sm shadow-lg shadow-indigo-500/20"
+              >
                 Start with the free readiness test <ArrowRight size={15} />
-              </Link>
+              </button>
               <p className="text-xs text-slate-600 mt-2">No signup · 5 minutes · Instant score</p>
             </div>
           </FadeUp>
@@ -824,12 +837,13 @@ const HomePage = () => {
               A strong score means you walk in with confidence. A low score gives you a clear, prioritised plan to improve — with enough time before your placement season to act on it.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
-              <Link
-                to="/start-assessment"
+              <button
+                type="button"
+                onClick={goToStartAssessment}
                 className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-8 py-4 rounded-xl shadow-lg shadow-indigo-500/20 transition-all text-sm"
               >
                 Check My Interview Score — Free <ArrowRight size={16} />
-              </Link>
+              </button>
               <Link
                 to="/waitlist"
                 className="flex items-center justify-center gap-2 border border-white/12 hover:border-white/25 hover:bg-white/5 text-slate-300 hover:text-white font-medium px-7 py-4 rounded-xl transition-all text-sm"
@@ -908,7 +922,15 @@ const HomePage = () => {
             <div>
               <p className="text-xs font-semibold text-slate-400 mb-3">Tools</p>
               <ul className="space-y-2 text-sm text-slate-500">
-                <li><Link to="/start-assessment" className="hover:text-slate-300 transition-colors">Interview Readiness</Link></li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={goToStartAssessment}
+                    className="hover:text-slate-300 transition-colors text-left bg-transparent border-0 p-0 cursor-pointer text-inherit font-inherit"
+                  >
+                    Interview Readiness
+                  </button>
+                </li>
                 <li><Link to="/mock-interviews" className="hover:text-slate-300 transition-colors">Mock Interviews</Link></li>
                 <li><Link to="/skill-gap-analyzer" className="hover:text-slate-300 transition-colors">Skill Gap Analyzer</Link></li>
                 <li><Link to="/resume-analyzer" className="hover:text-slate-300 transition-colors">Resume Analyzer</Link></li>

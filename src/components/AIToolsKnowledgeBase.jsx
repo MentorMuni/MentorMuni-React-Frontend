@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import AIToolsChatbot from './AIToolsChatbot';
 import {
   ChevronDown, ChevronRight, ExternalLink, Search, Zap, Brain,
   Code2, MessageSquare, FileSearch, BarChart2, Shield, Globe,
@@ -495,6 +496,7 @@ export default function AIToolsKnowledgeBase() {
         </div>
       </section>
 
+      <AIToolsChatbot />
     </div>
   );
 }

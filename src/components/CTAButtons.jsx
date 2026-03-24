@@ -1,6 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
+import { goToStartAssessment, isStartAssessmentPath } from '../utils/startAssessmentNavigation';
+
+const primaryCtaClass =
+  'btn-primary px-8 py-4 rounded-xl font-bold transition-all shadow-lg hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] inline-flex items-center justify-center gap-2 group';
 
 const CTAButtons = ({ 
   primaryText = "Check My Interview Readiness", 
@@ -10,18 +14,29 @@ const CTAButtons = ({
   variant = "default",
   className = ""
 }) => {
-  const isPrimary = variant === 'primary';
+  const primaryIsAssessment = isStartAssessmentPath(primaryHref);
 
   return (
     <div className={`flex flex-col sm:flex-row gap-4 ${className}`}>
-      {/* Primary CTA */}
-      <Link 
-        to={primaryHref}
-        className="btn-primary px-8 py-4 rounded-xl font-bold transition-all shadow-lg hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] inline-flex items-center justify-center gap-2 group"
-        style={{ display: 'inline-flex', alignItems: 'center' }}
-      >
-        {primaryText} <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
-      </Link>
+      {/* Primary CTA — full page load to reset assessment wizard (HashRouter) */}
+      {primaryIsAssessment ? (
+        <button
+          type="button"
+          onClick={goToStartAssessment}
+          className={primaryCtaClass}
+          style={{ display: 'inline-flex', alignItems: 'center' }}
+        >
+          {primaryText} <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
+        </button>
+      ) : (
+        <Link 
+          to={primaryHref}
+          className={primaryCtaClass}
+          style={{ display: 'inline-flex', alignItems: 'center' }}
+        >
+          {primaryText} <ArrowRight className="w-5 h-5 text-white group-hover:translate-x-1 transition-transform" />
+        </Link>
+      )}
 
       {/* Secondary CTA */}
       <Link 

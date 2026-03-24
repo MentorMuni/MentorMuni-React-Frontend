@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ChevronDown, BarChart2, Mic, FileSearch, Cpu } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
+import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 
 const TOOLS = [
   {
@@ -211,8 +212,9 @@ const Navbar = () => {
             >
               Join Waitlist
             </Link>
-            <Link
-              to="/start-assessment"
+            <button
+              type="button"
+              onClick={goToStartAssessment}
               className="nb-cta relative inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
             >
               {/* shimmer sweep on hover */}
@@ -224,7 +226,7 @@ const Navbar = () => {
               </span>
               Check My Interview Readiness
               <span className="text-xs bg-white/20 px-1.5 py-0.5 rounded-full font-semibold">Free</span>
-            </Link>
+            </button>
           </div>
 
           {/* Mobile Menu Toggle */}
@@ -289,13 +291,16 @@ const Navbar = () => {
               >
                 Join Waitlist
               </Link>
-              <Link
-                to="/start-assessment"
-                onClick={handleNavClick}
+              <button
+                type="button"
+                onClick={() => {
+                  handleNavClick();
+                  goToStartAssessment();
+                }}
                 className="px-4 py-3 text-base font-bold rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg transition-all flex items-center justify-center gap-2 w-full"
               >
                 Check My Interview Readiness — Free
-              </Link>
+              </button>
             </nav>
           </div>
         )}
