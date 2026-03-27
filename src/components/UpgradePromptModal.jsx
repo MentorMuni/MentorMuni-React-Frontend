@@ -53,7 +53,7 @@ export default function UpgradePromptModal({ isOpen, onClose, toolName = 'Resume
 
           {/* Icon */}
           <div className="flex justify-center mb-6">
-            <div className="p-4 rounded-full bg-gradient-to-br from-indigo-500 to-cyan-500 text-white">
+            <div className="p-4 rounded-full bg-gradient-to-br from-[#FF9500] to-cyan-500 text-white">
               <Zap size={32} />
             </div>
           </div>
@@ -65,7 +65,7 @@ export default function UpgradePromptModal({ isOpen, onClose, toolName = 'Resume
 
           {/* Description */}
           <p className="text-center text-slate-300 mb-3">
-            You've used all <span className="font-bold text-indigo-300">3 free analyses</span>.
+            You've used all <span className="font-bold text-[#CC7000]">3 free analyses</span>.
           </p>
 
           <p className="text-center text-slate-400 text-sm mb-8 leading-relaxed">
@@ -73,10 +73,10 @@ export default function UpgradePromptModal({ isOpen, onClose, toolName = 'Resume
           </p>
 
           {/* Features list */}
-          <div className="space-y-3 mb-8 p-4 bg-gradient-to-br from-indigo-500/10 to-cyan-500/10 border border-indigo-500/20 rounded-xl">
+          <div className="space-y-3 mb-8 p-4 bg-gradient-to-br from-[#FF9500]/10 to-cyan-500/10 border border-[#FF9500]/25 rounded-xl">
             {features.map((feature, index) => (
               <div key={index} className="flex items-center gap-3">
-                <span className="text-lg font-bold text-indigo-400">{feature.icon}</span>
+                <span className="text-lg font-bold text-[#FF9500]">{feature.icon}</span>
                 <span className="text-sm text-slate-300">{feature.text}</span>
               </div>
             ))}

@@ -1,14 +1,50 @@
 @import "tailwindcss";
 @import "./styles/design-tokens.css";
 
-/* Prevent white flash before React loads */
-html, body {
-  background-color: var(--main-bg);
-  color: var(--text-primary);
+/* Tailwind v4 — single theme aligned with design-tokens.css (:root) */
+@theme inline {
+  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  --color-background: var(--bg-primary);
+  --color-foreground: var(--text-primary);
+  --color-foreground-muted: var(--text-body);
+  --color-muted-foreground: var(--text-secondary);
+  --color-hint: var(--text-hint);
+
+  --color-primary: var(--accent);
+  --color-primary-hover: var(--accent-hover);
+  --color-primary-dark: var(--accent-hover);
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: var(--bg-secondary);
+  --color-card: var(--bg-card);
+  --color-surface: var(--bg-card);
+  --color-accent-warm: var(--accent-secondary);
+  --color-border: var(--border);
+  --color-success: var(--success);
+  --color-success-bg: var(--success-bg);
+
+  --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+  /* Match design-tokens :root — literals avoid circular var() in @theme */
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.05);
+  --shadow-nav: 0 1px 20px rgba(0, 0, 0, 0.06);
+  --shadow-button: 0 4px 14px rgba(255, 149, 0, 0.25);
+
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+  --radius-2xl: 1.5rem;
 }
 
-/* Prefer tokens for body */
+/* Prevent white flash before React loads */
+html,
+body {
+  background-color: var(--main-bg);
+  color: var(--text-body);
+}
+
 body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-family: var(--font-sans);
 }

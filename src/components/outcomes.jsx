@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 
 /* ─── Shared reveal helper ─────────────────────────────────── */
 const REVEAL_BASE = {
@@ -34,12 +35,12 @@ function useReveal(delay = 0, threshold = 0.12) {
 function StatCard({ icon, value, label }) {
   return (
     <div style={{
-      background: '#0f1a30', border: '1px solid rgba(255,255,255,0.07)',
+      background: '#ffffff', border: '1px solid #f0ece0',
       borderRadius: 10, padding: '24px 16px', textAlign: 'center',
     }}>
       <div style={{ fontSize: 28, marginBottom: 10 }}>{icon}</div>
-      <p style={{ fontSize: 22, fontWeight: 800, color: '#fff', marginBottom: 6, letterSpacing: '-0.3px' }}>{value}</p>
-      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', lineHeight: 1.5 }}>{label}</p>
+      <p style={{ fontSize: 22, fontWeight: 800, color: '#1a1a1a', marginBottom: 6, letterSpacing: '-0.3px' }}>{value}</p>
+      <p style={{ fontSize: 13, color: '#666666', lineHeight: 1.5 }}>{label}</p>
     </div>
   );
 }
@@ -48,21 +49,21 @@ function StatCard({ icon, value, label }) {
 function FeedbackCard({ quote, initial, avBg, name, tag }) {
   return (
     <div style={{
-      background: '#0f1a30', border: '1px solid rgba(255,255,255,0.07)',
+      background: '#ffffff', border: '1px solid #f0ece0',
       borderRadius: 12, padding: '24px 22px',
     }}>
-      <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.70)', lineHeight: 1.75, marginBottom: 20, fontStyle: 'italic' }}>
+      <p style={{ fontSize: 14, color: '#444444', lineHeight: 1.75, marginBottom: 20, fontStyle: 'italic' }}>
         "{quote}"
       </p>
       <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
         <div style={{
           width: 38, height: 38, borderRadius: '50%', background: avBg,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontWeight: 700, fontSize: 14, color: '#fff', flexShrink: 0,
+          fontWeight: 700, fontSize: 14, color: '#1a1a1a', flexShrink: 0,
         }}>
           {initial}
         </div>
-        <p style={{ fontWeight: 600, fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>{name}</p>
+        <p style={{ fontWeight: 600, fontSize: 13, color: '#666666' }}>{name}</p>
       </div>
     </div>
   );
@@ -72,15 +73,15 @@ function FeedbackCard({ quote, initial, avBg, name, tag }) {
 function RoleCard({ title, companies, focus }) {
   return (
     <div style={{
-      background: '#0f1a30', border: '1px solid rgba(255,255,255,0.07)',
+      background: '#ffffff', border: '1px solid #f0ece0',
       borderRadius: 12, padding: '20px 20px',
     }}>
-      <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#818cf8', marginBottom: 8 }}>
+      <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#FF9500', marginBottom: 8 }}>
         TARGET ROLE
       </p>
-      <h3 style={{ fontSize: 17, fontWeight: 700, color: '#fff', marginBottom: 8 }}>{title}</h3>
-      <p style={{ fontSize: 13, color: '#a78bfa', fontWeight: 500, marginBottom: 6 }}>{companies}</p>
-      <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.40)' }}>{focus}</p>
+      <h3 style={{ fontSize: 17, fontWeight: 700, color: '#1a1a1a', marginBottom: 8 }}>{title}</h3>
+      <p style={{ fontSize: 13, color: '#CC7000', fontWeight: 500, marginBottom: 6 }}>{companies}</p>
+      <p style={{ fontSize: 13, color: '#666666' }}>{focus}</p>
     </div>
   );
 }
@@ -96,8 +97,8 @@ function CommitRow({ bold, rest }) {
       }}>
         <span style={{ color: '#4ade80', fontSize: 13, fontWeight: 700 }}>✓</span>
       </div>
-      <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.65 }}>
-        <span style={{ color: '#fff', fontWeight: 600 }}>{bold}</span>{rest}
+      <p style={{ fontSize: 14, color: '#666666', lineHeight: 1.65 }}>
+        <span style={{ color: '#1a1a1a', fontWeight: 600 }}>{bold}</span>{rest}
       </p>
     </div>
   );
@@ -123,11 +124,11 @@ function CTAButtons({ navigate }) {
       <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginTop: 28, flexWrap: 'wrap' }}>
         <button
           onClick={() => navigate('/start-assessment')}
-          onMouseEnter={e => { e.currentTarget.style.background = '#4f46e5'; e.currentTarget.style.transform = 'scale(1.02)'; }}
-          onMouseLeave={e => { e.currentTarget.style.background = '#6366f1'; e.currentTarget.style.transform = 'scale(1)'; }}
-          style={{ background: '#6366f1', color: '#fff', border: 'none', padding: '13px 32px', borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s, transform 0.15s', whiteSpace: 'nowrap' }}
+          onMouseEnter={e => { e.currentTarget.style.background = '#FF9500'; e.currentTarget.style.transform = 'scale(1.02)'; }}
+          onMouseLeave={e => { e.currentTarget.style.background = '#FF9500'; e.currentTarget.style.transform = 'scale(1)'; }}
+          style={{ background: '#FF9500', color: '#1a1a1a', border: 'none', padding: '13px 32px', borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s, transform 0.15s', whiteSpace: 'nowrap' }}
         >
-          Check My Score — Free →
+          {PRIMARY_CTA_LABEL} →
         </button>
         <button
           onClick={() => navigate('/waitlist')}
@@ -162,7 +163,7 @@ export default function SuccessStories() {
   const ctaRef       = useReveal(0);
 
   return (
-    <div style={{ background: '#050b18', minHeight: '100vh', color: '#fff', fontFamily: 'Inter, system-ui, sans-serif' }}>
+    <div style={{ background: '#fffdf8', minHeight: '100vh', color: '#1a1a1a', fontFamily: 'Inter, system-ui, sans-serif' }}>
       <style>{`
         @keyframes ss-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
         @media(max-width:640px){
@@ -185,15 +186,15 @@ export default function SuccessStories() {
           </div>
 
           {/* H1 */}
-          <h1 style={{ fontSize: 'clamp(28px, 5vw, 38px)', fontWeight: 800, letterSpacing: '-0.5px', lineHeight: 1.18, marginBottom: 18, color: '#fff' }}>
+          <h1 style={{ fontSize: 'clamp(28px, 5vw, 38px)', fontWeight: 800, letterSpacing: '-0.5px', lineHeight: 1.18, marginBottom: 18, color: '#1a1a1a' }}>
             The first outcomes from our founding batch are{' '}
-            <span style={{ background: 'linear-gradient(90deg,#6366f1,#a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+            <span style={{ background: 'linear-gradient(90deg,#FF9500,#CC7000)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
               taking shape now.
             </span>
           </h1>
 
           {/* Sub */}
-          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.50)', lineHeight: 1.75, maxWidth: 480, margin: '0 auto' }}>
+          <p style={{ fontSize: 15, color: '#666666', lineHeight: 1.75, maxWidth: 480, margin: '0 auto' }}>
             We're in our founding batch. Students who join now get focused mentor attention, clear pricing, and visibility of their progress here. Here's what we commit to every student.
           </p>
         </div>
@@ -219,16 +220,16 @@ export default function SuccessStories() {
           ref={foundingRef}
           style={{
             ...REVEAL_BASE, maxWidth: 640, width: '100%',
-            background: 'rgba(99,102,241,0.08)',
-            border: '1.5px solid rgba(99,102,241,0.25)',
+            background: 'rgba(255,149,0,0.08)',
+            border: '1.5px solid rgba(255,149,0,0.25)',
             borderRadius: 14, padding: '32px 28px',
           }}
         >
-          <p style={{ fontSize: 12, fontWeight: 600, color: '#818cf8', marginBottom: 10, letterSpacing: '0.02em' }}>✦ Founding member opportunity</p>
-          <h2 style={{ fontSize: 21, fontWeight: 700, color: '#fff', marginBottom: 10, lineHeight: 1.35 }}>
+          <p style={{ fontSize: 12, fontWeight: 600, color: '#FF9500', marginBottom: 10, letterSpacing: '0.02em' }}>✦ Founding member opportunity</p>
+          <h2 style={{ fontSize: 21, fontWeight: 700, color: '#1a1a1a', marginBottom: 10, lineHeight: 1.35 }}>
             Be one of the first 100 students. Your outcome can be featured here.
           </h2>
-          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.55)', lineHeight: 1.7, marginBottom: 28 }}>
+          <p style={{ fontSize: 14, color: '#666666', lineHeight: 1.7, marginBottom: 28 }}>
             Founding batch students get the lowest price MentorMuni will ever offer, maximum mentor attention, and their placement outcome featured on this page when they’re placed.
           </p>
 
@@ -240,10 +241,10 @@ export default function SuccessStories() {
               'Your outcome listed here when you\'re placed',
             ].map((text, i) => (
               <div key={i} style={{ textAlign: 'center' }}>
-                <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#6366f1', color: '#fff', fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
+                <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#FF9500', color: '#1a1a1a', fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
                   {i + 1}
                 </div>
-                <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.5 }}>{text}</p>
+                <p style={{ fontSize: 12, color: '#666666', lineHeight: 1.5 }}>{text}</p>
               </div>
             ))}
           </div>
@@ -251,9 +252,9 @@ export default function SuccessStories() {
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
             <button
               onClick={() => navigate('/waitlist')}
-              onMouseEnter={e => { e.currentTarget.style.background = '#4f46e5'; e.currentTarget.style.transform = 'scale(1.02)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = '#6366f1'; e.currentTarget.style.transform = 'scale(1)'; }}
-              style={{ background: '#6366f1', color: '#fff', border: 'none', padding: '13px 36px', borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s, transform 0.15s' }}
+              onMouseEnter={e => { e.currentTarget.style.background = '#FF9500'; e.currentTarget.style.transform = 'scale(1.02)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = '#FF9500'; e.currentTarget.style.transform = 'scale(1)'; }}
+              style={{ background: '#FF9500', color: '#1a1a1a', border: 'none', padding: '13px 36px', borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s, transform 0.15s' }}
             >
               Join the founding batch →
             </button>
@@ -276,7 +277,7 @@ export default function SuccessStories() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16, marginBottom: 16 }} className="ss-2col">
               <FeedbackCard
                 quote="I did 3 AI mock interviews and the feedback was more specific than anything I got from seniors. It told me exactly which answers were weak and why."
-                initial="V" avBg="#4f46e5"
+                initial="V" avBg="#FF9500"
                 name="4th Year · CSE"
               />
               <FeedbackCard
@@ -309,12 +310,12 @@ export default function SuccessStories() {
           ref={commitRef}
           style={{
             ...REVEAL_BASE, maxWidth: 640, width: '100%',
-            background: '#0f1a30',
-            border: '1px solid rgba(255,255,255,0.07)',
+            background: '#ffffff',
+            border: '1px solid #f0ece0',
             borderRadius: 14, padding: '32px 28px',
           }}
         >
-          <h2 style={{ fontSize: 20, fontWeight: 700, color: '#fff', textAlign: 'center', marginBottom: 24 }}>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: '#1a1a1a', textAlign: 'center', marginBottom: 24 }}>
             Our commitment to every founding student
           </h2>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
@@ -331,17 +332,17 @@ export default function SuccessStories() {
         ref={ctaRef}
         style={{
           ...REVEAL_BASE,
-          background: 'rgba(99,102,241,0.07)',
-          borderTop: '1px solid rgba(99,102,241,0.15)',
+          background: 'rgba(255,149,0,0.07)',
+          borderTop: '1px solid rgba(255,149,0,0.15)',
           padding: '64px 24px',
           textAlign: 'center',
         }}
       >
         <div style={{ maxWidth: 460, margin: '0 auto' }}>
-          <h2 style={{ fontSize: 24, fontWeight: 700, color: '#fff', marginBottom: 12 }}>
+          <h2 style={{ fontSize: 24, fontWeight: 700, color: '#1a1a1a', marginBottom: 12 }}>
             Be among the first outcomes we feature.
           </h2>
-          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.50)', lineHeight: 1.7 }}>
+          <p style={{ fontSize: 14, color: '#666666', lineHeight: 1.7 }}>
             Start with the free assessment. See your gaps. Then decide if the founding batch is right for you.
           </p>
           <CTAButtons navigate={navigate} />
@@ -356,7 +357,7 @@ export default function SuccessStories() {
 
             {/* Brand */}
             <div>
-              <p style={{ fontWeight: 700, color: '#fff', fontSize: 15, marginBottom: 8 }}>MentorMuni</p>
+              <p style={{ fontWeight: 700, color: '#1a1a1a', fontSize: 15, marginBottom: 8 }}>MentorMuni</p>
               <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', lineHeight: 1.6, marginBottom: 14, maxWidth: 220 }}>
                 Know your interview readiness. Improve it. Crack it.
               </p>
@@ -368,30 +369,30 @@ export default function SuccessStories() {
 
             {/* Platform */}
             <div>
-              <p style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.40)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>Platform</p>
+              <p style={{ fontSize: 11, fontWeight: 600, color: '#666666', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>Platform</p>
               {[['Assessment', '/start-assessment'], ['Mock Interviews', '/mock-interviews'], ['Skill Analyser', '/skill-gap-analyzer'], ['Resume Analyser', '/resume-analyzer']].map(([label, to]) => (
                 <div key={to} style={{ marginBottom: 10 }}>
-                  <Link to={to} style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none' }}>{label}</Link>
+                  <Link to={to} style={{ fontSize: 13, color: '#666666', textDecoration: 'none' }}>{label}</Link>
                 </div>
               ))}
             </div>
 
             {/* Learning */}
             <div>
-              <p style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.40)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>Learning</p>
+              <p style={{ fontSize: 11, fontWeight: 600, color: '#666666', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>Learning</p>
               {[['Placement Tracks', '/placement-tracks'], ['Free Tutorials', '/free-tutorials'], ['Learning Paths', '/learning-paths'], ['Outcomes', '/outcomes']].map(([label, to]) => (
                 <div key={to} style={{ marginBottom: 10 }}>
-                  <Link to={to} style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none' }}>{label}</Link>
+                  <Link to={to} style={{ fontSize: 13, color: '#666666', textDecoration: 'none' }}>{label}</Link>
                 </div>
               ))}
             </div>
 
             {/* Company */}
             <div>
-              <p style={{ fontSize: 11, fontWeight: 600, color: 'rgba(255,255,255,0.40)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>Company</p>
+              <p style={{ fontSize: 11, fontWeight: 600, color: '#666666', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: 14 }}>Company</p>
               {[['About Us', '/contact'], ['Careers', '/contact'], ['Contact', '/contact'], ['For Recruiters', '/for-recruiters']].map(([label, to]) => (
                 <div key={label} style={{ marginBottom: 10 }}>
-                  <Link to={to} style={{ fontSize: 13, color: 'rgba(255,255,255,0.45)', textDecoration: 'none' }}>{label}</Link>
+                  <Link to={to} style={{ fontSize: 13, color: '#666666', textDecoration: 'none' }}>{label}</Link>
                 </div>
               ))}
             </div>

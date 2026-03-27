@@ -1,9 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ClipboardCheck, BarChart3, Mic, Users, Trophy, ArrowRight } from 'lucide-react';
+import { PRODUCT_READINESS_SCORE } from '../../constants/brandCopy';
 
 const STEPS = [
-  { icon: ClipboardCheck, title: 'Take Interview Readiness Test', href: '/start-assessment' },
+  { icon: ClipboardCheck, title: `Free ${PRODUCT_READINESS_SCORE} (~5 min)`, href: '/start-assessment' },
   { icon: BarChart3, title: 'Get Placement Readiness Score' },
   { icon: Mic, title: 'Practice AI Mock Interviews', href: '/mock-interviews' },
   { icon: Users, title: 'Get Mentorship from Industry Experts', href: '/mentors' },

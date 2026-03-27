@@ -45,7 +45,7 @@ const MentorDashboard = () => {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
         <div className="text-white text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-400 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FFB347] mx-auto mb-4"></div>
           <p>Loading...</p>
         </div>
       </div>
@@ -55,9 +55,9 @@ const MentorDashboard = () => {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-slate-800/50 backdrop-blur border border-white/10 rounded-2xl p-8 text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-indigo-600/20 border border-indigo-500/30 mb-6">
-            <AlertCircle size={32} className="text-indigo-400" />
+        <div className="max-w-md w-full bg-slate-800/50 backdrop-blur border border-[#E0DCCF] rounded-2xl p-8 text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF9500]/20 border border-[#FF9500]/35 mb-6">
+            <AlertCircle size={32} className="text-[#FF9500]" />
           </div>
           <h2 className="text-2xl font-bold mb-3">Authentication Required</h2>
           <p className="text-slate-300 mb-8">
@@ -66,13 +66,13 @@ const MentorDashboard = () => {
           <div className="space-y-3">
             <button
               onClick={() => window.location.href = '/start-assessment'}
-              className="w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-700 hover:to-indigo-600 text-white font-bold py-3 rounded-lg transition-all"
+              className="w-full bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#E88600] hover:to-[#E88600] text-white font-bold py-3 rounded-lg transition-all"
             >
               Start Free Assessment
             </button>
             <button
               onClick={() => window.location.href = '/'}
-              className="w-full bg-white/10 hover:bg-white/20 border border-white/10 text-white font-bold py-3 rounded-lg transition-all"
+              className="w-full bg-white/10 hover:bg-white/20 border border-[#E0DCCF] text-white font-bold py-3 rounded-lg transition-all"
             >
               Back to Home
             </button>
@@ -90,17 +90,17 @@ const MentorDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <a href="/" className="flex-shrink-0">
-              <img src="assets/logo.png" alt="MentorMuni" className="h-8 w-auto" />
+              <img src="/MentorMuni-React-Frontend/mentormuni-logo.png" alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
             </a>
             <nav className="hidden md:flex gap-6 text-sm font-medium text-slate-600">
-              <a href="/index.html" className="hover:text-indigo-600 transition-colors">Home</a>
-              <a href="/index.html#courses" className="hover:text-indigo-600 transition-colors">Courses</a>
-              <a href="/index.html#contact" className="hover:text-indigo-600 transition-colors">Contact</a>
+              <a href="/index.html" className="hover:text-[#FF9500] transition-colors">Home</a>
+              <a href="/index.html#courses" className="hover:text-[#FF9500] transition-colors">Courses</a>
+              <a href="/index.html#contact" className="hover:text-[#FF9500] transition-colors">Contact</a>
             </nav>
           </div>
           <div className="flex items-center gap-4">
             <button className="p-2 text-slate-400 hover:text-slate-600"><Settings size={20} /></button>
-            <div className="h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white text-xs font-bold">JD</div>
+            <div className="h-8 w-8 rounded-full bg-[#FF9500] flex items-center justify-center text-white text-xs font-bold">JD</div>
           </div>
         </div>
       </header>
@@ -115,10 +115,10 @@ const MentorDashboard = () => {
         <section className="mb-10">
           <h3 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4">Quick Actions</h3>
           <div className="flex flex-wrap gap-4">
-            <button className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-indigo-200 transition-all active:scale-95">
+            <button className="flex items-center gap-2 bg-[#FF9500] hover:bg-[#CC7000] text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-[0_2px_12px_rgba(0,0,0,0.06)] transition-all active:scale-95">
               <PlayCircle size={20} /> Start Mock Interview
             </button>
-            <button className="flex items-center gap-2 bg-white border border-slate-200 hover:border-indigo-600 hover:text-indigo-600 px-6 py-3 rounded-xl font-bold transition-all active:scale-95">
+            <button className="flex items-center gap-2 bg-white border border-slate-200 hover:border-indigo-600 hover:text-[#FF9500] px-6 py-3 rounded-xl font-bold transition-all active:scale-95">
               <FileUp size={20} /> Upload Feedback
             </button>
           </div>
@@ -132,9 +132,9 @@ const MentorDashboard = () => {
           <div className="lg:col-span-2 bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
             <div className="p-6 border-b border-slate-50 flex items-center justify-between">
               <h3 className="font-bold text-lg flex items-center gap-2">
-                <Calendar className="text-indigo-600" size={20} /> Upcoming Interviews
+                <Calendar className="text-[#FF9500]" size={20} /> Upcoming Interviews
               </h3>
-              <span className="text-xs font-bold bg-indigo-50 text-indigo-700 px-2 py-1 rounded-md">
+              <span className="text-xs font-bold bg-[#FFF4E0] text-[#CC7000] px-2 py-1 rounded-md">
                 {interviews.length} Scheduled
               </span>
             </div>
@@ -151,7 +151,7 @@ const MentorDashboard = () => {
                       <p className="text-sm text-slate-500">{item.batch} • {item.time}</p>
                     </div>
                   </div>
-                  <button className="text-slate-300 group-hover:text-indigo-600 transition-colors">
+                  <button className="text-slate-300 group-hover:text-[#FF9500] transition-colors">
                     <ChevronRight size={24} />
                   </button>
                 </div>
@@ -163,24 +163,24 @@ const MentorDashboard = () => {
           <div className="bg-white rounded-3xl shadow-sm border border-slate-100 flex flex-col">
             <div className="p-6 border-b border-slate-50 flex items-center justify-between">
               <h3 className="font-bold text-lg flex items-center gap-2">
-                <Users className="text-indigo-600" size={20} /> Assigned Students
+                <Users className="text-[#FF9500]" size={20} /> Assigned Students
               </h3>
             </div>
             <div className="p-4 flex-grow space-y-3">
               {students.map((student) => (
-                <div key={student.id} className="p-4 rounded-2xl border border-slate-50 bg-slate-50/50 flex items-center justify-between group hover:border-indigo-100 hover:bg-white transition-all">
+                <div key={student.id} className="p-4 rounded-2xl border border-slate-50 bg-slate-50/50 flex items-center justify-between group hover:border-[#F0ECE0] hover:bg-white transition-all">
                   <div>
                     <p className="font-bold text-slate-900 text-sm">{student.name}</p>
                     <p className="text-xs text-slate-500">{student.course}</p>
                   </div>
-                  <button className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all">
+                  <button className="p-2 text-slate-400 hover:text-[#FF9500] hover:bg-[#FFF4E0] rounded-lg transition-all">
                     <Mail size={16} />
                   </button>
                 </div>
               ))}
             </div>
             <div className="p-4 mt-auto">
-              <button className="w-full py-3 text-sm font-bold text-indigo-600 bg-indigo-50 rounded-xl hover:bg-indigo-100 transition-colors">
+              <button className="w-full py-3 text-sm font-bold text-[#FF9500] bg-[#FFF4E0] rounded-xl hover:bg-[#FFF4E0] transition-colors">
                 View All Students
               </button>
             </div>
@@ -194,21 +194,21 @@ const MentorDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
             <div className="col-span-2 md:col-span-1">
-              <img src="assets/logo.png" alt="MentorMuni" className="h-8 mb-6" />
+              <img src="/MentorMuni-React-Frontend/mentormuni-logo.png" alt="MentorMuni" className="h-12 w-12 rounded-full object-contain mx-auto mb-6" />
               <p className="text-sm text-slate-500 leading-relaxed">Guiding your journey to knowledge through elite mentorship.</p>
             </div>
             <div>
               <h4 className="font-bold text-slate-900 mb-4">Courses</h4>
               <div className="flex flex-col gap-2 text-sm text-slate-500">
-                <a href="#dsa" className="hover:text-indigo-600">DSA Placement</a>
-                <a href="#system-design" className="hover:text-indigo-600">System Design</a>
+                <a href="#dsa" className="hover:text-[#FF9500]">DSA Placement</a>
+                <a href="#system-design" className="hover:text-[#FF9500]">System Design</a>
               </div>
             </div>
             <div>
               <h4 className="font-bold text-slate-900 mb-4">Company</h4>
               <div className="flex flex-col gap-2 text-sm text-slate-500">
-                <a href="/about" className="hover:text-indigo-600">About Us</a>
-                <a href="/careers" className="hover:text-indigo-600">Careers</a>
+                <a href="/about" className="hover:text-[#FF9500]">About Us</a>
+                <a href="/careers" className="hover:text-[#FF9500]">Careers</a>
               </div>
             </div>
             <div>

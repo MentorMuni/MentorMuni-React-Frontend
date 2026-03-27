@@ -5,6 +5,7 @@ import {
   AlertCircle, Zap, Target, TrendingUp, Shield,
 } from 'lucide-react';
 import { RESUME_ATS_URL } from '../config';
+import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 
 /**
  * Backend: POST RESUME_ATS_URL — multipart/form-data
@@ -247,13 +248,13 @@ export default function ResumeAnalyzer() {
   const canAnalyze = file && role && !analyzing;
 
   return (
-    <div className="bg-[#050b18] text-white min-h-screen">
+    <div className="bg-[#FFFDF8] text-[#1A1A1A] min-h-screen">
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden border-b border-white/5">
+      <section className="relative overflow-hidden border-b border-[#F0ECE0]">
         <div className="pointer-events-none absolute inset-0">
-          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-900/15 rounded-full blur-[120px]" />
-          <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-violet-900/10 rounded-full blur-[100px]" />
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[rgba(255,149,0,0.12)] rounded-full blur-[120px]" />
+          <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[rgba(255,179,71,0.1)] rounded-full blur-[100px]" />
         </div>
         <div className="relative max-w-5xl mx-auto px-6 pt-12 pb-10">
           <div className="flex items-center gap-2 mb-4">
@@ -262,9 +263,9 @@ export default function ResumeAnalyzer() {
           </div>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
-              <h1 className="text-3xl md:text-4xl font-black mb-2 leading-tight tracking-tight">
+              <h1 className="text-3xl md:text-4xl font-extrabold mb-2 leading-tight tracking-tight text-[#1A1A1A]">
                 Resume{' '}
-                <span style={{ background: 'linear-gradient(90deg,#ec4899,#a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+                <span style={{ background: 'linear-gradient(90deg,#CC7000,#FF9500)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                   ATS Checker
                 </span>
               </h1>
@@ -275,10 +276,10 @@ export default function ResumeAnalyzer() {
             <div className="flex flex-wrap gap-3 shrink-0">
               {[
                 { icon: Shield,     color: 'text-green-400',  label: 'ATS Score' },
-                { icon: Target,     color: 'text-indigo-400', label: 'Keyword Match' },
+                { icon: Target,     color: 'text-[#FF9500]', label: 'Keyword Match' },
                 { icon: TrendingUp, color: 'text-amber-400',  label: 'Fix Suggestions' },
               ].map(({ icon: Icon, color, label }) => (
-                <div key={label} className="flex items-center gap-1.5 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5">
+                <div key={label} className="flex items-center gap-1.5 bg-white/5 border border-[#E0DCCF] rounded-lg px-3 py-1.5">
                   <Icon size={13} className={color} />
                   <span className="text-xs font-semibold text-slate-300">{label}</span>
                 </div>
@@ -296,8 +297,8 @@ export default function ResumeAnalyzer() {
           <div className="flex flex-col gap-5">
 
             {/* Upload zone */}
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden">
-              <div className="px-5 pt-5 pb-4 border-b border-white/8">
+            <div className="rounded-2xl border border-[#E0DCCF] bg-white/[0.03] overflow-hidden">
+              <div className="px-5 pt-5 pb-4 border-b border-[#F0ECE0]">
                 <h2 className="text-sm font-black text-white">Upload Resume</h2>
                 <p className="text-xs text-slate-500 mt-0.5">PDF, DOC, or DOCX only · Max 5MB</p>
               </div>
@@ -310,12 +311,12 @@ export default function ResumeAnalyzer() {
                     onClick={() => inputRef.current?.click()}
                     className={`flex flex-col items-center justify-center gap-4 py-12 rounded-xl border-2 border-dashed cursor-pointer transition-all ${
                       dragging
-                        ? 'border-indigo-400 bg-indigo-500/10'
-                        : 'border-white/15 hover:border-indigo-500/40 hover:bg-indigo-500/5'
+                        ? 'border-[#FFB347] bg-[#FF9500]/10'
+                        : 'border-[#E0DCCF] hover:border-[#FF9500]/45 hover:bg-[#E88600]/5'
                     }`}
                   >
-                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/20">
-                      <UploadCloud size={24} className="text-indigo-400" />
+                    <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#FF9500]/10 border border-[#FF9500]/25">
+                      <UploadCloud size={24} className="text-[#FF9500]" />
                     </div>
                     <div className="text-center">
                       <p className="text-sm font-semibold text-white">
@@ -325,7 +326,7 @@ export default function ResumeAnalyzer() {
                     </div>
                     <button
                       type="button"
-                      className="px-5 py-2 text-sm font-semibold rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white transition-colors"
+                      className="px-5 py-2 text-sm font-semibold rounded-lg bg-[#FF9500] hover:bg-[#E88600] text-white transition-colors"
                     >
                       Choose File
                     </button>
@@ -335,9 +336,9 @@ export default function ResumeAnalyzer() {
                     )}
                   </div>
                 ) : (
-                  <div className="flex items-center gap-3 p-4 rounded-xl border border-indigo-500/25 bg-indigo-500/8">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-indigo-500/15">
-                      <FileText size={18} className="text-indigo-400" />
+                  <div className="flex items-center gap-3 p-4 rounded-xl border border-[#FF9500]/30 bg-[#FF9500]/8">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FF9500]/15">
+                      <FileText size={18} className="text-[#FF9500]" />
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-semibold text-white truncate">{file.name}</p>
@@ -355,8 +356,8 @@ export default function ResumeAnalyzer() {
             </div>
 
             {/* Role selector */}
-            <div className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden">
-              <div className="px-5 pt-5 pb-4 border-b border-white/8">
+            <div className="rounded-2xl border border-[#E0DCCF] bg-white/[0.03] overflow-hidden">
+              <div className="px-5 pt-5 pb-4 border-b border-[#F0ECE0]">
                 <h2 className="text-sm font-black text-white">Target Role</h2>
                 <p className="text-xs text-slate-500 mt-0.5">We match keywords specific to this role</p>
               </div>
@@ -368,8 +369,8 @@ export default function ResumeAnalyzer() {
                       onClick={() => setRole(r)}
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                         role === r
-                          ? 'bg-indigo-600 text-white border border-indigo-500'
-                          : 'bg-white/5 border border-white/10 text-slate-400 hover:border-indigo-500/40 hover:text-white'
+                          ? 'bg-[#FF9500] text-white border border-[#FF9500]'
+                          : 'bg-white/5 border border-[#E0DCCF] text-slate-400 hover:border-[#FF9500]/45 hover:text-white'
                       }`}
                     >
                       {r}
@@ -385,13 +386,13 @@ export default function ResumeAnalyzer() {
               disabled={!canAnalyze}
               className={`w-full flex items-center justify-center gap-2.5 py-4 rounded-xl font-bold text-base transition-all ${
                 canAnalyze
-                  ? 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20'
-                  : 'bg-white/5 border border-white/10 text-slate-600 cursor-not-allowed'
+                  ? 'bg-[#FF9500] hover:bg-[#E88600] text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)]'
+                  : 'bg-white/5 border border-[#E0DCCF] text-slate-600 cursor-not-allowed'
               }`}
             >
               {analyzing ? (
                 <>
-                  <span className="h-4 w-4 rounded-full border-2 border-white/30 border-t-white animate-spin" />
+                  <span className="h-4 w-4 rounded-full border-2 border-[#E0DCCF] border-t-white animate-spin" />
                   Analysing your resume…
                 </>
               ) : (
@@ -419,8 +420,8 @@ export default function ResumeAnalyzer() {
           {/* ─── RIGHT: Results ─── */}
           <div className="flex flex-col gap-5">
             {!result && !analyzing && (
-              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-8 flex flex-col items-center justify-center gap-4 text-center min-h-[320px]">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 border border-white/10">
+              <div className="rounded-2xl border border-[#E0DCCF] bg-white/[0.03] p-8 flex flex-col items-center justify-center gap-4 text-center min-h-[320px]">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 border border-[#E0DCCF]">
                   <Target size={22} className="text-slate-600" />
                 </div>
                 <div>
@@ -431,12 +432,12 @@ export default function ResumeAnalyzer() {
             )}
 
             {analyzing && (
-              <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/5 p-8 flex flex-col items-center justify-center gap-5 min-h-[320px]">
+              <div className="rounded-2xl border border-[#FF9500]/25 bg-[#FF9500]/5 p-8 flex flex-col items-center justify-center gap-5 min-h-[320px]">
                 <div className="relative h-16 w-16">
-                  <div className="absolute inset-0 rounded-full border-2 border-indigo-500/20" />
-                  <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-indigo-400 animate-spin" />
+                  <div className="absolute inset-0 rounded-full border-2 border-[#FF9500]/25" />
+                  <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-[#FF9500] animate-spin" />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <FileText size={20} className="text-indigo-400" />
+                    <FileText size={20} className="text-[#FF9500]" />
                   </div>
                 </div>
                 <div className="text-center">
@@ -445,7 +446,7 @@ export default function ResumeAnalyzer() {
                 </div>
                 <div className="flex gap-1.5">
                   {[0, 1, 2].map(i => (
-                    <span key={i} className="w-1.5 h-1.5 rounded-full bg-indigo-500 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+                    <span key={i} className="w-1.5 h-1.5 rounded-full bg-[#FF9500] animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
                   ))}
                 </div>
               </div>
@@ -454,7 +455,7 @@ export default function ResumeAnalyzer() {
             {result && (
               <>
                 {/* Score card */}
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
+                <div className="rounded-2xl border border-[#E0DCCF] bg-white/[0.03] p-6">
                   <div className="flex items-center justify-between mb-5">
                     <div>
                       <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">ATS Score</p>
@@ -462,8 +463,8 @@ export default function ResumeAnalyzer() {
                     </div>
                     <ScoreRing score={result.score} />
                   </div>
-                  <div className="flex flex-col gap-3 pt-4 border-t border-white/8">
-                    <BarMetric label="ATS Compatibility"  value={result.ats}        color="linear-gradient(90deg,#6366f1,#a78bfa)" />
+                  <div className="flex flex-col gap-3 pt-4 border-t border-[#F0ECE0]">
+                    <BarMetric label="ATS Compatibility"  value={result.ats}        color="linear-gradient(90deg,#E88600,#FF9500)" />
                     <BarMetric label="Keyword Match"       value={result.keywords}   color="linear-gradient(90deg,#06b6d4,#3b82f6)" />
                     <BarMetric label="Formatting Score"    value={result.formatting} color="linear-gradient(90deg,#4ade80,#22d3ee)" />
                     <BarMetric label="Impact & Metrics"    value={result.impact}     color="linear-gradient(90deg,#f59e0b,#ef4444)" />
@@ -487,7 +488,7 @@ export default function ResumeAnalyzer() {
                 </div>
 
                 {/* Keywords */}
-                <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+                <div className="rounded-2xl border border-[#E0DCCF] bg-white/[0.03] p-5">
                   <h3 className="text-sm font-black text-white mb-4">Keyword Analysis</h3>
                   <div className="mb-3">
                     <p className="text-xs font-semibold text-green-400 mb-2">✓ Matched in your resume</p>
@@ -529,7 +530,7 @@ export default function ResumeAnalyzer() {
       </div>
 
       {/* ── Why ATS Matters ── */}
-      <section className="border-t border-white/5 py-14 px-6">
+      <section className="border-t border-[#F0ECE0] py-14 px-6">
         <div className="max-w-5xl mx-auto">
           <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-3">Why this matters</span>
           <h2 className="text-xl font-black mb-6">What ATS filtering means for your application</h2>
@@ -549,20 +550,20 @@ export default function ResumeAnalyzer() {
       </section>
 
       {/* ── CTA ── */}
-      <section className="py-12 px-6 border-t border-white/5">
+      <section className="py-12 px-6 border-t border-[#F0ECE0]">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-xl font-black mb-2">Also check your interview readiness</h2>
           <p className="text-slate-400 text-sm mb-6">A strong resume gets you the interview — preparation gets you the offer.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to="/start-assessment"
-              className="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-indigo-500/20 transition-all text-sm"
+              className="inline-flex items-center justify-center gap-2 bg-[#FF9500] hover:bg-[#E88600] text-white font-bold px-6 py-3 rounded-xl shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all text-sm"
             >
-              Check Interview Readiness — Free <ChevronRight size={15} />
+              {PRIMARY_CTA_LABEL} <ChevronRight size={15} />
             </Link>
             <Link
               to="/mock-interviews"
-              className="inline-flex items-center justify-center gap-2 border border-indigo-500/40 text-indigo-400 hover:text-white hover:border-indigo-400 font-semibold px-6 py-3 rounded-xl transition-all text-sm"
+              className="inline-flex items-center justify-center gap-2 border border-[#FF9500]/45 text-[#FF9500] hover:text-white hover:border-[#FFB347] font-semibold px-6 py-3 rounded-xl transition-all text-sm"
             >
               Try AI Mock Interview
             </Link>

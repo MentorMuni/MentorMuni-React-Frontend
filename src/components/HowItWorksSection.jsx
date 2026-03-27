@@ -9,9 +9,9 @@ export default function HowItWorksSection() {
       description: 'AI analyzes your resume, experience, and skills to understand your current profile.',
       icon: FileText,
       color: 'indigo',
-      bgColor: 'bg-indigo-500/10',
-      borderColor: 'border-indigo-500/20',
-      iconColor: 'text-indigo-400'
+      bgColor: 'bg-[#FF9500]/10',
+      borderColor: 'border-[#FF9500]/25',
+      iconColor: 'text-[#FF9500]'
     },
     {
       step: 2,
@@ -51,7 +51,7 @@ export default function HowItWorksSection() {
         {/* Steps Container */}
         <div className="grid md:grid-cols-3 gap-8 relative">
           {/* Connection line (desktop only) */}
-          <div className="hidden md:block absolute top-32 left-0 right-0 h-0.5 bg-gradient-to-r from-indigo-500 via-cyan-500 to-purple-500 -z-10" />
+          <div className="hidden md:block absolute top-32 left-0 right-0 h-0.5 bg-gradient-to-r from-[#FF9500] via-cyan-500 to-purple-500 -z-10" />
 
           {steps.map((item, index) => {
             const IconComponent = item.icon;
@@ -100,7 +100,7 @@ export default function HowItWorksSection() {
           </p>
           <a
             href="#get-started"
-            className="inline-block px-8 py-3 rounded-lg bg-gradient-to-r from-indigo-500 to-blue-500 text-white font-semibold hover:scale-105 transition-transform"
+            className="inline-block px-8 py-3 rounded-lg bg-gradient-to-r from-[#FF9500] to-blue-500 text-white font-semibold hover:scale-105 transition-transform"
           >
             Start Free Assessment
           </a>

@@ -30,8 +30,8 @@ const DevOpsRoadmap = () => {
     };
 
     return (
-      <div className="bg-[#1E293B] rounded-lg border border-white/10 mb-6 overflow-hidden">
-        <div className="flex justify-between items-center px-4 py-2 bg-[#0F172A] border-b border-white/10">
+      <div className="bg-[#1E293B] rounded-lg border border-[#E0DCCF] mb-6 overflow-hidden">
+        <div className="flex justify-between items-center px-4 py-2 bg-[#FFFDF8] border-b border-[#E0DCCF]">
           <span className="text-xs text-slate-400">{language}</span>
           <button
             onClick={handleCopy}
@@ -51,10 +51,10 @@ const DevOpsRoadmap = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
       {/* Header */}
-      <header className="sticky top-0 z-[100] bg-gradient-to-r from-slate-900 to-slate-900/95 backdrop-blur-md border-b border-white/5 shadow-xl">
+      <header className="sticky top-0 z-[100] bg-gradient-to-r from-slate-900 to-slate-900/95 backdrop-blur-md border-b border-[#F0ECE0] shadow-xl">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src={logo} alt="MentorMuni Logo" className="h-8 w-auto" />
+            <img src={logo} alt="MentorMuni Logo" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
             <span className="font-bold text-xl text-white hidden sm:inline">MentorMuni</span>
           </div>
 
@@ -96,7 +96,7 @@ const DevOpsRoadmap = () => {
             </button>
           </div>
 
-          <div className="mt-12 bg-white/5 border border-white/10 rounded-xl p-8">
+          <div className="mt-12 bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <div className="grid md:grid-cols-2 gap-8">
               <div>
                 <h3 className="text-2xl font-bold mb-4">What is DevOps?</h3>
@@ -136,7 +136,7 @@ const DevOpsRoadmap = () => {
         <div className="grid lg:grid-cols-4 gap-8 mb-20">
           {/* Sidebar Navigation */}
           <div className="lg:col-span-1">
-            <nav className="sticky top-24 bg-white/5 border border-white/10 rounded-xl p-4">
+            <nav className="sticky top-24 bg-white/5 border border-[#E0DCCF] rounded-xl p-4">
               <h3 className="font-bold mb-4">Course Modules</h3>
               <ul className="space-y-2">
                 {topics.map((topic) => (
@@ -164,7 +164,7 @@ const DevOpsRoadmap = () => {
               <section className="space-y-8">
                 <h2 className="text-4xl font-black mb-6">Introduction to DevOps</h2>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">Career Roles in DevOps</h3>
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="bg-[#1E293B] p-6 rounded-lg">
@@ -186,7 +186,7 @@ const DevOpsRoadmap = () => {
                   </div>
                 </div>
 
-                <div className="bg-gradient-to-r from-indigo-600/20 to-cyan-600/20 border border-indigo-400/30 rounded-xl p-8">
+                <div className="bg-gradient-to-r from-[#FF9500]/20 to-cyan-600/20 border border-[#FFB347]/40 rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">2026 Salary Trends</h3>
                   <p className="text-slate-300 mb-4">
                     DevOps professionals are among the highest-paid in tech with salaries increasing 5-8% annually:
@@ -206,7 +206,7 @@ const DevOpsRoadmap = () => {
               <section id="linux" className="space-y-8">
                 <h2 className="text-4xl font-black mb-6">Linux Fundamentals</h2>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">File System Structure</h3>
                   <p className="text-slate-300 mb-4">Linux uses a hierarchical directory structure starting from the root directory (/).</p>
 
@@ -227,7 +227,7 @@ const DevOpsRoadmap = () => {
                   />
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">File Permissions</h3>
                   <p className="text-slate-300 mb-4">Linux permissions use read (r), write (w), and execute (x) for owner, group, and others.</p>
 
@@ -248,7 +248,7 @@ chown -R user:group /directory`}
                   />
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">Essential Shell Commands</h3>
 
                   <CodeBlock
@@ -289,7 +289,7 @@ top                   # Resource monitor`}
               <section id="networking" className="space-y-8">
                 <h2 className="text-4xl font-black mb-6">Networking Basics</h2>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">TCP/IP Model</h3>
                   <p className="text-slate-300 mb-6">The TCP/IP model has four layers that enable internet communication.</p>
 
@@ -313,7 +313,7 @@ top                   # Resource monitor`}
                   </div>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">DNS & HTTP/HTTPS</h3>
 
                   <CodeBlock
@@ -341,7 +341,7 @@ Certificates verify server identity`}
                   />
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">Ports & Protocols</h3>
 
                   <CodeBlock
@@ -374,7 +374,7 @@ nc -zv host port`}
               <section id="git" className="space-y-8">
                 <h2 className="text-4xl font-black mb-6">Git & Version Control</h2>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">Git Workflow</h3>
 
                   <CodeBlock
@@ -408,7 +408,7 @@ git diff branch1 branch2      # Between branches`}
                   />
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">Branching & Merging</h3>
 
                   <CodeBlock
@@ -441,7 +441,7 @@ git rebase -i HEAD~3          # Interactive rebase last 3 commits`}
                   />
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">Pull Requests</h3>
                   <p className="text-slate-300 mb-4">
                     Pull Requests (PRs) are the standard for code review and collaboration:
@@ -485,7 +485,7 @@ git rebase -i HEAD~3          # Interactive rebase last 3 commits`}
               <section id="cicd" className="space-y-8">
                 <h2 className="text-4xl font-black mb-6">CI/CD Concepts</h2>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">What is CI/CD?</h3>
                   <div className="space-y-4">
                     <div>
@@ -499,7 +499,7 @@ git rebase -i HEAD~3          # Interactive rebase last 3 commits`}
                   </div>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">Jenkins Pipeline Example</h3>
 
                   <CodeBlock
@@ -545,7 +545,7 @@ git rebase -i HEAD~3          # Interactive rebase last 3 commits`}
                   />
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">GitHub Actions Workflow</h3>
 
                   <CodeBlock
@@ -597,7 +597,7 @@ jobs:
               <section id="docker" className="space-y-8">
                 <h2 className="text-4xl font-black mb-6">Docker & Containers</h2>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">What is Docker?</h3>
                   <p className="text-slate-300 mb-4">
                     Docker containerizes applications with all dependencies into portable units that run consistently across environments.
@@ -615,7 +615,7 @@ jobs:
                   </div>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">Dockerfile Example</h3>
 
                   <CodeBlock
@@ -636,7 +636,7 @@ CMD ["npm", "start"]`}
                   />
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">Docker Commands</h3>
 
                   <CodeBlock
@@ -666,7 +666,7 @@ docker push user/myapp:1.0`}
                   />
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">Docker Compose</h3>
 
                   <CodeBlock
@@ -707,7 +707,7 @@ volumes:
               <section id="kubernetes" className="space-y-8">
                 <h2 className="text-4xl font-black mb-6">Kubernetes Basics</h2>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">Kubernetes Concepts</h3>
 
                   <div className="space-y-4">
@@ -726,7 +726,7 @@ volumes:
                   </div>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">Kubernetes Deployment YAML</h3>
 
                   <CodeBlock
@@ -774,7 +774,7 @@ spec:
                   />
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">kubectl Commands</h3>
 
                   <CodeBlock
@@ -814,7 +814,7 @@ kubectl rollout undo deployment/webapp`}
               <section id="cloud" className="space-y-8">
                 <h2 className="text-4xl font-black mb-6">Cloud Fundamentals</h2>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">AWS Core Services</h3>
 
                   <div className="space-y-4 mb-6">
@@ -837,7 +837,7 @@ kubectl rollout undo deployment/webapp`}
                   </div>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">GCP Core Services</h3>
 
                   <div className="space-y-4">
@@ -863,7 +863,7 @@ kubectl rollout undo deployment/webapp`}
               <section id="iac" className="space-y-8">
                 <h2 className="text-4xl font-black mb-6">Infrastructure as Code</h2>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">Terraform Basics</h3>
                   <p className="text-slate-300 mb-4">
                     Terraform allows you to define infrastructure in code, enabling version control and reproducible deployments.
@@ -925,7 +925,7 @@ resource "aws_security_group" "web" {
                   />
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">Terraform State Management</h3>
 
                   <CodeBlock
@@ -970,7 +970,7 @@ terraform {
               <section id="monitoring" className="space-y-8">
                 <h2 className="text-4xl font-black mb-6">Monitoring & Logging</h2>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p=8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p=8">
                   <h3 className="text-2xl font-bold mb-4">Monitoring Stack</h3>
 
                   <div className="space-y-4">
@@ -989,7 +989,7 @@ terraform {
                   </div>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">ELK Stack (Elasticsearch, Logstash, Kibana)</h3>
 
                   <p className="text-slate-300 mb-6">The ELK stack collects, processes, and visualizes logs:</p>
@@ -1010,7 +1010,7 @@ terraform {
                   </div>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">Key Metrics to Monitor</h3>
 
                   <CodeBlock
@@ -1043,7 +1043,7 @@ Load balancer health`}
               <section id="interview" className="space-y-8">
                 <h2 className="text-4xl font-black mb-6">Interview Preparation</h2>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">Common Interview Questions</h3>
 
                   <div className="space-y-6">
@@ -1077,7 +1077,7 @@ Load balancer health`}
                   </div>
                 </div>
 
-                <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+                <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                   <h3 className="text-2xl font-bold mb-4">Scenario-Based Questions</h3>
 
                   <div className="space-y-6">
@@ -1128,7 +1128,7 @@ Load balancer health`}
         </div>
 
         {/* Additional Resources */}
-        <section className="bg-white/5 border border-white/10 rounded-xl p-8 mb-20">
+        <section className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-20">
           <h2 className="text-3xl font-bold mb-6">Additional Resources</h2>
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-[#1E293B] p-6 rounded-lg">
@@ -1177,7 +1177,7 @@ Load balancer health`}
         </section>
 
         {/* CTA */}
-        <section className="bg-gradient-to-r from-indigo-600 to-cyan-600 rounded-2xl p-12 text-center">
+        <section className="bg-gradient-to-r from-[#FF9500] to-cyan-600 rounded-2xl p-12 text-center">
           <h2 className="text-3xl font-black mb-4">Ready to Become a DevOps Engineer?</h2>
           <p className="text-lg mb-8 text-white/90">
             Master DevOps with hands-on projects, assessments, and 1:1 mentorship from industry experts.
@@ -1185,7 +1185,7 @@ Load balancer health`}
           <div className="flex flex-wrap gap-4 justify-center">
             <a
               href="/start-assessment"
-              className="px-8 py-4 bg-white text-indigo-600 rounded-xl font-bold hover:bg-slate-100 transition-all"
+              className="px-8 py-4 bg-white text-[#FF9500] rounded-xl font-bold hover:bg-slate-100 transition-all"
             >
               Start Assessment
             </a>

@@ -126,7 +126,7 @@ const PlacementTracks = () => {
               {placementTracks.map((track) => (
                 <div 
                   key={track.id} 
-                  className="bg-white/5 p-8 rounded-3xl border border-white/10 hover:border-indigo-500/50 transition-all hover:shadow-lg hover:shadow-indigo-500/20 cursor-pointer group"
+                  className="bg-white/5 p-8 rounded-3xl border border-[#E0DCCF] hover:border-[#FF9500]/50 transition-all hover:shadow-lg hover:shadow-[0_4px_14px_rgba(255,149,0,0.25)] cursor-pointer group"
                 >
                   <div className="text-6xl mb-6 group-hover:scale-110 transition-transform">{track.icon}</div>
                   <h3 className="text-2xl font-bold mb-2">{track.title}</h3>
@@ -140,7 +140,7 @@ const PlacementTracks = () => {
                       setSelectedTrack(track);
                       setShowCurriculum(true);
                     }}
-                    className="w-full bg-gradient-to-r from-indigo-600 to-cyan-600 text-white font-bold py-3 rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all group-hover:translate-y-[-2px]"
+                    className="w-full bg-gradient-to-r from-[#FF9500] to-cyan-600 text-white font-bold py-3 rounded-xl hover:shadow-lg hover:shadow-[0_4px_14px_rgba(255,149,0,0.2)] transition-all group-hover:translate-y-[-2px]"
                   >
                     Explore Curriculum
                   </button>
@@ -156,12 +156,12 @@ const PlacementTracks = () => {
                 setShowCurriculum(false);
                 setSelectedTrack(null);
               }}
-              className="mb-8 flex items-center gap-2 text-indigo-400 hover:text-indigo-300 font-bold transition-colors"
+              className="mb-8 flex items-center gap-2 text-[#FF9500] hover:text-[#CC7000] font-bold transition-colors"
             >
               ← Back to Tracks
             </button>
 
-            <div className="bg-gradient-to-br from-indigo-600 to-cyan-600 p-1 rounded-3xl mb-12">
+            <div className="bg-gradient-to-br from-[#FF9500] to-cyan-600 p-1 rounded-3xl mb-12">
               <div className="bg-slate-900 rounded-[calc(1.5rem-1px)] p-12">
                 <div className="flex items-center gap-8 mb-8">
                   <div className="text-7xl">{selectedTrack?.icon}</div>
@@ -182,9 +182,9 @@ const PlacementTracks = () => {
               <h3 className="text-3xl font-black mb-8">Curriculum Modules</h3>
               <div className="grid md:grid-cols-2 gap-6">
                 {selectedTrack?.modules.map((module, index) => (
-                  <div key={index} className="bg-white/5 p-6 rounded-2xl border border-white/10 hover:border-indigo-500/50 transition-all">
+                  <div key={index} className="bg-white/5 p-6 rounded-2xl border border-[#E0DCCF] hover:border-[#FF9500]/50 transition-all">
                     <div className="flex items-center gap-4">
-                      <div className="bg-indigo-600 text-white w-12 h-12 rounded-full flex items-center justify-center font-bold">
+                      <div className="bg-[#FF9500] text-white w-12 h-12 rounded-full flex items-center justify-center font-bold">
                         {index + 1}
                       </div>
                       <div className="text-lg font-semibold">{module}</div>
@@ -195,14 +195,14 @@ const PlacementTracks = () => {
             </div>
 
             {/* CTA Section */}
-            <div className="bg-gradient-to-r from-indigo-600 to-cyan-600 rounded-3xl p-12 text-center">
+            <div className="bg-gradient-to-r from-[#FF9500] to-cyan-600 rounded-3xl p-12 text-center">
               <h3 className="text-3xl font-black mb-4">Ready to Start Your Journey?</h3>
               <p className="text-lg text-white/90 mb-8">
                 Enroll now and get access to the complete {selectedTrack?.title} curriculum with 1:1 mentorship
               </p>
               <button 
                 onClick={() => window.location.href = '/upgrade'}
-                className="bg-white text-indigo-600 px-12 py-4 rounded-xl font-bold text-lg hover:shadow-lg hover:shadow-white/20 transition-all"
+                className="bg-white text-[#FF9500] px-12 py-4 rounded-xl font-bold text-lg hover:shadow-lg hover:shadow-white/20 transition-all"
               >
                 View Pricing & Enroll
               </button>

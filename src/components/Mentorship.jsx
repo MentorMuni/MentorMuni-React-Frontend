@@ -35,7 +35,7 @@ const Mentorship = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-[#F1F5F9] pt-20 pb-20">
+    <div className="min-h-screen bg-[#FFFDF8] text-[#444444] pt-20 pb-20">
       <div className="max-w-6xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-16">
@@ -52,7 +52,7 @@ const Mentorship = () => {
           {features.map((feature) => {
             const Icon = feature.icon;
             const colorMap = {
-              indigo: { bg: "bg-indigo-500/10", border: "border-indigo-500/20", icon: "text-indigo-400" },
+              indigo: { bg: "bg-[#FF9500]/10", border: "border-[#FF9500]/25", icon: "text-[#FF9500]" },
               cyan: { bg: "bg-cyan-500/10", border: "border-cyan-500/20", icon: "text-cyan-400" },
               purple: { bg: "bg-purple-500/10", border: "border-purple-500/20", icon: "text-purple-400" },
               emerald: { bg: "bg-emerald-500/10", border: "border-emerald-500/20", icon: "text-emerald-400" }
@@ -78,7 +78,7 @@ const Mentorship = () => {
         </div>
 
         {/* Call to Action */}
-        <div className="bg-gradient-to-r from-indigo-600/20 to-purple-600/20 border border-indigo-500/30 rounded-2xl p-12 text-center">
+        <div className="bg-gradient-to-r from-[#FF9500]/20 to-purple-600/20 border border-[#FF9500]/35 rounded-2xl p-12 text-center">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Ready to Get a Mentor?</h2>
           <p className="text-slate-300 mb-8 max-w-2xl mx-auto">
             Start with our free tools to identify your gaps, then upgrade to access experienced mentors who will guide you to success.
@@ -86,14 +86,14 @@ const Mentorship = () => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
               to="/learning-paths"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-[#FF9500] to-blue-500 hover:from-[#FF9500] hover:to-blue-600 text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
             >
               Explore Mentorship Programs
               <ArrowRight className="w-5 h-5" />
             </Link>
             <Link
               to="/start-assessment"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl border-2 border-indigo-400/50 text-indigo-300 hover:border-indigo-400 hover:text-indigo-200 font-bold transition-all hover:scale-105"
+              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl border-2 border-[#FFB347]/50 text-[#CC7000] hover:border-[#FFB347] hover:text-[#CC7000] font-bold transition-all hover:scale-105"
             >
               Start Free Assessment
             </Link>

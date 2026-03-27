@@ -106,7 +106,7 @@ const ProfessionalUpsellSection = ({ atsScore = 70, targetRole = 'Backend Develo
         <div className="flex justify-center mt-6">
           <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-gray-200 shadow-sm">
             <span className="text-sm text-gray-600">Your ATS Score:</span>
-            <span className="text-xl font-bold text-indigo-600">{atsScore}/100</span>
+            <span className="text-xl font-bold text-[#FF9500]">{atsScore}/100</span>
           </div>
         </div>
       </div>
@@ -122,15 +122,15 @@ const ProfessionalUpsellSection = ({ atsScore = 70, targetRole = 'Backend Develo
               key={service.id}
               className={`relative rounded-2xl transition-all duration-300 overflow-hidden ${
                 service.recommended
-                  ? 'ring-2 ring-indigo-500 shadow-xl scale-105 md:scale-100'
+                  ? 'ring-2 ring-[#FF9500] shadow-xl scale-105 md:scale-100'
                   : 'border border-gray-200 hover:border-gray-300'
               } ${
-                isActive ? 'bg-indigo-50' : 'bg-white'
+                isActive ? 'bg-[#FFF4E0]' : 'bg-white'
               }`}
             >
               {/* Recommended Badge */}
               {service.recommended && (
-                <div className="absolute top-4 right-4 bg-indigo-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                <div className="absolute top-4 right-4 bg-[#FF9500] text-white text-xs font-bold px-3 py-1 rounded-full">
                   Recommended for you
                 </div>
               )}
@@ -138,8 +138,8 @@ const ProfessionalUpsellSection = ({ atsScore = 70, targetRole = 'Backend Develo
               <div className="p-6 flex flex-col h-full">
                 {/* Icon and Title */}
                 <div className="mb-4">
-                  <div className="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-3">
-                    <Icon size={28} className="text-indigo-600" />
+                  <div className="w-12 h-12 bg-[#FFF4E0] rounded-lg flex items-center justify-center mb-3">
+                    <Icon size={28} className="text-[#FF9500]" />
                   </div>
                   <h3 className="text-lg font-bold text-gray-900 mb-1">
                     {service.title}
@@ -185,7 +185,7 @@ const ProfessionalUpsellSection = ({ atsScore = 70, targetRole = 'Backend Develo
                     onClick={() => setActiveService(service.id)}
                     className={`w-full py-3 px-4 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
                       service.recommended
-                        ? 'bg-indigo-600 text-white hover:bg-indigo-700'
+                        ? 'bg-[#FF9500] text-white hover:bg-[#CC7000]'
                         : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
                     }`}
                   >

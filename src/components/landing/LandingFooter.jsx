@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, Phone } from 'lucide-react';
+import { PRODUCT_READINESS_SCORE, MISSION_TAGLINE } from '../../constants/brandCopy';
 
 const FOOTER_LINKS = {
   Platform: [
-    { label: 'Interview Readiness Test', to: '/start-assessment' },
+    { label: PRODUCT_READINESS_SCORE, to: '/start-assessment' },
     { label: 'Mock Interviews', to: '/mock-interviews' },
     { label: 'Skill Gap Analyzer', to: '/skill-gap-analyzer' },
     { label: 'Resume Analyzer', to: '/resume-analyzer' },
@@ -28,7 +29,7 @@ export default function LandingFooter() {
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           <div>
             <p className="font-display font-bold text-white text-lg">MentorMuni</p>
-            <p className="text-slate-400 text-sm mt-2">Crack your placement interviews with AI and mentors.</p>
+            <p className="text-slate-400 text-sm mt-2 max-w-xs">{MISSION_TAGLINE}</p>
           </div>
           {Object.entries(FOOTER_LINKS).map(([title, links]) => (
             <div key={title}>

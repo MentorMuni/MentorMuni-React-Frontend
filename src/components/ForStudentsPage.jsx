@@ -2,11 +2,12 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ClipboardCheck, BarChart3, Mic, ArrowRight } from 'lucide-react';
 import LandingFooter from './landing/LandingFooter';
+import { PRIMARY_CTA_LABEL, PRODUCT_READINESS_SCORE } from '../constants/brandCopy';
 
 const FEATURES = [
   {
     icon: ClipboardCheck,
-    title: 'Interview Readiness Test',
+    title: PRODUCT_READINESS_SCORE,
     description: 'Know where you stand in 5 minutes. Get a clear readiness score.',
     href: '/start-assessment',
     cta: 'Take free test',
@@ -31,7 +32,7 @@ export default function ForStudentsPage() {
   return (
     <div className="min-h-screen bg-surface font-sans">
       <section className="relative py-20 md:py-28 px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/80 via-white to-violet-50/60 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#FFF8EE]/80 via-white to-[#FFFDF8]/60 pointer-events-none" />
         <div className="relative max-w-4xl mx-auto text-center">
           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight">
             For Students
@@ -43,7 +44,7 @@ export default function ForStudentsPage() {
             to="/start-assessment"
             className="mt-10 inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold text-lg shadow-soft hover:shadow-card transition-all"
           >
-            Take Free Interview Readiness Test
+            {PRIMARY_CTA_LABEL}
             <ArrowRight className="w-5 h-5" />
           </Link>
         </div>

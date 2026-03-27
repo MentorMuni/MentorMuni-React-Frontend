@@ -20,7 +20,7 @@ export default function LandingNavbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <img src={logo} alt="MentorMuni" className="h-8 w-auto" />
+            <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
             <span className="font-display font-bold text-lg text-slate-900">MentorMuni</span>
           </Link>
 

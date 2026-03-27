@@ -26,8 +26,8 @@
  *   - Links and focus states
  * 
  * Example:
- *   className="bg-gradient-to-r from-indigo-600 to-blue-600 
- *             hover:from-indigo-500 hover:to-blue-500"
+ *   className="bg-gradient-to-r from-[#FF9500] to-blue-600 
+ *             hover:from-[#FF9500] hover:to-blue-500"
  * 
  * 
  * SECONDARY (Purple) - #a855f7
@@ -81,9 +81,9 @@
  * Primary Button (Indigo/Blue gradient):
  *   <Link to="/path"
  *     className="px-6 py-3 rounded-lg font-bold text-white 
- *               bg-gradient-to-r from-indigo-600 to-blue-600 
- *               hover:from-indigo-500 hover:to-blue-500 
- *               hover:shadow-lg hover:shadow-indigo-500/30
+ *               bg-gradient-to-r from-[#FF9500] to-blue-600 
+ *               hover:from-[#FF9500] hover:to-blue-500 
+ *               hover:shadow-lg hover:shadow-[0_4px_14px_rgba(255,149,0,0.2)]
  *               transition-all active:scale-95"
  *   >
  *     Check My Status
@@ -125,8 +125,8 @@
  * Interactive Card (for features/paths):
  *   className="bg-gradient-to-br from-slate-800/50 to-slate-800/20 
  *             border border-slate-700/50 rounded-2xl p-6 
- *             hover:border-indigo-500/50 hover:shadow-lg 
- *             hover:shadow-indigo-500/10 transition-all"
+ *             hover:border-[#FF9500]/50 hover:shadow-lg 
+ *             hover:shadow-[0_2px_12px_rgba(255,149,0,0.15)] transition-all"
  * 
  * 
  * Features Card with Color Scheme:
@@ -205,11 +205,11 @@
  * 
  * Primary Button:
  *   hover:scale-[1.02] (slight growth)
- *   hover:shadow-lg hover:shadow-indigo-500/30
+ *   hover:shadow-lg hover:shadow-[0_4px_14px_rgba(255,149,0,0.2)]
  * 
  * Card:
- *   hover:border-indigo-500/50 (color change)
- *   hover:shadow-lg hover:shadow-indigo-500/10 (shadow)
+ *   hover:border-[#FF9500]/50 (color change)
+ *   hover:shadow-lg hover:shadow-[0_2px_12px_rgba(255,149,0,0.15)] (shadow)
  * 
  * ============================================================
  * DO's AND DON'Ts
@@ -253,12 +253,12 @@
  * {careerPaths.map(path => (
  *   <div 
  *     key={path.title}
- *     className="bg-gradient-to-br from-indigo-600/20 to-blue-600/20 
- *               border border-indigo-500/30 rounded-2xl p-6 
- *               hover:border-indigo-500/60 transition-all 
- *               hover:shadow-lg hover:shadow-indigo-500/20"
+ *     className="bg-gradient-to-br from-[#FF9500]/20 to-blue-600/20 
+ *               border border-[#FF9500]/35 rounded-2xl p-6 
+ *               hover:border-[#FF9500]/60 transition-all 
+ *               hover:shadow-lg hover:shadow-[0_4px_14px_rgba(255,149,0,0.25)]"
  *   >
- *     <path.icon className="w-6 h-6 text-indigo-400 mb-4" />
+ *     <path.icon className="w-6 h-6 text-[#FF9500] mb-4" />
  *     <h3 className="text-xl font-bold text-white mb-2">{path.title}</h3>
  *     <p className="text-slate-300 text-sm">{path.description}</p>
  *   </div>
@@ -270,10 +270,10 @@
  * // Primary action (Indigo)
  * <Link to="/assess"
  *   className="px-8 py-3 rounded-lg bg-gradient-to-r 
- *             from-indigo-600 to-blue-600 
- *             hover:from-indigo-500 hover:to-blue-500
+ *             from-[#FF9500] to-blue-600 
+ *             hover:from-[#FF9500] hover:to-blue-500
  *             text-white font-bold transition-all 
- *             hover:shadow-lg hover:shadow-indigo-500/30"
+ *             hover:shadow-lg hover:shadow-[0_4px_14px_rgba(255,149,0,0.2)]"
  * >
  *   Start Assessment
  * </Link>

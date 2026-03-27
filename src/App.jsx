@@ -38,13 +38,13 @@ const AIToolsKnowledgeBase = lazy(() => import("./components/AIToolsKnowledgeBas
 const InterviewReadinessToolsPage = lazy(() => import("./components/InterviewReadinessToolsPage"));
 
 function PageFallback() {
-  return <div className="min-h-[60vh] bg-[#050b18]" />;
+  return <div className="min-h-[60vh] bg-background" />;
 }
 
 function App() {
   return (
     <Router>
-      <div className="flex flex-col min-h-screen bg-[#050b18]">
+      <div className="flex min-h-screen flex-col bg-background text-foreground-muted">
         <Navbar />
         <main className="flex-grow relative z-0">
           <Suspense fallback={<PageFallback />}>

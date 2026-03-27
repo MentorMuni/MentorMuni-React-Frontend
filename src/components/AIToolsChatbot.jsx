@@ -208,18 +208,18 @@ export default function AIToolsChatbot() {
       {open && (
         <div
           id="ai-tools-chatbot-panel"
-          className="pointer-events-auto w-[min(100vw-2rem,400px)] rounded-2xl border border-white/15 bg-[#0a1020]/95 shadow-2xl shadow-indigo-950/50 backdrop-blur-xl flex flex-col overflow-hidden max-h-[min(520px,70vh)]"
+          className="pointer-events-auto w-[min(100vw-2rem,400px)] rounded-2xl border border-[#E0DCCF] bg-white/95 shadow-2xl shadow-[0_8px_32px_rgba(0,0,0,0.1)] backdrop-blur-xl flex flex-col overflow-hidden max-h-[min(520px,70vh)]"
           role="dialog"
           aria-label="AI Tools chat assistant"
         >
-          <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-white/10 bg-gradient-to-r from-indigo-600/30 to-violet-600/20">
+          <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-[#E0DCCF] bg-gradient-to-r from-[#FF9500]/30 to-[#FFB347]/20">
             <div className="flex items-center gap-2 min-w-0">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-500/30 border border-indigo-400/30">
-                <Bot size={18} className="text-indigo-200 shrink-0" />
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#FF9500]/30 border border-[#FFB347]/40">
+                <Bot size={18} className="text-[#CC7000] shrink-0" />
               </span>
               <div className="min-w-0">
                 <p className="text-sm font-bold text-white truncate">AI Tools Assistant</p>
-                <p className="text-[10px] text-indigo-200/80 truncate">KB + rules + Wikipedia summaries</p>
+                <p className="text-[10px] text-[#CC7000]/80 truncate">KB + rules + Wikipedia summaries</p>
               </div>
             </div>
             <button
@@ -241,15 +241,15 @@ export default function AIToolsChatbot() {
                 <div
                   className={`max-w-[92%] rounded-2xl px-3.5 py-2.5 leading-relaxed ${
                     msg.role === 'user'
-                      ? 'bg-indigo-600 text-white rounded-br-md'
-                      : 'bg-white/8 border border-white/10 text-slate-200 rounded-bl-md'
+                      ? 'bg-[#FF9500] text-white rounded-br-md'
+                      : 'bg-white/8 border border-[#E0DCCF] text-slate-200 rounded-bl-md'
                   }`}
                 >
                   {msg.role === 'bot' ? (
                     msg.text === '__LOADING__' ? (
                       <span className="text-slate-500 italic">Looking up…</span>
                     ) : (
-                      <span className="whitespace-pre-wrap [&_strong]:text-indigo-300 [&_strong]:font-semibold">
+                      <span className="whitespace-pre-wrap [&_strong]:text-[#CC7000] [&_strong]:font-semibold">
                         {msg.text.split('**').map((part, j) =>
                           j % 2 === 1 ? (
                             <strong key={j}>{part}</strong>
@@ -268,7 +268,7 @@ export default function AIToolsChatbot() {
             <div ref={bottomRef} />
           </div>
 
-          <div className="p-3 border-t border-white/10 bg-[#060b14]/90">
+          <div className="p-3 border-t border-[#E0DCCF] bg-[#FFF8EE]/90">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -276,12 +276,12 @@ export default function AIToolsChatbot() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && send()}
                 placeholder="Prompting, Gen AI, LLMs, tools…"
-                className="flex-1 min-w-0 rounded-xl border border-white/15 bg-white/5 px-3 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:border-indigo-500/50"
+                className="flex-1 min-w-0 rounded-xl border border-[#E0DCCF] bg-white/5 px-3 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:border-[#FF9500]/50"
               />
               <button
                 type="button"
                 onClick={send}
-                className="shrink-0 rounded-xl bg-indigo-600 hover:bg-indigo-500 px-3 py-2.5 text-white transition-colors"
+                className="shrink-0 rounded-xl bg-[#FF9500] hover:bg-[#E88600] px-3 py-2.5 text-white transition-colors"
                 aria-label="Send message"
               >
                 <Send size={18} />
@@ -298,7 +298,7 @@ export default function AIToolsChatbot() {
                   key={s}
                   type="button"
                   onClick={() => pushExchange(s)}
-                  className="text-[10px] font-medium rounded-full border border-white/10 bg-white/5 px-2 py-1 text-slate-400 hover:text-indigo-300 hover:border-indigo-500/30 transition-colors"
+                  className="text-[10px] font-medium rounded-full border border-[#E0DCCF] bg-white/5 px-2 py-1 text-slate-400 hover:text-[#CC7000] hover:border-[#FF9500]/35 transition-colors"
                 >
                   {s}
                 </button>
@@ -306,7 +306,7 @@ export default function AIToolsChatbot() {
             </div>
             <p className="mt-2 text-[10px] text-slate-600 text-center leading-snug">
               Local knowledge base + rules; may add a Wikipedia excerpt (not ChatGPT).{' '}
-              <Link to="/start-assessment" className="text-indigo-400 hover:underline">
+              <Link to="/start-assessment" className="text-[#FF9500] hover:underline">
                 Readiness test
               </Link>
             </p>
@@ -317,7 +317,7 @@ export default function AIToolsChatbot() {
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="pointer-events-auto group flex items-center gap-2 rounded-full border border-indigo-500/40 bg-gradient-to-r from-indigo-600 to-violet-600 px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-indigo-900/40 hover:from-indigo-500 hover:to-violet-500 transition-all"
+        className="pointer-events-auto group flex items-center gap-2 rounded-full border border-[#FF9500]/45 bg-gradient-to-r from-[#FF9500] to-[#FFB347] px-5 py-3.5 text-sm font-bold text-white shadow-lg shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:from-[#FF9500] hover:to-[#FFB347] transition-all"
         aria-expanded={open}
         aria-controls="ai-tools-chatbot-panel"
       >

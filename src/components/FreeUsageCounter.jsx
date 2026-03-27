@@ -61,8 +61,8 @@ export default function FreeUsageCounter({ toolName, onLimitReached, compact = f
   if (compact) {
     // Compact badge version for headers
     return (
-      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/20 border border-indigo-500/30 text-sm font-medium">
-        <Zap size={14} className="text-indigo-400" />
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FF9500]/20 border border-[#FF9500]/35 text-sm font-medium">
+        <Zap size={14} className="text-[#FF9500]" />
         <span className="text-slate-300">
           {attemptsRemaining} / {MAX_ATTEMPTS} free
         </span>
@@ -79,13 +79,13 @@ export default function FreeUsageCounter({ toolName, onLimitReached, compact = f
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Zap size={16} className={isLimitReached ? 'text-red-400' : 'text-indigo-400'} />
+          <Zap size={16} className={isLimitReached ? 'text-red-400' : 'text-[#FF9500]'} />
           <p className="text-sm font-semibold text-slate-300">
             Free Attempts
           </p>
         </div>
         <p className={`text-sm font-bold ${
-          isLimitReached ? 'text-red-400' : 'text-indigo-300'
+          isLimitReached ? 'text-red-400' : 'text-[#CC7000]'
         }`}>
           {attemptsRemaining} / {MAX_ATTEMPTS}
         </p>
@@ -97,7 +97,7 @@ export default function FreeUsageCounter({ toolName, onLimitReached, compact = f
           className={`h-full rounded-full transition-all duration-300 ease-out ${
             isLimitReached
               ? 'bg-gradient-to-r from-red-500 to-red-600'
-              : 'bg-gradient-to-r from-indigo-500 to-cyan-500'
+              : 'bg-gradient-to-r from-[#FF9500] to-cyan-500'
           }`}
           style={{ width: `${usagePercentage}%` }}
         />
@@ -110,7 +110,7 @@ export default function FreeUsageCounter({ toolName, onLimitReached, compact = f
             key={index}
             className={`flex-1 h-2 rounded-sm transition-all ${
               index < attemptsUsed
-                ? 'bg-indigo-500'
+                ? 'bg-[#FF9500]'
                 : 'bg-slate-700/40 border border-slate-600/30'
             }`}
           />

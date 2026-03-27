@@ -51,11 +51,11 @@ export default function AboutMentorMuniVideo() {
   const handleVideoPause = () => setPlaying(false);
 
   return (
-    <section className="py-16 md:py-24 px-6 bg-gradient-to-b from-slate-900/50 to-[#0B0F19]">
+    <section className="py-16 md:py-24 px-6 bg-gradient-to-b from-[#FFF8EE] to-[#FFFDF8]">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-sm font-medium mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FF9500]/20 border border-[#FFB347]/40 text-[#CC7000] text-sm font-medium mb-4">
             <Bot className="w-4 h-4" />
             <span>Introducing MentorMuni</span>
           </div>

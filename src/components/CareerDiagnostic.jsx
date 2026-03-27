@@ -12,7 +12,7 @@ const steps = [
 function ActivityBubble({ message }) {
   return (
     <div className="mt-4 inline-flex items-center gap-3 text-sm text-slate-400">
-      <div className="w-3 h-3 rounded-full bg-indigo-400 animate-pulse" />
+      <div className="w-3 h-3 rounded-full bg-[#FFB347] animate-pulse" />
       <span>{message}</span>
     </div>
   );
@@ -55,9 +55,9 @@ export default function CareerDiagnostic() {
         <div
           className={`w-10 h-10 rounded-full flex items-center justify-center font-bold shrink-0 ${
             done
-              ? 'bg-indigo-500 text-white'
+              ? 'bg-[#FF9500] text-white'
               : active
-                ? 'bg-indigo-500/30 text-indigo-200'
+                ? 'bg-[#FF9500]/30 text-[#CC7000]'
                 : 'bg-slate-700/80 text-slate-400'
           }`}
         >
@@ -91,7 +91,7 @@ export default function CareerDiagnostic() {
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <Link
                 to="/start-assessment"
-                className="inline-flex items-center gap-2 px-5 py-3 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg transition-all"
+                className="inline-flex items-center gap-2 px-5 py-3 bg-[#FF9500] hover:bg-[#E88600] text-white font-semibold rounded-lg transition-all"
               >
                 Start diagnostic
                 <ArrowRight className="w-4 h-4" />
@@ -132,7 +132,7 @@ export default function CareerDiagnostic() {
               )}
               {status === 'running' && current && (
                 <div className="flex items-center gap-3">
-                  <div className="w-3 h-3 rounded-full bg-indigo-400 animate-pulse shrink-0" />
+                  <div className="w-3 h-3 rounded-full bg-[#FFB347] animate-pulse shrink-0" />
                   <span>{steps.find((s) => s.id === current).activity}</span>
                 </div>
               )}

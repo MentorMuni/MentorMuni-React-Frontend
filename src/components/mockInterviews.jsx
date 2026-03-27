@@ -37,32 +37,32 @@ const MockInterviews = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#050b18] text-white">
+    <div className="min-h-screen bg-[#FFFDF8] text-[#1A1A1A]">
       {/* Ambient background — matches homepage / resume analyzer */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-indigo-900/15 rounded-full blur-[130px]" />
-        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-violet-900/10 rounded-full blur-[100px]" />
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[rgba(255,149,0,0.12)] rounded-full blur-[130px]" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-[rgba(255,179,71,0.1)] rounded-full blur-[100px]" />
       </div>
 
       <div className="relative">
         {/* Hero */}
-        <section className="border-b border-white/5">
+        <section className="border-b border-[#F0ECE0]">
           <div className="max-w-5xl mx-auto px-6 pt-14 pb-12">
             <div className="flex items-center gap-2 mb-4">
-              <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
-              <span className="text-xs font-bold text-violet-400 uppercase tracking-widest">Interview Prep</span>
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FFB347] animate-pulse" />
+              <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest">Interview Prep</span>
             </div>
             <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
               <div>
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/10 border border-indigo-500/20">
-                    <Mic size={22} className="text-indigo-400" />
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FF9500]/10 border border-[#FF9500]/25">
+                    <Mic size={22} className="text-[#FF9500]" />
                   </div>
-                  <h1 className="text-3xl md:text-4xl font-black tracking-tight">
+                  <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-[#1A1A1A]">
                     Mock{' '}
                     <span
                       style={{
-                        background: 'linear-gradient(90deg,#6366f1,#a78bfa)',
+                        background: 'linear-gradient(90deg,#CC7000,#FF9500)',
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                       }}
@@ -82,9 +82,9 @@ const MockInterviews = () => {
                 ].map(({ icon: Icon, label }) => (
                   <div
                     key={label}
-                    className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/5 px-3 py-1.5"
+                    className="flex items-center gap-1.5 rounded-lg border border-[#E0DCCF] bg-white/5 px-3 py-1.5"
                   >
-                    <Icon size={13} className="text-indigo-400" />
+                    <Icon size={13} className="text-[#FF9500]" />
                     <span className="text-xs font-semibold text-slate-300">{label}</span>
                   </div>
                 ))}
@@ -99,16 +99,16 @@ const MockInterviews = () => {
             {features.map(({ icon: Icon, title, desc, cta, href }) => (
               <div
                 key={title}
-                className="group rounded-2xl border border-white/10 bg-white/[0.03] p-6 transition-all hover:border-indigo-500/30 hover:bg-indigo-500/[0.04]"
+                className="group rounded-2xl border border-[#E0DCCF] bg-white/[0.03] p-6 transition-all hover:border-[#FF9500]/35 hover:bg-[#E88600]/[0.04]"
               >
-                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-indigo-500/10 border border-indigo-500/15 mb-4">
-                  <Icon size={20} className="text-indigo-400" />
+                <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#FF9500]/10 border border-[#FF9500]/15 mb-4">
+                  <Icon size={20} className="text-[#FF9500]" />
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">{title}</h3>
                 <p className="text-sm text-slate-400 leading-relaxed mb-5">{desc}</p>
                 <Link
                   to={href}
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
+                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#FF9500] hover:text-[#CC7000] transition-colors"
                 >
                   {cta} <ArrowRight size={15} className="group-hover:translate-x-0.5 transition-transform" />
                 </Link>
@@ -117,9 +117,9 @@ const MockInterviews = () => {
           </div>
 
           {/* Coming soon — indigo theme only (no cyan strip) */}
-          <div className="rounded-2xl border border-indigo-500/20 bg-indigo-500/[0.06] overflow-hidden">
+          <div className="rounded-2xl border border-[#FF9500]/25 bg-[#FF9500]/[0.06] overflow-hidden">
             <div className="px-6 py-10 md:px-10 md:py-12 text-center">
-              <div className="inline-flex items-center gap-2 rounded-full border border-indigo-500/25 bg-indigo-500/10 px-3 py-1 text-xs font-bold text-indigo-300 mb-4">
+              <div className="inline-flex items-center gap-2 rounded-full border border-[#FF9500]/30 bg-[#FF9500]/10 px-3 py-1 text-xs font-bold text-[#CC7000] mb-4">
                 <Sparkles size={12} />
                 Coming soon
               </div>
@@ -130,14 +130,14 @@ const MockInterviews = () => {
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
                   to="/waitlist"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-500/20 transition-all"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#FF9500] hover:bg-[#E88600] px-6 py-3 text-sm font-bold text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all"
                 >
                   Join the waitlist
                   <ChevronRight size={16} />
                 </Link>
                 <Link
                   to="/start-assessment"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-indigo-500/40 text-indigo-400 hover:text-white hover:border-indigo-400/60 px-6 py-3 text-sm font-semibold transition-all"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#FF9500]/45 text-[#FF9500] hover:text-white hover:border-[#FFB347]/60 px-6 py-3 text-sm font-semibold transition-all"
                 >
                   Check interview readiness — Free
                 </Link>

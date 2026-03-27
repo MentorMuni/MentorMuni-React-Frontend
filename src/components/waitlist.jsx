@@ -6,8 +6,8 @@ import confetti from 'canvas-confetti';
 const API_BASE = import.meta.env.VITE_API_URL || '';
 
 const AVATARS = [
-  { init: 'P', bg: 'bg-indigo-500' },
-  { init: 'R', bg: 'bg-violet-500' },
+  { init: 'P', bg: 'bg-[#FF9500]' },
+  { init: 'R', bg: 'bg-[#FFB347]' },
   { init: 'A', bg: 'bg-blue-500' },
   { init: 'S', bg: 'bg-purple-500' },
   { init: 'V', bg: 'bg-teal-500' },
@@ -65,7 +65,7 @@ export default function WaitlistPage() {
     const origin = rect
       ? { x: (rect.left + rect.width / 2) / window.innerWidth, y: rect.top / window.innerHeight }
       : { x: 0.5, y: 0.5 };
-    confetti({ particleCount: 120, spread: 80, origin, colors: ['#4f46e5','#818cf8','#4ade80','#fff'] });
+    confetti({ particleCount: 120, spread: 80, origin, colors: ['#FF9500','#FFB347','#1A8C55','#fff'] });
   };
 
   const handleSubmit = async (e) => {
@@ -96,25 +96,25 @@ export default function WaitlistPage() {
   };
 
   const inputCls = (k) =>
-    `w-full px-4 py-3 rounded-xl border bg-white/5 text-white placeholder-slate-500 outline-none transition-all text-sm ${
-      errors[k] ? 'border-red-500/50' : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20'
+    `w-full px-4 py-3 rounded-xl border bg-white text-[#1A1A1A] placeholder-[#AAAAAA] outline-none transition-all text-sm ${
+      errors[k] ? 'border-red-500/50' : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/25'
     }`;
 
   return (
-    <div className="min-h-screen bg-[#050b18] text-white font-sans antialiased">
+    <div className="min-h-screen bg-[#FFFDF8] text-[#1A1A1A] font-sans antialiased">
       <div className="max-w-3xl mx-auto px-5 pt-16 pb-24">
 
         {/* ── Hero ── */}
         <div className="text-center mb-10">
 
           {/* Pill badge */}
-          <div className="inline-flex items-center gap-2.5 bg-indigo-500/10 border border-indigo-400/30 rounded-full px-5 py-2 mb-7 shadow-[0_0_16px_rgba(99,102,241,0.15)]">
-            <span className="w-2 h-2 rounded-full bg-green-400 shrink-0" style={{ animation: 'pulse 1.5s ease-in-out infinite', boxShadow: '0 0 6px #4ade80' }} />
-            <span className="text-sm font-semibold text-indigo-200 tracking-wide">
+          <div className="inline-flex items-center gap-2.5 bg-[#FFF4E0] border border-[#FFB347]/40 rounded-full px-5 py-2 mb-7 shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
+            <span className="w-2 h-2 rounded-full bg-[#1A8C55] shrink-0" style={{ animation: 'pulse 1.5s ease-in-out infinite', boxShadow: '0 0 6px rgba(26,140,85,0.5)' }} />
+            <span className="text-sm font-semibold text-[#CC7000] tracking-wide">
               Mentorship program
             </span>
-            <span className="w-px h-3.5 bg-indigo-400/30" />
-            <span className="text-sm font-bold text-white">First batch starting April</span>
+            <span className="w-px h-3.5 bg-[#F0ECE0]" />
+            <span className="text-sm font-bold text-[#1A1A1A]">First batch starting April</span>
             <span className="text-xs font-semibold bg-red-500/20 text-red-300 border border-red-400/25 rounded-full px-2.5 py-0.5 leading-none">
               Limited seats
             </span>
@@ -122,20 +122,20 @@ export default function WaitlistPage() {
           <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
 
           <h1 className="text-3xl md:text-4xl font-black leading-snug tracking-tight mb-4">
-            Be the first to get placed with <span className="text-indigo-400">MentorMuni</span> — Mentorship and interview preparation.
+            Be the first to get placed with <span className="text-[#FF9500]">MentorMuni</span> — Mentorship and interview preparation.
           </h1>
 
-          <p className="text-slate-300 leading-relaxed mb-8 max-w-lg mx-auto">
+          <p className="text-[#666666] leading-relaxed mb-8 max-w-lg mx-auto">
             Full 1-on-1 mentorship, AI mock interviews, sessions from placed students,
             and a direct path to your first offer.{' '}
-            <span className="text-white font-semibold">Early access students get 30% off.</span>
+            <span className="text-[#1A1A1A] font-semibold">Early access students get 30% off.</span>
           </p>
 
           {/* Social proof */}
           <div className="flex items-center justify-center gap-3">
             <div className="flex -space-x-2">
               {AVATARS.map(({ init, bg }) => (
-                <div key={init} className={`w-8 h-8 rounded-full border-2 border-[#050b18] ${bg} flex items-center justify-center text-xs font-bold text-white`}>
+                <div key={init} className={`w-8 h-8 rounded-full border-2 border-[#FFFDF8] ${bg} flex items-center justify-center text-xs font-bold text-white shadow-sm`}>
                   {init}
                 </div>
               ))}
@@ -148,20 +148,20 @@ export default function WaitlistPage() {
         </div>
 
         {/* ── Form card ── */}
-        <div className="bg-[#0f1a30] border border-white/8 rounded-2xl p-6 md:p-8 mb-12">
+        <div className="bg-white border border-[#F0ECE0] rounded-2xl p-6 md:p-8 mb-12">
           {submitted ? (
             <div className="text-center py-8">
               <div className="w-16 h-16 rounded-full bg-green-500/15 border border-green-500/30 flex items-center justify-center mx-auto mb-4">
                 <Check size={28} className="text-green-400" />
               </div>
-              <h2 className="text-2xl font-bold text-white mb-2">You're on the list!</h2>
+              <h2 className="text-2xl font-bold text-[#1A1A1A] mb-2">You're on the list!</h2>
               <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-sm mx-auto">
                 We'll WhatsApp you the moment mentorship opens — with your early access link and 30% discount.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
                   to="/start-assessment"
-                  className="inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm px-6 py-3 rounded-xl transition-all"
+                  className="inline-flex items-center justify-center gap-2 bg-[#FF9500] hover:bg-[#E88600] text-white font-semibold text-sm px-6 py-3 rounded-xl transition-all"
                 >
                   Take free readiness test while you wait
                   <ArrowRight size={15} />
@@ -170,7 +170,7 @@ export default function WaitlistPage() {
             </div>
           ) : (
             <>
-              <h2 className="text-lg font-bold text-white mb-1">Join the waitlist</h2>
+              <h2 className="text-lg font-bold text-[#1A1A1A] mb-1">Join the waitlist</h2>
               <p className="text-slate-500 text-sm mb-6">Takes 30 seconds. Spot is saved instantly.</p>
 
               <form onSubmit={handleSubmit} className="space-y-4" noValidate>
@@ -206,7 +206,7 @@ export default function WaitlistPage() {
                     <select value={form.year} onChange={e => set('year', e.target.value)}
                       className={`${inputCls('year')} appearance-none`}>
                       <option value="" disabled>Select year</option>
-                      {YEARS.map(y => <option key={y} value={y} className="bg-[#0f1a30]">{y}</option>)}
+                      {YEARS.map(y => <option key={y} value={y} className="bg-white">{y}</option>)}
                     </select>
                     {errors.year && <p className="text-red-400 text-xs mt-1">{errors.year}</p>}
                   </div>
@@ -215,7 +215,7 @@ export default function WaitlistPage() {
                     <select value={form.role} onChange={e => set('role', e.target.value)}
                       className={`${inputCls('role')} appearance-none`}>
                       <option value="" disabled>Select role</option>
-                      {ROLES.map(r => <option key={r} value={r} className="bg-[#0f1a30]">{r}</option>)}
+                      {ROLES.map(r => <option key={r} value={r} className="bg-white">{r}</option>)}
                     </select>
                     {errors.role && <p className="text-red-400 text-xs mt-1">{errors.role}</p>}
                   </div>
@@ -223,12 +223,12 @@ export default function WaitlistPage() {
 
                 <label className="flex items-start gap-3 cursor-pointer">
                   <input type="checkbox" checked={form.whatsapp} onChange={e => set('whatsapp', e.target.checked)}
-                    className="mt-0.5 w-4 h-4 rounded accent-indigo-500 shrink-0" />
+                    className="mt-0.5 w-4 h-4 rounded accent-[#FF9500] shrink-0" />
                   <span className="text-sm text-slate-400">Send me updates on WhatsApp when mentorship opens</span>
                 </label>
 
                 <button ref={btnRef} type="submit" disabled={loading}
-                  className="w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-60 text-white font-bold text-sm py-4 rounded-xl transition-all shadow-lg shadow-indigo-500/20 active:scale-[0.98]">
+                  className="w-full flex items-center justify-center gap-2 bg-[#FF9500] hover:bg-[#E88600] disabled:opacity-60 text-white font-bold text-sm py-4 rounded-xl transition-all shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)] active:scale-[0.98]">
                   {loading ? 'Saving your spot…' : <>Join Waitlist — Free <ArrowRight size={16} /></>}
                 </button>
 
@@ -247,7 +247,7 @@ export default function WaitlistPage() {
           <p className="text-xs text-slate-500 uppercase tracking-wider font-medium text-center mb-5">What you unlock when mentorship opens</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {PERKS.map(({ emoji, title, desc }) => (
-              <div key={title} className="bg-[#0f1a30] border border-white/8 rounded-xl p-5">
+              <div key={title} className="bg-white border border-[#F0ECE0] rounded-xl p-5">
                 <div className="text-2xl mb-3">{emoji}</div>
                 <h3 className="font-semibold text-white text-sm mb-1.5">{title}</h3>
                 <p className="text-slate-500 text-xs leading-relaxed">{desc}</p>

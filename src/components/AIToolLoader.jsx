@@ -39,7 +39,7 @@ export default function AIToolLoader({ steps = defaultSteps, interval = 1200, sh
   return (
     <div className="p-6 card-elevated max-w-xl mx-auto">
       <div className="flex items-center gap-4">
-        <div className="w-12 h-12 rounded-full flex items-center justify-center bg-indigo-700/20">
+        <div className="w-12 h-12 rounded-full flex items-center justify-center bg-[rgba(255,149,0,0.15)]">
           <svg className="w-6 h-6 text-primary animate-spin-slow" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2" strokeOpacity="0.2" />
             <path d="M22 12a10 10 0 0 0-10-10" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Users, MessageSquare, Lightbulb, Heart, MessageCircle, Slack, ArrowRight } from 'lucide-react';
+import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 
 const CommunitySection = () => {
   const communityBenefits = [
@@ -53,9 +54,9 @@ const CommunitySection = () => {
   const colorMap = {
     indigo: {
       bg: "card-dark",
-      border: "border-indigo-500/20",
-      button: "from-indigo-600 to-blue-600",
-      hover: "hover:border-indigo-400/50"
+      border: "border-[#FF9500]/25",
+      button: "from-[#FF9500] to-blue-600",
+      hover: "hover:border-[#FFB347]/50"
     },
     purple: {
       bg: "card-dark",
@@ -94,7 +95,7 @@ const CommunitySection = () => {
                 return (
                   <div key={index} className="flex gap-4 group">
                     <div className="flex-shrink-0">
-                      <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-indigo-600 to-purple-600 text-white group-hover:scale-110 transition-transform">
+                      <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-gradient-to-br from-[#FF9500] to-purple-600 text-white group-hover:scale-110 transition-transform">
                         <BenefitIcon className="w-6 h-6" strokeWidth={1.5} />
                       </div>
                     </div>
@@ -178,10 +179,10 @@ const CommunitySection = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="/#/interview-readiness"
+              href="/#/start-assessment"
               className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-white font-bold rounded-lg hover:shadow-lg hover:-translate-y-1 transition-all duration-300 active:scale-95"
             >
-              <span>Check My Readiness (Free)</span>
+              <span>{PRIMARY_CTA_LABEL}</span>
               <ArrowRight className="w-5 h-5" />
             </a>
             <a

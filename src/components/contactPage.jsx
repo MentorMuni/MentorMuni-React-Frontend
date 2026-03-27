@@ -90,7 +90,7 @@ const ContactPage = () => {
         {/* Header */}
         <div className="text-center mb-16">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <MessageSquare size={40} className="text-indigo-400" />
+            <MessageSquare size={40} className="text-[#FF9500]" />
             <h1 className="text-5xl md:text-6xl font-black">Get in Touch</h1>
           </div>
           <p className="text-xl text-slate-300 max-w-2xl mx-auto">
@@ -101,14 +101,14 @@ const ContactPage = () => {
         <div className="grid md:grid-cols-2 gap-12">
           {/* Contact Info */}
           <div className="space-y-8">
-            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-8">
+            <div className="bg-white/5 backdrop-blur border border-[#E0DCCF] rounded-3xl p-8">
               <h2 className="text-2xl font-bold mb-8">Contact Information</h2>
 
               {/* Email */}
               <div className="flex gap-4 mb-8">
                 <div className="flex-shrink-0">
-                  <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-indigo-600/20 border border-indigo-500/30">
-                    <Mail size={24} className="text-indigo-400" />
+                  <div className="flex items-center justify-center h-12 w-12 rounded-xl bg-[#FF9500]/20 border border-[#FF9500]/35">
+                    <Mail size={24} className="text-[#FF9500]" />
                   </div>
                 </div>
                 <div>
@@ -148,23 +148,23 @@ const ContactPage = () => {
             </div>
 
             {/* Why Contact Us */}
-            <div className="bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-8">
+            <div className="bg-white/5 backdrop-blur border border-[#E0DCCF] rounded-3xl p-8">
               <h3 className="text-xl font-bold mb-6">Why Contact MentorMuni?</h3>
               <ul className="space-y-4">
                 <li className="flex gap-3">
-                  <Check size={20} className="text-indigo-400 flex-shrink-0 mt-0.5" />
+                  <Check size={20} className="text-[#FF9500] flex-shrink-0 mt-0.5" />
                   <span className="text-slate-300">Expert guidance from industry professionals</span>
                 </li>
                 <li className="flex gap-3">
-                  <Check size={20} className="text-indigo-400 flex-shrink-0 mt-0.5" />
+                  <Check size={20} className="text-[#FF9500] flex-shrink-0 mt-0.5" />
                   <span className="text-slate-300">Personalized learning paths for your goals</span>
                 </li>
                 <li className="flex gap-3">
-                  <Check size={20} className="text-indigo-400 flex-shrink-0 mt-0.5" />
+                  <Check size={20} className="text-[#FF9500] flex-shrink-0 mt-0.5" />
                   <span className="text-slate-300">Flexible pricing and payment options</span>
                 </li>
                 <li className="flex gap-3">
-                  <Check size={20} className="text-indigo-400 flex-shrink-0 mt-0.5" />
+                  <Check size={20} className="text-[#FF9500] flex-shrink-0 mt-0.5" />
                   <span className="text-slate-300">Free assessment and career counseling</span>
                 </li>
               </ul>
@@ -172,7 +172,7 @@ const ContactPage = () => {
           </div>
 
           {/* Contact Form */}
-          <div className="bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-8">
+          <div className="bg-white/5 backdrop-blur border border-[#E0DCCF] rounded-3xl p-8">
             <h2 className="text-2xl font-bold mb-8">Send us a Message</h2>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -188,7 +188,7 @@ const ContactPage = () => {
                   className={`w-full px-4 py-3 rounded-xl border transition-all outline-none ${
                     errors.name
                       ? 'border-rose-500 bg-rose-500/10'
-                      : 'border-white/20 bg-white/5 focus:border-indigo-400 focus:bg-white/10'
+                      : 'border-[#E0DCCF] bg-white/5 focus:border-[#FFB347] focus:bg-white/10'
                   }`}
                 />
                 {errors.name && (
@@ -208,7 +208,7 @@ const ContactPage = () => {
                   className={`w-full px-4 py-3 rounded-xl border transition-all outline-none ${
                     errors.email
                       ? 'border-rose-500 bg-rose-500/10'
-                      : 'border-white/20 bg-white/5 focus:border-indigo-400 focus:bg-white/10'
+                      : 'border-[#E0DCCF] bg-white/5 focus:border-[#FFB347] focus:bg-white/10'
                   }`}
                 />
                 {errors.email && (
@@ -228,7 +228,7 @@ const ContactPage = () => {
                   className={`w-full px-4 py-3 rounded-xl border transition-all outline-none ${
                     errors.phone
                       ? 'border-rose-500 bg-rose-500/10'
-                      : 'border-white/20 bg-white/5 focus:border-indigo-400 focus:bg-white/10'
+                      : 'border-[#E0DCCF] bg-white/5 focus:border-[#FFB347] focus:bg-white/10'
                   }`}
                 />
                 {errors.phone && (
@@ -248,7 +248,7 @@ const ContactPage = () => {
                   className={`w-full px-4 py-3 rounded-xl border transition-all outline-none resize-none ${
                     errors.message
                       ? 'border-rose-500 bg-rose-500/10'
-                      : 'border-white/20 bg-white/5 focus:border-indigo-400 focus:bg-white/10'
+                      : 'border-[#E0DCCF] bg-white/5 focus:border-[#FFB347] focus:bg-white/10'
                   }`}
                 />
                 {errors.message && (
@@ -274,7 +274,7 @@ const ContactPage = () => {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-700 hover:to-cyan-700 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"
+                  className="flex-1 bg-gradient-to-r from-[#FF9500] to-cyan-600 hover:from-[#E88600] hover:to-cyan-700 disabled:opacity-50 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"
                 >
                   {isSubmitting ? (
                     <>
@@ -291,7 +291,7 @@ const ContactPage = () => {
                 <button
                   type="button"
                   onClick={handleReset}
-                  className="px-6 bg-white/10 hover:bg-white/20 border border-white/20 text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"
+                  className="px-6 bg-white/10 hover:bg-white/20 border border-[#E0DCCF] text-white font-bold py-3 rounded-xl transition-all flex items-center justify-center gap-2"
                 >
                   <RotateCcw size={18} />
                   Clear
@@ -302,29 +302,29 @@ const ContactPage = () => {
         </div>
 
         {/* FAQ Section */}
-        <div className="mt-20 bg-white/5 backdrop-blur border border-white/10 rounded-3xl p-12">
+        <div className="mt-20 bg-white/5 backdrop-blur border border-[#E0DCCF] rounded-3xl p-12">
           <h2 className="text-3xl font-black mb-12 text-center">Frequently Asked Questions</h2>
           <div className="grid md:grid-cols-2 gap-8">
             <div>
-              <h3 className="font-bold text-lg mb-3 text-indigo-400">How quickly will I get a response?</h3>
+              <h3 className="font-bold text-lg mb-3 text-[#FF9500]">How quickly will I get a response?</h3>
               <p className="text-slate-300">
                 We typically respond to all inquiries within 24 hours during business days. For urgent matters, call us directly.
               </p>
             </div>
             <div>
-              <h3 className="font-bold text-lg mb-3 text-indigo-400">What is your refund policy?</h3>
+              <h3 className="font-bold text-lg mb-3 text-[#FF9500]">What is your refund policy?</h3>
               <p className="text-slate-300">
                 We offer a 7-day money-back guarantee on all paid plans. No questions asked if you're not satisfied.
               </p>
             </div>
             <div>
-              <h3 className="font-bold text-lg mb-3 text-indigo-400">Do you offer corporate training?</h3>
+              <h3 className="font-bold text-lg mb-3 text-[#FF9500]">Do you offer corporate training?</h3>
               <p className="text-slate-300">
                 Yes! We provide custom training solutions for companies. Contact our enterprise team for details.
               </p>
             </div>
             <div>
-              <h3 className="font-bold text-lg mb-3 text-indigo-400">Can I schedule a demo?</h3>
+              <h3 className="font-bold text-lg mb-3 text-[#FF9500]">Can I schedule a demo?</h3>
               <p className="text-slate-300">
                 Absolutely. Use the contact form above or call us to schedule a personalized demo of our platform.
               </p>

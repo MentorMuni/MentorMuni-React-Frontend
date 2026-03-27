@@ -1,6 +1,7 @@
 import React from 'react';
 import { Zap, Code, BarChart3, Shield, Smartphone, Briefcase } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 
 /**
  * DESIGN SYSTEM DEMO COMPONENT
@@ -14,12 +15,12 @@ import { Link } from 'react-router-dom';
 
 export default function DesignSystemDemo() {
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-white py-20 px-6">
+    <div className="min-h-screen bg-[#FFFDF8] text-[#1A1A1A] py-20 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-20">
           <h1 className="text-5xl md:text-6xl font-black mb-4">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-blue-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF9500] to-blue-400">
               Design System
             </span>
           </h1>
@@ -38,13 +39,13 @@ export default function DesignSystemDemo() {
             <h3 className="text-2xl font-bold text-white mb-4">Primary - Indigo/Blue</h3>
             <p className="text-slate-400 mb-6">Use for primary buttons, links, and main interactive elements.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-2xl p-8 text-center">
+              <div className="bg-gradient-to-r from-[#FF9500] to-blue-600 rounded-2xl p-8 text-center">
                 <p className="font-bold">Gradient Background</p>
-                <p className="text-sm text-indigo-100 mt-2">from-indigo-600 to-blue-600</p>
+                <p className="text-sm text-indigo-100 mt-2">from-[#FF9500] to-blue-600</p>
               </div>
-              <div className="border border-indigo-500/30 bg-indigo-500/10 rounded-2xl p-8 text-center hover:border-indigo-500/60">
+              <div className="border border-[#FF9500]/35 bg-[#FF9500]/10 rounded-2xl p-8 text-center hover:border-[#FF9500]/60">
                 <p className="font-bold">Subtle Background</p>
-                <p className="text-sm text-indigo-300 mt-2">bg-indigo-500/10</p>
+                <p className="text-sm text-[#CC7000] mt-2">bg-[#FF9500]/10</p>
               </div>
             </div>
           </div>
@@ -127,11 +128,11 @@ export default function DesignSystemDemo() {
             <div>
               <p className="text-sm text-slate-400 mb-3">Primary Button (Indigo)</p>
               <button className="px-8 py-3 rounded-lg font-bold text-white 
-                              bg-gradient-to-r from-indigo-600 to-blue-600 
-                              hover:from-indigo-500 hover:to-blue-500 
-                              hover:shadow-lg hover:shadow-indigo-500/30
+                              bg-gradient-to-r from-[#FF9500] to-blue-600 
+                              hover:from-[#FF9500] hover:to-blue-500 
+                              hover:shadow-lg hover:shadow-[0_4px_14px_rgba(255,149,0,0.2)]
                               transition-all active:scale-95">
-                Check My Interview Readiness
+                {PRIMARY_CTA_LABEL}
               </button>
             </div>
 
@@ -162,9 +163,9 @@ export default function DesignSystemDemo() {
             {/* Outline Button */}
             <div>
               <p className="text-sm text-slate-400 mb-3">Outline Button</p>
-              <button className="px-8 py-3 rounded-lg font-bold text-indigo-400 
-                              border border-indigo-500/30 
-                              hover:border-indigo-500/60 hover:bg-indigo-500/10
+              <button className="px-8 py-3 rounded-lg font-bold text-[#FF9500] 
+                              border border-[#FF9500]/35 
+                              hover:border-[#FF9500]/60 hover:bg-[#E88600]/10
                               transition-all active:scale-95">
                 View Roadmap
               </button>
@@ -178,11 +179,11 @@ export default function DesignSystemDemo() {
           
           <div className="grid md:grid-cols-2 gap-8">
             {/* Interactive Card */}
-            <div className="group bg-gradient-to-br from-indigo-600/20 to-blue-600/20 
-                          border border-indigo-500/30 rounded-2xl p-6 
-                          hover:border-indigo-500/60 transition-all 
-                          hover:shadow-lg hover:shadow-indigo-500/20">
-              <Zap className="w-6 h-6 text-indigo-400 mb-3 group-hover:scale-110 transition-transform" />
+            <div className="group bg-gradient-to-br from-[#FF9500]/20 to-blue-600/20 
+                          border border-[#FF9500]/35 rounded-2xl p-6 
+                          hover:border-[#FF9500]/60 transition-all 
+                          hover:shadow-lg hover:shadow-[0_4px_14px_rgba(255,149,0,0.25)]">
+              <Zap className="w-6 h-6 text-[#FF9500] mb-3 group-hover:scale-110 transition-transform" />
               <h3 className="text-xl font-bold text-white mb-2">Interactive Card</h3>
               <p className="text-slate-300 text-sm">
                 Cards with hover effects and color gradients for features and paths.
@@ -215,17 +216,17 @@ export default function DesignSystemDemo() {
             ].map(({ icon: Icon, title, desc }, index) => (
               <div
                 key={index}
-                className="group bg-gradient-to-br from-indigo-600/20 to-blue-600/20 
-                          border border-indigo-500/30 rounded-2xl p-6 
-                          hover:border-indigo-500/60 transition-all 
-                          hover:shadow-lg hover:shadow-indigo-500/20"
+                className="group bg-gradient-to-br from-[#FF9500]/20 to-blue-600/20 
+                          border border-[#FF9500]/35 rounded-2xl p-6 
+                          hover:border-[#FF9500]/60 transition-all 
+                          hover:shadow-lg hover:shadow-[0_4px_14px_rgba(255,149,0,0.25)]"
               >
-                <div className="mb-4 p-3 rounded-lg bg-indigo-500/20">
-                  <Icon className="w-6 h-6 text-indigo-400 group-hover:scale-110 transition-transform" />
+                <div className="mb-4 p-3 rounded-lg bg-[#FF9500]/20">
+                  <Icon className="w-6 h-6 text-[#FF9500] group-hover:scale-110 transition-transform" />
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">{title}</h3>
                 <p className="text-slate-300 text-sm mb-4">{desc}</p>
-                <button className="text-indigo-400 hover:text-indigo-300 font-semibold text-sm">
+                <button className="text-[#FF9500] hover:text-[#CC7000] font-semibold text-sm">
                   View Path →
                 </button>
               </div>

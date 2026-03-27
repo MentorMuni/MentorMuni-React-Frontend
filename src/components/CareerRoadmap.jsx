@@ -42,10 +42,10 @@ const CareerRoadmap = () => {
 
   const colorMap = {
     indigo: {
-      bg: "bg-indigo-50",
-      border: "border-indigo-200",
-      icon: "bg-indigo-100 text-indigo-600",
-      hover: "hover:bg-indigo-100"
+      bg: "bg-[#FFF4E0]",
+      border: "border-[#F0ECE0]",
+      icon: "bg-[#FFF4E0] text-[#FF9500]",
+      hover: "hover:bg-[#FFF4E0]"
     },
     purple: {
       bg: "bg-purple-50",
@@ -90,7 +90,7 @@ const CareerRoadmap = () => {
         <div className="hidden lg:block mb-16">
           <div className="relative">
             {/* Connecting Line */}
-            <div className="absolute top-[60px] left-0 right-0 h-1 bg-gradient-to-r from-indigo-400 via-purple-400 to-amber-400 z-0"></div>
+            <div className="absolute top-[60px] left-0 right-0 h-1 bg-gradient-to-r from-[#FF9500] via-purple-400 to-amber-400 z-0"></div>
 
             {/* Steps Container */}
             <div className="relative z-10 flex justify-between items-start gap-4">
@@ -119,7 +119,7 @@ const CareerRoadmap = () => {
                     </div>
 
                     {/* Step Number Badge */}
-                    <div className="mt-4 inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold">
+                    <div className="mt-4 inline-flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-[#FF9500] to-purple-600 text-white text-xs font-bold">
                       {step.id}
                     </div>
                   </div>
@@ -141,7 +141,7 @@ const CareerRoadmap = () => {
                 <div key={step.id} className="mb-8 flex gap-6 relative">
                   {/* Vertical Connecting Line */}
                   {!isLast && (
-                    <div className="absolute left-6 top-20 w-1 h-12 bg-gradient-to-b from-indigo-400 to-purple-400"></div>
+                    <div className="absolute left-6 top-20 w-1 h-12 bg-gradient-to-b from-[#FF9500] to-purple-400"></div>
                   )}
 
                   {/* Icon Circle */}
@@ -157,7 +157,7 @@ const CareerRoadmap = () => {
                       <h3 className="text-lg font-bold text-slate-900">
                         {step.title}
                       </h3>
-                      <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white text-xs font-bold">
+                      <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-r from-[#FF9500] to-purple-600 text-white text-xs font-bold">
                         {step.id}
                       </div>
                     </div>
@@ -177,10 +177,10 @@ const CareerRoadmap = () => {
             Start your transformation today. Our platform guides you through each step with curated content, expert mentorship, and real-world projects.
           </p>
           <a
-            href="/#/interview-readiness"
+            href="/#/start-assessment"
             className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white font-bold rounded-lg hover:shadow-lg hover:shadow-orange-500/30 hover:-translate-y-1 transition-all duration-300 active:scale-95"
           >
-            <span>Start My Career Analysis (Free)</span>
+            <span>Check my readiness — free</span>
             <ArrowRight className="w-5 h-5" />
           </a>
         </div>

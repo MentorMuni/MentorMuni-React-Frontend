@@ -50,14 +50,14 @@ const ForRecruiters = () => {
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-1 rounded-2xl">
+        <div className="bg-gradient-to-r from-blue-600 to-[#E88600] p-1 rounded-2xl">
           <div className="bg-slate-900 p-12 rounded-2xl text-center">
             <h2 className="text-3xl font-bold mb-4">Hire Interview-Ready Talent</h2>
             <p className="text-slate-300 mb-8 max-w-2xl mx-auto">
               MentorMuni connects you with pre-vetted engineering talent verified through our 
               AI-powered interview readiness assessment. Reduce hiring time and improve quality of hires.
             </p>
-            <button className="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-blue-500/50 transition-all">
+            <button className="bg-gradient-to-r from-blue-600 to-[#E88600] px-8 py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-blue-500/50 transition-all">
               Schedule a Demo
             </button>
           </div>

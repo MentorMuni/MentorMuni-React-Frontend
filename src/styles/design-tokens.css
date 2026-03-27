@@ -1,38 +1,103 @@
-/* Design tokens for MentorMuni */
-:root{
-  --primary: #6366F1; /* indigo */
-  --secondary: #8B5CF6; /* purple */
-  --accent: #F97316; /* orange */
+/* MentorMuni — warm light theme (Duolingo-style: approachable, energetic) */
+:root {
+  --bg-primary: #fffdf8;
+  --bg-secondary: #fff8ee;
+  --bg-card: #ffffff;
+  --bg-soft-peach: #fff4e0;
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+  --text-muted: #999999;
+  --text-hint: #888888;
+  --accent: #ff9500;
+  --accent-hover: #e88600;
+  --accent-soft: #fff4e0;
+  --accent-secondary: #ffb347;
+  --border: #f0ece0;
+  --border-hover: #ffb347;
+  --success: #1a8c55;
+  --success-bg: #e8f8f0;
+  --info: #1a6fc4;
+  --info-bg: #e8f3ff;
+  --warning-bg: #fff4e0;
+  --warning-text: #cc7000;
+  --focus-ring: #ff9500;
+  --overlay-warm: rgba(255, 149, 0, 0.08);
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.05);
+  --shadow-nav: 0 1px 20px rgba(0, 0, 0, 0.06);
+  --shadow-button: 0 4px 14px rgba(255, 149, 0, 0.25);
 
-  --text-primary: #F9FAFB; /* headings on dark */
-  --text-secondary: #D1D5DB; /* body on dark */
-  --text-muted: #9CA3AF; /* muted on dark */
-
-  --main-bg: #0B0F19;
-  --secondary-bg: #111827;
-  --card-bg: #1F2937;
-  --border-color: #374151;
+  --main-bg: var(--bg-primary);
+  --text-heading: #1a1a1a;
+  --text-body: #444444;
+  --primary: var(--accent);
+  --secondary: var(--accent-secondary);
+  --secondary-bg: var(--bg-secondary);
+  --card-bg: var(--bg-card);
+  --border-color: var(--border);
 }
 
-/* Utility helpers for components */
-.bg-soft { background-color: var(--secondary-bg); }
-.text-primary { color: var(--primary); }
-.text-accent { color: var(--accent); }
-.text-on-dark { color: var(--text-primary); }
-.text-on-dark-sub { color: var(--text-secondary); }
-.text-muted { color: var(--text-muted); }
+/* Utility helpers — light theme */
+.bg-soft {
+  background-color: var(--bg-secondary);
+}
+.text-primary {
+  color: var(--accent);
+}
+.text-accent {
+  color: var(--accent);
+}
+.text-on-dark {
+  color: var(--text-primary);
+}
+.text-on-dark-sub {
+  color: var(--text-body);
+}
+.text-muted {
+  color: var(--text-muted);
+}
 
-/* Section helpers */
-.section-dark { background-color: var(--secondary-bg); color: var(--text-primary); }
-.section-main { background-color: var(--main-bg); color: var(--text-primary); }
-.section-soft { background-color: var(--secondary-bg); color: var(--text-primary); }
+.section-dark {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+.section-main {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+.section-soft {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
 
-/* Card helpers */
-.card-dark { background-color: var(--card-bg); color: var(--text-primary); border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.4); border-radius: 16px }
-.card-elevated { background-color: rgba(31,41,55,0.6); color: var(--text-primary); border: 1px solid rgba(255,255,255,0.03); box-shadow: 0 10px 30px rgba(0,0,0,0.45); border-radius: 16px }
+.card-dark {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  border-radius: 16px;
+}
+.card-elevated {
+  background-color: #ffffff;
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  border-radius: 16px;
+}
 
-/* Ensure buttons use tokens */
-.btn-primary{ background-color: var(--accent); color: white; }
-.btn-primary:hover{ filter: brightness(0.95); }
-.btn-secondary{ border-color: var(--primary); color: var(--primary); background: transparent }
-.btn-secondary:hover{ background: rgba(79,70,229,0.06); }
+.btn-primary {
+  background-color: var(--accent);
+  color: #ffffff;
+  box-shadow: var(--shadow-button);
+}
+.btn-primary:hover {
+  background-color: var(--accent-hover);
+  filter: none;
+}
+.btn-secondary {
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  background: transparent;
+}
+.btn-secondary:hover {
+  background: var(--accent-soft);
+}

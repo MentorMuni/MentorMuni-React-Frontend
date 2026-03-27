@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import CTAButtons from './CTAButtons';
+import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 import { Check } from 'lucide-react';
 // TrustIndicators and CompanyLogos are rendered on the homepage directly beneath the Hero
 
@@ -15,7 +16,7 @@ const HeroSection = () => {
     <section className="relative min-h-[90vh] flex items-center overflow-hidden section-main">
       {/* Decorative Gradient Blobs */}
       <div className="absolute inset-0 z-0 opacity-25 pointer-events-none" aria-hidden="true">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-indigo-600 rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
+        <div className="absolute top-0 left-0 w-96 h-96 bg-[#FF9500] rounded-full mix-blend-multiply filter blur-3xl animate-blob"></div>
         <div className="absolute top-1/4 right-0 w-80 h-80 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-2000"></div>
         <div className="absolute bottom-0 left-1/3 w-72 h-72 bg-purple-600 rounded-full mix-blend-multiply filter blur-3xl animate-blob animation-delay-4000"></div>
       </div>
@@ -26,8 +27,8 @@ const HeroSection = () => {
           {/* Left Column - Text Content */}
           <div className="space-y-8 max-w-xl">
             {/* Confidence Badge */}
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-indigo-500/15 border border-indigo-400/30">
-              <span className="text-sm font-semibold text-indigo-300">✓ Built for Your Success</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#FF9500]/15 border border-[#FFB347]/40">
+              <span className="text-sm font-semibold text-[#CC7000]">✓ Built for Your Success</span>
             </div>
 
             {/* Main Headline - Job Outcome Focused */}
@@ -72,7 +73,7 @@ const HeroSection = () => {
             {/* CTA Buttons */}
             <div className="pt-4">
               <CTAButtons 
-                primaryText="Check My Interview Readiness (Free)"
+                primaryText={PRIMARY_CTA_LABEL}
                 primaryHref="/start-assessment"
                 secondaryText="Analyze My Resume"
                 secondaryHref="/resume-analyzer"
@@ -85,16 +86,16 @@ const HeroSection = () => {
               <p className="text-xs text-slate-500 mb-3">What you'll get from a free assessment:</p>
               <div className="flex flex-wrap gap-x-6 gap-y-2">
                 <span className="flex items-center gap-2 text-sm text-slate-300">
-                  <Check className="w-4 h-4 text-indigo-400" /> Interview Readiness Score
+                  <Check className="w-4 h-4 text-[#FF9500]" /> Interview Readiness Score
                 </span>
                 <span className="flex items-center gap-2 text-sm text-slate-300">
-                  <Check className="w-4 h-4 text-indigo-400" /> Resume ATS Score
+                  <Check className="w-4 h-4 text-[#FF9500]" /> Resume ATS Score
                 </span>
                 <span className="flex items-center gap-2 text-sm text-slate-300">
-                  <Check className="w-4 h-4 text-indigo-400" /> Personalized Roadmap
+                  <Check className="w-4 h-4 text-[#FF9500]" /> Personalized Roadmap
                 </span>
                 <span className="flex items-center gap-2 text-sm text-slate-300">
-                  <Check className="w-4 h-4 text-indigo-400" /> Skill Gap Analysis
+                  <Check className="w-4 h-4 text-[#FF9500]" /> Skill Gap Analysis
                 </span>
               </div>
             </div>
@@ -102,7 +103,7 @@ const HeroSection = () => {
 
           {/* Right Column - Illustration/Visual */}
           <div className="hidden lg:flex items-center justify-center relative">
-            <div className="absolute inset-0 bg-gradient-to-r from-indigo-600/10 to-blue-600/10 rounded-3xl blur-2xl"></div>
+            <div className="absolute inset-0 bg-gradient-to-r from-[#FF9500]/10 to-blue-600/10 rounded-3xl blur-2xl"></div>
             <div className="relative animate-float w-full max-w-md min-h-[300px]">
               {heroSrc ? (
                 <img 

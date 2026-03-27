@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { API_BASE } from '../config';
+import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 import AIAnalysisLoader from './AIAnalysisLoader';
 import { useFreeUsageTracker } from './FreeUsageCounter';
 import UpgradePromptModal from './UpgradePromptModal';
@@ -106,11 +107,11 @@ function readToolsEntryFromHash() {
 const InputField = ({ label, type, name, value, onChange, placeholder, error, maxLength, showCharCount }) => (
   <div className="space-y-2">
     <div className="flex justify-between items-center">
-      <label className="text-sm font-bold text-slate-200">
+      <label className="text-sm font-bold text-[#333333]">
         {label} <span className="text-red-400">*</span>
       </label>
       {showCharCount && maxLength && (
-        <span className={`text-xs font-medium ${value.length > maxLength * 0.9 ? 'text-red-400' : 'text-slate-400'}`}>
+        <span className={`text-xs font-medium ${value.length > maxLength * 0.9 ? 'text-red-400' : 'text-[#666666]'}`}>
           {value.length} / {maxLength}
         </span>
       )}
@@ -123,10 +124,10 @@ const InputField = ({ label, type, name, value, onChange, placeholder, error, ma
         placeholder={placeholder}
         maxLength={maxLength}
         rows={3}
-        className={`w-full px-4 py-3 rounded-xl border bg-white/5 backdrop-blur outline-none transition-all resize-none text-white placeholder-slate-500 ${
+        className={`w-full px-4 py-3 rounded-xl border bg-white border border-[#E0DCCF] outline-none transition-all resize-none text-[#1A1A1A] placeholder-[#AAAAAA] ${
           error
             ? 'border-red-500/50 bg-red-500/10'
-            : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30'
+            : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
         }`}
         required
       />
@@ -138,10 +139,10 @@ const InputField = ({ label, type, name, value, onChange, placeholder, error, ma
         onChange={onChange}
         placeholder={placeholder}
         maxLength={maxLength}
-        className={`w-full px-4 py-3 rounded-xl border bg-white/5 backdrop-blur outline-none transition-all text-white placeholder-slate-500 ${
+        className={`w-full px-4 py-3 rounded-xl border bg-white border border-[#E0DCCF] outline-none transition-all text-[#1A1A1A] placeholder-[#AAAAAA] ${
           error
             ? 'border-red-500/50 bg-red-500/10'
-            : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30'
+            : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
         }`}
         required
       />
@@ -209,11 +210,11 @@ function ReadinessScoreRing({ pct }) {
           initial={{ scale: 0.5, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.35, type: 'spring', stiffness: 260, damping: 18 }}
-          className="text-5xl font-black tabular-nums tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-white to-slate-300"
+          className="text-5xl font-black tabular-nums tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-[#1A1A1A] to-[#64748B]"
         >
           {pct}%
         </motion.span>
-        <span className="mt-1 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">Readiness</span>
+        <span className="mt-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[#666666]">Readiness</span>
       </div>
     </div>
   );
@@ -226,17 +227,17 @@ function FactorBar({ label, value, icon: Icon, variant = 'indigo', delay = 0 }) 
       ? 'linear-gradient(90deg, #10b981, #34d399)'
       : variant === 'amber'
         ? 'linear-gradient(90deg, #f59e0b, #fbbf24)'
-        : 'linear-gradient(90deg, #6366f1, #22d3ee)';
+        : 'linear-gradient(90deg, #E88600, #FF9500)';
   const iconCls =
-    variant === 'emerald' ? 'text-emerald-400' : variant === 'amber' ? 'text-amber-400' : 'text-indigo-400';
+    variant === 'emerald' ? 'text-emerald-400' : variant === 'amber' ? 'text-amber-400' : 'text-[#FF9500]';
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between gap-2 text-xs">
-        <span className="flex items-center gap-1.5 font-semibold text-slate-300">
+        <span className="flex items-center gap-1.5 font-semibold text-[#444444]">
           {Icon && <Icon size={13} className={iconCls} />}
           {label}
         </span>
-        <span className="tabular-nums text-slate-500">{Math.round(v)}%</span>
+        <span className="tabular-nums text-[#666666]">{Math.round(v)}%</span>
       </div>
       <div className="h-2 overflow-hidden rounded-full bg-white/[0.06]">
         <motion.div
@@ -704,7 +705,7 @@ const InterviewReady = () => {
     return (
       <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden mb-8">
         <div
-          className="h-full bg-gradient-to-r from-indigo-500 to-cyan-500 transition-all duration-500 ease-out"
+          className="h-full bg-gradient-to-r from-[#FF9500] to-cyan-500 transition-all duration-500 ease-out"
           style={{ width: `${(Object.keys(answers).length / total) * 100}%` }}
         />
       </div>
@@ -714,14 +715,14 @@ const InterviewReady = () => {
   // ========== STEP 0: LANDING ==========
   if (step === 0) {
     return (
-      <div className="min-h-screen bg-[#050b18] text-white py-14 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen bg-[#FFFDF8] text-[#1A1A1A] py-14 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-2xl mx-auto">
 
           {/* Source credibility pill */}
           <div className="flex justify-center mb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FFF8EE] border border-[#F0ECE0]">
               <Star size={13} className="text-amber-400" />
-              <span className="text-sm text-slate-400">Questions built from real interview patterns at 500+ companies</span>
+              <span className="text-sm text-[#666666]">Questions built from real interview patterns at 500+ companies</span>
             </div>
           </div>
 
@@ -729,13 +730,13 @@ const InterviewReady = () => {
           <div className="text-center mb-4">
             <h1 className="text-5xl md:text-6xl font-black leading-tight tracking-tight">
               Interview{' '}
-              <span className="text-indigo-400">Readiness</span>
+              <span className="text-[#FF9500]">Readiness</span>
               <br />Check
             </h1>
           </div>
 
           {/* Subheadline — specific, not fluffy */}
-          <p className="text-center text-lg text-slate-300 leading-relaxed mb-8 max-w-xl mx-auto">
+          <p className="text-center text-lg text-[#444444] leading-relaxed mb-8 max-w-xl mx-auto">
             Questions tailored to your role and tech stack. Get your readiness score, your weak spots,
             and a personalized study plan — in 5 minutes.
           </p>
@@ -747,12 +748,12 @@ const InterviewReady = () => {
               { Icon: ShieldCheck, title: 'No account needed', desc: 'No account, no password — just start. Save your report after if you want.' },
               { Icon: Map, title: 'Personalised plan', desc: 'Weak areas mapped to a specific week-by-week study roadmap for your stack.' },
             ].map(({ Icon, title, desc }) => (
-              <div key={title} className="bg-white/[0.03] border border-white/8 rounded-xl p-5 hover:border-indigo-500/30 transition-all">
-                <div className="w-9 h-9 bg-indigo-600/20 rounded-lg flex items-center justify-center mb-3">
-                  <Icon size={16} className="text-indigo-400" />
+              <div key={title} className="bg-white/[0.03] border border-[#F0ECE0] rounded-xl p-5 hover:border-[#FF9500]/35 transition-all">
+                <div className="w-9 h-9 bg-[#FF9500]/20 rounded-lg flex items-center justify-center mb-3">
+                  <Icon size={16} className="text-[#FF9500]" />
                 </div>
-                <h3 className="font-semibold text-white text-sm mb-1.5">{title}</h3>
-                <p className="text-slate-300 text-sm leading-relaxed">{desc}</p>
+                <h3 className="font-semibold text-[#1A1A1A] text-sm mb-1.5">{title}</h3>
+                <p className="text-[#444444] text-sm leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>
@@ -764,7 +765,7 @@ const InterviewReady = () => {
               { Icon: Check, text: 'Free, always' },
               { Icon: ShieldCheck, text: 'No signup' },
             ].map(({ Icon, text }) => (
-              <span key={text} className="inline-flex items-center gap-1.5 bg-white/5 border border-white/8 rounded-full px-3 py-1.5 text-xs text-slate-300 font-medium">
+              <span key={text} className="inline-flex items-center gap-1.5 bg-[#FFF8EE] border border-[#F0ECE0] rounded-full px-3 py-1.5 text-xs text-[#666666] font-medium">
                 <Icon size={12} className="text-green-400" />
                 {text}
               </span>
@@ -774,9 +775,9 @@ const InterviewReady = () => {
           {/* Primary CTA */}
           <button
             onClick={() => setStep(2)}
-            className="group w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-indigo-500/20 text-base active:scale-[0.98] mb-3"
+            className="group w-full flex items-center justify-center gap-2 bg-[#FF9500] hover:bg-[#E88600] text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)] text-base active:scale-[0.98] mb-3"
           >
-            Check My Readiness Score — Free
+            {PRIMARY_CTA_LABEL}
             <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
           </button>
 
@@ -788,24 +789,24 @@ const InterviewReady = () => {
   // ========== STEP 1: COLLECT CONTACT INFO ==========
   if (step === 1 && !otpSent) {
     return (
-      <div className="min-h-screen bg-[#050b18] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-[#0f1a30] border border-white/10 rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
+          <div className="bg-white border border-[#E0DCCF] rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-4">
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-500/20 border border-indigo-500">
-                  <Mail className="text-indigo-400" size={24} />
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#FF9500]/20 border border-[#FF9500]">
+                  <Mail className="text-[#FF9500]" size={24} />
                 </div>
-                <h2 className="text-3xl font-black text-white">Verify Your Contact</h2>
+                <h2 className="text-3xl font-black text-[#1A1A1A]">Verify Your Contact</h2>
               </div>
-              <p className="text-slate-400 text-base">
+              <p className="text-[#666666] text-base">
                 We'll send you an OTP to verify your email and phone
               </p>
             </div>
             
             <form onSubmit={handleRequestOTP} className="space-y-6">
               <div>
-                <label className="text-sm font-bold text-slate-200 block mb-3">
+                <label className="text-sm font-bold text-[#333333] block mb-3">
                   Email Address <span className="text-red-400">*</span>
                 </label>
                 <input 
@@ -816,10 +817,10 @@ const InterviewReady = () => {
                     setValidationErrors({...validationErrors, email: ''});
                   }}
                   placeholder="your.email@example.com"
-                  className={`w-full px-4 py-3 rounded-xl border bg-white/5 backdrop-blur outline-none transition-all text-white placeholder-slate-500 ${
+                  className={`w-full px-4 py-3 rounded-xl border bg-white border border-[#E0DCCF] outline-none transition-all text-[#1A1A1A] placeholder-[#AAAAAA] ${
                     validationErrors.email 
                       ? 'border-red-500/50 bg-red-500/10' 
-                      : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30'
+                      : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
                   }`}
                   required
                 />
@@ -832,7 +833,7 @@ const InterviewReady = () => {
               </div>
 
               <div>
-                <label className="text-sm font-bold text-slate-200 block mb-3">
+                <label className="text-sm font-bold text-[#333333] block mb-3">
                   Phone Number <span className="text-red-400">*</span>
                 </label>
                 <input 
@@ -843,10 +844,10 @@ const InterviewReady = () => {
                     setValidationErrors({...validationErrors, phone: ''});
                   }}
                   placeholder="+91 9876543210"
-                  className={`w-full px-4 py-3 rounded-xl border bg-white/5 backdrop-blur outline-none transition-all text-white placeholder-slate-500 ${
+                  className={`w-full px-4 py-3 rounded-xl border bg-white border border-[#E0DCCF] outline-none transition-all text-[#1A1A1A] placeholder-[#AAAAAA] ${
                     validationErrors.phone 
                       ? 'border-red-500/50 bg-red-500/10' 
-                      : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30'
+                      : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
                   }`}
                   required
                 />
@@ -869,14 +870,14 @@ const InterviewReady = () => {
                 <button 
                   type="button" 
                   onClick={() => setStep(0)}
-                  className="flex-1 py-3 font-bold text-slate-300 hover:text-white hover:bg-white/5 rounded-2xl transition-all border border-white/10 hover:border-white/20"
+                  className="flex-1 py-3 font-bold text-[#444444] hover:text-[#1A1A1A] hover:bg-[#FFF8EE] rounded-2xl transition-all border border-[#E0DCCF] hover:border-[#E0DCCF]"
                 >
                   Back
                 </button>
                 <button 
                   type="submit"
                   disabled={loading}
-                  className="flex-[2] bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 disabled:from-slate-600 disabled:to-slate-700 text-white font-bold py-3 rounded-2xl shadow-lg transition-all active:scale-95"
+                  className="flex-[2] bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#FF9500] hover:to-[#E88600] disabled:from-slate-600 disabled:to-slate-700 text-white font-bold py-3 rounded-2xl shadow-lg transition-all active:scale-95"
                 >
                   {loading ? 'Sending OTP...' : 'Send OTP'}
                 </button>
@@ -891,17 +892,17 @@ const InterviewReady = () => {
   // ========== STEP 1B: VERIFY OTP ==========
   if (step === 1 && otpSent && !otpVerified) {
     return (
-      <div className="min-h-screen bg-[#050b18] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-[#0f1a30] border border-white/10 rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
+          <div className="bg-white border border-[#E0DCCF] rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-500">
                   <Lock className="text-cyan-400" size={24} />
                 </div>
-                <h2 className="text-3xl font-black text-white">Verify OTP</h2>
+                <h2 className="text-3xl font-black text-[#1A1A1A]">Verify OTP</h2>
               </div>
-              <p className="text-slate-400 text-base">
+              <p className="text-[#666666] text-base">
                 Enter the 6-digit code sent to your email and phone
               </p>
               <p className="text-xs text-cyan-400/80 mt-3 bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-3">
@@ -911,7 +912,7 @@ const InterviewReady = () => {
             
             <form onSubmit={handleVerifyOTP} className="space-y-6">
               <div>
-                <label className="text-sm font-bold text-slate-200 block mb-3">
+                <label className="text-sm font-bold text-[#333333] block mb-3">
                   Enter OTP <span className="text-red-400">*</span>
                 </label>
                 <input 
@@ -920,7 +921,7 @@ const InterviewReady = () => {
                   onChange={(e) => setOtpCode(e.target.value.slice(0, 6))}
                   placeholder="000000"
                   maxLength="6"
-                  className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 backdrop-blur outline-none text-center text-3xl font-black tracking-widest text-white placeholder-slate-600 hover:border-white/20 focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30 transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] outline-none text-center text-3xl font-black tracking-widest text-[#1A1A1A] placeholder-[#AAAAAA] hover:border-[#E0DCCF] focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30 transition-all"
                   required
                 />
               </div>
@@ -936,7 +937,7 @@ const InterviewReady = () => {
                 <button 
                   type="button" 
                   onClick={() => setOtpSent(false)}
-                  className="flex-1 py-3 font-bold text-slate-300 hover:text-white hover:bg-white/5 rounded-2xl transition-all border border-white/10 hover:border-white/20"
+                  className="flex-1 py-3 font-bold text-[#444444] hover:text-[#1A1A1A] hover:bg-[#FFF8EE] rounded-2xl transition-all border border-[#E0DCCF] hover:border-[#E0DCCF]"
                 >
                   Back
                 </button>
@@ -992,9 +993,9 @@ const InterviewReady = () => {
     const currentStepIndex = 1;
 
     return (
-      <div className="min-h-screen bg-[#050b18] py-10 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen bg-[#FFFDF8] py-10 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-[#0f1a30] rounded-3xl shadow-2xl p-8 md:p-10 border border-white/8">
+          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-[#F0ECE0]">
 
             {/* Progress bar only — no step numbers or labels */}
             <div className="mb-6">
@@ -1007,16 +1008,16 @@ const InterviewReady = () => {
                 aria-valuemax={ASSESSMENT_STEPS}
               >
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400 transition-[width] duration-300"
+                  className="h-full rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-400 transition-[width] duration-300"
                   style={{ width: `${(currentStepIndex / ASSESSMENT_STEPS) * 100}%` }}
                 />
               </div>
             </div>
 
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight">
+            <h2 className="text-3xl md:text-4xl font-black text-[#1A1A1A] mb-2 tracking-tight">
               Select your professional profile
             </h2>
-            <p className="text-slate-400 text-base mb-8 leading-relaxed">
+            <p className="text-[#666666] text-base mb-8 leading-relaxed">
               Choose the option that best reflects your current stage. We’ll tailor questions to your context.
             </p>
 
@@ -1041,22 +1042,22 @@ const InterviewReady = () => {
                     }}
                     className={`p-5 rounded-2xl text-left transition-all border-2 group relative ${
                       selected
-                        ? 'border-indigo-500 bg-indigo-600/15 shadow-lg shadow-indigo-500/10'
-                        : 'border-white/8 bg-white/[0.03] hover:border-white/20 hover:bg-white/[0.06]'
+                        ? 'border-[#FF9500] bg-[#FF9500]/15 shadow-lg shadow-[0_2px_12px_rgba(255,149,0,0.15)]'
+                        : 'border-[#F0ECE0] bg-white/[0.03] hover:border-[#E0DCCF] hover:bg-white/[0.06]'
                     }`}
                   >
                     {selected && (
-                      <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-indigo-500 flex items-center justify-center">
+                      <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[#FF9500] flex items-center justify-center">
                         <Check size={11} className="text-white" />
                       </div>
                     )}
                     <div className="text-3xl mb-3">{option.emoji}</div>
-                    <h3 className="font-bold text-white text-sm mb-1">{option.label}</h3>
-                    <p className={`text-xs font-medium mb-3 ${selected ? 'text-indigo-400' : 'text-slate-500'}`}>{option.badge}</p>
+                    <h3 className="font-bold text-[#1A1A1A] text-sm mb-1">{option.label}</h3>
+                    <p className={`text-xs font-medium mb-3 ${selected ? 'text-[#FF9500]' : 'text-slate-500'}`}>{option.badge}</p>
                     <div className="space-y-1.5">
                       {option.details.map((d) => (
-                        <div key={d} className="flex items-start gap-1.5 text-xs text-slate-400">
-                          <Check size={11} className={`mt-0.5 shrink-0 ${selected ? 'text-indigo-400' : 'text-slate-600'}`} />
+                        <div key={d} className="flex items-start gap-1.5 text-xs text-[#666666]">
+                          <Check size={11} className={`mt-0.5 shrink-0 ${selected ? 'text-[#FF9500]' : 'text-slate-600'}`} />
                           {d}
                         </div>
                       ))}
@@ -1070,7 +1071,7 @@ const InterviewReady = () => {
               <button
                 type="button"
                 onClick={() => (fromToolsEntry ? navigate('/interview-readiness-tools') : setStep(0))}
-                className="px-6 py-3 font-bold text-slate-400 hover:text-white hover:bg-white/5 rounded-xl transition-all border border-white/8 hover:border-white/20 text-sm"
+                className="px-6 py-3 font-bold text-[#666666] hover:text-[#1A1A1A] hover:bg-[#FFF8EE] rounded-xl transition-all border border-[#F0ECE0] hover:border-[#E0DCCF] text-sm"
               >
                 ← Back
               </button>
@@ -1080,8 +1081,8 @@ const InterviewReady = () => {
                 onClick={() => setStep(3)}
                 className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all ${
                   profile.userCategory
-                    ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-lg shadow-indigo-500/25 hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98]'
-                    : 'cursor-not-allowed border border-white/8 bg-white/[0.04] text-slate-600'
+                    ? 'bg-gradient-to-r from-[#FF9500] to-[#FFB347] text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.3)] hover:from-[#FF9500] hover:to-[#FFB347] active:scale-[0.98]'
+                    : 'cursor-not-allowed border border-[#F0ECE0] bg-white/[0.04] text-slate-600'
                 }`}
               >
                 Continue
@@ -1105,9 +1106,9 @@ const InterviewReady = () => {
       profile.userCategory.replace(/_/g, ' ');
 
     return (
-      <div className="min-h-screen bg-[#050b18] py-10 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen bg-[#FFFDF8] py-10 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-[#0f1a30] rounded-3xl shadow-2xl p-8 md:p-10 border border-white/8 animate-in slide-in-from-bottom-4 duration-500">
+          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-[#F0ECE0] animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-6">
               <div
                 className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden"
@@ -1118,22 +1119,22 @@ const InterviewReady = () => {
                 aria-valuemax={ASSESSMENT_STEPS}
               >
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400 transition-[width] duration-300"
+                  className="h-full rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-400 transition-[width] duration-300"
                   style={{ width: `${(currentStepIndex / ASSESSMENT_STEPS) * 100}%` }}
                 />
               </div>
             </div>
 
             <div className="mb-6 flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1.5 text-xs font-semibold text-indigo-200">
-                Profile: <span className="ml-1 text-white">{roleLabel}</span>
+              <span className="inline-flex items-center rounded-full border border-[#FF9500]/35 bg-[#FF9500]/10 px-3 py-1.5 text-xs font-semibold text-[#CC7000]">
+                Profile: <span className="ml-1 text-[#444444]">{roleLabel}</span>
               </span>
             </div>
 
-            <h2 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight">
+            <h2 className="text-3xl md:text-4xl font-black text-[#1A1A1A] mb-2 tracking-tight">
               {isPro ? 'Your experience & organization' : 'Your college or university'}
             </h2>
-            <p className="text-slate-400 text-base mb-8 leading-relaxed max-w-2xl">
+            <p className="text-[#666666] text-base mb-8 leading-relaxed max-w-2xl">
               {isPro
                 ? 'We use this to calibrate question difficulty and seniority—same as how real interviews adapt to your level.'
                 : 'Helps us tailor examples and expectations to your academic context (campus drives, coursework, projects).'}
@@ -1143,8 +1144,8 @@ const InterviewReady = () => {
               {isPro ? (
                 <>
                   <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-sm font-bold text-slate-200">
-                      <Briefcase size={16} className="text-indigo-400" />
+                    <label className="flex items-center gap-2 text-sm font-bold text-[#333333]">
+                      <Briefcase size={16} className="text-[#FF9500]" />
                       Years of experience <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -1161,10 +1162,10 @@ const InterviewReady = () => {
                         );
                       }}
                       placeholder="e.g. 2.5"
-                      className={`w-full rounded-xl border bg-white/5 px-4 py-3 text-white outline-none transition-all placeholder:text-slate-500 ${
+                      className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-[#1A1A1A] outline-none transition-all placeholder:text-slate-500 ${
                         validationErrors.experienceYears
                           ? 'border-red-500/50 bg-red-500/10'
-                          : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30'
+                          : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
                       }`}
                     />
                     {validationErrors.experienceYears && (
@@ -1175,8 +1176,8 @@ const InterviewReady = () => {
                     )}
                   </div>
                   <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-sm font-bold text-slate-200">
-                      <Building2 size={16} className="text-indigo-400" />
+                    <label className="flex items-center gap-2 text-sm font-bold text-[#333333]">
+                      <Building2 size={16} className="text-[#FF9500]" />
                       Current organization <span className="text-red-400">*</span>
                     </label>
                     <input
@@ -1189,10 +1190,10 @@ const InterviewReady = () => {
                         );
                       }}
                       placeholder="Company or employer name"
-                      className={`w-full rounded-xl border bg-white/5 px-4 py-3 text-white outline-none transition-all placeholder:text-slate-500 ${
+                      className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-[#1A1A1A] outline-none transition-all placeholder:text-slate-500 ${
                         validationErrors.currentOrganization
                           ? 'border-red-500/50 bg-red-500/10'
-                          : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30'
+                          : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
                       }`}
                     />
                     {validationErrors.currentOrganization && (
@@ -1205,8 +1206,8 @@ const InterviewReady = () => {
                 </>
               ) : (
                 <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-bold text-slate-200">
-                    <Building2 size={16} className="text-indigo-400" />
+                  <label className="flex items-center gap-2 text-sm font-bold text-[#333333]">
+                    <Building2 size={16} className="text-[#FF9500]" />
                     College / university name <span className="text-red-400">*</span>
                   </label>
                   <input
@@ -1217,10 +1218,10 @@ const InterviewReady = () => {
                       setValidationErrors((prev) => (prev.collegeName ? { ...prev, collegeName: '' } : prev));
                     }}
                     placeholder="e.g. IIT Madras, VIT Vellore, state university…"
-                    className={`w-full rounded-xl border bg-white/5 px-4 py-3 text-white outline-none transition-all placeholder:text-slate-500 ${
+                    className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-[#1A1A1A] outline-none transition-all placeholder:text-slate-500 ${
                       validationErrors.collegeName
                         ? 'border-red-500/50 bg-red-500/10'
-                        : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30'
+                        : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
                     }`}
                   />
                   {validationErrors.collegeName && (
@@ -1233,11 +1234,11 @@ const InterviewReady = () => {
               )}
             </div>
 
-            <div className="mt-8 space-y-5 rounded-2xl border border-white/10 bg-white/[0.03] p-5 md:p-6">
+            <div className="mt-8 space-y-5 rounded-2xl border border-[#E0DCCF] bg-white/[0.03] p-5 md:p-6">
               <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Email &amp; phone</p>
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-bold text-slate-200">
-                  <Mail size={16} className="text-indigo-400" />
+                <label className="flex items-center gap-2 text-sm font-bold text-[#333333]">
+                  <Mail size={16} className="text-[#FF9500]" />
                   Email address <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -1250,10 +1251,10 @@ const InterviewReady = () => {
                     setValidationErrors((prev) => (prev.email ? { ...prev, email: '' } : prev));
                   }}
                   placeholder="you@example.com"
-                  className={`w-full rounded-xl border bg-white/5 px-4 py-3 text-white outline-none transition-all placeholder:text-slate-500 ${
+                  className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-[#1A1A1A] outline-none transition-all placeholder:text-slate-500 ${
                     validationErrors.email
                       ? 'border-red-500/50 bg-red-500/10'
-                      : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30'
+                      : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
                   }`}
                 />
                 {validationErrors.email && (
@@ -1264,8 +1265,8 @@ const InterviewReady = () => {
                 )}
               </div>
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-bold text-slate-200">
-                  <Phone size={16} className="text-indigo-400" />
+                <label className="flex items-center gap-2 text-sm font-bold text-[#333333]">
+                  <Phone size={16} className="text-[#FF9500]" />
                   Phone number <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -1278,10 +1279,10 @@ const InterviewReady = () => {
                     setValidationErrors((prev) => (prev.phone ? { ...prev, phone: '' } : prev));
                   }}
                   placeholder="+91 9876543210"
-                  className={`w-full rounded-xl border bg-white/5 px-4 py-3 text-white outline-none transition-all placeholder:text-slate-500 ${
+                  className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-[#1A1A1A] outline-none transition-all placeholder:text-slate-500 ${
                     validationErrors.phone
                       ? 'border-red-500/50 bg-red-500/10'
-                      : 'border-white/10 hover:border-white/20 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30'
+                      : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
                   }`}
                 />
                 {validationErrors.phone && (
@@ -1298,7 +1299,7 @@ const InterviewReady = () => {
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="rounded-xl border border-white/8 px-6 py-3 text-sm font-bold text-slate-400 transition-all hover:border-white/20 hover:bg-white/5 hover:text-white"
+                className="rounded-xl border border-[#F0ECE0] px-6 py-3 text-sm font-bold text-[#666666] transition-all hover:border-[#E0DCCF] hover:bg-white/5 hover:text-white"
               >
                 ← Back
               </button>
@@ -1308,7 +1309,7 @@ const InterviewReady = () => {
                   if (!validateContext()) return;
                   setStep(4);
                 }}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-500/25 transition-all hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98]"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FF9500] to-[#FFB347] py-3 text-sm font-bold text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-all hover:from-[#FF9500] hover:to-[#FFB347] active:scale-[0.98]"
               >
                 Continue to skills
                 <ChevronRight size={16} />
@@ -1330,9 +1331,9 @@ const InterviewReady = () => {
       profile.userCategory.replace(/_/g, ' ');
 
     return (
-      <div className="min-h-screen bg-[#050b18] py-10 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen bg-[#FFFDF8] py-10 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-[#0f1a30] rounded-3xl shadow-2xl p-8 md:p-10 border border-white/8 animate-in slide-in-from-bottom-4 duration-500">
+          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-[#F0ECE0] animate-in slide-in-from-bottom-4 duration-500">
             {/* Progress — matches role step */}
             <div className="mb-6">
               <div
@@ -1344,7 +1345,7 @@ const InterviewReady = () => {
                 aria-valuemax={ASSESSMENT_STEPS}
               >
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-indigo-500 to-cyan-400 transition-[width] duration-300"
+                  className="h-full rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-400 transition-[width] duration-300"
                   style={{ width: `${(currentStepIndex / ASSESSMENT_STEPS) * 100}%` }}
                 />
               </div>
@@ -1352,18 +1353,18 @@ const InterviewReady = () => {
 
             <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div className="min-w-0">
-                <h2 className="text-3xl md:text-4xl font-black text-white mb-2 tracking-tight">
+                <h2 className="text-3xl md:text-4xl font-black text-[#1A1A1A] mb-2 tracking-tight">
                   Your skills &amp; tech stack
                 </h2>
-                <p className="text-slate-400 text-base leading-relaxed max-w-2xl">
-                  We&apos;ll call the plan API to build <span className="text-slate-300 font-semibold">15 Yes/No questions</span>{' '}
+                <p className="text-[#666666] text-base leading-relaxed max-w-2xl">
+                  We&apos;ll call the plan API to build <span className="text-[#444444] font-semibold">15 Yes/No questions</span>{' '}
                   matched to your stack. List the languages, frameworks, and tools you&apos;re most comfortable discussing (
                   {PLAN_PRIMARY_SKILL_MAX} characters max).
                 </p>
               </div>
               <div className="flex shrink-0 flex-wrap items-center gap-2 sm:justify-end">
-                <span className="inline-flex items-center rounded-full border border-indigo-500/30 bg-indigo-500/10 px-3 py-1.5 text-xs font-semibold text-indigo-200">
-                  Profile: <span className="ml-1 text-white">{roleLabel}</span>
+                <span className="inline-flex items-center rounded-full border border-[#FF9500]/35 bg-[#FF9500]/10 px-3 py-1.5 text-xs font-semibold text-[#CC7000]">
+                  Profile: <span className="ml-1 text-[#444444]">{roleLabel}</span>
                 </span>
                 <span className="inline-flex items-center rounded-full border border-cyan-500/35 bg-cyan-500/10 px-3 py-1.5 text-xs font-bold text-cyan-300">
                   {usageInfo.remaining_attempts}/{FREE_TIER_LIMIT} free runs
@@ -1417,14 +1418,14 @@ const InterviewReady = () => {
                 <button
                   type="button"
                   onClick={() => setStep(3)}
-                  className="rounded-xl border border-white/8 px-6 py-3 text-sm font-bold text-slate-400 transition-all hover:border-white/20 hover:bg-white/5 hover:text-white"
+                  className="rounded-xl border border-[#F0ECE0] px-6 py-3 text-sm font-bold text-[#666666] transition-all hover:border-[#E0DCCF] hover:bg-white/5 hover:text-white"
                 >
                   ← Back
                 </button>
                 <button
                   type="submit"
                   disabled={loading || usageInfo.remaining_attempts <= 0}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 py-3 text-sm font-bold text-white shadow-lg shadow-indigo-500/25 transition-all hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98] disabled:cursor-not-allowed disabled:from-slate-600 disabled:to-slate-700 disabled:shadow-none"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FF9500] to-[#FFB347] py-3 text-sm font-bold text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-all hover:from-[#FF9500] hover:to-[#FFB347] active:scale-[0.98] disabled:cursor-not-allowed disabled:from-slate-600 disabled:to-slate-700 disabled:shadow-none"
                 >
                   {loading ? (
                     'Preparing your questions…'
@@ -1446,33 +1447,33 @@ const InterviewReady = () => {
   // ========== STEP 5: QUIZ ==========
   if (step === 5) {
     return (
-      <div className="min-h-screen bg-[#050b18] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-[#0f1a30] border border-white/10 rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-right-8 duration-500">
+          <div className="bg-white border border-[#E0DCCF] rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-right-8 duration-500">
             <div className="mb-8">
               <div className="flex justify-between items-end mb-6 gap-4 flex-wrap">
                 <div>
                   <div className="mb-2 flex flex-wrap items-center gap-2">
-                    <h2 className="text-3xl font-black text-white">Interview Readiness Quiz</h2>
-                    <span className="rounded-full border border-indigo-500/40 bg-indigo-500/15 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-indigo-300">
+                    <h2 className="text-3xl font-black text-[#1A1A1A]">Interview Readiness Quiz</h2>
+                    <span className="rounded-full border border-[#FF9500]/45 bg-[#FF9500]/15 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-[#CC7000]">
                       Yes / No · {questions.length} questions
                     </span>
                   </div>
-                  <p className="text-slate-400 text-sm mt-1">
+                  <p className="text-[#666666] text-sm mt-1">
                     Based on{' '}
                     <span className="font-semibold text-cyan-400">
                       {(profile.primarySkill || '').split(',')[0].trim() || 'your stack'}
                     </span>{' '}
                     for{' '}
-                    <span className="font-semibold text-indigo-400">
+                    <span className="font-semibold text-[#FF9500]">
                       {DISPLAY_ROLE_BY_CATEGORY[profile.userCategory] ||
                         profile.userCategory.replace(/_/g, ' ')}
                     </span>
                   </p>
                 </div>
-                <div className="text-right bg-white/5 border border-white/10 rounded-xl px-4 py-3 min-w-fit">
-                  <div className="text-2xl font-black bg-gradient-to-r from-indigo-400 to-cyan-400 bg-clip-text text-transparent">{Object.keys(answers).length}/{questions.length}</div>
-                  <p className="text-xs text-slate-400 mt-1">Answered</p>
+                <div className="text-right bg-[#FFFDF8] border border-[#E0DCCF] rounded-xl px-4 py-3 min-w-fit">
+                  <div className="text-2xl font-black bg-gradient-to-r from-[#FF9500] to-cyan-400 bg-clip-text text-transparent">{Object.keys(answers).length}/{questions.length}</div>
+                  <p className="text-xs text-[#666666] mt-1">Answered</p>
                 </div>
               </div>
               <ProgressBar />
@@ -1480,9 +1481,9 @@ const InterviewReady = () => {
 
             <div className="space-y-8 mb-8 max-h-[60vh] overflow-y-auto pr-4">
               {questions.map((q, i) => (
-                <div key={i} className="border-b border-white/5 pb-8 last:border-0">
-                  <p className="text-base font-semibold text-white mb-5 leading-relaxed flex items-start gap-3">
-                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-r from-indigo-600 to-cyan-600 text-white text-xs font-black flex-shrink-0 mt-0.5">
+                <div key={i} className="border-b border-[#F0ECE0] pb-8 last:border-0">
+                  <p className="text-base font-semibold text-[#1A1A1A] mb-5 leading-relaxed flex items-start gap-3">
+                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-600 text-white text-xs font-black flex-shrink-0 mt-0.5">
                       {i + 1}
                     </span>
                     <span>{q}</span>
@@ -1493,7 +1494,7 @@ const InterviewReady = () => {
                       className={`flex-1 py-3 rounded-xl font-bold border-2 transition-all ${
                         answers[i] === 'Yes' 
                           ? 'bg-emerald-600 border-emerald-500 text-white shadow-lg shadow-emerald-500/30' 
-                          : 'bg-white/5 border-white/10 text-slate-300 hover:border-emerald-400/50 hover:bg-emerald-500/10'
+                          : 'bg-white/5 border-[#E0DCCF] text-[#444444] hover:border-emerald-400/50 hover:bg-emerald-500/10'
                       }`}
                     >
                       Yes
@@ -1503,7 +1504,7 @@ const InterviewReady = () => {
                       className={`flex-1 py-3 rounded-xl font-bold border-2 transition-all ${
                         answers[i] === 'No' 
                           ? 'bg-rose-600 border-rose-500 text-white shadow-lg shadow-rose-500/30' 
-                          : 'bg-white/5 border-white/10 text-slate-300 hover:border-rose-400/50 hover:bg-rose-500/10'
+                          : 'bg-white/5 border-[#E0DCCF] text-[#444444] hover:border-rose-400/50 hover:bg-rose-500/10'
                       }`}
                     >
                       No
@@ -1516,8 +1517,8 @@ const InterviewReady = () => {
             <button 
               className={`w-full py-4 rounded-2xl font-bold text-white transition-all shadow-lg ${
                 Object.keys(answers).length < questions.length 
-                  ? 'bg-slate-600 cursor-not-allowed text-slate-400' 
-                  : 'bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 active:scale-95'
+                  ? 'bg-slate-600 cursor-not-allowed text-slate-200' 
+                  : 'bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#FF9500] hover:to-[#E88600] active:scale-95'
               }`}
               disabled={Object.keys(answers).length < questions.length || loading}
               onClick={handleEvalSubmit}
@@ -1561,15 +1562,15 @@ const InterviewReady = () => {
           : { label: 'Build band', sub: 'High upside — lock fundamentals below.' };
 
     return (
-      <div className="min-h-screen bg-[#050b18] py-10 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen bg-[#FFFDF8] py-10 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-3xl mx-auto space-y-6">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="relative overflow-hidden rounded-3xl border border-white/10 bg-[#0f1a30] p-6 shadow-2xl shadow-black/40 sm:p-10"
+            className="relative overflow-hidden rounded-3xl border border-[#E0DCCF] bg-white p-6 shadow-2xl shadow-black/40 sm:p-10"
           >
-            <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-indigo-600/15 blur-3xl" />
+            <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-[#FF9500]/15 blur-3xl" />
             <div className="pointer-events-none absolute -bottom-20 -left-20 h-56 w-56 rounded-full bg-cyan-500/10 blur-3xl" />
 
             <div className="relative grid gap-10 lg:grid-cols-[1fr_1.15fr] lg:items-center lg:text-left">
@@ -1579,20 +1580,20 @@ const InterviewReady = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.5 }}
-                  className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-slate-400"
+                  className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#E0DCCF] bg-white/5 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-[#666666]"
                 >
                   <Sparkles size={12} className="text-amber-400" />
                   {band.label}
                 </motion.div>
-                <h2 className="mt-3 text-3xl font-black text-white sm:text-4xl">{result.readiness_label}</h2>
-                <p className="mt-2 max-w-md text-slate-400">{band.sub}</p>
+                <h2 className="mt-3 text-3xl font-black text-[#1A1A1A] sm:text-4xl">{result.readiness_label}</h2>
+                <p className="mt-2 max-w-md text-[#666666]">{band.sub}</p>
                 <p className="mt-3 text-sm leading-relaxed text-slate-500">{result.summary}</p>
               </div>
 
               <div className="space-y-5">
-                <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-5">
+                <div className="rounded-2xl border border-[#E0DCCF] bg-white/[0.04] p-5">
                   <p className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
-                    <BarChart3 size={14} className="text-indigo-400" />
+                    <BarChart3 size={14} className="text-[#FF9500]" />
                     Score factors
                   </p>
                   <div className="space-y-4">
@@ -1629,13 +1630,13 @@ const InterviewReady = () => {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: 0.35 + i * 0.06 }}
-                      className="rounded-xl border border-white/10 bg-white/[0.03] p-4 text-left"
+                      className="rounded-xl border border-[#E0DCCF] bg-white/[0.03] p-4 text-left"
                     >
                       <div className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                        <row.icon size={14} className="text-indigo-400" />
+                        <row.icon size={14} className="text-[#FF9500]" />
                         {row.label}
                       </div>
-                      <p className="text-sm font-semibold capitalize text-white">{row.value}</p>
+                      <p className="text-sm font-semibold capitalize text-[#1A1A1A]">{row.value}</p>
                     </motion.div>
                   ))}
                 </div>
@@ -1646,30 +1647,30 @@ const InterviewReady = () => {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.45 }}
-              className="relative mt-10 rounded-2xl border border-indigo-500/35 bg-gradient-to-br from-indigo-600/15 to-violet-600/10 p-6 text-left"
+              className="relative mt-10 rounded-2xl border border-[#FF9500]/35 bg-gradient-to-br from-[#FF9500]/15 to-[#FFB347]/10 p-6 text-left"
             >
               <div className="absolute right-4 top-4 opacity-20">
-                <Lightbulb size={56} className="text-indigo-300" />
+                <Lightbulb size={56} className="text-[#CC7000]" />
               </div>
-              <p className="text-xs font-bold uppercase tracking-wider text-indigo-300/90">What this means for you</p>
-              <h3 className="relative mt-2 max-w-xl text-lg font-bold leading-snug text-white">
+              <p className="text-xs font-bold uppercase tracking-wider text-[#CC7000]/90">What this means for you</p>
+              <h3 className="relative mt-2 max-w-xl text-lg font-bold leading-snug text-[#1A1A1A]">
                 {pct < 50
                   ? 'Students at this score level often improve by 30+ points in a few weeks with guided practice.'
                   : pct < 75
                     ? "You're close — a focused plan can push you past 75 before drives."
                     : "You're in a strong range — sharpen the last gaps before interviews."}
               </h3>
-              <p className="relative mt-2 text-sm text-slate-400">First mentor session is free. No commitment.</p>
+              <p className="relative mt-2 text-sm text-[#666666]">First mentor session is free. No commitment.</p>
               <div className="relative mt-4 flex flex-col gap-3 sm:flex-row">
                 <Link
                   to="/mentors"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all hover:bg-indigo-500"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-all hover:bg-[#E88600]"
                 >
                   Book free intro call <ArrowRight size={15} />
                 </Link>
                 <Link
                   to="/learning-paths"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 px-5 py-3 text-sm font-medium text-slate-200 transition-all hover:border-white/25 hover:bg-white/5"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#E0DCCF] px-5 py-3 text-sm font-medium text-[#444444] transition-all hover:border-[#E0DCCF] hover:bg-[#FFF8EE]"
                 >
                   Browse learning paths
                 </Link>
@@ -1681,18 +1682,18 @@ const InterviewReady = () => {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/[0.08] via-white/[0.03] to-[#0a1224] p-6"
+            className="rounded-2xl border border-emerald-500/25 bg-gradient-to-br from-emerald-50/90 to-[#FFF8EE] p-6"
           >
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20">
-                <Trophy className="text-emerald-400" size={22} />
+                <Trophy className="text-emerald-600" size={22} />
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <Share2 size={16} className="text-slate-500" />
-                  <p className="text-sm font-bold text-white">Challenge your friends</p>
+                  <Share2 size={16} className="text-[#666666]" />
+                  <p className="text-sm font-bold text-[#1A1A1A]">Challenge your friends</p>
                 </div>
-                <p className="mt-1 text-sm text-slate-400">
+                <p className="mt-1 text-sm text-[#555555]">
                   Dare your squad to beat your {pct}% — same free ~5 min interview readiness check. Bragging rights
                   optional, placement prep mandatory.
                 </p>
@@ -1726,31 +1727,31 @@ const InterviewReady = () => {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="rounded-2xl border border-white/8 bg-white/[0.03] p-6"
+            className="rounded-2xl border border-[#F0ECE0] bg-white p-6"
           >
             {reportSent ? (
               <div className="py-2 text-center">
-                <CheckCircle size={28} className="mx-auto mb-2 text-green-400" />
-                <p className="text-sm font-semibold text-white">Report sent! Check your inbox.</p>
+                <CheckCircle size={28} className="mx-auto mb-2 text-green-600" />
+                <p className="text-sm font-semibold text-[#1A1A1A]">Report sent! Check your inbox.</p>
               </div>
             ) : (
               <>
-                <p className="mb-1 text-sm font-semibold text-white">Get your full report in your inbox</p>
-                <p className="mb-3 text-xs text-slate-500">Score breakdown, study plan, and resource links — sent once, no spam.</p>
+                <p className="mb-1 text-sm font-semibold text-[#1A1A1A]">Get your full report in your inbox</p>
+                <p className="mb-3 text-xs text-[#666666]">Score breakdown, study plan, and resource links — sent once, no spam.</p>
                 <div className="flex gap-2">
                   <input
                     type="email"
                     value={reportEmail}
                     onChange={(e) => setReportEmail(e.target.value)}
                     placeholder="your@email.com"
-                    className="flex-1 rounded-xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm text-white outline-none transition-colors placeholder:text-slate-500 focus:border-indigo-500"
+                    className="flex-1 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] px-4 py-2.5 text-sm text-[#1A1A1A] outline-none transition-colors placeholder:text-[#888888] focus:border-[#FF9500]"
                   />
                   <button
                     type="button"
                     onClick={() => {
                       if (reportEmail.includes('@')) setReportSent(true);
                     }}
-                    className="whitespace-nowrap rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-indigo-500"
+                    className="whitespace-nowrap rounded-xl bg-[#FF9500] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#E88600]"
                   >
                     Send Report
                   </button>
@@ -1763,10 +1764,10 @@ const InterviewReady = () => {
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-2xl border border-cyan-500/25 bg-gradient-to-br from-cyan-500/10 to-indigo-500/5 p-6"
+              className="rounded-2xl border border-cyan-500/25 bg-gradient-to-br from-cyan-500/10 to-[#E88600]/5 p-6"
             >
-              <h3 className="mb-4 flex items-center gap-2 text-lg font-black text-cyan-200">
-                <Lightbulb size={20} className="text-cyan-400" />
+              <h3 className="mb-4 flex items-center gap-2 text-lg font-black text-cyan-900">
+                <Lightbulb size={20} className="text-cyan-600" />
                 Personalized next steps
               </h3>
               <div className="space-y-3">
@@ -1777,7 +1778,7 @@ const InterviewReady = () => {
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.05 * i }}
-                      className="rounded-xl border border-white/10 bg-black/20 p-4 text-left text-sm text-slate-300"
+                      className="rounded-xl border border-[#E0DCCF] bg-white p-4 text-left text-sm text-[#444444]"
                     >
                       {rec}
                     </motion.p>
@@ -1787,13 +1788,13 @@ const InterviewReady = () => {
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.05 * i }}
-                      className="rounded-xl border border-white/10 bg-black/20 p-4 text-left"
+                      className="rounded-xl border border-[#E0DCCF] bg-white p-4 text-left"
                     >
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-indigo-300">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-[#CC7000]">
                         {rec.priority || 'Focus'}
                       </p>
-                      <p className="mt-1 font-semibold text-white">{rec.topic}</p>
-                      {rec.why && <p className="mt-1 text-sm text-slate-400">{rec.why}</p>}
+                      <p className="mt-1 font-semibold text-[#1A1A1A]">{rec.topic}</p>
+                      {rec.why && <p className="mt-1 text-sm text-[#666666]">{rec.why}</p>}
                     </motion.div>
                   )
                 )}
@@ -1859,7 +1860,7 @@ const InterviewReady = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.35 }}
-            className="rounded-3xl border border-white/10 bg-[#0f1a30] p-8 shadow-2xl"
+            className="rounded-3xl border border-[#E0DCCF] bg-white p-8 shadow-2xl"
           >
             <div className="space-y-3">
               {usageInfo.remaining_attempts > 0 ? (
@@ -1876,7 +1877,7 @@ const InterviewReady = () => {
                       currentOrganization: '',
                     });
                   }}
-                  className="w-full rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 py-4 text-base font-bold text-white shadow-lg shadow-indigo-500/25 transition-all hover:from-indigo-500 hover:to-violet-500 active:scale-[0.98]"
+                  className="w-full rounded-2xl bg-gradient-to-r from-[#FF9500] to-[#FFB347] py-4 text-base font-bold text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-all hover:from-[#FF9500] hover:to-[#FFB347] active:scale-[0.98]"
                 >
                   Try another category
                 </button>
@@ -1887,7 +1888,7 @@ const InterviewReady = () => {
                     setStep(7);
                     setAuthMode(null);
                   }}
-                  className="w-full rounded-2xl bg-indigo-600 py-4 text-base font-bold text-white shadow-lg shadow-indigo-500/20 transition-all hover:bg-indigo-500 active:scale-[0.98]"
+                  className="w-full rounded-2xl bg-[#FF9500] py-4 text-base font-bold text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-[#E88600] active:scale-[0.98]"
                 >
                   Unlock premium — get more interviews
                 </button>
@@ -1895,7 +1896,7 @@ const InterviewReady = () => {
               <button
                 type="button"
                 onClick={resetAll}
-                className="w-full rounded-2xl border border-white/10 bg-white/5 py-4 text-base font-bold text-slate-300 transition-all hover:border-white/20 hover:bg-white/10"
+                className="w-full rounded-2xl border border-[#E0DCCF] bg-[#FAFAFA] py-4 text-base font-bold text-[#444444] transition-all hover:border-[#E0DCCF] hover:bg-[#FFF8EE]"
               >
                 Start fresh
               </button>
@@ -1909,17 +1910,17 @@ const InterviewReady = () => {
   // ========== STEP 7: AUTHENTICATION CHECK ==========
   if (step === 7) {
     return (
-      <div className="min-h-screen bg-[#050b18] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-[#0f1a30] border border-indigo-500/20 rounded-3xl shadow-2xl p-8 text-center animate-in zoom-in duration-500">
+          <div className="bg-white border border-[#FF9500]/25 rounded-3xl shadow-2xl p-8 text-center animate-in zoom-in duration-500">
             <div className="mb-8">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-indigo-500/20 border border-indigo-500/40 mb-6">
-                <div className="w-2 h-10 bg-indigo-400 rounded-full"></div>
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#FF9500]/20 border border-[#FF9500]/45 mb-6">
+                <div className="w-2 h-10 bg-[#FFB347] rounded-full"></div>
               </div>
-              <h1 className="text-4xl font-black text-white mb-3">
+              <h1 className="text-4xl font-black text-[#1A1A1A] mb-3">
                 Unlock AI Mock Interviews
               </h1>
-              <p className="text-lg text-slate-300">
+              <p className="text-lg text-[#444444]">
                 You've completed your free assessment. Get premium access to unlimited AI mock interviews with advanced features!
               </p>
             </div>
@@ -1930,7 +1931,7 @@ const InterviewReady = () => {
                   setAuthMode('signin');
                   setStep(8);
                 }}
-                className="w-full bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95"
+                className="w-full bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#FF9500] hover:to-[#E88600] text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95"
               >
                 Sign In to Your Account
               </button>
@@ -1939,13 +1940,13 @@ const InterviewReady = () => {
                   setAuthMode('signup');
                   setStep(8);
                 }}
-                className="w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-slate-300 font-bold py-4 rounded-2xl transition-all"
+                className="w-full bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-[#E0DCCF] text-[#444444] font-bold py-4 rounded-2xl transition-all"
               >
                 Create New Account
               </button>
               <button 
                 onClick={resetAll}
-                className="w-full bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-slate-300 font-bold py-3 rounded-2xl transition-all text-sm"
+                className="w-full bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-[#E0DCCF] text-[#444444] font-bold py-3 rounded-2xl transition-all text-sm"
               >
                 Go Back Home
               </button>
@@ -1960,11 +1961,11 @@ const InterviewReady = () => {
   if (step === 8) {
     if (authMode === 'signin') {
       return (
-        <div className="min-h-screen bg-[#050b18] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+        <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
           <div className="max-w-md mx-auto">
-            <div className="bg-[#0f1a30] border border-white/10 rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
-              <h2 className="text-3xl font-black text-white mb-2">Sign In</h2>
-              <p className="text-slate-400 mb-8">Access your premium interviews</p>
+            <div className="bg-white border border-[#E0DCCF] rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
+              <h2 className="text-3xl font-black text-[#1A1A1A] mb-2">Sign In</h2>
+              <p className="text-[#666666] mb-8">Access your premium interviews</p>
 
               <form onSubmit={(e) => {
                 e.preventDefault();
@@ -1972,25 +1973,25 @@ const InterviewReady = () => {
                 setIsUserSignedUp(true);
               }} className="space-y-6">
                 <div>
-                  <label className="text-sm font-bold text-slate-200 block mb-2">Email</label>
+                  <label className="text-sm font-bold text-[#333333] block mb-2">Email</label>
                   <input 
                     type="email"
                     value={signInData.email}
                     onChange={(e) => setSignInData({...signInData, email: e.target.value})}
                     placeholder="you@example.com"
-                    className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white placeholder-slate-500 outline-none focus:border-indigo-500"
+                    className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] text-[#1A1A1A] placeholder-[#888888] outline-none focus:border-[#FF9500]"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="text-sm font-bold text-slate-200 block mb-2">Password</label>
+                  <label className="text-sm font-bold text-[#333333] block mb-2">Password</label>
                   <input 
                     type="password"
                     value={signInData.password}
                     onChange={(e) => setSignInData({...signInData, password: e.target.value})}
                     placeholder="••••••••"
-                    className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white placeholder-slate-500 outline-none focus:border-indigo-500"
+                    className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] text-[#1A1A1A] placeholder-[#888888] outline-none focus:border-[#FF9500]"
                     required
                   />
                 </div>
@@ -1999,13 +2000,13 @@ const InterviewReady = () => {
                   <button 
                     type="button"
                     onClick={() => setStep(7)}
-                    className="flex-1 py-3 font-bold text-slate-300 hover:text-white hover:bg-white/5 rounded-2xl transition-all border border-white/10"
+                    className="flex-1 py-3 font-bold text-[#444444] hover:text-[#1A1A1A] hover:bg-[#FFF8EE] rounded-2xl transition-all border border-[#E0DCCF]"
                   >
                     Back
                   </button>
                   <button 
                     type="submit"
-                    className="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold py-3 rounded-2xl shadow-lg transition-all"
+                    className="flex-1 bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#FF9500] hover:to-[#E88600] text-white font-bold py-3 rounded-2xl shadow-lg transition-all"
                   >
                     Sign In
                   </button>
@@ -2013,7 +2014,7 @@ const InterviewReady = () => {
               </form>
 
               <p className="text-xs text-slate-500 text-center mt-6">
-                Don't have an account? <button onClick={() => setAuthMode('signup')} className="text-indigo-400 font-semibold hover:text-indigo-300">Sign up here</button>
+                Don't have an account? <button onClick={() => setAuthMode('signup')} className="text-[#FF9500] font-semibold hover:text-[#CC7000]">Sign up here</button>
               </p>
             </div>
           </div>
@@ -2023,11 +2024,11 @@ const InterviewReady = () => {
 
     // SIGNUP
     return (
-      <div className="min-h-screen bg-[#050b18] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-md mx-auto">
-          <div className="bg-[#0f1a30] border border-white/10 rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
-            <h2 className="text-3xl font-black text-white mb-2">Create Account</h2>
-            <p className="text-slate-400 mb-8">Join thousands of job seekers mastering interviews</p>
+          <div className="bg-white border border-[#E0DCCF] rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
+            <h2 className="text-3xl font-black text-[#1A1A1A] mb-2">Create Account</h2>
+            <p className="text-[#666666] mb-8">Join thousands of job seekers mastering interviews</p>
 
             <form onSubmit={(e) => {
               e.preventDefault();
@@ -2035,61 +2036,61 @@ const InterviewReady = () => {
               setIsUserSignedUp(true);
             }} className="space-y-6">
               <div>
-                <label className="text-sm font-bold text-slate-200 block mb-2">Full Name</label>
+                <label className="text-sm font-bold text-[#333333] block mb-2">Full Name</label>
                 <input 
                   type="text"
                   value={authData.fullName}
                   onChange={(e) => setAuthData({...authData, fullName: e.target.value})}
                   placeholder="John Doe"
-                  className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white placeholder-slate-500 outline-none focus:border-indigo-500"
+                  className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-sm font-bold text-slate-200 block mb-2">Email</label>
+                <label className="text-sm font-bold text-[#333333] block mb-2">Email</label>
                 <input 
                   type="email"
                   value={authData.email}
                   onChange={(e) => setAuthData({...authData, email: e.target.value})}
                   placeholder="you@example.com"
-                  className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white placeholder-slate-500 outline-none focus:border-indigo-500"
+                  className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-sm font-bold text-slate-200 block mb-2">Phone</label>
+                <label className="text-sm font-bold text-[#333333] block mb-2">Phone</label>
                 <input 
                   type="tel"
                   value={authData.phone}
                   onChange={(e) => setAuthData({...authData, phone: e.target.value})}
                   placeholder="+91 9876543210"
-                  className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white placeholder-slate-500 outline-none focus:border-indigo-500"
+                  className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-sm font-bold text-slate-200 block mb-2">Password</label>
+                <label className="text-sm font-bold text-[#333333] block mb-2">Password</label>
                 <input 
                   type="password"
                   value={authData.password}
                   onChange={(e) => setAuthData({...authData, password: e.target.value})}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white placeholder-slate-500 outline-none focus:border-indigo-500"
+                  className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-sm font-bold text-slate-200 block mb-2">Confirm Password</label>
+                <label className="text-sm font-bold text-[#333333] block mb-2">Confirm Password</label>
                 <input 
                   type="password"
                   value={authData.confirmPassword}
                   onChange={(e) => setAuthData({...authData, confirmPassword: e.target.value})}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white placeholder-slate-500 outline-none focus:border-indigo-500"
+                  className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
                   required
                 />
               </div>
@@ -2098,13 +2099,13 @@ const InterviewReady = () => {
                 <button 
                   type="button"
                   onClick={() => setStep(7)}
-                  className="flex-1 py-3 font-bold text-slate-300 hover:text-white hover:bg-white/5 rounded-2xl transition-all border border-white/10"
+                  className="flex-1 py-3 font-bold text-[#444444] hover:text-[#1A1A1A] hover:bg-[#FFF8EE] rounded-2xl transition-all border border-[#E0DCCF]"
                 >
                   Back
                 </button>
                 <button 
                   type="submit"
-                  className="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white font-bold py-3 rounded-2xl shadow-lg transition-all"
+                  className="flex-1 bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#FF9500] hover:to-[#E88600] text-white font-bold py-3 rounded-2xl shadow-lg transition-all"
                 >
                   Sign Up
                 </button>
@@ -2112,7 +2113,7 @@ const InterviewReady = () => {
             </form>
 
             <p className="text-xs text-slate-500 text-center mt-6">
-              Already have an account? <button onClick={() => setAuthMode('signin')} className="text-indigo-400 font-semibold hover:text-indigo-300">Sign in here</button>
+              Already have an account? <button onClick={() => setAuthMode('signin')} className="text-[#FF9500] font-semibold hover:text-[#CC7000]">Sign in here</button>
             </p>
           </div>
         </div>
@@ -2176,13 +2177,13 @@ const InterviewReady = () => {
     ];
 
     return (
-      <div className="min-h-screen bg-[#050b18] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl font-black text-white mb-4">
               AI Mock Interview Plans
             </h1>
-            <p className="text-xl text-slate-300 max-w-2xl mx-auto">
+            <p className="text-xl text-[#444444] max-w-2xl mx-auto">
               Choose the perfect plan to ace your interviews with AI-powered simulations
             </p>
           </div>
@@ -2193,13 +2194,13 @@ const InterviewReady = () => {
                 key={plan.id}
                 className={`relative rounded-3xl transition-all transform hover:scale-105 ${
                   plan.highlighted
-                    ? 'bg-gradient-to-br from-indigo-600 to-cyan-600 p-1 md:scale-105'
-                    : 'border border-white/10'
+                    ? 'bg-gradient-to-br from-[#FF9500] to-cyan-600 p-1 md:scale-105'
+                    : 'border border-[#E0DCCF]'
                 }`}
               >
                 {plan.highlighted && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-indigo-500 text-white px-4 py-1 rounded-full text-xs font-black">
+                    <span className="bg-[#FF9500] text-white px-4 py-1 rounded-full text-xs font-black">
                       {plan.badge}
                     </span>
                   </div>
@@ -2207,15 +2208,15 @@ const InterviewReady = () => {
 
                 <div className={`${
                   plan.highlighted
-                    ? 'bg-[#050b18] rounded-[calc(1.5rem-1px)]'
+                    ? 'bg-[#FFFDF8] rounded-[calc(1.5rem-1px)]'
                     : 'bg-white/5'
                 } p-8 h-full`}>
                   <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
-                  <p className={`text-sm ${plan.highlighted ? 'text-cyan-400' : 'text-slate-400'} mb-6`}>{plan.duration}</p>
+                  <p className={`text-sm ${plan.highlighted ? 'text-cyan-400' : 'text-[#666666]'} mb-6`}>{plan.duration}</p>
 
                   <div className="mb-6">
                     <div className="text-4xl font-black text-white mb-1">₹{plan.price}</div>
-                    <div className="text-sm text-slate-400">
+                    <div className="text-sm text-[#666666]">
                       {plan.interviews} AI Mock Interviews
                     </div>
                   </div>
@@ -2223,8 +2224,8 @@ const InterviewReady = () => {
                   <div className="space-y-4 mb-8">
                     {plan.features.map((feature, i) => (
                       <div key={i} className="flex items-start gap-3">
-                        <CheckCircle size={18} className={`flex-shrink-0 mt-0.5 ${plan.highlighted ? 'text-cyan-400' : 'text-indigo-400'}`} />
-                        <span className="text-sm text-slate-300">{feature}</span>
+                        <CheckCircle size={18} className={`flex-shrink-0 mt-0.5 ${plan.highlighted ? 'text-cyan-400' : 'text-[#FF9500]'}`} />
+                        <span className="text-sm text-[#444444]">{feature}</span>
                       </div>
                     ))}
                   </div>
@@ -2235,10 +2236,10 @@ const InterviewReady = () => {
                       selectedPlan === plan.id
                         ? plan.highlighted
                           ? 'bg-cyan-600 text-white'
-                          : 'bg-indigo-600 text-white'
+                          : 'bg-[#FF9500] text-white'
                         : plan.highlighted
                         ? 'bg-cyan-600/30 border border-cyan-600 text-cyan-400 hover:bg-cyan-600/50'
-                        : 'bg-white/5 border border-white/10 text-white hover:bg-white/10'
+                        : 'bg-white/5 border border-[#E0DCCF] text-white hover:bg-white/10'
                     }`}
                   >
                     {selectedPlan === plan.id ? (
@@ -2255,11 +2256,11 @@ const InterviewReady = () => {
           </div>
 
           {selectedPlan && (
-            <div className="bg-gradient-to-r from-indigo-600 to-cyan-600 rounded-3xl p-8 text-center">
+            <div className="bg-gradient-to-r from-[#FF9500] to-cyan-600 rounded-3xl p-8 text-center">
               <h2 className="text-2xl font-black text-white mb-4">
                 Ready to master interviews?
               </h2>
-              <button className="bg-white text-indigo-600 px-12 py-4 rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-white/20 transition-all">
+              <button className="bg-white text-[#FF9500] px-12 py-4 rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-white/20 transition-all">
                 Proceed to Payment
               </button>
             </div>
@@ -2268,13 +2269,13 @@ const InterviewReady = () => {
           <div className="flex gap-4 justify-center mt-8">
             <button
               onClick={() => setStep(6)}
-              className="bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 font-bold py-3 px-8 rounded-2xl transition-all"
+              className="bg-white/5 hover:bg-white/10 border border-[#E0DCCF] text-[#444444] font-bold py-3 px-8 rounded-2xl transition-all"
             >
               ← Back
             </button>
             <button
               onClick={resetAll}
-              className="bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 font-bold py-3 px-8 rounded-2xl transition-all"
+              className="bg-white/5 hover:bg-white/10 border border-[#E0DCCF] text-[#444444] font-bold py-3 px-8 rounded-2xl transition-all"
             >
               Skip for Now
             </button>
@@ -2287,14 +2288,14 @@ const InterviewReady = () => {
   // ========== LOADING STATE ==========
   if (loading && step !== 7 && step !== 8 && step !== 9) {
     return (
-      <div className="min-h-screen bg-[#050b18] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-[#0f1a30] border border-white/10 rounded-3xl shadow-2xl p-12 backdrop-blur text-center animate-in fade-in duration-500">
+          <div className="bg-white border border-[#E0DCCF] rounded-3xl shadow-2xl p-12 backdrop-blur text-center animate-in fade-in duration-500">
             <div className="mb-6">
-              <div className="w-16 h-16 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin mx-auto"></div>
+              <div className="w-16 h-16 border-4 border-[#FF9500]/35 border-t-[#FF9500] rounded-full animate-spin mx-auto"></div>
             </div>
             <h2 className="text-2xl font-black text-white mb-2">Processing Your Request</h2>
-            <p className="text-slate-400 mb-4">Please wait while we generate your personalized assessment...</p>
+            <p className="text-[#666666] mb-4">Please wait while we generate your personalized assessment...</p>
             <p className="text-xs text-slate-500">This may take up to 30 seconds</p>
           </div>
         </div>

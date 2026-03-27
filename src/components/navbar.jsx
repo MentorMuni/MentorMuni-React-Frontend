@@ -2,36 +2,37 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Menu, X, ChevronDown, BarChart2, Mic, FileSearch, Cpu } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
+import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 
 const TOOLS = [
   {
     icon: BarChart2,
-    color: 'text-indigo-400',
-    bg: 'bg-indigo-500/10',
+    color: 'text-[#FF9500]',
+    bg: 'bg-[#FFF4E0]',
     title: 'Interview Readiness Score',
     desc: 'Get your score across DSA, System Design & HR',
     href: '/interview-readiness-tools',
   },
   {
     icon: Mic,
-    color: 'text-violet-400',
-    bg: 'bg-violet-500/10',
+    color: 'text-[#FF9500]',
+    bg: 'bg-[#FFF4E0]',
     title: 'AI Mock Interviews',
     desc: 'Practice with real-time AI interviewer feedback',
     href: '/mock-interviews',
   },
   {
     icon: FileSearch,
-    color: 'text-pink-400',
-    bg: 'bg-pink-500/10',
+    color: 'text-[#FF9500]',
+    bg: 'bg-[#FFF4E0]',
     title: 'Resume ATS Checker',
     desc: 'See your ATS score and fix what gets you filtered',
     href: '/resume-analyzer',
   },
   {
     icon: Cpu,
-    color: 'text-amber-400',
-    bg: 'bg-amber-500/10',
+    color: 'text-[#CC7000]',
+    bg: 'bg-[#FFF4E0]',
     title: 'AI Tools Knowledge Base',
     desc: 'Learn GitHub Copilot, ChatGPT & Cursor for interviews',
     href: '/ai-tools',
@@ -60,7 +61,6 @@ const Navbar = () => {
     { label: 'Outcomes', path: '/outcomes', exact: false },
   ];
 
-  // Check if a nav item is active
   const isActive = (path, exact = false) => {
     if (exact) {
       return location.pathname === path;
@@ -106,28 +106,26 @@ const Navbar = () => {
     }
   ];
 
-  // Close mobile menu when a link is clicked
   const handleNavClick = () => {
     setIsOpen(false);
   };
 
   return (
-    <header className="sticky top-0 z-[100] bg-[#050b18]/95 backdrop-blur-md border-b border-indigo-500/10 shadow-lg">
+    <header className="sticky top-0 z-[100] border-b border-border bg-background/95 shadow-nav backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="h-20 flex items-center justify-between">
-          
-          {/* Logo */}
+
           <Link to="/" className="flex-shrink-0 flex items-center gap-3 group">
             <img
               src="/MentorMuni-React-Frontend/mentormuni-logo.png"
               alt="MentorMuni Logo"
-              className="h-9 w-9 rounded-full object-cover group-hover:scale-110 transition-transform"
-              style={{ mixBlendMode: 'screen' }}
+              className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain group-hover:scale-105 transition-transform"
             />
-            <span className="font-bold text-xl text-white hidden sm:inline">MentorMuni</span>
+            <span className="font-bold text-xl text-[#1A1A1A] hidden sm:inline">
+              Mentor<span className="text-[#FF9500]">Muni</span>
+            </span>
           </Link>
 
-          {/* Desktop Navigation */}
           <nav className="hidden lg:flex items-center gap-1">
             {navItems.map((item) => (
               <Link
@@ -135,20 +133,21 @@ const Navbar = () => {
                 to={item.path}
                 className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
                   isActive(item.path, item.exact)
-                    ? 'text-indigo-300 bg-indigo-500/15 border border-indigo-500/30'
-                    : 'text-slate-300 hover:text-white hover:bg-white/5'
+                    ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
+                    : 'text-[#444444] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
                 }`}
               >
                 {item.label}
               </Link>
             ))}
 
-            {/* Tools dropdown */}
             <div ref={toolsRef} className="relative">
               <button
                 onClick={() => setToolsOpen(v => !v)}
                 className={`flex items-center gap-1 px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
-                  toolsOpen ? 'text-indigo-300 bg-indigo-500/15 border border-indigo-500/30' : 'text-slate-300 hover:text-white hover:bg-white/5'
+                  toolsOpen
+                    ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
+                    : 'text-[#444444] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
                 }`}
               >
                 Tools
@@ -156,7 +155,7 @@ const Navbar = () => {
               </button>
 
               {toolsOpen && (
-                <div className="absolute top-full left-0 mt-2 w-72 rounded-xl border border-indigo-500/20 bg-[#0b1120]/98 backdrop-blur-xl shadow-2xl shadow-black/50 overflow-hidden z-50">
+                <div className="absolute top-full left-0 mt-2 w-72 rounded-xl border border-[#F0ECE0] bg-white shadow-[0_8px_32px_rgba(0,0,0,0.10)] overflow-hidden z-50">
                   <div className="p-2">
                     {TOOLS.map((tool) => {
                       const Icon = tool.icon;
@@ -165,24 +164,24 @@ const Navbar = () => {
                           key={tool.href}
                           to={tool.href}
                           onClick={() => setToolsOpen(false)}
-                          className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-white/5 transition-colors group"
+                          className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-[#FFF8EE] transition-colors group"
                         >
                           <span className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${tool.bg}`}>
                             <Icon size={15} className={tool.color} />
                           </span>
                           <span>
-                            <span className="block text-sm font-semibold text-white group-hover:text-indigo-300 transition-colors">{tool.title}</span>
-                            <span className="block text-xs text-slate-500 leading-snug mt-0.5">{tool.desc}</span>
+                            <span className="block text-sm font-semibold text-[#1A1A1A] group-hover:text-[#FF9500] transition-colors">{tool.title}</span>
+                            <span className="block text-xs text-[#666666] leading-snug mt-0.5">{tool.desc}</span>
                           </span>
                         </Link>
                       );
                     })}
                   </div>
-                  <div className="border-t border-white/5 px-4 py-2.5 bg-indigo-500/5">
+                  <div className="border-t border-[#F0ECE0] px-4 py-2.5 bg-[#FFF8EE]">
                     <Link
                       to="/interview-readiness-tools"
                       onClick={() => setToolsOpen(false)}
-                      className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors"
+                      className="text-xs font-semibold text-[#FF9500] hover:text-[#E88600] transition-colors"
                     >
                       Start with a free readiness check →
                     </Link>
@@ -192,7 +191,6 @@ const Navbar = () => {
             </div>
           </nav>
 
-          {/* Waitlist + primary CTA (Desktop) */}
           <div className="hidden lg:flex items-center gap-3">
             <style>{`
               @keyframes nb-shimmer {
@@ -200,50 +198,44 @@ const Navbar = () => {
                 100% { transform: translateX(220%) skewX(-15deg); }
               }
               @keyframes nb-ring {
-                0%,100% { box-shadow: 0 0 0 0 rgba(99,102,241,0.55), 0 4px 14px rgba(99,102,241,0.35); }
-                50%      { box-shadow: 0 0 0 5px rgba(99,102,241,0), 0 4px 20px rgba(99,102,241,0.55); }
+                0%,100% { box-shadow: 0 0 0 0 rgba(255,149,0,0.45), 0 4px 14px rgba(255,149,0,0.25); }
+                50%      { box-shadow: 0 0 0 5px rgba(255,149,0,0), 0 4px 20px rgba(255,149,0,0.35); }
               }
               .nb-cta { animation: nb-ring 2s ease-in-out infinite; }
               .nb-cta:hover .nb-shine { animation: nb-shimmer 0.55s ease forwards; }
             `}</style>
             <Link
               to="/waitlist"
-              className="px-4 py-2 text-sm font-semibold rounded-lg border border-indigo-500/40 text-indigo-400 hover:text-indigo-300 hover:border-indigo-400/60 hover:bg-indigo-500/10 transition-all"
+              className="px-4 py-2 text-sm font-semibold rounded-lg border border-[#FF9500] text-[#FF9500] hover:bg-[#FFF4E0] transition-all"
             >
               Join Waitlist
             </Link>
             <button
               type="button"
               onClick={goToStartAssessment}
-              className="nb-cta relative inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-bold transition-all overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-500"
+              className="nb-cta relative inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#FF9500] hover:bg-[#E88600] text-white font-bold transition-all overflow-hidden shadow-[0_4px_14px_rgba(255,149,0,0.25)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9500]"
             >
-              {/* shimmer sweep on hover */}
-              <span className="nb-shine pointer-events-none absolute inset-0 w-1/3 bg-white/20 blur-sm" style={{ transform: 'translateX(-100%) skewX(-15deg)' }} />
-              {/* pulsing dot */}
+              <span className="nb-shine pointer-events-none absolute inset-0 w-1/3 bg-white/25 blur-sm" style={{ transform: 'translateX(-100%) skewX(-15deg)' }} />
               <span className="relative flex h-2 w-2 shrink-0">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1A8C55] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1A8C55]" />
               </span>
-              Check My Interview Readiness
-              <span className="text-xs bg-white/20 px-1.5 py-0.5 rounded-full font-semibold">Free</span>
+              {PRIMARY_CTA_LABEL}
             </button>
           </div>
 
-          {/* Mobile Menu Toggle */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 text-slate-300 hover:text-white transition-colors"
+            className="lg:hidden p-2 text-[#444444] hover:text-[#FF9500] transition-colors"
             aria-label="Toggle mobile menu"
           >
             {isOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {isOpen && (
-          <div className="lg:hidden bg-slate-800/95 backdrop-blur border-t border-indigo-500/10 max-h-[calc(100vh-80px)] overflow-y-auto">
+          <div className="lg:hidden bg-[#FFF8EE] border-t border-[#F0ECE0] max-h-[calc(100vh-80px)] overflow-y-auto">
             <nav className="flex flex-col p-4 space-y-2">
-              {/* Mobile Navigation Items */}
               {navItems.map((item) => (
                 <Link
                   key={item.path}
@@ -251,17 +243,16 @@ const Navbar = () => {
                   onClick={handleNavClick}
                   className={`px-4 py-3 text-base font-semibold rounded-lg transition-all ${
                     isActive(item.path, item.exact)
-                      ? 'text-indigo-300 bg-indigo-500/15 border border-indigo-500/30'
-                      : 'text-slate-300 hover:text-white hover:bg-white/5'
+                      ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
+                      : 'text-[#444444] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
                   }`}
                 >
                   {item.label}
                 </Link>
               ))}
 
-              {/* Tools section */}
-              <div className="border-t border-slate-700 my-2 pt-2">
-                <p className="px-4 py-1 text-xs font-bold text-slate-500 uppercase tracking-widest">Tools</p>
+              <div className="border-t border-[#F0ECE0] my-2 pt-2">
+                <p className="px-4 py-1 text-xs font-bold text-[#888888] uppercase tracking-widest">Tools</p>
                 {TOOLS.map((tool) => {
                   const Icon = tool.icon;
                   return (
@@ -269,7 +260,7 @@ const Navbar = () => {
                       key={tool.href}
                       to={tool.href}
                       onClick={handleNavClick}
-                      className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/5 transition-all"
+                      className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#444444] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)] transition-all"
                     >
                       <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${tool.bg}`}>
                         <Icon size={13} className={tool.color} />
@@ -280,14 +271,12 @@ const Navbar = () => {
                 })}
               </div>
 
-              {/* Divider */}
-              <div className="border-t border-slate-700 my-2"></div>
+              <div className="border-t border-[#F0ECE0] my-2"></div>
 
-              {/* Mobile CTA Buttons */}
               <Link
                 to="/waitlist"
                 onClick={handleNavClick}
-                className="px-4 py-3 text-base font-semibold rounded-lg border border-indigo-500/40 text-indigo-400 flex items-center justify-center w-full transition-all"
+                className="px-4 py-3 text-base font-semibold rounded-lg border border-[#FF9500] text-[#FF9500] flex items-center justify-center w-full transition-all"
               >
                 Join Waitlist
               </Link>
@@ -297,9 +286,9 @@ const Navbar = () => {
                   handleNavClick();
                   goToStartAssessment();
                 }}
-                className="px-4 py-3 text-base font-bold rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg transition-all flex items-center justify-center gap-2 w-full"
+                className="px-4 py-3 text-base font-bold rounded-lg bg-[#FF9500] hover:bg-[#E88600] text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all flex items-center justify-center gap-2 w-full"
               >
-                Check My Interview Readiness — Free
+                {PRIMARY_CTA_LABEL}
               </button>
             </nav>
           </div>

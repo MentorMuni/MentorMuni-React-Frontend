@@ -26,7 +26,7 @@ export default function MentorProfilesCards() {
               className="bg-white rounded-2xl border border-slate-200 shadow-soft p-6 hover:shadow-card transition-all"
             >
               <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-violet-500/20 flex items-center justify-center text-primary font-bold text-xl">
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-[#FFB347]/20 flex items-center justify-center text-primary font-bold text-xl">
                   {m.initial}
                 </div>
                 <div>

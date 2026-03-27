@@ -1,14 +1,15 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Mic, BarChart3, Users } from 'lucide-react';
+import { PRIMARY_CTA_LABEL, PRODUCT_READINESS_SCORE } from '../../constants/brandCopy';
 
 export default function LandingHero() {
   return (
     <section className="relative min-h-[90vh] flex items-center overflow-hidden bg-surface">
       {/* Soft gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/80 via-white to-violet-50/60 pointer-events-none" aria-hidden="true" />
-      <div className="absolute top-0 right-0 w-[40%] max-w-xl h-96 bg-gradient-to-l from-indigo-200/30 to-transparent rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
-      <div className="absolute bottom-0 left-0 w-[30%] max-w-sm h-72 bg-violet-200/20 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#FFF8EE]/80 via-white to-[#FFFDF8]/60 pointer-events-none" aria-hidden="true" />
+      <div className="absolute top-0 right-0 w-[40%] max-w-xl h-96 bg-gradient-to-l from-[#FF9500]/15 to-transparent rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
+      <div className="absolute bottom-0 left-0 w-[30%] max-w-sm h-72 bg-[#FFB347]/15 rounded-full blur-3xl pointer-events-none" aria-hidden="true" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 md:py-24 w-full">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
@@ -17,14 +18,14 @@ export default function LandingHero() {
               Crack Your Placement Interviews in 30 Days
             </h1>
             <p className="mt-6 text-lg md:text-xl text-slate-600 max-w-xl mx-auto lg:mx-0">
-              AI Mock Interviews · Industry Mentors · Interview Readiness Score
+              AI Mock Interviews · Industry Mentors · {PRODUCT_READINESS_SCORE}
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
               <Link
                 to="/start-assessment"
                 className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-primary hover:bg-primary-dark text-white font-bold text-lg shadow-soft hover:shadow-card transition-all hover:scale-[1.02] active:scale-[0.98]"
               >
-                Take Free Interview Readiness Test
+                {PRIMARY_CTA_LABEL}
                 <ArrowRight className="w-5 h-5" />
               </Link>
               <Link
@@ -51,7 +52,7 @@ export default function LandingHero() {
           </div>
           <div className="hidden lg:block relative">
             <div className="aspect-square max-w-md mx-auto rounded-3xl bg-white shadow-card border border-slate-100 overflow-hidden">
-              <div className="p-8 h-full flex flex-col justify-center bg-gradient-to-br from-indigo-50 to-violet-50">
+              <div className="p-8 h-full flex flex-col justify-center bg-gradient-to-br from-[#FFF8EE] to-[#FFFDF8]">
                 <p className="text-slate-500 text-sm font-medium">Your Readiness Dashboard</p>
                 <p className="text-2xl font-display font-bold text-slate-900 mt-2">Placement Probability: 63%</p>
                 <div className="mt-6 space-y-4">
@@ -63,7 +64,7 @@ export default function LandingHero() {
                       </div>
                       <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
                         <div
-                          className="h-full bg-gradient-to-r from-primary to-violet-500 rounded-full transition-all duration-700"
+                          className="h-full bg-gradient-to-r from-primary to-[#FFB347] rounded-full transition-all duration-700"
                           style={{ width: `${[72, 61, 54, 49][i]}%` }}
                         />
                       </div>

@@ -89,12 +89,12 @@ const PromptEngineeringMasterclass = () => {
     };
 
     return (
-      <div className="bg-[#1e1e1e] rounded-lg border border-white/10 my-4">
-        <div className="flex justify-between items-center px-4 py-2 border-b border-white/10">
-          <span className="text-xs text-[#94A3B8]">{language}</span>
+      <div className="bg-[#1e1e1e] rounded-lg border border-[#E0DCCF] my-4">
+        <div className="flex justify-between items-center px-4 py-2 border-b border-[#E0DCCF]">
+          <span className="text-xs text-[#666666]">{language}</span>
           <button
             onClick={copyToClipboard}
-            className="flex items-center gap-2 px-3 py-1 bg-[#4F46E5] hover:bg-[#4F46E5]/80 rounded text-white text-xs transition-all"
+            className="flex items-center gap-2 px-3 py-1 bg-[#FF9500] hover:bg-[#FF9500]/80 rounded text-white text-xs transition-all"
           >
             <Copy size={14} /> Copy
           </button>
@@ -107,7 +107,7 @@ const PromptEngineeringMasterclass = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-[#F1F5F9] font-sans antialiased">
+    <div className="min-h-screen bg-[#FFFDF8] text-[#444444] font-sans antialiased">
       {/* Meta Tags for SEO */}
       <head>
         <title>Prompt Engineering Masterclass - From Beginner to Advanced | Complete Tutorial</title>
@@ -132,14 +132,14 @@ const PromptEngineeringMasterclass = () => {
       </script>
 
       {/* HEADER */}
-      <header className="sticky top-0 z-[100] bg-[#0F1419]/95 backdrop-blur-md border-b border-white/5 px-5">
+      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-[#F0ECE0] px-5">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between py-4">
           <a href="/" className="transition-transform hover:scale-[1.02]">
-            <img src={logo} alt="MentorMuni" className="h-10 w-auto" />
+            <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
           </a>
 
           <nav className="hidden md:flex items-center gap-8">
-            <a href="/free-tutorials" className="text-sm font-semibold text-[#94A3B8] hover:text-white transition-colors flex items-center gap-2">
+            <a href="/free-tutorials" className="text-sm font-semibold text-[#666666] hover:text-white transition-colors flex items-center gap-2">
               ← Back to Free Tutorials
             </a>
           </nav>
@@ -155,8 +155,8 @@ const PromptEngineeringMasterclass = () => {
         
         {/* LEFT SIDEBAR NAVIGATION */}
         <aside className="hidden lg:block w-64 sticky top-24 h-[calc(100vh-100px)] overflow-y-auto">
-          <div className="bg-white/5 border border-white/10 rounded-xl p-6">
-            <h3 className="text-lg font-bold mb-6 text-indigo-400">Course Contents</h3>
+          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+            <h3 className="text-lg font-bold mb-6 text-[#FF9500]">Course Contents</h3>
             <nav className="space-y-2">
               {topics.map((topic) => (
                 <button
@@ -164,8 +164,8 @@ const PromptEngineeringMasterclass = () => {
                   onClick={() => scrollToSection(topic.id)}
                   className={`w-full text-left px-4 py-2 rounded-lg transition-all text-sm font-semibold ${
                     activeSection === topic.id
-                      ? 'bg-indigo-600 text-white'
-                      : 'text-[#94A3B8] hover:text-white hover:bg-white/5'
+                      ? 'bg-[#FF9500] text-white'
+                      : 'text-[#666666] hover:text-white hover:bg-white/5'
                   }`}
                 >
                   {topic.title}
@@ -183,25 +183,25 @@ const PromptEngineeringMasterclass = () => {
             <h1 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-[#4F46E5] via-[#9333EA] to-[#06B6D4] bg-clip-text text-transparent">
               Prompt Engineering Masterclass
             </h1>
-            <p className="text-xl text-[#94A3B8] leading-relaxed mb-4">
+            <p className="text-xl text-[#666666] leading-relaxed mb-4">
               Master the art and science of prompt engineering. Learn ChatGPT prompts, LLM prompting strategies, and advanced techniques used by AI professionals. Go from beginner to advanced level with practical, real-world examples.
             </p>
             <div className="flex gap-4 flex-wrap mb-8">
-              <div className="px-4 py-2 bg-[#4F46E5]/20 border border-[#4F46E5]/50 rounded-lg text-sm">4-5 hours comprehensive course</div>
+              <div className="px-4 py-2 bg-[#FF9500]/20 border border-[#4F46E5]/50 rounded-lg text-sm">4-5 hours comprehensive course</div>
               <div className="px-4 py-2 bg-cyan-600/20 border border-cyan-600/50 rounded-lg text-sm">Beginner to Advanced</div>
               <div className="px-4 py-2 bg-green-600/20 border border-green-600/50 rounded-lg text-sm">Industry Best Practices</div>
             </div>
           </div>
 
           {/* TABLE OF CONTENTS */}
-          <div className="mb-16 bg-white/5 border border-white/10 rounded-xl p-8">
+          <div className="mb-16 bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h2 className="text-2xl font-bold mb-6">What You'll Learn</h2>
             <div className="grid md:grid-cols-2 gap-4">
               {topics.slice(0, -1).map((topic, idx) => (
                 <button
                   key={topic.id}
                   onClick={() => scrollToSection(topic.id)}
-                  className="text-left p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-all border border-white/5 hover:border-indigo-400/30"
+                  className="text-left p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-all border border-[#F0ECE0] hover:border-[#FFB347]/40"
                 >
                   <span className="text-cyan-400 font-bold">{idx + 1}.</span> {topic.title}
                 </button>
@@ -213,41 +213,41 @@ const PromptEngineeringMasterclass = () => {
           <section id="intro" className="mb-16">
             <h2 className="text-4xl font-black mb-6">Introduction to Prompt Engineering</h2>
 
-            <div className="bg-white/5 border border-white/10 rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">What is Prompt Engineering?</h3>
-              <p className="text-[#94A3B8] mb-4">
+              <p className="text-[#666666] mb-4">
                 Prompt engineering is the practice of crafting, refining, and optimizing text inputs (prompts) to elicit the best possible outputs from Large Language Models (LLMs). It's the bridge between human intent and machine understanding.
               </p>
-              <p className="text-[#94A3B8] mb-4">
+              <p className="text-[#666666] mb-4">
                 Think of it as learning to communicate effectively with AI. Just as managers get better results by asking employees the right questions, you get better AI results by asking models the right prompts.
               </p>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Why Prompt Engineering Matters</h3>
               <div className="space-y-4">
                 <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
                   <strong className="text-green-400">Quality Control</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">Better prompts = better outputs. Small changes in wording can significantly impact results.</p>
+                  <p className="text-[#666666] text-sm mt-2">Better prompts = better outputs. Small changes in wording can significantly impact results.</p>
                 </div>
                 <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
                   <strong className="text-green-400">Cost Efficiency</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">Well-engineered prompts reduce the need for API calls and iterations, saving money.</p>
+                  <p className="text-[#666666] text-sm mt-2">Well-engineered prompts reduce the need for API calls and iterations, saving money.</p>
                 </div>
                 <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
                   <strong className="text-green-400">Speed</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">Getting the right answer on the first try is faster than iterating multiple times.</p>
+                  <p className="text-[#666666] text-sm mt-2">Getting the right answer on the first try is faster than iterating multiple times.</p>
                 </div>
                 <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
                   <strong className="text-green-400">Reliability</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">Professional prompt engineering ensures consistent, predictable results for production systems.</p>
+                  <p className="text-[#666666] text-sm mt-2">Professional prompt engineering ensures consistent, predictable results for production systems.</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Who Should Learn Prompt Engineering?</h3>
-              <ul className="text-[#94A3B8] space-y-3">
+              <ul className="text-[#666666] space-y-3">
                 <li className="flex gap-3">
                   <Check size={20} className="text-cyan-400 flex-shrink-0" />
                   <span><strong>Content Creators:</strong> Generate blog posts, social media content, marketing copy</span>
@@ -276,34 +276,34 @@ const PromptEngineeringMasterclass = () => {
           <section id="how-llms-work" className="mb-16">
             <h2 className="text-4xl font-black mb-6">⚙️ How Large Language Models Work</h2>
 
-            <div className="bg-white/5 border border-white/10 rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">The Basics of LLM Architecture</h3>
-              <p className="text-[#94A3B8] mb-4">
+              <p className="text-[#666666] mb-4">
                 LLMs are deep learning models built on Transformer architecture. They process language by predicting the probability of the next token (word fragment) based on all preceding tokens.
               </p>
               <div className="space-y-4">
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-white/10">
-                  <strong className="text-indigo-400">Token</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">Small units of text (roughly 1 token ≈ 4 characters). "Hello world" = ~3 tokens.</p>
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                  <strong className="text-[#FF9500]">Token</strong>
+                  <p className="text-[#666666] text-sm mt-2">Small units of text (roughly 1 token ≈ 4 characters). "Hello world" = ~3 tokens.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-white/10">
-                  <strong className="text-indigo-400">Embedding</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">Each token is converted to a vector (list of numbers) representing its meaning in context.</p>
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                  <strong className="text-[#FF9500]">Embedding</strong>
+                  <p className="text-[#666666] text-sm mt-2">Each token is converted to a vector (list of numbers) representing its meaning in context.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-white/10">
-                  <strong className="text-indigo-400">Attention Mechanism</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">The model weighs the importance of different tokens when predicting the next one. "The cat sat on the mat" - 'mat' depends more on 'cat' and 'sat' than 'the'.</p>
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                  <strong className="text-[#FF9500]">Attention Mechanism</strong>
+                  <p className="text-[#666666] text-sm mt-2">The model weighs the importance of different tokens when predicting the next one. "The cat sat on the mat" - 'mat' depends more on 'cat' and 'sat' than 'the'.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-white/10">
-                  <strong className="text-indigo-400">Probability Distribution</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">The model outputs probabilities for thousands of possible next tokens. Temperature controls randomness (0 = deterministic, 1 = creative).</p>
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                  <strong className="text-[#FF9500]">Probability Distribution</strong>
+                  <p className="text-[#666666] text-sm mt-2">The model outputs probabilities for thousands of possible next tokens. Temperature controls randomness (0 = deterministic, 1 = creative).</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">How a Model Responds to Your Prompt</h3>
-              <ol className="text-[#94A3B8] space-y-4 ml-4">
+              <ol className="text-[#666666] space-y-4 ml-4">
                 <li className="flex gap-3">
                   <span className="text-cyan-400 font-bold">1.</span>
                   <span><strong>Tokenization:</strong> Your prompt is split into tokens</span>
@@ -331,9 +331,9 @@ const PromptEngineeringMasterclass = () => {
               </ol>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Key Constraints to Know</h3>
-              <ul className="text-[#94A3B8] space-y-3">
+              <ul className="text-[#666666] space-y-3">
                 <li className="flex gap-3">
                   <span className="text-yellow-400 font-bold">⚠️</span>
                   <span><strong>Context Window Limit:</strong> Each model has max tokens it can process (ChatGPT-4: 128K tokens)</span>
@@ -358,26 +358,26 @@ const PromptEngineeringMasterclass = () => {
           <section id="prompt-types" className="mb-16">
             <h2 className="text-4xl font-black mb-6">📋 Types of Prompts</h2>
 
-            <div className="bg-white/5 border border-white/10 rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Zero-Shot Prompting</h3>
-              <p className="text-[#94A3B8] mb-4">
+              <p className="text-[#666666] mb-4">
                 You ask the model to perform a task without providing any examples. The model relies on its general knowledge.
               </p>
-              <p className="text-[#94A3B8] mb-4"><strong>When to use:</strong> General tasks, creative work, or when you don't have examples.</p>
-              <p className="text-[#94A3B8] mb-2 font-semibold">Example:</p>
+              <p className="text-[#666666] mb-4"><strong>When to use:</strong> General tasks, creative work, or when you don't have examples.</p>
+              <p className="text-[#666666] mb-2 font-semibold">Example:</p>
               <CodeBlock
                 code={`Prompt: "Generate a product description for a waterproof smartwatch in 50 words."\n\nModel generates description without seeing examples.`}
                 language="plaintext"
               />
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Few-Shot Prompting</h3>
-              <p className="text-[#94A3B8] mb-4">
+              <p className="text-[#666666] mb-4">
                 You provide a few examples before asking the actual task. This helps the model understand the pattern and desired output format.
               </p>
-              <p className="text-[#94A3B8] mb-4"><strong>When to use:</strong> When you want specific format or style. Usually 2-5 examples work best.</p>
-              <p className="text-[#94A3B8] mb-2 font-semibold">Example:</p>
+              <p className="text-[#666666] mb-4"><strong>When to use:</strong> When you want specific format or style. Usually 2-5 examples work best.</p>
+              <p className="text-[#666666] mb-2 font-semibold">Example:</p>
               <CodeBlock
                 code={`Example 1:
 Input: "Mango"
@@ -393,13 +393,13 @@ Input: "Banana"\nOutput: ?`}
               />
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Chain-of-Thought Prompting</h3>
-              <p className="text-[#94A3B8] mb-4">
+              <p className="text-[#666666] mb-4">
                 You ask the model to explain its reasoning step-by-step before giving the answer. This improves accuracy for complex tasks.
               </p>
-              <p className="text-[#94A3B8] mb-4"><strong>When to use:</strong> Math problems, logic puzzles, complex reasoning tasks.</p>
-              <p className="text-[#94A3B8] mb-2 font-semibold">Example:</p>
+              <p className="text-[#666666] mb-4"><strong>When to use:</strong> Math problems, logic puzzles, complex reasoning tasks.</p>
+              <p className="text-[#666666] mb-2 font-semibold">Example:</p>
               <CodeBlock
                 code={`Prompt: "Solve this step by step:\n\nIf Sarah has 3 apples and buys 2 more, \nthen eats 1, how many does she have?\n\nThink through this carefully."\n\nModel explains: "Sarah starts with 3 apples + 2 = 5 apples. \nThen eats 1, so 5 - 1 = 4 apples remaining."`}
                 language="plaintext"
@@ -411,38 +411,38 @@ Input: "Banana"\nOutput: ?`}
           <section id="prompt-structure" className="mb-16">
             <h2 className="text-4xl font-black mb-6">🏗️ The Prompt Structure Formula</h2>
 
-            <div className="bg-white/5 border border-white/10 rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">The CRISPR Framework</h3>
-              <p className="text-[#94A3B8] mb-4">A proven structure for effective prompts:</p>
+              <p className="text-[#666666] mb-4">A proven structure for effective prompts:</p>
               <div className="space-y-4">
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-indigo-400/30">
-                  <strong className="text-indigo-400">C - Context</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">Provide background information. "You are a marketing expert with 10 years of experience..."</p>
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40">
+                  <strong className="text-[#FF9500]">C - Context</strong>
+                  <p className="text-[#666666] text-sm mt-2">Provide background information. "You are a marketing expert with 10 years of experience..."</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-indigo-400/30">
-                  <strong className="text-indigo-400">R - Role</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">Specify what role the model should take. "Act as a technical writer..."</p>
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40">
+                  <strong className="text-[#FF9500]">R - Role</strong>
+                  <p className="text-[#666666] text-sm mt-2">Specify what role the model should take. "Act as a technical writer..."</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-indigo-400/30">
-                  <strong className="text-indigo-400">I - Input</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">Provide the material to work with. "Here is the product: [details]"</p>
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40">
+                  <strong className="text-[#FF9500]">I - Input</strong>
+                  <p className="text-[#666666] text-sm mt-2">Provide the material to work with. "Here is the product: [details]"</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-indigo-400/30">
-                  <strong className="text-indigo-400">S - Steps</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">Break down what you want. "First analyze, then create, finally summarize"</p>
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40">
+                  <strong className="text-[#FF9500]">S - Steps</strong>
+                  <p className="text-[#666666] text-sm mt-2">Break down what you want. "First analyze, then create, finally summarize"</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-indigo-400/30">
-                  <strong className="text-indigo-400">P - Process</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">Specify output format. "Return as JSON, bullet points, or essay format"</p>
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40">
+                  <strong className="text-[#FF9500]">P - Process</strong>
+                  <p className="text-[#666666] text-sm mt-2">Specify output format. "Return as JSON, bullet points, or essay format"</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-indigo-400/30">
-                  <strong className="text-indigo-400">R - Review</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">Ask for quality checks. "Check for accuracy and tone before responding"</p>
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40">
+                  <strong className="text-[#FF9500]">R - Review</strong>
+                  <p className="text-[#666666] text-sm mt-2">Ask for quality checks. "Check for accuracy and tone before responding"</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Complete CRISPR Prompt Example</h3>
               <CodeBlock
                 code={`Context: You are an expert UX writer with 7 years of experience designing user experiences for SaaS products.
@@ -472,9 +472,9 @@ Now write the documentation.`}
             <h2 className="text-4xl font-black mb-6">💼 Real-World ChatGPT Prompt Examples</h2>
 
             <div className="space-y-6">
-              <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                 <h3 className="text-2xl font-bold mb-4">Example 1: Content Creation</h3>
-                <p className="text-[#94A3B8] mb-3 font-semibold">Task: Write LinkedIn post about AI</p>
+                <p className="text-[#666666] mb-3 font-semibold">Task: Write LinkedIn post about AI</p>
                 <CodeBlock
                   code={`You are a LinkedIn marketing expert. Write an engaging LinkedIn post (100-150 words) about "The Future of AI in 2025" for a tech professional audience.
 
@@ -489,9 +489,9 @@ Post for maximum engagement and shares.`}
                 />
               </div>
 
-              <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                 <h3 className="text-2xl font-bold mb-4">Example 2: Code Generation</h3>
-                <p className="text-[#94A3B8] mb-3 font-semibold">Task: Generate Python function</p>
+                <p className="text-[#666666] mb-3 font-semibold">Task: Generate Python function</p>
                 <CodeBlock
                   code={`You are a senior Python developer. Write a production-ready function with the following specifications:
 
@@ -509,9 +509,9 @@ Return only the function code with tests. No explanation needed.`}
                 />
               </div>
 
-              <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                 <h3 className="text-2xl font-bold mb-4">Example 3: Data Analysis</h3>
-                <p className="text-[#94A3B8] mb-3 font-semibold">Task: Analyze customer data</p>
+                <p className="text-[#666666] mb-3 font-semibold">Task: Analyze customer data</p>
                 <CodeBlock
                   code={`You are a data analyst. Analyze the following customer satisfaction survey results:
 
@@ -538,35 +538,35 @@ Focus on business value and implementability.`}
           <section id="role-based" className="mb-16">
             <h2 className="text-4xl font-black mb-6">🎭 Role-Based Prompting</h2>
 
-            <div className="bg-white/5 border border-white/10 rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Why Assign Roles?</h3>
-              <p className="text-[#94A3B8] mb-4">
+              <p className="text-[#666666] mb-4">
                 When you assign a specific role to the LLM, it activates relevant knowledge and communication patterns from its training. The model adjust its response style, expertise level, and focus accordingly.
               </p>
-              <p className="text-[#94A3B8] mb-4">
+              <p className="text-[#666666] mb-4">
                 Compare "Explain quantum computing" to "You are a quantum physicist. Explain quantum computing to a high school student." The second prompt will get much better results.
               </p>
             </div>
 
             <div className="space-y-4">
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-white/10">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
                 <strong className="text-cyan-400">Software Engineer Role</strong>
-                <p className="text-[#94A3B8] text-sm mt-2">"You are a senior software engineer with 15 years of backend development experience..." - Gets technical, architecture-focused responses</p>
+                <p className="text-[#666666] text-sm mt-2">"You are a senior software engineer with 15 years of backend development experience..." - Gets technical, architecture-focused responses</p>
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-white/10">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
                 <strong className="text-cyan-400">Teacher Role</strong>
-                <p className="text-[#94A3B8] text-sm mt-2">"You are an experienced high school teacher..." - Gets simplified, educational responses with examples</p>
+                <p className="text-[#666666] text-sm mt-2">"You are an experienced high school teacher..." - Gets simplified, educational responses with examples</p>
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-white/10">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
                 <strong className="text-cyan-400">Project Manager Role</strong>
-                <p className="text-[#94A3B8] text-sm mt-2">"You are a project manager at a Fortune 500 company..." - Gets business-focused, stakeholder-aware responses</p>
+                <p className="text-[#666666] text-sm mt-2">"You are a project manager at a Fortune 500 company..." - Gets business-focused, stakeholder-aware responses</p>
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-white/10">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
                 <strong className="text-cyan-400">Creative Writer Role</strong>
-                <p className="text-[#94A3B8] text-sm mt-2">"You are a bestselling fiction author..." - Gets creative, narrative-driven responses</p>
+                <p className="text-[#666666] text-sm mt-2">"You are a bestselling fiction author..." - Gets creative, narrative-driven responses</p>
               </div>
             </div>
           </section>
@@ -575,35 +575,35 @@ Focus on business value and implementability.`}
           <section id="evaluation" className="mb-16">
             <h2 className="text-4xl font-black mb-6">✅ Prompt Evaluation & Iteration</h2>
 
-            <div className="bg-white/5 border border-white/10 rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">How to Evaluate Prompt Quality</h3>
               <div className="space-y-4">
                 <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
                   <strong className="text-green-400 flex items-center gap-1"><Check size={16} /> Accuracy</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">Is the output factually correct? Verify against known sources.</p>
+                  <p className="text-[#666666] text-sm mt-2">Is the output factually correct? Verify against known sources.</p>
                 </div>
                 <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
                   <strong className="text-green-400 flex items-center gap-1"><Check size={16} /> Relevance</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">Does it address your specific need? No unnecessary info?</p>
+                  <p className="text-[#666666] text-sm mt-2">Does it address your specific need? No unnecessary info?</p>
                 </div>
                 <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
                   <strong className="text-green-400 flex items-center gap-1"><Check size={16} /> Completeness</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">Are all aspects of your request covered?</p>
+                  <p className="text-[#666666] text-sm mt-2">Are all aspects of your request covered?</p>
                 </div>
                 <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
                   <strong className="text-green-400 flex items-center gap-1"><Check size={16} /> Consistency</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">Does it produce similar quality repeatedly?</p>
+                  <p className="text-[#666666] text-sm mt-2">Does it produce similar quality repeatedly?</p>
                 </div>
                 <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
                   <strong className="text-green-400 flex items-center gap-1"><Check size={16} /> Tone</strong>
-                  <p className="text-[#94A3B8] text-sm mt-2">Does it match the intended audience and context?</p>
+                  <p className="text-[#666666] text-sm mt-2">Does it match the intended audience and context?</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Iteration Strategy</h3>
-              <ol className="text-[#94A3B8] space-y-3 ml-4">
+              <ol className="text-[#666666] space-y-3 ml-4">
                 <li className="flex gap-3">
                   <span className="text-cyan-400 font-bold">1.</span>
                   <span><strong>Test Initial Prompt:</strong> Get baseline response</span>
@@ -639,7 +639,7 @@ Focus on business value and implementability.`}
             <div className="space-y-4">
               <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-red-400 mb-3 flex items-center gap-2"><AlertCircle size={20} className="flex-shrink-0" /> Mistake 1: Vague Prompts</h3>
-                <p className="text-[#94A3B8] mb-3">
+                <p className="text-[#666666] mb-3">
                   <strong>Wrong:</strong> "Write something about marketing"<br/>
                   <strong>Right:</strong> "Write a 500-word blog post about email marketing best practices for SaaS companies, targeting marketing managers"
                 </p>
@@ -647,7 +647,7 @@ Focus on business value and implementability.`}
 
               <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-red-400 mb-3 flex items-center gap-2"><AlertCircle size={20} className="flex-shrink-0" /> Mistake 2: No Format Specification</h3>
-                <p className="text-[#94A3B8] mb-3">
+                <p className="text-[#666666] mb-3">
                   <strong>Wrong:</strong> "Give me ideas for a new app"<br/>
                   <strong>Right:</strong> "Give me 5 app ideas. For each, provide: name, target user, core feature, 1-line description. Format as bullet points."
                 </p>
@@ -655,7 +655,7 @@ Focus on business value and implementability.`}
 
               <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-red-400 mb-3 flex items-center gap-2"><AlertCircle size={20} className="flex-shrink-0" /> Mistake 3: Asking Multiple Unrelated Questions</h3>
-                <p className="text-[#94A3B8] mb-3">
+                <p className="text-[#666666] mb-3">
                   <strong>Wrong:</strong> "Explain React hooks, write me a function, and how do I deploy?"<br/>
                   <strong>Right:</strong> Use separate prompts for each topic to get better focused responses
                 </p>
@@ -663,7 +663,7 @@ Focus on business value and implementability.`}
 
               <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-red-400 mb-3 flex items-center gap-2"><AlertCircle size={20} className="flex-shrink-0" /> Mistake 4: Not Providing Context</h3>
-                <p className="text-[#94A3B8] mb-3">
+                <p className="text-[#666666] mb-3">
                   <strong>Wrong:</strong> "Optimize this code"<br/>
                   <strong>Right:</strong> "Optimize this Python function for readability and performance. Context: It's used in a real-time data processing pipeline that handles 10K events/second"
                 </p>
@@ -671,7 +671,7 @@ Focus on business value and implementability.`}
 
               <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-red-400 mb-3 flex items-center gap-2"><AlertCircle size={20} className="flex-shrink-0" /> Mistake 5: Sharing Sensitive Information</h3>
-                <p className="text-[#94A3B8] mb-3">
+                <p className="text-[#666666] mb-3">
                   <strong>Wrong:</strong> Pasting customer data, passwords, API keys, or confidential information<br/>
                   <strong>Right:</strong> Redact or anonymize sensitive data. Use placeholders: "[CUSTOMER_EMAIL]", "[API_KEY]"
                 </p>
@@ -679,7 +679,7 @@ Focus on business value and implementability.`}
 
               <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-6">
                 <h3 className="text-xl font-bold text-red-400 mb-3 flex items-center gap-2"><AlertCircle size={20} className="flex-shrink-0" /> Mistake 6: Not Setting Length Constraints</h3>
-                <p className="text-[#94A3B8] mb-3">
+                <p className="text-[#666666] mb-3">
                   <strong>Wrong:</strong> "Summarize this article"<br/>
                   <strong>Right:</strong> "Summarize this 2000-word article in exactly 150 words, keeping the 3 main points"
                 </p>
@@ -692,7 +692,7 @@ Focus on business value and implementability.`}
             <h2 className="text-4xl font-black mb-6">📝 Ready-to-Use Prompt Templates</h2>
 
             <div className="space-y-6">
-              <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                 <h3 className="text-xl font-bold mb-4">Content Creation Template</h3>
                 <CodeBlock
                   code={`You are [ROLE]. Create [CONTENT_TYPE] about [TOPIC] for [AUDIENCE].
@@ -710,7 +710,7 @@ Deliver [CONTENT_TYPE] that resonates with [AUDIENCE].`}
                 />
               </div>
 
-              <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                 <h3 className="text-xl font-bold mb-4">Analysis Template</h3>
                 <CodeBlock
                   code={`You are [EXPERT_ROLE]. Analyze [SUBJECT] from these perspectives:
@@ -727,7 +727,7 @@ Conclude with top 3 recommendations.`}
                 />
               </div>
 
-              <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                 <h3 className="text-xl font-bold mb-4">Problem Solving Template</h3>
                 <CodeBlock
                   code={`You are [EXPERT]. Help me solve this problem:
@@ -754,18 +754,18 @@ Please provide:
             <h2 className="text-4xl font-black mb-6">🛠️ Mini Projects to Practice</h2>
 
             <div className="space-y-6">
-              <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                 <h3 className="text-xl font-bold mb-4">Project 1: Personal Brand Content Generator</h3>
-                <p className="text-[#94A3B8] mb-4">
+                <p className="text-[#666666] mb-4">
                   <strong>Goal:</strong> Create a prompt that generates personalized LinkedIn content consistently
                 </p>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-white/10 mb-4">
-                  <p className="text-[#94A3B8] text-sm">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF] mb-4">
+                  <p className="text-[#666666] text-sm">
                     Create a prompt that generates LinkedIn posts about your niche (e.g., AI, marketing, design). The prompt should ensure consistent tone, mention industry insights, include engagement-driving elements, and be original each time.
                   </p>
                 </div>
-                <p className="text-[#94A3B8] font-semibold">💡 Tip:</p>
-                <ul className="text-[#94A3B8] text-sm space-y-1 ml-4">
+                <p className="text-[#666666] font-semibold">💡 Tip:</p>
+                <ul className="text-[#666666] text-sm space-y-1 ml-4">
                   <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Define your unique perspective/insights</li>
                   <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Specify the format (question, story, insight)</li>
                   <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Include brand voice guidelines</li>
@@ -773,18 +773,18 @@ Please provide:
                 </ul>
               </div>
 
-              <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                 <h3 className="text-xl font-bold mb-4">Project 2: Tutorial Maker</h3>
-                <p className="text-[#94A3B8] mb-4">
+                <p className="text-[#666666] mb-4">
                   <strong>Goal:</strong> Create a prompt that turns complex topics into step-by-step tutorials
                 </p>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-white/10 mb-4">
-                  <p className="text-[#94A3B8] text-sm">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF] mb-4">
+                  <p className="text-[#666666] text-sm">
                     Create a prompt that transforms a complex concept (e.g., "Docker containers") into a beginner-friendly tutorial with steps, examples, and a practice exercise.
                   </p>
                 </div>
-                <p className="text-[#94A3B8] font-semibold">💡 Tip:</p>
-                <ul className="text-[#94A3B8] text-sm space-y-1 ml-4">
+                <p className="text-[#666666] font-semibold">💡 Tip:</p>
+                <ul className="text-[#666666] text-sm space-y-1 ml-4">
                   <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Break complexity into digestible chunks</li>
                   <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Include real, runnable examples</li>
                   <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Add prerequisites and common mistakes</li>
@@ -792,18 +792,18 @@ Please provide:
                 </ul>
               </div>
 
-              <div className="bg-white/5 border border-white/10 rounded-xl p-8">
+              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
                 <h3 className="text-xl font-bold mb-4">Project 3: Customer Support Optimizer</h3>
-                <p className="text-[#94A3B8] mb-4">
+                <p className="text-[#666666] mb-4">
                   <strong>Goal:</strong> Create a prompt that generates helpful, consistent customer support responses
                 </p>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-white/10 mb-4">
-                  <p className="text-[#94A3B8] text-sm">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF] mb-4">
+                  <p className="text-[#666666] text-sm">
                     Create a prompt that takes a customer question and generates a support response that's helpful, on-brand, offers solutions, and includes follow-up options.
                   </p>
                 </div>
-                <p className="text-[#94A3B8] font-semibold">💡 Tip:</p>
-                <ul className="text-[#94A3B8] text-sm space-y-1 ml-4">
+                <p className="text-[#666666] font-semibold">💡 Tip:</p>
+                <ul className="text-[#666666] text-sm space-y-1 ml-4">
                   <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Specify company tone and values</li>
                   <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Include empathy guidelines</li>
                   <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Provide company knowledge base references</li>
@@ -818,47 +818,47 @@ Please provide:
             <h2 className="text-4xl font-black mb-6">💪 Interview Questions on Prompt Engineering</h2>
 
             <div className="space-y-6">
-              <details className="group cursor-pointer bg-white/5 border border-white/10 rounded-xl p-6">
-                <summary className="font-bold text-indigo-400 mb-4 group-open:mb-4 cursor-pointer">
+              <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+                <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4 cursor-pointer">
                   1️⃣ Explain the difference between temperature and top_p parameters in LLM generation.
                 </summary>
-                <p className="text-[#94A3B8] text-sm">
+                <p className="text-[#666666] text-sm">
                   <strong>Answer:</strong> Temperature controls randomness on a scale of 0-2 (0=deterministic, 1=balanced, 2=random). Top_p controls diversity by only considering tokens with cumulative probability up to p. Temperature affects all probabilities equally, while top_p filters low-probability tokens. For factual tasks use low temperature (0.3), for creative tasks use higher (0.8-1.0).
                 </p>
               </details>
 
-              <details className="group cursor-pointer bg-white/5 border border-white/10 rounded-xl p-6">
-                <summary className="font-bold text-indigo-400 mb-4 group-open:mb-4 cursor-pointer">
+              <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+                <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4 cursor-pointer">
                   2️⃣ How would you debug a prompt that's producing inconsistent results?
                 </summary>
-                <p className="text-[#94A3B8] text-sm">
+                <p className="text-[#666666] text-sm">
                   <strong>Answer:</strong> 1) Test with same prompt 5-10 times to establish baseline variations, 2) Lower temperature to increase consistency, 3) Add more constraints/specificity to the prompt, 4) Use few-shot examples to guide behavior, 5) Check if results are legitimately random or actually inconsistent, 6) Test with different models to rule out model issues, 7) Document variations and patterns.
                 </p>
               </details>
 
-              <details className="group cursor-pointer bg-white/5 border border-white/10 rounded-xl p-6">
-                <summary className="font-bold text-indigo-400 mb-4 group-open:mb-4 cursor-pointer">
+              <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+                <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4 cursor-pointer">
                   3️⃣ Describe a scenario where chain-of-thought prompting would significantly improve results.
                 </summary>
-                <p className="text-[#94A3B8] text-sm">
+                <p className="text-[#666666] text-sm">
                   <strong>Answer:</strong> Math word problems, logical reasoning tasks, or complex multi-step analysis. Without CoT, model might guess. With CoT ("Let's think step by step…"), model explains reasoning before answering, improving accuracy 5-50% depending on complexity. Example: asking for step-by-step derivation of physics equations much better than direct answer.
                 </p>
               </details>
 
-              <details className="group cursor-pointer bg-white/5 border border-white/10 rounded-xl p-6">
-                <summary className="font-bold text-indigo-400 mb-4 group-open:mb-4 cursor-pointer">
+              <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+                <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4 cursor-pointer">
                   4️⃣ How do you handle prompt injection attacks in production?
                 </summary>
-                <p className="text-[#94A3B8] text-sm">
+                <p className="text-[#666666] text-sm">
                   <strong>Answer:</strong> 1) Never concatenate user input directly into prompts, 2) Use templating with clear delimiters between system instructions and user content, 3) Sanitize inputs for suspicious patterns, 4) Implement output validation/filtering, 5) Set clear system instructions that model should follow, 6) Use lower temperature for sensitive tasks, 7) Audit logs for suspicious patterns.
                 </p>
               </details>
 
-              <details className="group cursor-pointer bg-white/5 border border-white/10 rounded-xl p-6">
-                <summary className="font-bold text-indigo-400 mb-4 group-open:mb-4 cursor-pointer">
+              <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+                <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4 cursor-pointer">
                   5️⃣ What metrics would you use to measure prompt engineering effectiveness?
                 </summary>
-                <p className="text-[#94A3B8] text-sm">
+                <p className="text-[#666666] text-sm">
                   <strong>Answer:</strong> 1) Accuracy - correct outputs/total outputs, 2) Relevance - rated by human or automated metric, 3) Cost efficiency - tokens used per query, 4) Latency - time to response, 5) User satisfaction - NPS or survey scores, 6) Consistency - variance across repeated prompts, 7) Failure rate - prompts that produce unusable outputs. Track these over time to show improvement.
                 </p>
               </details>
@@ -876,15 +876,15 @@ Please provide:
                   onClick={() => setExpandedFAQ(expandedFAQ === index ? null : index)}
                   className="w-full text-left"
                 >
-                  <div className="bg-white/5 border border-white/10 hover:border-indigo-400/30 rounded-xl p-6 transition-all cursor-pointer">
+                  <div className="bg-white/5 border border-[#E0DCCF] hover:border-[#FFB347]/40 rounded-xl p-6 transition-all cursor-pointer">
                     <div className="flex justify-between items-start gap-4">
-                      <h3 className="font-bold text-indigo-400 text-lg">{item.question}</h3>
+                      <h3 className="font-bold text-[#FF9500] text-lg">{item.question}</h3>
                       <span className="text-cyan-400 text-2xl font-bold flex-shrink-0">
                         {expandedFAQ === index ? '−' : '+'}
                       </span>
                     </div>
                     {expandedFAQ === index && (
-                      <p className="text-[#94A3B8] text-sm mt-4 leading-relaxed">{item.answer}</p>
+                      <p className="text-[#666666] text-sm mt-4 leading-relaxed">{item.answer}</p>
                     )}
                   </div>
                 </button>
@@ -892,34 +892,34 @@ Please provide:
             </div>
 
             {/* INTERNAL LINKS SECTION */}
-            <div className="mt-16 bg-gradient-to-r from-indigo-600/20 to-purple-600/20 border border-indigo-400/30 rounded-xl p-8">
+            <div className="mt-16 bg-gradient-to-r from-[#FF9500]/20 to-purple-600/20 border border-[#FFB347]/40 rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-6">Continue Your Learning Journey</h3>
               <div className="grid md:grid-cols-3 gap-6">
                 <a 
                   href="/tutorials/generative-ai-for-beginners"
-                  className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-indigo-400/30 rounded-lg p-6 transition-all"
+                  className="group bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-[#FFB347]/40 rounded-lg p-6 transition-all"
                 >
                   <div className="text-3xl mb-3">🤖</div>
-                  <h4 className="font-bold mb-2 group-hover:text-indigo-400 transition-colors">Generative AI for Beginners</h4>
-                  <p className="text-[#94A3B8] text-sm">Master the fundamentals of generative AI, LLMs, and how they work.</p>
+                  <h4 className="font-bold mb-2 group-hover:text-[#FF9500] transition-colors">Generative AI for Beginners</h4>
+                  <p className="text-[#666666] text-sm">Master the fundamentals of generative AI, LLMs, and how they work.</p>
                 </a>
 
                 <a 
                   href="/start-assessment"
-                  className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-cyan-400/30 rounded-lg p-6 transition-all"
+                  className="group bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-cyan-400/30 rounded-lg p-6 transition-all"
                 >
                   <div className="text-3xl mb-3">📊</div>
                   <h4 className="font-bold mb-2 group-hover:text-cyan-400 transition-colors">Interview Assessment</h4>
-                  <p className="text-[#94A3B8] text-sm">Test your AI and prompt engineering knowledge with our assessment.</p>
+                  <p className="text-[#666666] text-sm">Test your AI and prompt engineering knowledge with our assessment.</p>
                 </a>
 
                 <a 
                   href="/resume-analyzer"
-                  className="group bg-white/5 hover:bg-white/10 border border-white/10 hover:border-green-400/30 rounded-lg p-6 transition-all"
+                  className="group bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-green-400/30 rounded-lg p-6 transition-all"
                 >
                   <div className="text-3xl mb-3">📄</div>
                   <h4 className="font-bold mb-2 group-hover:text-green-400 transition-colors">Resume Analyzer</h4>
-                  <p className="text-[#94A3B8] text-sm">Get AI feedback on your resume and improve your interview readiness.</p>
+                  <p className="text-[#666666] text-sm">Get AI feedback on your resume and improve your interview readiness.</p>
                 </a>
               </div>
             </div>
@@ -927,7 +927,7 @@ Please provide:
 
           {/* FINAL CTA */}
           <section className="mb-16">
-            <div className="bg-gradient-to-r from-[#4F46E5] via-[#9333EA] to-[#06B6D4] rounded-2xl p-12 text-center border border-white/20">
+            <div className="bg-gradient-to-r from-[#4F46E5] via-[#9333EA] to-[#06B6D4] rounded-2xl p-12 text-center border border-[#E0DCCF]">
               <h2 className="text-3xl font-black mb-4">Ready to Master Prompt Engineering?</h2>
               <p className="text-lg mb-8 text-white/90">
                 Take the next step in your AI journey. Assess your knowledge and identify areas for improvement.
@@ -943,7 +943,7 @@ Please provide:
         </main>
       </div>
 
-      <footer className="py-10 text-center text-slate-500 text-sm border-t border-white/5 mt-16">
+      <footer className="py-10 text-center text-slate-500 text-sm border-t border-[#F0ECE0] mt-16">
         © 2026 MentorMuni. Prompt Engineering Masterclass - Complete Tutorial with Real-World Examples.
       </footer>
     </div>

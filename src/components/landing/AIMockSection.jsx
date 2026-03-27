@@ -16,7 +16,7 @@ export default function AIMockSection() {
         <div className="grid md:grid-cols-2 gap-10 items-center">
           <div className="bg-white rounded-3xl border border-slate-200 shadow-card p-8">
             <div className="flex items-center gap-3 mb-6">
-              <div className="w-12 h-12 rounded-xl bg-indigo-100 flex items-center justify-center">
+              <div className="w-12 h-12 rounded-xl bg-[#FFF4E0] flex items-center justify-center">
                 <Mic className="w-6 h-6 text-primary" />
               </div>
               <div>

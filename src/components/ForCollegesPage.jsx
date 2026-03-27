@@ -30,7 +30,7 @@ export default function ForCollegesPage() {
   return (
     <div className="min-h-screen bg-surface font-sans">
       <section className="relative py-20 md:py-28 px-6 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-indigo-50/80 via-white to-violet-50/60 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-[#FFF8EE]/80 via-white to-[#FFFDF8]/60 pointer-events-none" />
         <div className="relative max-w-4xl mx-auto text-center">
           <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight">
             Improve Your College Placement Rate

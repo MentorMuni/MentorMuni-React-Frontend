@@ -1,5 +1,6 @@
 import React from 'react';
 import { XCircle, Zap, CheckCircle, ArrowRight, Sparkles } from 'lucide-react';
+import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 
 const CareerTransformationSection = () => {
   const transformationStages = [
@@ -89,7 +90,7 @@ const CareerTransformationSection = () => {
 
                   {index < transformationStages.length - 1 && (
                     <div className="flex justify-center -mx-4 mt-8">
-                      <ArrowRight className="w-8 h-8 text-indigo-600 transform rotate-0 font-bold" strokeWidth={3} />
+                      <ArrowRight className="w-8 h-8 text-[#FF9500] transform rotate-0 font-bold" strokeWidth={3} />
                     </div>
                   )}
                 </div>
@@ -100,7 +101,7 @@ const CareerTransformationSection = () => {
 
         <div className="lg:hidden mb-16">
           <div className="relative">
-            <div className="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-indigo-600/30 to-purple-600/30" />
+            <div className="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-[#FF9500]/30 to-purple-600/30" />
 
             <div className="space-y-8">
               {transformationStages.map((stage) => {
@@ -165,7 +166,7 @@ const CareerTransformationSection = () => {
               <ArrowRight className="w-5 h-5 text-white" />
             </a>
 
-            <a href="/#/interview-readiness" className="btn-secondary inline-flex items-center gap-2 px-8 py-4 rounded-lg font-bold">Check Interview Readiness</a>
+            <a href="/#/start-assessment" className="btn-secondary inline-flex items-center gap-2 px-8 py-4 rounded-lg font-bold">Check my readiness — free</a>
           </div>
 
           <p className="text-sm text-on-dark-sub mt-6">✓ 1,350+ students transformed • ✓ 85% got interview calls • ✓ No credit card required</p>

@@ -55,7 +55,7 @@ export const Card = ({
  */
 export const GradientText = ({ children, gradient = 'primary', className = '' }) => {
   const gradientMap = {
-    primary: 'from-indigo-400 to-blue-400',
+    primary: 'from-[#FF9500] to-blue-400',
     secondary: 'from-purple-400 to-pink-400',
     accent: 'from-orange-400 to-red-400',
     cool: 'from-cyan-400 to-blue-400',
@@ -104,7 +104,7 @@ export const FeatureCard = ({
   ...props
 }) => {
   const colorMap = {
-    indigo: { bg: 'from-indigo-600/20 to-blue-600/20', border: 'border-indigo-500/30', icon: 'text-indigo-400' },
+    indigo: { bg: 'from-[#FF9500]/20 to-blue-600/20', border: 'border-[#FF9500]/35', icon: 'text-[#FF9500]' },
     purple: { bg: 'from-purple-600/20 to-pink-600/20', border: 'border-purple-500/30', icon: 'text-purple-400' },
     orange: { bg: 'from-orange-600/20 to-red-600/20', border: 'border-orange-500/30', icon: 'text-orange-400' },
     cyan: { bg: 'from-cyan-600/20 to-emerald-600/20', border: 'border-cyan-500/30', icon: 'text-cyan-400' },
@@ -128,7 +128,7 @@ export const FeatureCard = ({
       {cta && (
         <div className="mt-auto">
           {typeof cta === 'string' ? (
-            <a href="#" className="text-indigo-400 hover:text-indigo-300 font-semibold text-sm inline-flex items-center gap-1">
+            <a href="#" className="text-[#FF9500] hover:text-[#CC7000] font-semibold text-sm inline-flex items-center gap-1">
               {cta} →
             </a>
           ) : (

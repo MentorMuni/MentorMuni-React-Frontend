@@ -55,9 +55,9 @@
  * - Key highlights
  * 
  * Usage:
- *   bg-gradient-to-r from-indigo-600 to-blue-600
- *   text-indigo-400
- *   border-indigo-500/30
+ *   bg-gradient-to-r from-[#FF9500] to-blue-600
+ *   text-[#FF9500]
+ *   border-[#FF9500]/35
  * 
  * 
  * SECONDARY (Purple #a855f7)
@@ -253,16 +253,16 @@
  * 
  * GRADIENT HEADING:
  * <h1 className="text-5xl md:text-6xl font-black">
- *   <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-blue-400">
+ *   <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF9500] to-blue-400">
  *     Headline Text
  *   </span>
  * </h1>
  * 
  * INTERACTIVE CARD:
- * <div className="bg-gradient-to-br from-indigo-600/20 to-blue-600/20 
- *              border border-indigo-500/30 rounded-2xl p-6 
- *              hover:border-indigo-500/60 transition-all 
- *              hover:shadow-lg hover:shadow-indigo-500/20">
+ * <div className="bg-gradient-to-br from-[#FF9500]/20 to-blue-600/20 
+ *              border border-[#FF9500]/35 rounded-2xl p-6 
+ *              hover:border-[#FF9500]/60 transition-all 
+ *              hover:shadow-lg hover:shadow-[0_4px_14px_rgba(255,149,0,0.25)]">
  *   {content}
  * </div>
  * 

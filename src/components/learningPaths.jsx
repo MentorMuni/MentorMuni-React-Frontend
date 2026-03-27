@@ -5,11 +5,11 @@ const LearningPaths = () => {
   const pathsData = [
     {
       id: 1,
-      icon: <Rocket size={40} className="text-indigo-400" />,
+      icon: <Rocket size={40} className="text-[#FF9500]" />,
       title: 'Placement Track',
       description: 'Full structured program with mentorship. Master in-demand skills and get placement-ready.',
       href: '/placement-tracks',
-      color: 'from-indigo-600 to-indigo-500',
+      color: 'from-[#FF9500] to-[#E88600]',
       badge: 'Most Popular'
     },
     {
@@ -32,20 +32,20 @@ const LearningPaths = () => {
     },
     {
       id: 4,
-      icon: <TrendingUp size={40} className="text-violet-400" />,
+      icon: <TrendingUp size={40} className="text-[#FF9500]" />,
       title: 'Skill Gap Analyzer',
       description: 'AI-driven improvement insights. Identify your weaknesses and get personalized roadmaps.',
       href: '/skill-gap-analyzer',
-      color: 'from-violet-600 to-purple-500',
+      color: 'from-[#FFB347] to-purple-500',
       badge: 'AI Powered'
     },
     {
       id: 5,
-      icon: <ScanSearch size={40} className="text-indigo-600" />,
+      icon: <ScanSearch size={40} className="text-[#FF9500]" />,
       title: 'Resume Optimizer',
       description: 'Optimize your resume with AI-powered ATS scoring and keyword matching tailored to your target role.',
       href: '/resume-analyzer',
-      color: 'from-rose-600 to-indigo-500',
+      color: 'from-rose-600 to-[#E88600]',
       badge: 'AI Powered'
     }
   ];
@@ -56,7 +56,7 @@ const LearningPaths = () => {
       <div className="max-w-6xl mx-auto px-6 py-20">
         <div className="text-center mb-20">
           <h1 className="text-5xl md:text-6xl font-black mb-4">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-cyan-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF9500] to-cyan-400">
               Learning Paths
             </span>
           </h1>
@@ -76,7 +76,7 @@ const LearningPaths = () => {
             >
               <div className={`absolute inset-0 bg-gradient-to-r ${path.color} rounded-3xl opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
               
-              <div className="relative bg-white/5 backdrop-blur border border-white/10 hover:border-white/30 rounded-3xl p-8 transition-all duration-300 hover:shadow-2xl">
+              <div className="relative bg-white/5 backdrop-blur border border-[#E0DCCF] hover:border-[#E0DCCF] rounded-3xl p-8 transition-all duration-300 hover:shadow-2xl">
                 {/* Badge */}
                 <div className={`absolute top-6 right-6 bg-gradient-to-r ${path.color} text-white text-xs font-bold px-4 py-1 rounded-full`}>
                   {path.badge}
@@ -88,7 +88,7 @@ const LearningPaths = () => {
                 </div>
 
                 {/* Content */}
-                <h3 className="text-2xl font-bold mb-3 group-hover:text-indigo-400 transition-colors">
+                <h3 className="text-2xl font-bold mb-3 group-hover:text-[#FF9500] transition-colors">
                   {path.title}
                 </h3>
                 <p className="text-slate-300 mb-8 leading-relaxed">
@@ -96,7 +96,7 @@ const LearningPaths = () => {
                 </p>
 
                 {/* CTA */}
-                <div className="flex items-center gap-2 text-indigo-400 group-hover:gap-3 transition-all font-semibold">
+                <div className="flex items-center gap-2 text-[#FF9500] group-hover:gap-3 transition-all font-semibold">
                   Get Started
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -106,11 +106,11 @@ const LearningPaths = () => {
         </div>
 
         {/* Why Choose Section */}
-        <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border border-white/10 rounded-3xl p-12 mb-12">
+        <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border border-[#E0DCCF] rounded-3xl p-12 mb-12">
           <h2 className="text-3xl font-black mb-8 text-center">Why Choose MentorMuni?</h2>
           <div className="grid md:grid-cols-4 gap-6">
             <div className="text-center">
-              <div className="text-4xl font-black text-indigo-400 mb-2">AI-Powered</div>
+              <div className="text-4xl font-black text-[#FF9500] mb-2">AI-Powered</div>
               <p className="text-slate-300">Real-time AI feedback and personalized recommendations</p>
             </div>
             <div className="text-center">
@@ -129,14 +129,14 @@ const LearningPaths = () => {
         </div>
 
         {/* CTA Section */}
-        <div className="bg-gradient-to-r from-indigo-600 to-cyan-600 rounded-3xl p-12 text-center">
+        <div className="bg-gradient-to-r from-[#FF9500] to-cyan-600 rounded-3xl p-12 text-center">
           <h2 className="text-3xl font-bold mb-4">Not sure where to start?</h2>
           <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
             Take our free interview readiness assessment to discover which learning path is perfect for your goals.
           </p>
           <button
             onClick={() => window.location.href = '/start-assessment'}
-            className="bg-white text-indigo-600 font-bold py-4 px-8 rounded-xl hover:shadow-lg hover:shadow-white/20 transition-all inline-flex items-center gap-2"
+            className="bg-white text-[#FF9500] font-bold py-4 px-8 rounded-xl hover:shadow-lg hover:shadow-white/20 transition-all inline-flex items-center gap-2"
           >
             Take Free Assessment
             <ArrowRight size={20} />

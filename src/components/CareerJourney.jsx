@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, FileText, Brain, TrendingUp } from 'lucide-react';
+import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 
 const CareerJourney = () => {
   const steps = [
@@ -10,7 +11,7 @@ const CareerJourney = () => {
       description: "Let AI evaluate your resume against job descriptions. Get your ATS score and understand how recruiters will see you.",
       icon: FileText,
       color: "indigo",
-      bgGradient: "from-indigo-600 to-indigo-700",
+      bgGradient: "from-[#FF9500] to-[#E88600]",
       textColor: "indigo-400",
       borderColor: "indigo-500/20",
       href: "/resume-analyzer"
@@ -55,7 +56,7 @@ const CareerJourney = () => {
         {/* Steps Container */}
         <div className="grid md:grid-cols-3 gap-8 relative">
           {/* Connection Line (Desktop) */}
-          <div className="hidden md:block absolute top-20 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500/20 via-cyan-500/20 to-purple-500/20"></div>
+          <div className="hidden md:block absolute top-20 left-0 right-0 h-1 bg-gradient-to-r from-[#FF9500]/20 via-cyan-500/20 to-purple-500/20"></div>
 
           {/* Steps */}
           {steps.map((step, index) => {
@@ -67,7 +68,7 @@ const CareerJourney = () => {
                 <div className="bg-gradient-to-br from-slate-800/50 to-slate-800/20 border border-slate-700/50 rounded-2xl p-8 hover:border-slate-600 transition-all h-full flex flex-col">
                   {/* Step Number Badge */}
                   {step.color === "indigo" && (
-                    <div className={`w-16 h-16 bg-gradient-to-br ${step.bgGradient} rounded-full flex items-center justify-center mb-6 flex-shrink-0 relative z-10 shadow-lg shadow-indigo-500/30`}>
+                    <div className={`w-16 h-16 bg-gradient-to-br ${step.bgGradient} rounded-full flex items-center justify-center mb-6 flex-shrink-0 relative z-10 shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.2)]`}>
                       <span className="text-2xl font-black text-white">{step.number}</span>
                     </div>
                   )}
@@ -85,8 +86,8 @@ const CareerJourney = () => {
                   {/* Step Icon */}
                   <div className="mb-4 flex-shrink-0">
                     {step.color === "indigo" && (
-                      <div className="w-12 h-12 rounded-xl bg-indigo-500/20 flex items-center justify-center">
-                        <Icon className="w-6 h-6 text-indigo-400" />
+                      <div className="w-12 h-12 rounded-xl bg-[#FF9500]/20 flex items-center justify-center">
+                        <Icon className="w-6 h-6 text-[#FF9500]" />
                       </div>
                     )}
                     {step.color === "cyan" && (
@@ -113,7 +114,7 @@ const CareerJourney = () => {
                   {step.color === "indigo" && (
                     <Link 
                       to={step.href} 
-                      className="inline-flex items-center gap-2 text-indigo-400 font-semibold text-sm group hover:gap-3 transition-all"
+                      className="inline-flex items-center gap-2 text-[#FF9500] font-semibold text-sm group hover:gap-3 transition-all"
                     >
                       Start now <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
@@ -145,9 +146,9 @@ const CareerJourney = () => {
           <p className="text-slate-400 mb-6">All tools are completely free with your first 3 attempts on each.</p>
           <Link 
             to="/start-assessment" 
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] group"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#FF9500] hover:to-[#CC7000] text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] group"
           >
-            <span>Check Your Interview Readiness Now</span>
+            <span>{PRIMARY_CTA_LABEL}</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>

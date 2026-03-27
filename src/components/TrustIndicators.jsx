@@ -67,8 +67,8 @@ const TrustIndicators = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {trustStats.map((s) => (
             <div key={s.key} className="card-dark p-6 text-center shadow-sm hover:shadow-lg transition-shadow hover:scale-[1.01] transform-gpu">
-              <div className="flex items-center justify-center h-12 w-12 rounded-full mx-auto bg-indigo-600/10 mb-3">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-indigo-300">
+              <div className="flex items-center justify-center h-12 w-12 rounded-full mx-auto bg-[#FF9500]/10 mb-3">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" className="text-[#CC7000]">
                   <circle cx="12" cy="12" r="9" stroke="rgba(99,102,241,0.35)" strokeWidth="1.5" />
                 </svg>
               </div>

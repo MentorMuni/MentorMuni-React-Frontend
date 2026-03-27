@@ -56,7 +56,7 @@ export default function AIAnalysisLoader({ onComplete, duration = 4000 }) {
     <div className="min-h-screen flex items-center justify-center px-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Animated background blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl animate-pulse" />
+        <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[#FF9500]/10 rounded-full blur-3xl animate-pulse" />
         <div className="absolute bottom-1/4 -right-32 w-96 h-96 bg-cyan-500/10 rounded-full blur-3xl animate-pulse animation-delay-2000" />
       </div>
 
@@ -66,12 +66,12 @@ export default function AIAnalysisLoader({ onComplete, duration = 4000 }) {
         <div className="flex justify-center mb-12">
           <div className="relative w-24 h-24">
             {/* Outer pulsing ring */}
-            <div className="absolute inset-0 rounded-full border-2 border-indigo-500/30 animate-pulse" />
+            <div className="absolute inset-0 rounded-full border-2 border-[#FF9500]/35 animate-pulse" />
             <div className="absolute inset-2 rounded-full border-2 border-cyan-500/20 animate-pulse animation-delay-1000" />
 
             {/* Inner icon container */}
-            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-indigo-600/20 to-blue-600/20 rounded-full backdrop-blur-sm border border-indigo-500/30">
-              <Zap className="w-12 h-12 text-indigo-400 animate-pulse" />
+            <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-[#FF9500]/20 to-blue-600/20 rounded-full backdrop-blur-sm border border-[#FF9500]/35">
+              <Zap className="w-12 h-12 text-[#FF9500] animate-pulse" />
             </div>
           </div>
         </div>
@@ -84,7 +84,7 @@ export default function AIAnalysisLoader({ onComplete, duration = 4000 }) {
                 fadeIn ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
               }`}
             >
-              <span className="bg-gradient-to-r from-indigo-400 via-cyan-400 to-blue-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#FF9500] via-cyan-400 to-blue-400 bg-clip-text text-transparent">
                 {analysisSteps[currentStep]}
               </span>
             </p>
@@ -96,7 +96,7 @@ export default function AIAnalysisLoader({ onComplete, duration = 4000 }) {
           <div className="relative h-2 bg-slate-700/50 rounded-full overflow-hidden backdrop-blur-sm border border-slate-600/30">
             {/* Animated gradient progress bar */}
             <div
-              className="h-full bg-gradient-to-r from-indigo-500 via-cyan-500 to-blue-500 rounded-full transition-all duration-300 ease-out shadow-lg shadow-indigo-500/50"
+              className="h-full bg-gradient-to-r from-[#FF9500] via-cyan-500 to-blue-500 rounded-full transition-all duration-300 ease-out shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)]"
               style={{ width: `${progress}%` }}
             >
               {/* Shimmer effect */}
@@ -109,7 +109,7 @@ export default function AIAnalysisLoader({ onComplete, duration = 4000 }) {
             <p className="text-xs text-slate-400">
               Step {currentStep + 1} of {totalSteps}
             </p>
-            <p className="text-xs text-indigo-400 font-semibold">
+            <p className="text-xs text-[#FF9500] font-semibold">
               {Math.round(progress)}%
             </p>
           </div>
@@ -122,9 +122,9 @@ export default function AIAnalysisLoader({ onComplete, duration = 4000 }) {
               key={index}
               className={`h-2 rounded-full transition-all duration-300 ${
                 index < currentStep
-                  ? 'bg-gradient-to-r from-indigo-500 to-cyan-500 w-6'
+                  ? 'bg-gradient-to-r from-[#FF9500] to-cyan-500 w-6'
                   : index === currentStep
-                  ? 'bg-indigo-400 w-8 animate-pulse'
+                  ? 'bg-[#FFB347] w-8 animate-pulse'
                   : 'bg-slate-600 w-2'
               }`}
             />

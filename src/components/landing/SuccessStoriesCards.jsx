@@ -52,7 +52,7 @@ export default function SuccessStoriesCards() {
               </div>
               <p className="text-slate-600 text-sm leading-relaxed mb-6">&ldquo;{story.quote}&rdquo;</p>
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-violet-500 flex items-center justify-center text-white font-bold">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary to-[#FFB347] flex items-center justify-center text-white font-bold">
                   {story.avatar}
                 </div>
                 <div>

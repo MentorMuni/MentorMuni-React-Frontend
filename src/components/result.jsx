@@ -78,7 +78,7 @@ function ScoreBar({ label, value, delay }) {
 /* ─── Share card (rendered as DOM for html2canvas) ─────────── */
 const ShareCard = React.forwardRef(({ score, role }, ref) => (
   <div ref={ref} style={{
-    background: '#050b18', border: '1px solid #4f46e5',
+    background: '#fffdf8', border: '1px solid #ff9500',
     borderRadius: 16, padding: 32, width: 480, fontFamily: 'sans-serif',
   }}>
     <p style={{ color: '#818cf8', fontSize: 12, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>
@@ -170,7 +170,7 @@ export default function ResultPage() {
           document.head.appendChild(s);
         });
       }
-      const canvas = await window.html2canvas(shareRef.current, { backgroundColor: '#050b18', scale: 2 });
+      const canvas = await window.html2canvas(shareRef.current, { backgroundColor: '#fffdf8', scale: 2 });
       const link = document.createElement('a');
       link.download = `mentormuni-score-${totalScore}.png`;
       link.href = canvas.toDataURL();
@@ -189,11 +189,11 @@ export default function ResultPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050b18] text-white font-sans antialiased py-12 px-4">
+    <div className="min-h-screen bg-[#FFFDF8] text-[#1A1A1A] font-sans antialiased py-12 px-4">
       <div className="max-w-2xl mx-auto space-y-6">
 
         {/* ── Score ring + verdict ── */}
-        <div className="bg-[#0f1a30] border border-white/8 rounded-2xl p-8 text-center">
+        <div className="bg-white border border-[#F0ECE0] rounded-2xl p-8 text-center">
           <p className="text-xs text-slate-500 uppercase tracking-wider mb-5 font-medium">Your Interview Readiness Score</p>
           <ScoreRing score={totalScore} />
           <div className="mt-4 mb-2">
@@ -206,7 +206,7 @@ export default function ResultPage() {
         </div>
 
         {/* ── Score breakdown bars ── */}
-        <div className="bg-[#0f1a30] border border-white/8 rounded-2xl p-6">
+        <div className="bg-white border border-[#F0ECE0] rounded-2xl p-6">
           <h2 className="font-bold text-white text-sm mb-5">Score breakdown</h2>
           <div className="space-y-4">
             {BARS.map((b, i) => (
@@ -231,7 +231,7 @@ export default function ResultPage() {
         )}
 
         {/* ── Waitlist CTA ── */}
-        <div className="bg-indigo-600/10 border border-indigo-500/30 rounded-2xl p-6">
+        <div className="bg-[#FF9500]/10 border border-[#FF9500]/35 rounded-2xl p-6">
           {wlJoined ? (
             <div className="text-center py-2">
               <div className="w-10 h-10 rounded-full bg-green-500/15 border border-green-500/30 flex items-center justify-center mx-auto mb-3">
@@ -256,11 +256,11 @@ export default function ResultPage() {
                     type="tel" value={wlPhone}
                     onChange={e => setWlPhone(e.target.value.replace(/\D/g,'').slice(0,10))}
                     placeholder="WhatsApp number"
-                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-white/10 bg-white/5 text-white placeholder-slate-500 text-sm outline-none focus:border-indigo-500 transition-colors"
+                    className="w-full pl-10 pr-4 py-3 rounded-xl border border-[#E0DCCF] bg-white/5 text-white placeholder-slate-500 text-sm outline-none focus:border-[#FF9500] transition-colors"
                   />
                 </div>
                 <button onClick={handleWaitlist}
-                  className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm px-4 py-3 rounded-xl transition-all whitespace-nowrap">
+                  className="flex items-center gap-1.5 bg-[#FF9500] hover:bg-[#E88600] text-white font-bold text-sm px-4 py-3 rounded-xl transition-all whitespace-nowrap">
                   Join Waitlist <ArrowRight size={14} />
                 </button>
               </div>
@@ -269,7 +269,7 @@ export default function ResultPage() {
         </div>
 
         {/* ── Share card ── */}
-        <div className="bg-[#0f1a30] border border-white/8 rounded-2xl p-6">
+        <div className="bg-white border border-[#F0ECE0] rounded-2xl p-6">
           <h2 className="font-bold text-white text-sm mb-2">Share your result</h2>
           <p className="text-slate-500 text-xs mb-5">Challenge your friends or show recruiters you took the test.</p>
 
@@ -288,7 +288,7 @@ export default function ResultPage() {
               <Share2 size={14} /> LinkedIn
             </button>
             <button onClick={handleCopy}
-              className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/8 border border-white/10 text-slate-300 font-semibold text-sm py-3 rounded-xl transition-all">
+              className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/8 border border-[#E0DCCF] text-slate-300 font-semibold text-sm py-3 rounded-xl transition-all">
               <Copy size={14} /> {copied ? 'Copied!' : 'Copy link'}
             </button>
           </div>
@@ -301,11 +301,11 @@ export default function ResultPage() {
         {/* ── Actions ── */}
         <div className="flex flex-col sm:flex-row gap-3">
           <Link to="/start-assessment"
-            className="flex-1 flex items-center justify-center gap-2 bg-white/5 hover:bg-white/8 border border-white/10 text-slate-300 hover:text-white font-semibold text-sm py-3 rounded-xl transition-all">
+            className="flex-1 flex items-center justify-center gap-2 bg-white/5 hover:bg-white/8 border border-[#E0DCCF] text-slate-300 hover:text-white font-semibold text-sm py-3 rounded-xl transition-all">
             Retake assessment
           </Link>
           <Link to="/mentors"
-            className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/20">
+            className="flex-1 flex items-center justify-center gap-2 bg-[#FF9500] hover:bg-[#E88600] text-white font-bold text-sm py-3 rounded-xl transition-all shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)]">
             Book free mentor session <ArrowRight size={14} />
           </Link>
         </div>

@@ -10,7 +10,7 @@ const MentorSection = () => {
       experience: "Ex-Amazon, Ex-Flipkart",
       expertise: "Backend, System Design",
       avatar: "AV",
-      bgGradient: "from-blue-600 to-indigo-700",
+      bgGradient: "from-blue-600 to-[#E88600]",
       borderColor: "border-blue-500/20"
     },
     {
@@ -106,7 +106,7 @@ const MentorSection = () => {
               </div>
 
               {/* Experience */}
-              <p className="text-xs text-indigo-300 font-semibold mb-4 px-3 py-2 bg-indigo-500/10 border border-indigo-500/20 rounded-full">
+              <p className="text-xs text-[#CC7000] font-semibold mb-4 px-3 py-2 bg-[#FF9500]/10 border border-[#FF9500]/25 rounded-full">
                 {mentor.experience}
               </p>
 
@@ -128,8 +128,8 @@ const MentorSection = () => {
           <p className="text-slate-300 mb-6">
             All mentors are available to guide you through your preparation journey
           </p>
-          <div className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-indigo-500/20 border border-indigo-500/30">
-            <span className="text-sm font-semibold text-indigo-300">Access mentor guidance → Upgrade to Pro</span>
+          <div className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full bg-[#FF9500]/20 border border-[#FF9500]/35">
+            <span className="text-sm font-semibold text-[#CC7000]">Access mentor guidance → Upgrade to Pro</span>
           </div>
         </div>
       </div>

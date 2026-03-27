@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
 const SKILLS = [
-  { label: 'Coding Skills', value: 72, color: 'from-indigo-500 to-indigo-600' },
-  { label: 'DSA Knowledge', value: 61, color: 'from-violet-500 to-violet-600' },
+  { label: 'Coding Skills', value: 72, color: 'from-[#FF9500] to-[#E88600]' },
+  { label: 'DSA Knowledge', value: 61, color: 'from-violet-500 to-[#FFB347]' },
   { label: 'Communication', value: 54, color: 'from-purple-500 to-purple-600' },
   { label: 'Interview Confidence', value: 49, color: 'from-fuchsia-500 to-fuchsia-600' },
 ];

@@ -2,12 +2,13 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { goToStartAssessment, isStartAssessmentPath } from '../utils/startAssessmentNavigation';
+import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 
 const primaryCtaClass =
   'btn-primary px-8 py-4 rounded-xl font-bold transition-all shadow-lg hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] inline-flex items-center justify-center gap-2 group';
 
 const CTAButtons = ({ 
-  primaryText = "Check My Interview Readiness", 
+  primaryText = PRIMARY_CTA_LABEL, 
   primaryHref = "/start-assessment",
   secondaryText = "Analyze My Resume",
   secondaryHref = "/resume-analyzer",

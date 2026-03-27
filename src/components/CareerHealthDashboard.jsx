@@ -45,7 +45,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
       "Beginner": { bg: "from-orange-400 to-red-500", text: "text-orange-600", badge: "bg-orange-100 text-orange-700" },
       "Intermediate": { bg: "from-amber-400 to-orange-500", text: "text-amber-600", badge: "bg-amber-100 text-amber-700" },
       "Advanced": { bg: "from-emerald-400 to-teal-500", text: "text-emerald-600", badge: "bg-emerald-100 text-emerald-700" },
-      "Expert": { bg: "from-indigo-500 to-purple-600", text: "text-indigo-600", badge: "bg-indigo-100 text-indigo-700" }
+      "Expert": { bg: "from-[#FF9500] to-purple-600", text: "text-[#FF9500]", badge: "bg-[#FFF4E0] text-[#CC7000]" }
     };
     return colors[level] || colors["Beginner"];
   };
@@ -123,7 +123,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
         </div>
 
         {/* Overall Score Card */}
-        <div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-2xl p-8 md:p-12 text-white mb-12 shadow-lg">
+        <div className="bg-gradient-to-br from-[#FF9500] to-purple-600 rounded-2xl p-8 md:p-12 text-white mb-12 shadow-lg">
           <div className="flex flex-col md:flex-row items-center justify-between gap-8">
             <div className="flex-1">
               <h2 className="text-2xl font-bold mb-3 flex items-center gap-2">
@@ -134,7 +134,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
                 Your overall score is based on resume strength, technical interview readiness, and project portfolio. Keep improving!
               </p>
               <div className="flex items-center gap-4">
-                <button className="px-6 py-3 bg-white text-indigo-600 font-bold rounded-lg hover:bg-indigo-50 transition-all">
+                <button className="px-6 py-3 bg-white text-[#FF9500] font-bold rounded-lg hover:bg-[#FFF4E0] transition-all">
                   View Improvement Plan
                 </button>
                 <button className="px-6 py-3 border-2 border-white text-white font-bold rounded-lg hover:bg-white/10 transition-all">
@@ -152,12 +152,12 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
           {/* Resume Score Card */}
           <div
-            className="bg-white rounded-xl shadow-md p-8 border-2 border-slate-200 hover:border-indigo-300 hover:shadow-lg transition-all cursor-pointer"
+            className="bg-white rounded-xl shadow-md p-8 border-2 border-slate-200 hover:border-[#FFB347] hover:shadow-lg transition-all cursor-pointer"
             onClick={() => setExpandedMetric(expandedMetric === 'resume' ? null : 'resume')}
           >
             <div className="flex items-center justify-between mb-6">
               <h3 className="text-lg font-bold text-slate-900">Resume Score</h3>
-              <FileText className="w-6 h-6 text-indigo-600" />
+              <FileText className="w-6 h-6 text-[#FF9500]" />
             </div>
 
             <div className="mb-6">
@@ -192,7 +192,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
                 <p className="text-sm text-slate-600 mb-4">
                   <strong>Recommendation:</strong> {getRecommendation('resumeScore')}
                 </p>
-                <button className="w-full px-4 py-2 text-sm bg-indigo-50 text-indigo-600 font-semibold rounded-lg hover:bg-indigo-100 transition-all flex items-center justify-center gap-2">
+                <button className="w-full px-4 py-2 text-sm bg-[#FFF4E0] text-[#FF9500] font-semibold rounded-lg hover:bg-[#FFF4E0] transition-all flex items-center justify-center gap-2">
                   <span>Improve Resume</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
@@ -301,12 +301,12 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
         <div className="bg-white rounded-xl shadow-md p-8 border-2 border-slate-200 mb-12">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold text-slate-900">Portfolio & Projects</h3>
-            <TrendingUp className="w-6 h-6 text-indigo-600" />
+            <TrendingUp className="w-6 h-6 text-[#FF9500]" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center p-6 bg-indigo-50 rounded-lg">
-              <div className="text-4xl font-black text-indigo-600 mb-2">
+            <div className="text-center p-6 bg-[#FFF4E0] rounded-lg">
+              <div className="text-4xl font-black text-[#FF9500] mb-2">
                 {metrics.projectsCompleted}
               </div>
               <p className="text-sm text-slate-600 font-medium">Projects Completed</p>
@@ -337,7 +337,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
         </div>
 
         {/* Call-to-Action Section */}
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-xl p-8 md:p-12 text-white text-center">
+        <div className="bg-gradient-to-r from-[#FF9500] to-purple-600 rounded-xl p-8 md:p-12 text-white text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-4">
             Ready to Improve Your Score?
           </h2>
@@ -347,7 +347,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
               href="#"
-              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-indigo-600 font-bold rounded-lg hover:shadow-lg hover:-translate-y-1 transition-all duration-300 active:scale-95"
+              className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#FF9500] font-bold rounded-lg hover:shadow-lg hover:-translate-y-1 transition-all duration-300 active:scale-95"
             >
               <span>Resume Analyzer</span>
               <ArrowRight className="w-5 h-5" />

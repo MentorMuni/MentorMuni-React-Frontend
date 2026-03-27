@@ -39,7 +39,7 @@ const EnhancedSkillMatch = ({
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-bold text-gray-800">Skill Match Analysis</h3>
           <div className="text-right">
-            <p className="text-3xl font-bold text-indigo-600">{matchPercentage}%</p>
+            <p className="text-3xl font-bold text-[#FF9500]">{matchPercentage}%</p>
             <p className="text-xs text-gray-500">Match Percentage</p>
           </div>
         </div>
@@ -47,7 +47,7 @@ const EnhancedSkillMatch = ({
         {/* Match Bar */}
         <div className="relative h-3 bg-blue-200 rounded-full overflow-hidden mb-4">
           <div
-            className="h-full bg-gradient-to-r from-indigo-500 to-blue-500 rounded-full transition-all duration-500"
+            className="h-full bg-gradient-to-r from-[#FF9500] to-blue-500 rounded-full transition-all duration-500"
             style={{ width: `${matchPercentage}%` }}
           ></div>
         </div>
@@ -147,12 +147,12 @@ const EnhancedSkillMatch = ({
       <div className="flex gap-3">
         <button
           onClick={onViewDetailedReport}
-          className="flex-1 px-4 py-3 bg-white border-2 border-indigo-600 text-indigo-600 font-semibold rounded-xl hover:bg-indigo-50 transition-all"
+          className="flex-1 px-4 py-3 bg-white border-2 border-[#FF9500] text-[#FF9500] font-semibold rounded-xl hover:bg-[#FFF4E0] transition-all"
         >
           View Detailed Skill Gap Report
         </button>
         
-        <button className="flex-1 px-4 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all">
+        <button className="flex-1 px-4 py-3 bg-[#FF9500] text-white font-semibold rounded-xl hover:bg-[#CC7000] transition-all">
           Get Improvement Roadmap
         </button>
       </div>

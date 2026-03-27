@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { PRIMARY_CTA_LABEL, MENTORSHIP_TRUST_BADGE } from '../constants/brandCopy';
 
 /* ─── Scroll-reveal hook ───────────────────────────────────── */
 function useReveal(threshold = 0.12) {
@@ -89,13 +90,13 @@ function TimelineStep({ step, index, isLast }) {
         <p style={{ color: step.tagColor, fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 6, marginTop: 12 }}>
           {step.tag}
         </p>
-        <h3 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 10, lineHeight: 1.3 }}>{step.title}</h3>
-        <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.70)', lineHeight: 1.75, marginBottom: 16 }}>{step.body}</p>
+        <h3 style={{ fontSize: 20, fontWeight: 700, color: '#1a1a1a', marginBottom: 10, lineHeight: 1.3 }}>{step.title}</h3>
+        <p style={{ fontSize: 14, color: '#444444', lineHeight: 1.75, marginBottom: 16 }}>{step.body}</p>
         <div style={{ background: step.cardBg, border: `1px solid ${step.cardBorder}`, borderRadius: 10, padding: '14px 18px' }}>
           {step.items.map((item, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: i < step.items.length - 1 ? 9 : 0 }}>
               <span style={{ color: step.dotColor, fontSize: 16, lineHeight: 1, marginTop: 2, flexShrink: 0 }}>•</span>
-              <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.70)', lineHeight: 1.6 }}>{item}</span>
+              <span style={{ fontSize: 13, color: '#444444', lineHeight: 1.6 }}>{item}</span>
             </div>
           ))}
         </div>
@@ -107,19 +108,19 @@ function TimelineStep({ step, index, isLast }) {
 /* ─── Blurred mentor teaser card ───────────────────────────── */
 function MentorTeaserCard({ initials, avColor, name, role, badge, stat, lockMsg }) {
   return (
-    <div style={{ background: '#0f1a30', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12, overflow: 'hidden', position: 'relative' }}>
+    <div style={{ background: '#ffffff', border: '1px solid #f0ece0', borderRadius: 12, overflow: 'hidden', position: 'relative' }}>
       {/* Blurred inner layer */}
       <div style={{ padding: '24px 20px 20px', filter: 'blur(5px)', pointerEvents: 'none', userSelect: 'none' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
-          <div style={{ width: 48, height: 48, borderRadius: '50%', background: avColor, border: '1.5px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 15, color: '#fff', flexShrink: 0 }}>
+          <div style={{ width: 48, height: 48, borderRadius: '50%', background: avColor, border: '1.5px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 15, color: '#1a1a1a', flexShrink: 0 }}>
             {initials}
           </div>
           <div>
-            <p style={{ fontWeight: 600, fontSize: 15, color: '#fff', marginBottom: 2 }}>{name}</p>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>{role}</p>
+            <p style={{ fontWeight: 600, fontSize: 15, color: '#1a1a1a', marginBottom: 2 }}>{name}</p>
+            <p style={{ fontSize: 13, color: '#666666' }}>{role}</p>
           </div>
         </div>
-        <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 6, padding: '5px 10px', display: 'inline-block', fontSize: 12, color: 'rgba(255,255,255,0.55)', marginBottom: 10 }}>
+        <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 6, padding: '5px 10px', display: 'inline-block', fontSize: 12, color: '#666666', marginBottom: 10 }}>
           {badge}
         </div>
         <p style={{ fontSize: 12, color: '#4ade80', fontWeight: 500 }}>{stat}</p>
@@ -129,13 +130,13 @@ function MentorTeaserCard({ initials, avColor, name, role, badge, stat, lockMsg 
       <div style={{
         position: 'absolute', inset: 0,
         backdropFilter: 'blur(2px)',
-        background: 'rgba(5,11,24,0.75)',
+        background: 'rgba(255, 253, 248, 0.92)',
         display: 'flex', flexDirection: 'column',
         alignItems: 'center', justifyContent: 'center',
         gap: 10, padding: '0 20px', textAlign: 'center',
       }}>
         <span style={{ fontSize: 22 }}>🔒</span>
-        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.60)', lineHeight: 1.5, maxWidth: 160 }}>{lockMsg}</p>
+        <p style={{ fontSize: 13, color: '#666666', lineHeight: 1.5, maxWidth: 160 }}>{lockMsg}</p>
       </div>
     </div>
   );
@@ -144,11 +145,11 @@ function MentorTeaserCard({ initials, avColor, name, role, badge, stat, lockMsg 
 /* ─── Mentor feature card ──────────────────────────────────── */
 function FeatureCard({ icon, title, body }) {
   return (
-    <div style={{ background: '#0f1a30', border: '1px solid rgba(255,255,255,0.07)', borderRadius: 12, padding: '20px 22px', display: 'flex', alignItems: 'flex-start', gap: 16 }}>
+    <div style={{ background: '#ffffff', border: '1px solid #f0ece0', borderRadius: 12, padding: '20px 22px', display: 'flex', alignItems: 'flex-start', gap: 16 }}>
       <span style={{ fontSize: 26, flexShrink: 0, marginTop: 2 }}>{icon}</span>
       <div>
-        <p style={{ fontWeight: 700, fontSize: 15, color: '#fff', marginBottom: 6 }}>{title}</p>
-        <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.65)', lineHeight: 1.7 }}>{body}</p>
+        <p style={{ fontWeight: 700, fontSize: 15, color: '#1a1a1a', marginBottom: 6 }}>{title}</p>
+        <p style={{ fontSize: 13, color: '#666666', lineHeight: 1.7 }}>{body}</p>
       </div>
     </div>
   );
@@ -157,9 +158,9 @@ function FeatureCard({ icon, title, body }) {
 /* ─── Data ─────────────────────────────────────────────────── */
 const TIMELINE_STEPS = [
   {
-    tag: 'STEP 01', tagColor: '#818cf8', emoji: '🔍',
+    tag: 'STEP 01', tagColor: '#FF9500', emoji: '🔍',
     circleBg: 'rgba(99,102,241,0.15)', circleBorder: 'rgba(99,102,241,0.5)',
-    cardBg: 'rgba(99,102,241,0.08)', cardBorder: 'rgba(99,102,241,0.2)', dotColor: '#6366f1',
+    cardBg: 'rgba(99,102,241,0.08)', cardBorder: 'rgba(99,102,241,0.2)', dotColor: '#FF9500',
     connectorGradient: 'linear-gradient(180deg,rgba(99,102,241,0.5),rgba(236,72,153,0.5))',
     title: 'You take the free assessment',
     body: 'Questions tailored to your role and tech stack. Score across DSA, System Design, Communication, and Projects.',
@@ -243,7 +244,7 @@ export default function Mentors() {
   };
 
   return (
-    <div style={{ background: '#050b18', minHeight: '100vh', color: '#fff', fontFamily: 'Inter, system-ui, sans-serif' }}>
+    <div style={{ background: '#fffdf8', minHeight: '100vh', color: '#1a1a1a', fontFamily: 'Inter, system-ui, sans-serif' }}>
       <style>{`
         @keyframes mentors-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
         @keyframes mentors-amber-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
@@ -256,13 +257,13 @@ export default function Mentors() {
           {/* Pill badge */}
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)', borderRadius: 20, padding: '5px 16px', marginBottom: 28 }}>
             <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#f59e0b', display: 'inline-block', animation: 'mentors-amber-pulse 1.5s ease-in-out infinite', boxShadow: '0 0 6px #f59e0b', flexShrink: 0 }} />
-            <span style={{ fontSize: 12, fontWeight: 500, color: '#fbbf24', letterSpacing: '0.01em' }}>Mentor matching — launching April 2025</span>
+            <span style={{ fontSize: 12, fontWeight: 500, color: '#fbbf24', letterSpacing: '0.01em' }}>Mentor matching · {MENTORSHIP_TRUST_BADGE}</span>
           </div>
 
           {/* H1 */}
-          <h1 style={{ fontSize: 'clamp(28px, 5vw, 38px)', fontWeight: 800, letterSpacing: '-0.5px', lineHeight: 1.15, marginBottom: 18, color: '#fff' }}>
+          <h1 style={{ fontSize: 'clamp(28px, 5vw, 38px)', fontWeight: 800, letterSpacing: '-0.5px', lineHeight: 1.15, marginBottom: 18, color: '#1a1a1a' }}>
             Your mentor is chosen by{' '}
-            <span style={{ background: 'linear-gradient(90deg,#6366f1,#a78bfa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
+            <span style={{ background: 'linear-gradient(90deg,#FF9500,#CC7000)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
               your score, not by luck.
             </span>
           </h1>
@@ -288,7 +289,7 @@ export default function Mentors() {
       <section ref={teaserRef} style={{ ...REVEAL_STYLE, padding: '0 24px 80px' }}>
         <div style={{ maxWidth: 900, margin: '0 auto' }}>
           <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.30)', textAlign: 'center', marginBottom: 28 }}>
-            Mentors joining the platform — April 2025
+            Mentors joining in cohorts — waitlist open
           </p>
 
           {/* 3-col grid */}
@@ -311,25 +312,25 @@ export default function Mentors() {
           style={{
             ...REVEAL_STYLE,
             maxWidth: 580, width: '100%',
-            background: '#0f1a30',
+            background: '#ffffff',
             border: '1.5px solid rgba(99,102,241,0.3)',
             borderRadius: 14,
             padding: '32px 28px',
           }}
         >
           {/* Eyebrow */}
-          <p style={{ fontSize: 12, fontWeight: 600, color: '#818cf8', marginBottom: 10, letterSpacing: '0.02em' }}>
+          <p style={{ fontSize: 12, fontWeight: 600, color: '#FF9500', marginBottom: 10, letterSpacing: '0.02em' }}>
             ✦ Get notified when your matched mentor goes live
           </p>
 
           {/* Title */}
-          <h2 style={{ fontSize: 20, fontWeight: 700, color: '#fff', marginBottom: 10, lineHeight: 1.35 }}>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: '#1a1a1a', marginBottom: 10, lineHeight: 1.35 }}>
             Take the assessment. We'll notify you the moment your mentor match is ready.
           </h2>
 
           {/* Subtext */}
           <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.50)', lineHeight: 1.7, marginBottom: 24 }}>
-            Mentors are joining in April 2025. Leave your WhatsApp — we'll message you personally when your match is available to book.
+            Leave your WhatsApp — we&apos;ll message you when your matched mentor is available to book.
           </p>
 
           {/* 3-step mini flow */}
@@ -340,10 +341,10 @@ export default function Mentors() {
               "WhatsApp when they're live",
             ].map((text, i) => (
               <div key={i} style={{ textAlign: 'center' }}>
-                <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#6366f1', color: '#fff', fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
+                <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#FF9500', color: '#1a1a1a', fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
                   {i + 1}
                 </div>
-                <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.55)', lineHeight: 1.5 }}>{text}</p>
+                <p style={{ fontSize: 12, color: '#666666', lineHeight: 1.5 }}>{text}</p>
               </div>
             ))}
           </div>
@@ -352,7 +353,7 @@ export default function Mentors() {
           {submitted ? (
             <div style={{ background: 'rgba(74,222,128,0.10)', border: '1px solid rgba(74,222,128,0.3)', borderRadius: 10, padding: '16px 20px', textAlign: 'center' }}>
               <p style={{ fontSize: 15, fontWeight: 600, color: '#4ade80', marginBottom: 4 }}>You're on the list!</p>
-              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.55)' }}>We'll WhatsApp you when your mentor is ready.</p>
+              <p style={{ fontSize: 13, color: '#666666' }}>We'll WhatsApp you when your mentor is ready.</p>
             </div>
           ) : (
             <div style={{ maxWidth: 360, margin: '0 auto' }}>
@@ -369,7 +370,7 @@ export default function Mentors() {
                       width: '100%', boxSizing: 'border-box',
                       paddingLeft: 42, paddingRight: 14, paddingTop: 12, paddingBottom: 12,
                       background: 'rgba(255,255,255,0.05)', border: `1px solid ${err ? 'rgba(248,113,113,0.5)' : 'rgba(255,255,255,0.12)'}`,
-                      borderRadius: 8, color: '#fff', fontSize: 14,
+                      borderRadius: 8, color: '#1a1a1a', fontSize: 14,
                       outline: 'none',
                     }}
                     maxLength={10}
@@ -379,13 +380,13 @@ export default function Mentors() {
                   onClick={handleNotify}
                   disabled={loading}
                   style={{
-                    background: '#6366f1', color: '#fff', border: 'none',
+                    background: '#FF9500', color: '#1a1a1a', border: 'none',
                     padding: '0 20px', borderRadius: 8, fontSize: 14, fontWeight: 600,
                     cursor: loading ? 'default' : 'pointer', whiteSpace: 'nowrap',
                     opacity: loading ? 0.7 : 1, transition: 'background 0.15s',
                   }}
                   onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#4f46e5'; }}
-                  onMouseLeave={e => { e.currentTarget.style.background = '#6366f1'; }}
+                  onMouseLeave={e => { e.currentTarget.style.background = '#FF9500'; }}
                 >
                   {loading ? '...' : 'Notify me →'}
                 </button>
@@ -429,7 +430,7 @@ export default function Mentors() {
         }}
       >
         <div style={{ maxWidth: 480, margin: '0 auto' }}>
-          <h2 style={{ fontSize: 24, fontWeight: 700, color: '#fff', marginBottom: 12 }}>
+          <h2 style={{ fontSize: 24, fontWeight: 700, color: '#1a1a1a', marginBottom: 12 }}>
             Find out who your mentor will be.
           </h2>
           <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.50)', lineHeight: 1.7, maxWidth: 400, margin: '0 auto' }}>
@@ -441,10 +442,10 @@ export default function Mentors() {
             <button
               onClick={() => navigate('/start-assessment')}
               onMouseEnter={e => { e.currentTarget.style.background = '#4f46e5'; e.currentTarget.style.transform = 'scale(1.02)'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = '#6366f1'; e.currentTarget.style.transform = 'scale(1)'; }}
-              style={{ background: '#6366f1', color: '#fff', border: 'none', padding: '13px 32px', borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s, transform 0.15s', whiteSpace: 'nowrap' }}
+              onMouseLeave={e => { e.currentTarget.style.background = '#FF9500'; e.currentTarget.style.transform = 'scale(1)'; }}
+              style={{ background: '#FF9500', color: '#1a1a1a', border: 'none', padding: '13px 32px', borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s, transform 0.15s', whiteSpace: 'nowrap' }}
             >
-              Check My Score — Free →
+              {PRIMARY_CTA_LABEL} →
             </button>
             <button
               onClick={() => navigate('/waitlist')}

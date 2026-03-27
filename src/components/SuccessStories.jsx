@@ -10,8 +10,8 @@ const SuccessStories = () => {
       company: "TCS",
       quote: "I was lost about how to transition from mechanical to software engineering. MentorMuni's skill gap analysis showed me exactly what to learn first. In 3 months, I got placed at TCS!",
       avatar: "RS",
-      bgColor: "from-indigo-600/20 to-indigo-600/10",
-      borderColor: "border-indigo-500/20"
+      bgColor: "from-[#FF9500]/20 to-[#E88600]/10",
+      borderColor: "border-[#FF9500]/25"
     },
     {
       id: 2,
@@ -89,13 +89,13 @@ const SuccessStories = () => {
               {/* Transformation Badge */}
               <div className="bg-slate-800/50 border border-slate-700/50 rounded-lg px-4 py-3 mb-4">
                 <p className="text-xs font-semibold text-slate-300 mb-1">Journey:</p>
-                <p className="text-sm text-indigo-300 font-semibold">{story.transformation}</p>
+                <p className="text-sm text-[#CC7000] font-semibold">{story.transformation}</p>
               </div>
 
               {/* Company */}
               <div className="flex items-center gap-2">
                 <span className="text-xs font-semibold text-slate-400">Joined:</span>
-                <span className="px-3 py-1 bg-indigo-500/20 border border-indigo-500/30 rounded-full text-xs font-bold text-indigo-300">
+                <span className="px-3 py-1 bg-[#FF9500]/20 border border-[#FF9500]/35 rounded-full text-xs font-bold text-[#CC7000]">
                   {story.company}
                 </span>
               </div>

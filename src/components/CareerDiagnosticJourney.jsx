@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { FileText, BarChart3, Zap, MapPin, ArrowDown, ArrowRight, Sparkles, CheckCircle } from 'lucide-react';
+import { PRODUCT_READINESS_SCORE, PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 
 const CareerDiagnosticJourney = () => {
   const [hoveredStep, setHoveredStep] = useState(null);
@@ -32,14 +33,14 @@ const CareerDiagnosticJourney = () => {
     {
       id: 3,
       number: "03",
-      title: "Interview Readiness",
+      title: PRODUCT_READINESS_SCORE,
       problemQuestion: "Are You Ready for Your Next Tech Interview?",
       description: "Get an honest assessment of your technical interview readiness with detailed feedback.",
       icon: Zap,
       benefits: ["DSA Readiness", "System Design Score", "Confidence Level"],
       color: "amber",
-      cta: "Check Readiness",
-      link: "/#/interview-readiness"
+      cta: PRIMARY_CTA_LABEL,
+      link: "/#/start-assessment"
     },
     {
       id: 4,
@@ -57,13 +58,13 @@ const CareerDiagnosticJourney = () => {
 
   const colorMap = {
     indigo: {
-      bg: "bg-indigo-50",
-      border: "border-indigo-200",
-      icon: "bg-indigo-100 text-indigo-600",
-      badge: "bg-indigo-100 text-indigo-700",
-      button: "from-indigo-600 to-blue-600",
-      dot: "bg-indigo-600",
-      hover: "hover:border-indigo-400 hover:shadow-indigo-300"
+      bg: "bg-[#FFF4E0]",
+      border: "border-[#F0ECE0]",
+      icon: "bg-[#FFF4E0] text-[#FF9500]",
+      badge: "bg-[#FFF4E0] text-[#CC7000]",
+      button: "from-[#FF9500] to-blue-600",
+      dot: "bg-[#FF9500]",
+      hover: "hover:border-[#FFB347] hover:shadow-indigo-300"
     },
     cyan: {
       bg: "bg-cyan-50",
@@ -95,11 +96,11 @@ const CareerDiagnosticJourney = () => {
   };
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-b from-white via-indigo-50/20 to-white">
+    <section className="py-20 px-6 bg-gradient-to-b from-white via-[#FFF8EE]/20 to-white">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-20">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-indigo-100 rounded-full text-indigo-700 font-semibold text-sm mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFF4E0] rounded-full text-[#CC7000] font-semibold text-sm mb-6">
             <Sparkles className="w-4 h-4" />
             AI-Powered Career Diagnosis
           </div>
@@ -119,7 +120,7 @@ const CareerDiagnosticJourney = () => {
           {/* Steps Container */}
           <div className="relative">
             {/* Connecting Line */}
-            <div className="absolute top-[120px] left-0 right-0 h-1 bg-gradient-to-r from-indigo-400 via-cyan-400 via-amber-400 to-purple-400"></div>
+            <div className="absolute top-[120px] left-0 right-0 h-1 bg-gradient-to-r from-[#FF9500] via-cyan-400 via-amber-400 to-purple-400"></div>
 
             <div className="relative z-10 grid grid-cols-4 gap-6">
               {diagnosticSteps.map((step, index) => {
@@ -137,7 +138,7 @@ const CareerDiagnosticJourney = () => {
                     <div className={`w-16 h-16 rounded-full ${colors.icon} flex items-center justify-center mb-6 border-4 ${
                       hoveredStep === step.id ? 'border-white shadow-lg' : 'border-white'
                     } transition-all duration-300 relative z-20`}>
-                      <span className={`text-2xl font-black ${colors.dot === 'bg-indigo-600' ? 'text-indigo-600' : colors.dot === 'bg-cyan-600' ? 'text-cyan-600' : colors.dot === 'bg-amber-600' ? 'text-amber-600' : 'text-purple-600'}`}>
+                      <span className={`text-2xl font-black ${colors.dot === 'bg-[#FF9500]' ? 'text-[#FF9500]' : colors.dot === 'bg-cyan-600' ? 'text-cyan-600' : colors.dot === 'bg-amber-600' ? 'text-amber-600' : 'text-purple-600'}`}>
                         {step.number}
                       </span>
                     </div>
@@ -203,7 +204,7 @@ const CareerDiagnosticJourney = () => {
               <div key={step.id} className="relative mb-8">
                 {/* Vertical Connecting Line */}
                 {!isLast && (
-                  <div className="absolute left-8 top-24 w-1 h-24 bg-gradient-to-b from-indigo-400 to-cyan-400"></div>
+                  <div className="absolute left-8 top-24 w-1 h-24 bg-gradient-to-b from-[#FF9500] to-cyan-400"></div>
                 )}
 
                 {/* Step Container */}
@@ -266,20 +267,20 @@ const CareerDiagnosticJourney = () => {
 
         {/* Bottom CTA */}
         <div className="text-center">
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-12 text-white shadow-xl">
+          <div className="bg-gradient-to-r from-[#FF9500] to-purple-600 rounded-2xl p-12 text-white shadow-xl">
             <h3 className="text-3xl md:text-4xl font-black mb-4">
               Ready to Begin Your Career Diagnosis?
             </h3>
             <p className="text-lg text-indigo-100 mb-2 max-w-2xl mx-auto">
               Start your AI-powered career diagnostic journey today.
             </p>
-            <p className="text-sm text-indigo-200 mb-8 max-w-2xl mx-auto">
+            <p className="text-sm text-[#CC7000] mb-8 max-w-2xl mx-auto">
               Get 3 free analyses. No credit card required. Takes just 15 minutes to complete.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="/#/resume-analyzer"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-indigo-600 font-bold rounded-lg hover:shadow-lg hover:-translate-y-1 transition-all duration-300 active:scale-95"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#FF9500] font-bold rounded-lg hover:shadow-lg hover:-translate-y-1 transition-all duration-300 active:scale-95"
               >
                 <Sparkles className="w-5 h-5" />
                 <span>Start Career Diagnosis</span>
@@ -292,7 +293,7 @@ const CareerDiagnosticJourney = () => {
                 <ArrowRight className="w-5 h-5" />
               </a>
             </div>
-            <p className="text-xs text-indigo-200 mt-6">
+            <p className="text-xs text-[#CC7000] mt-6">
               ✓ 1,350+ students already diagnosed • ✓ 85% improvement rate • ✓ Mentor-backed recommendations
             </p>
           </div>

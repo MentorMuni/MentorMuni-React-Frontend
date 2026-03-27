@@ -40,11 +40,11 @@ const CareerReadinessJourney = () => {
 
   const colorStyles = {
     indigo: {
-      badge: "bg-gradient-to-br from-indigo-600 to-indigo-700",
-      icon: "bg-indigo-500/20 text-indigo-400",
-      line: "from-indigo-500/30",
-      card: "border-indigo-500/20 hover:border-indigo-500/50 hover:shadow-indigo-500/10",
-      cta: "text-indigo-400"
+      badge: "bg-gradient-to-br from-[#FF9500] to-[#E88600]",
+      icon: "bg-[#FF9500]/20 text-[#FF9500]",
+      line: "from-[#FF9500]/30",
+      card: "border-[#FF9500]/25 hover:border-[#FF9500]/50 hover:shadow-[0_2px_12px_rgba(255,149,0,0.15)]",
+      cta: "text-[#FF9500]"
     },
     cyan: {
       badge: "bg-gradient-to-br from-cyan-600 to-cyan-700",
@@ -85,7 +85,7 @@ const CareerReadinessJourney = () => {
         {/* Steps Timeline */}
         <div className="grid md:grid-cols-4 gap-6 relative">
           {/* Connection Line (Desktop) */}
-          <div className="hidden md:block absolute top-24 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500/20 via-purple-500/20 to-emerald-500/20 opacity-60"></div>
+          <div className="hidden md:block absolute top-24 left-0 right-0 h-1 bg-gradient-to-r from-[#FF9500]/20 via-purple-500/20 to-emerald-500/20 opacity-60"></div>
 
           {/* Steps */}
           {steps.map((step, index) => {
@@ -133,13 +133,13 @@ const CareerReadinessJourney = () => {
 
         {/* Call to Action */}
         <div className="mt-14 text-center">
-          <div className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-indigo-600/20 to-purple-600/20 border border-indigo-500/30 rounded-full px-6 py-3 mb-6">
-            <Zap className="w-5 h-5 text-indigo-400" />
-            <span className="text-sm text-indigo-200 font-semibold">Takes about 15-20 minutes • Free forever</span>
+          <div className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#FF9500]/20 to-purple-600/20 border border-[#FF9500]/35 rounded-full px-6 py-3 mb-6">
+            <Zap className="w-5 h-5 text-[#FF9500]" />
+            <span className="text-sm text-[#CC7000] font-semibold">Takes about 15-20 minutes • Free forever</span>
           </div>
           <Link 
             to="/resume-analyzer"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105 group"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-[#FF9500] to-blue-500 hover:from-[#FF9500] hover:to-blue-600 text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105 group"
           >
             Start Your Diagnostic Journey Now
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

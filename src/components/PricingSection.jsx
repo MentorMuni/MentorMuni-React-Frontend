@@ -18,7 +18,7 @@ const Plan = ({ title, price, bullets, cta, href, primary }) => (
       to={href}
       className={`mt-6 inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-semibold transition-all ${
         primary
-          ? 'bg-indigo-600 hover:bg-indigo-500 text-white'
+          ? 'bg-[#FF9500] hover:bg-[#E88600] text-white'
           : 'border border-slate-500 text-slate-300 hover:border-slate-400 hover:text-white'
       }`}
     >

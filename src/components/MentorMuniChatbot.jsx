@@ -51,7 +51,7 @@ function MessageBubble({ text, isBot, isMarkdown }) {
   return (
     <div className={`flex gap-2 ${isBot ? "" : "flex-row-reverse"}`}>
       {isBot && (
-        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-sm flex-shrink-0">
+        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#FF9500] to-[#FFB347] flex items-center justify-center text-sm flex-shrink-0">
           {BOT_AVATAR}
         </div>
       )}
@@ -59,7 +59,7 @@ function MessageBubble({ text, isBot, isMarkdown }) {
         className={`max-w-[85%] px-4 py-2.5 rounded-2xl ${
           isBot
             ? "rounded-bl-md bg-slate-700/90 text-slate-100"
-            : "rounded-br-md bg-indigo-600 text-white"
+            : "rounded-br-md bg-[#FF9500] text-white"
         }`}
       >
         {isMarkdown ? (
@@ -139,7 +139,7 @@ export default function MentorMuniChatbot() {
         transition={{ delay: 1.5, duration: 0.4 }}
         className="fixed bottom-6 right-20 z-[9998] hidden sm:flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800/95 border border-slate-600/50 shadow-lg backdrop-blur"
       >
-        <Sparkles className="w-4 h-4 text-indigo-400" />
+        <Sparkles className="w-4 h-4 text-[#FF9500]" />
         <span className="text-sm font-medium text-white">Ask me about MentorMuni</span>
       </motion.div>
 
@@ -147,19 +147,19 @@ export default function MentorMuniChatbot() {
       <motion.button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-[9998] flex items-center justify-center w-14 h-14 rounded-2xl shadow-xl text-white focus:outline-none focus:ring-4 focus:ring-indigo-400/50"
+        className="fixed bottom-6 right-6 z-[9998] flex items-center justify-center w-14 h-14 rounded-2xl shadow-xl text-white focus:outline-none focus:ring-4 focus:ring-[#FF9500]/35"
         style={{
-          background: "linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #7c3aed 100%)",
-          boxShadow: "0 10px 40px -10px rgba(99, 102, 241, 0.6)",
+          background: "linear-gradient(135deg, #FF9500 0%, #E88600 50%, #CC7000 100%)",
+          boxShadow: "0 10px 40px -10px rgba(255, 149, 0, 0.45)",
         }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.98 }}
         initial={false}
         animate={{
           boxShadow: [
-            "0 10px 40px -10px rgba(99, 102, 241, 0.6)",
-            "0 10px 50px -5px rgba(139, 92, 246, 0.7)",
-            "0 10px 40px -10px rgba(99, 102, 241, 0.6)",
+            "0 10px 40px -10px rgba(255, 149, 0, 0.45)",
+            "0 10px 50px -5px rgba(232, 134, 0, 0.5)",
+            "0 10px 40px -10px rgba(255, 149, 0, 0.45)",
           ],
         }}
         transition={{ duration: 2, repeat: Infinity }}
@@ -191,7 +191,7 @@ export default function MentorMuniChatbot() {
               }}
             >
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-lg">
+                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#FF9500] to-[#FFB347] flex items-center justify-center text-lg">
                   {BOT_AVATAR}
                 </div>
                 <div>
@@ -224,7 +224,7 @@ export default function MentorMuniChatbot() {
                         key={q}
                         type="button"
                         onClick={() => handleQuickQuestion(q)}
-                        className="px-3 py-1.5 rounded-full text-xs font-medium bg-slate-700/80 text-slate-200 hover:bg-indigo-600 hover:text-white transition-colors border border-slate-600/50"
+                        className="px-3 py-1.5 rounded-full text-xs font-medium bg-slate-700/80 text-slate-200 hover:bg-[#FF9500] hover:text-white transition-colors border border-slate-600/50"
                       >
                         {q}
                       </button>
@@ -239,7 +239,7 @@ export default function MentorMuniChatbot() {
             <div className="px-4 pb-2 flex gap-2">
               <Link
                 to="/start-assessment"
-                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-semibold transition-colors"
+                className="flex-1 flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-[#FF9500] hover:bg-[#E88600] text-white text-sm font-semibold transition-colors"
               >
                 <Sparkles className="w-4 h-4" /> Readiness
               </Link>
@@ -260,12 +260,12 @@ export default function MentorMuniChatbot() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && sendMessage()}
                 placeholder="Ask about MentorMuni..."
-                className="flex-1 px-4 py-3 rounded-xl bg-slate-800 border border-slate-600/50 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent text-sm"
+                className="flex-1 px-4 py-3 rounded-xl bg-slate-800 border border-slate-600/50 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-[#FF9500] focus:border-transparent text-sm"
               />
               <button
                 type="button"
                 onClick={() => sendMessage()}
-                className="p-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white transition-colors disabled:opacity-50"
+                className="p-3 rounded-xl bg-[#FF9500] hover:bg-[#E88600] text-white transition-colors disabled:opacity-50"
                 aria-label="Send"
               >
                 <Send className="w-5 h-5" />

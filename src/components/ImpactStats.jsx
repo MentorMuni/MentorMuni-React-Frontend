@@ -9,9 +9,9 @@ const ImpactStats = () => {
       description: "Active learners preparing for tech careers",
       icon: Users,
       color: "indigo",
-      bgColor: "bg-indigo-500/10",
-      borderColor: "border-indigo-500/20",
-      iconColor: "text-indigo-400"
+      bgColor: "bg-[#FF9500]/10",
+      borderColor: "border-[#FF9500]/25",
+      iconColor: "text-[#FF9500]"
     },
     {
       number: "85%",
@@ -86,7 +86,7 @@ const ImpactStats = () => {
         {/* Bottom CTA */}
         <div className="mt-14 text-center">
           <p className="text-slate-300 text-sm">
-            These numbers are growing every day. <span className="text-indigo-300 font-semibold">You could be next.</span>
+            These numbers are growing every day. <span className="text-[#CC7000] font-semibold">You could be next.</span>
           </p>
         </div>
       </div>

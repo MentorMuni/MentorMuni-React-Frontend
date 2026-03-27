@@ -9,9 +9,9 @@ const CareerSwitchPaths = () => {
       description: 'Learn software testing fundamentals, automation tools, and testing frameworks to transition into QA roles.',
       icon: Shield,
       color: 'indigo',
-      gradient: 'from-indigo-500 to-blue-500',
-      bgGradient: 'from-indigo-600/20 to-blue-600/20',
-      borderColor: 'border-indigo-500/30',
+      gradient: 'from-[#FF9500] to-blue-500',
+      bgGradient: 'from-[#FF9500]/20 to-blue-600/20',
+      borderColor: 'border-[#FF9500]/35',
       route: '/learning-paths'
     },
     {
@@ -59,8 +59,8 @@ const CareerSwitchPaths = () => {
       description: 'Leverage design knowledge and learn React Native to create cross-platform mobile applications.',
       icon: Smartphone,
       color: 'fuchsia',
-      gradient: 'from-fuchsia-500 to-violet-500',
-      bgGradient: 'from-fuchsia-600/20 to-violet-600/20',
+      gradient: 'from-fuchsia-500 to-[#FFB347]',
+      bgGradient: 'from-fuchsia-600/20 to-[#FFB347]/20',
       borderColor: 'border-fuchsia-500/30',
       route: '/learning-paths'
     },
@@ -114,9 +114,9 @@ const CareerSwitchPaths = () => {
               {transitions.map((transition, index) => (
                 <div
                   key={index}
-                  className="px-4 py-2 rounded-full bg-gradient-to-r from-indigo-500/10 to-cyan-500/10 border border-indigo-500/20 text-sm text-slate-300 hover:border-indigo-500/40 transition-colors"
+                  className="px-4 py-2 rounded-full bg-gradient-to-r from-[#FF9500]/10 to-cyan-500/10 border border-[#FF9500]/25 text-sm text-slate-300 hover:border-[#FF9500]/45 transition-colors"
                 >
-                  <span className="font-semibold text-indigo-300">{transition.from}</span>
+                  <span className="font-semibold text-[#CC7000]">{transition.from}</span>
                   <span className="mx-2 text-slate-500">→</span>
                   <span className="font-semibold text-cyan-300">{transition.to}</span>
                 </div>
@@ -167,7 +167,7 @@ const CareerSwitchPaths = () => {
         </div>
 
         {/* Bottom CTA */}
-        <div className="mt-16 text-center p-8 bg-gradient-to-r from-indigo-600/20 to-cyan-600/20 border border-indigo-500/30 rounded-2xl">
+        <div className="mt-16 text-center p-8 bg-gradient-to-r from-[#FF9500]/20 to-cyan-600/20 border border-[#FF9500]/35 rounded-2xl">
           <h3 className="text-2xl font-bold text-white mb-3">
             Not sure which path is right for you?
           </h3>
@@ -176,7 +176,7 @@ const CareerSwitchPaths = () => {
           </p>
           <Link
             to="/start-assessment"
-            className="inline-flex items-center gap-2 px-8 py-3 rounded-lg bg-gradient-to-r from-indigo-600 to-cyan-600 text-white font-bold hover:shadow-lg hover:shadow-indigo-500/50 transition-all active:scale-95 hover:gap-3"
+            className="inline-flex items-center gap-2 px-8 py-3 rounded-lg bg-gradient-to-r from-[#FF9500] to-cyan-600 text-white font-bold hover:shadow-lg hover:shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all active:scale-95 hover:gap-3"
           >
             Start Free Assessment
             <ArrowRight size={20} />

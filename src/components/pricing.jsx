@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { PRIMARY_CTA_LABEL, MISSION_TAGLINE, PRODUCT_READINESS_SCORE } from '../constants/brandCopy';
 import {
   CheckCircle2, X, ShieldCheck, ArrowRight,
   Mail, Phone, Users, Zap, Star,
@@ -24,7 +25,7 @@ const PLANS = [
     ],
     cta: 'Start free',
     ctaTo: '/start-assessment',
-    ctaStyle: 'border border-white/15 hover:border-white/30 hover:bg-white/5 text-slate-300 hover:text-white',
+    ctaStyle: 'border border-[#E0DCCF] hover:border-[#E0DCCF] hover:bg-white/5 text-slate-300 hover:text-white',
   },
   {
     id: 'core',
@@ -44,7 +45,7 @@ const PLANS = [
     ],
     cta: 'Enroll — ₹10,000 total',
     ctaTo: '/contact',
-    ctaStyle: 'bg-indigo-600 hover:bg-indigo-500 text-white shadow-lg shadow-indigo-500/20',
+    ctaStyle: 'bg-[#FF9500] hover:bg-[#E88600] text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)]',
     highlight: true,
   },
   {
@@ -64,7 +65,7 @@ const PLANS = [
     ],
     cta: 'Apply for Elite',
     ctaTo: '/contact',
-    ctaStyle: 'border border-white/15 hover:border-white/30 hover:bg-white/5 text-slate-300 hover:text-white',
+    ctaStyle: 'border border-[#E0DCCF] hover:border-[#E0DCCF] hover:bg-white/5 text-slate-300 hover:text-white',
   },
 ];
 
@@ -78,13 +79,13 @@ const VALUE_ROWS = [
 
 const TESTIMONIALS = [
   {
-    init: 'RS', bg: 'bg-indigo-500',
+    init: 'RS', bg: 'bg-[#FF9500]',
     name: 'Rahul S.', college: 'NIT Trichy',
     placed: 'TCS', lpa: '₹7 LPA',
     quote: '"Got placed at TCS within 5 weeks. The placed-student sessions showed me exactly what interviewers actually look for — not textbook answers, real ones."',
   },
   {
-    init: 'PK', bg: 'bg-violet-500',
+    init: 'PK', bg: 'bg-[#FFB347]',
     name: 'Priya K.', college: 'VIT Vellore',
     placed: 'Infosys', lpa: '₹6.5 LPA',
     quote: '"My AI mock score went from 48 to 81. The gap analysis was scary accurate — it found things I didn\'t know I was missing. Cleared Infosys first attempt."',
@@ -121,7 +122,7 @@ const PricingPage = () => {
   const [openFaq, setOpenFaq] = useState(null);
 
   return (
-    <div className="min-h-screen bg-[#050b18] text-white font-sans antialiased">
+    <div className="min-h-screen bg-[#FFFDF8] text-[#1A1A1A] font-sans antialiased">
 
       {/* ── Hero ── */}
       <section className="max-w-3xl mx-auto px-6 pt-16 pb-10 text-center">
@@ -135,7 +136,7 @@ const PricingPage = () => {
         <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-3 leading-tight">
           Simple, honest pricing.
           <br />
-          <span className="text-indigo-400">One program. Complete support.</span>
+          <span className="text-[#FF9500]">One program. Complete support.</span>
         </h1>
         <p className="text-slate-400 text-lg mb-4">Until you're placed.</p>
         <p className="text-slate-500 text-sm">No hidden fees. No upsells. No "basic" tier that doesn't work.</p>
@@ -163,13 +164,13 @@ const PricingPage = () => {
               key={plan.id}
               className={`relative rounded-2xl p-6 flex flex-col h-full transition-all ${
                 plan.highlight
-                  ? 'bg-indigo-600/10 border-2 border-indigo-500 shadow-xl shadow-indigo-500/10'
-                  : 'bg-[#0f1a30] border border-white/8'
+                  ? 'bg-[#FF9500]/10 border-2 border-[#FF9500] shadow-xl shadow-[0_2px_12px_rgba(255,149,0,0.15)]'
+                  : 'bg-white border border-[#F0ECE0]'
               }`}
             >
               {plan.badge && (
                 <div className={`absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
-                  plan.highlight ? 'bg-indigo-500 text-white' : 'bg-white/10 text-slate-300 border border-white/10'
+                  plan.highlight ? 'bg-[#FF9500] text-white' : 'bg-white/10 text-slate-300 border border-[#E0DCCF]'
                 }`}>
                   {plan.badge}
                 </div>
@@ -188,7 +189,7 @@ const PricingPage = () => {
                 {plan.features.map((f) => (
                   <li key={f.text} className="flex items-start gap-2.5 text-sm">
                     {f.yes
-                      ? <CheckCircle2 size={15} className={`mt-0.5 shrink-0 ${plan.highlight ? 'text-indigo-400' : 'text-green-500'}`} />
+                      ? <CheckCircle2 size={15} className={`mt-0.5 shrink-0 ${plan.highlight ? 'text-[#FF9500]' : 'text-green-500'}`} />
                       : <X size={15} className="mt-0.5 shrink-0 text-slate-700" />}
                     <span className={f.yes ? 'text-slate-300' : 'text-slate-600'}>{f.text}</span>
                   </li>
@@ -213,23 +214,23 @@ const PricingPage = () => {
         <h2 className="text-xl font-bold text-white mb-1 text-center">What you'd pay separately</h2>
         <p className="text-slate-400 text-sm text-center mb-6">This is why ₹10,000 is not expensive — it's what you're saving.</p>
 
-        <div className="bg-white/[0.03] border border-white/8 rounded-2xl overflow-hidden">
+        <div className="bg-white/[0.03] border border-[#F0ECE0] rounded-2xl overflow-hidden">
           {VALUE_ROWS.map((row, i) => (
-            <div key={row.label} className={`flex items-center justify-between px-5 py-3.5 ${i < VALUE_ROWS.length - 1 ? 'border-b border-white/5' : ''}`}>
+            <div key={row.label} className={`flex items-center justify-between px-5 py-3.5 ${i < VALUE_ROWS.length - 1 ? 'border-b border-[#F0ECE0]' : ''}`}>
               <span className="text-sm text-slate-300">{row.label}</span>
               <span className="text-sm font-semibold text-slate-400">{row.market}</span>
             </div>
           ))}
           {/* Subtotal */}
-          <div className="flex items-center justify-between px-5 py-3.5 border-t border-white/8 bg-white/[0.03]">
+          <div className="flex items-center justify-between px-5 py-3.5 border-t border-[#F0ECE0] bg-white/[0.03]">
             <span className="text-sm text-slate-400">Market value total</span>
             <span className="text-sm font-bold text-slate-300 line-through">₹36,000</span>
           </div>
           {/* MentorMuni price */}
-          <div className="flex items-center justify-between px-5 py-4 bg-indigo-600/15 border-t border-indigo-500/30">
+          <div className="flex items-center justify-between px-5 py-4 bg-[#FF9500]/15 border-t border-[#FF9500]/35">
             <span className="font-bold text-white">You pay with MentorMuni</span>
             <div className="flex items-center gap-2">
-              <span className="text-xl font-black text-indigo-400">₹10,000</span>
+              <span className="text-xl font-black text-[#FF9500]">₹10,000</span>
               <span className="text-xs bg-green-500/15 text-green-400 border border-green-500/20 px-2 py-0.5 rounded-full font-semibold">Save ₹26,000</span>
             </div>
           </div>
@@ -242,7 +243,7 @@ const PricingPage = () => {
           <span className="text-xs font-bold text-amber-400 uppercase tracking-widest block mb-3">Honest note — we're a new platform</span>
           <h2 className="text-lg font-bold text-white mb-2">No placement stories yet. That's exactly why the founding batch price exists.</h2>
           <p className="text-slate-400 text-sm leading-relaxed max-w-xl mx-auto mb-5">
-            We're starting with our first batch of students in April 2025. We can't show you "Rahul from NIT got ₹7 LPA" because we haven't run the programme yet. What we can offer instead: the lowest price we'll ever charge, maximum mentor attention per student, and a money-back guarantee — so the risk is entirely on us.
+            We&apos;re still a young programme—we can&apos;t show you &quot;Rahul from NIT got ₹7 LPA&quot; yet because we&apos;re building those stories with our early cohorts. What we can offer instead: the lowest price we plan to charge, high mentor attention per student, and a money-back guarantee—so early risk stays on us, not you.
           </p>
           <div className="grid grid-cols-3 gap-4 max-w-lg mx-auto">
             {[
@@ -250,7 +251,7 @@ const PricingPage = () => {
               { icon: '👤', label: 'Small batch', sub: 'More attention per student' },
               { icon: '💰', label: 'Money-back', sub: 'If you complete and don\'t get placed' },
             ].map(c => (
-              <div key={c.label} className="bg-white/[0.03] border border-white/8 rounded-xl p-3">
+              <div key={c.label} className="bg-white/[0.03] border border-[#F0ECE0] rounded-xl p-3">
                 <span className="text-xl block mb-1">{c.icon}</span>
                 <p className="text-xs font-bold text-white mb-0.5">{c.label}</p>
                 <p className="text-[10px] text-slate-500 leading-snug">{c.sub}</p>
@@ -265,7 +266,7 @@ const PricingPage = () => {
         <h2 className="text-xl font-bold text-white mb-6 text-center">Common questions</h2>
         <div className="space-y-2">
           {FAQS.map((faq, i) => (
-            <div key={i} className="bg-white/[0.03] border border-white/8 rounded-xl overflow-hidden">
+            <div key={i} className="bg-white/[0.03] border border-[#F0ECE0] rounded-xl overflow-hidden">
               <button
                 className="w-full flex items-center justify-between px-5 py-4 text-left"
                 onClick={() => setOpenFaq(openFaq === i ? null : i)}
@@ -278,7 +279,7 @@ const PricingPage = () => {
                 </span>
               </button>
               {openFaq === i && (
-                <div className="px-5 pb-4 text-sm text-slate-400 leading-relaxed border-t border-white/5 pt-3">
+                <div className="px-5 pb-4 text-sm text-slate-400 leading-relaxed border-t border-[#F0ECE0] pt-3">
                   {faq.a}
                   <span className="inline-block ml-2 text-green-400 font-semibold">✓</span>
                 </div>
@@ -290,20 +291,20 @@ const PricingPage = () => {
 
       {/* ── Final CTA ── */}
       <section className="max-w-xl mx-auto px-6 pb-20 text-center">
-        <div className="bg-indigo-600/10 border border-indigo-500/25 rounded-2xl p-8">
-          <p className="text-xs text-slate-500 uppercase tracking-wider mb-2 font-medium">April cohort · 8 seats left</p>
+        <div className="bg-[#FF9500]/10 border border-[#FF9500]/30 rounded-2xl p-8">
+          <p className="text-xs text-slate-500 uppercase tracking-wider mb-2 font-medium">Founding cohort · Limited seats</p>
           <h3 className="text-2xl font-bold text-white mb-2">Start free. Upgrade when ready.</h3>
           <p className="text-slate-400 text-sm mb-6">Take the free readiness test first — no card needed. Enroll when you've seen your score and know it's worth it.</p>
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
               to="/start-assessment"
-              className="flex-1 flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 hover:border-white/20 text-slate-300 hover:text-white font-semibold text-sm py-3 rounded-xl transition-all"
+              className="flex-1 flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-[#E0DCCF] text-slate-300 hover:text-white font-semibold text-sm py-3 rounded-xl transition-all"
             >
-              Take free test first
+              {PRIMARY_CTA_LABEL}
             </Link>
             <Link
               to="/contact"
-              className="flex-1 flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm py-3 rounded-xl transition-all shadow-lg shadow-indigo-500/20"
+              className="flex-1 flex items-center justify-center gap-2 bg-[#FF9500] hover:bg-[#E88600] text-white font-bold text-sm py-3 rounded-xl transition-all shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)]"
             >
               Enroll now — ₹10,000
               <ArrowRight size={15} />
@@ -313,12 +314,12 @@ const PricingPage = () => {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-white/5 py-14 px-6">
+      <footer className="border-t border-[#F0ECE0] py-14 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 mb-10">
             <div className="md:col-span-1">
               <h3 className="font-bold text-white mb-2">MentorMuni</h3>
-              <p className="text-slate-500 text-sm leading-relaxed mb-3 max-w-xs">Know your interview readiness. Improve it. Crack it.</p>
+              <p className="text-slate-500 text-sm leading-relaxed mb-3 max-w-xs">{MISSION_TAGLINE}</p>
               <div className="space-y-1 text-sm text-slate-500">
                 <a href="mailto:enroll@mentormuni.com" className="flex items-center gap-2 hover:text-slate-300 transition-colors"><Mail size={13} /> enroll@mentormuni.com</a>
                 <a href="tel:+919146421302" className="flex items-center gap-2 hover:text-slate-300 transition-colors"><Phone size={13} /> +91 91464 21302</a>
@@ -327,7 +328,7 @@ const PricingPage = () => {
             <div>
               <p className="text-xs font-semibold text-slate-400 mb-3">Tools</p>
               <ul className="space-y-2 text-sm text-slate-500">
-                <li><Link to="/start-assessment" className="hover:text-slate-300 transition-colors">Interview Readiness</Link></li>
+                <li><Link to="/start-assessment" className="hover:text-slate-300 transition-colors">{PRODUCT_READINESS_SCORE}</Link></li>
                 <li><Link to="/mock-interviews" className="hover:text-slate-300 transition-colors">Mock Interviews</Link></li>
                 <li><Link to="/skill-gap-analyzer" className="hover:text-slate-300 transition-colors">Skill Gap Analyzer</Link></li>
                 <li><Link to="/resume-analyzer" className="hover:text-slate-300 transition-colors">Resume Analyzer</Link></li>
@@ -351,7 +352,7 @@ const PricingPage = () => {
               </ul>
             </div>
           </div>
-          <div className="border-t border-white/5 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-slate-600">
+          <div className="border-t border-[#F0ECE0] pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-slate-600">
             <p>© {new Date().getFullYear()} MentorMuni. All rights reserved.</p>
             <div className="flex gap-5">
               <Link to="/contact" className="hover:text-slate-400 transition-colors">Terms</Link>

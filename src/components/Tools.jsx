@@ -6,112 +6,141 @@ const Tools = () => {
   const tools = [
     {
       id: 1,
-      title: "Resume Analyzer",
-      description: "Get your resume scored for ATS compatibility. See exactly what's holding you back from recruiter discovery.",
+      title: 'Resume ATS checker',
+      description:
+        'See how applicant systems score your resume—keywords, structure, and what is quietly filtering you out before a human reads it.',
       icon: FileText,
-      color: "indigo",
-      href: "/resume-analyzer",
-      highlights: ["ATS Score", "Keyword Analysis", "Format Optimization"]
+      color: 'orange',
+      href: '/resume-analyzer',
+      highlights: ['ATS score', 'Keyword gaps', 'Format fixes'],
     },
     {
       id: 2,
-      title: "Skill Gap Analyzer",
-      description: "Compare your skills with industry requirements for your target role. Get a detailed roadmap to close gaps.",
+      title: 'Skill gap analyzer',
+      description:
+        'Compare your skills to what your target role expects. Get a prioritized gap list and a learning direction—not a generic syllabus.',
       icon: Brain,
-      color: "cyan",
-      href: "/skill-gap-analyzer",
-      highlights: ["Skills Assessment", "Industry Benchmarking", "Learning Plan"]
+      color: 'cyan',
+      href: '/skill-gap-analyzer',
+      highlights: ['Role benchmark', 'Gap map', 'Next steps'],
     },
     {
       id: 3,
-      title: "Interview Readiness",
-      description: "Evaluate your interview preparation with AI-powered mock interviews and get instant feedback.",
+      title: 'Interview readiness score',
+      description:
+        'A short assessment across DSA, system design, and HR. One score out of 100 plus concrete gaps—so you know what to fix first.',
       icon: ClipboardCheck,
-      color: "purple",
-      href: "/interview-readiness-tools",
-      highlights: ["Mock Interviews", "Real-time Feedback", "Score Tracking"]
+      color: 'purple',
+      href: '/interview-readiness-tools',
+      highlights: ['~5 minutes', 'No signup', 'Instant breakdown'],
     },
     {
       id: 4,
-      title: "Mentor Guidance",
-      description: "Get personalized guidance from experienced mentors who have cracked top tech companies.",
+      title: 'Mentor guidance',
+      description:
+        '1:1 support from people who have cleared the same rounds you are preparing for—aligned to your stack and timeline.',
       icon: TrendingUp,
-      color: "emerald",
-      href: "/learning-paths",
-      highlights: ["1:1 Mentorship", "Career Roadmap", "Job Placement Support"]
-    }
+      color: 'emerald',
+      href: '/learning-paths',
+      highlights: ['1:1 sessions', 'Roadmap', 'Placement focus'],
+    },
   ];
 
+  const colorMap = {
+    orange: {
+      bg: 'bg-[#FF9500]/10',
+      border: 'border-[#FF9500]/25',
+      text: 'text-[#E88600]',
+      hover: 'hover:border-[#FF9500]/50',
+    },
+    cyan: {
+      bg: 'bg-cyan-500/10',
+      border: 'border-cyan-500/25',
+      text: 'text-cyan-700',
+      hover: 'hover:border-cyan-500/40',
+    },
+    purple: {
+      bg: 'bg-violet-500/10',
+      border: 'border-violet-500/25',
+      text: 'text-violet-700',
+      hover: 'hover:border-violet-500/40',
+    },
+    emerald: {
+      bg: 'bg-emerald-500/10',
+      border: 'border-emerald-500/25',
+      text: 'text-emerald-700',
+      hover: 'hover:border-emerald-500/40',
+    },
+  };
+
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-[#F1F5F9] pt-20 pb-20">
+    <div className="min-h-screen bg-background text-foreground pt-20 pb-20">
       <div className="max-w-6xl mx-auto px-6">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-black text-white mb-4">
-            Powerful Tools for Career Success
+        <div className="text-center mb-14 max-w-3xl mx-auto">
+          <p className="text-xs font-semibold uppercase tracking-widest text-[#CC7000] mb-3">
+            Free tools · Same mission as the rest of MentorMuni
+          </p>
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#1A1A1A] mb-4 tracking-tight leading-tight">
+            Know your gaps before the shortlist does
           </h1>
-          <p className="text-xl text-slate-300 max-w-3xl mx-auto">
-            Everything you need to prepare for tech interviews and land your dream job
+          <p className="text-lg text-[#666666] leading-relaxed">
+            Most students prep harder, not smarter. These tools help you{' '}
+            <span className="text-[#1A1A1A] font-semibold">measure</span>,{' '}
+            <span className="text-[#1A1A1A] font-semibold">fix what filters you out</span>, and{' '}
+            <span className="text-[#1A1A1A] font-semibold">practice like the real round</span>—without guessing where to start.
           </p>
         </div>
 
-        {/* Tools Grid */}
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid md:grid-cols-2 gap-6">
           {tools.map((tool) => {
             const Icon = tool.icon;
-            const colorMap = {
-              indigo: { bg: "bg-indigo-500/10", border: "border-indigo-500/20", text: "text-indigo-400" },
-              cyan: { bg: "bg-cyan-500/10", border: "border-cyan-500/20", text: "text-cyan-400" },
-              purple: { bg: "bg-purple-500/10", border: "border-purple-500/20", text: "text-purple-400" },
-              emerald: { bg: "bg-emerald-500/10", border: "border-emerald-500/20", text: "text-emerald-400" }
-            };
-            const colors = colorMap[tool.color];
+            const c = colorMap[tool.color];
 
             return (
               <Link
                 key={tool.id}
                 to={tool.href}
-                className={`${colors.bg} ${colors.border} border rounded-2xl p-8 hover:border-opacity-60 transition-all hover:shadow-lg hover:shadow-black/20 group`}
+                className={`group block rounded-2xl border bg-white p-7 shadow-card transition-all ${c.border} ${c.hover} hover:shadow-lg`}
               >
-                {/* Icon */}
-                <div className={`w-12 h-12 ${colors.bg} rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
-                  <Icon className={`w-6 h-6 ${colors.text}`} />
+                <div
+                  className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl border ${c.bg} ${c.border}`}
+                >
+                  <Icon className={`h-6 w-6 ${c.text}`} strokeWidth={2} />
                 </div>
-
-                {/* Title & Description */}
-                <h3 className="text-2xl font-bold text-white mb-2">{tool.title}</h3>
-                <p className="text-slate-300 text-sm leading-relaxed mb-6">{tool.description}</p>
-
-                {/* Highlights */}
-                <div className="flex flex-wrap gap-2 mb-6">
+                <h3 className="text-xl font-bold text-[#1A1A1A] mb-2 group-hover:text-[#CC7000] transition-colors">
+                  {tool.title}
+                </h3>
+                <p className="text-sm text-[#666666] leading-relaxed mb-5">{tool.description}</p>
+                <div className="flex flex-wrap gap-2 mb-5">
                   {tool.highlights.map((highlight) => (
-                    <span key={highlight} className="text-xs px-3 py-1 rounded-full bg-slate-700/50 text-slate-300">
+                    <span
+                      key={highlight}
+                      className="text-xs px-2.5 py-1 rounded-full bg-[#FFF8EE] border border-[#F0ECE0] text-[#555555] font-medium"
+                    >
                       {highlight}
                     </span>
                   ))}
                 </div>
-
-                {/* CTA */}
-                <div className={`inline-flex items-center gap-2 ${colors.text} font-semibold text-sm group-hover:gap-3 transition-all`}>
-                  Try now
-                  <ArrowRight className="w-4 h-4" />
+                <div className={`inline-flex items-center gap-2 font-semibold text-sm ${c.text}`}>
+                  Open tool
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </div>
               </Link>
             );
           })}
         </div>
 
-        {/* Bottom CTA */}
-        <div className="mt-14 text-center">
-          <p className="text-slate-300 mb-6">
-            All tools are free to start: <span className="text-emerald-300 font-semibold">3 attempts each</span>
+        <div className="mt-14 rounded-2xl border border-[#F0ECE0] bg-[#FFF8EE] px-6 py-8 text-center">
+          <p className="text-sm text-[#666666] mb-5 max-w-xl mx-auto">
+            Start with the <span className="font-semibold text-[#1A1A1A]">readiness score</span> to see where you stand in minutes.
+            Other tools stay free to try with fair usage limits.
           </p>
           <Link
             to="/start-assessment"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
+            className="inline-flex items-center gap-2 rounded-xl bg-[#FF9500] px-8 py-3.5 font-bold text-white shadow-button transition-all hover:bg-[#E88600]"
           >
-            Get Started Free
-            <ArrowRight className="w-5 h-5" />
+            Check my readiness — free
+            <ArrowRight className="h-5 w-5" />
           </Link>
         </div>
       </div>

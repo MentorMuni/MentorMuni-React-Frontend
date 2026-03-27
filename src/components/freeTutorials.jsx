@@ -9,7 +9,7 @@ const FreeTutorials = () => {
       icon: null,
       description: 'Learn how GPT, LLMs, and prompt engineering work with practical beginner examples. Perfect for entering the AI revolution.',
       route: '/tutorials/generative-ai-for-beginners',
-      color: 'from-indigo-600 to-purple-600'
+      color: 'from-[#FF9500] to-purple-600'
     },
     {
       id: 'prompt-engineering',
@@ -25,7 +25,7 @@ const FreeTutorials = () => {
       icon: null,
       description: 'Master Retrieval-Augmented Generation from fundamentals to production. Learn vector databases, RAG architecture, and build intelligent document Q&A systems.',
       route: '/courses/rag-systems',
-      color: 'from-cyan-600 to-indigo-600'
+      color: 'from-cyan-600 to-[#E88600]'
     },
     {
       id: 'quantum-computing',
@@ -87,7 +87,7 @@ const FreeTutorials = () => {
           {tutorials.map((tutorial) => (
             <div 
               key={tutorial.id} 
-              className="group bg-white/5 p-8 rounded-3xl border border-white/10 hover:border-cyan-500/50 transition-all hover:shadow-lg hover:shadow-cyan-500/20"
+              className="group bg-white/5 p-8 rounded-3xl border border-[#E0DCCF] hover:border-cyan-500/50 transition-all hover:shadow-lg hover:shadow-cyan-500/20"
             >
               <div className="w-12 h-1 bg-gradient-to-r from-cyan-400 to-indigo-400 mb-6 rounded-full"></div>
               <h3 className="text-2xl font-bold mb-3">{tutorial.title}</h3>
@@ -105,7 +105,7 @@ const FreeTutorials = () => {
         </div>
 
         {/* Additional Resources */}
-        <div className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-white/10 rounded-3xl p-12">
+        <div className="bg-gradient-to-r from-slate-800/50 to-slate-700/50 border border-[#E0DCCF] rounded-3xl p-12">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-2xl font-bold mb-4">Why Our Free Tutorials?</h3>
@@ -135,7 +135,7 @@ const FreeTutorials = () => {
               </p>
               <button
                 onClick={() => window.location.href = '/learning-paths'}
-                className="bg-gradient-to-r from-indigo-600 to-cyan-600 text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-indigo-500/30 transition-all flex items-center gap-2"
+                className="bg-gradient-to-r from-[#FF9500] to-cyan-600 text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-[0_4px_14px_rgba(255,149,0,0.2)] transition-all flex items-center gap-2"
               >
                 Explore Placement Tracks
                 <ArrowRight size={18} />

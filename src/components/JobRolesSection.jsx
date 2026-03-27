@@ -1,5 +1,6 @@
 import React from 'react';
 import { Code, CheckCircle, BarChart3, Layout, Server, Zap, ArrowRight } from 'lucide-react';
+import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 
 const JobRolesSection = () => {
   const jobRoles = [
@@ -56,11 +57,11 @@ const JobRolesSection = () => {
   const colorMap = {
     indigo: {
       bg: "card-dark",
-      border: "border-indigo-500/20",
-      icon: "text-indigo-400",
-      badge: "bg-indigo-500/20 text-indigo-300",
-      button: "from-indigo-600 to-blue-600",
-      hover: "hover:border-indigo-400/50"
+      border: "border-[#FF9500]/25",
+      icon: "text-[#FF9500]",
+      badge: "bg-[#FF9500]/20 text-[#CC7000]",
+      button: "from-[#FF9500] to-blue-600",
+      hover: "hover:border-[#FFB347]/50"
     },
     cyan: {
       bg: "card-dark",
@@ -177,10 +178,10 @@ const JobRolesSection = () => {
               <ArrowRight className="w-5 h-5" />
             </a>
             <a
-              href="/#/interview-readiness"
+              href="/#/start-assessment"
               className="inline-flex items-center gap-2 px-8 py-4 border border-primary text-primary font-bold rounded-lg hover:bg-primary/10 transition-all duration-300"
             >
-              Check My Readiness (Free)
+              {PRIMARY_CTA_LABEL}
             </a>
           </div>
         </div>

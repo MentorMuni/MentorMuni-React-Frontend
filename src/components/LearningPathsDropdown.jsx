@@ -108,7 +108,7 @@ const LearningPathsDropdown = ({ isActive, learningPathsItems, variant }) => {
               ? 'text-cyan-400 bg-cyan-400/15 border border-cyan-500/40'
               : 'text-cyan-300 border border-cyan-500/40 hover:bg-cyan-500/15 hover:border-cyan-400/60 hover:text-white'
             : isOpen || isActive
-            ? 'text-indigo-400 bg-indigo-400/10'
+            ? 'text-[#FF9500] bg-[#FFB347]/10'
             : 'text-slate-300 hover:text-white hover:bg-white/5'
         }`}
       >
@@ -128,7 +128,7 @@ const LearningPathsDropdown = ({ isActive, learningPathsItems, variant }) => {
             style={dropdownStyle}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            className="bg-slate-900 border border-white/15 rounded-xl shadow-2xl p-6 sm:p-8 transition-all duration-300 ease-out opacity-100 visible translate-y-0 animate-in fade-in slide-in-from-top-2"
+            className="bg-slate-900 border border-[#E0DCCF] rounded-xl shadow-2xl p-6 sm:p-8 transition-all duration-300 ease-out opacity-100 visible translate-y-0 animate-in fade-in slide-in-from-top-2"
           >
             {/* Grid Layout - Responsive */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-5">
@@ -142,7 +142,7 @@ const LearningPathsDropdown = ({ isActive, learningPathsItems, variant }) => {
                       clearTimeout(closeTimeoutRef.current);
                     }
                   }}
-                  className="group/item p-4 rounded-lg bg-slate-800/50 hover:bg-slate-800/80 border border-white/10 hover:border-indigo-500/50 transition-all duration-200 transform hover:scale-105 hover:-translate-y-1"
+                  className="group/item p-4 rounded-lg bg-slate-800/50 hover:bg-slate-800/80 border border-[#E0DCCF] hover:border-[#FF9500]/50 transition-all duration-200 transform hover:scale-105 hover:-translate-y-1"
                 >
                   {/* Icon */}
                   <div className="text-2xl mb-3 group-hover/item:scale-125 transition-transform duration-200">
@@ -161,7 +161,7 @@ const LearningPathsDropdown = ({ isActive, learningPathsItems, variant }) => {
             </div>
 
             {/* Optional: Divider line at bottom */}
-            <div className="mt-5 pt-5 border-t border-white/5">
+            <div className="mt-5 pt-5 border-t border-[#F0ECE0]">
               <p className="text-xs text-slate-500">
                 Tip: Choose a learning path that matches your goals and skill level
               </p>

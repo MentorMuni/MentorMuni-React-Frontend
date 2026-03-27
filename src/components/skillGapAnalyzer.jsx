@@ -297,7 +297,7 @@ const SkillGapAnalyzer = () => {
           <h2 className="text-3xl font-bold mb-6">Skill Gap Analysis</h2>
 
           {/* Free Usage Counter */}
-          <div className="mb-6 p-4 bg-gradient-to-r from-indigo-600/20 to-cyan-600/20 border border-indigo-500/30 rounded-lg">
+          <div className="mb-6 p-4 bg-gradient-to-r from-[#FF9500]/20 to-cyan-600/20 border border-[#FF9500]/35 rounded-lg">
             <FreeUsageCounter
               toolName="skill_gap_analyzer"
               onLimitReached={() => setShowUpgradeModal(true)}

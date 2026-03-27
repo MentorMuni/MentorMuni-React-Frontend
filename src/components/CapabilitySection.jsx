@@ -14,8 +14,8 @@ const CapabilitySection = () => {
         "Interview readiness evaluation"
       ],
       color: "indigo",
-      gradient: "from-indigo-600 to-blue-600",
-      bgGradient: "from-indigo-500/10 to-blue-500/10"
+      gradient: "from-[#FF9500] to-blue-600",
+      bgGradient: "from-[#FF9500]/10 to-blue-500/10"
     },
     {
       id: 2,
@@ -116,7 +116,7 @@ const CapabilitySection = () => {
         <div className="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-8 md:p-12 text-white mb-16 shadow-lg">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <div className="text-4xl font-black text-indigo-400 mb-2">85%</div>
+              <div className="text-4xl font-black text-[#FF9500] mb-2">85%</div>
               <p className="text-slate-300">of successful candidates use feedback-driven preparation</p>
             </div>
             <div>
@@ -140,7 +140,7 @@ const CapabilitySection = () => {
               <thead>
                 <tr className="border-b-2 border-slate-300">
                   <th className="text-left py-4 px-6 font-bold text-slate-900">Capability</th>
-                  <th className="text-center py-4 px-6 font-bold text-indigo-600">MentorMuni</th>
+                  <th className="text-center py-4 px-6 font-bold text-[#FF9500]">MentorMuni</th>
                   <th className="text-center py-4 px-6 font-bold text-slate-500">Others</th>
                 </tr>
               </thead>
@@ -220,20 +220,20 @@ const CapabilitySection = () => {
 
         {/* Bottom CTA */}
         <div className="text-center">
-          <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-12 text-white shadow-xl">
+          <div className="bg-gradient-to-r from-[#FF9500] to-purple-600 rounded-2xl p-12 text-white shadow-xl">
             <h3 className="text-3xl font-black mb-3">
               Ready to Prepare Like Top Tech Candidates?
             </h3>
             <p className="text-lg text-indigo-100 mb-2 max-w-2xl mx-auto">
               Start building your real-world job readiness today.
             </p>
-            <p className="text-sm text-indigo-200 mb-8 max-w-2xl mx-auto">
+            <p className="text-sm text-[#CC7000] mb-8 max-w-2xl mx-auto">
               Get 3 free analyses. No credit card required.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <a
                 href="/#/resume-analyzer"
-                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-indigo-600 font-bold rounded-lg hover:shadow-lg hover:-translate-y-1 transition-all duration-300 active:scale-95"
+                className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#FF9500] font-bold rounded-lg hover:shadow-lg hover:-translate-y-1 transition-all duration-300 active:scale-95"
               >
                 <span>Get Started Free</span>
                 <ArrowRight className="w-5 h-5" />

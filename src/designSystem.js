@@ -1,13 +1,13 @@
-// Minimal design tokens for MentorMuni
+// Minimal design tokens — product UI (warm light + orange accent)
 const designSystem = {
   colors: {
-    primary: '#4F46E5', // indigo-600
-    primaryDark: '#3730A3',
-    secondary: '#7C3AED', // purple-600
-    accent: '#F97316', // orange-500
-    bg: '#F8FAFC',
+    primary: '#FF9500',
+    primaryDark: '#E88600',
+    secondary: '#FFB347',
+    accent: '#FF9500',
+    bg: '#FFFDF8',
     surface: '#FFFFFF',
-    text: '#0F172A',
+    text: '#1A1A1A',
   },
   spacing: {
     container: 'max-w-6xl mx-auto px-4 sm:px-6 lg:px-8',
@@ -30,8 +30,8 @@ export default designSystem;
 // ============================================================
 
 export const colors = {
-  // Primary Color - Indigo/Blue
-  // Used for primary buttons, key highlights, important UI elements, links
+  /** Brand accent is orange (#FF9500); indigo scale below is legacy / charts only */
+  // Primary (indigo) — optional for data viz, not default CTAs
   primary: {
     50: '#eef2ff',
     100: '#e0e7ff',
@@ -103,7 +103,7 @@ export const colors = {
 
   // Gradients
   gradients: {
-    primary: 'from-indigo-500 to-blue-500',
+    primary: 'from-[#FF9500] to-blue-500',
     secondary: 'from-purple-500 to-pink-500',
     accent: 'from-orange-500 to-red-500',
     cool: 'from-cyan-500 to-blue-500',
@@ -202,9 +202,9 @@ export const componentStyles = {
   // Button styles
   buttons: {
     primary: `px-6 py-3 rounded-lg font-bold text-white 
-              bg-gradient-to-r from-indigo-600 to-blue-600 
-              hover:from-indigo-500 hover:to-blue-500 
-              hover:shadow-lg hover:shadow-indigo-500/30
+              bg-gradient-to-r from-[#FF9500] to-blue-600 
+              hover:from-[#FF9500] hover:to-blue-500 
+              hover:shadow-lg hover:shadow-[0_4px_14px_rgba(255,149,0,0.2)]
               transition-all active:scale-95 
               disabled:opacity-50 disabled:cursor-not-allowed`,
 
@@ -221,9 +221,9 @@ export const componentStyles = {
             transition-all active:scale-95
             disabled:opacity-50 disabled:cursor-not-allowed`,
 
-    outline: `px-6 py-3 rounded-lg font-bold text-indigo-400 
-             border border-indigo-500/30 
-             hover:border-indigo-500/60 hover:bg-indigo-500/10
+    outline: `px-6 py-3 rounded-lg font-bold text-[#FF9500] 
+             border border-[#FF9500]/35 
+             hover:border-[#FF9500]/60 hover:bg-[#E88600]/10
              transition-all active:scale-95`,
   },
 
@@ -235,8 +235,8 @@ export const componentStyles = {
 
     interactive: `bg-gradient-to-br from-slate-800/50 to-slate-800/20 
                  border border-slate-700/50 rounded-2xl p-6 
-                 hover:border-indigo-500/50 hover:shadow-lg 
-                 hover:shadow-indigo-500/10 transition-all`,
+                 hover:border-[#FF9500]/50 hover:shadow-lg 
+                 hover:shadow-[0_2px_12px_rgba(255,149,0,0.15)] transition-all`,
 
     elevated: `bg-gradient-to-br from-slate-800/80 to-slate-900/50 
               border border-slate-600/50 rounded-2xl p-8 
