@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect, useId } from 'react';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { motion, useInView, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import {
@@ -11,8 +11,6 @@ import {
   CONTACT_PHONE_DISPLAY,
   CONTACT_PHONE_HREF,
   HERO_EYEBROW,
-  HERO_MOTTO_EMPHASIS,
-  HERO_MOTTO_SUFFIX,
   HERO_HEADLINE,
   HERO_HEADLINE_ACCENT,
   HERO_PROBLEM_LABEL,
@@ -20,8 +18,12 @@ import {
   HERO_SOLUTION_LABEL,
   HERO_SOLUTION,
   HERO_PROOF_STAT,
-  READINESS_TEST_COUPON_PROMO,
   READINESS_TEST_COUPON_BADGE,
+  READINESS_TEST_COUPON_OFFER_HEADLINE,
+  READINESS_TEST_COUPON_OFFER_HOW,
+  READINESS_TEST_COUPON_CARD_HEADLINE,
+  READINESS_TEST_COUPON_CARD_BODY,
+  READINESS_TEST_COUPON_CARD_CTA,
 } from '../constants/brandCopy';
 import LimitedRewardLabel from './LimitedRewardLabel';
 import {
@@ -29,8 +31,8 @@ import {
   BarChart3, Cpu, TrendingUp,
   MessageSquare, GraduationCap, Building2, Users,
   Mail, Phone, Check, X,
-  BookOpen, Code2, Layers, Sparkles, CalendarClock, Mic2,
-  Clock, Gift, UserX, Gauge, Info, Tag,
+  BookOpen, Layers, Sparkles, CalendarClock, Mic2,
+  Clock, Gift, UserX, Gauge,
 } from 'lucide-react';
 
 /* ─── Scroll-reveal wrapper ─────────────────────────────────── */
@@ -180,56 +182,30 @@ const earlyBenefitItem = {
   },
 };
 
-const PREP_MAP_ROWS = [
-  {
-    icon: Code2,
-    label: 'DSA & problem solving',
-    w: 72,
-    hue: 'from-[#FF9500] to-[#FFB347]',
-    stripe: 'from-orange-500 to-amber-400',
-    iconBg: 'from-orange-500 to-amber-500',
-    insight: 'Comfortable on arrays & strings — next: graphs / DP patterns',
-  },
-  {
-    icon: Layers,
-    label: 'OS / DBMS / CN',
-    w: 58,
-    hue: 'from-[#F59E0B] to-[#FBBF24]',
-    stripe: 'from-amber-500 to-yellow-400',
-    iconBg: 'from-amber-500 to-yellow-500',
-    insight: 'DBMS & SQL need depth — revise joins, indexing, normalization',
-  },
-  {
-    icon: Cpu,
-    label: 'Projects & stack',
-    w: 65,
-    hue: 'from-[#EA580C] to-[#FF9500]',
-    stripe: 'from-[#EA580C] to-orange-500',
-    iconBg: 'from-[#EA580C] to-[#FF9500]',
-    insight: 'Stack matches role — tighten README, metrics, and trade-offs',
-  },
-  {
-    icon: MessageSquare,
-    label: 'HR & communication',
-    w: 48,
-    hue: 'from-[#F97316] to-[#FB7185]',
-    stripe: 'from-rose-500 to-orange-400',
-    iconBg: 'from-rose-500 to-orange-500',
-    insight: 'Practice STAR answers & clarity — biggest lift vs peers here',
-  },
+/** Sample area weights for “strongest / focus next” only (prep map teaser). */
+const PREP_MAP_SAMPLE_AREAS = [
+  { label: 'DSA & problem solving', w: 72 },
+  { label: 'OS / DBMS / CN', w: 58 },
+  { label: 'Projects & stack', w: 65 },
+  { label: 'HR & communication', w: 48 },
 ];
 
-const PREP_MAP_TAGS = [
-  { label: 'Trees & graphs', tone: 'from-orange-100/90 to-amber-50 border-orange-200/70 text-orange-950' },
-  { label: 'SQL joins & queries', tone: 'from-cyan-50 to-sky-50 border-cyan-200/60 text-cyan-950' },
-  { label: 'REST / APIs in projects', tone: 'from-violet-50 to-fuchsia-50 border-violet-200/50 text-violet-950' },
-  { label: 'Git & collaboration', tone: 'from-emerald-50 to-teal-50 border-emerald-200/55 text-emerald-950' },
-  { label: 'Puzzles & aptitude', tone: 'from-rose-50 to-orange-50 border-rose-200/45 text-rose-950' },
-  { label: 'Intro to system design', tone: 'from-indigo-50 to-blue-50 border-indigo-200/50 text-indigo-950' },
+/** Shown as example prep focus areas (not scored on the homepage teaser). */
+const PREP_MAP_PREP_TOPIC_EXAMPLES = [
+  'AI agents',
+  'LinkedIn checklist',
+  'Database partitioning',
+  'React & Redux',
 ];
 
 /** Same 0–100 scale as Interview Readiness results (see `interviewready.jsx`); illustrative sample only. */
 const PREP_MAP_ILLUSTRATIVE_SCORE = 64;
+
+/** Strongest / weakest for sample “at a glance” (illustrative). */
+function prepMapGlance(rows) {
+  const sorted = [...rows].sort((a, b) => b.w - a.w);
+  return { strongest: sorted[0], weakest: sorted[sorted.length - 1] };
+}
 
 function prepMapReadinessBand(pct) {
   if (pct >= 75) return { label: 'Strong band', sub: 'Keep momentum — polish the last gaps.' };
@@ -293,6 +269,7 @@ function AnimatedPrepMapPanel() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.25 });
   const illustrativeBand = prepMapReadinessBand(PREP_MAP_ILLUSTRATIVE_SCORE);
+  const glance = prepMapGlance(PREP_MAP_SAMPLE_AREAS);
   return (
     <div ref={ref} className="relative">
       <div
@@ -347,144 +324,87 @@ function AnimatedPrepMapPanel() {
                 </span>
               </div>
             </div>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/60 bg-gradient-to-r from-amber-50 via-orange-50 to-amber-50 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-amber-950 shadow-[0_2px_8px_-2px_rgba(245,158,11,0.35)]">
-              <Info size={12} className="shrink-0 text-amber-700" strokeWidth={2.5} aria-hidden />
-              Illustrative only
-            </span>
+            <div className="shrink-0 self-center">
+              <LimitedRewardLabel className="text-[8px] px-2.5 py-1 sm:text-[9px] sm:px-3 sm:py-1.5 [&_svg]:h-2.5 [&_svg]:w-2.5 sm:[&_svg]:h-3 sm:[&_svg]:w-3" />
+            </div>
           </div>
 
-          <div className="mb-5 rounded-2xl border border-orange-100/90 bg-gradient-to-r from-orange-50/80 via-amber-50/40 to-transparent px-4 py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] sm:px-4 sm:py-4">
+          <div className="mb-4 rounded-xl border border-orange-100/90 bg-orange-50/40 px-3 py-2.5 sm:px-4 sm:py-3">
             <p className="text-[11px] leading-relaxed text-neutral-600 sm:text-xs">
-              In the live assessment you choose what to be scored on — your report is built from your answers and topic picks.
-              The ring and bars below are a{' '}
-              <span className="font-semibold text-neutral-800">fictional example</span> of the Interview Readiness score and topic
-              breakdown.
+              <span className="font-semibold text-neutral-800">Sample only.</span> In the real test you pick topics — your report
+              reflects your answers. What follows is a fictional example so you can see the layout.
             </p>
           </div>
 
-          <div className="mb-5 flex flex-col items-stretch gap-4 rounded-2xl border border-neutral-200/90 bg-gradient-to-br from-white via-neutral-50/50 to-orange-50/20 p-4 shadow-[0_8px_30px_-18px_rgba(0,0,0,0.08)] sm:flex-row sm:items-stretch sm:gap-5 sm:p-5 lg:gap-7">
-            <PrepMapReadinessScoreRing pct={PREP_MAP_ILLUSTRATIVE_SCORE} inView={inView} />
-            <div className="min-w-0 flex-1 text-center sm:text-left sm:py-0.5">
-              <div className="mb-2 inline-flex items-center justify-center gap-1.5 rounded-full border border-neutral-200/90 bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-600 sm:justify-start">
+          {/* Overall score: ring + band only (no coupon here — stays readable) */}
+          <div className="mb-4 flex flex-col items-center gap-5 rounded-2xl border border-neutral-200/90 bg-gradient-to-br from-white via-neutral-50/50 to-orange-50/15 p-4 shadow-[0_8px_30px_-18px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center sm:gap-8 sm:p-6">
+            <div className="flex shrink-0 justify-center">
+              <PrepMapReadinessScoreRing pct={PREP_MAP_ILLUSTRATIVE_SCORE} inView={inView} />
+            </div>
+            <div className="min-w-0 flex-1 text-center sm:text-left">
+              <div className="mb-2 inline-flex items-center justify-center gap-1.5 rounded-full border border-neutral-200/90 bg-white px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-neutral-600 sm:justify-start">
                 <Target size={12} className="text-[#FF9500]" strokeWidth={2.5} aria-hidden />
                 Interview readiness score
               </div>
-              <p className="text-[11px] font-semibold text-neutral-800">Example only — not your result</p>
-              <p className="mt-2 text-lg font-black leading-tight text-neutral-900 sm:text-xl">{illustrativeBand.label}</p>
-              <p className="mt-1 text-[11px] leading-snug text-neutral-600 sm:text-xs">{illustrativeBand.sub}</p>
-            </div>
-            <div className="w-full shrink-0 rounded-xl border border-orange-200/80 bg-gradient-to-br from-amber-50 via-orange-50/90 to-amber-100/40 px-3.5 py-3.5 text-left shadow-[0_4px_20px_-8px_rgba(234,88,12,0.25),inset_0_1px_0_rgba(255,255,255,0.95)] ring-1 ring-orange-200/50 sm:ml-auto sm:max-w-[min(100%,17.75rem)] sm:self-center lg:max-w-[19.5rem]">
-              <div className="flex flex-col gap-3">
-                <div className="flex gap-2.5">
-                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FF9500] to-[#EA580C] text-white shadow-md">
-                    <Gift className="h-5 w-5" strokeWidth={2} aria-hidden />
-                  </span>
-                  <div className="min-w-0 pt-0.5">
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#9A3412] mb-0.5">
-                      Your real test unlocks a code
-                    </p>
-                    <p className="text-[11px] leading-snug text-neutral-800 sm:text-[12px]">{READINESS_TEST_COUPON_BADGE}</p>
-                  </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={goToStartAssessment}
-                  className="flex w-full items-center justify-center gap-1.5 rounded-lg bg-[#FF9500] px-3 py-2.5 text-[11px] font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.35)] transition-colors hover:bg-[#E88600] sm:text-xs"
-                >
-                  {PRIMARY_CTA_LABEL}
-                  <ArrowRight size={14} strokeWidth={2.5} className="shrink-0" aria-hidden />
-                </button>
-              </div>
+              <p className="text-[11px] font-semibold text-neutral-700">Example only — not your result</p>
+              <p className="mt-2 text-xl font-black leading-tight text-neutral-900 sm:text-2xl">{illustrativeBand.label}</p>
+              <p className="mt-1.5 text-sm leading-snug text-neutral-600">{illustrativeBand.sub}</p>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:gap-3.5">
-            {PREP_MAP_ROWS.map((row, i) => (
-              <motion.div
-                key={row.label}
-                initial={{ opacity: 0, y: 14 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.06 + i * 0.06, type: 'spring', stiffness: 280, damping: 26 }}
-                whileHover={{ y: -3, transition: { type: 'spring', stiffness: 400, damping: 24 } }}
-                className="group relative overflow-hidden rounded-2xl border border-white/90 bg-white/85 p-3.5 shadow-[0_6px_24px_-12px_rgba(0,0,0,0.08)] ring-1 ring-orange-100/30 backdrop-blur-[2px] sm:p-4"
-              >
-                <div
-                  className={`absolute left-0 right-0 top-0 h-[3px] bg-gradient-to-r ${row.stripe} opacity-90`}
-                  aria-hidden
-                />
-                <div className="mb-3 flex items-start justify-between gap-2">
-                  <div className="flex min-w-0 items-center gap-2">
-                    <span
-                      className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${row.iconBg} text-white shadow-md shadow-orange-900/10`}
-                    >
-                      <row.icon size={15} strokeWidth={2.2} aria-hidden />
-                    </span>
-                    <span className="text-[10px] font-bold leading-tight text-neutral-800 sm:text-[11px]">{row.label}</span>
-                  </div>
-                  <span className="shrink-0 rounded-lg bg-neutral-100/90 px-1.5 py-0.5 text-[10px] font-extrabold tabular-nums text-neutral-700">
-                    {row.w}%
-                  </span>
-                </div>
-                <div className="h-2.5 overflow-hidden rounded-full bg-gradient-to-b from-neutral-100 to-neutral-200/80 p-[2px] shadow-inner">
-                  <motion.div
-                    className={`relative h-full overflow-hidden rounded-full bg-gradient-to-r ${row.hue} shadow-[0_0_12px_-2px_rgba(255,149,0,0.5)]`}
-                    initial={{ width: 0 }}
-                    animate={inView ? { width: `${row.w}%` } : { width: 0 }}
-                    transition={{
-                      delay: 0.18 + i * 0.1,
-                      duration: 1.05,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
-                  >
-                    <span
-                      className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/35 to-transparent"
-                      aria-hidden
-                    />
-                  </motion.div>
-                </div>
-                <p className="mt-2 text-[9px] leading-snug text-neutral-600 sm:text-[10px]">{row.insight}</p>
-              </motion.div>
-            ))}
+          {/* At a glance — strengths vs gaps (sample) */}
+          <div className="mb-4 grid gap-2 rounded-xl border border-neutral-200/80 bg-white/90 p-3 sm:grid-cols-2 sm:gap-3 sm:p-4">
+            <div className="rounded-lg border border-emerald-200/60 bg-emerald-50/50 px-3 py-2.5">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-800">Strongest area (sample)</p>
+              <p className="mt-1 text-sm font-bold text-neutral-900">{glance.strongest.label}</p>
+              <p className="text-xs font-semibold tabular-nums text-emerald-800">{glance.strongest.w}%</p>
+            </div>
+            <div className="rounded-lg border border-amber-200/70 bg-amber-50/60 px-3 py-2.5">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-amber-900">Focus next (sample)</p>
+              <p className="mt-1 text-sm font-bold text-neutral-900">{glance.weakest.label}</p>
+              <p className="text-xs font-semibold tabular-nums text-amber-900">{glance.weakest.w}%</p>
+            </div>
           </div>
 
-          <div className="relative mt-5 overflow-hidden rounded-2xl border border-dashed border-cyan-300/45 bg-gradient-to-br from-cyan-50/50 via-white/80 to-violet-50/30 p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] sm:p-5">
-            <div
-              className="pointer-events-none absolute -right-8 top-0 h-24 w-24 rounded-full bg-cyan-300/15 blur-2xl"
-              aria-hidden
-            />
-            <p className="mb-3 flex items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.1em] text-cyan-950">
-              <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-teal-600 text-white shadow-md">
-                <Tag size={14} strokeWidth={2.5} aria-hidden />
-              </span>
-              Skills you can tag in the assessment
+          <div className="mb-4 rounded-xl border border-violet-200/60 bg-gradient-to-br from-violet-50/40 via-white to-white px-3 py-3 sm:px-4 sm:py-3.5">
+            <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-violet-900/90">Example topics to prep</p>
+            <p className="mt-1 text-[11px] leading-snug text-neutral-600">
+              Ideas you might drill or tag in the real assessment — mix tech depth with how you show up.
             </p>
-            <p className="mb-3 text-[10px] leading-relaxed text-cyan-900/80">
-              Pick what gets scored — examples below are for the same kind of report as the bars above.
-            </p>
-            <motion.div
-              className="flex flex-wrap gap-2"
-              initial="hidden"
-              animate={inView ? 'visible' : 'hidden'}
-              variants={{
-                visible: { transition: { staggerChildren: 0.05, delayChildren: 0.55 } },
-                hidden: {},
-              }}
-            >
-              {PREP_MAP_TAGS.map(({ label, tone }) => (
-                <motion.span
-                  key={label}
-                  variants={{
-                    hidden: { opacity: 0, y: 8 },
-                    visible: { opacity: 1, y: 0 },
-                  }}
-                  whileHover={{ scale: 1.02 }}
-                  className={`rounded-xl border bg-gradient-to-r px-2.5 py-1.5 text-[10px] font-semibold shadow-sm transition-shadow hover:shadow-md sm:px-3 sm:text-[11px] ${tone}`}
+            <div className="mt-2.5 flex flex-wrap gap-2">
+              {PREP_MAP_PREP_TOPIC_EXAMPLES.map((topic) => (
+                <span
+                  key={topic}
+                  className="rounded-lg border border-violet-200/70 bg-white/90 px-2.5 py-1.5 text-[11px] font-semibold text-neutral-800 shadow-sm"
                 >
-                  {label}
-                </motion.span>
+                  {topic}
+                </span>
               ))}
-            </motion.div>
+            </div>
           </div>
+
+          {/* Reward — full width so copy & CTA never clip */}
+          <div className="mb-0 flex flex-col gap-3 rounded-xl border border-orange-200/90 bg-gradient-to-r from-amber-50 via-orange-50/80 to-amber-50/40 p-3 shadow-sm sm:flex-row sm:items-center sm:gap-4 sm:p-4">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FF9500] to-[#EA580C] text-white shadow-md">
+              <Gift className="h-5 w-5" strokeWidth={2} aria-hidden />
+            </span>
+            <div className="min-w-0 flex-1">
+              <p className="text-xs font-bold uppercase tracking-wide text-[#9A3412]">{READINESS_TEST_COUPON_CARD_HEADLINE}</p>
+              <p className="mt-1 text-sm leading-snug text-neutral-800">{READINESS_TEST_COUPON_CARD_BODY}</p>
+            </div>
+            <button
+              type="button"
+              onClick={goToStartAssessment}
+              className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-4 py-2.5 text-sm font-bold text-white shadow-md transition-colors hover:bg-[#E88600] sm:w-auto sm:min-w-[10.5rem]"
+            >
+              {READINESS_TEST_COUPON_CARD_CTA}
+              <ArrowRight size={16} strokeWidth={2.5} className="shrink-0" aria-hidden />
+            </button>
+          </div>
+
+          <p className="mt-4 text-center text-[11px] leading-snug text-neutral-500">
+            Full report after your test: every topic you tag, with scores and what to improve first.
+          </p>
         </div>
       </div>
     </div>
@@ -720,12 +640,12 @@ function MentorMuniPosterCarousel({ className = '' }) {
   );
 }
 
-
 /* ═══════════════════════════════════════════════════════════════
    MAIN COMPONENT
    ═══════════════════════════════════════════════════════════════ */
 const HomePage = () => {
   const [earlyYear, setEarlyYear] = useState('y2');
+  const reduceMotion = useReducedMotion();
 
   return (
     <div className="bg-background text-foreground overflow-x-hidden">
@@ -769,16 +689,27 @@ const HomePage = () => {
         @media (prefers-reduced-motion: reduce) {
           .mm-hero-proof-strip { animation: none !important; background-position: 0% 50% !important; }
         }
+        /* Eyebrow pills: soft glow pulse (text stays sharp — no sliding gradient) */
         .mm-hero-eyebrow-pill {
-          background-size: 200% 200%;
-          animation: mm-hero-eyebrow-shimmer 14s ease-in-out infinite;
+          background-image: linear-gradient(135deg, #fff8f0 0%, #ffffff 45%, #f0fdfa 100%);
         }
-        @keyframes mm-hero-eyebrow-shimmer {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
+        .mm-hero-eyebrow-pill-glow {
+          animation: mm-eyebrow-glow 5s ease-in-out infinite;
+        }
+        .mm-hero-eyebrow-pill-glow.mm-eyebrow-d1 { animation-delay: 0.35s; }
+        .mm-hero-eyebrow-pill-glow.mm-eyebrow-d2 { animation-delay: 0.7s; }
+        @keyframes mm-eyebrow-glow {
+          0%, 100% {
+            box-shadow: 0 2px 14px -6px rgba(255, 149, 0, 0.32), 0 0 0 0 rgba(255, 149, 0, 0);
+            border-color: rgba(253, 186, 116, 0.55);
+          }
+          50% {
+            box-shadow: 0 4px 22px -4px rgba(255, 149, 0, 0.42), 0 0 20px -8px rgba(251, 146, 60, 0.25);
+            border-color: rgba(251, 146, 60, 0.75);
+          }
         }
         @media (prefers-reduced-motion: reduce) {
-          .mm-hero-eyebrow-pill { animation: none !important; background-position: 0% 50% !important; }
+          .mm-hero-eyebrow-pill-glow { animation: none !important; }
         }
       `}</style>
       {/* ════════════════ Promo bar: reward + mentorship line (single band, aligned to page grid) ════════════════ */}
@@ -796,9 +727,11 @@ const HomePage = () => {
                 <div className="mb-1.5 w-fit">
                   <LimitedRewardLabel className="sm:text-[10px] sm:px-3 sm:py-1.5" />
                 </div>
-                <p className="text-[13px] font-semibold leading-snug text-neutral-900 sm:text-sm">
-                  <span className="sm:hidden">{READINESS_TEST_COUPON_BADGE}</span>
-                  <span className="hidden sm:inline">{READINESS_TEST_COUPON_PROMO}</span>
+                <p className="text-[14px] font-bold leading-tight text-neutral-900 sm:text-[15px]">
+                  {READINESS_TEST_COUPON_OFFER_HEADLINE}
+                </p>
+                <p className="mt-1 text-[11px] font-medium leading-snug text-neutral-600 sm:text-xs">
+                  {READINESS_TEST_COUPON_OFFER_HOW}
                 </p>
               </div>
             </div>
@@ -840,38 +773,42 @@ const HomePage = () => {
         <div className="relative mx-auto grid w-full max-w-7xl items-center gap-14 px-5 sm:px-6 lg:grid-cols-2 lg:gap-20 lg:px-8">
           {/* ── Left: copy — Razorpay-like hierarchy: eyebrow → display headline → meta → card ── */}
           <div className="max-w-[36rem]">
-            <div className="mb-6 space-y-3">
-              <motion.div
-                initial={{ opacity: 0, y: -6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35 }}
-                className="flex flex-wrap items-center gap-2 sm:gap-2.5"
-              >
+            <div className="mb-6">
+              <div className="-mx-1 flex max-w-full flex-nowrap items-center gap-1 overflow-x-auto px-1 pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] sm:mx-0 sm:gap-1.5 sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden">
                 {HERO_EYEBROW.split(' · ').map((part, idx) => (
-                  <span
-                    key={part}
-                    className="mm-hero-eyebrow-pill inline-flex items-center gap-2 rounded-full border border-orange-200/60 bg-gradient-to-r from-[#FFF8F0] via-white to-[#F0FDFA] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-neutral-700 shadow-[0_2px_14px_-6px_rgba(255,149,0,0.35)] ring-1 ring-white/80 sm:px-3.5 sm:text-[11px]"
+                  <motion.span
+                    key={`${part}-${idx}`}
+                    initial={reduceMotion ? false : { opacity: 0, y: 10, scale: 0.94 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={
+                      reduceMotion
+                        ? { duration: 0 }
+                        : {
+                            delay: 0.05 + idx * 0.14,
+                            type: 'spring',
+                            stiffness: 420,
+                            damping: 26,
+                            mass: 0.7,
+                          }
+                    }
+                    whileHover={
+                      reduceMotion
+                        ? undefined
+                        : { scale: 1.03, transition: { type: 'spring', stiffness: 500, damping: 22 } }
+                    }
+                    className={`mm-hero-eyebrow-pill mm-hero-eyebrow-pill-glow inline-flex shrink-0 items-center gap-1 rounded-full border border-orange-200/60 px-2 py-1 text-[9px] font-bold uppercase leading-snug tracking-[0.08em] text-neutral-800 ring-1 ring-white/90 sm:px-2.5 sm:py-1.5 sm:text-[10px] sm:tracking-[0.1em] md:gap-1.5 md:px-3 md:text-[11px] md:tracking-[0.12em] ${idx === 1 ? 'mm-eyebrow-d1' : ''} ${idx === 2 ? 'mm-eyebrow-d2' : ''}`}
                   >
                     {idx === 0 ? (
-                      <GraduationCap className="h-3.5 w-3.5 shrink-0 text-[#EA580C] sm:h-4 sm:w-4" strokeWidth={2.2} aria-hidden />
+                      <GraduationCap className="h-2.5 w-2.5 shrink-0 text-[#EA580C] sm:h-3 sm:w-3 md:h-3.5 md:w-3.5" strokeWidth={2.2} aria-hidden />
+                    ) : idx === 1 ? (
+                      <Mic2 className="h-2.5 w-2.5 shrink-0 text-[#0891B2] sm:h-3 sm:w-3 md:h-3.5 md:w-3.5" strokeWidth={2.2} aria-hidden />
                     ) : (
-                      <Mic2 className="h-3.5 w-3.5 shrink-0 text-[#0891B2] sm:h-4 sm:w-4" strokeWidth={2.2} aria-hidden />
+                      <Sparkles className="h-2.5 w-2.5 shrink-0 text-[#EA580C] sm:h-3 sm:w-3 md:h-3.5 md:w-3.5" strokeWidth={2.2} aria-hidden />
                     )}
                     {part}
-                  </span>
+                  </motion.span>
                 ))}
-              </motion.div>
-              <motion.p
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.4, delay: 0.06 }}
-                className="max-w-xl text-[13px] leading-relaxed text-neutral-700 sm:text-sm"
-              >
-                <span className="bg-gradient-to-r from-[#EA580C] via-[#FF9500] to-[#0E7490] bg-clip-text font-bold tracking-tight text-transparent">
-                  {HERO_MOTTO_EMPHASIS}
-                </span>
-                <span className="font-medium text-neutral-700"> {HERO_MOTTO_SUFFIX}</span>
-              </motion.p>
+              </div>
             </div>
 
             <motion.h1
@@ -1018,7 +955,7 @@ const HomePage = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
-            className="hidden w-full flex-col items-center gap-8 lg:flex lg:max-w-none lg:flex-row lg:items-start lg:justify-center lg:gap-10"
+            className="hidden w-full flex-col items-center justify-center gap-8 lg:flex lg:max-w-none"
           >
             <div className="flex w-full max-w-[400px] shrink-0 flex-col items-stretch">
               <Link
@@ -1039,27 +976,6 @@ const HomePage = () => {
 
               <MentorMuniPosterCarousel className="w-full shadow-[0_24px_80px_-48px_rgba(0,0,0,0.35)] ring-1 ring-black/[0.04]" />
             </div>
-
-            {/* Static feature stack — clean product list (no flashing emoji) */}
-            <ul className="mt-4 flex w-[200px] shrink-0 flex-col gap-2.5 lg:mt-16" aria-label="Product areas">
-              {[
-                { Icon: BarChart3, label: 'Readiness score' },
-                { Icon: Mic2, label: 'AI mock interviews' },
-                { Icon: BookOpen, label: 'Resume & ATS' },
-                { Icon: Cpu, label: 'AI tools fluency' },
-                { Icon: Users, label: '1:1 mentorship' },
-              ].map(({ Icon, label }) => (
-                <li
-                  key={label}
-                  className="flex items-center gap-2.5 rounded-xl border border-neutral-200/80 bg-white/90 px-3 py-2.5 text-[12px] font-medium text-neutral-700 shadow-sm"
-                >
-                  <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-50 text-neutral-600">
-                    <Icon size={15} strokeWidth={2} aria-hidden />
-                  </span>
-                  {label}
-                </li>
-              ))}
-            </ul>
           </motion.div>
         </div>
       </section>

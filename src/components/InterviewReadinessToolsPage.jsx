@@ -10,7 +10,7 @@ import {
   Sparkles,
   ChevronRight,
 } from 'lucide-react';
-import { READINESS_TEST_COUPON_BADGE, READINESS_TEST_COUPON_PROMO } from '../constants/brandCopy';
+import { READINESS_TEST_COUPON_OFFER_HEADLINE, READINESS_TEST_COUPON_OFFER_HOW } from '../constants/brandCopy';
 import LimitedRewardLabel from './LimitedRewardLabel';
 
 /**
@@ -63,10 +63,8 @@ export default function InterviewReadinessToolsPage() {
               <div className="mb-1.5 w-fit">
                 <LimitedRewardLabel />
               </div>
-              <p className="text-sm text-[#1A1A1A] font-medium leading-snug">
-                <span className="sm:hidden">{READINESS_TEST_COUPON_BADGE}</span>
-                <span className="hidden sm:inline">{READINESS_TEST_COUPON_PROMO}</span>
-              </p>
+              <p className="text-sm font-bold leading-tight text-[#1A1A1A]">{READINESS_TEST_COUPON_OFFER_HEADLINE}</p>
+              <p className="mt-1 text-xs font-medium leading-snug text-[#666666]">{READINESS_TEST_COUPON_OFFER_HOW}</p>
             </div>
           </div>
         </div>

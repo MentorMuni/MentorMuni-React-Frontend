@@ -10,11 +10,9 @@ export const PRIMARY_CTA_LABEL = 'Check my readiness — free';
 export const PAIN_HOOK =
   "Most students don't discover their real interview gaps until after a rejection. We show you where you stand in minutes—then what to fix first.";
 
-/** Homepage hero — two chips (split on ·). Who we serve + what we do (prep only—not hiring outcomes). */
-export const HERO_EYEBROW = 'Engineering students in India · interview preparation';
-/** Motto — short hook under chips (gradient + plain). No job-placement disclaimer here; keep it scannable. */
-export const HERO_MOTTO_EMPHASIS = 'Mentors + AI';
-export const HERO_MOTTO_SUFFIX = '— know your gaps, then drill what counts.';
+/** Homepage hero — chips (split on ·). Audience · focus · Mentors + AI */
+export const HERO_EYEBROW =
+  'Engineering students in India · interview preparation · Mentors + AI';
 export const HERO_HEADLINE = "You can't fix what you don't measure.";
 export const HERO_HEADLINE_ACCENT = 'Get your readiness score in ~5 minutes.';
 export const HERO_PROBLEM_LABEL = 'Why it matters';
@@ -30,11 +28,23 @@ export const MISSION_TAGLINE =
   'Readiness scores, specific gaps, and mentor-backed practice—so you walk into interviews prepared, not guessing.';
 
 /** Completing the free Interview Readiness assessment — coupon reward (homepage + promos) */
+/** Promo bar — line 1: the offer (what) */
+export const READINESS_TEST_COUPON_OFFER_HEADLINE =
+  '1 free 1:1 mentorship + 1 free AI mock interview';
+/** Promo bar — line 2: how you get it */
+export const READINESS_TEST_COUPON_OFFER_HOW =
+  'How: take the free readiness test (~5 min). Your coupon code is emailed right after.';
+/** One-line summary for nav / tool strips that only have room for a single sentence */
 export const READINESS_TEST_COUPON_PROMO =
-  'Take the Interview Readiness test and get a coupon code for one free 1:1 mentorship session and one AI mock interview.';
+  'Free: 1× 1:1 mentorship + 1× AI mock — unlock by completing the free readiness test.';
 /** Short line for badges / narrow layouts */
 export const READINESS_TEST_COUPON_BADGE =
-  'Coupon: 1 free 1:1 mentorship + 1 AI mock after your readiness test';
+  '1× 1:1 mentor + 1× AI mock · coupon after free test';
+/** Prep map card (narrow column) — short lines so nothing clips */
+export const READINESS_TEST_COUPON_CARD_HEADLINE = 'Your real test unlocks a code';
+export const READINESS_TEST_COUPON_CARD_BODY =
+  'Coupon: 1 free 1:1 + 1 AI mock after your test';
+export const READINESS_TEST_COUPON_CARD_CTA = 'Check my readiness';
 
 /** Stale-date-free mentorship messaging */
 export const MENTORSHIP_BANNER = 'Mentorship programme · Limited seats per batch';
