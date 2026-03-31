@@ -113,6 +113,15 @@ const Navbar = () => {
     setIsOpen(false);
   };
 
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  };
+
+  const handleHomeClick = () => {
+    scrollToTop();
+    setIsOpen(false);
+  };
+
   const navLinkClass = (active) =>
     `inline-flex h-10 items-center whitespace-nowrap rounded-lg px-2.5 text-[0.8125rem] font-semibold leading-none transition-all xl:px-3 xl:text-[0.875rem] ${
       active
@@ -124,7 +133,7 @@ const Navbar = () => {
     <header className="sticky top-0 z-[100] border-b border-[#F0ECE0] bg-white/95 shadow-[0_1px_0_rgba(0,0,0,0.04)] backdrop-blur-md">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-[4.25rem] items-center gap-3 lg:h-[4.5rem] lg:gap-4">
-          <Link to="/" className="group flex shrink-0 items-center gap-2.5 sm:gap-3">
+          <Link to="/" onClick={handleHomeClick} className="group flex shrink-0 items-center gap-2.5 sm:gap-3">
             <img
               src="/MentorMuni-React-Frontend/mentormuni-logo.png"
               alt="MentorMuni Logo"

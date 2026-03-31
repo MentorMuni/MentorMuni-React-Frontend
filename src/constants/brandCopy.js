@@ -13,6 +13,8 @@ export const PAIN_HOOK =
 /** Homepage hero — chips (split on ·). Audience · focus · Mentors + AI */
 export const HERO_EYEBROW =
   'Engineering students in India · interview preparation · Mentors + AI';
+/** Early-bird coupon card ribbon (homepage hero) */
+export const HERO_EARLY_BIRD_RIBBON = 'Early bird';
 export const HERO_HEADLINE = "You can't fix what you don't measure.";
 export const HERO_HEADLINE_ACCENT = 'Get your readiness score in ~5 minutes.';
 export const HERO_PROBLEM_LABEL = 'Why it matters';

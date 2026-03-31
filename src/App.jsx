@@ -1,5 +1,5 @@
-import React, { Suspense, lazy } from "react";
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
+import React, { Suspense, lazy, useEffect } from "react";
+import { HashRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 
 import Navbar from "./components/navbar";
 import HomePage from "./components/homepage";
@@ -42,9 +42,19 @@ function PageFallback() {
   return <div className="min-h-[60vh] bg-background" />;
 }
 
+/** HashRouter SPA: reset scroll when the route changes so new pages (including home) start at the top. */
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [pathname]);
+  return null;
+}
+
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <div className="flex min-h-screen flex-col bg-background text-foreground-muted font-sans antialiased">
         <Navbar />
         <main className="flex-grow relative z-0">

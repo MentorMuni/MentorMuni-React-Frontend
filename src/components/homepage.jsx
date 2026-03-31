@@ -5,12 +5,12 @@ import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import {
   PRIMARY_CTA_LABEL,
   MISSION_TAGLINE,
-  MENTORSHIP_BANNER,
   MENTORSHIP_TRUST_BADGE,
   PRODUCT_READINESS_SCORE,
   CONTACT_PHONE_DISPLAY,
   CONTACT_PHONE_HREF,
   HERO_EYEBROW,
+  HERO_EARLY_BIRD_RIBBON,
   HERO_HEADLINE,
   HERO_HEADLINE_ACCENT,
   HERO_PROBLEM_LABEL,
@@ -712,53 +712,9 @@ const HomePage = () => {
           .mm-hero-eyebrow-pill-glow { animation: none !important; }
         }
       `}</style>
-      {/* ════════════════ Promo bar: reward + mentorship line (single band, aligned to page grid) ════════════════ */}
-      <div className="border-b border-orange-200/60 bg-gradient-to-r from-amber-50/95 via-[#FFF8F0] to-cyan-50/80 shadow-[inset_0_-1px_0_rgba(234,88,12,0.06)]">
-        <div className="mx-auto max-w-7xl px-4 py-3.5 sm:px-6 lg:px-8">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-8">
-            <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
-              <span
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FF9500] to-[#EA580C] text-white shadow-md ring-2 ring-white/80"
-                aria-hidden
-              >
-                <Gift size={20} strokeWidth={2.2} />
-              </span>
-              <div className="min-w-0 flex-1">
-                <div className="mb-1.5 w-fit">
-                  <LimitedRewardLabel className="sm:text-[10px] sm:px-3 sm:py-1.5" />
-                </div>
-                <p className="text-[14px] font-bold leading-tight text-neutral-900 sm:text-[15px]">
-                  {READINESS_TEST_COUPON_OFFER_HEADLINE}
-                </p>
-                <p className="mt-1 text-[11px] font-medium leading-snug text-neutral-600 sm:text-xs">
-                  {READINESS_TEST_COUPON_OFFER_HOW}
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={goToStartAssessment}
-              className="inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#1A1A1A] px-5 text-xs font-bold text-white shadow-md transition hover:bg-neutral-800 sm:w-auto sm:min-w-[12rem] sm:text-sm"
-            >
-              Take Interview Readiness test
-              <ArrowRight size={16} className="opacity-90" aria-hidden />
-            </button>
-          </div>
-          <div className="mt-3 flex justify-center border-t border-orange-200/50 pt-3">
-            <Link
-              to="/waitlist"
-              className="text-[11px] font-medium tracking-wide text-neutral-600 transition-colors hover:text-[#CC7000] sm:text-xs"
-            >
-              {MENTORSHIP_BANNER}
-              <span className="text-neutral-400"> · </span>
-              <span className="font-semibold text-[#CC7000]">Join waitlist</span>
-            </Link>
-          </div>
-        </div>
-      </div>
 
       {/* ════════════════ HERO — editorial layout, calm canvas, strong type ════════════════ */}
-      <section className="relative flex min-h-[min(90vh,880px)] items-center border-b border-neutral-200/60 bg-gradient-to-b from-neutral-50 via-[#fffdf8] to-[#faf8f5] py-14 md:py-20 lg:py-24">
+      <section className="relative flex min-h-[min(85vh,760px)] items-start border-b border-neutral-200/60 bg-gradient-to-b from-neutral-50 via-[#fffdf8] to-[#faf8f5] pt-8 pb-14 md:pt-10 md:pb-16 lg:pt-10 lg:pb-20">
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
           <div
             className="mm-hero-orb absolute -right-32 top-0 h-[520px] w-[520px] rounded-full bg-[rgba(255,149,0,0.06)] blur-[120px]"
@@ -770,7 +726,7 @@ const HomePage = () => {
           />
         </div>
 
-        <div className="relative mx-auto grid w-full max-w-7xl items-center gap-14 px-5 sm:px-6 lg:grid-cols-2 lg:gap-20 lg:px-8">
+        <div className="relative mx-auto grid w-full max-w-7xl items-start gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8">
           {/* ── Left: copy — Razorpay-like hierarchy: eyebrow → display headline → meta → card ── */}
           <div className="max-w-[36rem]">
             <div className="mb-6">
@@ -810,6 +766,51 @@ const HomePage = () => {
                 ))}
               </div>
             </div>
+
+            <motion.div
+              initial={reduceMotion ? false : { opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.04, ease: [0.22, 1, 0.36, 1] }}
+              className="relative z-[1] mb-6 max-w-xl"
+              aria-label={`${HERO_EARLY_BIRD_RIBBON}: ${READINESS_TEST_COUPON_OFFER_HEADLINE}`}
+            >
+              <div className="absolute left-4 -top-2 z-10 sm:left-5">
+                <span className="inline-flex items-center gap-1 rounded-md bg-neutral-900 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.18em] text-amber-200 shadow-[3px_3px_0_0_rgba(251,146,60,0.55)] ring-1 ring-amber-500/40">
+                  <Sparkles className="h-3 w-3 text-amber-300" strokeWidth={2.5} aria-hidden />
+                  {HERO_EARLY_BIRD_RIBBON}
+                </span>
+              </div>
+              <div className="relative overflow-hidden rounded-2xl border-2 border-dashed border-amber-500/60 bg-gradient-to-br from-amber-50/98 via-white to-orange-50/90 px-4 pb-4 pt-7 shadow-[0_22px_56px_-28px_rgba(234,88,12,0.48),inset_0_1px_0_rgba(255,255,255,0.95)] ring-1 ring-amber-200/60 sm:px-5 sm:pb-5 sm:pt-8">
+                <div
+                  className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-amber-400/50 to-transparent"
+                  aria-hidden
+                />
+                <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-orange-400/15 blur-3xl" aria-hidden />
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-5">
+                  <div className="flex min-w-0 gap-3 sm:gap-3.5">
+                    <span className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-[#EA580C] text-white shadow-lg ring-2 ring-white/90">
+                      <Gift size={20} strokeWidth={2.2} aria-hidden />
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-[15px] font-black leading-snug text-neutral-900 sm:text-base">
+                        {READINESS_TEST_COUPON_OFFER_HEADLINE}
+                      </p>
+                      <p className="mt-1.5 text-[11px] font-medium leading-relaxed text-neutral-600 sm:text-xs">
+                        {READINESS_TEST_COUPON_OFFER_HOW}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={goToStartAssessment}
+                    className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FF9500] to-[#EA580C] px-4 py-3 text-xs font-bold text-white shadow-[0_10px_28px_-10px_rgba(234,88,12,0.75)] ring-2 ring-white/70 transition hover:brightness-[1.05] sm:w-auto sm:min-w-[11.5rem] sm:py-2.5 sm:text-sm"
+                  >
+                    {PRIMARY_CTA_LABEL}
+                    <ArrowRight size={16} className="opacity-95" aria-hidden />
+                  </button>
+                </div>
+              </div>
+            </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 14 }}
@@ -955,25 +956,9 @@ const HomePage = () => {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.3 }}
-            className="hidden w-full flex-col items-center justify-center gap-8 lg:flex lg:max-w-none"
+            className="hidden w-full flex-col items-center justify-start gap-8 lg:flex lg:max-w-none"
           >
             <div className="flex w-full max-w-[400px] shrink-0 flex-col items-stretch">
-              <Link
-                to="/waitlist"
-                className="mb-5 inline-flex items-center gap-3 self-center rounded-2xl border border-neutral-200/90 bg-white px-4 py-3 shadow-[0_1px_3px_rgba(0,0,0,0.06)] transition hover:border-[#FFB347]/50 hover:shadow-md"
-              >
-                <span
-                  className="h-2 w-2 shrink-0 rounded-full bg-emerald-600"
-                  style={{ boxShadow: '0 0 0 3px rgba(26,140,85,0.2)' }}
-                  aria-hidden
-                />
-                <span className="text-left">
-                  <span className="block text-[13px] font-semibold text-neutral-900">Mentorship (waitlist)</span>
-                  <span className="block text-[11px] text-neutral-500">Limited seats per batch</span>
-                </span>
-                <ArrowRight size={16} className="shrink-0 text-[#FF9500]" aria-hidden />
-              </Link>
-
               <MentorMuniPosterCarousel className="w-full shadow-[0_24px_80px_-48px_rgba(0,0,0,0.35)] ring-1 ring-black/[0.04]" />
             </div>
           </motion.div>
