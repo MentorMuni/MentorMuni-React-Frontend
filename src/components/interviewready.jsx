@@ -7,7 +7,8 @@ import {
 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { API_BASE } from '../config';
-import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
+import { PRIMARY_CTA_LABEL, READINESS_TEST_COUPON_BADGE } from '../constants/brandCopy';
+import LimitedRewardLabel from './LimitedRewardLabel';
 import AIAnalysisLoader from './AIAnalysisLoader';
 import { useFreeUsageTracker } from './FreeUsageCounter';
 import UpgradePromptModal from './UpgradePromptModal';
@@ -772,6 +773,18 @@ const InterviewReady = () => {
             ))}
           </div>
 
+          <div className="mb-5 rounded-xl border border-orange-200/70 bg-[#FFF8EE] px-4 py-3 flex gap-3 text-left max-w-lg mx-auto">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#FF9500] to-amber-600 text-white shadow-sm">
+              <Gift size={17} strokeWidth={2} />
+            </span>
+            <div>
+              <div className="mb-1 w-fit">
+                <LimitedRewardLabel />
+              </div>
+              <p className="text-sm text-[#444444] leading-snug">{READINESS_TEST_COUPON_BADGE}</p>
+            </div>
+          </div>
+
           {/* Primary CTA */}
           <button
             onClick={() => setStep(2)}
@@ -977,7 +990,7 @@ const InterviewReady = () => {
         value: 'recent_graduate',
         emoji: '🎯',
         label: 'Recent Graduate',
-        badge: 'Passout 2023–2025',
+        badge: 'Passout 2023–2026',
         details: ['Off-campus job hunt', 'Competitive placement prep', 'High-stakes interviews'],
       },
       {

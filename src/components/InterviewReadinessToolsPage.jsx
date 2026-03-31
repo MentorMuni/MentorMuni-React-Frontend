@@ -5,13 +5,16 @@ import {
   BarChart3,
   ClipboardCheck,
   Clock,
+  Gift,
   Layers,
   Sparkles,
   ChevronRight,
 } from 'lucide-react';
+import { READINESS_TEST_COUPON_BADGE, READINESS_TEST_COUPON_PROMO } from '../constants/brandCopy';
+import LimitedRewardLabel from './LimitedRewardLabel';
 
 /**
- * Tools entry for Interview Readiness — matches MentorMuni global theme (#050b18, indigo/violet).
+ * Tools entry for Interview Readiness — warm cream + orange (MentorMuni marketing theme).
  * Same assessment as /start-assessment?entry=tools (skips marketing landing).
  */
 export default function InterviewReadinessToolsPage() {
@@ -50,6 +53,23 @@ export default function InterviewReadinessToolsPage() {
           <ChevronRight size={12} className="text-slate-600" />
           <span className="text-[#666666]">Interview Readiness</span>
         </nav>
+
+        <div className="mb-8 rounded-2xl border border-orange-200/70 bg-gradient-to-r from-amber-50/95 to-orange-50/40 px-4 py-3.5 sm:px-5 sm:py-4">
+          <div className="flex items-start gap-3">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FF9500] to-amber-600 text-white shadow-sm">
+              <Gift size={18} strokeWidth={2} />
+            </span>
+            <div>
+              <div className="mb-1.5 w-fit">
+                <LimitedRewardLabel />
+              </div>
+              <p className="text-sm text-[#1A1A1A] font-medium leading-snug">
+                <span className="sm:hidden">{READINESS_TEST_COUPON_BADGE}</span>
+                <span className="hidden sm:inline">{READINESS_TEST_COUPON_PROMO}</span>
+              </p>
+            </div>
+          </div>
+        </div>
 
         <div className="flex flex-col lg:flex-row lg:items-start lg:gap-12">
           {/* Left column */}

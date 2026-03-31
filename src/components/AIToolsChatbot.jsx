@@ -23,7 +23,7 @@ function matchRegexRules(userText) {
     return "Why did the developer break up with GitHub Copilot? Too many *commit*ment issues. …Now ask me something useful about AI tools 🙂";
   }
   if (/love|marry|date|crush/.test(q)) {
-    return "I only have a professional relationship with transformers (the neural kind). But I *love* explaining why Cursor is hot in 2025.";
+    return "I only have a professional relationship with transformers (the neural kind). But I *love* explaining why Cursor is hot in hiring conversations right now.";
   }
   if (/who (are|r) you|what are you/.test(q)) {
     return "I'm a tiny on-page assistant — not ChatGPT. I answer using MentorMuni's AI Tools Knowledge Base: LLMs, coding tools, and interview prep.";
@@ -50,7 +50,7 @@ function matchRegexRules(userText) {
     return "Generative AI (Gen AI) creates new content: text, code, images, audio — not just labeling or ranking. ChatGPT, Copilot, and Midjourney are Gen AI. Under the hood it's usually large models (often transformers) trained to generate the next token or pixel from a prompt.";
   }
   if (/agentic ai|agentic artificial|what (is|are) agentic|\bai agents?\b|autonomous agents?/.test(q)) {
-    return "Agentic AI = systems that behave like agents: they break a goal into steps, call tools (search, APIs, code, browsers), and loop or retry — not just one reply. Think 'assistant that plans and acts.' It's LLMs + tooling + orchestration; a big 2024–2025 interview topic.";
+    return "Agentic AI = systems that behave like agents: they break a goal into steps, call tools (search, APIs, code, browsers), and loop or retry — not just one reply. Think 'assistant that plans and acts.' It's LLMs + tooling + orchestration; a big recent interview topic.";
   }
 
   // ── Basics ───────────────────────────────────────────────────
@@ -67,7 +67,7 @@ function matchRegexRules(userText) {
     return "GitHub Copilot is an AI pair programmer inside your IDE — suggests whole lines/functions from context. Paid for individuals; many companies pay for it. Great to mention in interviews.";
   }
   if (/cursor\b/.test(q)) {
-    return "Cursor is an AI-first code editor (VS Code–based). You can chat with your whole repo, not just one file. Very popular in 2025 for serious dev work.";
+    return "Cursor is an AI-first code editor (VS Code–based). You can chat with your whole repo, not just one file. Very popular for serious dev work.";
   }
   if (/codeium|tabnine/.test(q)) {
     return "Codeium and Tabnine are Copilot-style assistants. Codeium has a solid free tier; Tabnine stresses privacy/local mode. Good free alternatives for students.";

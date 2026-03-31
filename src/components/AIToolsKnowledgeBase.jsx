@@ -113,7 +113,7 @@ const FAQS = [
     a: 'A Large Language Model (LLM) is an AI system trained on vast amounts of text — books, websites, code, research papers — to understand and generate human language. It uses a neural network architecture called a Transformer, introduced by Google in 2017. The model learns statistical patterns of language and can predict the next word, answer questions, write code or summarise documents. When you type a prompt, the LLM does not "look things up" — it generates responses from patterns internalised during training across trillions of words.',
   },
   {
-    q: 'How many LLMs exist in 2025?',
+    q: 'How many LLMs exist today?',
     a: 'There are over 1,000 LLMs publicly available on Hugging Face alone, with hundreds more proprietary ones. However, only a dozen or so are widely used in production. The major commercial ones are GPT-4o (OpenAI), Claude 3.5 (Anthropic), Gemini 1.5 (Google), and Grok 2 (xAI). Open-source leaders include LLaMA 3 (Meta), Mistral, Phi-3 (Microsoft) and Falcon. The number grows every month as new models and fine-tuned variants are released.',
   },
   {
@@ -125,7 +125,7 @@ const FAQS = [
     a: 'Yes. For interview prep, free-tier ChatGPT (GPT-4o), Claude.ai and Gemini are more than capable. You can use them to explain DSA concepts, review your code, simulate HR questions and get feedback. MentorMuni\'s readiness score, AI mock interviews and ATS checker are completely free and purpose-built for campus placement preparation.',
   },
   {
-    q: 'What AI tools should an engineering student know in 2025?',
+    q: 'What AI tools should an engineering student know in 2026?',
     a: 'Interviewers now ask: "How do you use AI in your workflow?" The minimum you should know: (1) GitHub Copilot or Cursor for coding — understand how they work and their limitations; (2) ChatGPT or Claude for research and concept explanation; (3) Perplexity for quick factual searches with sources. Being able to speak confidently about AI tools is now a baseline expectation at product companies.',
   },
 ];
@@ -188,7 +188,7 @@ export default function AIToolsKnowledgeBase() {
             </span>
           </h1>
           <p className="text-lg text-[#555555] max-w-2xl leading-relaxed mb-8">
-            Everything an engineering student needs to know about LLMs and AI tools — from first principles to the tools interviewers now expect you to know in 2025.
+            Everything an engineering student needs to know about LLMs and AI tools — from first principles to the tools interviewers now expect you to know.
           </p>
           <div className="flex flex-wrap gap-3">
             {[
@@ -248,7 +248,7 @@ export default function AIToolsKnowledgeBase() {
       {/* ── LLM Comparison ── */}
       <section className="py-14 px-6 border-b border-[#F0ECE0]">
         <div className="max-w-5xl mx-auto">
-          <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest block mb-3">2025 Landscape</span>
+          <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest block mb-3">AI tools landscape</span>
           <h2 className="text-2xl md:text-3xl font-black mb-2 leading-tight">Major LLMs compared</h2>
           <p className="text-[#555555] text-sm mb-8 max-w-xl">There are 1,000+ LLMs publicly available. Here are the 8 you actually need to know.</p>
           <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -348,7 +348,7 @@ export default function AIToolsKnowledgeBase() {
           <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest block mb-3">For Developers</span>
           <h2 className="text-2xl font-black mb-2 leading-tight">Coding & Development AI Tools</h2>
           <p className="text-[#555555] text-sm mb-6 max-w-xl">
-            Tools every engineering student should know — and be able to talk about in a 2025 interview.
+            Tools every engineering student should know — and be able to talk about in a technical interview.
           </p>
           <div className="flex flex-wrap gap-3 mb-6">
             {[

@@ -238,13 +238,13 @@ export default function Mentors() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ whatsapp: digits, timestamp: new Date().toISOString() }),
       });
-    } catch (_) { /* best-effort */ }
+    } catch { /* best-effort */ }
     setLoading(false);
     setSubmitted(true);
   };
 
   return (
-    <div style={{ background: '#fffdf8', minHeight: '100vh', color: '#1a1a1a', fontFamily: 'Inter, system-ui, sans-serif' }}>
+    <div className="min-h-screen bg-[#fffdf8] font-sans text-[#1a1a1a] antialiased">
       <style>{`
         @keyframes mentors-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
         @keyframes mentors-amber-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
@@ -255,9 +255,9 @@ export default function Mentors() {
         <div style={{ maxWidth: 620, margin: '0 auto' }}>
 
           {/* Pill badge */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.25)', borderRadius: 20, padding: '5px 16px', marginBottom: 28 }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#f59e0b', display: 'inline-block', animation: 'mentors-amber-pulse 1.5s ease-in-out infinite', boxShadow: '0 0 6px #f59e0b', flexShrink: 0 }} />
-            <span style={{ fontSize: 12, fontWeight: 500, color: '#fbbf24', letterSpacing: '0.01em' }}>Mentor matching · {MENTORSHIP_TRUST_BADGE}</span>
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255, 149, 0, 0.12)', border: '1px solid rgba(180, 83, 9, 0.35)', borderRadius: 20, padding: '5px 16px', marginBottom: 28 }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#ea580c', display: 'inline-block', animation: 'mentors-amber-pulse 1.5s ease-in-out infinite', boxShadow: '0 0 6px rgba(234, 88, 12, 0.6)', flexShrink: 0 }} />
+            <span style={{ fontSize: 12, fontWeight: 600, color: '#9A3412', letterSpacing: '0.01em' }}>Mentor matching · {MENTORSHIP_TRUST_BADGE}</span>
           </div>
 
           {/* H1 */}
@@ -269,7 +269,7 @@ export default function Mentors() {
           </h1>
 
           {/* Subtext */}
-          <p style={{ fontSize: 15, color: 'rgba(255,255,255,0.50)', lineHeight: 1.75, maxWidth: 480, margin: '0 auto' }}>
+          <p style={{ fontSize: 15, color: '#666666', lineHeight: 1.75, maxWidth: 480, margin: '0 auto' }}>
             Every student gets matched to a mentor based on their exact gaps, target role, and interview timeline. No random assignments. The right expert for your specific situation.
           </p>
         </div>
@@ -277,7 +277,7 @@ export default function Mentors() {
 
       {/* ══════════════ SECTION 2 — HOW MATCHING WORKS ══════════════ */}
       <section ref={timelineRef} style={{ ...REVEAL_STYLE, maxWidth: 700, margin: '0 auto', padding: '0 24px 80px' }}>
-        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.30)', textAlign: 'center', marginBottom: 40 }}>
+        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888888', textAlign: 'center', marginBottom: 40 }}>
           How mentor matching works
         </p>
         {TIMELINE_STEPS.map((step, i) => (
@@ -288,7 +288,7 @@ export default function Mentors() {
       {/* ══════════════ SECTION 3 — BLURRED MENTOR TEASER ══════════════ */}
       <section ref={teaserRef} style={{ ...REVEAL_STYLE, padding: '0 24px 80px' }}>
         <div style={{ maxWidth: 900, margin: '0 auto' }}>
-          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.30)', textAlign: 'center', marginBottom: 28 }}>
+          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888888', textAlign: 'center', marginBottom: 28 }}>
             Mentors joining in cohorts — waitlist open
           </p>
 
@@ -299,7 +299,7 @@ export default function Mentors() {
             ))}
           </div>
 
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', textAlign: 'center', maxWidth: 480, margin: '0 auto' }}>
+          <p style={{ fontSize: 12, color: '#777777', textAlign: 'center', maxWidth: 480, margin: '0 auto' }}>
             Mentors are matched after your assessment — so you always get the right fit, not whoever's available.
           </p>
         </div>
@@ -313,7 +313,7 @@ export default function Mentors() {
             ...REVEAL_STYLE,
             maxWidth: 580, width: '100%',
             background: '#ffffff',
-            border: '1.5px solid rgba(99,102,241,0.3)',
+            border: '1.5px solid rgba(255,149,0,0.35)',
             borderRadius: 14,
             padding: '32px 28px',
           }}
@@ -329,7 +329,7 @@ export default function Mentors() {
           </h2>
 
           {/* Subtext */}
-          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.50)', lineHeight: 1.7, marginBottom: 24 }}>
+          <p style={{ fontSize: 14, color: '#666666', lineHeight: 1.7, marginBottom: 24 }}>
             Leave your WhatsApp — we&apos;ll message you when your matched mentor is available to book.
           </p>
 
@@ -359,7 +359,7 @@ export default function Mentors() {
             <div style={{ maxWidth: 360, margin: '0 auto' }}>
               <div style={{ display: 'flex', gap: 8 }}>
                 <div style={{ flex: 1, position: 'relative' }}>
-                  <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 13, color: 'rgba(255,255,255,0.35)', pointerEvents: 'none' }}>+91</span>
+                  <span style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', fontSize: 13, color: '#777777', pointerEvents: 'none' }}>+91</span>
                   <input
                     type="tel"
                     value={wa}
@@ -369,7 +369,7 @@ export default function Mentors() {
                     style={{
                       width: '100%', boxSizing: 'border-box',
                       paddingLeft: 42, paddingRight: 14, paddingTop: 12, paddingBottom: 12,
-                      background: 'rgba(255,255,255,0.05)', border: `1px solid ${err ? 'rgba(248,113,113,0.5)' : 'rgba(255,255,255,0.12)'}`,
+                      background: '#ffffff', border: `1px solid ${err ? 'rgba(248,113,113,0.6)' : '#F0ECE0'}`,
                       borderRadius: 8, color: '#1a1a1a', fontSize: 14,
                       outline: 'none',
                     }}
@@ -385,7 +385,7 @@ export default function Mentors() {
                     cursor: loading ? 'default' : 'pointer', whiteSpace: 'nowrap',
                     opacity: loading ? 0.7 : 1, transition: 'background 0.15s',
                   }}
-                  onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#4f46e5'; }}
+                  onMouseEnter={e => { if (!loading) e.currentTarget.style.background = '#E88600'; }}
                   onMouseLeave={e => { e.currentTarget.style.background = '#FF9500'; }}
                 >
                   {loading ? '...' : 'Notify me →'}
@@ -398,7 +398,7 @@ export default function Mentors() {
           {/* Microcopy */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: 18, marginTop: 16, flexWrap: 'wrap' }}>
             {['No spam', 'One message only', 'Free always'].map(t => (
-              <span key={t} style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', gap: 5 }}>
+              <span key={t} style={{ fontSize: 12, color: '#888888', display: 'flex', alignItems: 'center', gap: 5 }}>
                 <span style={{ color: '#4ade80' }}>✓</span>{t}
               </span>
             ))}
@@ -409,7 +409,7 @@ export default function Mentors() {
       {/* ══════════════ SECTION 5 — WHAT EVERY MENTOR BRINGS ══════════════ */}
       <section ref={featuresRef} style={{ ...REVEAL_STYLE, padding: '0 24px 80px' }}>
         <div style={{ maxWidth: 820, margin: '0 auto' }}>
-          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'rgba(255,255,255,0.30)', textAlign: 'center', marginBottom: 28 }}>
+          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888888', textAlign: 'center', marginBottom: 28 }}>
             What every mentor brings
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 14 }}>
@@ -423,8 +423,8 @@ export default function Mentors() {
         ref={ctaRef}
         style={{
           ...REVEAL_STYLE,
-          background: 'rgba(99,102,241,0.07)',
-          borderTop: '1px solid rgba(99,102,241,0.15)',
+          background: 'rgba(255,149,0,0.06)',
+          borderTop: '1px solid rgba(255,149,0,0.15)',
           padding: '64px 24px',
           textAlign: 'center',
         }}
@@ -433,25 +433,27 @@ export default function Mentors() {
           <h2 style={{ fontSize: 24, fontWeight: 700, color: '#1a1a1a', marginBottom: 12 }}>
             Find out who your mentor will be.
           </h2>
-          <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.50)', lineHeight: 1.7, maxWidth: 400, margin: '0 auto' }}>
+          <p style={{ fontSize: 14, color: '#666666', lineHeight: 1.7, maxWidth: 400, margin: '0 auto' }}>
             Take the free assessment — 5 minutes, no signup. We'll show you your score, your gaps, and the type of mentor we'd match you with.
           </p>
 
           {/* Buttons */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: 12, marginTop: 28, flexWrap: 'wrap' }}>
             <button
+              type="button"
               onClick={() => navigate('/start-assessment')}
-              onMouseEnter={e => { e.currentTarget.style.background = '#4f46e5'; e.currentTarget.style.transform = 'scale(1.02)'; }}
+              onMouseEnter={e => { e.currentTarget.style.background = '#E88600'; e.currentTarget.style.transform = 'scale(1.02)'; }}
               onMouseLeave={e => { e.currentTarget.style.background = '#FF9500'; e.currentTarget.style.transform = 'scale(1)'; }}
-              style={{ background: '#FF9500', color: '#1a1a1a', border: 'none', padding: '13px 32px', borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s, transform 0.15s', whiteSpace: 'nowrap' }}
+              style={{ background: '#FF9500', color: '#ffffff', border: 'none', padding: '13px 32px', borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s, transform 0.15s', whiteSpace: 'nowrap' }}
             >
               {PRIMARY_CTA_LABEL} →
             </button>
             <button
+              type="button"
               onClick={() => navigate('/waitlist')}
-              onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; e.currentTarget.style.color = '#fff'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; e.currentTarget.style.color = 'rgba(255,255,255,0.5)'; }}
-              style={{ background: 'transparent', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.12)', padding: '13px 24px', borderRadius: 9, fontSize: 14, fontWeight: 500, cursor: 'pointer', transition: 'border-color 0.15s, color 0.15s', whiteSpace: 'nowrap' }}
+              onMouseEnter={e => { e.currentTarget.style.borderColor = '#FFB347'; e.currentTarget.style.color = '#CC7000'; }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = '#F0ECE0'; e.currentTarget.style.color = '#666666'; }}
+              style={{ background: 'transparent', color: '#666666', border: '1px solid #F0ECE0', padding: '13px 24px', borderRadius: 9, fontSize: 14, fontWeight: 500, cursor: 'pointer', transition: 'border-color 0.15s, color 0.15s', whiteSpace: 'nowrap' }}
             >
               Join the waitlist
             </button>
@@ -460,7 +462,7 @@ export default function Mentors() {
           {/* Microcopy */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginTop: 16, flexWrap: 'wrap' }}>
             {['Free always', '5 minutes', 'No signup'].map(t => (
-              <span key={t} style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', gap: 5 }}>
+              <span key={t} style={{ fontSize: 12, color: '#888888', display: 'flex', alignItems: 'center', gap: 5 }}>
                 <span style={{ color: '#4ade80' }}>✓</span>{t}
               </span>
             ))}

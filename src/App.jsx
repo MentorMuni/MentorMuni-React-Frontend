@@ -36,6 +36,7 @@ const DesignSystemDemo = lazy(() => import("./components/DesignSystemDemo"));
 const CareerHealthDashboard = lazy(() => import("./components/CareerHealthDashboard"));
 const AIToolsKnowledgeBase = lazy(() => import("./components/AIToolsKnowledgeBase"));
 const InterviewReadinessToolsPage = lazy(() => import("./components/InterviewReadinessToolsPage"));
+const LeadershipBoard = lazy(() => import("./components/leadershipBoard"));
 
 function PageFallback() {
   return <div className="min-h-[60vh] bg-background" />;
@@ -44,13 +45,14 @@ function PageFallback() {
 function App() {
   return (
     <Router>
-      <div className="flex min-h-screen flex-col bg-background text-foreground-muted">
+      <div className="flex min-h-screen flex-col bg-background text-foreground-muted font-sans antialiased">
         <Navbar />
         <main className="flex-grow relative z-0">
           <Suspense fallback={<PageFallback />}>
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
+              <Route path="/leadership-board" element={<LeadershipBoard />} />
               {/* Specific /tools/* routes must be listed before /tools so they match first */}
               <Route path="/tools/interview-readiness" element={<InterviewReadinessToolsPage />} />
               <Route path="/interview-readiness-tools" element={<InterviewReadinessToolsPage />} />

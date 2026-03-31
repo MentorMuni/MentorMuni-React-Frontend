@@ -118,7 +118,7 @@ function ScoreRing({ score, size = 140 }) {
   return (
     <div className="flex flex-col items-center gap-2">
       <svg width={size} height={size} viewBox="0 0 120 120">
-        <circle cx="60" cy="60" r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth="10" />
+        <circle cx="60" cy="60" r={r} fill="none" stroke="rgba(15,23,42,0.08)" strokeWidth="10" />
         <circle
           cx="60" cy="60" r={r} fill="none"
           stroke={color} strokeWidth="10"
@@ -127,8 +127,8 @@ function ScoreRing({ score, size = 140 }) {
           transform="rotate(-90 60 60)"
           style={{ transition: 'stroke-dasharray 0.8s ease' }}
         />
-        <text x="60" y="55" textAnchor="middle" fill="white" fontSize="22" fontWeight="900" fontFamily="sans-serif">{score}</text>
-        <text x="60" y="71" textAnchor="middle" fill="rgba(255,255,255,0.45)" fontSize="9" fontFamily="sans-serif">out of 100</text>
+        <text x="60" y="55" textAnchor="middle" fill="#1A1A1A" fontSize="22" fontWeight="900" fontFamily="sans-serif">{score}</text>
+        <text x="60" y="71" textAnchor="middle" fill="#64748b" fontSize="9" fontFamily="sans-serif">out of 100</text>
       </svg>
       <span className="text-sm font-bold" style={{ color }}>{label}</span>
     </div>
@@ -140,10 +140,10 @@ function BarMetric({ label, value, color }) {
   return (
     <div>
       <div className="flex justify-between items-center mb-1.5">
-        <span className="text-xs font-semibold text-slate-300">{label}</span>
-        <span className="text-xs font-bold text-white">{value}%</span>
+        <span className="text-xs font-semibold text-[#444444]">{label}</span>
+        <span className="text-xs font-bold text-[#1A1A1A] tabular-nums">{value}%</span>
       </div>
-      <div className="h-1.5 rounded-full bg-white/8 overflow-hidden">
+      <div className="h-1.5 rounded-full bg-neutral-200/90 overflow-hidden">
         <div
           className="h-full rounded-full transition-all duration-700"
           style={{ width: `${value}%`, background: color }}
@@ -269,7 +269,7 @@ export default function ResumeAnalyzer() {
                   ATS Checker
                 </span>
               </h1>
-              <p className="text-slate-400 text-sm max-w-xl leading-relaxed">
+              <p className="text-[#555555] text-sm max-w-xl leading-relaxed">
                 75% of resumes are rejected before a human sees them. Upload yours and see your ATS score, keyword gaps, and exactly what to fix.
               </p>
             </div>
@@ -279,9 +279,9 @@ export default function ResumeAnalyzer() {
                 { icon: Target,     color: 'text-[#FF9500]', label: 'Keyword Match' },
                 { icon: TrendingUp, color: 'text-amber-400',  label: 'Fix Suggestions' },
               ].map(({ icon: Icon, color, label }) => (
-                <div key={label} className="flex items-center gap-1.5 bg-white/5 border border-[#E0DCCF] rounded-lg px-3 py-1.5">
+                <div key={label} className="flex items-center gap-1.5 bg-[#FFF8EE] border border-[#E0DCCF] rounded-lg px-3 py-1.5">
                   <Icon size={13} className={color} />
-                  <span className="text-xs font-semibold text-slate-300">{label}</span>
+                  <span className="text-xs font-semibold text-[#444444]">{label}</span>
                 </div>
               ))}
             </div>
@@ -297,9 +297,9 @@ export default function ResumeAnalyzer() {
           <div className="flex flex-col gap-5">
 
             {/* Upload zone */}
-            <div className="rounded-2xl border border-[#E0DCCF] bg-white/[0.03] overflow-hidden">
+            <div className="rounded-2xl border border-[#E0DCCF] bg-white shadow-sm overflow-hidden">
               <div className="px-5 pt-5 pb-4 border-b border-[#F0ECE0]">
-                <h2 className="text-sm font-black text-white">Upload Resume</h2>
+                <h2 className="text-sm font-black text-[#1A1A1A]">Upload Resume</h2>
                 <p className="text-xs text-slate-500 mt-0.5">PDF, DOC, or DOCX only · Max 5MB</p>
               </div>
               <div className="p-5">
@@ -319,7 +319,7 @@ export default function ResumeAnalyzer() {
                       <UploadCloud size={24} className="text-[#FF9500]" />
                     </div>
                     <div className="text-center">
-                      <p className="text-sm font-semibold text-white">
+                      <p className="text-sm font-semibold text-[#1A1A1A]">
                         {dragging ? 'Drop your file here' : 'Drag & drop your resume'}
                       </p>
                       <p className="text-xs text-slate-500 mt-1">or click to browse from your device</p>
@@ -341,12 +341,12 @@ export default function ResumeAnalyzer() {
                       <FileText size={18} className="text-[#FF9500]" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-white truncate">{file.name}</p>
+                      <p className="text-sm font-semibold text-[#1A1A1A] truncate">{file.name}</p>
                       <p className="text-xs text-slate-500">{(file.size / 1024).toFixed(0)} KB · Ready to analyse</p>
                     </div>
                     <button
                       onClick={() => { setFile(null); setResult(null); setFileError(null); }}
-                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg hover:bg-white/10 text-slate-500 hover:text-white transition-colors"
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg hover:bg-neutral-200/80 text-slate-600 hover:text-[#1A1A1A] transition-colors"
                     >
                       <X size={15} />
                     </button>
@@ -356,9 +356,9 @@ export default function ResumeAnalyzer() {
             </div>
 
             {/* Role selector */}
-            <div className="rounded-2xl border border-[#E0DCCF] bg-white/[0.03] overflow-hidden">
+            <div className="rounded-2xl border border-[#E0DCCF] bg-white shadow-sm overflow-hidden">
               <div className="px-5 pt-5 pb-4 border-b border-[#F0ECE0]">
-                <h2 className="text-sm font-black text-white">Target Role</h2>
+                <h2 className="text-sm font-black text-[#1A1A1A]">Target Role</h2>
                 <p className="text-xs text-slate-500 mt-0.5">We match keywords specific to this role</p>
               </div>
               <div className="p-5">
@@ -370,7 +370,7 @@ export default function ResumeAnalyzer() {
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                         role === r
                           ? 'bg-[#FF9500] text-white border border-[#FF9500]'
-                          : 'bg-white/5 border border-[#E0DCCF] text-slate-400 hover:border-[#FF9500]/45 hover:text-white'
+                          : 'bg-white border border-[#E0DCCF] text-[#555555] hover:border-[#FF9500]/45 hover:bg-[#FFF4E0] hover:text-[#1A1A1A]'
                       }`}
                     >
                       {r}
@@ -387,12 +387,12 @@ export default function ResumeAnalyzer() {
               className={`w-full flex items-center justify-center gap-2.5 py-4 rounded-xl font-bold text-base transition-all ${
                 canAnalyze
                   ? 'bg-[#FF9500] hover:bg-[#E88600] text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)]'
-                  : 'bg-white/5 border border-[#E0DCCF] text-slate-600 cursor-not-allowed'
+                  : 'bg-neutral-100 border border-[#E0DCCF] text-neutral-500 cursor-not-allowed'
               }`}
             >
               {analyzing ? (
                 <>
-                  <span className="h-4 w-4 rounded-full border-2 border-[#E0DCCF] border-t-white animate-spin" />
+                  <span className="h-4 w-4 rounded-full border-2 border-[#E0DCCF] border-t-[#FF9500] animate-spin" />
                   Analysing your resume…
                 </>
               ) : (
@@ -404,7 +404,7 @@ export default function ResumeAnalyzer() {
             </button>
 
             {apiError && (
-              <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+              <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
                 <div className="flex gap-2">
                   <AlertCircle size={18} className="shrink-0 mt-0.5 text-red-400" />
                   <span className="leading-relaxed">{apiError}</span>
@@ -420,12 +420,12 @@ export default function ResumeAnalyzer() {
           {/* ─── RIGHT: Results ─── */}
           <div className="flex flex-col gap-5">
             {!result && !analyzing && (
-              <div className="rounded-2xl border border-[#E0DCCF] bg-white/[0.03] p-8 flex flex-col items-center justify-center gap-4 text-center min-h-[320px]">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/5 border border-[#E0DCCF]">
+              <div className="rounded-2xl border border-[#E0DCCF] bg-white p-8 flex flex-col items-center justify-center gap-4 text-center min-h-[320px] shadow-sm">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#FFF8EE] border border-[#E0DCCF]">
                   <Target size={22} className="text-slate-600" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-slate-400">Your results will appear here</p>
+                  <p className="text-sm font-semibold text-[#666666]">Your results will appear here</p>
                   <p className="text-xs text-slate-600 mt-1 max-w-[220px]">Upload your resume and pick a role to see your ATS score and fix suggestions</p>
                 </div>
               </div>
@@ -441,7 +441,7 @@ export default function ResumeAnalyzer() {
                   </div>
                 </div>
                 <div className="text-center">
-                  <p className="text-sm font-bold text-white">Scanning your resume…</p>
+                  <p className="text-sm font-bold text-[#1A1A1A]">Scanning your resume…</p>
                   <p className="text-xs text-slate-500 mt-1">Checking ATS compatibility and keyword match</p>
                 </div>
                 <div className="flex gap-1.5">
@@ -455,7 +455,7 @@ export default function ResumeAnalyzer() {
             {result && (
               <>
                 {/* Score card */}
-                <div className="rounded-2xl border border-[#E0DCCF] bg-white/[0.03] p-6">
+                <div className="rounded-2xl border border-[#E0DCCF] bg-white p-6 shadow-sm">
                   <div className="flex items-center justify-between mb-5">
                     <div>
                       <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">ATS Score</p>
@@ -475,34 +475,34 @@ export default function ResumeAnalyzer() {
                 <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5">
                   <div className="flex items-center gap-2 mb-4">
                     <AlertCircle size={15} className="text-amber-400" />
-                    <h3 className="text-sm font-black text-amber-300">Suggested Fixes</h3>
+                    <h3 className="text-sm font-black text-amber-900">Suggested Fixes</h3>
                   </div>
                   <div className="flex flex-col gap-3">
                     {result.fixes.map((fix, i) => (
                       <div key={i} className="flex items-start gap-2.5">
                         <span className="mt-1 text-[10px] font-black text-amber-500 bg-amber-500/15 rounded px-1.5 py-0.5 shrink-0">{i + 1}</span>
-                        <p className="text-xs text-slate-400 leading-relaxed">{fix}</p>
+                        <p className="text-xs text-[#555555] leading-relaxed">{fix}</p>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Keywords */}
-                <div className="rounded-2xl border border-[#E0DCCF] bg-white/[0.03] p-5">
-                  <h3 className="text-sm font-black text-white mb-4">Keyword Analysis</h3>
+                <div className="rounded-2xl border border-[#E0DCCF] bg-white p-5 shadow-sm">
+                  <h3 className="text-sm font-black text-[#1A1A1A] mb-4">Keyword Analysis</h3>
                   <div className="mb-3">
-                    <p className="text-xs font-semibold text-green-400 mb-2">✓ Matched in your resume</p>
+                    <p className="text-xs font-semibold text-green-800 mb-2">✓ Matched in your resume</p>
                     <div className="flex flex-wrap gap-2">
                       {result.matched.map(k => (
-                        <span key={k} className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-green-500/10 border border-green-500/20 text-green-400">{k}</span>
+                        <span key={k} className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-green-50 border border-green-200 text-green-800">{k}</span>
                       ))}
                     </div>
                   </div>
                   <div>
-                    <p className="text-xs font-semibold text-red-400 mb-2">✗ Missing — add these</p>
+                    <p className="text-xs font-semibold text-red-700 mb-2">✗ Missing — add these</p>
                     <div className="flex flex-wrap gap-2">
                       {result.missing.map(k => (
-                        <span key={k} className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400">{k}</span>
+                        <span key={k} className="text-xs font-semibold px-2.5 py-1 rounded-lg bg-red-50 border border-red-200 text-red-800">{k}</span>
                       ))}
                     </div>
                   </div>
@@ -512,13 +512,13 @@ export default function ResumeAnalyzer() {
                 <div className="rounded-2xl border border-green-500/20 bg-green-500/5 p-5">
                   <div className="flex items-center gap-2 mb-3">
                     <CheckCircle size={14} className="text-green-400" />
-                    <h3 className="text-sm font-black text-green-300">What's working</h3>
+                    <h3 className="text-sm font-black text-green-900">What&apos;s working</h3>
                   </div>
                   <div className="flex flex-col gap-2">
                     {result.strengths.map((s, i) => (
                       <div key={i} className="flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-green-400" />
-                        <span className="text-xs text-slate-400">{s}</span>
+                        <span className="text-xs text-[#555555]">{s}</span>
                       </div>
                     ))}
                   </div>
@@ -533,7 +533,7 @@ export default function ResumeAnalyzer() {
       <section className="border-t border-[#F0ECE0] py-14 px-6">
         <div className="max-w-5xl mx-auto">
           <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-3">Why this matters</span>
-          <h2 className="text-xl font-black mb-6">What ATS filtering means for your application</h2>
+          <h2 className="text-xl font-black text-[#1A1A1A] mb-6">What ATS filtering means for your application</h2>
           <div className="grid sm:grid-cols-3 gap-4">
             {[
               { stat: '75%',   color: 'text-red-400',    border: 'border-red-500/20',    bg: 'bg-red-500/5',    label: 'Resumes rejected by ATS before a recruiter reads them' },
@@ -542,7 +542,7 @@ export default function ResumeAnalyzer() {
             ].map(({ stat, color, border, bg, label }) => (
               <div key={stat} className={`rounded-xl border ${border} ${bg} p-5`}>
                 <div className={`text-3xl font-black mb-2 ${color}`}>{stat}</div>
-                <p className="text-xs text-slate-400 leading-relaxed">{label}</p>
+                <p className="text-xs text-[#555555] leading-relaxed">{label}</p>
               </div>
             ))}
           </div>
@@ -552,8 +552,8 @@ export default function ResumeAnalyzer() {
       {/* ── CTA ── */}
       <section className="py-12 px-6 border-t border-[#F0ECE0]">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-xl font-black mb-2">Also check your interview readiness</h2>
-          <p className="text-slate-400 text-sm mb-6">A strong resume gets you the interview — preparation gets you the offer.</p>
+          <h2 className="text-xl font-black text-[#1A1A1A] mb-2">Also check your interview readiness</h2>
+          <p className="text-[#666666] text-sm mb-6">A strong resume gets you the interview — preparation gets you the offer.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to="/start-assessment"
@@ -563,7 +563,7 @@ export default function ResumeAnalyzer() {
             </Link>
             <Link
               to="/mock-interviews"
-              className="inline-flex items-center justify-center gap-2 border border-[#FF9500]/45 text-[#FF9500] hover:text-white hover:border-[#FFB347] font-semibold px-6 py-3 rounded-xl transition-all text-sm"
+              className="inline-flex items-center justify-center gap-2 border border-[#FF9500]/45 bg-white text-[#FF9500] hover:bg-[#FFF4E0] hover:border-[#FFB347] font-semibold px-6 py-3 rounded-xl transition-all text-sm"
             >
               Try AI Mock Interview
             </Link>

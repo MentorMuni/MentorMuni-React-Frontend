@@ -1,14 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Mail, Phone, MapPin, Send, RotateCcw, Loader2, MessageSquare, Check } from 'lucide-react';
 import { API_BASE } from '../config';
+import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_HREF } from '../constants/brandCopy';
 
 const ContactPage = () => {
+  const [searchParams] = useSearchParams();
+  const topic = searchParams.get('topic');
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     phone: '',
     message: ''
   });
+
+  useEffect(() => {
+    if (topic !== 'recruiters') return;
+    setFormData((prev) => {
+      if (prev.message.trim()) return prev;
+      return {
+        ...prev,
+        message:
+          "Hello — I'm reaching out from the For Recruiters page. I'd like to discuss hiring / partnership.",
+      };
+    });
+  }, [topic]);
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState({ type: '', message: '' });
@@ -127,7 +144,9 @@ const ContactPage = () => {
                 </div>
                 <div>
                   <h3 className="text-lg font-bold mb-1">Phone</h3>
-                  <p className="text-slate-300">+91 6000 000 000</p>
+                  <a href={CONTACT_PHONE_HREF} className="text-slate-300 hover:text-[#FF9500] transition-colors">
+                    {CONTACT_PHONE_DISPLAY}
+                  </a>
                   <p className="text-slate-400 text-sm">Mon-Fri, 9AM-6PM IST</p>
                 </div>
               </div>

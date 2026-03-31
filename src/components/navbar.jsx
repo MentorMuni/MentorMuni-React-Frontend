@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { AnimatePresence, motion } from 'framer-motion';
 import { Menu, X, ChevronDown, BarChart2, Mic, FileSearch, Cpu } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
-import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
+import { PRIMARY_CTA_LABEL, READINESS_TEST_COUPON_BADGE } from '../constants/brandCopy';
+import LimitedRewardLabel from './LimitedRewardLabel';
 
 const TOOLS = [
   {
@@ -10,7 +12,7 @@ const TOOLS = [
     color: 'text-[#FF9500]',
     bg: 'bg-[#FFF4E0]',
     title: 'Interview Readiness Score',
-    desc: 'Get your score across DSA, System Design & HR',
+    desc: 'DSA, SD & HR score — finish the test for a coupon (1:1 mentorship + AI mock)',
     href: '/interview-readiness-tools',
   },
   {
@@ -59,6 +61,7 @@ const Navbar = () => {
     { label: 'How It Works', path: '/how-it-works', exact: false },
     { label: 'Mentors', path: '/mentors', exact: false },
     { label: 'Outcomes', path: '/outcomes', exact: false },
+    { label: 'Leadership Board', path: '/leadership-board', exact: false },
   ];
 
   const isActive = (path, exact = false) => {
@@ -113,28 +116,28 @@ const Navbar = () => {
   return (
     <header className="sticky top-0 z-[100] border-b border-border bg-background/95 shadow-nav backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="h-20 flex items-center justify-between">
+        <div className="min-h-[5.25rem] lg:min-h-[5.5rem] flex items-center justify-between py-2">
 
-          <Link to="/" className="flex-shrink-0 flex items-center gap-3 group">
+          <Link to="/" className="flex-shrink-0 flex items-center gap-3 sm:gap-3.5 group">
             <img
               src="/MentorMuni-React-Frontend/mentormuni-logo.png"
               alt="MentorMuni Logo"
-              className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain group-hover:scale-105 transition-transform"
+              className="h-14 w-14 sm:h-16 sm:w-16 shrink-0 rounded-full object-contain ring-2 ring-[#F0ECE0] group-hover:ring-[#FFB347]/50 group-hover:scale-[1.02] transition-all"
             />
-            <span className="font-bold text-xl text-[#1A1A1A] hidden sm:inline">
+            <span className="font-extrabold text-2xl sm:text-[1.65rem] tracking-tight text-[#1A1A1A] hidden sm:inline">
               Mentor<span className="text-[#FF9500]">Muni</span>
             </span>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
+                className={`px-4 py-2.5 text-[0.9375rem] xl:text-base font-semibold rounded-xl transition-all ${
                   isActive(item.path, item.exact)
                     ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
-                    : 'text-[#444444] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+                    : 'text-[#333333] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
                 }`}
               >
                 {item.label}
@@ -143,19 +146,20 @@ const Navbar = () => {
 
             <div ref={toolsRef} className="relative">
               <button
+                type="button"
                 onClick={() => setToolsOpen(v => !v)}
-                className={`flex items-center gap-1 px-4 py-2 text-sm font-semibold rounded-lg transition-all ${
+                className={`flex items-center gap-1.5 px-4 py-2.5 text-[0.9375rem] xl:text-base font-semibold rounded-xl transition-all ${
                   toolsOpen
                     ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
-                    : 'text-[#444444] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+                    : 'text-[#333333] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
                 }`}
               >
                 Tools
-                <ChevronDown size={14} className={`transition-transform duration-200 ${toolsOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={18} strokeWidth={2.25} className={`shrink-0 transition-transform duration-200 ${toolsOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {toolsOpen && (
-                <div className="absolute top-full left-0 mt-2 w-72 rounded-xl border border-[#F0ECE0] bg-white shadow-[0_8px_32px_rgba(0,0,0,0.10)] overflow-hidden z-50">
+                <div className="absolute top-full left-0 mt-2 w-[19rem] rounded-xl border border-[#F0ECE0] bg-white shadow-[0_8px_32px_rgba(0,0,0,0.10)] overflow-hidden z-50">
                   <div className="p-2">
                     {TOOLS.map((tool) => {
                       const Icon = tool.icon;
@@ -164,24 +168,28 @@ const Navbar = () => {
                           key={tool.href}
                           to={tool.href}
                           onClick={() => setToolsOpen(false)}
-                          className="flex items-start gap-3 px-3 py-2.5 rounded-lg hover:bg-[#FFF8EE] transition-colors group"
+                          className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-[#FFF8EE] transition-colors group"
                         >
-                          <span className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${tool.bg}`}>
-                            <Icon size={15} className={tool.color} />
+                          <span className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${tool.bg}`}>
+                            <Icon size={17} className={tool.color} strokeWidth={2} />
                           </span>
                           <span>
-                            <span className="block text-sm font-semibold text-[#1A1A1A] group-hover:text-[#FF9500] transition-colors">{tool.title}</span>
-                            <span className="block text-xs text-[#666666] leading-snug mt-0.5">{tool.desc}</span>
+                            <span className="block text-[0.9375rem] font-semibold text-[#1A1A1A] group-hover:text-[#FF9500] transition-colors">{tool.title}</span>
+                            <span className="block text-[13px] text-[#666666] leading-snug mt-0.5">{tool.desc}</span>
                           </span>
                         </Link>
                       );
                     })}
                   </div>
-                  <div className="border-t border-[#F0ECE0] px-4 py-2.5 bg-[#FFF8EE]">
+                  <div className="border-t border-[#F0ECE0] px-4 py-3 bg-gradient-to-r from-amber-50/90 to-[#FFF8EE]">
+                    <div className="mb-1.5 w-fit">
+                      <LimitedRewardLabel className="text-[8px] px-2 py-0.5 [&_svg]:h-2.5 [&_svg]:w-2.5" />
+                    </div>
+                    <p className="text-[12px] text-[#444444] leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
                     <Link
                       to="/interview-readiness-tools"
                       onClick={() => setToolsOpen(false)}
-                      className="text-xs font-semibold text-[#FF9500] hover:text-[#E88600] transition-colors"
+                      className="text-sm font-semibold text-[#FF9500] hover:text-[#E88600] transition-colors"
                     >
                       Start with a free readiness check →
                     </Link>
@@ -191,7 +199,7 @@ const Navbar = () => {
             </div>
           </nav>
 
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3 xl:gap-4">
             <style>{`
               @keyframes nb-shimmer {
                 0%   { transform: translateX(-100%) skewX(-15deg); }
@@ -206,19 +214,19 @@ const Navbar = () => {
             `}</style>
             <Link
               to="/waitlist"
-              className="px-4 py-2 text-sm font-semibold rounded-lg border border-[#FF9500] text-[#FF9500] hover:bg-[#FFF4E0] transition-all"
+              className="px-5 py-2.5 text-[0.9375rem] xl:text-base font-semibold rounded-xl border-2 border-[#FF9500] text-[#FF9500] hover:bg-[#FFF4E0] transition-all"
             >
               Join Waitlist
             </Link>
             <button
               type="button"
               onClick={goToStartAssessment}
-              className="nb-cta relative inline-flex items-center gap-2 px-5 py-2.5 rounded-lg bg-[#FF9500] hover:bg-[#E88600] text-white font-bold transition-all overflow-hidden shadow-[0_4px_14px_rgba(255,149,0,0.25)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9500]"
+              className="nb-cta relative inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-[#FF9500] hover:bg-[#E88600] text-white text-[0.9375rem] xl:text-base font-bold transition-all overflow-hidden shadow-[0_4px_14px_rgba(255,149,0,0.25)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9500]"
             >
               <span className="nb-shine pointer-events-none absolute inset-0 w-1/3 bg-white/25 blur-sm" style={{ transform: 'translateX(-100%) skewX(-15deg)' }} />
-              <span className="relative flex h-2 w-2 shrink-0">
+              <span className="relative flex h-2.5 w-2.5 shrink-0">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1A8C55] opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#1A8C55]" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#1A8C55]" />
               </span>
               {PRIMARY_CTA_LABEL}
             </button>
@@ -233,15 +241,23 @@ const Navbar = () => {
           </button>
         </div>
 
+        <AnimatePresence>
         {isOpen && (
-          <div className="lg:hidden bg-[#FFF8EE] border-t border-[#F0ECE0] max-h-[calc(100vh-80px)] overflow-y-auto">
-            <nav className="flex flex-col p-4 space-y-2">
+          <motion.div
+            key="mobile-nav"
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="lg:hidden border-t border-[#F0ECE0] bg-[#FFF8EE]"
+          >
+            <nav className="flex max-h-[calc(100vh-5.5rem)] flex-col space-y-2 overflow-y-auto p-4">
               {navItems.map((item) => (
                 <Link
                   key={item.path}
                   to={item.path}
                   onClick={handleNavClick}
-                  className={`px-4 py-3 text-base font-semibold rounded-lg transition-all ${
+                  className={`px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
                     isActive(item.path, item.exact)
                       ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
                       : 'text-[#444444] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
@@ -265,10 +281,26 @@ const Navbar = () => {
                       <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${tool.bg}`}>
                         <Icon size={13} className={tool.color} />
                       </span>
-                      <span className="text-sm font-semibold">{tool.title}</span>
+                      <span className="text-base font-semibold">{tool.title}</span>
                     </Link>
                   );
                 })}
+                <div className="mx-2 mt-2 rounded-xl border border-orange-200/60 bg-gradient-to-r from-amber-50 to-[#FFF8EE] px-3 py-3">
+                  <div className="mb-1.5 w-fit">
+                    <LimitedRewardLabel className="text-[8px] px-2 py-0.5 [&_svg]:h-2.5 [&_svg]:w-2.5" />
+                  </div>
+                  <p className="text-xs text-[#444444] leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      handleNavClick();
+                      goToStartAssessment();
+                    }}
+                    className="text-sm font-semibold text-[#FF9500] hover:text-[#E88600] transition-colors"
+                  >
+                    Take the test →
+                  </button>
+                </div>
               </div>
 
               <div className="border-t border-[#F0ECE0] my-2"></div>
@@ -276,7 +308,7 @@ const Navbar = () => {
               <Link
                 to="/waitlist"
                 onClick={handleNavClick}
-                className="px-4 py-3 text-base font-semibold rounded-lg border border-[#FF9500] text-[#FF9500] flex items-center justify-center w-full transition-all"
+                className="px-4 py-3.5 text-lg font-semibold rounded-xl border-2 border-[#FF9500] text-[#FF9500] flex items-center justify-center w-full transition-all"
               >
                 Join Waitlist
               </Link>
@@ -286,13 +318,14 @@ const Navbar = () => {
                   handleNavClick();
                   goToStartAssessment();
                 }}
-                className="px-4 py-3 text-base font-bold rounded-lg bg-[#FF9500] hover:bg-[#E88600] text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all flex items-center justify-center gap-2 w-full"
+                className="px-4 py-3.5 text-lg font-bold rounded-xl bg-[#FF9500] hover:bg-[#E88600] text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all flex items-center justify-center gap-2 w-full"
               >
                 {PRIMARY_CTA_LABEL}
               </button>
             </nav>
-          </div>
+          </motion.div>
         )}
+        </AnimatePresence>
       </div>
     </header>
   );

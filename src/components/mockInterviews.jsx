@@ -71,7 +71,7 @@ const MockInterviews = () => {
                     </span>
                   </h1>
                 </div>
-                <p className="text-slate-400 text-base max-w-xl leading-relaxed">
+                <p className="text-[#555555] text-base max-w-xl leading-relaxed">
                   Practice with real-time evaluation and feedback aligned to campus and off-campus tech rounds — same visual language as the rest of MentorMuni.
                 </p>
               </div>
@@ -82,10 +82,10 @@ const MockInterviews = () => {
                 ].map(({ icon: Icon, label }) => (
                   <div
                     key={label}
-                    className="flex items-center gap-1.5 rounded-lg border border-[#E0DCCF] bg-white/5 px-3 py-1.5"
+                    className="flex items-center gap-1.5 rounded-lg border border-[#E0DCCF] bg-[#FFF8EE] px-3 py-1.5"
                   >
                     <Icon size={13} className="text-[#FF9500]" />
-                    <span className="text-xs font-semibold text-slate-300">{label}</span>
+                    <span className="text-xs font-semibold text-[#444444]">{label}</span>
                   </div>
                 ))}
               </div>
@@ -99,13 +99,13 @@ const MockInterviews = () => {
             {features.map(({ icon: Icon, title, desc, cta, href }) => (
               <div
                 key={title}
-                className="group rounded-2xl border border-[#E0DCCF] bg-white/[0.03] p-6 transition-all hover:border-[#FF9500]/35 hover:bg-[#E88600]/[0.04]"
+                className="group rounded-2xl border border-[#E0DCCF] bg-white p-6 shadow-sm transition-all hover:border-[#FF9500]/40 hover:shadow-md"
               >
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#FF9500]/10 border border-[#FF9500]/15 mb-4">
                   <Icon size={20} className="text-[#FF9500]" />
                 </div>
-                <h3 className="text-lg font-bold text-white mb-2">{title}</h3>
-                <p className="text-sm text-slate-400 leading-relaxed mb-5">{desc}</p>
+                <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">{title}</h3>
+                <p className="text-sm text-[#666666] leading-relaxed mb-5">{desc}</p>
                 <Link
                   to={href}
                   className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#FF9500] hover:text-[#CC7000] transition-colors"
@@ -123,8 +123,8 @@ const MockInterviews = () => {
                 <Sparkles size={12} />
                 Coming soon
               </div>
-              <h2 className="text-2xl md:text-3xl font-black text-white mb-3">Full mock interview platform</h2>
-              <p className="text-slate-400 text-sm max-w-2xl mx-auto leading-relaxed mb-8">
+              <h2 className="text-2xl md:text-3xl font-black text-[#1A1A1A] mb-3">Full mock interview platform</h2>
+              <p className="text-[#555555] text-sm max-w-2xl mx-auto leading-relaxed mb-8">
                 Live mentors, AI evaluation, and performance analytics — built for engineering students in India. Be among the first to get access.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -137,7 +137,7 @@ const MockInterviews = () => {
                 </Link>
                 <Link
                   to="/start-assessment"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#FF9500]/45 text-[#FF9500] hover:text-white hover:border-[#FFB347]/60 px-6 py-3 text-sm font-semibold transition-all"
+                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#FF9500]/45 bg-white/80 text-[#FF9500] hover:bg-[#FFF4E0] hover:border-[#FFB347]/60 px-6 py-3 text-sm font-semibold transition-all"
                 >
                   Check interview readiness — Free
                 </Link>

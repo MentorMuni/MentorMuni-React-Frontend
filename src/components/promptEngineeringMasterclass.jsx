@@ -476,7 +476,7 @@ Now write the documentation.`}
                 <h3 className="text-2xl font-bold mb-4">Example 1: Content Creation</h3>
                 <p className="text-[#666666] mb-3 font-semibold">Task: Write LinkedIn post about AI</p>
                 <CodeBlock
-                  code={`You are a LinkedIn marketing expert. Write an engaging LinkedIn post (100-150 words) about "The Future of AI in 2025" for a tech professional audience.
+                  code={`You are a LinkedIn marketing expert. Write an engaging LinkedIn post (100-150 words) about "The Future of AI in 2026" for a tech professional audience.
 
 Requirements:
 - Start with a thought-provoking question

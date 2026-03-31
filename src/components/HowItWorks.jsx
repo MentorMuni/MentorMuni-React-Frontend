@@ -1,6 +1,6 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import {
   ClipboardCheck,
   Users,
@@ -129,11 +129,17 @@ function PhaseCard({ phase, index }) {
 }
 
 export default function HowItWorks() {
+  const reduceMotion = useReducedMotion();
   return (
     <div className="min-h-screen bg-[#FFFDF8] font-sans text-[#1A1A1A]">
       {/* Hero */}
       <section className="relative overflow-hidden border-b border-[#F0ECE0] px-6 pb-16 pt-24 md:pt-28">
-        <div className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[800px] -translate-x-1/2 bg-[#FF9500]/[0.12] blur-[120px]" aria-hidden />
+        <motion.div
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[800px] -translate-x-1/2 bg-[#FF9500]/[0.12] blur-[120px]"
+          animate={reduceMotion ? undefined : { scale: [1, 1.03, 1], opacity: [0.85, 1, 0.85] }}
+          transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+        />
         <div className="relative mx-auto max-w-3xl text-center">
           <FadeUp>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#FF9500]/30 bg-[#FF9500]/10 px-4 py-1.5">

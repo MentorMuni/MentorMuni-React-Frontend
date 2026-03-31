@@ -478,7 +478,7 @@ char firstLetter = 'J';`}
         String myName = "Your Name";
         int myAge = 20;
         double myHeight = 5.9;
-        int graduationYear = 2025;
+        int graduationYear = 2026;
         
         System.out.println("Name: " + myName);
         System.out.println("Age: " + myAge);

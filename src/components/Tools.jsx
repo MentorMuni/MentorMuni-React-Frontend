@@ -1,6 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { FileText, Brain, ClipboardCheck, TrendingUp, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { FileText, Brain, ClipboardCheck, TrendingUp, ArrowRight, Gift } from 'lucide-react';
+import { READINESS_TEST_COUPON_BADGE, READINESS_TEST_COUPON_PROMO } from '../constants/brandCopy';
+import LimitedRewardLabel from './LimitedRewardLabel';
 
 const Tools = () => {
   const tools = [
@@ -75,32 +78,58 @@ const Tools = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground pt-20 pb-20">
+      <div className="pointer-events-none fixed inset-x-0 top-0 h-[min(55vh,420px)] bg-gradient-to-b from-[#FF9500]/[0.09] to-transparent -z-10" aria-hidden />
       <div className="max-w-6xl mx-auto px-6">
-        <div className="text-center mb-14 max-w-3xl mx-auto">
+        <motion.div
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center mb-14 max-w-3xl mx-auto"
+        >
           <p className="text-xs font-semibold uppercase tracking-widest text-[#CC7000] mb-3">
             Free tools · Same mission as the rest of MentorMuni
           </p>
           <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#1A1A1A] mb-4 tracking-tight leading-tight">
             Know your gaps before the shortlist does
           </h1>
-          <p className="text-lg text-[#666666] leading-relaxed">
-            Most students prep harder, not smarter. These tools help you{' '}
-            <span className="text-[#1A1A1A] font-semibold">measure</span>,{' '}
-            <span className="text-[#1A1A1A] font-semibold">fix what filters you out</span>, and{' '}
-            <span className="text-[#1A1A1A] font-semibold">practice like the real round</span>—without guessing where to start.
+          <p className="text-base md:text-lg text-[#666666] leading-relaxed">
+            Measure first, then fix what filters you out—without guessing where to start.
           </p>
+        </motion.div>
+
+        <div className="mb-10 max-w-3xl mx-auto rounded-2xl border border-orange-200/70 bg-gradient-to-r from-amber-50/95 to-[#FFF8EE] px-4 py-4 sm:px-6 sm:py-5">
+          <div className="flex items-start gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FF9500] to-amber-600 text-white shadow-sm">
+              <Gift size={20} strokeWidth={2} />
+            </span>
+            <div>
+              <div className="mb-1.5 w-fit">
+                <LimitedRewardLabel />
+              </div>
+              <p className="text-sm text-[#1A1A1A] font-medium leading-snug">
+                <span className="sm:hidden">{READINESS_TEST_COUPON_BADGE}</span>
+                <span className="hidden sm:inline">{READINESS_TEST_COUPON_PROMO}</span>
+              </p>
+            </div>
+          </div>
         </div>
 
         <div className="grid md:grid-cols-2 gap-6">
-          {tools.map((tool) => {
+          {tools.map((tool, idx) => {
             const Icon = tool.icon;
             const c = colorMap[tool.color];
 
             return (
-              <Link
+              <motion.div
                 key={tool.id}
+                initial={{ opacity: 0, y: 22 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.4, delay: idx * 0.06, ease: [0.22, 1, 0.36, 1] }}
+              >
+              <Link
                 to={tool.href}
-                className={`group block rounded-2xl border bg-white p-7 shadow-card transition-all ${c.border} ${c.hover} hover:shadow-lg`}
+                className={`group block h-full rounded-2xl border bg-white p-7 shadow-card transition-all ${c.border} ${c.hover} hover:shadow-lg hover:-translate-y-0.5`}
               >
                 <div
                   className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl border ${c.bg} ${c.border}`}
@@ -126,13 +155,21 @@ const Tools = () => {
                   <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
                 </div>
               </Link>
+              </motion.div>
             );
           })}
         </div>
 
-        <div className="mt-14 rounded-2xl border border-[#F0ECE0] bg-[#FFF8EE] px-6 py-8 text-center">
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.4 }}
+          className="mt-14 rounded-2xl border border-[#F0ECE0] bg-[#FFF8EE] px-6 py-8 text-center"
+        >
           <p className="text-sm text-[#666666] mb-5 max-w-xl mx-auto">
-            Start with the <span className="font-semibold text-[#1A1A1A]">readiness score</span> to see where you stand in minutes.
+            Start with the <span className="font-semibold text-[#1A1A1A]">readiness score</span> to see where you stand in minutes —{' '}
+            <span className="font-semibold text-[#9A3412]">{READINESS_TEST_COUPON_BADGE}</span>.
             Other tools stay free to try with fair usage limits.
           </p>
           <Link
@@ -142,7 +179,7 @@ const Tools = () => {
             Check my readiness — free
             <ArrowRight className="h-5 w-5" />
           </Link>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

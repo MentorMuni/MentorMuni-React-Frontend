@@ -46,7 +46,7 @@ function StatCard({ icon, value, label }) {
 }
 
 /* ─── Beta feedback card ───────────────────────────────────── */
-function FeedbackCard({ quote, initial, avBg, name, tag }) {
+function FeedbackCard({ quote, initial, avBg, name }) {
   return (
     <div style={{
       background: '#ffffff', border: '1px solid #f0ece0',
@@ -109,7 +109,7 @@ function SectionLabel({ children }) {
   return (
     <p style={{
       fontSize: 11, fontWeight: 600, letterSpacing: '0.12em',
-      textTransform: 'uppercase', color: 'rgba(255,255,255,0.30)',
+      textTransform: 'uppercase', color: '#888888',
       textAlign: 'center', marginBottom: 28,
     }}>
       {children}
@@ -131,17 +131,18 @@ function CTAButtons({ navigate }) {
           {PRIMARY_CTA_LABEL} →
         </button>
         <button
+          type="button"
           onClick={() => navigate('/waitlist')}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.3)'; e.currentTarget.style.color = '#fff'; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; e.currentTarget.style.color = 'rgba(255,255,255,0.5)'; }}
-          style={{ background: 'transparent', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.12)', padding: '13px 24px', borderRadius: 9, fontSize: 14, fontWeight: 500, cursor: 'pointer', transition: 'border-color 0.15s, color 0.15s', whiteSpace: 'nowrap' }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = '#FFB347'; e.currentTarget.style.color = '#CC7000'; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = '#F0ECE0'; e.currentTarget.style.color = '#666666'; }}
+          style={{ background: 'transparent', color: '#666666', border: '1px solid #F0ECE0', padding: '13px 24px', borderRadius: 9, fontSize: 14, fontWeight: 500, cursor: 'pointer', transition: 'border-color 0.15s, color 0.15s', whiteSpace: 'nowrap' }}
         >
           Join the waitlist
         </button>
       </div>
       <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginTop: 16, flexWrap: 'wrap' }}>
         {['Free always', '5 minutes', 'No signup'].map(t => (
-          <span key={t} style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', display: 'flex', alignItems: 'center', gap: 5 }}>
+          <span key={t} style={{ fontSize: 12, color: '#888888', display: 'flex', alignItems: 'center', gap: 5 }}>
             <span style={{ color: '#4ade80' }}>✓</span>{t}
           </span>
         ))}
@@ -163,7 +164,7 @@ export default function SuccessStories() {
   const ctaRef       = useReveal(0);
 
   return (
-    <div style={{ background: '#fffdf8', minHeight: '100vh', color: '#1a1a1a', fontFamily: 'Inter, system-ui, sans-serif' }}>
+    <div className="min-h-screen bg-[#fffdf8] font-sans text-[#1a1a1a] antialiased">
       <style>{`
         @keyframes ss-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
         @media(max-width:640px){
@@ -260,7 +261,7 @@ export default function SuccessStories() {
             </button>
             <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', justifyContent: 'center' }}>
               {['Start free', 'No commitment', '8 spots left'].map(t => (
-                <span key={t} style={{ fontSize: 12, color: 'rgba(255,255,255,0.28)', display: 'flex', alignItems: 'center', gap: 5 }}>
+                <span key={t} style={{ fontSize: 12, color: '#888888', display: 'flex', alignItems: 'center', gap: 5 }}>
                   <span style={{ color: '#4ade80' }}>✓</span>{t}
                 </span>
               ))}
@@ -350,7 +351,7 @@ export default function SuccessStories() {
       </section>
 
       {/* ══════ SECTION 8 — FOOTER ══════ */}
-      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.05)', padding: '56px 24px 32px' }}>
+      <footer style={{ borderTop: '1px solid #F0ECE0', background: '#FFF8EE', padding: '56px 24px 32px' }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 32, marginBottom: 40 }} className="ss-footer-grid">
             <style>{`@media(max-width:640px){ .ss-footer-grid{ grid-template-columns:1fr 1fr !important; } }`}</style>
@@ -358,12 +359,12 @@ export default function SuccessStories() {
             {/* Brand */}
             <div>
               <p style={{ fontWeight: 700, color: '#1a1a1a', fontSize: 15, marginBottom: 8 }}>MentorMuni</p>
-              <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', lineHeight: 1.6, marginBottom: 14, maxWidth: 220 }}>
+              <p style={{ fontSize: 13, color: '#666666', lineHeight: 1.6, marginBottom: 14, maxWidth: 220 }}>
                 Know your interview readiness. Improve it. Crack it.
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <a href="mailto:enroll@mentormuni.com" style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', textDecoration: 'none' }}>enroll@mentormuni.com</a>
-                <a href="tel:+919146421302"            style={{ fontSize: 13, color: 'rgba(255,255,255,0.35)', textDecoration: 'none' }}>+91 91464 21302</a>
+                <a href="mailto:enroll@mentormuni.com" style={{ fontSize: 13, color: '#666666', textDecoration: 'none' }}>enroll@mentormuni.com</a>
+                <a href="tel:+919146421302" style={{ fontSize: 13, color: '#666666', textDecoration: 'none' }}>+91 91464 21302</a>
               </div>
             </div>
 
@@ -399,11 +400,11 @@ export default function SuccessStories() {
           </div>
 
           {/* Bottom bar */}
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
-            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)' }}>© {new Date().getFullYear()} MentorMuni. All rights reserved.</p>
+          <div style={{ borderTop: '1px solid #F0ECE0', paddingTop: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+            <p style={{ fontSize: 12, color: '#888888' }}>© {new Date().getFullYear()} MentorMuni. All rights reserved.</p>
             <div style={{ display: 'flex', gap: 20 }}>
               {['Terms', 'Privacy', 'Cookies'].map(t => (
-                <Link key={t} to="/contact" style={{ fontSize: 12, color: 'rgba(255,255,255,0.25)', textDecoration: 'none' }}>{t}</Link>
+                <Link key={t} to="/contact" style={{ fontSize: 12, color: '#888888', textDecoration: 'none' }}>{t}</Link>
               ))}
             </div>
           </div>
