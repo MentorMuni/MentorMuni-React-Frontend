@@ -781,46 +781,47 @@ const HomePage = () => {
           .mm-hero-eyebrow-pill { animation: none !important; background-position: 0% 50% !important; }
         }
       `}</style>
-      {/* ════════════════ Coupon promo — Interview Readiness reward ════════════════ */}
-      <div className="border-b border-orange-300/50 bg-gradient-to-r from-amber-50 via-[#FFF7ED] to-cyan-50/90 px-4 py-3.5 shadow-[inset_0_-1px_0_rgba(234,88,12,0.08)]">
-        <div className="mx-auto flex max-w-5xl flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-          <div className="flex min-w-0 items-start gap-3 sm:items-center">
-            <span
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FF9500] to-[#EA580C] text-white shadow-[0_4px_14px_-4px_rgba(234,88,12,0.55)] ring-2 ring-white/70"
-              aria-hidden
-            >
-              <Gift size={18} strokeWidth={2.2} />
-            </span>
-            <div className="min-w-0 text-left">
-              <div className="mb-1 w-fit">
-                <LimitedRewardLabel className="sm:text-[10px] sm:px-3 sm:py-1.5" />
+      {/* ════════════════ Promo bar: reward + mentorship line (single band, aligned to page grid) ════════════════ */}
+      <div className="border-b border-orange-200/60 bg-gradient-to-r from-amber-50/95 via-[#FFF8F0] to-cyan-50/80 shadow-[inset_0_-1px_0_rgba(234,88,12,0.06)]">
+        <div className="mx-auto max-w-7xl px-4 py-3.5 sm:px-6 lg:px-8">
+          <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:gap-8">
+            <div className="flex min-w-0 flex-1 items-center gap-3 sm:gap-4">
+              <span
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FF9500] to-[#EA580C] text-white shadow-md ring-2 ring-white/80"
+                aria-hidden
+              >
+                <Gift size={20} strokeWidth={2.2} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="mb-1.5 w-fit">
+                  <LimitedRewardLabel className="sm:text-[10px] sm:px-3 sm:py-1.5" />
+                </div>
+                <p className="text-[13px] font-semibold leading-snug text-neutral-900 sm:text-sm">
+                  <span className="sm:hidden">{READINESS_TEST_COUPON_BADGE}</span>
+                  <span className="hidden sm:inline">{READINESS_TEST_COUPON_PROMO}</span>
+                </p>
               </div>
-              <p className="mt-0.5 text-[13px] font-semibold leading-snug text-neutral-900 sm:text-sm">
-                <span className="sm:hidden">{READINESS_TEST_COUPON_BADGE}</span>
-                <span className="hidden sm:inline">{READINESS_TEST_COUPON_PROMO}</span>
-              </p>
             </div>
+            <button
+              type="button"
+              onClick={goToStartAssessment}
+              className="inline-flex h-11 w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#1A1A1A] px-5 text-xs font-bold text-white shadow-md transition hover:bg-neutral-800 sm:w-auto sm:min-w-[12rem] sm:text-sm"
+            >
+              Take Interview Readiness test
+              <ArrowRight size={16} className="opacity-90" aria-hidden />
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={goToStartAssessment}
-            className="inline-flex shrink-0 items-center justify-center gap-2 self-center rounded-xl bg-[#1A1A1A] px-4 py-2.5 text-xs font-bold text-white shadow-lg transition hover:bg-neutral-800 sm:self-auto sm:px-5 sm:text-sm"
-          >
-            Take Interview Readiness test
-            <ArrowRight size={16} className="opacity-90" aria-hidden />
-          </button>
+          <div className="mt-3 flex justify-center border-t border-orange-200/50 pt-3">
+            <Link
+              to="/waitlist"
+              className="text-[11px] font-medium tracking-wide text-neutral-600 transition-colors hover:text-[#CC7000] sm:text-xs"
+            >
+              {MENTORSHIP_BANNER}
+              <span className="text-neutral-400"> · </span>
+              <span className="font-semibold text-[#CC7000]">Join waitlist</span>
+            </Link>
+          </div>
         </div>
-      </div>
-      {/* ════════════════ ANNOUNCEMENT — minimal strip (editorial) ════════════════ */}
-      <div className="border-b border-neutral-200/80 bg-white/90 py-2.5 text-center backdrop-blur-sm">
-        <Link
-          to="/waitlist"
-          className="text-[11px] font-medium tracking-wide text-neutral-600 transition-colors hover:text-[#CC7000] sm:text-xs"
-        >
-          {MENTORSHIP_BANNER}
-          <span className="text-neutral-400"> · </span>
-          <span className="text-[#CC7000]">Join waitlist</span>
-        </Link>
       </div>
 
       {/* ════════════════ HERO — editorial layout, calm canvas, strong type ════════════════ */}

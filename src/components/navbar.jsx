@@ -113,32 +113,34 @@ const Navbar = () => {
     setIsOpen(false);
   };
 
-  return (
-    <header className="sticky top-0 z-[100] border-b border-border bg-background/95 shadow-nav backdrop-blur-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="min-h-[5.25rem] lg:min-h-[5.5rem] flex items-center justify-between py-2">
+  const navLinkClass = (active) =>
+    `inline-flex h-10 items-center whitespace-nowrap rounded-lg px-2.5 text-[0.8125rem] font-semibold leading-none transition-all xl:px-3 xl:text-[0.875rem] ${
+      active
+        ? 'text-[#FF9500] bg-[#FFF4E0] ring-1 ring-[#FFB347]/35'
+        : 'text-[#333333] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+    }`;
 
-          <Link to="/" className="flex-shrink-0 flex items-center gap-3 sm:gap-3.5 group">
+  return (
+    <header className="sticky top-0 z-[100] border-b border-[#F0ECE0] bg-white/95 shadow-[0_1px_0_rgba(0,0,0,0.04)] backdrop-blur-md">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-[4.25rem] items-center gap-3 lg:h-[4.5rem] lg:gap-4">
+          <Link to="/" className="group flex shrink-0 items-center gap-2.5 sm:gap-3">
             <img
               src="/MentorMuni-React-Frontend/mentormuni-logo.png"
               alt="MentorMuni Logo"
-              className="h-14 w-14 sm:h-16 sm:w-16 shrink-0 rounded-full object-contain ring-2 ring-[#F0ECE0] group-hover:ring-[#FFB347]/50 group-hover:scale-[1.02] transition-all"
+              className="h-11 w-11 shrink-0 rounded-full object-contain ring-2 ring-[#F0ECE0] transition-all group-hover:ring-[#FFB347]/50 sm:h-12 sm:w-12"
             />
-            <span className="font-extrabold text-2xl sm:text-[1.65rem] tracking-tight text-[#1A1A1A] hidden sm:inline">
+            <span className="hidden text-xl font-extrabold tracking-tight text-[#1A1A1A] sm:inline sm:text-[1.4rem]">
               Mentor<span className="text-[#FF9500]">Muni</span>
             </span>
           </Link>
 
-          <nav className="hidden lg:flex items-center gap-0.5 xl:gap-1">
+          <nav className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 lg:flex xl:gap-1">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`px-4 py-2.5 text-[0.9375rem] xl:text-base font-semibold rounded-xl transition-all ${
-                  isActive(item.path, item.exact)
-                    ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
-                    : 'text-[#333333] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
-                }`}
+                className={navLinkClass(isActive(item.path, item.exact))}
               >
                 {item.label}
               </Link>
@@ -148,14 +150,14 @@ const Navbar = () => {
               <button
                 type="button"
                 onClick={() => setToolsOpen(v => !v)}
-                className={`flex items-center gap-1.5 px-4 py-2.5 text-[0.9375rem] xl:text-base font-semibold rounded-xl transition-all ${
+                className={`inline-flex h-10 items-center gap-1 rounded-lg px-2.5 text-[0.8125rem] font-semibold transition-all xl:px-3 xl:text-[0.875rem] ${
                   toolsOpen
-                    ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
+                    ? 'text-[#FF9500] bg-[#FFF4E0] ring-1 ring-[#FFB347]/35'
                     : 'text-[#333333] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
                 }`}
               >
                 Tools
-                <ChevronDown size={18} strokeWidth={2.25} className={`shrink-0 transition-transform duration-200 ${toolsOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={16} strokeWidth={2.25} className={`shrink-0 transition-transform duration-200 ${toolsOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {toolsOpen && (
@@ -199,7 +201,7 @@ const Navbar = () => {
             </div>
           </nav>
 
-          <div className="hidden lg:flex items-center gap-3 xl:gap-4">
+          <div className="hidden shrink-0 items-center gap-2 lg:flex">
             <style>{`
               @keyframes nb-shimmer {
                 0%   { transform: translateX(-100%) skewX(-15deg); }
@@ -214,21 +216,23 @@ const Navbar = () => {
             `}</style>
             <Link
               to="/waitlist"
-              className="px-5 py-2.5 text-[0.9375rem] xl:text-base font-semibold rounded-xl border-2 border-[#FF9500] text-[#FF9500] hover:bg-[#FFF4E0] transition-all"
+              className="inline-flex h-11 min-w-[7.5rem] items-center justify-center rounded-xl border-2 border-[#FF9500] px-4 text-[0.8125rem] font-semibold text-[#FF9500] transition-all hover:bg-[#FFF4E0] xl:text-[0.875rem]"
             >
               Join Waitlist
             </Link>
             <button
               type="button"
               onClick={goToStartAssessment}
-              className="nb-cta relative inline-flex items-center gap-2.5 px-6 py-3 rounded-xl bg-[#FF9500] hover:bg-[#E88600] text-white text-[0.9375rem] xl:text-base font-bold transition-all overflow-hidden shadow-[0_4px_14px_rgba(255,149,0,0.25)] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9500]"
+              className="nb-cta relative inline-flex h-11 max-w-[16.5rem] items-center justify-center gap-2 overflow-hidden rounded-xl bg-[#FF9500] px-4 text-[0.8125rem] font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-colors hover:bg-[#E88600] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9500] xl:max-w-none xl:px-5 xl:text-[0.875rem]"
             >
               <span className="nb-shine pointer-events-none absolute inset-0 w-1/3 bg-white/25 blur-sm" style={{ transform: 'translateX(-100%) skewX(-15deg)' }} />
-              <span className="relative flex h-2.5 w-2.5 shrink-0">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#1A8C55] opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#1A8C55]" />
+              <span className="relative flex h-2 w-2 shrink-0">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#1A8C55] opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#1A8C55]" />
               </span>
-              {PRIMARY_CTA_LABEL}
+              <span className="relative max-w-[11rem] truncate text-left leading-tight sm:max-w-none">
+                {PRIMARY_CTA_LABEL}
+              </span>
             </button>
           </div>
 
