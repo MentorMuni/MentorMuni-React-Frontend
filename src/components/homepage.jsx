@@ -569,7 +569,6 @@ function MentorMuniPosterCarousel({ className = '' }) {
       aria-label="How MentorMuni addresses common prep problems"
     >
       <div>
-        {/* Dark base + min-height so crossfade never reveals white card behind */}
         <div
           className="relative cursor-pointer overflow-hidden rounded-t-xl bg-zinc-950"
           onClick={next}
@@ -1214,29 +1213,36 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ════════════════ MARKET REALITY — single scannable block (replaces two long sections) ════════════════ */}
+      {/* ════════════════ WHY MENTORMUNI — origin story + urgency (leads the page narrative) ════════════════ */}
       <section className="relative py-16 md:py-20 px-6 border-t border-[#F0ECE0] overflow-hidden bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE]">
         <div className="pointer-events-none absolute right-0 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-[rgba(255,149,0,0.1)] blur-[100px]" aria-hidden />
         <div className="max-w-5xl mx-auto relative">
           <FadeUp>
-            <span className="text-xs font-bold text-[#CC7000] uppercase tracking-[0.2em] block mb-3">Why MentorMuni exists</span>
+            <span className="text-xs font-bold text-[#CC7000] uppercase tracking-[0.2em] block mb-3">Why MentorMuni</span>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-4 leading-[1.15] tracking-tight max-w-3xl">
-              Hiring got harder.{' '}
+              Too many students walk into placement{' '}
               <span className="bg-gradient-to-r from-[#FF9500] to-[#FFB347] bg-clip-text text-transparent">
-                Generic prep won&apos;t cut it.
+                before they&apos;ve ever had a real mock.
               </span>
             </h2>
+            <p className="text-[#666666] text-base md:text-lg max-w-2xl leading-relaxed mb-4">
+              We started MentorMuni after seeing the same pattern: final-year students showing up for interviews with almost no structured prep—no measured baseline, no serious mock round, sometimes no practice speaking answers under pressure. The first time they truly get evaluated is often already the real interview—and the rejection email follows.
+            </p>
             <p className="text-[#666666] text-base md:text-lg max-w-2xl leading-relaxed mb-10">
-              Fewer entry roles, more competition, and new interview criteria—measure your gaps first, then fix what actually moves the needle.
+              Hiring is tighter and panels are unforgiving. You don&apos;t get unlimited shots. That&apos;s why we built MentorMuni so you can go in at full strength:{' '}
+              <span className="font-semibold text-[#1A1A1A]">
+                interview readiness check, AI mock interviews, and mentor-backed prep
+              </span>
+              —all before the rounds that actually count.
             </p>
           </FadeUp>
 
           <div className="grid sm:grid-cols-2 gap-4 mb-10">
             {[
-              { icon: '📉', title: 'Tighter hiring', line: 'Fewer entry-level seats—same graduate pool.', tint: 'from-red-500/10 to-transparent border-red-500/20' },
-              { icon: '🤖', title: 'AI is on the scorecard', line: 'Tool fluency shows up in technical rounds.', tint: 'from-amber-500/10 to-transparent border-amber-500/25' },
-              { icon: '⚡', title: '15:1 competition', line: 'Specific prep beats “study everything.”', tint: 'from-[#FF9500]/12 to-transparent border-[#FFB347]/30' },
-              { icon: '🎯', title: 'Exams ≠ interviews', line: 'Memory under time ≠ thinking out loud under pressure.', tint: 'from-emerald-500/10 to-transparent border-emerald-500/25' },
+              { icon: '🎤', title: 'First “real” round was never mocked', line: 'Many students never ran a serious mock interview before facing a panel.', tint: 'from-red-500/10 to-transparent border-red-500/20' },
+              { icon: '📉', title: 'Fewer interviews, same crowd', line: 'Open roles are harder to land—walking in under-prepared costs more than before.', tint: 'from-amber-500/10 to-transparent border-amber-500/25' },
+              { icon: '📊', title: 'Rejection without a map', line: 'Without a readiness score, you don’t know what to fix first—only that it “went badly.”', tint: 'from-[#FF9500]/12 to-transparent border-[#FFB347]/30' },
+              { icon: '✅', title: '100% prep before Day 1', line: 'Measure gaps, practice out loud, then close them with mentorship—before real interviews.', tint: 'from-emerald-500/10 to-transparent border-emerald-500/25' },
             ].map((item, i) => (
               <FadeUp key={item.title} delay={i * 0.06}>
                 <motion.div
@@ -1255,9 +1261,13 @@ const HomePage = () => {
           <FadeUp delay={0.15}>
             <div className="grid md:grid-cols-2 gap-4 mb-8">
               <div className="rounded-2xl border border-red-500/20 bg-red-500/[0.04] p-5 md:p-6">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-red-600 mb-3">Without a plan</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-red-600 mb-3">Showing up under-prepared</p>
                 <ul className="space-y-2.5">
-                  {['Random practice, no measured baseline', 'Never spoke answers aloud with a timer', 'Resume never ATS-checked'].map((p) => (
+                  {[
+                    'Placement season without a real mock interview or timed practice',
+                    'No readiness benchmark—only hope after every rejection',
+                    'Cramming topics instead of fixing the gaps the panel actually tests',
+                  ].map((p) => (
                     <li key={p} className="flex gap-2 text-sm text-[#555555]">
                       <X size={14} className="text-red-500 shrink-0 mt-0.5" />
                       {p}
@@ -1266,9 +1276,13 @@ const HomePage = () => {
                 </ul>
               </div>
               <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/[0.05] p-5 md:p-6">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700 mb-3">With MentorMuni</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700 mb-3">Going in with MentorMuni</p>
                 <ul className="space-y-2.5">
-                  {['Readiness score + prioritized gaps', 'Mock interviews with structured feedback', 'ATS-aware resume'].map((p) => (
+                  {[
+                    'Free interview readiness check—a clear score and what to fix first',
+                    'AI mock interviews so your first “real” panel isn’t your first time under pressure',
+                    'Mentorship to close gaps and align prep to the companies you’re targeting',
+                  ].map((p) => (
                     <li key={p} className="flex gap-2 text-sm text-[#555555]">
                       <Check size={14} className="text-emerald-600 shrink-0 mt-0.5" />
                       {p}
@@ -1282,7 +1296,7 @@ const HomePage = () => {
           <FadeUp delay={0.22}>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-[#F0ECE0] bg-white p-5 md:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
               <p className="text-sm md:text-base text-[#444444] font-medium max-w-xl">
-                Start with a free readiness check—then build momentum with tools and mentors aligned to your timeline.
+                Don’t use real interviews as practice. Start with the free check—then stack mocks and mentors until you’re ready for the panel.
               </p>
               <button
                 type="button"
@@ -1297,15 +1311,21 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ════════════════ FEATURES ════════════════ */}
+      {/* ════════════════ HOW IT WORKS — what we give (after the “why”) ════════════════ */}
       <section className="py-14 px-6 border-t border-[#F0ECE0]">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest block mb-3">What MentorMuni gives you</span>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-[#1A1A1A] mb-2">Four tools. One goal.</h2>
-            <p className="text-[#666666] text-sm mb-10 max-w-xl leading-relaxed">
-              Each tool closes a real gap—measurement, practice, and polish—not another content dump.
+            <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest block mb-3">How it works</span>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-[#1A1A1A] mb-2">What we give you—before you face the real panel</h2>
+            <p className="text-[#666666] text-sm mb-4 max-w-2xl leading-relaxed">
+              One flow: measure with the readiness check, practice with AI mocks, polish with ATS and AI-tool fluency, and go deeper with mentor-backed prep when you want a human in your corner.
             </p>
+            <Link
+              to="/how-it-works"
+              className="inline-flex items-center gap-1 text-sm font-semibold text-[#FF9500] hover:text-[#E88600] transition-colors mb-10"
+            >
+              Full step-by-step walkthrough <ArrowRight size={14} />
+            </Link>
           </FadeUp>
           <div className="grid md:grid-cols-2 gap-5">
             {FEATURES.map((f, i) => (

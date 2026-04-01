@@ -76,6 +76,34 @@ const PHASES = [
   },
 ];
 
+/** Right-rail visual: mirrors homepage promise (check → mocks → mentors). */
+const STORY_FLOW_RAIL = [
+  {
+    step: '01',
+    Icon: ClipboardCheck,
+    title: 'Readiness check',
+    line: 'Baseline score & gaps—before a real round.',
+    ring: 'from-[#FF9500] to-[#EA580C]',
+    glow: 'rgba(234,88,12,0.2)',
+  },
+  {
+    step: '02',
+    Icon: Mic2,
+    title: 'AI mock interviews',
+    line: 'Practice aloud under pressure—not alone in your room.',
+    ring: 'from-[#f59e0b] to-[#fbbf24]',
+    glow: 'rgba(245,158,11,0.2)',
+  },
+  {
+    step: '03',
+    Icon: Users,
+    title: 'Mentor-backed prep',
+    line: 'Human guidance aligned to your role & timeline.',
+    ring: 'from-[#0891b2] to-[#14b8a6]',
+    glow: 'rgba(8,145,178,0.18)',
+  },
+];
+
 function FadeUp({ children, delay = 0, className = '' }) {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, amount: 0.12 });
@@ -128,38 +156,225 @@ function PhaseCard({ phase, index }) {
   );
 }
 
+function HowItWorksStoryHero({ reduceMotion }) {
+  const heroRef = useRef(null);
+  const heroInView = useInView(heroRef, { once: true, amount: 0.12 });
+
+  const container = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: reduceMotion
+        ? { duration: 0 }
+        : { staggerChildren: 0.11, delayChildren: 0.06 },
+    },
+  };
+
+  const item = {
+    hidden: reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 26 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: reduceMotion
+        ? { duration: 0 }
+        : { duration: 0.58, ease: [0.22, 1, 0.36, 1] },
+    },
+  };
+
+  return (
+    <section
+      ref={heroRef}
+      className="relative overflow-hidden border-b border-[#F0ECE0] px-5 pb-20 pt-24 sm:px-6 md:pb-24 md:pt-28"
+    >
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.35]"
+        style={{
+          backgroundImage: `radial-gradient(circle at 1px 1px, rgba(180,120,60,0.07) 1px, transparent 0)`,
+          backgroundSize: '28px 28px',
+        }}
+        aria-hidden
+      />
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute -left-20 top-20 h-[340px] w-[340px] rounded-full bg-[#FF9500]/[0.14] blur-[100px]"
+        animate={reduceMotion ? undefined : { x: [0, 20, 0], y: [0, 12, 0] }}
+        transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute -right-24 bottom-0 h-[280px] w-[280px] rounded-full bg-cyan-400/[0.11] blur-[90px]"
+        animate={reduceMotion ? undefined : { x: [0, -16, 0] }}
+        transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-0 h-[480px] w-[min(900px,100vw)] -translate-x-1/2 bg-gradient-to-b from-[#FF9500]/[0.10] to-transparent blur-[100px]"
+        animate={reduceMotion ? undefined : { scale: [1, 1.04, 1], opacity: [0.9, 1, 0.9] }}
+        transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      <motion.div
+        className="relative mx-auto max-w-6xl"
+        variants={container}
+        initial="hidden"
+        animate={heroInView ? 'visible' : 'hidden'}
+      >
+        <motion.div variants={item} className="mb-6 flex flex-col items-center text-center sm:mb-8">
+          <motion.div
+            className="inline-flex items-center gap-2 rounded-full border border-[#FF9500]/35 bg-white/80 px-4 py-2 shadow-[0_8px_30px_-12px_rgba(234,88,12,0.25)] backdrop-blur-sm"
+            whileHover={reduceMotion ? undefined : { scale: 1.02, y: -1 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 24 }}
+          >
+            <motion.span
+              aria-hidden
+              animate={reduceMotion ? undefined : { rotate: [0, 12, -8, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <Sparkles size={15} className="text-[#FF9500]" />
+            </motion.span>
+            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#9A3412] sm:text-xs">
+              Our story · your prep
+            </span>
+          </motion.div>
+        </motion.div>
+
+        <motion.h1
+          variants={item}
+          className="mx-auto max-w-4xl text-center text-[1.65rem] font-black leading-[1.15] tracking-tight text-[#1A1A1A] sm:text-4xl md:text-[2.65rem] md:leading-[1.1]"
+        >
+          Don&apos;t let your{' '}
+          <span className="bg-gradient-to-r from-[#FF9500] via-[#FFB347] to-[#ea580c] bg-clip-text text-transparent">
+            first real panel
+          </span>{' '}
+          be your first mock
+        </motion.h1>
+
+        <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:items-start lg:gap-12">
+          <motion.div variants={item} className="space-y-5 lg:col-span-7">
+            <motion.article
+              className="relative overflow-hidden rounded-[1.35rem] border border-red-200/40 bg-gradient-to-br from-white via-white to-red-50/30 p-6 shadow-[0_20px_50px_-28px_rgba(220,38,38,0.12)] md:p-7"
+              whileHover={reduceMotion ? undefined : { y: -3 }}
+              transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+            >
+              <div
+                className="pointer-events-none absolute -right-16 top-0 h-40 w-40 rounded-full bg-red-500/[0.06] blur-3xl"
+                aria-hidden
+              />
+              <span className="relative inline-flex rounded-md bg-red-500/[0.08] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-red-800">
+                The problem
+              </span>
+              <h2 className="relative mt-4 text-xl font-black leading-[1.25] tracking-tight text-[#1A1A1A] md:text-2xl md:leading-[1.2]">
+                For too many students, a real hiring panel was the first time they felt real interview pressure.
+              </h2>
+              <p className="relative mt-4 text-[15px] leading-[1.7] text-[#555555] md:text-base">
+                We started MentorMuni after the same story, over and over: students walking into placement interviews with
+                almost no serious mock practice—no baseline, no pressure rehearsal—then getting rejected without a clear map
+                of what to fix. Hiring is tighter now; you don&apos;t get unlimited shots.
+              </p>
+            </motion.article>
+
+            <motion.article
+              className="relative overflow-hidden rounded-[1.35rem] border border-[#FFB347]/45 bg-gradient-to-br from-[#FFFCF7] via-white to-cyan-50/20 p-6 shadow-[0_24px_60px_-28px_rgba(234,88,12,0.2)] md:p-7"
+              whileHover={reduceMotion ? undefined : { y: -3 }}
+              transition={{ type: 'spring', stiffness: 380, damping: 28 }}
+            >
+              <div
+                className="pointer-events-none absolute -left-12 bottom-0 h-36 w-36 rounded-full bg-[#FF9500]/[0.12] blur-3xl"
+                aria-hidden
+              />
+              <span className="relative inline-flex rounded-md bg-[#FF9500]/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#9A3412]">
+                What we built
+              </span>
+              <h2 className="relative mt-4 text-xl font-black leading-[1.25] tracking-tight text-[#1A1A1A] md:text-2xl md:leading-[1.2]">
+                One flow—readiness check, AI mocks, mentor prep—before the rounds that actually count.
+              </h2>
+              <p className="relative mt-4 text-[15px] leading-[1.7] text-[#444444] md:text-base">
+                You get a measured baseline, out-loud AI mocks, and mentor support when you want it—so you aren&apos;t
+                improvising when the panel is real. Next: four phases from first check to structured prep—not guesswork.
+              </p>
+              <div className="relative mt-5 flex flex-wrap gap-2">
+                {['Free check first', 'Mocks that feel real', 'Mentors when you want depth'].map((label) => (
+                  <span
+                    key={label}
+                    className="rounded-lg border border-orange-200/70 bg-white/90 px-3 py-1.5 text-[11px] font-bold text-[#7c2d12] shadow-sm"
+                  >
+                    {label}
+                  </span>
+                ))}
+              </div>
+            </motion.article>
+          </motion.div>
+
+          <motion.aside variants={item} className="lg:col-span-5">
+            <div className="lg:sticky lg:top-28">
+              <p className="mb-4 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-[#888888] lg:text-left">
+                The thread we follow
+              </p>
+              <div className="relative rounded-2xl border border-[#F0ECE0] bg-white/90 p-5 shadow-[0_12px_40px_-20px_rgba(0,0,0,0.08)] backdrop-blur-sm md:p-6">
+                <motion.div
+                  className="absolute left-[1.35rem] top-14 bottom-14 w-px bg-gradient-to-b from-[#FF9500]/50 via-amber-200/90 to-cyan-400/40 md:left-[1.5rem]"
+                  aria-hidden
+                  initial={{ scaleY: reduceMotion ? 1 : 0 }}
+                  animate={{ scaleY: 1 }}
+                  style={{ transformOrigin: 'top center' }}
+                  transition={{
+                    duration: reduceMotion ? 0 : 0.95,
+                    ease: [0.22, 1, 0.36, 1],
+                    delay: reduceMotion ? 0 : 0.35,
+                  }}
+                />
+                <ul className="relative space-y-6">
+                  {STORY_FLOW_RAIL.map((row, i) => {
+                    const Icon = row.Icon;
+                    return (
+                      <motion.li
+                        key={row.step}
+                        className="flex gap-4 md:gap-5"
+                        initial={reduceMotion ? { opacity: 1, x: 0 } : { opacity: 0, x: 18 }}
+                        animate={
+                          reduceMotion || heroInView ? { opacity: 1, x: 0 } : { opacity: 0, x: 18 }
+                        }
+                        transition={{
+                          duration: reduceMotion ? 0 : 0.45,
+                          delay: reduceMotion ? 0 : 0.45 + i * 0.14,
+                          ease: [0.22, 1, 0.36, 1],
+                        }}
+                      >
+                        <motion.div
+                          className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${row.ring} text-white shadow-lg md:h-12 md:w-12`}
+                          whileHover={reduceMotion ? undefined : { scale: 1.06 }}
+                          transition={{ type: 'spring', stiffness: 450, damping: 22 }}
+                        >
+                          <span
+                            className="absolute inset-0 rounded-xl opacity-40 blur-md"
+                            style={{ background: `radial-gradient(circle, ${row.glow}, transparent 70%)` }}
+                            aria-hidden
+                          />
+                          <Icon className="relative shrink-0 drop-shadow-sm" size={20} strokeWidth={2} />
+                        </motion.div>
+                        <div className="min-w-0 pt-0.5">
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-[#999999]">Step {row.step}</p>
+                          <p className="mt-0.5 font-bold text-[#1A1A1A]">{row.title}</p>
+                          <p className="mt-1 text-sm leading-snug text-[#666666]">{row.line}</p>
+                        </div>
+                      </motion.li>
+                    );
+                  })}
+                </ul>
+              </div>
+            </div>
+          </motion.aside>
+        </div>
+      </motion.div>
+    </section>
+  );
+}
+
 export default function HowItWorks() {
   const reduceMotion = useReducedMotion();
   return (
     <div className="min-h-screen bg-[#FFFDF8] font-sans text-[#1A1A1A]">
-      {/* Hero */}
-      <section className="relative overflow-hidden border-b border-[#F0ECE0] px-6 pb-16 pt-24 md:pt-28">
-        <motion.div
-          aria-hidden
-          className="pointer-events-none absolute left-1/2 top-0 h-[420px] w-[800px] -translate-x-1/2 bg-[#FF9500]/[0.12] blur-[120px]"
-          animate={reduceMotion ? undefined : { scale: [1, 1.03, 1], opacity: [0.85, 1, 0.85] }}
-          transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
-        />
-        <div className="relative mx-auto max-w-3xl text-center">
-          <FadeUp>
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#FF9500]/30 bg-[#FF9500]/10 px-4 py-1.5">
-              <Sparkles size={14} className="text-[#FF9500]" />
-              <span className="text-xs font-semibold tracking-wide text-[#CC7000]/90">How MentorMuni works</span>
-            </div>
-            <h1 className="text-3xl font-black leading-tight tracking-tight text-[#1A1A1A] md:text-4xl md:leading-[1.12]">
-              A clear path from{' '}
-              <span className="bg-gradient-to-r from-[#FF9500] via-[#FFB347] to-[#FFD580] bg-clip-text text-transparent">
-                first assessment
-              </span>{' '}
-              to interview-ready
-            </h1>
-            <p className="mx-auto mt-5 max-w-xl text-base leading-relaxed text-[#666666]">
-              Four phases, one thread: understand your gaps, get aligned support, practice realistically, then take
-              that prep into applications—with structure instead of guesswork.
-            </p>
-          </FadeUp>
-        </div>
-      </section>
+      <HowItWorksStoryHero reduceMotion={reduceMotion} />
 
       {/* Phases grid */}
       <section className="mx-auto max-w-5xl px-6 py-16 md:py-20">
@@ -167,8 +382,9 @@ export default function HowItWorks() {
           <div className="mb-10 max-w-2xl">
             <h2 className="text-xl font-bold text-[#1A1A1A] md:text-2xl">What happens, in order</h2>
             <p className="mt-2 text-sm leading-relaxed text-[#666666]">
-              You can start with the free check today. Mentorship and deeper practice are there when you want hands-on
-              guidance—not a one-size-fits-all course.
+              Start with the free readiness check today—know your gaps before you burn a real round. Add AI mocks and
+              mentor support when you want hands-on guidance, so you walk in measured, practiced, and aligned—not
+              hoping luck covers weak spots.
             </p>
           </div>
         </FadeUp>
@@ -206,10 +422,10 @@ export default function HowItWorks() {
       <section className="border-t border-[#F0ECE0] bg-gradient-to-b from-[#FFF8EE] to-[#FFFDF8] px-6 py-16 md:py-20">
         <FadeUp>
           <div className="mx-auto max-w-lg text-center">
-            <h2 className="text-2xl font-bold text-[#1A1A1A]">Start with the free assessment</h2>
+            <h2 className="text-2xl font-bold text-[#1A1A1A]">Start with the free readiness check</h2>
             <p className="mt-3 text-sm leading-relaxed text-[#666666]">
-              See your readiness score and gaps in minutes. No signup required. Then decide if you want mentor-led
-              support.
+              Get your score and prioritized gaps in minutes—no signup. Stack mocks and mentorship after that so your
+              next interview isn&apos;t the first time you feel real pressure.
             </p>
             <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
               <button
