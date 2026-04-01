@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import {
   AlertCircle, CheckCircle, ChevronRight, Lock, Mail, Phone, Check, Zap, ShieldCheck, Map, ArrowRight, Star, Clock,
   TrendingUp, Target, Sparkles, BarChart3, AlertTriangle, CheckCircle2, Lightbulb, Cpu, User,
-  Share2, Linkedin, Trophy, Building2, Briefcase,
+  Share2, Linkedin, Trophy, Building2, Briefcase, Gift,
 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { API_BASE } from '../config';
@@ -320,7 +320,6 @@ const InterviewReady = () => {
 
   // Authentication states
   const [authMode, setAuthMode] = useState(null); // 'signup' or 'signin'
-  const [isUserSignedUp, setIsUserSignedUp] = useState(false);
   const [authData, setAuthData] = useState({
     fullName: '',
     email: '',
@@ -713,6 +712,7 @@ const InterviewReady = () => {
     );
   };
 
+  const stepContent = (() => {
   // ========== STEP 0: LANDING ==========
   if (step === 0) {
     return (
@@ -1547,19 +1547,7 @@ const InterviewReady = () => {
     );
   }
 
-  // ========== STEP 6: LOADING STATE ==========
-  if (step === 6 && loading && !result) {
-    return (
-      <AIAnalysisLoader
-        onComplete={() => {
-          // Loader completes, results will be displayed automatically
-        }}
-        duration={4000}
-      />
-    );
-  }
-
-  // ========== STEP 6: RESULTS ==========
+  // ========== STEP 6: RESULTS (before loader branch so result takes precedence) ==========
   if (step === 6 && result) {
     const pct = result.readiness_percentage;
     const strengthCount = result.strengths?.length || 0;
@@ -1920,6 +1908,18 @@ const InterviewReady = () => {
     );
   }
 
+  // ========== STEP 6: LOADING SCORE (step set before result in same tick) ==========
+  if (step === 6 && !result) {
+    return (
+      <AIAnalysisLoader
+        onComplete={() => {
+          // Results appear when evaluation payload is ready
+        }}
+        duration={4000}
+      />
+    );
+  }
+
   // ========== STEP 7: AUTHENTICATION CHECK ==========
   if (step === 7) {
     return (
@@ -1983,7 +1983,6 @@ const InterviewReady = () => {
               <form onSubmit={(e) => {
                 e.preventDefault();
                 setStep(9);
-                setIsUserSignedUp(true);
               }} className="space-y-6">
                 <div>
                   <label className="text-sm font-bold text-[#333333] block mb-2">Email</label>
@@ -2046,7 +2045,6 @@ const InterviewReady = () => {
             <form onSubmit={(e) => {
               e.preventDefault();
               setStep(9);
-              setIsUserSignedUp(true);
             }} className="space-y-6">
               <div>
                 <label className="text-sm font-bold text-[#333333] block mb-2">Full Name</label>
@@ -2135,7 +2133,7 @@ const InterviewReady = () => {
   }
 
   // ========== STEP 9: PAYMENT PLANS ==========
-  if (step === 9 && isUserSignedUp) {
+  if (step === 9) {
     const plans = [
       {
         id: 'plan1',
@@ -2298,7 +2296,7 @@ const InterviewReady = () => {
     );
   }
 
-  // ========== LOADING STATE ==========
+  // ========== LOADING STATE (OTP / plan API / etc.) ==========
   if (loading && step !== 7 && step !== 8 && step !== 9) {
     return (
       <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
@@ -2307,7 +2305,7 @@ const InterviewReady = () => {
             <div className="mb-6">
               <div className="w-16 h-16 border-4 border-[#FF9500]/35 border-t-[#FF9500] rounded-full animate-spin mx-auto"></div>
             </div>
-            <h2 className="text-2xl font-black text-white mb-2">Processing Your Request</h2>
+            <h2 className="text-2xl font-black text-[#1A1A1A] mb-2">Processing Your Request</h2>
             <p className="text-[#666666] mb-4">Please wait while we generate your personalized assessment...</p>
             <p className="text-xs text-slate-500">This may take up to 30 seconds</p>
           </div>
@@ -2316,9 +2314,32 @@ const InterviewReady = () => {
     );
   }
 
+  // OTP verified → step 2 in same update; rare fallthrough while step is still 1
+  if (step === 1 && otpSent && otpVerified) {
+    return (
+      <div className="min-h-screen bg-[#FFFDF8] flex items-center justify-center px-4">
+        <div className="w-12 h-12 border-4 border-[#FF9500]/35 border-t-[#FF9500] rounded-full animate-spin" aria-hidden />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#FFFDF8] flex flex-col items-center justify-center gap-4 px-4 py-12">
+      <p className="text-[#444444] text-center max-w-md">Something went wrong loading this screen.</p>
+      <button
+        type="button"
+        onClick={resetAll}
+        className="rounded-xl bg-[#FF9500] hover:bg-[#E88600] px-6 py-3 font-bold text-white shadow-lg transition-colors"
+      >
+        Start over
+      </button>
+    </div>
+  );
+  })();
+
   return (
     <>
-      {null}
+      {stepContent}
       <UpgradePromptModal
         isOpen={showUpgradeModal}
         onClose={() => setShowUpgradeModal(false)}
