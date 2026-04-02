@@ -86,8 +86,8 @@ const FAQS = [
     a: '₹10,000 is everything. No registration fee, no session fee, no upsells. Ever. The old registration fee is removed — what you see is what you pay.',
   },
   {
-    q: "What if I don't get placed after completing the program?",
-    a: 'Full refund. If you complete all program milestones — sessions, mock interviews, assignments — and do not receive a qualifying offer, we refund 100%. No conditions beyond completing the work.',
+    q: "What if I don't get placed right away?",
+    a: "We don't guarantee a job or offer money-back refunds. Our commitment is mentorship and support until you get placed—sessions, mocks, and guidance stay with you through the journey. That's what 'placement support till offer letter' means in the Complete programme.",
   },
   {
     q: 'What makes this different from YouTube + LeetCode?',
@@ -223,13 +223,13 @@ const PricingPage = () => {
           <span className="text-xs font-bold text-[#B45309] uppercase tracking-widest block mb-3">Honest note — we&apos;re a new platform</span>
           <h2 className="text-lg font-bold text-[#1A1A1A] mb-2">No placement stories yet. That&apos;s exactly why the founding batch price exists.</h2>
           <p className="text-[#666666] text-sm leading-relaxed max-w-xl mx-auto mb-5">
-            We&apos;re still a young programme—we&apos;re building verified outcomes with our early cohorts. What we can offer now: the lowest price we plan to charge, high mentor attention per student, and a money-back guarantee—so early risk stays on us, not you.
+            We&apos;re still a young programme—we&apos;re building verified outcomes with our early cohorts. What we can offer now: the lowest price we plan to charge, high mentor attention per student, and our real promise: we stay with you until you get placed. We don&apos;t guarantee a job or offer refunds for non-placement—what you get is sustained mentorship until you land an offer.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-lg mx-auto">
             {[
               { icon: '🎯', label: 'Founding batch price', sub: 'Lowest MentorMuni will ever charge' },
               { icon: '👤', label: 'Small batch', sub: 'More attention per student' },
-              { icon: '💰', label: 'Money-back', sub: 'If you complete and don\'t get placed' },
+              { icon: '🤝', label: "Till you're placed", sub: 'Mentorship support through your placement journey' },
             ].map(c => (
               <div key={c.label} className="bg-white border border-[#F0ECE0] rounded-xl p-3 shadow-sm">
                 <span className="text-xl block mb-1">{c.icon}</span>

@@ -1734,7 +1734,6 @@ const HomePage = () => {
               <p className="text-xs font-semibold text-[#888888] mb-3">Company</p>
               <ul className="space-y-2 text-sm text-[#666666]">
                 <li><Link to="/contact" className="hover:text-[#FF9500] transition-colors">Contact</Link></li>
-                <li><Link to="/pricing" className="hover:text-[#FF9500] transition-colors">Pricing</Link></li>
                 <li><Link to="/mentors" className="hover:text-[#FF9500] transition-colors">Mentorship</Link></li>
                 <li><Link to="/for-recruiters" className="hover:text-[#FF9500] transition-colors">For Recruiters</Link></li>
               </ul>

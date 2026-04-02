@@ -208,6 +208,13 @@ const Navbar = () => {
                 </div>
               )}
             </div>
+
+            <Link
+              to="/contact"
+              className={navLinkClass(isActive('/contact', true))}
+            >
+              Contact us
+            </Link>
           </nav>
 
           <div className="hidden shrink-0 items-center gap-2 lg:flex">
@@ -315,6 +322,18 @@ const Navbar = () => {
                   </button>
                 </div>
               </div>
+
+              <Link
+                to="/contact"
+                onClick={handleNavClick}
+                className={`px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
+                  isActive('/contact', true)
+                    ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
+                    : 'text-[#444444] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+                }`}
+              >
+                Contact us
+              </Link>
 
               <div className="border-t border-[#F0ECE0] my-2"></div>
 

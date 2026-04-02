@@ -61,7 +61,7 @@ const CoursesPage = () => {
           </a>
 
           <nav className="hidden md:flex items-center gap-7">
-            {['Home', 'Interview Readiness', 'Outcomes', 'Pricing', 'Contact'].map((item) => (
+            {['Home', 'Interview Readiness', 'Outcomes', 'Contact'].map((item) => (
               <a 
                 key={item} 
                 href={`/${item.toLowerCase().replace(' ', '-')}`} 
@@ -101,7 +101,7 @@ const CoursesPage = () => {
 
         {isNavOpen && (
           <div className="md:hidden absolute top-full left-0 right-0 bg-[#FFFDF8] border-b border-[#E0DCCF] p-5 flex flex-col gap-4 shadow-2xl">
-            {['Home', 'Interview Readiness', 'Outcomes', 'Pricing', 'Contact'].map((item) => (
+            {['Home', 'Interview Readiness', 'Outcomes', 'Contact'].map((item) => (
               <a key={item} href="#" className="font-bold text-[#666666] hover:text-white">{item}</a>
             ))}
             

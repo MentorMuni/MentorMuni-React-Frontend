@@ -1,13 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useId } from 'react';
 import { motion } from 'framer-motion';
 import {
   AlertCircle, CheckCircle, ChevronRight, Lock, Mail, Phone, Check, Zap, ShieldCheck, Map, ArrowRight, Star, Clock,
-  TrendingUp, Target, Sparkles, BarChart3, AlertTriangle, CheckCircle2, Lightbulb, Cpu, User,
+  TrendingUp, Target, Sparkles, BarChart3, AlertTriangle, CheckCircle2, Lightbulb, Users, Headphones,
   Share2, Linkedin, Trophy, Building2, Briefcase, Gift,
 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { API_BASE } from '../config';
-import { PRIMARY_CTA_LABEL, READINESS_TEST_COUPON_BADGE } from '../constants/brandCopy';
+import { READINESS_TEST_COUPON_BADGE } from '../constants/brandCopy';
 import LimitedRewardLabel from './LimitedRewardLabel';
 import AIAnalysisLoader from './AIAnalysisLoader';
 import { useFreeUsageTracker } from './FreeUsageCounter';
@@ -20,6 +20,7 @@ const INTERVIEW_PLAN_PATH = '/interview-ready/plan';
 /**
  * PlanRequest.user_type — must match backend validation exactly:
  * student | working professional | 3rd Year Student | 4th Year Student
+ * (UI shows 1st-3rd Year Student for the 3rd_year bucket; API value unchanged.)
  */
 const API_USER_TYPE_BY_CATEGORY = {
   '3rd_year': '3rd Year Student',
@@ -30,7 +31,7 @@ const API_USER_TYPE_BY_CATEGORY = {
 
 /** Pretty labels for UI only (not sent to API) */
 const DISPLAY_ROLE_BY_CATEGORY = {
-  '3rd_year': '3rd Year Student',
+  '3rd_year': '1st–3rd Year Student',
   '4th_year': '4th Year Student',
   'recent_graduate': 'Recent Graduate',
   professional: 'Working Professional',
@@ -38,6 +39,15 @@ const DISPLAY_ROLE_BY_CATEGORY = {
 
 /** PlanRequest.primary_skill maxLength in OpenAPI schema */
 const PLAN_PRIMARY_SKILL_MAX = 100;
+
+/** POST /interview-ready/plan — skill-deep vs placement-breadth (backend may ignore if unsupported) */
+const ASSESSMENT_FOCUS_SKILL = 'skill';
+const ASSESSMENT_FOCUS_PLACEMENT = 'placement';
+
+const ASSESSMENT_MODE_LABEL = {
+  [ASSESSMENT_FOCUS_SKILL]: 'Skill preparation score',
+  [ASSESSMENT_FOCUS_PLACEMENT]: 'Interview readiness score',
+};
 
 function formatPlanApiError(data) {
   if (!data) return 'Failed to generate questions';
@@ -166,38 +176,49 @@ const resultsListItem = {
   show: { opacity: 1, x: 0, transition: { type: 'spring', stiffness: 320, damping: 28 } },
 };
 
-/** SVG ring + animated stroke (readiness %) */
+/** SVG ring — warm track + thick arc (no thin pink stroke) */
 function ReadinessScoreRing({ pct }) {
-  const size = 216;
-  const stroke = 12;
+  const uid = useId().replace(/:/g, '');
+  const gradId = `readinessRingGrad-${uid}`;
+  const size = 220;
+  const stroke = 14;
   const r = (size - stroke) / 2;
   const c = 2 * Math.PI * r;
   const offset = c * (1 - pct / 100);
   const tier =
-    pct >= 75 ? { from: '#34d399', to: '#10b981', glow: 'rgba(16,185,129,0.45)' } :
-    pct >= 50 ? { from: '#fbbf24', to: '#f59e0b', glow: 'rgba(245,158,11,0.4)' } :
-    { from: '#fb7185', to: '#f43f5e', glow: 'rgba(244,63,94,0.35)' };
+    pct >= 75
+      ? { from: '#059669', to: '#10b981', glow: 'rgba(16,185,129,0.2)' }
+      : pct >= 50
+        ? { from: '#EA580C', to: '#F59E0B', glow: 'rgba(234,88,12,0.18)' }
+        : { from: '#C2410C', to: '#EA580C', glow: 'rgba(194,65,12,0.16)' };
 
   return (
-    <div className="relative mx-auto flex h-[240px] w-[240px] items-center justify-center">
+    <div className="relative mx-auto flex h-[232px] w-[232px] items-center justify-center">
       <div
-        className="absolute inset-0 rounded-full blur-2xl opacity-60"
-        style={{ background: `radial-gradient(circle, ${tier.glow} 0%, transparent 70%)` }}
+        className="absolute inset-0 rounded-full blur-2xl opacity-90"
+        style={{ background: `radial-gradient(circle, ${tier.glow} 0%, transparent 72%)` }}
       />
-      <svg width={size} height={size} className="-rotate-90 transform drop-shadow-lg">
+      <svg width={size} height={size} className="-rotate-90 transform" aria-hidden>
         <defs>
-          <linearGradient id="readinessRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <linearGradient id={gradId} x1="0%" y1="0%" x2="100%" y2="0%">
             <stop offset="0%" stopColor={tier.from} />
             <stop offset="100%" stopColor={tier.to} />
           </linearGradient>
         </defs>
-        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={stroke} />
+        <circle
+          cx={size / 2}
+          cy={size / 2}
+          r={r}
+          fill="none"
+          stroke="#EDE4D8"
+          strokeWidth={stroke}
+        />
         <motion.circle
           cx={size / 2}
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="url(#readinessRingGrad)"
+          stroke={`url(#${gradId})`}
           strokeWidth={stroke}
           strokeLinecap="round"
           strokeDasharray={c}
@@ -208,49 +229,112 @@ function ReadinessScoreRing({ pct }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
         <motion.span
-          initial={{ scale: 0.5, opacity: 0 }}
+          initial={{ scale: 0.92, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ delay: 0.35, type: 'spring', stiffness: 260, damping: 18 }}
-          className="text-5xl font-black tabular-nums tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-[#1A1A1A] to-[#64748B]"
+          transition={{ delay: 0.25, type: 'spring', stiffness: 280, damping: 22 }}
+          className="text-5xl font-black tabular-nums tracking-tight text-[#1A1A1A] sm:text-[3.25rem]"
         >
           {pct}%
         </motion.span>
-        <span className="mt-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[#666666]">Readiness</span>
+        <span className="mt-1.5 text-[10px] font-bold uppercase tracking-[0.28em] text-[#666666]">Readiness</span>
       </div>
     </div>
   );
 }
 
-function FactorBar({ label, value, icon: Icon, variant = 'indigo', delay = 0 }) {
+function ScoreFactorRow({ label, value, hint, icon: Icon, variant = 'orange', delay = 0 }) {
   const v = Math.min(100, Math.max(0, value));
   const grad =
     variant === 'emerald'
-      ? 'linear-gradient(90deg, #10b981, #34d399)'
+      ? 'linear-gradient(90deg, #059669, #34d399)'
       : variant === 'amber'
-        ? 'linear-gradient(90deg, #f59e0b, #fbbf24)'
-        : 'linear-gradient(90deg, #E88600, #FF9500)';
-  const iconCls =
-    variant === 'emerald' ? 'text-emerald-400' : variant === 'amber' ? 'text-amber-400' : 'text-[#FF9500]';
+        ? 'linear-gradient(90deg, #d97706, #fbbf24)'
+        : 'linear-gradient(90deg, #ea580c, #ff9500)';
+  const iconWrap =
+    variant === 'emerald'
+      ? 'bg-emerald-50 text-emerald-700 ring-emerald-100'
+      : variant === 'amber'
+        ? 'bg-amber-50 text-amber-700 ring-amber-100'
+        : 'bg-orange-50 text-orange-700 ring-orange-100';
+
   return (
-    <div className="space-y-1.5">
-      <div className="flex items-center justify-between gap-2 text-xs">
-        <span className="flex items-center gap-1.5 font-semibold text-[#444444]">
-          {Icon && <Icon size={13} className={iconCls} />}
-          {label}
-        </span>
-        <span className="tabular-nums text-[#666666]">{Math.round(v)}%</span>
-      </div>
-      <div className="h-2 overflow-hidden rounded-full bg-white/[0.06]">
-        <motion.div
-          className="h-full rounded-full"
-          initial={{ width: 0 }}
-          animate={{ width: `${v}%` }}
-          transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
-          style={{ background: grad }}
-        />
+    <div className="space-y-2">
+      <div className="flex items-start gap-3">
+        {Icon && (
+          <span
+            className={`mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ring-1 ${iconWrap}`}
+            aria-hidden
+          >
+            <Icon size={16} strokeWidth={2.25} />
+          </span>
+        )}
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-sm font-semibold text-[#1A1A1A]">{label}</span>
+            <span className="tabular-nums text-sm font-bold text-[#444444]">{Math.round(v)}%</span>
+          </div>
+          {hint ? <p className="mt-0.5 text-xs leading-snug text-[#666666]">{hint}</p> : null}
+          <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-[#EDE8E0]">
+            <motion.div
+              className="h-full rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${v}%` }}
+              transition={{ duration: 0.9, delay, ease: [0.22, 1, 0.36, 1] }}
+              style={{ background: grad }}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );
+}
+
+function nextStepsForScoreBand(pct) {
+  if (pct < 50) {
+    return [
+      { title: 'Close your top gaps first', sub: 'Pick 2 topics from “Areas to improve” and study 25–40 min daily.' },
+      { title: 'Talk to a mentor (free intro)', sub: 'Align a plan with someone who has cleared top tech interviews.' },
+      { title: 'Retake this check in 2 weeks', sub: 'Measure movement — most students here gain 20–35 points with focus.' },
+    ];
+  }
+  if (pct < 75) {
+    return [
+      { title: 'Drill weak topics with mocks', sub: 'Verbalize answers out loud — same format as real panels.' },
+      { title: 'Add system-design reps', sub: 'Push from “good” to “hire-ready” on breadth and tradeoffs.' },
+      { title: 'Book a mentor before your next drive', sub: 'Polish stories and gaps while companies are active.' },
+    ];
+  }
+  return [
+    { title: 'Polish edge cases', sub: 'You are in a strong band — refine depth on your gap list only.' },
+    { title: 'Full mock interview sprint', sub: 'Stress-test under time pressure with AI + mentor feedback.' },
+    { title: 'Maintain until offers', sub: 'Short weekly touch-ups beat cramming before finals.' },
+  ];
+}
+
+function peerDimensionsFromResult(pct, strengthSignal, gapPressure) {
+  const balance = Math.round((pct + strengthSignal + (100 - gapPressure)) / 3);
+  return [
+    {
+      label: 'Overall readiness',
+      value: pct,
+      hint: 'Composite vs a typical peer cohort on this assessment.',
+    },
+    {
+      label: 'Topic strength signal',
+      value: strengthSignal,
+      hint: 'Share of topics where you showed confidence.',
+    },
+    {
+      label: 'Gap load',
+      value: gapPressure,
+      hint: 'Surface area still open vs typical — higher means more to close.',
+    },
+    {
+      label: 'Balance index',
+      value: Math.min(100, Math.max(0, balance)),
+      hint: 'Blend of score, strengths, and gaps — directional only.',
+    },
+  ];
 }
 
 /** Public link to start the same assessment (HashRouter + Vite base). */
@@ -260,13 +344,477 @@ function getInterviewReadinessShareUrl() {
   return `${window.location.origin}${base}#/start-assessment`;
 }
 
-function buildWhatsAppChallengeMessage(pct, readinessLabel) {
+function buildWhatsAppChallengeMessage(pct, readinessLabel, modeLabel) {
   const url = getInterviewReadinessShareUrl();
+  const product = modeLabel || 'Interview Readiness';
   return (
-    `I scored ${pct}% on MentorMuni Interview Readiness (${readinessLabel}).\n\n` +
+    `I scored ${pct}% on MentorMuni ${product} (${readinessLabel}).\n\n` +
     `Think you can beat me? Same free 5-minute quiz — no signup.\n\n` +
     `Challenge your batchmates:\n${url}\n\n` +
-    `Placement prep · Engineering students`
+    `Interview prep · Students & professionals`
+  );
+}
+
+const ASSESSMENT_MODE_OPTIONS = [
+  {
+    mode: ASSESSMENT_FOCUS_SKILL,
+    emoji: '💻',
+    title: ASSESSMENT_MODE_LABEL[ASSESSMENT_FOCUS_SKILL],
+    badge: 'One skill, deep prep',
+    compactHint: 'Drill one stack end-to-end — Java, Python, AI, etc.',
+    details: [
+      'You name one skill (Java, C#, Python, AI…)',
+      'Questions stay focused on that skill only',
+      'Best when you want targeted practice',
+    ],
+  },
+  {
+    mode: ASSESSMENT_FOCUS_PLACEMENT,
+    emoji: '🎯',
+    title: ASSESSMENT_MODE_LABEL[ASSESSMENT_FOCUS_PLACEMENT],
+    badge: 'Broad interview check',
+    compactHint: 'Typical engineering mix — students & professionals.',
+    details: [
+      'Typical engineering interview mix across major areas',
+      'You share context; questions stay broad, not one-skill deep',
+      'Students or working professionals — same readiness lens',
+    ],
+  },
+];
+
+/**
+ * Two-card picker — single click selects and calls onPick(mode).
+ * variant "hero" = large cards, minimal copy (landing). "default" = full bullet list (tools step).
+ */
+function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
+  const isHero = variant === 'hero';
+
+  return (
+    <div className={`grid grid-cols-1 ${isHero ? 'sm:grid-cols-2 gap-4 md:gap-5' : 'sm:grid-cols-2 gap-4'} mb-2`}>
+      {ASSESSMENT_MODE_OPTIONS.map((option) => {
+        const selected = selectedMode === option.mode;
+        return (
+          <motion.button
+            key={option.mode}
+            type="button"
+            onClick={() => onPick(option.mode)}
+            whileHover={
+              isHero
+                ? {
+                    y: -8,
+                    boxShadow: '0 24px 48px -12px rgba(255, 149, 0, 0.35)',
+                    transition: { duration: 0.22, ease: [0.22, 1, 0.36, 1] },
+                  }
+                : undefined
+            }
+            whileTap={isHero ? { scale: 0.96 } : { scale: 0.98 }}
+            transition={{ type: 'spring', stiffness: 420, damping: 28 }}
+            className={
+              isHero
+                ? `group relative cursor-pointer select-none text-left rounded-3xl border-2 transition-colors duration-200 will-change-transform ${
+                    selected
+                      ? 'border-[#FF9500] bg-gradient-to-br from-[#FFF8EE] to-white shadow-xl shadow-[#FF9500]/25 ring-2 ring-[#FF9500]/30'
+                      : 'border-[#E0D8CF] bg-gradient-to-br from-white to-[#FFFCF7] shadow-md shadow-black/[0.06] hover:border-[#FF9500] hover:ring-4 hover:ring-[#FF9500]/15'
+                  } p-6 sm:p-7`
+                : `cursor-pointer p-5 rounded-2xl text-left transition-all border-2 group relative ${
+                    selected
+                      ? 'border-[#FF9500] bg-[#FF9500]/15 shadow-lg shadow-[0_2px_12px_rgba(255,149,0,0.15)]'
+                      : 'border-[#F0ECE0] bg-white hover:border-[#E0DCCF] hover:bg-[#FFFDF8]'
+                  }`
+            }
+          >
+            {selected && (
+              <div
+                className={`absolute rounded-full bg-[#FF9500] flex items-center justify-center text-white ${
+                  isHero ? 'top-4 right-4 w-7 h-7' : 'top-3 right-3 w-5 h-5'
+                }`}
+              >
+                <Check size={isHero ? 14 : 11} className="text-white" />
+              </div>
+            )}
+            <div
+              className={`mb-4 flex items-center justify-center rounded-2xl bg-gradient-to-br from-[#FF9500]/20 to-amber-100/80 ${
+                isHero ? 'h-16 w-16 text-4xl shadow-inner' : 'h-14 w-14 text-3xl'
+              }`}
+            >
+              <span className="leading-none">{option.emoji}</span>
+            </div>
+            <h3 className={`font-black text-[#1A1A1A] ${isHero ? 'text-base sm:text-lg leading-snug pr-6' : 'text-sm mb-1'}`}>
+              {option.title}
+            </h3>
+            <p
+              className={`font-semibold uppercase tracking-wide ${isHero ? 'text-[11px] mt-1.5 text-[#CC7000]' : `text-xs mb-3 ${selected ? 'text-[#FF9500]' : 'text-slate-500'}`}`}
+            >
+              {option.badge}
+            </p>
+            {isHero ? (
+              <p className="text-sm text-[#555555] leading-relaxed mt-2 pr-2">{option.compactHint}</p>
+            ) : (
+              <div className="space-y-1.5">
+                {option.details.map((d) => (
+                  <div key={d} className="flex items-start gap-1.5 text-xs text-[#666666]">
+                    <Check size={11} className={`mt-0.5 shrink-0 ${selected ? 'text-[#FF9500]' : 'text-slate-600'}`} />
+                    {d}
+                  </div>
+                ))}
+              </div>
+            )}
+            {isHero && (
+              <div className="mt-5 flex items-center gap-2 text-sm font-bold text-[#FF9500] transition-all group-hover:gap-3">
+                <span className="rounded-lg bg-[#FF9500]/10 px-2 py-0.5 text-xs font-black uppercase tracking-wide text-[#CC7000]">
+                  Tap to continue
+                </span>
+                <ArrowRight size={18} className="shrink-0 transition-transform group-hover:translate-x-1" />
+              </div>
+            )}
+          </motion.button>
+        );
+      })}
+    </div>
+  );
+}
+
+const HOW_IT_WORKS_STEPS = [
+  {
+    Icon: Zap,
+    title: '~5 min score',
+    desc: 'Targeted Yes/No questions and a readiness readout.',
+  },
+  {
+    Icon: ShieldCheck,
+    title: 'No friction',
+    desc: 'Start immediately — save a report later if you want.',
+  },
+  {
+    Icon: Map,
+    title: 'Your gaps',
+    desc: 'See weak topics and what to study next for your stack.',
+  },
+];
+
+/** Timeline + horizontal flow — avoids three heavy “card” boxes */
+function HowItWorksFlow() {
+  return (
+    <div className="mx-auto w-full max-w-4xl">
+      {/* Mobile: vertical timeline */}
+      <div className="relative md:hidden">
+        <div
+          className="absolute left-[21px] top-2 bottom-2 w-[2px] rounded-full bg-gradient-to-b from-[#FF9500]/35 via-[#E8E4DC] to-[#E8E4DC]"
+          aria-hidden
+        />
+        <ul className="relative space-y-10 pl-0">
+          {HOW_IT_WORKS_STEPS.map(({ Icon, title, desc }, i) => (
+            <motion.li
+              key={title}
+              initial={{ opacity: 0, x: -12 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true, margin: '-30px' }}
+              transition={{ delay: i * 0.08, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              className="relative flex gap-4"
+            >
+              <motion.div
+                className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-white bg-[#FFFDF8] shadow-md ring-2 ring-[#FF9500]/15"
+                whileHover={{ scale: 1.08 }}
+                transition={{ type: 'spring', stiffness: 420, damping: 24 }}
+              >
+                <Icon size={19} className="text-[#FF9500]" strokeWidth={2} />
+              </motion.div>
+              <div className="min-w-0 pt-0.5">
+                <h3 className="text-sm font-semibold text-[#1A1A1A]">{title}</h3>
+                <p className="mt-1 text-xs leading-relaxed text-[#666666]">{desc}</p>
+              </div>
+            </motion.li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Desktop: horizontal flow with connectors */}
+      <div className="hidden md:flex md:items-start md:justify-center md:gap-0">
+        {HOW_IT_WORKS_STEPS.map(({ Icon, title, desc }, i) => (
+          <React.Fragment key={title}>
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-40px' }}
+              transition={{ delay: i * 0.1, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              className="flex max-w-[220px] flex-1 flex-col items-center px-2 text-center lg:max-w-[240px] lg:px-3"
+            >
+              <motion.div
+                className="relative mb-4"
+                whileHover={{ y: -4 }}
+                transition={{ type: 'spring', stiffness: 380, damping: 22 }}
+              >
+                <div className="absolute inset-0 rounded-full bg-[#FF9500]/12 blur-lg" aria-hidden />
+                <div className="relative flex h-[52px] w-[52px] items-center justify-center rounded-full border border-[#E8E4DC] bg-white shadow-sm">
+                  <Icon size={22} className="text-[#FF9500]" strokeWidth={2} />
+                </div>
+              </motion.div>
+              <h3 className="text-sm font-semibold text-[#1A1A1A]">{title}</h3>
+              <p className="mt-2 text-xs leading-relaxed text-[#666666]">{desc}</p>
+            </motion.div>
+            {i < HOW_IT_WORKS_STEPS.length - 1 && (
+              <div className="flex shrink-0 items-center self-center px-1 pt-7 lg:px-2">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.15 + i * 0.1, duration: 0.35 }}
+                  className="flex items-center text-[#C9C4BB]"
+                >
+                  <span className="hidden h-px w-4 rounded-full bg-gradient-to-r from-transparent to-[#E0DCCF] lg:block" />
+                  <ArrowRight className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" strokeWidth={2} />
+                  <span className="hidden h-px w-4 rounded-full bg-gradient-to-l from-transparent to-[#E0DCCF] lg:block" />
+                </motion.div>
+              </div>
+            )}
+          </React.Fragment>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/** Full-screen loader while POST /interview-ready/plan runs — avoids a frozen UI with generic copy */
+function PlanGenerationLoader() {
+  return (
+    <div
+      className="relative min-h-screen overflow-hidden bg-[#FFFDF8] font-sans"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
+      <div className="pointer-events-none absolute inset-0">
+        <div className="absolute left-1/4 top-20 h-64 w-64 rounded-full bg-[#FF9500]/10 blur-3xl" />
+        <div className="absolute bottom-24 right-1/4 h-56 w-56 rounded-full bg-cyan-400/10 blur-3xl" />
+      </div>
+
+      <div className="relative z-10 mx-auto flex min-h-screen max-w-lg flex-col justify-center px-4 py-12 sm:max-w-xl sm:px-6">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+          className="text-center"
+        >
+          <div className="relative mx-auto mb-8 flex h-20 w-20 items-center justify-center" aria-hidden>
+            <div className="absolute inset-0 rounded-full border-2 border-[#F0ECE0] bg-white/80" />
+            <div className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-[#FF9500] border-r-[#FF9500]/30" />
+            <Sparkles className="relative z-10 h-9 w-9 text-[#FF9500]" strokeWidth={2} />
+          </div>
+
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#888888]">Please wait</p>
+          <h2 className="mt-2 text-2xl font-black tracking-tight text-[#1A1A1A] sm:text-3xl">Preparing your questions</h2>
+          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-[#555555]">
+            We&apos;re tailoring Yes/No items to your profile and focus. This can take up to a minute on a slow connection.
+          </p>
+          <p className="mt-2 text-xs text-[#888888]">Do not close this tab.</p>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="mt-10 rounded-2xl border border-[#E8E4DC] bg-white/95 p-6 shadow-lg shadow-black/[0.04] backdrop-blur-sm sm:p-7"
+        >
+          <div className="mb-4 flex items-center justify-center gap-2 text-[#1A1A1A]">
+            <Users className="h-5 w-5 shrink-0 text-[#FF9500]" strokeWidth={2} />
+            <h3 className="text-base font-bold sm:text-lg">Bridge the gap with MentorMuni</h3>
+          </div>
+          <p className="text-center text-sm leading-relaxed text-[#555555]">
+            Practice alone only gets you so far. Join MentorMuni for{' '}
+            <span className="font-semibold text-[#333333]">1:1 mentorship</span> and{' '}
+            <span className="font-semibold text-[#333333]">AI mock interviews</span> — structured to build confidence before
+            the real round.
+          </p>
+          <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
+            <Link
+              to="/mentors"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-5 py-3 text-sm font-bold text-white shadow-md shadow-[#FF9500]/25 transition-all hover:bg-[#E88600] sm:w-auto"
+            >
+              <Headphones className="h-4 w-4" aria-hidden />
+              Explore mentorship
+            </Link>
+            <Link
+              to="/mock-interviews"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] px-5 py-3 text-sm font-semibold text-[#333333] transition-all hover:border-[#FF9500]/40 hover:bg-[#FFF8EE] sm:w-auto"
+            >
+              AI mock interviews
+              <ArrowRight className="h-4 w-4" aria-hidden />
+            </Link>
+          </div>
+        </motion.div>
+      </div>
+    </div>
+  );
+}
+
+/** Lighter loader while answers are evaluated (step 5) */
+function EvaluatingAnswersLoader() {
+  return (
+    <div className="min-h-screen bg-[#FFFDF8] px-4 py-12 font-sans sm:px-6">
+      <div className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center text-center">
+        <div className="mx-auto mb-6 h-16 w-16 rounded-full border-4 border-[#FF9500]/25 border-t-[#FF9500] animate-spin" />
+        <h2 className="text-xl font-black text-[#1A1A1A] sm:text-2xl">Scoring your readiness</h2>
+        <p className="mt-2 text-sm text-[#666666]">Analyzing your answers — almost there.</p>
+        <p className="mx-auto mt-8 max-w-sm rounded-xl border border-[#F0ECE0] bg-white px-4 py-3 text-xs leading-relaxed text-[#666666]">
+          <span className="font-semibold text-[#444444]">MentorMuni</span> pairs you with mentors and AI mocks so gaps turn
+          into confidence — explore after your score appears.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+/** Step 5: compact header; on list scroll, swap to slim title bar so questions stay visible */
+function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit, loading }) {
+  const [scrolled, setScrolled] = useState(false);
+  const listRef = useRef(null);
+  const isSkillQuiz = profile.assessmentMode === ASSESSMENT_FOCUS_SKILL;
+  const quizTitle = isSkillQuiz ? 'Skill preparation quiz' : 'Interview readiness quiz';
+  const answered = Object.keys(answers).length;
+  const total = questions.length || 1;
+  const pct = Math.min(100, Math.round((answered / total) * 100));
+  const skillSnippet = (profile.primarySkill || '').split(',')[0].trim() || 'your input';
+  const roleLabel =
+    DISPLAY_ROLE_BY_CATEGORY[profile.userCategory] || profile.userCategory.replace(/_/g, ' ') || '';
+
+  const onListScroll = () => {
+    const el = listRef.current;
+    if (!el) return;
+    setScrolled(el.scrollTop > 28);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#FFFDF8] py-6 px-4 font-sans sm:px-6 sm:py-8 lg:px-8">
+      <div className="mx-auto max-w-3xl">
+        <div className="overflow-hidden rounded-2xl border border-[#E0DCCF] bg-white shadow-xl sm:rounded-3xl">
+          {/* Expanded header — hidden once user scrolls the question list */}
+          <div
+            className={`border-b border-[#F0ECE0] px-4 transition-all duration-200 sm:px-6 ${
+              scrolled ? 'max-h-0 overflow-hidden border-0 opacity-0' : 'max-h-[220px] opacity-100 py-4 sm:py-5'
+            }`}
+            aria-hidden={scrolled}
+          >
+            <div className="flex flex-wrap items-start justify-between gap-3 gap-y-2">
+              <div className="min-w-0 flex-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 className="text-lg font-bold leading-tight text-[#1A1A1A] sm:text-xl">{quizTitle}</h2>
+                  <span className="shrink-0 rounded-full border border-[#E8D9C8] bg-[#FFF8EE] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#8B6914] sm:text-[11px]">
+                    Yes/No · {questions.length}
+                  </span>
+                </div>
+                <p className="mt-1.5 line-clamp-2 text-xs leading-snug text-[#666666] sm:text-sm">
+                  {isSkillQuiz
+                    ? 'Scoped to your skill — not a full interview-round mix.'
+                    : 'Broad engineering-style checks for overall readiness.'}
+                </p>
+                <p className="mt-1 truncate text-xs text-[#888888]">
+                  {isSkillQuiz ? 'Skill: ' : 'Context: '}
+                  <span className="font-medium text-[#444444]">{skillSnippet}</span>
+                  {roleLabel ? (
+                    <>
+                      {' · '}
+                      <span className="font-medium text-[#444444]">{roleLabel}</span>
+                    </>
+                  ) : null}
+                </p>
+              </div>
+              <div className="shrink-0 rounded-lg border border-[#E0DCCF] bg-[#FFFDF8] px-3 py-2 text-right">
+                <div className="text-lg font-black tabular-nums leading-none text-[#1A1A1A] sm:text-xl">
+                  {answered}
+                  <span className="text-[#999999]">/</span>
+                  {questions.length}
+                </div>
+                <p className="text-[10px] font-medium uppercase tracking-wide text-[#888888]">Answered</p>
+              </div>
+            </div>
+            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-[#F0ECE0]">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-500 transition-[width] duration-300"
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Slim bar — only after scrolling */}
+          <div
+            className={`border-b border-[#F0ECE0] bg-[#FAFAFA]/95 px-4 backdrop-blur-sm transition-all duration-200 sm:px-6 ${
+              scrolled ? 'max-h-24 py-2.5 opacity-100' : 'max-h-0 overflow-hidden border-0 py-0 opacity-0'
+            }`}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <p className="min-w-0 truncate text-sm font-semibold text-[#1A1A1A]">{quizTitle}</p>
+              <span className="shrink-0 text-xs font-bold tabular-nums text-[#555555]">
+                {answered}/{questions.length}
+              </span>
+            </div>
+            <div className="mt-2 h-0.5 w-full overflow-hidden rounded-full bg-[#E8E4DC]">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-500"
+                style={{ width: `${pct}%` }}
+              />
+            </div>
+          </div>
+
+          <div
+            ref={listRef}
+            onScroll={onListScroll}
+            className="max-h-[min(75dvh,720px)] space-y-6 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5"
+          >
+            {questions.map((q, i) => (
+              <div key={i} className="border-b border-[#F0ECE0] pb-6 last:border-0 last:pb-2">
+                <p className="mb-4 flex items-start gap-3 text-base font-semibold leading-relaxed text-[#1A1A1A]">
+                  <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-600 text-xs font-black text-white">
+                    {i + 1}
+                  </span>
+                  <span>{q}</span>
+                </p>
+                <div className="flex gap-3 sm:gap-4">
+                  <button
+                    type="button"
+                    onClick={() => setAnswers({ ...answers, [i]: 'Yes' })}
+                    className={`flex-1 rounded-xl border-2 py-2.5 text-sm font-bold transition-all sm:py-3 ${
+                      answers[i] === 'Yes'
+                        ? 'border-emerald-500 bg-emerald-600 text-white shadow-md shadow-emerald-500/25'
+                        : 'border-[#E0DCCF] bg-white text-[#444444] hover:border-emerald-400/60 hover:bg-emerald-50'
+                    }`}
+                  >
+                    Yes
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setAnswers({ ...answers, [i]: 'No' })}
+                    className={`flex-1 rounded-xl border-2 py-2.5 text-sm font-bold transition-all sm:py-3 ${
+                      answers[i] === 'No'
+                        ? 'border-rose-500 bg-rose-600 text-white shadow-md shadow-rose-500/25'
+                        : 'border-[#E0DCCF] bg-white text-[#444444] hover:border-rose-400/60 hover:bg-rose-50'
+                    }`}
+                  >
+                    No
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="border-t border-[#F0ECE0] bg-[#FFFCF9] px-4 py-4 sm:px-6">
+            <button
+              type="button"
+              className={`w-full rounded-2xl py-3.5 text-base font-bold text-white shadow-lg transition-all sm:py-4 ${
+                answered < questions.length
+                  ? 'cursor-not-allowed bg-slate-500 text-slate-200'
+                  : 'bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#FF9500] hover:to-[#E88600] active:scale-[0.99]'
+              }`}
+              disabled={answered < questions.length || loading}
+              onClick={onSubmit}
+            >
+              {answered < questions.length
+                ? `Answer ${questions.length - answered} more ${questions.length - answered === 1 ? 'question' : 'questions'}`
+                : 'Get My Readiness Score'}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -278,8 +826,8 @@ const InterviewReady = () => {
   // Initialize free usage tracker and modal
   const { incrementUsage, getUsageInfo } = useFreeUsageTracker('interview_readiness');
 
-  // 0: landing, 2: role, … — skip landing when opened from Tools (?entry=tools)
-  const [step, setStep] = useState(() => (readToolsEntryFromHash() ? 2 : 0));
+  // 0: landing, 12: mode (tools entry), 2: role, … — tools skips hero, starts at mode picker
+  const [step, setStep] = useState(() => (readToolsEntryFromHash() ? 12 : 0));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
@@ -299,6 +847,7 @@ const InterviewReady = () => {
   const [reportSent, setReportSent] = useState(false);
   
   const [profile, setProfile] = useState({
+    assessmentMode: null,
     userCategory: '',
     primarySkill: '',
     email: '',
@@ -342,9 +891,15 @@ const InterviewReady = () => {
   // Client navigation to ?entry=tools after mount (e.g. in-app link)
   useEffect(() => {
     if (searchParams.get('entry') === 'tools') {
-      setStep((s) => (s === 0 ? 2 : s));
+      setStep((s) => (s === 0 ? 12 : s));
     }
   }, [searchParams]);
+
+  useEffect(() => {
+    if ([2, 3, 4, 5].includes(step) && !profile.assessmentMode) {
+      setStep(fromToolsEntry ? 12 : 0);
+    }
+  }, [step, profile.assessmentMode, fromToolsEntry]);
 
   const checkBackendHealth = async () => {
     try {
@@ -538,7 +1093,10 @@ const InterviewReady = () => {
     }
 
     if (!profile.primarySkill.trim()) {
-      errors.primarySkill = 'Primary tech stack is required';
+      errors.primarySkill =
+        profile.assessmentMode === ASSESSMENT_FOCUS_SKILL
+          ? 'Enter the skill you want to practice'
+          : 'Enter your major subjects or areas (for interview context)';
     } else if (profile.primarySkill.trim().length > PLAN_PRIMARY_SKILL_MAX) {
       errors.primarySkill = `Keep your stack to ${PLAN_PRIMARY_SKILL_MAX} characters or less (API limit)`;
     }
@@ -576,6 +1134,9 @@ const InterviewReady = () => {
     }
     if (profile.userCategory && profile.userCategory !== 'professional' && profile.collegeName?.trim()) {
       payload.college_name = profile.collegeName.trim();
+    }
+    if (profile.assessmentMode === ASSESSMENT_FOCUS_SKILL || profile.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT) {
+      payload.assessment_focus = profile.assessmentMode;
     }
 
     const controller = new AbortController();
@@ -658,6 +1219,7 @@ const InterviewReady = () => {
         readiness_label: data.readiness_label,
         summary: `${data.readiness_label} — ${data.readiness_percentage}% readiness score`,
         userCategory: profile.userCategory,
+        assessmentMode: profile.assessmentMode,
         techStack: profile.primarySkill,
         strengths: data.strengths || [],
         gaps: data.gaps || [],
@@ -681,6 +1243,7 @@ const InterviewReady = () => {
   const resetAll = () => {
     setStep(0);
     setProfile({
+      assessmentMode: null,
       userCategory: '',
       primarySkill: '',
       email: '',
@@ -700,100 +1263,153 @@ const InterviewReady = () => {
     setReportSent(false);
   };
 
-  const ProgressBar = () => {
-    const total = questions.length || 1;
+  const stepContent = (() => {
+  // Loading must be checked first — otherwise `if (step === 4)` returns the form and the loader never shows.
+  if (loading && step !== 7 && step !== 8 && step !== 9) {
+    if (step === 4) {
+      return <PlanGenerationLoader />;
+    }
+    if (step === 5) {
+      return <EvaluatingAnswersLoader />;
+    }
     return (
-      <div className="w-full bg-white/10 h-2 rounded-full overflow-hidden mb-8">
-        <div
-          className="h-full bg-gradient-to-r from-[#FF9500] to-cyan-500 transition-all duration-500 ease-out"
-          style={{ width: `${(Object.keys(answers).length / total) * 100}%` }}
-        />
+      <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+        <div className="mx-auto max-w-2xl">
+          <div className="rounded-3xl border border-[#E0DCCF] bg-white p-10 text-center shadow-xl backdrop-blur animate-in fade-in duration-500">
+            <div className="mb-6">
+              <div className="mx-auto h-14 w-14 rounded-full border-4 border-[#FF9500]/25 border-t-[#FF9500] animate-spin" />
+            </div>
+            <h2 className="mb-2 text-2xl font-black text-[#1A1A1A]">Processing your request</h2>
+            <p className="text-[#666666]">Please wait a moment…</p>
+          </div>
+        </div>
       </div>
     );
-  };
+  }
 
-  const stepContent = (() => {
+  // ========== STEP 12: ASSESSMENT MODE (tools entry — same picker as landing) ==========
+  if (step === 12) {
+    return (
+      <div className="min-h-screen bg-[#FFFDF8] py-10 px-4 sm:px-6 lg:px-8 font-sans">
+        <div className="max-w-3xl mx-auto">
+          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-[#F0ECE0]">
+            <h2 className="text-3xl md:text-4xl font-black text-[#1A1A1A] mb-2 tracking-tight">Choose what to measure</h2>
+            <p className="text-[#666666] text-sm md:text-base mb-6 leading-relaxed">
+              One skill in depth, or a broad interview mix — tap a card to continue.
+            </p>
+            <AssessmentModeGrid
+              variant="hero"
+              selectedMode={profile.assessmentMode}
+              onPick={(mode) => {
+                setProfile((p) => ({ ...p, assessmentMode: mode }));
+                setStep(2);
+              }}
+            />
+            <button
+              type="button"
+              onClick={() => navigate('/interview-readiness-tools')}
+              className="mt-6 px-6 py-3 font-bold text-[#666666] hover:text-[#1A1A1A] hover:bg-[#FFF8EE] rounded-xl transition-all border border-[#F0ECE0] hover:border-[#E0DCCF] text-sm"
+            >
+              ← Back to tools
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // ========== STEP 0: LANDING ==========
   if (step === 0) {
     return (
-      <div className="min-h-screen bg-[#FFFDF8] text-[#1A1A1A] py-14 px-4 sm:px-6 lg:px-8 font-sans">
-        <div className="max-w-2xl mx-auto">
+      <div className="relative min-h-screen overflow-hidden bg-[#FFFDF8] text-[#1A1A1A] font-sans">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <div className="absolute -left-20 top-10 h-72 w-72 rounded-full bg-[#FF9500]/12 blur-3xl" />
+          <div className="absolute -right-16 top-1/3 h-64 w-64 rounded-full bg-cyan-400/10 blur-3xl" />
+          <div className="absolute bottom-0 left-1/2 h-48 w-[min(100%,480px)] -translate-x-1/2 rounded-full bg-amber-200/20 blur-3xl" />
+        </div>
 
-          {/* Source credibility pill */}
-          <div className="flex justify-center mb-6">
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FFF8EE] border border-[#F0ECE0]">
-              <Star size={13} className="text-amber-400" />
-              <span className="text-sm text-[#666666]">Questions built from real interview patterns at 500+ companies</span>
-            </div>
-          </div>
-
-          {/* Title */}
-          <div className="text-center mb-4">
-            <h1 className="text-5xl md:text-6xl font-black leading-tight tracking-tight">
-              Interview{' '}
-              <span className="text-[#FF9500]">Readiness</span>
-              <br />Check
-            </h1>
-          </div>
-
-          {/* Subheadline — specific, not fluffy */}
-          <p className="text-center text-lg text-[#444444] leading-relaxed mb-8 max-w-xl mx-auto">
-            Questions tailored to your role and tech stack. Get your readiness score, your weak spots,
-            and a personalized study plan — in 5 minutes.
-          </p>
-
-          {/* Feature cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-8">
-            {[
-              { Icon: Zap, title: 'Score in 5 minutes', desc: '5 targeted questions, instant readiness score and topic breakdown.' },
-              { Icon: ShieldCheck, title: 'No account needed', desc: 'No account, no password — just start. Save your report after if you want.' },
-              { Icon: Map, title: 'Personalised plan', desc: 'Weak areas mapped to a specific week-by-week study roadmap for your stack.' },
-            ].map(({ Icon, title, desc }) => (
-              <div key={title} className="bg-white/[0.03] border border-[#F0ECE0] rounded-xl p-5 hover:border-[#FF9500]/35 transition-all">
-                <div className="w-9 h-9 bg-[#FF9500]/20 rounded-lg flex items-center justify-center mb-3">
-                  <Icon size={16} className="text-[#FF9500]" />
-                </div>
-                <h3 className="font-semibold text-[#1A1A1A] text-sm mb-1.5">{title}</h3>
-                <p className="text-[#444444] text-sm leading-relaxed">{desc}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Trust pills — ABOVE the CTA */}
-          <div className="flex flex-wrap justify-center gap-3 mb-5">
-            {[
-              { Icon: Clock, text: '5 minutes' },
-              { Icon: Check, text: 'Free, always' },
-              { Icon: ShieldCheck, text: 'No signup' },
-            ].map(({ Icon, text }) => (
-              <span key={text} className="inline-flex items-center gap-1.5 bg-[#FFF8EE] border border-[#F0ECE0] rounded-full px-3 py-1.5 text-xs text-[#666666] font-medium">
-                <Icon size={12} className="text-green-400" />
-                {text}
+        <div className="relative z-10 mx-auto flex min-h-screen max-w-3xl flex-col px-4 pb-12 pt-8 sm:px-6 sm:pt-10 lg:max-w-5xl lg:px-8">
+          {/* Credibility — compact */}
+          <div className="mb-5 flex justify-center sm:mb-6">
+            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-[#F0ECE0] bg-white/90 px-3 py-1.5 shadow-sm backdrop-blur sm:px-4">
+              <Star size={14} className="shrink-0 text-amber-400" />
+              <span className="text-center text-[11px] font-medium text-[#666666] sm:text-xs">
+                Patterns from 500+ companies · free score
               </span>
-            ))}
-          </div>
-
-          <div className="mb-5 rounded-xl border border-orange-200/70 bg-[#FFF8EE] px-4 py-3 flex gap-3 text-left max-w-lg mx-auto">
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-[#FF9500] to-amber-600 text-white shadow-sm">
-              <Gift size={17} strokeWidth={2} />
-            </span>
-            <div>
-              <div className="mb-1 w-fit">
-                <LimitedRewardLabel />
-              </div>
-              <p className="text-sm text-[#444444] leading-snug">{READINESS_TEST_COUPON_BADGE}</p>
             </div>
           </div>
 
-          {/* Primary CTA */}
-          <button
-            onClick={() => setStep(2)}
-            className="group w-full flex items-center justify-center gap-2 bg-[#FF9500] hover:bg-[#E88600] text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)] text-base active:scale-[0.98] mb-3"
-          >
-            {PRIMARY_CTA_LABEL}
-            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
-          </button>
+          {/* Headline — short */}
+          <div className="mx-auto mb-6 max-w-xl text-center lg:mb-8">
+            <h1 className="text-4xl font-black leading-[1.08] tracking-tight text-[#1A1A1A] sm:text-5xl md:text-6xl">
+              Interview{' '}
+              <span className="bg-gradient-to-r from-[#FF9500] to-amber-500 bg-clip-text text-transparent">Readiness</span>
+              <br />
+              <span className="text-[#1A1A1A]">Check</span>
+            </h1>
+            <p className="mt-3 text-base text-[#555555] sm:text-lg">
+              Two ways to start — pick one. <span className="whitespace-nowrap text-[#444444] font-semibold">~5 min.</span>{' '}
+              <span className="whitespace-nowrap">Free.</span> No signup.
+            </p>
+            {/* Trust row — single line */}
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-medium text-[#666666]">
+              {[
+                { Icon: Clock, text: '~5 min' },
+                { Icon: Sparkles, text: 'Instant score' },
+                { Icon: ShieldCheck, text: 'No account' },
+              ].map(({ Icon, text }) => (
+                <span key={text} className="inline-flex items-center gap-1.5">
+                  <Icon size={13} className="text-[#FF9500]" />
+                  {text}
+                </span>
+              ))}
+            </div>
+          </div>
 
+          {/* How it works — above path choice (timeline / flow, not card grid) */}
+          <div className="mx-auto mb-8 w-full max-w-3xl sm:mb-10">
+            <div className="mb-6 flex items-center justify-center gap-2 text-center sm:mb-8">
+              <Zap size={18} className="shrink-0 text-[#FF9500]" />
+              <h2 className="text-base font-semibold text-[#1A1A1A] sm:text-lg">How it works &amp; what you get</h2>
+            </div>
+            <HowItWorksFlow />
+          </div>
+
+          {/* Primary action — path cards */}
+          <div className="mx-auto w-full max-w-3xl flex-1">
+            <div className="mb-6 text-center sm:mb-7">
+              <h2 className="text-base font-semibold tracking-tight text-[#1A1A1A] sm:text-lg">
+                Choose your path
+              </h2>
+              <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-[#666666]">
+                Select one option below to continue.
+              </p>
+              <div className="mx-auto mt-5 h-px w-16 bg-[#E0DCCF]" aria-hidden />
+            </div>
+            <AssessmentModeGrid
+              variant="hero"
+              selectedMode={profile.assessmentMode}
+              onPick={(mode) => {
+                setProfile((p) => ({ ...p, assessmentMode: mode }));
+                setStep(2);
+              }}
+            />
+          </div>
+
+          {/* Reward — below CTAs */}
+          <div className="mx-auto mt-10 w-full max-w-2xl">
+            <div className="flex items-start gap-3 rounded-2xl border border-orange-200/60 bg-gradient-to-r from-[#FFF8EE] to-white px-4 py-3 shadow-sm">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FF9500] to-amber-600 text-white shadow-md">
+                <Gift size={18} strokeWidth={2} />
+              </span>
+              <div className="min-w-0 pt-0.5">
+                <div className="mb-0.5 w-fit">
+                  <LimitedRewardLabel />
+                </div>
+                <p className="text-sm text-[#444444] leading-snug">{READINESS_TEST_COUPON_BADGE}</p>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -975,7 +1591,7 @@ const InterviewReady = () => {
       {
         value: '3rd_year',
         emoji: '🎓',
-        label: '3rd Year Student',
+        label: '1st–3rd Year Student',
         badge: 'Internship-focused',
         details: ['Building DSA fundamentals', 'Core CS concepts', 'Targeting internships'],
       },
@@ -1026,6 +1642,14 @@ const InterviewReady = () => {
                 />
               </div>
             </div>
+
+            {profile.assessmentMode && (
+              <div className="mb-4">
+                <span className="inline-flex items-center rounded-full border border-cyan-500/35 bg-cyan-500/10 px-3 py-1.5 text-xs font-semibold text-[#0E7490]">
+                  {ASSESSMENT_MODE_LABEL[profile.assessmentMode]}
+                </span>
+              </div>
+            )}
 
             <h2 className="text-3xl md:text-4xl font-black text-[#1A1A1A] mb-2 tracking-tight">
               Select your professional profile
@@ -1083,7 +1707,11 @@ const InterviewReady = () => {
             <div className="flex gap-3">
               <button
                 type="button"
-                onClick={() => (fromToolsEntry ? navigate('/interview-readiness-tools') : setStep(0))}
+                onClick={() => {
+                  setProfile((p) => ({ ...p, assessmentMode: null }));
+                  if (fromToolsEntry) setStep(12);
+                  else setStep(0);
+                }}
                 className="px-6 py-3 font-bold text-[#666666] hover:text-[#1A1A1A] hover:bg-[#FFF8EE] rounded-xl transition-all border border-[#F0ECE0] hover:border-[#E0DCCF] text-sm"
               >
                 ← Back
@@ -1338,6 +1966,7 @@ const InterviewReady = () => {
   if (step === 4) {
     const ASSESSMENT_STEPS = 6;
     const currentStepIndex = 3;
+    const isSkillFocus = profile.assessmentMode === ASSESSMENT_FOCUS_SKILL;
 
     const roleLabel =
       DISPLAY_ROLE_BY_CATEGORY[profile.userCategory] ||
@@ -1364,30 +1993,48 @@ const InterviewReady = () => {
               </div>
             </div>
 
-            <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-              <div className="min-w-0">
-                <h2 className="text-3xl md:text-4xl font-black text-[#1A1A1A] mb-2 tracking-tight">
-                  Your skills &amp; tech stack
-                </h2>
-                <p className="text-[#666666] text-base leading-relaxed max-w-2xl">
-                  We&apos;ll call the plan API to build <span className="text-[#444444] font-semibold">15 Yes/No questions</span>{' '}
-                  matched to your stack. List the languages, frameworks, and tools you&apos;re most comfortable discussing (
-                  {PLAN_PRIMARY_SKILL_MAX} characters max).
-                </p>
-              </div>
-              <div className="flex shrink-0 flex-wrap items-center gap-2 sm:justify-end">
-                <span className="inline-flex items-center rounded-full border border-[#FF9500]/35 bg-[#FF9500]/10 px-3 py-1.5 text-xs font-semibold text-[#CC7000]">
-                  Profile: <span className="ml-1 text-[#444444]">{roleLabel}</span>
+            <div className="mb-6 space-y-3">
+              <h2 className="text-2xl font-black tracking-tight text-[#1A1A1A] md:text-3xl">
+                {isSkillFocus ? 'Your skill focus' : 'Interview focus areas'}
+              </h2>
+              <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-[#666666]">
+                {profile.assessmentMode && (
+                  <>
+                    <span className="font-semibold text-[#444444]">
+                      {ASSESSMENT_MODE_LABEL[profile.assessmentMode]}
+                    </span>
+                    <span className="text-[#D4D0C8]" aria-hidden>
+                      ·
+                    </span>
+                  </>
+                )}
+                <span>{roleLabel}</span>
+                <span className="text-[#D4D0C8]" aria-hidden>
+                  ·
                 </span>
-                <span className="inline-flex items-center rounded-full border border-cyan-500/35 bg-cyan-500/10 px-3 py-1.5 text-xs font-bold text-cyan-300">
-                  {usageInfo.remaining_attempts}/{FREE_TIER_LIMIT} free runs
+                <span className="tabular-nums">
+                  {usageInfo.remaining_attempts}/{FREE_TIER_LIMIT} free
                 </span>
-              </div>
+              </p>
+              <p className="max-w-2xl text-sm leading-relaxed text-[#555555]">
+                {isSkillFocus ? (
+                  <>
+                    One skill only — we&apos;ll keep every question on it.{' '}
+                    <span className="text-[#888888]">({PLAN_PRIMARY_SKILL_MAX} characters max)</span>
+                  </>
+                ) : (
+                  <>
+                    Add subjects for context (e.g. DSA, OOP, DBMS). You&apos;ll get a{' '}
+                    <span className="font-medium text-[#333333]">broad interview mix</span>, not drills on one language.{' '}
+                    <span className="text-[#888888]">({PLAN_PRIMARY_SKILL_MAX} characters max)</span>
+                  </>
+                )}
+              </p>
             </div>
 
             <form onSubmit={handleGetReadinessPlan} className="space-y-6">
               <InputField
-                label="Primary technologies"
+                label={isSkillFocus ? 'Skill to practice' : 'Major areas & skills (for context)'}
                 type="textarea"
                 name="primarySkill"
                 value={profile.primarySkill}
@@ -1396,17 +2043,30 @@ const InterviewReady = () => {
                   setProfile((prev) => ({ ...prev, primarySkill: v }));
                   setValidationErrors((prev) => (prev.primarySkill ? { ...prev, primarySkill: '' } : prev));
                 }}
-                placeholder="e.g. React, TypeScript, Node.js, PostgreSQL"
+                placeholder={
+                  isSkillFocus
+                    ? 'e.g. Java, or C#, or Python, or Machine Learning — one primary skill'
+                    : 'e.g. DSA, OOP, DBMS, system design — comma-separated areas'
+                }
                 error={validationErrors.primarySkill}
                 maxLength={PLAN_PRIMARY_SKILL_MAX}
                 showCharCount={true}
                 autoComplete="off"
               />
 
-              <div className="rounded-xl border border-cyan-500/25 bg-cyan-500/[0.06] p-4">
-                <p className="text-sm leading-relaxed text-cyan-100/90">
-                  <span className="font-semibold text-cyan-300">Tip:</span> Separate items with commas. Mention what you&apos;d
-                  talk about in a technical interview — we match question difficulty to this list.
+              <div className="rounded-lg border border-[#E8E4DC] bg-[#FAFAFA] px-3 py-2.5">
+                <p className="text-xs leading-snug text-[#555555]">
+                  {isSkillFocus ? (
+                    <>
+                      <span className="font-semibold text-[#444444]">Tip:</span> Best with a single stack (e.g. Java or
+                      Python), not a long list.
+                    </>
+                  ) : (
+                    <>
+                      <span className="font-semibold text-[#444444]">Tip:</span> Comma-separated is fine; questions stay
+                      general across topics.
+                    </>
+                  )}
                 </p>
               </div>
 
@@ -1460,90 +2120,14 @@ const InterviewReady = () => {
   // ========== STEP 5: QUIZ ==========
   if (step === 5) {
     return (
-      <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
-        <div className="max-w-3xl mx-auto">
-          <div className="bg-white border border-[#E0DCCF] rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-right-8 duration-500">
-            <div className="mb-8">
-              <div className="flex justify-between items-end mb-6 gap-4 flex-wrap">
-                <div>
-                  <div className="mb-2 flex flex-wrap items-center gap-2">
-                    <h2 className="text-3xl font-black text-[#1A1A1A]">Interview Readiness Quiz</h2>
-                    <span className="rounded-full border border-[#FF9500]/45 bg-[#FF9500]/15 px-2.5 py-0.5 text-xs font-bold uppercase tracking-wide text-[#CC7000]">
-                      Yes / No · {questions.length} questions
-                    </span>
-                  </div>
-                  <p className="text-[#666666] text-sm mt-1">
-                    Based on{' '}
-                    <span className="font-semibold text-cyan-400">
-                      {(profile.primarySkill || '').split(',')[0].trim() || 'your stack'}
-                    </span>{' '}
-                    for{' '}
-                    <span className="font-semibold text-[#FF9500]">
-                      {DISPLAY_ROLE_BY_CATEGORY[profile.userCategory] ||
-                        profile.userCategory.replace(/_/g, ' ')}
-                    </span>
-                  </p>
-                </div>
-                <div className="text-right bg-[#FFFDF8] border border-[#E0DCCF] rounded-xl px-4 py-3 min-w-fit">
-                  <div className="text-2xl font-black bg-gradient-to-r from-[#FF9500] to-cyan-400 bg-clip-text text-transparent">{Object.keys(answers).length}/{questions.length}</div>
-                  <p className="text-xs text-[#666666] mt-1">Answered</p>
-                </div>
-              </div>
-              <ProgressBar />
-            </div>
-
-            <div className="space-y-8 mb-8 max-h-[60vh] overflow-y-auto pr-4">
-              {questions.map((q, i) => (
-                <div key={i} className="border-b border-[#F0ECE0] pb-8 last:border-0">
-                  <p className="text-base font-semibold text-[#1A1A1A] mb-5 leading-relaxed flex items-start gap-3">
-                    <span className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-600 text-white text-xs font-black flex-shrink-0 mt-0.5">
-                      {i + 1}
-                    </span>
-                    <span>{q}</span>
-                  </p>
-                  <div className="flex gap-4">
-                    <button
-                      onClick={() => setAnswers({...answers, [i]: 'Yes'})}
-                      className={`flex-1 py-3 rounded-xl font-bold border-2 transition-all ${
-                        answers[i] === 'Yes' 
-                          ? 'bg-emerald-600 border-emerald-500 text-white shadow-lg shadow-emerald-500/30' 
-                          : 'bg-white/5 border-[#E0DCCF] text-[#444444] hover:border-emerald-400/50 hover:bg-emerald-500/10'
-                      }`}
-                    >
-                      Yes
-                    </button>
-                    <button
-                      onClick={() => setAnswers({...answers, [i]: 'No'})}
-                      className={`flex-1 py-3 rounded-xl font-bold border-2 transition-all ${
-                        answers[i] === 'No' 
-                          ? 'bg-rose-600 border-rose-500 text-white shadow-lg shadow-rose-500/30' 
-                          : 'bg-white/5 border-[#E0DCCF] text-[#444444] hover:border-rose-400/50 hover:bg-rose-500/10'
-                      }`}
-                    >
-                      No
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <button 
-              className={`w-full py-4 rounded-2xl font-bold text-white transition-all shadow-lg ${
-                Object.keys(answers).length < questions.length 
-                  ? 'bg-slate-600 cursor-not-allowed text-slate-200' 
-                  : 'bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#FF9500] hover:to-[#E88600] active:scale-95'
-              }`}
-              disabled={Object.keys(answers).length < questions.length || loading}
-              onClick={handleEvalSubmit}
-            >
-              {Object.keys(answers).length < questions.length 
-                ? `Answer ${questions.length - Object.keys(answers).length} more ${questions.length - Object.keys(answers).length === 1 ? 'question' : 'questions'}` 
-                : 'Get My Readiness Score'
-              }
-            </button>
-          </div>
-        </div>
-      </div>
+      <ReadinessQuizPanel
+        questions={questions}
+        answers={answers}
+        setAnswers={setAnswers}
+        profile={profile}
+        onSubmit={handleEvalSubmit}
+        loading={loading}
+      />
     );
   }
 
@@ -1562,121 +2146,180 @@ const InterviewReady = () => {
           ? { label: 'Growth band', sub: 'Structured practice moves this score quickly.' }
           : { label: 'Build band', sub: 'High upside — lock fundamentals below.' };
 
+    const modeLabel =
+      result.assessmentMode === ASSESSMENT_FOCUS_SKILL
+        ? 'Skill preparation'
+        : result.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT
+          ? 'Interview readiness'
+          : '—';
+    const roleShort = result.userCategory.replace(/_/g, ' ');
+    const areaShort = result.techStack || '—';
+    const nextSteps = nextStepsForScoreBand(pct);
+    const peerDims = peerDimensionsFromResult(pct, strengthSignal, gapPressure);
+
     return (
-      <div className="min-h-screen bg-[#FFFDF8] py-10 px-4 sm:px-6 lg:px-8 font-sans">
-        <div className="max-w-3xl mx-auto space-y-6">
+      <div className="min-h-screen bg-[#FFFDF8] py-8 px-4 sm:px-6 lg:px-8 font-sans">
+        <div className="mx-auto max-w-3xl space-y-6">
+          <div>
+            <h1 className="text-xl font-bold tracking-tight text-[#1A1A1A] sm:text-2xl">Your readiness score</h1>
+            <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[#666666]">
+              <span className="font-medium text-[#444444]">{modeLabel}</span>
+              <span className="text-[#D4D0C8]" aria-hidden>
+                ·
+              </span>
+              <span className="capitalize">{roleShort}</span>
+              <span className="text-[#D4D0C8]" aria-hidden>
+                ·
+              </span>
+              <span className="max-w-[200px] truncate sm:max-w-none" title={areaShort}>
+                {areaShort}
+              </span>
+              <span className="text-[#D4D0C8]" aria-hidden>
+                ·
+              </span>
+              <span className="tabular-nums">
+                {usageInfo.current_usage}/{FREE_TIER_LIMIT} attempts
+              </span>
+            </p>
+          </div>
+
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="relative overflow-hidden rounded-3xl border border-[#E0DCCF] bg-white p-6 shadow-2xl shadow-black/40 sm:p-10"
+            className="relative overflow-hidden rounded-3xl border border-[#E0DCCF] bg-white p-6 shadow-xl sm:p-8"
           >
-            <div className="pointer-events-none absolute -right-24 -top-24 h-64 w-64 rounded-full bg-[#FF9500]/15 blur-3xl" />
-            <div className="pointer-events-none absolute -bottom-20 -left-20 h-56 w-56 rounded-full bg-cyan-500/10 blur-3xl" />
+            <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-[#FF9500]/10 blur-3xl" />
 
-            <div className="relative grid gap-10 lg:grid-cols-[1fr_1.15fr] lg:items-center lg:text-left">
-              <div className="flex flex-col items-center lg:items-start">
+            <div className="relative grid gap-10 lg:grid-cols-[minmax(0,280px)_1fr] lg:items-start lg:gap-12">
+              <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
                 <ReadinessScoreRing pct={pct} />
                 <motion.div
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  transition={{ delay: 0.5 }}
-                  className="mt-6 inline-flex items-center gap-2 rounded-full border border-[#E0DCCF] bg-white/5 px-3 py-1 text-[11px] font-bold uppercase tracking-widest text-[#666666]"
+                  transition={{ delay: 0.45 }}
+                  className="mt-5 inline-flex items-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-950"
                 >
-                  <Sparkles size={12} className="text-amber-400" />
+                  <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" aria-hidden />
                   {band.label}
                 </motion.div>
-                <h2 className="mt-3 text-3xl font-black text-[#1A1A1A] sm:text-4xl">{result.readiness_label}</h2>
-                <p className="mt-2 max-w-md text-[#666666]">{band.sub}</p>
-                <p className="mt-3 text-sm leading-relaxed text-slate-500">{result.summary}</p>
+                <h2 className="mt-4 text-2xl font-black leading-tight text-[#1A1A1A] sm:text-3xl">
+                  {result.readiness_label}
+                </h2>
+                <p className="mt-2 max-w-sm text-sm text-[#555555]">{band.sub}</p>
+                <p className="mt-3 text-xs leading-relaxed text-[#888888]">{result.summary}</p>
               </div>
 
-              <div className="space-y-5">
-                <div className="rounded-2xl border border-[#E0DCCF] bg-white/[0.04] p-5">
-                  <p className="mb-4 flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500">
-                    <BarChart3 size={14} className="text-[#FF9500]" />
-                    Score factors
-                  </p>
-                  <div className="space-y-4">
-                    <FactorBar label="Overall readiness index" value={pct} icon={Target} variant="indigo" delay={0.1} />
-                    <FactorBar
-                      label="Strength coverage (topics you showed)"
-                      value={strengthSignal}
-                      icon={TrendingUp}
-                      variant="emerald"
-                      delay={0.2}
-                    />
-                    <FactorBar
-                      label="Gap surface (topics to close)"
-                      value={gapPressure}
-                      icon={AlertTriangle}
-                      variant="amber"
-                      delay={0.3}
-                    />
-                  </div>
-                  <p className="mt-3 text-[10px] leading-relaxed text-slate-600">
-                    Bars derive from your score + how many strength vs gap topics the model returned — use them as a
-                    directional snapshot, not a second exam.
-                  </p>
+              <div className="rounded-2xl border border-[#E8E4DC] bg-[#FAFAFA]/80 p-5 sm:p-6">
+                <p className="mb-5 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-[#666666]">
+                  <BarChart3 size={15} className="text-[#FF9500]" />
+                  Score factors
+                </p>
+                <div className="space-y-6">
+                  <ScoreFactorRow
+                    label="Overall readiness"
+                    value={pct}
+                    hint="Headline score from this Yes/No run — your north-star number."
+                    icon={Target}
+                    variant="orange"
+                    delay={0.08}
+                  />
+                  <ScoreFactorRow
+                    label="Strength coverage"
+                    value={strengthSignal}
+                    hint="Share of topics where your answers looked solid vs all topics scored."
+                    icon={CheckCircle2}
+                    variant="emerald"
+                    delay={0.16}
+                  />
+                  <ScoreFactorRow
+                    label="Gap surface"
+                    value={gapPressure}
+                    hint="How much ground is still open — higher means more topics to prioritize."
+                    icon={AlertTriangle}
+                    variant="amber"
+                    delay={0.24}
+                  />
                 </div>
-
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                  {[
-                    { icon: User, label: 'Role', value: result.userCategory.replace('_', ' ') },
-                    { icon: Cpu, label: 'Stack', value: result.techStack || '—' },
-                    { icon: BarChart3, label: 'Attempts', value: `${usageInfo.current_usage}/${FREE_TIER_LIMIT}` },
-                  ].map((row, i) => (
-                    <motion.div
-                      key={row.label}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.35 + i * 0.06 }}
-                      className="rounded-xl border border-[#E0DCCF] bg-white/[0.03] p-4 text-left"
-                    >
-                      <div className="mb-2 flex items-center gap-2 text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                        <row.icon size={14} className="text-[#FF9500]" />
-                        {row.label}
-                      </div>
-                      <p className="text-sm font-semibold capitalize text-[#1A1A1A]">{row.value}</p>
-                    </motion.div>
-                  ))}
-                </div>
+                <p className="mt-5 border-t border-[#EDE8E0] pt-4 text-[10px] leading-relaxed text-[#888888]">
+                  Directional only — derived from your score and how many strength vs gap topics we detected.
+                </p>
               </div>
             </div>
+          </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.45 }}
-              className="relative mt-10 rounded-2xl border border-[#FF9500]/35 bg-gradient-to-br from-[#FF9500]/15 to-[#FFB347]/10 p-6 text-left"
-            >
-              <div className="absolute right-4 top-4 opacity-20">
-                <Lightbulb size={56} className="text-[#CC7000]" />
-              </div>
-              <p className="text-xs font-bold uppercase tracking-wider text-[#CC7000]/90">What this means for you</p>
-              <h3 className="relative mt-2 max-w-xl text-lg font-bold leading-snug text-[#1A1A1A]">
-                {pct < 50
-                  ? 'Students at this score level often improve by 30+ points in a few weeks with guided practice.'
-                  : pct < 75
-                    ? "You're close — a focused plan can push you past 75 before drives."
-                    : "You're in a strong range — sharpen the last gaps before interviews."}
-              </h3>
-              <p className="relative mt-2 text-sm text-[#666666]">First mentor session is free. No commitment.</p>
-              <div className="relative mt-4 flex flex-col gap-3 sm:flex-row">
-                <Link
-                  to="/mentors"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-5 py-3 text-sm font-semibold text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-all hover:bg-[#E88600]"
-                >
-                  Book free intro call <ArrowRight size={15} />
-                </Link>
-                <Link
-                  to="/learning-paths"
-                  className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#E0DCCF] px-5 py-3 text-sm font-medium text-[#444444] transition-all hover:border-[#E0DCCF] hover:bg-[#FFF8EE]"
-                >
-                  Browse learning paths
-                </Link>
-              </div>
-            </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="rounded-2xl bg-[#141414] px-6 py-8 text-left text-white shadow-xl sm:px-8"
+          >
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/50">What this means for you</p>
+            <h3 className="mt-3 max-w-xl text-lg font-semibold leading-snug text-white sm:text-xl">
+              {pct < 50
+                ? 'At this level, most students gain 25–35 points within a few weeks of guided practice — you are not stuck here.'
+                : pct < 75
+                  ? 'You are in reach of a strong band — focused reps on gaps and mocks usually close the gap before drives.'
+                  : 'You are in a competitive range — polish remaining gaps and practice under time pressure.'}
+            </h3>
+            <p className="mt-3 text-sm text-white/70">First mentor session is free. No commitment.</p>
+            <div className="mt-6">
+              <Link
+                to="/mentors"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-5 py-3.5 text-sm font-semibold text-[#141414] shadow-lg transition hover:bg-[#FFB347] sm:w-auto"
+              >
+                Book free intro call
+                <ArrowRight size={16} />
+              </Link>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="rounded-2xl border border-[#E0DCCF] bg-white p-6 shadow-sm sm:p-7"
+          >
+            <h3 className="text-base font-bold text-[#1A1A1A] sm:text-lg">Your next steps</h3>
+            <p className="mt-1 text-xs text-[#666666]">Prioritized for your current band — do them in order.</p>
+            <ol className="mt-5 space-y-4">
+              {nextSteps.map((stepItem, i) => (
+                <li key={stepItem.title} className="flex gap-4">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FFF8EE] text-sm font-black text-[#CC7000] ring-1 ring-[#F0ECE0]">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <p className="font-semibold text-[#1A1A1A]">{stepItem.title}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-[#666666]">{stepItem.sub}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+            className="rounded-2xl border border-[#E0DCCF] bg-white p-6 shadow-sm sm:p-7"
+          >
+            <h3 className="text-base font-bold text-[#1A1A1A] sm:text-lg">How you compare</h3>
+            <p className="mt-1 text-xs text-[#666666]">
+              Illustrative peer lens — derived from your score profile (not a live benchmark survey).
+            </p>
+            <div className="mt-6 space-y-6">
+              {peerDims.map((row, i) => (
+                <ScoreFactorRow
+                  key={row.label}
+                  label={row.label}
+                  value={row.value}
+                  hint={row.hint}
+                  icon={i === 0 ? Target : i === 1 ? TrendingUp : i === 2 ? AlertTriangle : BarChart3}
+                  variant={i === 1 ? 'emerald' : i === 2 ? 'amber' : 'orange'}
+                  delay={0.05 * i}
+                />
+              ))}
+            </div>
           </motion.div>
 
           <motion.div
@@ -1696,11 +2339,17 @@ const InterviewReady = () => {
                 </div>
                 <p className="mt-1 text-sm text-[#555555]">
                   Dare your squad to beat your {pct}% — same free ~5 min interview readiness check. Bragging rights
-                  optional, placement prep mandatory.
+                  optional, interview prep mandatory.
                 </p>
                 <div className="mt-4 flex flex-wrap gap-3">
                   <a
-                    href={`https://wa.me/?text=${encodeURIComponent(buildWhatsAppChallengeMessage(pct, result.readiness_label))}`}
+                    href={`https://wa.me/?text=${encodeURIComponent(
+                      buildWhatsAppChallengeMessage(
+                        pct,
+                        result.readiness_label,
+                        result.assessmentMode ? ASSESSMENT_MODE_LABEL[result.assessmentMode] : ''
+                      )
+                    )}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/25 transition hover:bg-[#20bd5a]"
@@ -1805,11 +2454,14 @@ const InterviewReady = () => {
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {result.strengths && result.strengths.length > 0 && (
-              <div className="rounded-2xl border border-emerald-500/35 bg-gradient-to-br from-emerald-600/20 via-emerald-900/10 to-transparent p-6 shadow-lg shadow-emerald-950/20">
-                <h3 className="mb-4 flex items-center gap-2 text-lg font-black text-emerald-300">
-                  <CheckCircle2 size={22} className="text-emerald-400" />
+              <div className="rounded-2xl border border-[#E0DCCF] bg-white p-6 shadow-sm ring-1 ring-emerald-500/10">
+                <h3 className="mb-1 flex items-center gap-2.5 text-base font-semibold tracking-tight text-[#1A1A1A] sm:text-lg">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100">
+                    <CheckCircle2 size={20} className="text-emerald-600" strokeWidth={2} aria-hidden />
+                  </span>
                   Your strengths
                 </h3>
+                <p className="mb-4 text-xs leading-relaxed text-[#666666]">Topics where your answers showed solid understanding.</p>
                 <motion.div
                   variants={resultsListContainer}
                   initial="hidden"
@@ -1820,10 +2472,10 @@ const InterviewReady = () => {
                     <motion.div
                       key={i}
                       variants={resultsListItem}
-                      className="flex items-start gap-3 rounded-xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-left text-sm font-medium text-emerald-100"
+                      className="flex items-start gap-3 rounded-xl border border-[#E8F0EA] bg-[#FAFDFB] px-3.5 py-2.5 text-left text-sm leading-snug text-[#333333]"
                     >
-                      <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-400" />
-                      <span>{strength}</span>
+                      <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-600" strokeWidth={2} aria-hidden />
+                      <span className="font-medium">{strength}</span>
                     </motion.div>
                   ))}
                 </motion.div>
@@ -1831,11 +2483,14 @@ const InterviewReady = () => {
             )}
 
             {result.gaps && result.gaps.length > 0 && (
-              <div className="rounded-2xl border border-amber-500/35 bg-gradient-to-br from-amber-600/15 via-amber-900/10 to-transparent p-6 shadow-lg shadow-amber-950/20">
-                <h3 className="mb-4 flex items-center gap-2 text-lg font-black text-amber-300">
-                  <AlertTriangle size={22} className="text-amber-400" />
+              <div className="rounded-2xl border border-[#E0DCCF] bg-white p-6 shadow-sm ring-1 ring-amber-500/10">
+                <h3 className="mb-1 flex items-center gap-2.5 text-base font-semibold tracking-tight text-[#1A1A1A] sm:text-lg">
+                  <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 text-amber-800 ring-1 ring-amber-100">
+                    <AlertTriangle size={20} className="text-amber-600" strokeWidth={2} aria-hidden />
+                  </span>
                   Areas to improve
                 </h3>
+                <p className="mb-4 text-xs leading-relaxed text-[#666666]">Prioritize these for your next study block.</p>
                 <motion.div
                   variants={resultsListContainer}
                   initial="hidden"
@@ -1846,10 +2501,10 @@ const InterviewReady = () => {
                     <motion.div
                       key={i}
                       variants={resultsListItem}
-                      className="flex items-start gap-3 rounded-xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-left text-sm font-medium text-amber-100"
+                      className="flex items-start gap-3 rounded-xl border border-[#F5EBDD] bg-[#FFFCF7] px-3.5 py-2.5 text-left text-sm leading-snug text-[#333333]"
                     >
-                      <Target size={16} className="mt-0.5 shrink-0 text-amber-400" />
-                      <span>{gap}</span>
+                      <Target size={16} className="mt-0.5 shrink-0 text-amber-600" strokeWidth={2} aria-hidden />
+                      <span className="font-medium">{gap}</span>
                     </motion.div>
                   ))}
                 </motion.div>
@@ -2290,24 +2945,6 @@ const InterviewReady = () => {
             >
               Skip for Now
             </button>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ========== LOADING STATE (OTP / plan API / etc.) ==========
-  if (loading && step !== 7 && step !== 8 && step !== 9) {
-    return (
-      <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-white border border-[#E0DCCF] rounded-3xl shadow-2xl p-12 backdrop-blur text-center animate-in fade-in duration-500">
-            <div className="mb-6">
-              <div className="w-16 h-16 border-4 border-[#FF9500]/35 border-t-[#FF9500] rounded-full animate-spin mx-auto"></div>
-            </div>
-            <h2 className="text-2xl font-black text-[#1A1A1A] mb-2">Processing Your Request</h2>
-            <p className="text-[#666666] mb-4">Please wait while we generate your personalized assessment...</p>
-            <p className="text-xs text-slate-500">This may take up to 30 seconds</p>
           </div>
         </div>
       </div>

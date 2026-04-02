@@ -200,11 +200,14 @@ const PlacementTracks = () => {
               <p className="text-lg text-white/90 mb-8">
                 Enroll now and get access to the complete {selectedTrack?.title} curriculum with 1:1 mentorship
               </p>
-              <button 
-                onClick={() => window.location.href = '/upgrade'}
+              <button
+                type="button"
+                onClick={() => {
+                  window.location.hash = '#/contact';
+                }}
                 className="bg-white text-[#FF9500] px-12 py-4 rounded-xl font-bold text-lg hover:shadow-lg hover:shadow-white/20 transition-all"
               >
-                View Pricing & Enroll
+                Contact us to enroll
               </button>
             </div>
           </>

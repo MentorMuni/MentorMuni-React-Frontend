@@ -84,11 +84,11 @@ export default function UpgradePromptModal({ isOpen, onClose, toolName = 'Resume
 
           {/* Primary CTA */}
           <Link
-            to="/upgrade"
+            to="/contact"
             onClick={handleClose}
             className="w-full py-4 px-4 bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-500 hover:to-red-500 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all hover:shadow-lg hover:shadow-orange-500/30 active:scale-95 mb-3"
           >
-            Upgrade Now
+            Contact us
             <ArrowRight size={20} />
           </Link>
 
