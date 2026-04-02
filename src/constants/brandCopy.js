@@ -16,7 +16,11 @@ export const HERO_EYEBROW =
 /** Early-bird coupon card ribbon (homepage hero) */
 export const HERO_EARLY_BIRD_RIBBON = 'Early bird';
 export const HERO_HEADLINE = "You can't fix what you don't measure.";
+/** Orange payoff line — own line under the dark headline (readability + emphasis) */
 export const HERO_HEADLINE_ACCENT = 'Get your readiness score in ~5 minutes.';
+/** Bridge below hero headline: rejection (hook) → score & gaps (value), reduces bounce */
+export const HERO_SUBHEADLINE =
+  "Rejection shouldn't be how you discover your gaps. See where you stand in minutes—then what to fix first.";
 export const HERO_PROBLEM_LABEL = 'Why it matters';
 export const HERO_PROBLEM =
   'Most students only see their real interview gaps after a rejection—not before they walk in.';

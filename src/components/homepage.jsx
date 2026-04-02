@@ -13,6 +13,7 @@ import {
   HERO_EARLY_BIRD_RIBBON,
   HERO_HEADLINE,
   HERO_HEADLINE_ACCENT,
+  HERO_SUBHEADLINE,
   HERO_PROBLEM_LABEL,
   HERO_PROBLEM,
   HERO_SOLUTION_LABEL,
@@ -48,6 +49,25 @@ const FadeUp = ({ children, delay = 0, className = '' }) => {
       transition={{ duration: 0.55, delay, ease: [0.22, 1, 0.36, 1] }}
     >
       {children}
+    </motion.div>
+  );
+};
+
+/** Staggered line for long “Why MentorMuni” copy — readable at a glance */
+const StoryLine = ({ children, className = '', delay = 0, as: Tag = 'p' }) => {
+  const reduceMotion = useReducedMotion();
+  return (
+    <motion.div
+      initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.08 }}
+      transition={{
+        duration: reduceMotion ? 0 : 0.45,
+        delay: reduceMotion ? 0 : delay,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+    >
+      <Tag className={className}>{children}</Tag>
     </motion.div>
   );
 };
@@ -411,18 +431,15 @@ function AnimatedPrepMapPanel() {
   );
 }
 
-/* ─── Hero poster carousel: full-bleed photos + problem / solution copy ─ */
-const posterImage = (file) => `${import.meta.env.BASE_URL}images/poster-carousel/${file}`;
-
+/* ─── Hero poster carousel: compact dark strip + icon + problem / solution copy ─ */
 const POSTER_CAROUSEL_SLIDES = [
   {
     title: 'Interview readiness',
     Icon: BarChart3,
-    accentOrb: 'from-[#ea580c]/25 to-amber-500/10',
+    accentOrb: 'from-[#ea580c]/20 to-amber-400/15',
+    visualBg: 'from-orange-50/95 via-amber-50/90 to-[#fffbeb]',
     visualKicker: 'Readiness',
     visualLine: 'Score · categories · what to fix first',
-    visualImage: posterImage('readiness.jpg'),
-    visualImagePosition: '50% 40%',
     problem: 'You don’t know which skills to fix first — “study everything” hides your real gaps.',
     solution:
       'Interview Readiness Score: one number out of 100 with category breakdowns so you prep with a target, not a guess.',
@@ -430,11 +447,10 @@ const POSTER_CAROUSEL_SLIDES = [
   {
     title: '1:1 mentorship',
     Icon: Users,
-    accentOrb: 'from-amber-400/20 to-yellow-500/5',
+    accentOrb: 'from-amber-400/20 to-yellow-400/12',
+    visualBg: 'from-amber-50/95 via-orange-50/85 to-[#fff7ed]',
     visualKicker: 'Mentorship',
     visualLine: 'Human guidance · your timeline · your goals',
-    visualImage: posterImage('mentorship.jpg'),
-    visualImagePosition: '50% 35%',
     problem: 'Generic advice from seniors doesn’t map to your timeline, branch, or goals.',
     solution:
       'Human 1:1 mentorship (waitlist, limited seats) aligned to what you’re aiming for — not one-size-fits-all.',
@@ -442,11 +458,10 @@ const POSTER_CAROUSEL_SLIDES = [
   {
     title: 'Mock interview prep',
     Icon: Mic2,
-    accentOrb: 'from-cyan-500/15 to-sky-400/5',
+    accentOrb: 'from-cyan-400/18 to-sky-300/12',
+    visualBg: 'from-cyan-50/90 via-sky-50/80 to-[#f0fdfa]',
     visualKicker: 'Practice',
     visualLine: 'Voice · feedback · panel-style pressure',
-    visualImage: posterImage('mock-interview.jpg'),
-    visualImagePosition: '50% 45%',
     problem: 'Solo grind doesn’t mirror the panel: you never hear how your answers land under pressure.',
     solution:
       'AI mock interviews with voice practice and blunt feedback on clarity and depth — closer to a real round.',
@@ -454,11 +469,10 @@ const POSTER_CAROUSEL_SLIDES = [
   {
     title: 'Week planner',
     Icon: CalendarClock,
-    accentOrb: 'from-emerald-500/15 to-teal-500/5',
+    accentOrb: 'from-emerald-400/18 to-teal-300/12',
+    visualBg: 'from-emerald-50/90 via-teal-50/75 to-[#ecfdf5]',
     visualKicker: 'Structure',
     visualLine: 'Weekly rhythm · aligned to drives & coursework',
-    visualImage: posterImage('planner.jpg'),
-    visualImagePosition: '50% 42%',
     problem: 'Random LeetCode nights and last-minute cramming don’t compound into interview readiness.',
     solution:
       'A structured week-by-week plan so your prep matches drives and coursework — not chaos.',
@@ -466,11 +480,10 @@ const POSTER_CAROUSEL_SLIDES = [
   {
     title: 'HR & technical interviews',
     Icon: Layers,
-    accentOrb: 'from-violet-500/15 to-fuchsia-500/5',
+    accentOrb: 'from-violet-400/18 to-fuchsia-300/12',
+    visualBg: 'from-violet-50/90 via-fuchsia-50/70 to-[#faf5ff]',
     visualKicker: 'Full stack prep',
     visualLine: 'Behavioral polish · DSA · stack · depth',
-    visualImage: posterImage('hr-technical.jpg'),
-    visualImagePosition: '50% 38%',
     problem: 'Students often over-index on DSA or only HR — companies expect both to feel credible.',
     solution:
       'Prep that connects behavioral polish with DSA, stack, and role-relevant technical depth.',
@@ -479,64 +492,38 @@ const POSTER_CAROUSEL_SLIDES = [
 
 function PosterSlideVisual({ slide, fillParent = false }) {
   const Icon = slide.Icon;
-  const hasPhoto = Boolean(slide.visualImage);
+  const visualBg = slide.visualBg ?? 'from-[#fffdfb] via-orange-50/70 to-amber-50/80';
+
   return (
     <div
-      className={`relative w-full overflow-hidden rounded-t-xl bg-zinc-950 ${
-        fillParent ? 'h-full min-h-[220px] sm:min-h-[270px]' : 'aspect-[16/10] sm:aspect-[16/9]'
+      className={`relative min-h-0 w-full min-w-0 overflow-hidden rounded-t-xl bg-gradient-to-br ${visualBg} ${
+        fillParent ? 'h-full w-full' : 'aspect-[16/10] sm:aspect-[16/9]'
       }`}
     >
-      {hasPhoto ? (
-        <>
-          <img
-            src={slide.visualImage}
-            alt=""
-            className="absolute inset-0 h-full w-full scale-105 object-cover"
-            style={{ objectPosition: slide.visualImagePosition ?? 'center' }}
-            loading="lazy"
-            decoding="async"
-          />
-          <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/80 to-zinc-950/25"
-            aria-hidden
-          />
-          <div
-            className="pointer-events-none absolute inset-0 bg-gradient-to-br from-orange-500/10 via-transparent to-violet-600/15"
-            aria-hidden
-          />
-        </>
-      ) : (
-        <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-br from-zinc-950 via-zinc-900 to-neutral-950"
-          aria-hidden
-        />
-      )}
       <div
-        className={`pointer-events-none absolute -right-24 -top-20 h-[min(55%,280px)] w-[min(55%,280px)] rounded-full bg-gradient-to-br ${slide.accentOrb} blur-3xl ${
-          hasPhoto ? 'opacity-50' : ''
-        }`}
+        className={`pointer-events-none absolute -right-16 -top-12 h-[min(45%,200px)] w-[min(45%,200px)] rounded-full bg-gradient-to-br ${slide.accentOrb} blur-2xl opacity-50`}
         aria-hidden
       />
       <div
-        className={`pointer-events-none absolute -bottom-24 -left-20 h-52 w-52 rounded-full bg-orange-500/10 blur-3xl ${hasPhoto ? 'opacity-60' : ''}`}
+        className="pointer-events-none absolute -bottom-16 -left-12 h-32 w-32 rounded-full bg-orange-400/20 blur-2xl opacity-60"
         aria-hidden
       />
       <div
-        className={`pointer-events-none absolute inset-0 ${hasPhoto ? 'opacity-[0.18]' : 'opacity-[0.4]'}`}
+        className="pointer-events-none absolute inset-0 opacity-[0.1]"
         style={{
-          backgroundImage: `linear-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
-            linear-gradient(90deg, rgba(255,255,255,0.04) 1px, transparent 1px)`,
-          backgroundSize: '32px 32px',
+          backgroundImage: `linear-gradient(rgba(120,80,40,0.06) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(120,80,40,0.06) 1px, transparent 1px)`,
+          backgroundSize: '24px 24px',
         }}
         aria-hidden
       />
-      <div className="relative flex h-full min-h-[220px] flex-col items-center justify-end px-6 pb-9 pt-10 sm:min-h-[270px] sm:pb-10 sm:pt-12">
+      <div className="relative flex h-full min-h-[96px] flex-col items-center justify-center gap-1.5 px-4 py-4 sm:min-h-[104px] sm:gap-2 sm:px-5 sm:py-5">
         <div className="flex flex-col items-center">
-          <div className="rounded-2xl border border-white/15 bg-white/10 p-4 shadow-[0_24px_60px_-20px_rgba(0,0,0,0.75)] ring-1 ring-white/10 backdrop-blur-md">
-            <Icon className="h-10 w-10 text-white sm:h-11 sm:w-11" strokeWidth={1.15} aria-hidden />
+          <div className="rounded-xl border border-orange-200/70 bg-white/90 p-2.5 shadow-[0_8px_24px_-12px_rgba(234,88,12,0.18)] ring-1 ring-orange-100/80 sm:p-3">
+            <Icon className="h-7 w-7 text-[#ea580c] sm:h-8 sm:w-8" strokeWidth={1.15} aria-hidden />
           </div>
-          <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.22em] text-zinc-300">{slide.visualKicker}</p>
-          <p className="mt-2 max-w-[300px] text-center text-[13px] font-medium leading-snug text-zinc-100 sm:text-sm">
+          <p className="mt-2 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#9A3412]/90 sm:text-[10px]">{slide.visualKicker}</p>
+          <p className="mt-0.5 max-w-[280px] text-center text-[11px] font-medium leading-snug text-neutral-600 sm:text-xs">
             {slide.visualLine}
           </p>
         </div>
@@ -563,22 +550,22 @@ function MentorMuniPosterCarousel({ className = '' }) {
 
   return (
     <div
-      className={`relative overflow-hidden rounded-2xl border border-[#F0ECE0] bg-white shadow-[0_8px_32px_rgba(0,0,0,0.06)] ${className}`}
+      className={`relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-[#F0ECE0] bg-white shadow-[0_8px_32px_rgba(0,0,0,0.06)] ${className}`}
       role="region"
       aria-roledescription="carousel"
       aria-label="How MentorMuni addresses common prep problems"
     >
-      <div>
+      <div className="flex min-h-0 flex-1 flex-col">
         <div
-          className="relative cursor-pointer overflow-hidden rounded-t-xl bg-zinc-950"
+          className="relative h-[112px] w-full shrink-0 cursor-pointer overflow-hidden rounded-t-xl bg-gradient-to-b from-[#fffdfb] to-[#fff4e6] sm:h-[124px]"
           onClick={next}
           title="Tap for next slide"
         >
-          <div className="relative min-h-[240px] sm:min-h-[280px]">
+          <div className="absolute inset-0 min-h-0">
             <AnimatePresence initial={false} mode="sync">
               <motion.div
                 key={index}
-                className="absolute inset-0"
+                className="absolute inset-0 h-full w-full min-h-0"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
@@ -590,8 +577,8 @@ function MentorMuniPosterCarousel({ className = '' }) {
           </div>
         </div>
 
-        <div className="relative border-t border-[#F0ECE0] bg-white px-4 py-4 sm:px-5 sm:py-5" aria-live="polite">
-          <div className="relative min-h-[240px] sm:min-h-[220px]">
+        <div className="relative flex-1 border-t border-[#F0ECE0] bg-white px-4 py-4 sm:px-5 sm:py-5" aria-live="polite">
+          <div className="relative min-h-[200px] sm:min-h-[200px]">
             <AnimatePresence initial={false} mode="sync">
               <motion.div
                 key={index}
@@ -725,9 +712,56 @@ const HomePage = () => {
           />
         </div>
 
-        <div className="relative mx-auto grid w-full max-w-7xl items-start gap-10 px-5 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:px-8">
-          {/* ── Left: copy — Razorpay-like hierarchy: eyebrow → display headline → meta → card ── */}
-          <div className="max-w-[36rem]">
+        <div className="relative mx-auto flex w-full max-w-7xl flex-col items-stretch gap-10 px-5 sm:px-6 lg:gap-12 lg:px-8">
+          {/* ── Tagline — centered, top of hero ── */}
+          <div className="w-full text-center">
+            <motion.h1
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.03 }}
+              className="mx-auto max-w-[42rem] text-[1.85rem] font-semibold leading-[1.12] tracking-[-0.025em] sm:text-4xl md:max-w-[48rem] md:text-5xl lg:text-[3.15rem] lg:leading-[1.08]"
+            >
+              <span className="block text-neutral-900">{HERO_HEADLINE}</span>
+              <span className="mt-2 block sm:mt-3 mm-hero-accent bg-gradient-to-r from-[#ea580c] via-[#FF9500] to-[#f59e0b] bg-clip-text text-transparent">
+                {HERO_HEADLINE_ACCENT}
+              </span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 0.08 }}
+              className="mx-auto mt-4 max-w-[36rem] px-1 text-[15px] leading-relaxed text-neutral-600 sm:mt-5 sm:text-lg"
+            >
+              {HERO_SUBHEADLINE}
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.12 }}
+              className="mt-5 flex flex-wrap items-center justify-center gap-2 sm:mt-6"
+              aria-label={HERO_PROOF_STAT}
+            >
+              {[
+                { Icon: Clock, text: '~5 min' },
+                { Icon: Gift, text: 'Free' },
+                { Icon: UserX, text: 'No signup' },
+                { Icon: Gauge, text: 'Instant score' },
+              ].map(({ Icon, text }) => (
+                <span
+                  key={text}
+                  className="mm-hero-proof-strip inline-flex items-center gap-1.5 rounded-xl border border-orange-200/50 bg-gradient-to-r from-[#FFF8F0] via-white to-[#FFFDF8] px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-neutral-600 shadow-[0_2px_12px_-4px_rgba(255,149,0,0.2)] sm:gap-2 sm:px-3 sm:text-[11px]"
+                >
+                  <Icon className="h-3.5 w-3.5 shrink-0 text-[#EA580C] sm:h-4 sm:w-4" strokeWidth={2.2} aria-hidden />
+                  {text}
+                </span>
+              ))}
+            </motion.div>
+          </div>
+
+          {/* ── Intro: eyebrow → promo card (narrow measure, centered under tagline) ── */}
+          <div className="mx-auto w-full max-w-[36rem]">
             <div className="mb-6">
               <div className="-mx-1 flex max-w-full flex-nowrap items-center gap-1 overflow-x-auto px-1 pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] sm:mx-0 sm:gap-1.5 sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden">
                 {HERO_EYEBROW.split(' · ').map((part, idx) => (
@@ -810,53 +844,21 @@ const HomePage = () => {
                 </div>
               </div>
             </motion.div>
+          </div>
 
-            <motion.h1
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.03 }}
-              className="text-[1.85rem] font-semibold leading-[1.08] tracking-[-0.025em] text-neutral-900 sm:text-4xl md:text-5xl lg:text-[3.15rem] lg:leading-[1.06]"
-            >
-              <span className="block sm:inline">{HERO_HEADLINE}</span>{' '}
-              <span className="mm-hero-accent bg-gradient-to-r from-[#ea580c] via-[#FF9500] to-[#f59e0b] bg-clip-text text-transparent">
-                {HERO_HEADLINE_ACCENT}
-              </span>
-            </motion.h1>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.1 }}
-              className="mt-5 flex flex-wrap items-center gap-2"
-              aria-label={HERO_PROOF_STAT}
-            >
-              {[
-                { Icon: Clock, text: '~5 min' },
-                { Icon: Gift, text: 'Free' },
-                { Icon: UserX, text: 'No signup' },
-                { Icon: Gauge, text: 'Instant score' },
-              ].map(({ Icon, text }) => (
-                <span
-                  key={text}
-                  className="mm-hero-proof-strip inline-flex items-center gap-1.5 rounded-xl border border-orange-200/50 bg-gradient-to-r from-[#FFF8F0] via-white to-[#FFFDF8] px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-neutral-600 shadow-[0_2px_12px_-4px_rgba(255,149,0,0.2)] sm:gap-2 sm:px-3 sm:text-[11px]"
-                >
-                  <Icon className="h-3.5 w-3.5 shrink-0 text-[#EA580C] sm:h-4 sm:w-4" strokeWidth={2.2} aria-hidden />
-                  {text}
-                </span>
-              ))}
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, delay: 0.08 }}
-              className="relative mt-8"
-            >
+          {/* ── Same row: “Why it matters / How MentorMuni helps” | poster carousel — equal columns, matched height ── */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, delay: 0.08 }}
+            className="grid w-full grid-cols-1 items-stretch gap-6 lg:grid-cols-2 lg:gap-8"
+          >
+            <div className="relative flex h-full min-h-[min(52vh,520px)] flex-col">
               <div
                 className="pointer-events-none absolute -inset-px rounded-[1.35rem] bg-gradient-to-br from-[#FFB347]/55 via-[#FF9500]/25 to-cyan-400/30 opacity-90 blur-[1px]"
                 aria-hidden
               />
-              <div className="relative overflow-hidden rounded-[1.3rem] border border-white/70 shadow-[0_4px_24px_-8px_rgba(255,149,0,0.12),0_24px_60px_-28px_rgba(15,23,42,0.12)]">
+              <div className="relative flex h-full min-h-0 flex-col overflow-hidden rounded-[1.3rem] border border-white/70 shadow-[0_4px_24px_-8px_rgba(255,149,0,0.12),0_24px_60px_-28px_rgba(15,23,42,0.12)]">
                 <div
                   className="pointer-events-none absolute -right-24 top-0 h-56 w-56 rounded-full bg-gradient-to-br from-orange-400/25 to-amber-300/10 blur-3xl"
                   aria-hidden
@@ -874,7 +876,7 @@ const HomePage = () => {
                   }}
                   aria-hidden
                 />
-                <div className="mm-hero-value-mesh relative space-y-0 p-5 sm:p-7">
+                <div className="mm-hero-value-mesh relative flex min-h-0 flex-1 flex-col space-y-0 p-5 sm:p-7">
                   <div className="relative rounded-2xl border border-orange-200/45 bg-gradient-to-br from-orange-50/90 via-white/60 to-transparent p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] sm:p-5">
                     <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-orange-200/60 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#9A3412] shadow-sm">
                       <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-amber-500 text-white shadow-sm">
@@ -885,7 +887,7 @@ const HomePage = () => {
                     <p className="text-[15px] leading-[1.65] text-neutral-700 sm:text-base">{HERO_PROBLEM}</p>
                   </div>
 
-                  <div className="relative py-4 sm:py-5">
+                  <div className="relative shrink-0 py-4 sm:py-5">
                     <div className="absolute left-0 right-0 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-orange-200/70 to-transparent" aria-hidden />
                     <div className="relative mx-auto flex w-fit items-center justify-center gap-2 rounded-full border border-orange-100/90 bg-white/95 px-3 py-1 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.06)]">
                       <Sparkles className="h-3.5 w-3.5 text-[#FF9500]" strokeWidth={2} aria-hidden />
@@ -903,13 +905,24 @@ const HomePage = () => {
                   </div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
+            <motion.div
+              initial={{ opacity: 0, x: 12 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="flex h-full min-h-[min(52vh,520px)] flex-col"
+            >
+              <MentorMuniPosterCarousel className="h-full w-full min-h-[min(52vh,520px)] shadow-[0_24px_80px_-48px_rgba(0,0,0,0.35)] ring-1 ring-black/[0.04]" />
+            </motion.div>
+          </motion.div>
+
+          <div className="mx-auto w-full max-w-[36rem]">
             <motion.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: 0.12 }}
-              className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6"
+              className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6"
             >
               <button
                 type="button"
@@ -938,29 +951,7 @@ const HomePage = () => {
               </Link>
               <span className="text-neutral-400"> — limited seats per batch.</span>
             </motion.p>
-
-            {/* Mobile / tablet: visual anchor so the hero isn’t text-only */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.38 }}
-              className="mt-9 w-full max-w-xl lg:hidden"
-            >
-              <MentorMuniPosterCarousel className="w-full" />
-            </motion.div>
           </div>
-
-          {/* ── Right: brand image + feature pills ── */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="hidden w-full flex-col items-center justify-start gap-8 lg:flex lg:max-w-none"
-          >
-            <div className="flex w-full max-w-[400px] shrink-0 flex-col items-stretch">
-              <MentorMuniPosterCarousel className="w-full shadow-[0_24px_80px_-48px_rgba(0,0,0,0.35)] ring-1 ring-black/[0.04]" />
-            </div>
-          </motion.div>
         </div>
       </section>
 
@@ -1217,25 +1208,95 @@ const HomePage = () => {
       <section className="relative py-16 md:py-20 px-6 border-t border-[#F0ECE0] overflow-hidden bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE]">
         <div className="pointer-events-none absolute right-0 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-[rgba(255,149,0,0.1)] blur-[100px]" aria-hidden />
         <div className="max-w-5xl mx-auto relative">
-          <FadeUp>
-            <span className="text-xs font-bold text-[#CC7000] uppercase tracking-[0.2em] block mb-3">Why MentorMuni</span>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-4 leading-[1.15] tracking-tight max-w-3xl">
+          <div className="mb-10">
+            <StoryLine
+              delay={0}
+              className="text-xs font-bold text-[#CC7000] uppercase tracking-[0.2em] block mb-3"
+              as="span"
+            >
+              Why MentorMuni
+            </StoryLine>
+            <StoryLine
+              delay={0.07}
+              className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-6 leading-[1.15] tracking-tight max-w-3xl"
+              as="h2"
+            >
               Too many students walk into placement{' '}
               <span className="bg-gradient-to-r from-[#FF9500] to-[#FFB347] bg-clip-text text-transparent">
                 before they&apos;ve ever had a real mock.
               </span>
-            </h2>
-            <p className="text-[#666666] text-base md:text-lg max-w-2xl leading-relaxed mb-4">
-              We started MentorMuni after seeing the same pattern: final-year students showing up for interviews with almost no structured prep—no measured baseline, no serious mock round, sometimes no practice speaking answers under pressure. The first time they truly get evaluated is often already the real interview—and the rejection email follows.
-            </p>
-            <p className="text-[#666666] text-base md:text-lg max-w-2xl leading-relaxed mb-10">
-              Hiring is tighter and panels are unforgiving. You don&apos;t get unlimited shots. That&apos;s why we built MentorMuni so you can go in at full strength:{' '}
-              <span className="font-semibold text-[#1A1A1A]">
-                interview readiness check, AI mock interviews, and mentor-backed prep
-              </span>
-              —all before the rounds that actually count.
-            </p>
-          </FadeUp>
+            </StoryLine>
+
+            <div className="grid gap-5 md:grid-cols-2 md:gap-6">
+              <div className="relative overflow-hidden rounded-2xl border border-orange-200/70 bg-gradient-to-br from-white to-orange-50/30 p-5 shadow-[0_4px_28px_-14px_rgba(234,88,12,0.18)] md:p-6">
+                <div
+                  className="pointer-events-none absolute inset-y-4 left-0 w-1 rounded-full bg-gradient-to-b from-[#FF9500] to-amber-400/50"
+                  aria-hidden
+                />
+                <StoryLine
+                  delay={0.12}
+                  className="mb-3 pl-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#B45309]"
+                  as="p"
+                >
+                  What we kept seeing
+                </StoryLine>
+                <div className="space-y-3 pl-4">
+                  <StoryLine
+                    delay={0.18}
+                    className="relative text-sm leading-relaxed text-[#555555] md:text-[15px]"
+                  >
+                    We started MentorMuni after seeing the same pattern: final-year students showing up for interviews with almost no structured prep.
+                  </StoryLine>
+                  <StoryLine
+                    delay={0.28}
+                    className="relative text-sm leading-relaxed text-[#555555] md:text-[15px]"
+                  >
+                    No measured baseline, no serious mock round—sometimes no practice speaking answers under pressure.
+                  </StoryLine>
+                  <StoryLine
+                    delay={0.38}
+                    className="relative text-sm font-medium leading-relaxed text-[#444444] md:text-[15px]"
+                  >
+                    The first time they truly get evaluated is often already the real interview—and the rejection email follows.
+                  </StoryLine>
+                </div>
+              </div>
+
+              <div className="relative overflow-hidden rounded-2xl border border-emerald-200/60 bg-gradient-to-br from-white to-emerald-50/25 p-5 shadow-[0_4px_28px_-14px_rgba(16,185,129,0.12)] md:p-6">
+                <div
+                  className="pointer-events-none absolute inset-y-4 left-0 w-1 rounded-full bg-gradient-to-b from-emerald-500/80 to-teal-400/40"
+                  aria-hidden
+                />
+                <StoryLine
+                  delay={0.22}
+                  className="mb-3 pl-4 text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-800"
+                  as="p"
+                >
+                  Why we built it
+                </StoryLine>
+                <div className="space-y-3 pl-4">
+                  <StoryLine
+                    delay={0.3}
+                    className="relative text-sm leading-relaxed text-[#555555] md:text-[15px]"
+                  >
+                    Hiring is tighter and panels are unforgiving. You don&apos;t get unlimited shots.
+                  </StoryLine>
+                  <StoryLine
+                    delay={0.4}
+                    className="relative text-sm leading-relaxed text-[#555555] md:text-[15px]"
+                  >
+                    That&apos;s why we built MentorMuni so you can go in at full strength:
+                  </StoryLine>
+                  <StoryLine
+                    delay={0.5}
+                    className="relative text-sm font-semibold leading-relaxed text-[#1A1A1A] md:text-[15px]"
+                  >
+                    Interview readiness check, AI mock interviews, and mentor-backed prep—all before the rounds that actually count.
+                  </StoryLine>
+                </div>
+              </div>
+            </div>
+          </div>
 
           <div className="grid sm:grid-cols-2 gap-4 mb-10">
             {[
