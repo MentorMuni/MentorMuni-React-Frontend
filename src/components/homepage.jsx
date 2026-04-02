@@ -713,54 +713,93 @@ const HomePage = () => {
         </div>
 
         <div className="relative mx-auto flex w-full max-w-7xl flex-col items-stretch gap-10 px-5 sm:px-6 lg:gap-12 lg:px-8">
-          {/* ── Tagline — centered, top of hero ── */}
-          <div className="w-full text-center">
-            <motion.h1
-              initial={{ opacity: 0, y: 14 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.03 }}
-              className="mx-auto max-w-[42rem] text-[1.85rem] font-semibold leading-[1.12] tracking-[-0.025em] sm:text-4xl md:max-w-[48rem] md:text-5xl lg:text-[3.15rem] lg:leading-[1.08]"
-            >
-              <span className="block text-neutral-900">{HERO_HEADLINE}</span>
-              <span className="mt-2 block sm:mt-3 mm-hero-accent bg-gradient-to-r from-[#ea580c] via-[#FF9500] to-[#f59e0b] bg-clip-text text-transparent">
-                {HERO_HEADLINE_ACCENT}
-              </span>
-            </motion.h1>
-
-            <motion.p
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, delay: 0.08 }}
-              className="mx-auto mt-4 max-w-[36rem] px-1 text-[15px] leading-relaxed text-neutral-600 sm:mt-5 sm:text-lg"
-            >
-              {HERO_SUBHEADLINE}
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.12 }}
-              className="mt-5 flex flex-wrap items-center justify-center gap-2 sm:mt-6"
-              aria-label={HERO_PROOF_STAT}
-            >
-              {[
-                { Icon: Clock, text: '~5 min' },
-                { Icon: Gift, text: 'Free' },
-                { Icon: UserX, text: 'No signup' },
-                { Icon: Gauge, text: 'Instant score' },
-              ].map(({ Icon, text }) => (
-                <span
-                  key={text}
-                  className="mm-hero-proof-strip inline-flex items-center gap-1.5 rounded-xl border border-orange-200/50 bg-gradient-to-r from-[#FFF8F0] via-white to-[#FFFDF8] px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-neutral-600 shadow-[0_2px_12px_-4px_rgba(255,149,0,0.2)] sm:gap-2 sm:px-3 sm:text-[11px]"
-                >
-                  <Icon className="h-3.5 w-3.5 shrink-0 text-[#EA580C] sm:h-4 sm:w-4" strokeWidth={2.2} aria-hidden />
-                  {text}
+          {/* Mobile: headline → early bird strip → … | lg: grid with early bird left, headline right */}
+          <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(260px,320px)_minmax(0,1fr)] lg:items-start lg:gap-10 xl:grid-cols-[minmax(280px,340px)_minmax(0,1fr)] xl:gap-12">
+            {/* Headline block — first on mobile, right column on lg */}
+            <div className="order-1 w-full text-center lg:order-2 lg:min-w-0 lg:text-left">
+              <motion.h1
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.5, delay: 0.03 }}
+                className="mx-auto max-w-[42rem] text-[1.85rem] font-semibold leading-[1.12] tracking-[-0.025em] sm:text-4xl md:max-w-[48rem] md:text-5xl lg:mx-0 lg:max-w-[40rem] lg:text-[3.15rem] lg:leading-[1.08] xl:max-w-[44rem]"
+              >
+                <span className="block text-neutral-900">{HERO_HEADLINE}</span>
+                <span className="mt-2 block sm:mt-3 mm-hero-accent bg-gradient-to-r from-[#ea580c] via-[#FF9500] to-[#f59e0b] bg-clip-text text-transparent">
+                  {HERO_HEADLINE_ACCENT}
                 </span>
-              ))}
+              </motion.h1>
+
+              <motion.p
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.45, delay: 0.08 }}
+                className="mx-auto mt-4 max-w-[36rem] px-1 text-[15px] leading-relaxed text-neutral-600 sm:mt-5 sm:text-lg lg:mx-0 lg:max-w-xl"
+              >
+                {HERO_SUBHEADLINE}
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.12 }}
+                className="mt-5 flex flex-wrap items-center justify-center gap-2 sm:mt-6 lg:justify-start"
+                aria-label={HERO_PROOF_STAT}
+              >
+                {[
+                  { Icon: Clock, text: '~5 min' },
+                  { Icon: Gift, text: 'Free' },
+                  { Icon: UserX, text: 'No signup' },
+                  { Icon: Gauge, text: 'Instant score' },
+                ].map(({ Icon, text }) => (
+                  <span
+                    key={text}
+                    className="mm-hero-proof-strip inline-flex items-center gap-1.5 rounded-xl border border-orange-200/50 bg-gradient-to-r from-[#FFF8F0] via-white to-[#FFFDF8] px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-neutral-600 shadow-[0_2px_12px_-4px_rgba(255,149,0,0.2)] sm:gap-2 sm:px-3 sm:text-[11px]"
+                  >
+                    <Icon className="h-3.5 w-3.5 shrink-0 text-[#EA580C] sm:h-4 sm:w-4" strokeWidth={2.2} aria-hidden />
+                    {text}
+                  </span>
+                ))}
+              </motion.div>
+            </div>
+
+            {/* Early bird — full-width strip (<lg); left column card (lg+) — one CTA */}
+            <motion.div
+              initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.45, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}
+              className="order-2 -mx-5 w-[calc(100%+2.5rem)] sm:-mx-6 sm:w-[calc(100%+3rem)] lg:order-1 lg:mx-0 lg:w-full lg:max-w-[340px] lg:self-start xl:max-w-[360px]"
+              aria-label={`${HERO_EARLY_BIRD_RIBBON}: ${READINESS_TEST_COUPON_OFFER_HEADLINE}`}
+            >
+              <div className="border-y border-amber-200/80 bg-gradient-to-r from-[#fff4e6] via-[#fffbeb] to-[#fff4e6] py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] sm:py-4 lg:rounded-2xl lg:border lg:border-amber-200/80 lg:bg-gradient-to-b lg:from-[#fff8f0] lg:via-[#fffbeb] lg:to-[#fff4e6] lg:py-5 lg:shadow-[0_12px_40px_-16px_rgba(234,88,12,0.2)]">
+                <div className="mx-auto flex max-w-3xl flex-col items-stretch gap-3 px-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-6 lg:max-w-none lg:flex-col lg:items-stretch lg:gap-4 lg:px-5">
+                  <div className="flex min-w-0 flex-col items-center gap-2.5 text-center sm:flex-row sm:items-center sm:gap-4 sm:text-left lg:flex-col lg:items-start lg:gap-3 lg:text-left">
+                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-gradient-to-r from-[#FF9500] to-[#EA580C] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.22em] text-white shadow-[0_2px_8px_rgba(234,88,12,0.35)]">
+                      <Sparkles className="h-3.5 w-3.5 text-amber-100" strokeWidth={2.5} aria-hidden />
+                      {HERO_EARLY_BIRD_RIBBON}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-[15px] font-bold leading-snug text-neutral-900 sm:text-base lg:text-[15px] xl:text-base">
+                        {READINESS_TEST_COUPON_OFFER_HEADLINE}
+                      </p>
+                      <p className="mt-1 text-[11px] font-medium leading-snug text-neutral-600 sm:text-xs">
+                        {READINESS_TEST_COUPON_OFFER_HOW}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={goToStartAssessment}
+                    className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-full bg-[#FF9500] px-5 py-2.5 text-xs font-bold text-white shadow-[0_4px_14px_-4px_rgba(234,88,12,0.55)] transition hover:bg-[#E88600] sm:w-auto sm:min-w-[12rem] sm:py-2.5 sm:text-sm lg:w-full lg:min-w-0 xl:text-sm"
+                  >
+                    {PRIMARY_CTA_LABEL}
+                    <ArrowRight size={16} className="opacity-95" aria-hidden />
+                  </button>
+                </div>
+              </div>
             </motion.div>
           </div>
 
-          {/* ── Intro: eyebrow → promo card (narrow measure, centered under tagline) ── */}
+          {/* ── Intro: eyebrow chips ── */}
           <div className="mx-auto w-full max-w-[36rem]">
             <div className="mb-6">
               <div className="-mx-1 flex max-w-full flex-nowrap items-center gap-1 overflow-x-auto px-1 pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] sm:mx-0 sm:gap-1.5 sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden">
@@ -799,51 +838,6 @@ const HomePage = () => {
                 ))}
               </div>
             </div>
-
-            <motion.div
-              initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.04, ease: [0.22, 1, 0.36, 1] }}
-              className="relative z-[1] mb-6 max-w-xl"
-              aria-label={`${HERO_EARLY_BIRD_RIBBON}: ${READINESS_TEST_COUPON_OFFER_HEADLINE}`}
-            >
-              <div className="absolute left-4 -top-2 z-10 sm:left-5">
-                <span className="inline-flex items-center gap-1 rounded-md bg-neutral-900 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.18em] text-amber-200 shadow-[3px_3px_0_0_rgba(251,146,60,0.55)] ring-1 ring-amber-500/40">
-                  <Sparkles className="h-3 w-3 text-amber-300" strokeWidth={2.5} aria-hidden />
-                  {HERO_EARLY_BIRD_RIBBON}
-                </span>
-              </div>
-              <div className="relative overflow-hidden rounded-2xl border-2 border-dashed border-amber-500/60 bg-gradient-to-br from-amber-50/98 via-white to-orange-50/90 px-4 pb-4 pt-7 shadow-[0_22px_56px_-28px_rgba(234,88,12,0.48),inset_0_1px_0_rgba(255,255,255,0.95)] ring-1 ring-amber-200/60 sm:px-5 sm:pb-5 sm:pt-8">
-                <div
-                  className="pointer-events-none absolute inset-x-6 top-0 h-px bg-gradient-to-r from-transparent via-amber-400/50 to-transparent"
-                  aria-hidden
-                />
-                <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-orange-400/15 blur-3xl" aria-hidden />
-                <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between sm:gap-5">
-                  <div className="flex min-w-0 gap-3 sm:gap-3.5">
-                    <span className="mt-0.5 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-[#EA580C] text-white shadow-lg ring-2 ring-white/90">
-                      <Gift size={20} strokeWidth={2.2} aria-hidden />
-                    </span>
-                    <div className="min-w-0">
-                      <p className="text-[15px] font-black leading-snug text-neutral-900 sm:text-base">
-                        {READINESS_TEST_COUPON_OFFER_HEADLINE}
-                      </p>
-                      <p className="mt-1.5 text-[11px] font-medium leading-relaxed text-neutral-600 sm:text-xs">
-                        {READINESS_TEST_COUPON_OFFER_HOW}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={goToStartAssessment}
-                    className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FF9500] to-[#EA580C] px-4 py-3 text-xs font-bold text-white shadow-[0_10px_28px_-10px_rgba(234,88,12,0.75)] ring-2 ring-white/70 transition hover:brightness-[1.05] sm:w-auto sm:min-w-[11.5rem] sm:py-2.5 sm:text-sm"
-                  >
-                    {PRIMARY_CTA_LABEL}
-                    <ArrowRight size={16} className="opacity-95" aria-hidden />
-                  </button>
-                </div>
-              </div>
-            </motion.div>
           </div>
 
           {/* ── Same row: “Why it matters / How MentorMuni helps” | poster carousel — equal columns, matched height ── */}
