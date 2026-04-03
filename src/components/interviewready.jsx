@@ -3,11 +3,16 @@ import { motion } from 'framer-motion';
 import {
   AlertCircle, CheckCircle, ChevronRight, Lock, Mail, Phone, Check, Zap, ShieldCheck, Map, ArrowRight, Star, Clock,
   TrendingUp, Target, Sparkles, BarChart3, AlertTriangle, CheckCircle2, Lightbulb, Users, Headphones,
-  Share2, Linkedin, Trophy, Building2, Briefcase, Gift,
+  Share2, Linkedin, Trophy, Building2, Briefcase, Gift, Copy,
 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { API_BASE } from '../config';
-import { READINESS_TEST_COUPON_BADGE } from '../constants/brandCopy';
+import {
+  READINESS_TEST_COUPON_BADGE,
+  HERO_EARLY_BIRD_RIBBON,
+  READINESS_TEST_COUPON_OFFER_HEADLINE,
+} from '../constants/brandCopy';
+import { pickRandomEarlyBirdCoupon } from '../utils/earlyBirdCoupons';
 import LimitedRewardLabel from './LimitedRewardLabel';
 import AIAnalysisLoader from './AIAnalysisLoader';
 import { useFreeUsageTracker } from './FreeUsageCounter';
@@ -1224,6 +1229,7 @@ const InterviewReady = () => {
         strengths: data.strengths || [],
         gaps: data.gaps || [],
         learning_recommendations: data.learning_recommendations || [],
+        evaluatedAt: Date.now(),
       };
 
       setResult(evalResult);
@@ -2247,6 +2253,66 @@ const InterviewReady = () => {
               </div>
             </div>
           </motion.div>
+
+          {earlyBirdCouponCode && (
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.12 }}
+              className="relative overflow-hidden rounded-3xl border-2 border-[#FFB347]/60 bg-gradient-to-br from-[#FFF8EE] via-white to-[#FFF4E6] p-6 shadow-lg sm:p-8"
+            >
+              <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#FF9500]/15 blur-2xl" />
+              <div className="relative">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center rounded-full bg-[#FF9500] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
+                    {HERO_EARLY_BIRD_RIBBON}
+                  </span>
+                  <Gift className="h-5 w-5 text-[#CC7000]" aria-hidden />
+                </div>
+                <h3 className="mt-3 text-lg font-black text-[#1A1A1A] sm:text-xl">
+                  {READINESS_TEST_COUPON_OFFER_HEADLINE}
+                </h3>
+                <p className="mt-2 text-sm text-[#555555]">
+                  Your early-bird coupon is below — copy it and use it when you claim your reward (waitlist, mentor
+                  session, or checkout when we share the link).
+                </p>
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                  <code className="break-all rounded-2xl border border-[#E0DCCF] bg-white px-4 py-3 text-center font-mono text-lg font-bold tracking-wide text-[#1A1A1A] shadow-inner sm:text-xl">
+                    {earlyBirdCouponCode}
+                  </code>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        await navigator.clipboard.writeText(earlyBirdCouponCode);
+                        setCouponCopied(true);
+                        window.setTimeout(() => setCouponCopied(false), 2200);
+                      } catch {
+                        /* clipboard unavailable */
+                      }
+                    }}
+                    className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-5 py-3 text-sm font-bold text-white shadow-md transition hover:bg-[#E88600]"
+                  >
+                    {couponCopied ? (
+                      <>
+                        <Check className="h-4 w-4" />
+                        Copied
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="h-4 w-4" />
+                        Copy code
+                      </>
+                    )}
+                  </button>
+                </div>
+                <p className="mt-4 text-xs text-[#888888]">
+                  {READINESS_TEST_COUPON_BADGE} · Codes are chosen at random from our early-bird pool for each score
+                  card.
+                </p>
+              </div>
+            </motion.div>
+          )}
 
           <motion.div
             initial={{ opacity: 0, y: 12 }}

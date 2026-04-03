@@ -4,6 +4,7 @@
  * to a JSON URL that returns { chunks: [{ keywords: [], text: "" }] }.
  */
 
+/** Exported for MuniBot merged search — keep chunks self-contained { keywords, text } */
 export const KNOWLEDGE_CHUNKS = [
   {
     id: 'prompting-basics',

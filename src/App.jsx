@@ -3,6 +3,7 @@ import { HashRouter as Router, Routes, Route, useLocation } from "react-router-d
 
 import Navbar from "./components/navbar";
 import HomePage from "./components/homepage";
+import MuniBot from "./components/MuniBot";
 import "./index.css";
 
 // Lazy-load all other pages so only Home + Navbar load on first visit
@@ -110,6 +111,7 @@ function App() {
             </Routes>
           </Suspense>
         </main>
+        <MuniBot />
       </div>
     </Router>
   );

@@ -5,6 +5,17 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   base: '/MentorMuni-React-Frontend/',
   plugins: [react()],
+  /** Dev: keep this process running — edits to source/CSS hot-reload without restart. */
+  server: {
+    port: 5173,
+    strictPort: false,
+    open: false,
+    /** Fast refresh + HMR (default on; explicit for clarity) */
+    hmr: true,
+    watch: {
+      ignored: ['**/node_modules/**', '**/dist/**'],
+    },
+  },
   build: {
     rollupOptions: {
       output: {
