@@ -10,7 +10,10 @@ import {
   Loader2,
   MessageSquare,
   Check,
-  Sparkles,
+  UserRound,
+  GraduationCap,
+  Clock,
+  Shield,
 } from 'lucide-react';
 import { API_BASE } from '../config';
 import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_HREF, MISSION_TAGLINE } from '../constants/brandCopy';
@@ -35,11 +38,34 @@ const FadeUp = ({ children, delay = 0, className = '' }) => {
 };
 
 const inputBase =
-  'w-full rounded-2xl border bg-white px-4 py-3.5 text-[#1a1a1a] shadow-[0_1px_0_rgba(0,0,0,0.03)] transition-[box-shadow,border-color,transform] duration-200 outline-none placeholder:text-neutral-400';
+  'w-full rounded-xl border bg-white px-4 py-3 text-[0.9375rem] text-[#1a1a1a] shadow-sm transition-[box-shadow,border-color] duration-200 outline-none placeholder:text-neutral-400';
+
+const AUDIENCES = [
+  { id: 'students', param: null, label: 'Students & learners', short: 'Learners', Icon: UserRound },
+  { id: 'colleges', param: 'colleges', label: 'Colleges & TPOs', short: 'Colleges', Icon: GraduationCap },
+];
+
+const audienceFromTopic = (topic) => {
+  if (topic === 'colleges') return 'colleges';
+  return 'students';
+};
+
+const MESSAGE_PREFILL_COLLEGES =
+  "Hello — I'm reaching out from the For Colleges page (TPO/Placement). I'd like to discuss partnership: leadership board, bulk mentorship, and interview prep for our students. College:";
+
+const isPartnerPrefillMessage = (raw) => {
+  const m = (raw || '').trim();
+  if (!m) return false;
+  if (m === MESSAGE_PREFILL_COLLEGES.trim()) return true;
+  if (m.startsWith("Hello — I'm reaching out from the For Colleges page")) return true;
+  if (m.startsWith("Hello — I'm reaching out from the For Recruiters page")) return true;
+  return false;
+};
 
 const ContactPage = () => {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const topic = searchParams.get('topic');
+  const audience = audienceFromTopic(topic);
   const reduceMotion = useReducedMotion();
 
   const [formData, setFormData] = useState({
@@ -50,14 +76,29 @@ const ContactPage = () => {
   });
 
   useEffect(() => {
-    if (topic !== 'recruiters') return;
+    if (topic === 'recruiters') {
+      setSearchParams({}, { replace: true });
+    }
+  }, [topic, setSearchParams]);
+
+  useEffect(() => {
+    const prefills = {
+      colleges: MESSAGE_PREFILL_COLLEGES,
+    };
+
+    if (!topic) {
+      setFormData((prev) => {
+        if (!isPartnerPrefillMessage(prev.message)) return prev;
+        return { ...prev, message: '' };
+      });
+      return;
+    }
+
+    const text = prefills[topic];
+    if (!text) return;
     setFormData((prev) => {
       if (prev.message.trim()) return prev;
-      return {
-        ...prev,
-        message:
-          "Hello — I'm reaching out from the For Recruiters page. I'd like to discuss hiring / partnership.",
-      };
+      return { ...prev, message: text };
     });
   }, [topic]);
   const [errors, setErrors] = useState({});
@@ -147,7 +188,80 @@ const ContactPage = () => {
     }`;
 
   const linkClass =
-    'font-semibold text-[#FF9500] underline decoration-[#FF9500]/30 underline-offset-2 transition hover:text-[#E88600]';
+    'font-semibold text-[#1A6FC4] underline decoration-[#1A6FC4]/35 underline-offset-2 transition hover:text-[#155a9e]';
+
+  const selectAudience = (id) => {
+    if (id !== audience) {
+      setFormData((prev) => ({ ...prev, message: '' }));
+      setErrors((prev) => ({ ...prev, message: '' }));
+    }
+    if (id === 'students') {
+      setSearchParams({});
+      return;
+    }
+    if (id === 'colleges') {
+      setSearchParams({ topic: 'colleges' });
+    }
+  };
+
+  const whyReachOutLines = {
+    students: [
+      'Mentorship and placement guidance from industry mentors',
+      'Readiness insight so you know what to fix first',
+      'Flexible plans and clear next steps',
+      'Complimentary assessment and counseling',
+    ],
+    colleges: [
+      'Leadership board, readiness competitions, and cohort visibility',
+      'Interview prep and tooling aligned with your placement calendar',
+      'Bulk mentorship and economics scoped to batch size',
+      'One partnerships contact for rollout, fairness, and governance',
+    ],
+  };
+
+  const formLabels = {
+    students: {
+      title: 'Send a message',
+      description:
+        'Share your background, goals, and timeline. We route every enquiry to the right counselor.',
+      submit: 'Submit enquiry',
+      placeholders: {
+        name: 'Your full name',
+        email: 'you@email.com',
+        phone: '+91 …',
+        message: 'How can we help? Target companies, skills, and urgency help us respond faster.',
+      },
+    },
+    colleges: {
+      title: 'Partnership enquiry',
+      description:
+        'Include institution name, your role, approximate batch size, placement season, and any programs you want (e.g. leadership board, readiness sprint).',
+      submit: 'Submit partnership enquiry',
+      placeholders: {
+        name: 'Your name and title (e.g. TPO)',
+        email: 'official.institution@domain.edu',
+        phone: 'Direct line or department number',
+        message:
+          'College name, cohort size, key dates, and what you want to pilot—we will reply with a short call plan.',
+      },
+    },
+  };
+
+  const hero = {
+    students: {
+      eyebrow: 'Contact · Students & learners',
+      title: 'Tell us what you are working toward',
+      subtitle: MISSION_TAGLINE,
+    },
+    colleges: {
+      eyebrow: 'Contact · Colleges & TPOs',
+      title: 'Partnership and campus programs',
+      subtitle:
+        'We work with placement teams on cohort readiness, leadership board and competition formats, and optional bulk mentorship. Share your context and we will respond with a concise next step—usually a short discovery call.',
+    },
+  }[audience];
+
+  const fc = formLabels[audience];
 
   const faqItems = [
     {
@@ -186,106 +300,149 @@ const ContactPage = () => {
       q: 'Do you work with employers or campuses?',
       a: (
         <>
-          We partner with hiring teams and colleges. If you are a recruiter or institution, see{' '}
+          We partner with hiring teams and colleges. Recruiters should start on{' '}
           <Link to="/for-recruiters" className={linkClass}>
             For Recruiters
-          </Link>{' '}
-          or use this form—we will connect you with the right contact.
+          </Link>
+          . Colleges &amp; TPOs:{' '}
+          <Link to="/colleges" className={linkClass}>
+            For Colleges
+          </Link>
+          . This contact form is for students, learners, and campus enquiries.
         </>
       ),
     },
   ];
 
+  const whyReachOutTitle = {
+    students: 'Why learners contact us',
+    colleges: 'What we discuss with institutions',
+  }[audience];
+
+  const formAccentClass = {
+    students: 'border-l-[#FF9500]',
+    colleges: 'border-l-[#1A6FC4]',
+  }[audience];
+
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#FFFDF8] text-[#1a1a1a]">
-      {/* Ambient background */}
+    <div className="relative min-h-screen overflow-hidden bg-[#FAFAF8] text-[#1a1a1a]">
       <div
         className="pointer-events-none absolute inset-0 overflow-hidden"
         aria-hidden
       >
-        <div className="absolute -left-32 top-20 h-72 w-72 rounded-full bg-[#FF9500]/12 blur-3xl" />
-        <div className="absolute -right-24 top-40 h-80 w-80 rounded-full bg-cyan-400/10 blur-3xl" />
-        <div className="absolute bottom-0 left-1/2 h-96 w-[120%] -translate-x-1/2 rounded-[100%] bg-gradient-to-t from-[#FFF4E6]/80 to-transparent blur-2xl" />
+        <div className="absolute -left-32 top-20 h-72 w-72 rounded-full bg-neutral-300/20 blur-3xl" />
+        <div className="absolute -right-24 top-40 h-80 w-80 rounded-full bg-[#1A6FC4]/8 blur-3xl" />
+        <div className="absolute bottom-0 left-1/2 h-96 w-[120%] -translate-x-1/2 rounded-[100%] bg-gradient-to-t from-[#FFFDF8] to-transparent blur-2xl" />
       </div>
 
-      <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-16 sm:px-6 sm:pt-20 md:pb-28">
-        {/* Hero */}
-        <motion.header
-          className="mx-auto mb-14 max-w-3xl text-center md:mb-16"
-          initial={reduceMotion ? false : { opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: reduceMotion ? 0 : 0.6, ease: easeOut }}
-        >
-          <motion.div
-            className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#E0DCCF] bg-white/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-neutral-600 shadow-[0_2px_12px_-4px_rgba(255,149,0,0.18)]"
-            initial={reduceMotion ? false : { opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: reduceMotion ? 0 : 0.08, duration: 0.45, ease: easeOut }}
-          >
-            <Sparkles className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
-            We reply within 24h · IST
-          </motion.div>
-          <div className="mb-4 flex items-center justify-center gap-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-[#E0DCCF] bg-gradient-to-br from-white to-[#FFF8EE] shadow-[0_8px_24px_-12px_rgba(255,149,0,0.35)]">
-              <MessageSquare className="h-6 w-6 text-[#FF9500]" strokeWidth={2} />
-            </div>
-            <h1 className="text-4xl font-black tracking-tight text-[#111] sm:text-5xl md:text-6xl">
-              Get in touch
-            </h1>
+      <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-12 sm:px-6 sm:pt-16 md:pb-28">
+        <div className="mx-auto mb-10 max-w-3xl">
+          <p className="mb-2 text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-neutral-500">
+            I am reaching out as
+          </p>
+          <div className="flex flex-col gap-2 rounded-2xl border border-neutral-200/90 bg-white p-1.5 shadow-sm sm:flex-row sm:rounded-xl">
+            {AUDIENCES.map(({ id, label, short, Icon }) => {
+              const active = audience === id;
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  onClick={() => selectAudience(id)}
+                  aria-pressed={active}
+                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-semibold transition-all sm:px-4 ${
+                    active
+                      ? 'bg-[#111] text-white shadow-md'
+                      : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
+                  }`}
+                >
+                  <Icon className="h-4 w-4 shrink-0 opacity-90" strokeWidth={2} aria-hidden />
+                  <span className="hidden sm:inline">{label}</span>
+                  <span className="sm:hidden">{short}</span>
+                </button>
+              );
+            })}
           </div>
-          <p className="mx-auto text-lg leading-relaxed text-neutral-600 md:text-xl">
-            {MISSION_TAGLINE}
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-neutral-500">
+            <span className="inline-flex items-center gap-1.5">
+              <Clock className="h-3.5 w-3.5 shrink-0 text-neutral-400" aria-hidden />
+              Response within 24h · business days (IST)
+            </span>
+            <span className="inline-flex items-center gap-1.5">
+              <Shield className="h-3.5 w-3.5 shrink-0 text-neutral-400" aria-hidden />
+              Enquiries routed to the right team
+            </span>
+          </div>
+        </div>
+
+        <motion.header
+          className="mx-auto mb-12 max-w-3xl text-center md:mb-14"
+          initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: reduceMotion ? 0 : 0.5, ease: easeOut }}
+        >
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">{hero.eyebrow}</p>
+          <h1 className="text-3xl font-bold tracking-tight text-[#111] sm:text-4xl md:text-[2.45rem] md:leading-[1.15]">
+            {hero.title}
+          </h1>
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-neutral-600 md:text-lg">
+            {hero.subtitle}
           </p>
-          <p className="mt-3 text-sm text-neutral-500">
-            Prefer to explore first?{' '}
-            <Link
-              to="/interview-ready"
-              className="font-semibold text-[#FF9500] underline decoration-[#FF9500]/30 underline-offset-2 transition hover:text-[#E88600]"
-            >
-              See how readiness scoring works
-            </Link>
-          </p>
+          {audience === 'students' && (
+            <p className="mt-4 text-sm text-neutral-500">
+              Prefer to explore first?{' '}
+              <Link to="/start-assessment" className={linkClass}>
+                Take the free readiness assessment
+              </Link>
+            </p>
+          )}
+          {audience === 'colleges' && (
+            <p className="mt-4 text-sm text-neutral-500">
+              <Link to="/colleges" className={linkClass}>
+                College program overview
+              </Link>
+              <span className="mx-2 text-neutral-300">·</span>
+              <Link to="/leadership-board" className={linkClass}>
+                Leadership board
+              </Link>
+            </p>
+          )}
         </motion.header>
 
-        <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.05fr)] lg:gap-12">
-          {/* Left column */}
+        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.12fr)] lg:gap-10 lg:items-start">
           <div className="space-y-6">
             <FadeUp>
-              <motion.div
-                className="rounded-3xl border border-[#E0DCCF] bg-white/90 p-7 shadow-[0_20px_50px_-24px_rgba(0,0,0,0.12)] backdrop-blur-sm"
-                whileHover={reduceMotion ? undefined : { y: -2 }}
-                transition={{ duration: 0.22 }}
-              >
-                <h2 className="mb-6 text-xl font-bold text-[#111]">Contact information</h2>
-                <ul className="space-y-6">
+              <div className="rounded-2xl border border-neutral-200/90 bg-white p-6 shadow-sm">
+                <div className="mb-5 flex items-center gap-2">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100 text-neutral-600">
+                    <MessageSquare className="h-4 w-4" strokeWidth={2} aria-hidden />
+                  </div>
+                  <h2 className="text-lg font-semibold text-[#111]">Direct channels</h2>
+                </div>
+                <ul className="space-y-5">
                   <li className="flex gap-4">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#FFE0B8] bg-gradient-to-br from-[#FFF4E6] to-white">
-                      <Mail className="h-5 w-5 text-[#FF9500]" />
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-neutral-600">
+                      <Mail className="h-[18px] w-[18px]" strokeWidth={2} />
                     </div>
                     <div>
-                      <p className="text-xs font-bold uppercase tracking-wider text-neutral-500">
-                        Email
-                      </p>
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">Email</p>
                       <a
                         href="mailto:hello@mentormuni.com"
-                        className="font-semibold text-[#111] transition hover:text-[#FF9500]"
+                        className="mt-0.5 block text-[0.9375rem] font-semibold text-[#111] transition hover:text-[#1A6FC4]"
                       >
                         hello@mentormuni.com
                       </a>
-                      <p className="mt-0.5 text-sm text-neutral-500">We respond within 24 hours</p>
+                      <p className="mt-0.5 text-sm text-neutral-500">We respond within 24 hours on business days</p>
                     </div>
                   </li>
                   <li className="flex gap-4">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-cyan-200/80 bg-gradient-to-br from-cyan-50 to-white">
-                      <Phone className="h-5 w-5 text-cyan-600" />
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-neutral-600">
+                      <Phone className="h-[18px] w-[18px]" strokeWidth={2} />
                     </div>
                     <div>
-                      <p className="text-xs font-bold uppercase tracking-wider text-neutral-500">
-                        Phone
-                      </p>
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">Phone</p>
                       <a
                         href={CONTACT_PHONE_HREF}
-                        className="font-semibold text-[#111] transition hover:text-[#FF9500]"
+                        className="mt-0.5 block text-[0.9375rem] font-semibold text-[#111] transition hover:text-[#1A6FC4]"
                       >
                         {CONTACT_PHONE_DISPLAY}
                       </a>
@@ -293,34 +450,27 @@ const ContactPage = () => {
                     </div>
                   </li>
                   <li className="flex gap-4">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-emerald-200/80 bg-gradient-to-br from-emerald-50 to-white">
-                      <MapPin className="h-5 w-5 text-emerald-600" />
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-neutral-600">
+                      <MapPin className="h-[18px] w-[18px]" strokeWidth={2} />
                     </div>
                     <div>
-                      <p className="text-xs font-bold uppercase tracking-wider text-neutral-500">
-                        Location
-                      </p>
-                      <p className="font-semibold text-[#111]">Bangalore, India</p>
-                      <p className="mt-0.5 text-sm text-neutral-500">Serving students globally</p>
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">Registered office</p>
+                      <p className="mt-0.5 text-[0.9375rem] font-semibold text-[#111]">Bangalore, India</p>
+                      <p className="mt-0.5 text-sm text-neutral-500">Serving learners and partners globally</p>
                     </div>
                   </li>
                 </ul>
-              </motion.div>
+              </div>
             </FadeUp>
 
             <FadeUp delay={0.08}>
-              <div className="rounded-3xl border border-[#E0DCCF] bg-gradient-to-br from-[#FFFCF7] to-white p-7 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
-                <h3 className="mb-5 text-lg font-bold text-[#111]">Why reach out?</h3>
-                <ul className="space-y-3.5">
-                  {[
-                    'Guidance from industry mentors',
-                    'Clear gaps and what to fix first',
-                    'Flexible plans and payment options',
-                    'Free assessment and counseling',
-                  ].map((line) => (
-                    <li key={line} className="flex gap-3 text-neutral-700">
-                      <span className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#FF9500]/15">
-                        <Check className="h-3.5 w-3.5 text-[#E88600]" strokeWidth={3} />
+              <div className="rounded-2xl border border-neutral-200/90 bg-white p-6 shadow-sm">
+                <h3 className="mb-4 text-base font-semibold text-[#111]">{whyReachOutTitle}</h3>
+                <ul className="space-y-3">
+                  {whyReachOutLines[audience].map((line) => (
+                    <li key={line} className="flex gap-3 text-sm leading-snug text-neutral-700">
+                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+                        <Check className="h-3 w-3" strokeWidth={3} aria-hidden />
                       </span>
                       <span>{line}</span>
                     </li>
@@ -330,21 +480,19 @@ const ContactPage = () => {
             </FadeUp>
           </div>
 
-          {/* Form */}
           <FadeUp delay={0.05}>
             <motion.div
-              className="rounded-3xl border border-[#E0DCCF] bg-white p-7 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.14)] sm:p-8"
-              initial={reduceMotion ? false : { opacity: 0.98 }}
-              transition={{ duration: 0.4 }}
+              key={audience}
+              className={`rounded-2xl border border-neutral-200/90 border-l-4 ${formAccentClass} bg-white p-6 shadow-sm sm:p-8`}
+              initial={reduceMotion ? false : { opacity: 0.96 }}
+              transition={{ duration: 0.35 }}
             >
-              <h2 className="mb-2 text-2xl font-bold text-[#111]">Send a message</h2>
-              <p className="mb-8 text-sm text-neutral-500">
-                Share a bit about your goals—we will route you to the right counselor.
-              </p>
+              <h2 className="text-xl font-semibold tracking-tight text-[#111] sm:text-[1.35rem]">{fc.title}</h2>
+              <p className="mt-2 text-sm leading-relaxed text-neutral-600">{fc.description}</p>
 
-              <form onSubmit={handleSubmit} className="space-y-5">
+              <form onSubmit={handleSubmit} className="mt-8 space-y-5">
                 <div>
-                  <label htmlFor="contact-name" className="mb-2 block text-sm font-semibold text-[#333]">
+                  <label htmlFor="contact-name" className="mb-1.5 block text-sm font-medium text-neutral-800">
                     Full name
                   </label>
                   <input
@@ -354,17 +502,15 @@ const ContactPage = () => {
                     value={formData.name}
                     onChange={handleChange}
                     autoComplete="name"
-                    placeholder="Your name"
+                    placeholder={fc.placeholders.name}
                     className={fieldClass('name')}
                   />
-                  {errors.name && (
-                    <p className="mt-2 text-sm font-medium text-rose-600">{errors.name}</p>
-                  )}
+                  {errors.name && <p className="mt-1.5 text-sm font-medium text-rose-600">{errors.name}</p>}
                 </div>
 
                 <div>
-                  <label htmlFor="contact-email" className="mb-2 block text-sm font-semibold text-[#333]">
-                    Email
+                  <label htmlFor="contact-email" className="mb-1.5 block text-sm font-medium text-neutral-800">
+                    {audience === 'colleges' ? 'Official or institutional email' : 'Email'}
                   </label>
                   <input
                     id="contact-email"
@@ -373,16 +519,14 @@ const ContactPage = () => {
                     value={formData.email}
                     onChange={handleChange}
                     autoComplete="email"
-                    placeholder="you@university.edu"
+                    placeholder={fc.placeholders.email}
                     className={fieldClass('email')}
                   />
-                  {errors.email && (
-                    <p className="mt-2 text-sm font-medium text-rose-600">{errors.email}</p>
-                  )}
+                  {errors.email && <p className="mt-1.5 text-sm font-medium text-rose-600">{errors.email}</p>}
                 </div>
 
                 <div>
-                  <label htmlFor="contact-phone" className="mb-2 block text-sm font-semibold text-[#333]">
+                  <label htmlFor="contact-phone" className="mb-1.5 block text-sm font-medium text-neutral-800">
                     Phone
                   </label>
                   <input
@@ -392,16 +536,14 @@ const ContactPage = () => {
                     value={formData.phone}
                     onChange={handleChange}
                     autoComplete="tel"
-                    placeholder="+91 00000 00000"
+                    placeholder={fc.placeholders.phone}
                     className={fieldClass('phone')}
                   />
-                  {errors.phone && (
-                    <p className="mt-2 text-sm font-medium text-rose-600">{errors.phone}</p>
-                  )}
+                  {errors.phone && <p className="mt-1.5 text-sm font-medium text-rose-600">{errors.phone}</p>}
                 </div>
 
                 <div>
-                  <label htmlFor="contact-message" className="mb-2 block text-sm font-semibold text-[#333]">
+                  <label htmlFor="contact-message" className="mb-1.5 block text-sm font-medium text-neutral-800">
                     Message
                   </label>
                   <textarea
@@ -409,13 +551,11 @@ const ContactPage = () => {
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    placeholder="How can we help?"
+                    placeholder={fc.placeholders.message}
                     rows={5}
-                    className={`${fieldClass('message')} resize-none`}
+                    className={`${fieldClass('message')} min-h-[8.5rem] resize-y`}
                   />
-                  {errors.message && (
-                    <p className="mt-2 text-sm font-medium text-rose-600">{errors.message}</p>
-                  )}
+                  {errors.message && <p className="mt-1.5 text-sm font-medium text-rose-600">{errors.message}</p>}
                 </div>
 
                 {submitStatus.message && (
@@ -423,48 +563,50 @@ const ContactPage = () => {
                     role="status"
                     initial={reduceMotion ? false : { opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className={`flex gap-3 rounded-2xl border px-4 py-3 text-sm font-medium ${
+                    className={`flex gap-3 rounded-xl border px-4 py-3 text-sm font-medium ${
                       submitStatus.type === 'success'
-                        ? 'border-emerald-200 bg-emerald-50/90 text-emerald-900'
-                        : 'border-rose-200 bg-rose-50/90 text-rose-900'
+                        ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
+                        : 'border-rose-200 bg-rose-50 text-rose-900'
                     }`}
                   >
                     {submitStatus.type === 'success' ? (
-                      <Check className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
+                      <Check className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" aria-hidden />
                     ) : (
-                      <span className="mt-0.5 shrink-0 font-bold text-rose-600">!</span>
+                      <span className="mt-0.5 shrink-0 font-bold text-rose-600" aria-hidden>
+                        !
+                      </span>
                     )}
                     <span>{submitStatus.message}</span>
                   </motion.div>
                 )}
 
-                <div className="flex flex-col gap-3 pt-2 sm:flex-row sm:gap-3">
+                <div className="flex flex-col gap-3 border-t border-neutral-100 pt-6 sm:flex-row">
                   <motion.button
                     type="submit"
                     disabled={isSubmitting}
-                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#FF9500] to-[#E88600] px-6 py-3.5 text-base font-bold text-white shadow-[0_12px_28px_-8px_rgba(255,149,0,0.45)] transition hover:from-[#E88600] hover:to-[#D67A00] disabled:cursor-not-allowed disabled:opacity-55"
-                    whileHover={reduceMotion || isSubmitting ? undefined : { scale: 1.01 }}
-                    whileTap={reduceMotion || isSubmitting ? undefined : { scale: 0.99 }}
+                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#111] px-6 py-3 text-[0.9375rem] font-semibold text-white shadow-sm transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-55"
+                    whileHover={reduceMotion || isSubmitting ? undefined : { scale: 1.005 }}
+                    whileTap={reduceMotion || isSubmitting ? undefined : { scale: 0.995 }}
                   >
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                        Sending…
+                        <Loader2 className="h-5 w-5 animate-spin" aria-hidden />
+                        Sending enquiry…
                       </>
                     ) : (
                       <>
-                        <Send className="h-5 w-5" />
-                        Send message
+                        <Send className="h-4 w-4" aria-hidden />
+                        {fc.submit}
                       </>
                     )}
                   </motion.button>
                   <button
                     type="button"
                     onClick={handleReset}
-                    className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#E0DCCF] bg-[#FFFDF8] px-6 py-3.5 text-base font-bold text-[#444] transition hover:border-[#D4CFC0] hover:bg-white"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white px-6 py-3 text-[0.9375rem] font-semibold text-neutral-700 transition hover:border-neutral-300 hover:bg-neutral-50"
                   >
-                    <RotateCcw className="h-5 w-5" />
-                    Clear
+                    <RotateCcw className="h-4 w-4" aria-hidden />
+                    Clear form
                   </button>
                 </div>
               </form>
@@ -474,19 +616,22 @@ const ContactPage = () => {
 
         {/* FAQ */}
         <FadeUp className="mt-16 md:mt-20">
-          <div className="rounded-3xl border border-[#E0DCCF] bg-gradient-to-b from-white to-[#FFFCF7] px-6 py-10 sm:px-10 sm:py-12">
-            <h2 className="mb-10 text-center text-2xl font-black tracking-tight text-[#111] md:text-3xl">
+          <div className="rounded-2xl border border-neutral-200/90 bg-white px-6 py-10 sm:px-10 sm:py-12">
+            <h2 className="mb-2 text-center text-xl font-semibold text-[#111] sm:text-2xl">
               Frequently asked questions
             </h2>
+            <p className="mx-auto mb-10 max-w-xl text-center text-sm text-neutral-500">
+              Quick answers for students and partners. For anything specific, use the form above.
+            </p>
             <motion.ul
-              className="grid gap-6 md:grid-cols-2 md:gap-8"
+              className="grid gap-4 md:grid-cols-2 md:gap-5"
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, amount: 0.15 }}
               variants={{
                 hidden: {},
                 show: {
-                  transition: { staggerChildren: reduceMotion ? 0 : 0.08 },
+                  transition: { staggerChildren: reduceMotion ? 0 : 0.06 },
                 },
               }}
             >
@@ -494,13 +639,13 @@ const ContactPage = () => {
                 <motion.li
                   key={item.q}
                   variants={{
-                    hidden: { opacity: 0, y: 14 },
-                    show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: easeOut } },
+                    hidden: { opacity: 0, y: 12 },
+                    show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: easeOut } },
                   }}
-                  className="rounded-2xl border border-[#F0EBE0] bg-white/80 p-5 shadow-[0_8px_24px_-16px_rgba(0,0,0,0.08)]"
+                  className="rounded-xl border border-neutral-200/80 bg-[#FAFAF8] p-5"
                 >
-                  <h3 className="mb-2 font-bold text-[#FF9500]">{item.q}</h3>
-                  <p className="text-sm leading-relaxed text-neutral-600">{item.a}</p>
+                  <h3 className="mb-2 text-sm font-semibold text-[#111]">{item.q}</h3>
+                  <div className="text-sm leading-relaxed text-neutral-600">{item.a}</div>
                 </motion.li>
               ))}
             </motion.ul>

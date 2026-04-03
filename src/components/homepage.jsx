@@ -1230,12 +1230,20 @@ const HomePage = () => {
                     </span>
                   ))}
                 </div>
-                <Link
-                  to="/contact"
-                  className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-[#1A6FC4] hover:bg-[#155a9e] px-5 py-2.5 rounded-xl transition-colors shadow-[0_2px_12px_rgba(0,0,0,0.05)]"
-                >
-                  Request a demo <ArrowRight size={15} />
-                </Link>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Link
+                    to="/contact?topic=colleges"
+                    className="inline-flex items-center gap-1.5 text-sm font-semibold text-white bg-[#1A6FC4] hover:bg-[#155a9e] px-5 py-2.5 rounded-xl transition-colors shadow-[0_2px_12px_rgba(0,0,0,0.05)]"
+                  >
+                    Request a demo <ArrowRight size={15} />
+                  </Link>
+                  <Link
+                    to="/colleges"
+                    className="inline-flex items-center gap-1 text-sm font-semibold text-[#1A6FC4] hover:text-[#155a9e]"
+                  >
+                    Learn more <ArrowRight size={15} />
+                  </Link>
+                </div>
               </div>
             </div>
           </FadeUp>
@@ -1309,6 +1317,7 @@ const HomePage = () => {
                 <li><Link to="/contact" className="hover:text-[#FF9500] transition-colors">Contact</Link></li>
                 <li><Link to="/mentors" className="hover:text-[#FF9500] transition-colors">Mentorship</Link></li>
                 <li><Link to="/for-recruiters" className="hover:text-[#FF9500] transition-colors">For Recruiters</Link></li>
+                <li><Link to="/colleges" className="hover:text-[#FF9500] transition-colors">For Colleges</Link></li>
               </ul>
             </div>
           </div>

@@ -61,7 +61,6 @@ const Navbar = () => {
     { label: 'How It Works', path: '/how-it-works', exact: false },
     { label: 'Mentors', path: '/mentors', exact: false },
     { label: 'Outcomes', path: '/outcomes', exact: false },
-    { label: 'Leadership Board', path: '/leadership-board', exact: false },
   ];
 
   const isActive = (path, exact = false) => {
@@ -209,6 +208,9 @@ const Navbar = () => {
               )}
             </div>
 
+            <Link to="/colleges" className={navLinkClass(isActive('/colleges', true))}>
+              For colleges
+            </Link>
             <Link
               to="/contact"
               className={navLinkClass(isActive('/contact', true))}
@@ -323,6 +325,17 @@ const Navbar = () => {
                 </div>
               </div>
 
+              <Link
+                to="/colleges"
+                onClick={handleNavClick}
+                className={`px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
+                  isActive('/colleges', true)
+                    ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
+                    : 'text-[#444444] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+                }`}
+              >
+                For colleges
+              </Link>
               <Link
                 to="/contact"
                 onClick={handleNavClick}

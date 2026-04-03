@@ -28,6 +28,7 @@ const DevOpsRoadmap = lazy(() => import("./components/devopsRoadmap"));
 const MockInterviews = lazy(() => import("./components/mockInterviews"));
 const SkillGapAnalyzer = lazy(() => import("./components/skillGapAnalyzer"));
 const ForRecruiters = lazy(() => import("./components/forRecruiters"));
+const Colleges = lazy(() => import("./components/colleges"));
 const LearningPaths = lazy(() => import("./components/learningPaths"));
 const PlacementTracks = lazy(() => import("./components/placementTracks"));
 const FreeTutorials = lazy(() => import("./components/freeTutorials"));
@@ -85,6 +86,7 @@ function App() {
               <Route path="/waitlist" element={<Waitlist />} />
               <Route path="/result" element={<ResultPage />} />
               <Route path="/for-recruiters" element={<ForRecruiters />} />
+              <Route path="/colleges" element={<Colleges />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/dashboard" element={<MentorDashboard />} />
               <Route path="/java-tutorial" element={<JavaTutorial />} />

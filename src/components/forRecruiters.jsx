@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Briefcase, Users, BarChart3, Mail, ArrowRight } from 'lucide-react';
 
-const recruiterContact = '/contact?topic=recruiters';
+const recruiterContact = '/contact';
 
 const ForRecruiters = () => {
   return (
