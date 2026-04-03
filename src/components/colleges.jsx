@@ -61,7 +61,7 @@ const checklist = [
 
 const Colleges = () => {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#FFFDF8] text-[#1a1a1a]">
+    <div className="relative min-h-screen overflow-hidden bg-[#FFFDF8] text-foreground-muted">
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
         <div className="absolute -left-24 top-16 h-72 w-72 rounded-full bg-[#1A6FC4]/10 blur-3xl" />
         <div className="absolute -right-20 top-40 h-80 w-80 rounded-full bg-[#FF9500]/12 blur-3xl" />
@@ -75,7 +75,7 @@ const Colleges = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#E0DCCF] bg-white/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-neutral-600 shadow-sm">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#E0DCCF] bg-white/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground shadow-sm">
             <Building2 className="h-4 w-4 text-[#1A6FC4]" aria-hidden />
             College collaboration · Phase 1
           </div>
@@ -83,14 +83,14 @@ const Colleges = () => {
             <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#E0DCCF] bg-gradient-to-br from-[#E8F3FF] to-white shadow-md">
               <GraduationCap className="h-8 w-8 text-[#1A6FC4]" strokeWidth={1.75} />
             </div>
-            <h1 className="text-3xl font-black tracking-tight text-[#111] sm:text-4xl md:text-5xl">
+            <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-5xl md:text-6xl leading-[1.08]">
               MentorMuni for{' '}
               <span className="bg-gradient-to-r from-[#1A6FC4] to-[#FF9500] bg-clip-text text-transparent">
                 colleges &amp; TPOs
               </span>
             </h1>
           </div>
-          <p className="text-lg leading-relaxed text-neutral-600 md:text-xl">
+          <p className="text-lg leading-relaxed text-muted-foreground md:text-xl">
             Partner with us to run measurable interview readiness across your batch: a leadership board that gamifies real
             prep so students push scores and ranking as they fix gaps, plus optional bulk mentorship and the same tools they
             already use—aligned with placement season.
@@ -105,7 +105,7 @@ const Colleges = () => {
             </Link>
             <Link
               to="/leadership-board"
-              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#E0DCCF] bg-white px-6 py-3.5 text-sm font-bold text-[#444] transition hover:border-[#FFB347] hover:bg-[#FFF8EE]"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#E0DCCF] bg-white px-6 py-3.5 text-sm font-bold text-foreground-muted transition hover:border-[#FFB347] hover:bg-[#FFF8EE]"
             >
               See the leadership board
               <Trophy className="h-4 w-4 text-[#FF9500]" />
@@ -133,11 +133,11 @@ const Colleges = () => {
             />
             <div className="relative">
               <div className="mb-5 flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#FF9500]/50 bg-[#FF9500] px-3 py-1 text-[11px] font-black uppercase tracking-wider text-white shadow-sm sm:text-xs">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-[#FF9500]/50 bg-[#FF9500] px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-white shadow-sm sm:text-xs">
                   <Flame className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
                   Gamification spotlight
                 </span>
-                <span className="inline-flex items-center gap-1 rounded-full border border-amber-300/80 bg-white/90 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-[#8B4513] shadow-sm sm:text-xs">
+                <span className="inline-flex items-center gap-1 rounded-full border border-amber-300/80 bg-white/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#8B4513] shadow-sm sm:text-xs">
                   <Medal className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
                   Interview readiness competition
                 </span>
@@ -148,15 +148,15 @@ const Colleges = () => {
               </div>
               <div className="flex flex-col gap-6 md:flex-row md:items-start md:gap-10">
                 <div className="flex-1">
-                  <h2 className="text-xl font-black tracking-tight text-[#111] sm:text-2xl md:text-[1.65rem] md:leading-snug">
+                  <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl md:leading-snug">
                     Campus energy students actually feel:{' '}
                     <span className="bg-gradient-to-r from-[#CC7000] to-[#FF9500] bg-clip-text text-transparent">
                       competitions, badges, and bragging rights tied to real prep
                     </span>
                   </h2>
-                  <p className="mt-4 text-sm leading-relaxed text-neutral-700 sm:text-[0.9375rem]">
+                  <p className="mt-4 text-sm leading-relaxed text-foreground-muted sm:text-[0.9375rem]">
                     Hook your batch with an{' '}
-                    <strong className="font-semibold text-[#111]">Interview Readiness Competition</strong>: timed rounds, clear
+                    <strong className="font-semibold text-foreground">Interview Readiness Competition</strong>: timed rounds, clear
                     scoring on readiness and practice milestones, and live movement on the leadership board so every rank-up
                     reflects effort—not luck. Run it inside one cohort, across departments, or as a friendly inter-college
                     challenge; we help you shape the format, dates, and fairness rules with your placement cell.
@@ -204,11 +204,11 @@ const Colleges = () => {
                       >
                         <div className="flex items-start gap-3">
                           <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white/90 shadow-sm ring-1 ring-black/5">
-                            <CardIcon className="h-4 w-4 text-[#111]" strokeWidth={2} />
+                            <CardIcon className="h-4 w-4 text-foreground" strokeWidth={2} />
                           </span>
                           <div>
-                            <p className="text-sm font-bold text-[#111]">{card.title}</p>
-                            <p className="mt-1 text-xs leading-relaxed text-neutral-600">{card.blurb}</p>
+                            <p className="text-sm font-semibold text-foreground">{card.title}</p>
+                            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{card.blurb}</p>
                           </div>
                         </div>
                       </div>
@@ -221,8 +221,8 @@ const Colleges = () => {
         </motion.section>
 
         <section className="mx-auto mt-16 max-w-4xl">
-          <h2 className="text-center text-xs font-bold uppercase tracking-[0.2em] text-neutral-500">What we offer</h2>
-          <p className="mx-auto mt-2 max-w-2xl text-center text-lg font-bold text-[#111] sm:text-xl">
+          <h2 className="text-center text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">What we offer</h2>
+          <p className="mx-auto mt-2 max-w-2xl text-center text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
             One partnership line: visibility, mentorship at scale, and structured prep
           </p>
           <div className="mt-10 grid gap-6 md:grid-cols-3">
@@ -238,10 +238,10 @@ const Colleges = () => {
                   className={`relative overflow-hidden rounded-2xl border ${p.border} bg-gradient-to-b ${p.tint} to-white p-6 shadow-[0_8px_30px_-12px_rgba(0,0,0,0.08)]`}
                 >
                   <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl border border-white/80 bg-white/90 shadow-sm">
-                    <Icon className="h-5 w-5 text-[#1A1A1A]" strokeWidth={2} />
+                    <Icon className="h-5 w-5 text-foreground" strokeWidth={2} />
                   </div>
-                  <h3 className="text-base font-bold text-[#111]">{p.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-neutral-600">{p.desc}</p>
+                  <h3 className="text-base font-semibold text-foreground">{p.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.desc}</p>
                 </motion.article>
               );
             })}
@@ -252,12 +252,12 @@ const Colleges = () => {
           <div className="mb-8 text-center">
             <div className="mb-3 flex items-center justify-center gap-2 text-[#CC7000]">
               <TrendingUp className="h-6 w-6" aria-hidden />
-              <span className="text-xs font-bold uppercase tracking-[0.18em] text-neutral-500">Gamified prep loop</span>
+              <span className="text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">Gamified prep loop</span>
             </div>
-            <h2 className="text-xl font-bold text-[#111] sm:text-2xl">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
               Leadership board: rank, fix gaps, score higher, rank again
             </h2>
-            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-neutral-600 sm:text-[0.9375rem]">
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-[0.9375rem]">
               The board rewards actual readiness work—not vanity metrics. As students practice, plug topic gaps, and rerun
               assessments, their scores reflect the progress and their position can move up, which keeps batches engaged
               through placement season.
@@ -302,13 +302,13 @@ const Colleges = () => {
                   <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFF4E0]">
                     <StepIcon className="h-5 w-5 text-[#CC7000]" strokeWidth={2} />
                   </div>
-                  <h3 className="text-sm font-bold text-[#111]">{item.title}</h3>
-                  <p className="mt-2 text-xs leading-relaxed text-neutral-600 sm:text-sm">{item.text}</p>
+                  <h3 className="text-sm font-semibold text-foreground">{item.title}</h3>
+                  <p className="mt-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">{item.text}</p>
                 </div>
               );
             })}
           </div>
-          <p className="mx-auto mt-8 max-w-2xl text-center text-xs leading-relaxed text-neutral-500">
+          <p className="mx-auto mt-8 max-w-2xl text-center text-xs leading-relaxed text-hint">
             Fair-play and opt-in rules are set with your institution so the board stays motivating without becoming toxic.
           </p>
         </section>
@@ -316,17 +316,17 @@ const Colleges = () => {
         <section className="mx-auto mt-16 max-w-3xl rounded-3xl border border-[#E0DCCF] bg-white px-6 py-10 shadow-lg sm:px-10">
           <div className="mb-6 flex items-center gap-2 text-[#1A6FC4]">
             <BarChart3 className="h-6 w-6" />
-            <span className="text-sm font-bold uppercase tracking-wider">Typical engagement</span>
+            <span className="text-sm font-semibold uppercase tracking-wider text-foreground">Typical engagement</span>
           </div>
           <ul className="space-y-3">
             {checklist.map((item) => (
-              <li key={item} className="flex gap-3 text-sm text-neutral-700">
+              <li key={item} className="flex gap-3 text-sm text-foreground-muted">
                 <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                 <span>{item}</span>
               </li>
             ))}
           </ul>
-          <p className="mt-6 text-xs leading-relaxed text-neutral-500">
+          <p className="mt-6 text-xs leading-relaxed text-hint">
             Exact terms, data visibility, and leaderboard rules are agreed per institution (privacy, opt-in, and fair-use).
             This page is our public entry point; formal proposals follow your first conversation.
           </p>
@@ -335,8 +335,8 @@ const Colleges = () => {
         <section className="mx-auto mt-16 grid max-w-5xl gap-8 md:grid-cols-2 md:items-center">
           <div className="rounded-2xl border border-[#F0ECE0] bg-gradient-to-br from-white to-[#FFF8EE] p-6 sm:p-8">
             <Mic2 className="mb-3 h-8 w-8 text-[#FF9500]" />
-            <h2 className="text-xl font-bold text-[#111]">What Phase 1 focuses on</h2>
-            <p className="mt-3 text-sm leading-relaxed text-neutral-600">
+            <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">What Phase 1 focuses on</h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               First we align on a simple, repeatable story: students get a fair read on where they stand and what to improve,
               and your team gets a readiness sprint you can stand behind, with optional mentorship if you want it. Deeper work
               like dedicated access, college-scoped views, and exports follows once we agree on cohort, timeline, and how you
@@ -352,12 +352,12 @@ const Colleges = () => {
           </div>
           <div className="rounded-2xl border-2 border-[#FF9500]/40 bg-[#FF9500]/8 p-6 sm:p-8">
             <Sparkles className="mb-3 h-8 w-8 text-[#CC7000]" />
-            <h2 className="text-xl font-bold text-[#111]">Next step</h2>
-            <p className="mt-3 text-sm leading-relaxed text-neutral-700">
+            <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">Next step</h2>
+            <p className="mt-3 text-sm leading-relaxed text-foreground-muted">
               Send college name, approximate batch size, and placement window—we&apos;ll reply with a short call proposal and
               next steps.
             </p>
-            <p className="mt-4 text-sm text-neutral-600">
+            <p className="mt-4 text-sm text-muted-foreground">
               Prefer phone?{' '}
               <a href={CONTACT_PHONE_HREF} className="font-semibold text-[#1A6FC4] hover:underline">
                 {CONTACT_PHONE_DISPLAY}

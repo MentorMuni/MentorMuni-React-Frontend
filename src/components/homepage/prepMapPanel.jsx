@@ -16,11 +16,12 @@ const PREP_MAP_SAMPLE_AREAS = [
   { label: 'HR & communication', w: 48 },
 ];
 
+/** Illustrative drill tags — aligned with placement prep (DSA → stack → HR), not unrelated buzzwords */
 const PREP_MAP_PREP_TOPIC_EXAMPLES = [
-  'AI agents',
-  'LinkedIn checklist',
-  'Database partitioning',
-  'React & Redux',
+  'DSA patterns & complexity',
+  'OS, DBMS & networking',
+  'Project & stack deep-dive',
+  'HR & communication',
 ];
 
 const PREP_MAP_ILLUSTRATIVE_SCORE = 64;
@@ -80,8 +81,8 @@ function PrepMapReadinessScoreRing({ pct, inView }) {
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <span className="text-3xl font-black tabular-nums tracking-tight text-[#1A1A1A] sm:text-[2.1rem]">{pct}%</span>
-        <span className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-neutral-500">Readiness</span>
+        <span className="text-3xl font-black tabular-nums tracking-tight text-foreground sm:text-[2.1rem]">{pct}%</span>
+        <span className="mt-0.5 text-[9px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Readiness</span>
       </div>
     </div>
   );
@@ -138,10 +139,10 @@ export function AnimatedPrepMapPanel() {
                 <Sparkles size={20} strokeWidth={2} aria-hidden />
               </motion.span>
               <div>
-                <span className="block bg-gradient-to-r from-[#1A1A1A] to-neutral-700 bg-clip-text text-base font-extrabold tracking-tight text-transparent sm:text-lg">
+                <span className="block text-base font-bold tracking-tight text-foreground sm:text-lg">
                   Your prep map
                 </span>
-                <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-neutral-500">
+                <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
                   Readiness by area · sample view
                 </span>
               </div>
@@ -152,8 +153,8 @@ export function AnimatedPrepMapPanel() {
           </div>
 
           <div className="mb-4 rounded-xl border border-orange-100/90 bg-orange-50/40 px-3 py-2.5 sm:px-4 sm:py-3">
-            <p className="text-[11px] leading-relaxed text-neutral-600 sm:text-xs">
-              <span className="font-semibold text-neutral-800">Sample only.</span> In the real test you pick topics — your report
+            <p className="text-[11px] leading-relaxed text-muted-foreground sm:text-xs">
+              <span className="font-semibold text-foreground">Sample only.</span> In the real test you pick topics — your report
               reflects your answers. What follows is a fictional example so you can see the layout.
             </p>
           </div>
@@ -163,39 +164,40 @@ export function AnimatedPrepMapPanel() {
               <PrepMapReadinessScoreRing pct={PREP_MAP_ILLUSTRATIVE_SCORE} inView={inView} />
             </div>
             <div className="min-w-0 flex-1 text-center sm:text-left">
-              <div className="mb-2 inline-flex items-center justify-center gap-1.5 rounded-full border border-neutral-200/90 bg-white px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-neutral-600 sm:justify-start">
+              <div className="mb-2 inline-flex items-center justify-center gap-1.5 rounded-full border border-neutral-200/90 bg-white px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:justify-start">
                 <Target size={12} className="text-[#FF9500]" strokeWidth={2.5} aria-hidden />
                 Interview readiness score
               </div>
-              <p className="text-[11px] font-semibold text-neutral-700">Example only — not your result</p>
-              <p className="mt-2 text-xl font-black leading-tight text-neutral-900 sm:text-2xl">{illustrativeBand.label}</p>
-              <p className="mt-1.5 text-sm leading-snug text-neutral-600">{illustrativeBand.sub}</p>
+              <p className="text-[11px] font-semibold text-foreground-muted">Example only — not your result</p>
+              <p className="mt-2 text-xl font-black leading-tight text-foreground sm:text-2xl">{illustrativeBand.label}</p>
+              <p className="mt-1.5 text-sm leading-snug text-muted-foreground">{illustrativeBand.sub}</p>
             </div>
           </div>
 
           <div className="mb-4 grid gap-2 rounded-xl border border-neutral-200/80 bg-white/90 p-3 sm:grid-cols-2 sm:gap-3 sm:p-4">
             <div className="rounded-lg border border-emerald-200/60 bg-emerald-50/50 px-3 py-2.5">
               <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-800">Strongest area (sample)</p>
-              <p className="mt-1 text-sm font-bold text-neutral-900">{glance.strongest.label}</p>
+              <p className="mt-1 text-sm font-bold text-foreground">{glance.strongest.label}</p>
               <p className="text-xs font-semibold tabular-nums text-emerald-800">{glance.strongest.w}%</p>
             </div>
             <div className="rounded-lg border border-amber-200/70 bg-amber-50/60 px-3 py-2.5">
               <p className="text-[10px] font-bold uppercase tracking-wider text-amber-900">Focus next (sample)</p>
-              <p className="mt-1 text-sm font-bold text-neutral-900">{glance.weakest.label}</p>
+              <p className="mt-1 text-sm font-bold text-foreground">{glance.weakest.label}</p>
               <p className="text-xs font-semibold tabular-nums text-amber-900">{glance.weakest.w}%</p>
             </div>
           </div>
 
           <div className="mb-4 rounded-xl border border-violet-200/60 bg-gradient-to-br from-violet-50/40 via-white to-white px-3 py-3 sm:px-4 sm:py-3.5">
             <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-violet-900/90">Example topics to prep</p>
-            <p className="mt-1 text-[11px] leading-snug text-neutral-600">
-              Ideas you might drill or tag in the real assessment — mix tech depth with how you show up.
+            <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
+              Sample labels only — in the real test you choose focus areas; questions stay tied to what you tag (technical depth
+              and how you communicate).
             </p>
             <div className="mt-2.5 flex flex-wrap gap-2">
               {PREP_MAP_PREP_TOPIC_EXAMPLES.map((topic) => (
                 <span
                   key={topic}
-                  className="rounded-lg border border-violet-200/70 bg-white/90 px-2.5 py-1.5 text-[11px] font-semibold text-neutral-800 shadow-sm"
+                  className="rounded-lg border border-violet-200/70 bg-white/90 px-2.5 py-1.5 text-[11px] font-semibold text-foreground shadow-sm"
                 >
                   {topic}
                 </span>
@@ -209,7 +211,7 @@ export function AnimatedPrepMapPanel() {
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold uppercase tracking-wide text-[#9A3412]">{READINESS_TEST_COUPON_CARD_HEADLINE}</p>
-              <p className="mt-1 text-sm leading-snug text-neutral-800">{READINESS_TEST_COUPON_CARD_BODY}</p>
+              <p className="mt-1 text-sm leading-snug text-foreground-muted">{READINESS_TEST_COUPON_CARD_BODY}</p>
             </div>
             <button
               type="button"
@@ -221,7 +223,7 @@ export function AnimatedPrepMapPanel() {
             </button>
           </div>
 
-          <p className="mt-4 text-center text-[11px] leading-snug text-neutral-500">
+          <p className="mt-4 text-center text-[11px] leading-snug text-hint">
             Full report after your test: every topic you tag, with scores and what to improve first.
           </p>
         </div>

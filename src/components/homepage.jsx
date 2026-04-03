@@ -294,9 +294,9 @@ const HomePage = () => {
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.03 }}
-                className="mx-auto max-w-[42rem] text-[1.85rem] font-semibold leading-[1.12] tracking-[-0.025em] sm:text-4xl md:max-w-[48rem] md:text-5xl lg:mx-0 lg:max-w-[40rem] lg:text-[3.15rem] lg:leading-[1.08] xl:max-w-[44rem]"
+                className="mx-auto max-w-[42rem] text-4xl font-black leading-[1.08] tracking-tight text-foreground sm:text-5xl md:max-w-[48rem] md:text-6xl lg:mx-0 lg:max-w-[40rem] xl:max-w-[44rem]"
               >
-                <span className="block text-neutral-900">{HERO_HEADLINE}</span>
+                <span className="block">{HERO_HEADLINE}</span>
                 <span className="mt-2 block sm:mt-3 mm-hero-accent bg-gradient-to-r from-[#ea580c] via-[#FF9500] to-[#f59e0b] bg-clip-text text-transparent">
                   {HERO_HEADLINE_ACCENT}
                 </span>
@@ -306,7 +306,7 @@ const HomePage = () => {
                 initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.45, delay: 0.08 }}
-                className="mx-auto mt-4 max-w-[36rem] px-1 text-[15px] leading-relaxed text-neutral-600 sm:mt-5 sm:text-lg lg:mx-0 lg:max-w-xl"
+                className="mx-auto mt-4 max-w-[36rem] px-1 text-base leading-relaxed text-muted-foreground sm:mt-5 sm:text-lg lg:mx-0 lg:max-w-xl"
               >
                 {HERO_SUBHEADLINE}
               </motion.p>
@@ -326,7 +326,7 @@ const HomePage = () => {
                 ].map(({ Icon, text }) => (
                   <span
                     key={text}
-                    className="mm-hero-proof-strip inline-flex items-center gap-1.5 rounded-xl border border-orange-200/50 bg-gradient-to-r from-[#FFF8F0] via-white to-[#FFFDF8] px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-neutral-600 shadow-[0_2px_12px_-4px_rgba(255,149,0,0.2)] sm:gap-2 sm:px-3 sm:text-[11px]"
+                    className="mm-hero-proof-strip inline-flex items-center gap-1.5 rounded-xl border border-orange-200/50 bg-gradient-to-r from-[#FFF8F0] via-white to-[#FFFDF8] px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground shadow-[0_2px_12px_-4px_rgba(255,149,0,0.2)] sm:gap-2 sm:px-3 sm:text-[11px]"
                   >
                     <Icon className="h-3.5 w-3.5 shrink-0 text-[#EA580C] sm:h-4 sm:w-4" strokeWidth={2.2} aria-hidden />
                     {text}
@@ -351,10 +351,10 @@ const HomePage = () => {
                       {HERO_EARLY_BIRD_RIBBON}
                     </span>
                     <div className="min-w-0">
-                      <p className="text-[15px] font-bold leading-snug text-neutral-900 sm:text-base lg:text-[15px] xl:text-base">
+                      <p className="text-[15px] font-bold leading-snug text-foreground sm:text-base lg:text-[15px] xl:text-base">
                         {READINESS_TEST_COUPON_OFFER_HEADLINE}
                       </p>
-                      <p className="mt-1 text-[11px] font-medium leading-snug text-neutral-600 sm:text-xs">
+                      <p className="mt-1 text-[11px] font-medium leading-snug text-muted-foreground sm:text-xs">
                         {READINESS_TEST_COUPON_OFFER_HOW}
                       </p>
                     </div>
@@ -397,7 +397,7 @@ const HomePage = () => {
                         ? undefined
                         : { scale: 1.03, transition: { type: 'spring', stiffness: 500, damping: 22 } }
                     }
-                    className={`mm-hero-eyebrow-pill mm-hero-eyebrow-pill-glow inline-flex shrink-0 items-center gap-1 rounded-full border border-orange-200/60 px-2 py-1 text-[9px] font-bold uppercase leading-snug tracking-[0.08em] text-neutral-800 ring-1 ring-white/90 sm:px-2.5 sm:py-1.5 sm:text-[10px] sm:tracking-[0.1em] md:gap-1.5 md:px-3 md:text-[11px] md:tracking-[0.12em] ${idx === 1 ? 'mm-eyebrow-d1' : ''} ${idx === 2 ? 'mm-eyebrow-d2' : ''}`}
+                    className={`mm-hero-eyebrow-pill mm-hero-eyebrow-pill-glow inline-flex shrink-0 items-center gap-1 rounded-full border border-orange-200/60 px-2 py-1 text-[9px] font-bold uppercase leading-snug tracking-[0.08em] text-foreground ring-1 ring-white/90 sm:px-2.5 sm:py-1.5 sm:text-[10px] sm:tracking-[0.1em] md:gap-1.5 md:px-3 md:text-[11px] md:tracking-[0.12em] ${idx === 1 ? 'mm-eyebrow-d1' : ''} ${idx === 2 ? 'mm-eyebrow-d2' : ''}`}
                   >
                     {idx === 0 ? (
                       <GraduationCap className="h-2.5 w-2.5 shrink-0 text-[#EA580C] sm:h-3 sm:w-3 md:h-3.5 md:w-3.5" strokeWidth={2.2} aria-hidden />
@@ -451,7 +451,7 @@ const HomePage = () => {
                       </span>
                       {HERO_PROBLEM_LABEL}
                     </div>
-                    <p className="text-[15px] leading-[1.65] text-neutral-700 sm:text-base">{HERO_PROBLEM}</p>
+                    <p className="text-[15px] leading-[1.65] text-foreground-muted sm:text-base">{HERO_PROBLEM}</p>
                   </div>
 
                   <div className="relative shrink-0 py-4 sm:py-5">
@@ -468,7 +468,7 @@ const HomePage = () => {
                       </span>
                       {HERO_SOLUTION_LABEL}
                     </div>
-                    <p className="text-[15px] font-medium leading-[1.65] text-neutral-800 sm:text-base">{HERO_SOLUTION}</p>
+                    <p className="text-[15px] font-medium leading-[1.65] text-foreground sm:text-base">{HERO_SOLUTION}</p>
                   </div>
                 </div>
               </div>
@@ -501,7 +501,7 @@ const HomePage = () => {
               </button>
               <Link
                 to="/how-it-works"
-                className="inline-flex items-center justify-center gap-1.5 text-sm font-medium text-neutral-500 transition-colors hover:text-neutral-900"
+                className="inline-flex items-center justify-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
               >
                 How it works <ArrowRight size={14} />
               </Link>
@@ -511,12 +511,15 @@ const HomePage = () => {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.2 }}
-              className="mt-6 text-sm text-neutral-500"
+              className="mt-6 text-sm text-muted-foreground"
             >
-              <Link to="/waitlist" className="font-medium text-neutral-700 underline decoration-neutral-300 underline-offset-4 transition hover:text-[#CC7000] hover:decoration-[#FFB347]">
+              <Link
+                to="/waitlist"
+                className="font-medium text-foreground-muted underline decoration-neutral-300 underline-offset-4 transition hover:text-[#CC7000] hover:decoration-[#FFB347]"
+              >
                 Mentorship waitlist
               </Link>
-              <span className="text-neutral-400"> — limited seats per batch.</span>
+              <span className="text-hint"> — limited seats per batch.</span>
             </motion.p>
           </div>
         </div>
@@ -583,7 +586,7 @@ const HomePage = () => {
                     Early years on campus
                   </span>
                 </div>
-                <h2 className="mb-4 text-2xl font-extrabold leading-tight text-[#1A1A1A] md:text-3xl">
+                <h2 className="mb-4 text-2xl font-bold leading-tight tracking-tight text-foreground md:text-3xl">
                   Prep for what you&apos;re studying —{' '}
                   <span className="mm-hero-accent bg-gradient-to-r from-[#FF9500] via-[#f97316] to-[#FFB347] bg-clip-text text-transparent">
                     not someday, from now.
@@ -591,7 +594,7 @@ const HomePage = () => {
                 </h2>
 
                 <div className="mb-6 rounded-2xl border border-[#F0ECE0] bg-white/90 px-3 py-4 shadow-sm sm:px-5">
-                  <p className="mb-3 text-center text-[10px] font-medium uppercase tracking-[0.14em] text-[#888888]">
+                  <p className="mb-3 text-center text-[10px] font-medium uppercase tracking-[0.14em] text-hint">
                     Your prep journey
                   </p>
                   {/* Track + walking mascot (md+); stacked steps on small screens */}
@@ -646,13 +649,13 @@ const HomePage = () => {
                           >
                             {s.step}
                           </span>
-                          <span className="max-w-[8rem] text-[9px] font-bold uppercase leading-tight tracking-wide text-[#444444] sm:max-w-[9rem] sm:text-[10px]">
+                          <span className="max-w-[8rem] text-[9px] font-bold uppercase leading-tight tracking-wide text-foreground-muted sm:max-w-[9rem] sm:text-[10px]">
                             {s.label}
                           </span>
                         </motion.div>
                       ))}
                     </div>
-                    <p className="mt-3 text-center text-[10px] text-[#999999] md:hidden">
+                    <p className="mt-3 text-center text-[10px] text-muted-foreground md:hidden">
                       Learn → readiness test & score → 1:1 MentorMuni
                     </p>
                   </div>
@@ -671,7 +674,7 @@ const HomePage = () => {
                       aria-selected={earlyYear === key}
                       onClick={() => setEarlyYear(key)}
                       className={`relative flex-1 rounded-xl py-3 text-sm font-bold transition-colors ${
-                        earlyYear === key ? 'text-[#1A1A1A]' : 'text-[#888888] hover:text-[#555555]'
+                        earlyYear === key ? 'text-foreground' : 'text-hint hover:text-foreground-muted'
                       }`}
                     >
                       {earlyYear === key && (
@@ -695,12 +698,12 @@ const HomePage = () => {
                     transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
                     className="mb-5 max-w-xl rounded-2xl border border-[#FFB347]/35 bg-gradient-to-br from-white via-[#FFFCF7] to-[#FFF4E0]/70 p-5 shadow-[0_8px_32px_rgba(255,149,0,0.08)]"
                   >
-                    <p className="text-sm font-bold text-[#1A1A1A]">{EARLY_YEAR_TRACKS[earlyYear].shortLine}</p>
-                    <p className="mt-2 text-sm leading-relaxed text-[#555555]">{EARLY_YEAR_TRACKS[earlyYear].detail}</p>
+                    <p className="text-sm font-bold text-foreground">{EARLY_YEAR_TRACKS[earlyYear].shortLine}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-foreground-muted">{EARLY_YEAR_TRACKS[earlyYear].detail}</p>
                   </motion.div>
                 </AnimatePresence>
 
-                <p className="mb-6 max-w-xl text-sm font-medium leading-relaxed text-[#666666]">
+                <p className="mb-6 max-w-xl text-sm font-medium leading-relaxed text-muted-foreground">
                   See how your prep lines up with what companies actually ask in interviews—then{' '}
                   <span className="font-semibold text-[#CC7000]">focus on the gaps</span> that matter most.
                 </p>
@@ -728,11 +731,11 @@ const HomePage = () => {
                         className={`mb-2 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br ${b.gradient} p-[1px]`}
                       >
                         <div className="flex h-full w-full items-center justify-center rounded-[11px] bg-white">
-                          <b.Icon size={16} className="text-[#333333]" strokeWidth={2.2} />
+                          <b.Icon size={16} className="text-foreground" strokeWidth={2.2} />
                         </div>
                       </div>
-                      <p className="text-xs font-extrabold text-[#1A1A1A]">{b.title}</p>
-                      <p className="mt-0.5 text-[11px] leading-snug text-[#777777]">{b.sub}</p>
+                      <p className="text-xs font-semibold text-foreground">{b.title}</p>
+                      <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">{b.sub}</p>
                     </motion.div>
                   ))}
                 </motion.div>
@@ -745,8 +748,8 @@ const HomePage = () => {
                   Check prep on my topics — free
                   <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
                 </button>
-                <div className="mt-3 max-w-xl space-y-2 text-xs leading-relaxed text-[#555555] sm:text-sm">
-                  <p className="font-medium text-[#333333]">When you begin, pick the option that fits you:</p>
+                <div className="mt-3 max-w-xl space-y-2 text-xs leading-relaxed text-foreground-muted sm:text-sm">
+                  <p className="font-medium text-foreground">When you begin, pick the option that fits you:</p>
                   <p>
                     <span className="font-semibold text-[#FF9500]">2nd and 3rd year</span>
                     {' — '}internships, core subjects, and building readiness before final year.
@@ -785,7 +788,7 @@ const HomePage = () => {
             </StoryLine>
             <StoryLine
               delay={0.07}
-              className="text-2xl sm:text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-6 leading-[1.15] tracking-tight max-w-3xl"
+              className="mb-6 max-w-3xl text-2xl font-bold leading-[1.15] tracking-tight text-foreground sm:text-3xl md:text-4xl"
               as="h2"
             >
               Too many students walk into placement{' '}
@@ -810,19 +813,19 @@ const HomePage = () => {
                 <div className="space-y-3 pl-4">
                   <StoryLine
                     delay={0.18}
-                    className="relative text-sm leading-relaxed text-[#555555] md:text-[15px]"
+                    className="relative text-sm leading-relaxed text-foreground-muted md:text-[15px]"
                   >
                     We started MentorMuni after seeing the same pattern: final-year students showing up for interviews with almost no structured prep.
                   </StoryLine>
                   <StoryLine
                     delay={0.28}
-                    className="relative text-sm leading-relaxed text-[#555555] md:text-[15px]"
+                    className="relative text-sm leading-relaxed text-foreground-muted md:text-[15px]"
                   >
                     No measured baseline, no serious mock round—sometimes no practice speaking answers under pressure.
                   </StoryLine>
                   <StoryLine
                     delay={0.38}
-                    className="relative text-sm font-medium leading-relaxed text-[#444444] md:text-[15px]"
+                    className="relative text-sm font-medium leading-relaxed text-foreground-muted md:text-[15px]"
                   >
                     The first time they truly get evaluated is often already the real interview—and the rejection email follows.
                   </StoryLine>
@@ -844,19 +847,19 @@ const HomePage = () => {
                 <div className="space-y-3 pl-4">
                   <StoryLine
                     delay={0.3}
-                    className="relative text-sm leading-relaxed text-[#555555] md:text-[15px]"
+                    className="relative text-sm leading-relaxed text-foreground-muted md:text-[15px]"
                   >
                     Hiring is tighter and panels are unforgiving. You don&apos;t get unlimited shots.
                   </StoryLine>
                   <StoryLine
                     delay={0.4}
-                    className="relative text-sm leading-relaxed text-[#555555] md:text-[15px]"
+                    className="relative text-sm leading-relaxed text-foreground-muted md:text-[15px]"
                   >
                     That&apos;s why we built MentorMuni so you can go in at full strength:
                   </StoryLine>
                   <StoryLine
                     delay={0.5}
-                    className="relative text-sm font-semibold leading-relaxed text-[#1A1A1A] md:text-[15px]"
+                    className="relative text-sm font-semibold leading-relaxed text-foreground md:text-[15px]"
                   >
                     Interview readiness check, AI mock interviews, and mentor-backed prep—all before the rounds that actually count.
                   </StoryLine>
@@ -879,8 +882,8 @@ const HomePage = () => {
                   className={`h-full rounded-2xl border bg-gradient-to-br ${item.tint} p-5 shadow-[0_2px_12px_rgba(0,0,0,0.04)]`}
                 >
                   <span className="text-2xl" aria-hidden>{item.icon}</span>
-                  <h3 className="mt-2 font-bold text-[#1A1A1A] text-sm">{item.title}</h3>
-                  <p className="mt-1 text-xs text-[#666666] leading-relaxed">{item.line}</p>
+                  <h3 className="mt-2 text-base font-semibold text-foreground">{item.title}</h3>
+                  <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{item.line}</p>
                 </motion.div>
               </FadeUp>
             ))}
@@ -896,7 +899,7 @@ const HomePage = () => {
                     'No readiness benchmark—only hope after every rejection',
                     'Cramming topics instead of fixing the gaps the panel actually tests',
                   ].map((p) => (
-                    <li key={p} className="flex gap-2 text-sm text-[#555555]">
+                    <li key={p} className="flex gap-2 text-sm text-foreground-muted">
                       <X size={14} className="text-red-500 shrink-0 mt-0.5" />
                       {p}
                     </li>
@@ -911,7 +914,7 @@ const HomePage = () => {
                     'AI mock interviews so your first “real” panel isn’t your first time under pressure',
                     'Mentorship to close gaps and align prep to the companies you’re targeting',
                   ].map((p) => (
-                    <li key={p} className="flex gap-2 text-sm text-[#555555]">
+                    <li key={p} className="flex gap-2 text-sm text-foreground-muted">
                       <Check size={14} className="text-emerald-600 shrink-0 mt-0.5" />
                       {p}
                     </li>
@@ -923,7 +926,7 @@ const HomePage = () => {
 
           <FadeUp delay={0.22}>
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-[#F0ECE0] bg-white p-5 md:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
-              <p className="text-sm md:text-base text-[#444444] font-medium max-w-xl">
+              <p className="text-sm md:text-base text-foreground-muted font-medium max-w-xl">
                 Don’t use real interviews as practice. Start with the free check—then stack mocks and mentors until you’re ready for the panel.
               </p>
               <button
@@ -944,8 +947,10 @@ const HomePage = () => {
         <div className="max-w-5xl mx-auto">
           <FadeUp>
             <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest block mb-3">How it works</span>
-            <h2 className="text-2xl md:text-3xl font-extrabold text-[#1A1A1A] mb-2">What we give you—before you face the real panel</h2>
-            <p className="text-[#666666] text-sm mb-4 max-w-2xl leading-relaxed">
+            <h2 className="mb-2 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+              What we give you—before you face the real panel
+            </h2>
+            <p className="text-muted-foreground text-sm mb-4 max-w-2xl leading-relaxed">
               One flow: measure with the readiness check, practice with AI mocks, polish with ATS and AI-tool fluency, and go deeper with mentor-backed prep when you want a human in your corner.
             </p>
             <Link
@@ -964,10 +969,10 @@ const HomePage = () => {
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 mb-1.5 flex-wrap">
-                      <h3 className="font-bold text-[#1A1A1A] text-sm">{f.title}</h3>
+                      <h3 className="text-base font-semibold text-foreground">{f.title}</h3>
                       <span className="text-[9px] font-bold text-[#CC7000] bg-[#FFF4E0] border border-[#F0ECE0] rounded px-1.5 py-0.5 uppercase tracking-wider">{f.tag}</span>
                     </div>
-                    <p className="text-[#666666] text-xs leading-relaxed mb-2">{f.desc}</p>
+                    <p className="text-muted-foreground text-xs leading-relaxed mb-2">{f.desc}</p>
                     <span className="text-[10px] font-semibold text-[#1A8C55]">{f.highlight}</span>
                   </div>
                 </div>
@@ -983,7 +988,7 @@ const HomePage = () => {
               >
                 {PRIMARY_CTA_LABEL} <ArrowRight size={15} />
               </button>
-              <p className="text-xs text-[#666666] mt-2">No signup · 5 minutes · Instant score</p>
+              <p className="text-xs text-muted-foreground mt-2">No signup · 5 minutes · Instant score</p>
             </div>
           </FadeUp>
         </div>
@@ -1008,13 +1013,13 @@ const HomePage = () => {
                 Real voices
               </span>
             </div>
-            <h2 className="text-2xl font-extrabold tracking-tight text-[#1A1A1A] md:text-3xl">
+            <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
               What changes{' '}
               <span className="bg-gradient-to-r from-[#FF9500] to-[#E88600] bg-clip-text text-transparent">
                 after the assessment
               </span>
             </h2>
-            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-[#666666] md:mx-0">
+            <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground md:mx-0">
               Paraphrased from students who used the readiness check and mocks. Initials only; names withheld.
             </p>
           </motion.div>
@@ -1059,15 +1064,15 @@ const HomePage = () => {
                           {t.avatar}
                         </motion.div>
                         <div>
-                          <p className="text-sm font-bold text-[#1A1A1A]">Student {t.avatar}</p>
-                          <p className="text-xs text-[#888888]">{t.tag}</p>
+                          <p className="text-sm font-bold text-foreground">Student {t.avatar}</p>
+                          <p className="text-xs text-hint">{t.tag}</p>
                         </div>
                       </div>
                       <div
                         className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${t.gradient} p-[1px] shadow-sm`}
                       >
                         <div className="flex h-full w-full items-center justify-center rounded-[11px] bg-white/95">
-                          <CardIcon size={18} className="text-[#444444]" strokeWidth={2} aria-hidden />
+                          <CardIcon size={18} className="text-foreground-muted" strokeWidth={2} aria-hidden />
                         </div>
                       </div>
                     </div>
@@ -1075,7 +1080,7 @@ const HomePage = () => {
                     <p className="relative mb-3 inline-flex w-fit rounded-full bg-[#FFF4E0] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#CC7000] ring-1 ring-[#FFB347]/30">
                       {t.insight}
                     </p>
-                    <p className="relative text-[15px] leading-relaxed text-[#3d3d3d]">{t.text}</p>
+                    <p className="relative text-[15px] leading-relaxed text-foreground-muted">{t.text}</p>
 
                     <div
                       className="pointer-events-none absolute bottom-0 left-0 right-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-[#FF9500] to-[#FFB347] transition-transform duration-300 ease-out group-hover:scale-x-100"
@@ -1095,11 +1100,11 @@ const HomePage = () => {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
             <FadeUp>
               <span className="text-xs font-bold text-[#CC7000] uppercase tracking-widest block mb-3">Expert Mentorship</span>
-              <h2 className="text-2xl md:text-3xl font-extrabold text-[#1A1A1A] mb-3 leading-tight">
+              <h2 className="mb-3 text-2xl font-bold leading-tight tracking-tight text-foreground md:text-3xl">
                 Mentors with 12–15 years<br />
                 <span className="text-[#FF9500]">of industry experience.</span>
               </h2>
-              <p className="text-[#666666] leading-relaxed mb-6 text-sm">
+              <p className="text-muted-foreground leading-relaxed mb-6 text-sm">
                 Our mentors are senior engineers and tech leads from India's leading IT companies with over a decade of industry experience. They have conducted hundreds of interviews — and bring that perspective directly to your preparation.
               </p>
               <div className="space-y-4 mb-7">
@@ -1113,8 +1118,8 @@ const HomePage = () => {
                       <item.Icon size={14} className="text-[#FF9500]" />
                     </div>
                     <div>
-                      <p className="font-bold text-[#1A1A1A] text-sm mb-0.5">{item.title}</p>
-                      <p className="text-[#888888] text-xs leading-relaxed">{item.desc}</p>
+                      <p className="font-bold text-foreground text-sm mb-0.5">{item.title}</p>
+                      <p className="text-hint text-xs leading-relaxed">{item.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -1125,7 +1130,7 @@ const HomePage = () => {
             </FadeUp>
 
             <FadeUp delay={0.12}>
-              <p className="text-xs text-[#888888] uppercase tracking-wider mb-4 font-medium">What you get with every mentor</p>
+              <p className="text-xs text-hint uppercase tracking-wider mb-4 font-medium">What you get with every mentor</p>
 
               {/* Mentor strengths — student-facing */}
               <div className="space-y-3 mb-5">
@@ -1138,8 +1143,8 @@ const HomePage = () => {
                   <div key={c.label} className="flex gap-3 items-start bg-white border border-[#F0ECE0] shadow-[0_2px_12px_rgba(0,0,0,0.05)] rounded-xl p-3.5">
                     <span className="text-lg mt-0.5">{c.icon}</span>
                     <div>
-                      <p className="text-sm font-bold text-[#1A1A1A] mb-0.5">{c.label}</p>
-                      <p className="text-xs text-[#888888] leading-relaxed">{c.desc}</p>
+                      <p className="text-sm font-bold text-foreground mb-0.5">{c.label}</p>
+                      <p className="text-xs text-hint leading-relaxed">{c.desc}</p>
                     </div>
                   </div>
                 ))}
@@ -1148,7 +1153,7 @@ const HomePage = () => {
               {/* Honest launch notice */}
               <div className="bg-[#FFF4E0] border border-[#F0ECE0] rounded-xl p-4">
                 <p className="text-xs font-bold text-[#CC7000] mb-1">✦ Mentorship cohorts · Waitlist open</p>
-                <p className="text-xs text-[#666666] leading-relaxed">
+                <p className="text-xs text-muted-foreground leading-relaxed">
                   We&apos;re onboarding mentors in batches. Join the waitlist—you&apos;ll be matched based on your readiness profile when your cohort opens.
                 </p>
                 <Link to="/waitlist" className="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-[#FF9500] hover:text-[#E88600] transition-colors">
@@ -1165,16 +1170,16 @@ const HomePage = () => {
         <div className="max-w-2xl mx-auto text-center">
           <FadeUp>
             <span className="text-xs font-bold text-[#1A8C55] uppercase tracking-widest block mb-4">Free · 5 Minutes · Instant Result</span>
-            <p className="mb-4 inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-2xl border border-orange-200/70 bg-gradient-to-r from-orange-50/95 to-amber-50/80 px-4 py-2.5 text-center text-[12px] font-semibold leading-snug text-neutral-900 shadow-sm sm:text-sm">
+            <p className="mb-4 inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-2xl border border-orange-200/70 bg-gradient-to-r from-orange-50/95 to-amber-50/80 px-4 py-2.5 text-center text-[12px] font-semibold leading-snug text-foreground shadow-sm sm:text-sm">
               <Gift size={16} className="shrink-0 text-[#EA580C]" aria-hidden />
               {READINESS_TEST_COUPON_BADGE}
             </p>
-            <h2 className="text-3xl md:text-4xl font-extrabold text-[#1A1A1A] mb-4 leading-tight">
+            <h2 className="mb-4 text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl">
               Know your readiness score.
               <br />
               <span className="text-[#FF9500]">Walk into your interview prepared.</span>
             </h2>
-            <p className="text-[#666666] mb-8 leading-relaxed text-sm max-w-lg mx-auto">
+            <p className="text-muted-foreground mb-8 leading-relaxed text-sm max-w-lg mx-auto">
               A strong score means you walk in with confidence. A low score gives you a clear, prioritised plan to improve — with enough time before your placement season to act on it.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
@@ -1194,7 +1199,7 @@ const HomePage = () => {
             </div>
             <div className="flex flex-wrap justify-center gap-x-5 gap-y-1">
               {['No signup needed', 'Free forever', '5 min test', 'Instant score + roadmap'].map(t => (
-                <span key={t} className="flex items-center gap-1 text-xs text-[#666666]">
+                <span key={t} className="flex items-center gap-1 text-xs text-muted-foreground">
                   <Check size={10} className="text-[#1A8C55]" /> {t}
                 </span>
               ))}
@@ -1206,7 +1211,7 @@ const HomePage = () => {
       {/* ════════════════ FOR COLLEGES ════════════════ */}
       <section className="py-14 px-6 border-t border-[#F0ECE0]">
         <div className="max-w-3xl mx-auto">
-          <p className="text-xs text-[#888888] uppercase tracking-wider font-medium text-center mb-5">Are you a placement officer?</p>
+          <p className="text-xs text-hint uppercase tracking-wider font-medium text-center mb-5">Are you a placement officer?</p>
           <FadeUp>
             <div className="bg-white border border-[#F0ECE0] shadow-[0_2px_12px_rgba(0,0,0,0.05)] rounded-2xl p-8 flex flex-col md:flex-row gap-8 items-start">
               <div className="w-12 h-12 bg-[#E8F3FF] rounded-xl flex items-center justify-center flex-shrink-0">
@@ -1214,8 +1219,8 @@ const HomePage = () => {
               </div>
               <div>
                 <p className="text-xs text-[#1A6FC4] font-medium mb-1">For placement officers & TPOs</p>
-                <h3 className="text-xl font-bold text-[#1A1A1A] mb-2">MentorMuni for Colleges</h3>
-                <p className="text-[#444444] text-sm leading-relaxed mb-5">
+                <h3 className="text-xl font-bold text-foreground mb-2">MentorMuni for Colleges</h3>
+                <p className="text-foreground-muted text-sm leading-relaxed mb-5">
                   Give your entire batch a readiness score before placement season. Identify who
                   needs what, track improvement week over week, and go in prepared — not hoping.
                 </p>
@@ -1225,8 +1230,8 @@ const HomePage = () => {
                     { Icon: BarChart3, label: 'Per-student tracking' },
                     { Icon: GraduationCap, label: 'Placement stats reporting' },
                   ].map(f => (
-                    <span key={f.label} className="flex items-center gap-1.5 text-xs text-[#666666]">
-                      <f.Icon size={12} className="text-[#888888]" /> {f.label}
+                    <span key={f.label} className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                      <f.Icon size={12} className="text-hint" /> {f.label}
                     </span>
                   ))}
                 </div>
@@ -1255,8 +1260,8 @@ const HomePage = () => {
         <div className="max-w-6xl mx-auto">
           <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-8 mb-10">
             <div className="md:col-span-2">
-              <h3 className="font-bold text-[#1A1A1A] mb-2">Mentor<span className="text-[#FF9500]">Muni</span></h3>
-              <p className="text-[#666666] text-sm leading-relaxed mb-4 max-w-xs">
+              <h3 className="font-bold text-foreground mb-2">Mentor<span className="text-[#FF9500]">Muni</span></h3>
+              <p className="text-muted-foreground text-sm leading-relaxed mb-4 max-w-xs">
                 {MISSION_TAGLINE}
               </p>
               <div className="mb-4 max-w-sm rounded-xl border border-orange-200/60 bg-white/90 px-3 py-3 shadow-sm">
@@ -1264,7 +1269,7 @@ const HomePage = () => {
                   <Gift className="h-4 w-4 shrink-0 text-[#CC7000] mt-0.5" aria-hidden />
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-wider text-[#9A3412] mb-1">Limited offer</p>
-                    <p className="text-xs text-[#555555] leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
+                    <p className="text-xs text-foreground-muted leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
                     <button
                       type="button"
                       onClick={goToStartAssessment}
@@ -1275,7 +1280,7 @@ const HomePage = () => {
                   </div>
                 </div>
               </div>
-              <div className="space-y-1.5 text-sm text-[#666666]">
+              <div className="space-y-1.5 text-sm text-muted-foreground">
                 <a href="mailto:hello@mentormuni.com" className="flex items-center gap-2 hover:text-[#FF9500] transition-colors">
                   <Mail size={13} /> hello@mentormuni.com
                 </a>
@@ -1285,8 +1290,8 @@ const HomePage = () => {
               </div>
             </div>
             <div>
-              <p className="text-xs font-semibold text-[#888888] mb-3">Tools</p>
-              <ul className="space-y-2 text-sm text-[#666666]">
+              <p className="text-xs font-semibold text-hint mb-3">Tools</p>
+              <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
                   <button
                     type="button"
@@ -1302,8 +1307,8 @@ const HomePage = () => {
               </ul>
             </div>
             <div>
-              <p className="text-xs font-semibold text-[#888888] mb-3">Learn</p>
-              <ul className="space-y-2 text-sm text-[#666666]">
+              <p className="text-xs font-semibold text-hint mb-3">Learn</p>
+              <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><Link to="/free-tutorials" className="hover:text-[#FF9500] transition-colors">Free Tutorials</Link></li>
                 <li><Link to="/learning-paths" className="hover:text-[#FF9500] transition-colors">Learning Paths</Link></li>
                 <li><Link to="/placement-tracks" className="hover:text-[#FF9500] transition-colors">Placement Tracks</Link></li>
@@ -1312,8 +1317,8 @@ const HomePage = () => {
               </ul>
             </div>
             <div>
-              <p className="text-xs font-semibold text-[#888888] mb-3">Company</p>
-              <ul className="space-y-2 text-sm text-[#666666]">
+              <p className="text-xs font-semibold text-hint mb-3">Company</p>
+              <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><Link to="/contact" className="hover:text-[#FF9500] transition-colors">Contact</Link></li>
                 <li><Link to="/mentors" className="hover:text-[#FF9500] transition-colors">Mentorship</Link></li>
                 <li><Link to="/for-recruiters" className="hover:text-[#FF9500] transition-colors">For Recruiters</Link></li>
@@ -1321,7 +1326,7 @@ const HomePage = () => {
               </ul>
             </div>
           </div>
-          <div className="border-t border-[#F0ECE0] pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-[#666666]">
+          <div className="border-t border-[#F0ECE0] pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-muted-foreground">
             <p>© {new Date().getFullYear()} MentorMuni. All rights reserved.</p>
             <div className="flex gap-5">
               <Link to="/contact" className="hover:text-[#FF9500] transition-colors">Terms</Link>

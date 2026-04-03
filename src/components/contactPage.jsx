@@ -38,7 +38,7 @@ const FadeUp = ({ children, delay = 0, className = '' }) => {
 };
 
 const inputBase =
-  'w-full rounded-xl border bg-white px-4 py-3 text-[0.9375rem] text-[#1a1a1a] shadow-sm transition-[box-shadow,border-color] duration-200 outline-none placeholder:text-neutral-400';
+  'w-full rounded-xl border bg-white px-4 py-3 text-[0.9375rem] text-foreground shadow-sm transition-[box-shadow,border-color] duration-200 outline-none placeholder:text-neutral-400';
 
 const AUDIENCES = [
   { id: 'students', param: null, label: 'Students & learners', short: 'Learners', Icon: UserRound },
@@ -325,7 +325,7 @@ const ContactPage = () => {
   }[audience];
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#FAFAF8] text-[#1a1a1a]">
+    <div className="relative min-h-screen overflow-hidden bg-[#FAFAF8] text-foreground-muted">
       <div
         className="pointer-events-none absolute inset-0 overflow-hidden"
         aria-hidden
@@ -337,7 +337,7 @@ const ContactPage = () => {
 
       <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-12 sm:px-6 sm:pt-16 md:pb-28">
         <div className="mx-auto mb-10 max-w-3xl">
-          <p className="mb-2 text-center text-[11px] font-semibold uppercase tracking-[0.16em] text-neutral-500">
+          <p className="mb-2 text-center text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
             I am reaching out as
           </p>
           <div className="flex flex-col gap-2 rounded-2xl border border-neutral-200/90 bg-white p-1.5 shadow-sm sm:flex-row sm:rounded-xl">
@@ -351,8 +351,8 @@ const ContactPage = () => {
                   aria-pressed={active}
                   className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-semibold transition-all sm:px-4 ${
                     active
-                      ? 'bg-[#111] text-white shadow-md'
-                      : 'text-neutral-600 hover:bg-neutral-50 hover:text-neutral-900'
+                      ? 'bg-foreground text-white shadow-md'
+                      : 'text-muted-foreground hover:bg-neutral-50 hover:text-foreground'
                   }`}
                 >
                   <Icon className="h-4 w-4 shrink-0 opacity-90" strokeWidth={2} aria-hidden />
@@ -362,7 +362,7 @@ const ContactPage = () => {
               );
             })}
           </div>
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-neutral-500">
+          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-hint">
             <span className="inline-flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5 shrink-0 text-neutral-400" aria-hidden />
               Response within 24h · business days (IST)
@@ -380,15 +380,15 @@ const ContactPage = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: reduceMotion ? 0 : 0.5, ease: easeOut }}
         >
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-neutral-500">{hero.eyebrow}</p>
-          <h1 className="text-3xl font-bold tracking-tight text-[#111] sm:text-4xl md:text-[2.45rem] md:leading-[1.15]">
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">{hero.eyebrow}</p>
+          <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-5xl md:text-6xl leading-[1.08]">
             {hero.title}
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-neutral-600 md:text-lg">
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-foreground-muted md:text-lg">
             {hero.subtitle}
           </p>
           {audience === 'students' && (
-            <p className="mt-4 text-sm text-neutral-500">
+            <p className="mt-4 text-sm text-hint">
               Prefer to explore first?{' '}
               <Link to="/start-assessment" className={linkClass}>
                 Take the free readiness assessment
@@ -396,7 +396,7 @@ const ContactPage = () => {
             </p>
           )}
           {audience === 'colleges' && (
-            <p className="mt-4 text-sm text-neutral-500">
+            <p className="mt-4 text-sm text-hint">
               <Link to="/colleges" className={linkClass}>
                 College program overview
               </Link>
@@ -416,7 +416,7 @@ const ContactPage = () => {
                   <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100 text-neutral-600">
                     <MessageSquare className="h-4 w-4" strokeWidth={2} aria-hidden />
                   </div>
-                  <h2 className="text-lg font-semibold text-[#111]">Direct channels</h2>
+                  <h2 className="text-lg font-semibold text-foreground">Direct channels</h2>
                 </div>
                 <ul className="space-y-5">
                   <li className="flex gap-4">
@@ -424,14 +424,14 @@ const ContactPage = () => {
                       <Mail className="h-[18px] w-[18px]" strokeWidth={2} />
                     </div>
                     <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">Email</p>
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Email</p>
                       <a
                         href="mailto:hello@mentormuni.com"
-                        className="mt-0.5 block text-[0.9375rem] font-semibold text-[#111] transition hover:text-[#1A6FC4]"
+                        className="mt-0.5 block text-[0.9375rem] font-semibold text-foreground transition hover:text-[#1A6FC4]"
                       >
                         hello@mentormuni.com
                       </a>
-                      <p className="mt-0.5 text-sm text-neutral-500">We respond within 24 hours on business days</p>
+                      <p className="mt-0.5 text-sm text-hint">We respond within 24 hours on business days</p>
                     </div>
                   </li>
                   <li className="flex gap-4">
@@ -439,14 +439,14 @@ const ContactPage = () => {
                       <Phone className="h-[18px] w-[18px]" strokeWidth={2} />
                     </div>
                     <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">Phone</p>
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Phone</p>
                       <a
                         href={CONTACT_PHONE_HREF}
-                        className="mt-0.5 block text-[0.9375rem] font-semibold text-[#111] transition hover:text-[#1A6FC4]"
+                        className="mt-0.5 block text-[0.9375rem] font-semibold text-foreground transition hover:text-[#1A6FC4]"
                       >
                         {CONTACT_PHONE_DISPLAY}
                       </a>
-                      <p className="mt-0.5 text-sm text-neutral-500">Mon–Fri · 9am–6pm IST</p>
+                      <p className="mt-0.5 text-sm text-hint">Mon–Fri · 9am–6pm IST</p>
                     </div>
                   </li>
                   <li className="flex gap-4">
@@ -454,9 +454,9 @@ const ContactPage = () => {
                       <MapPin className="h-[18px] w-[18px]" strokeWidth={2} />
                     </div>
                     <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-wider text-neutral-500">Registered office</p>
-                      <p className="mt-0.5 text-[0.9375rem] font-semibold text-[#111]">Bangalore, India</p>
-                      <p className="mt-0.5 text-sm text-neutral-500">Serving learners and partners globally</p>
+                      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Registered office</p>
+                      <p className="mt-0.5 text-[0.9375rem] font-semibold text-foreground">Bangalore, India</p>
+                      <p className="mt-0.5 text-sm text-hint">Serving learners and partners globally</p>
                     </div>
                   </li>
                 </ul>
@@ -465,10 +465,10 @@ const ContactPage = () => {
 
             <FadeUp delay={0.08}>
               <div className="rounded-2xl border border-neutral-200/90 bg-white p-6 shadow-sm">
-                <h3 className="mb-4 text-base font-semibold text-[#111]">{whyReachOutTitle}</h3>
+                <h3 className="mb-4 text-base font-semibold text-foreground">{whyReachOutTitle}</h3>
                 <ul className="space-y-3">
                   {whyReachOutLines[audience].map((line) => (
-                    <li key={line} className="flex gap-3 text-sm leading-snug text-neutral-700">
+                    <li key={line} className="flex gap-3 text-sm leading-snug text-foreground-muted">
                       <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
                         <Check className="h-3 w-3" strokeWidth={3} aria-hidden />
                       </span>
@@ -487,12 +487,12 @@ const ContactPage = () => {
               initial={reduceMotion ? false : { opacity: 0.96 }}
               transition={{ duration: 0.35 }}
             >
-              <h2 className="text-xl font-semibold tracking-tight text-[#111] sm:text-[1.35rem]">{fc.title}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-neutral-600">{fc.description}</p>
+              <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-[1.35rem]">{fc.title}</h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{fc.description}</p>
 
               <form onSubmit={handleSubmit} className="mt-8 space-y-5">
                 <div>
-                  <label htmlFor="contact-name" className="mb-1.5 block text-sm font-medium text-neutral-800">
+                  <label htmlFor="contact-name" className="mb-1.5 block text-sm font-medium text-foreground">
                     Full name
                   </label>
                   <input
@@ -509,7 +509,7 @@ const ContactPage = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="contact-email" className="mb-1.5 block text-sm font-medium text-neutral-800">
+                  <label htmlFor="contact-email" className="mb-1.5 block text-sm font-medium text-foreground">
                     {audience === 'colleges' ? 'Official or institutional email' : 'Email'}
                   </label>
                   <input
@@ -526,7 +526,7 @@ const ContactPage = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="contact-phone" className="mb-1.5 block text-sm font-medium text-neutral-800">
+                  <label htmlFor="contact-phone" className="mb-1.5 block text-sm font-medium text-foreground">
                     Phone
                   </label>
                   <input
@@ -543,7 +543,7 @@ const ContactPage = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="contact-message" className="mb-1.5 block text-sm font-medium text-neutral-800">
+                  <label htmlFor="contact-message" className="mb-1.5 block text-sm font-medium text-foreground">
                     Message
                   </label>
                   <textarea
@@ -584,7 +584,7 @@ const ContactPage = () => {
                   <motion.button
                     type="submit"
                     disabled={isSubmitting}
-                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#111] px-6 py-3 text-[0.9375rem] font-semibold text-white shadow-sm transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-55"
+                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-foreground px-6 py-3 text-[0.9375rem] font-semibold text-white shadow-sm transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-55"
                     whileHover={reduceMotion || isSubmitting ? undefined : { scale: 1.005 }}
                     whileTap={reduceMotion || isSubmitting ? undefined : { scale: 0.995 }}
                   >
@@ -603,7 +603,7 @@ const ContactPage = () => {
                   <button
                     type="button"
                     onClick={handleReset}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white px-6 py-3 text-[0.9375rem] font-semibold text-neutral-700 transition hover:border-neutral-300 hover:bg-neutral-50"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white px-6 py-3 text-[0.9375rem] font-semibold text-foreground-muted transition hover:border-neutral-300 hover:bg-neutral-50"
                   >
                     <RotateCcw className="h-4 w-4" aria-hidden />
                     Clear form
@@ -617,10 +617,10 @@ const ContactPage = () => {
         {/* FAQ */}
         <FadeUp className="mt-16 md:mt-20">
           <div className="rounded-2xl border border-neutral-200/90 bg-white px-6 py-10 sm:px-10 sm:py-12">
-            <h2 className="mb-2 text-center text-xl font-semibold text-[#111] sm:text-2xl">
+            <h2 className="mb-2 text-center text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
               Frequently asked questions
             </h2>
-            <p className="mx-auto mb-10 max-w-xl text-center text-sm text-neutral-500">
+            <p className="mx-auto mb-10 max-w-xl text-center text-sm text-hint">
               Quick answers for students and partners. For anything specific, use the form above.
             </p>
             <motion.ul
@@ -644,8 +644,8 @@ const ContactPage = () => {
                   }}
                   className="rounded-xl border border-neutral-200/80 bg-[#FAFAF8] p-5"
                 >
-                  <h3 className="mb-2 text-sm font-semibold text-[#111]">{item.q}</h3>
-                  <div className="text-sm leading-relaxed text-neutral-600">{item.a}</div>
+                  <h3 className="mb-2 text-sm font-semibold text-foreground">{item.q}</h3>
+                  <div className="text-sm leading-relaxed text-muted-foreground">{item.a}</div>
                 </motion.li>
               ))}
             </motion.ul>

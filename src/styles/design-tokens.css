@@ -101,3 +101,32 @@
 .btn-secondary:hover {
   background: var(--accent-soft);
 }
+
+/*
+ * Typography ramp (Plus Jakarta Sans) — use Tailwind semantic utilities:
+ *
+ * | Role        | Tailwind classes (example) |
+ * |-------------|----------------------------|
+ * | Display/H1  | text-4xl font-black tracking-tight text-foreground sm:text-5xl md:text-6xl leading-[1.08] |
+ * | Section H2  | text-2xl font-bold tracking-tight text-foreground md:text-3xl |
+ * | Card H3     | text-base font-semibold text-foreground |
+ * | Body        | text-base text-foreground-muted leading-relaxed |
+ * | Supporting  | text-sm text-muted-foreground leading-relaxed |
+ * | Eyebrow     | text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground |
+ * | Chip/label  | text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground |
+ *
+ * Ink is always --text-primary (#1a1a1a); do not use #111 in new code.
+ * Optional legacy helpers if a non-Tailwind context needs the same colors:
+ */
+.mm-text-ink {
+  color: var(--text-heading);
+}
+.mm-text-body {
+  color: var(--text-body);
+}
+.mm-text-secondary {
+  color: var(--text-secondary);
+}
+.mm-text-hint {
+  color: var(--text-hint);
+}

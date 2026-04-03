@@ -123,11 +123,11 @@ function readToolsEntryFromHash() {
 const InputField = ({ label, type, name, value, onChange, placeholder, error, maxLength, showCharCount }) => (
   <div className="space-y-2">
     <div className="flex justify-between items-center">
-      <label className="text-sm font-bold text-[#333333]">
+      <label className="text-sm font-bold text-foreground">
         {label} <span className="text-red-400">*</span>
       </label>
       {showCharCount && maxLength && (
-        <span className={`text-xs font-medium ${value.length > maxLength * 0.9 ? 'text-red-400' : 'text-[#666666]'}`}>
+        <span className={`text-xs font-medium ${value.length > maxLength * 0.9 ? 'text-red-400' : 'text-hint'}`}>
           {value.length} / {maxLength}
         </span>
       )}
@@ -140,7 +140,7 @@ const InputField = ({ label, type, name, value, onChange, placeholder, error, ma
         placeholder={placeholder}
         maxLength={maxLength}
         rows={3}
-        className={`w-full px-4 py-3 rounded-xl border bg-white border border-[#E0DCCF] outline-none transition-all resize-none text-[#1A1A1A] placeholder-[#AAAAAA] ${
+        className={`w-full px-4 py-3 rounded-xl border bg-white border border-[#E0DCCF] outline-none transition-all resize-none text-foreground placeholder:text-hint ${
           error
             ? 'border-red-500/50 bg-red-500/10'
             : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
@@ -155,7 +155,7 @@ const InputField = ({ label, type, name, value, onChange, placeholder, error, ma
         onChange={onChange}
         placeholder={placeholder}
         maxLength={maxLength}
-        className={`w-full px-4 py-3 rounded-xl border bg-white border border-[#E0DCCF] outline-none transition-all text-[#1A1A1A] placeholder-[#AAAAAA] ${
+        className={`w-full px-4 py-3 rounded-xl border bg-white border border-[#E0DCCF] outline-none transition-all text-foreground placeholder:text-hint ${
           error
             ? 'border-red-500/50 bg-red-500/10'
             : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
@@ -444,7 +444,7 @@ function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
             >
               <span className="leading-none">{option.emoji}</span>
             </div>
-            <h3 className={`font-black text-[#1A1A1A] ${isHero ? 'text-base sm:text-lg leading-snug pr-6' : 'text-sm mb-1'}`}>
+            <h3 className={`font-black text-foreground ${isHero ? 'text-base sm:text-lg leading-snug pr-6' : 'text-sm mb-1'}`}>
               {option.title}
             </h3>
             <p
@@ -453,11 +453,11 @@ function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
               {option.badge}
             </p>
             {isHero ? (
-              <p className="text-sm text-[#555555] leading-relaxed mt-2 pr-2">{option.compactHint}</p>
+              <p className="mt-2 pr-2 text-sm leading-relaxed text-muted-foreground">{option.compactHint}</p>
             ) : (
               <div className="space-y-1.5">
                 {option.details.map((d) => (
-                  <div key={d} className="flex items-start gap-1.5 text-xs text-[#666666]">
+                  <div key={d} className="flex items-start gap-1.5 text-xs text-muted-foreground">
                     <Check size={11} className={`mt-0.5 shrink-0 ${selected ? 'text-[#FF9500]' : 'text-slate-600'}`} />
                     {d}
                   </div>
@@ -525,8 +525,8 @@ function HowItWorksFlow() {
                 <Icon size={19} className="text-[#FF9500]" strokeWidth={2} />
               </motion.div>
               <div className="min-w-0 pt-0.5">
-                <h3 className="text-sm font-semibold text-[#1A1A1A]">{title}</h3>
-                <p className="mt-1 text-xs leading-relaxed text-[#666666]">{desc}</p>
+                <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{desc}</p>
               </div>
             </motion.li>
           ))}
@@ -554,8 +554,8 @@ function HowItWorksFlow() {
                   <Icon size={22} className="text-[#FF9500]" strokeWidth={2} />
                 </div>
               </motion.div>
-              <h3 className="text-sm font-semibold text-[#1A1A1A]">{title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-[#666666]">{desc}</p>
+              <h3 className="text-sm font-semibold text-foreground">{title}</h3>
+              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{desc}</p>
             </motion.div>
             {i < HOW_IT_WORKS_STEPS.length - 1 && (
               <div className="flex shrink-0 items-center self-center px-1 pt-7 lg:px-2">
@@ -670,7 +670,7 @@ function EvaluatingAnswersLoader() {
 }
 
 /** Step 5: compact header; on list scroll, swap to slim title bar so questions stay visible */
-function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit, loading }) {
+function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit, loading, error }) {
   const [scrolled, setScrolled] = useState(false);
   const listRef = useRef(null);
   const isSkillQuiz = profile.assessmentMode === ASSESSMENT_FOCUS_SKILL;
@@ -680,7 +680,9 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
   const pct = Math.min(100, Math.round((answered / total) * 100));
   const skillSnippet = (profile.primarySkill || '').split(',')[0].trim() || 'your input';
   const roleLabel =
-    DISPLAY_ROLE_BY_CATEGORY[profile.userCategory] || profile.userCategory.replace(/_/g, ' ') || '';
+    DISPLAY_ROLE_BY_CATEGORY[profile.userCategory] ||
+    (profile.userCategory ? String(profile.userCategory).replace(/_/g, ' ') : '') ||
+    '';
 
   const onListScroll = () => {
     const el = listRef.current;
@@ -802,6 +804,15 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
           </div>
 
           <div className="border-t border-[#F0ECE0] bg-[#FFFCF9] px-4 py-4 sm:px-6">
+            {error && (
+              <div
+                className="mb-4 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-3 text-left text-sm font-medium text-red-800"
+                role="alert"
+              >
+                <AlertCircle size={18} className="mt-0.5 shrink-0" aria-hidden />
+                <span>{error}</span>
+              </div>
+            )}
             <button
               type="button"
               className={`w-full rounded-2xl py-3.5 text-base font-bold text-white shadow-lg transition-all sm:py-4 ${
@@ -866,6 +877,8 @@ const InterviewReady = () => {
   const [answers, setAnswers] = useState({});
   const [evaluationData, setEvaluationData] = useState(null);
   const [result, setResult] = useState(null);
+  const [earlyBirdCouponCode, setEarlyBirdCouponCode] = useState('');
+  const [couponCopied, setCouponCopied] = useState(false);
   const [usageInfo, setUsageInfo] = useState({
     current_usage: 0,
     limit: FREE_TIER_LIMIT,
@@ -1211,33 +1224,49 @@ const InterviewReady = () => {
         body: JSON.stringify(payload),
       });
 
-      const data = await res.json();
+      const data = await parseResponseJson(res);
 
       if (!res.ok) {
-        setError(data.detail || data.error || 'Failed to evaluate answers. Please try again.');
-        setLoading(false);
+        const msg =
+          (typeof data.detail === 'string' && data.detail) ||
+          data.error ||
+          data.message ||
+          'Failed to evaluate answers. Please try again.';
+        setError(msg);
         return;
       }
 
+      const pctRaw = data.readiness_percentage ?? data.readinessPercentage;
+      const pctNum =
+        typeof pctRaw === 'number' && !Number.isNaN(pctRaw)
+          ? pctRaw
+          : parseFloat(String(pctRaw ?? '').replace(/,/g, ''), 10);
+      const readinessPct = Number.isFinite(pctNum) ? Math.min(100, Math.max(0, pctNum)) : 0;
+      const readinessLabel =
+        (typeof data.readiness_label === 'string' && data.readiness_label) ||
+        (typeof data.readinessLabel === 'string' && data.readinessLabel) ||
+        'Your result';
+
       const evalResult = {
-        readiness_percentage: data.readiness_percentage,
-        readiness_label: data.readiness_label,
-        summary: `${data.readiness_label} — ${data.readiness_percentage}% readiness score`,
+        readiness_percentage: readinessPct,
+        readiness_label: readinessLabel,
+        summary: `${readinessLabel} — ${readinessPct}% readiness score`,
         userCategory: profile.userCategory,
         assessmentMode: profile.assessmentMode,
         techStack: profile.primarySkill,
         strengths: data.strengths || [],
         gaps: data.gaps || [],
-        learning_recommendations: data.learning_recommendations || [],
+        learning_recommendations: data.learning_recommendations || data.learningRecommendations || [],
         evaluatedAt: Date.now(),
       };
 
+      setEarlyBirdCouponCode(pickRandomEarlyBirdCoupon());
+      setCouponCopied(false);
       setResult(evalResult);
       setStep(6);
 
       const { isLimitReached } = incrementUsage();
       if (isLimitReached) setShowUpgradeModal(true);
-
     } catch (err) {
       console.error('Evaluate error:', err);
       setError('Cannot connect to backend. Please try again.');
@@ -1267,11 +1296,14 @@ const InterviewReady = () => {
     setOtpCode('');
     setReportEmail('');
     setReportSent(false);
+    setResult(null);
+    setEarlyBirdCouponCode('');
+    setCouponCopied(false);
   };
 
   const stepContent = (() => {
-  // Loading must be checked first — otherwise `if (step === 4)` returns the form and the loader never shows.
-  if (loading && step !== 7 && step !== 8 && step !== 9) {
+  // Score card must win over loading: after evaluate(), step becomes 6 while `loading` may still be true for one frame.
+  if (loading && step !== 7 && step !== 8 && step !== 9 && !(step === 6 && result)) {
     if (step === 4) {
       return <PlanGenerationLoader />;
     }
@@ -1327,7 +1359,7 @@ const InterviewReady = () => {
   // ========== STEP 0: LANDING ==========
   if (step === 0) {
     return (
-      <div className="relative min-h-screen overflow-hidden bg-[#FFFDF8] text-[#1A1A1A] font-sans">
+      <div className="relative min-h-screen overflow-hidden bg-[#FFFDF8] text-foreground-muted font-sans">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -left-20 top-10 h-72 w-72 rounded-full bg-[#FF9500]/12 blur-3xl" />
           <div className="absolute -right-16 top-1/3 h-64 w-64 rounded-full bg-cyan-400/10 blur-3xl" />
@@ -1339,7 +1371,7 @@ const InterviewReady = () => {
           <div className="mb-5 flex justify-center sm:mb-6">
             <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-[#F0ECE0] bg-white/90 px-3 py-1.5 shadow-sm backdrop-blur sm:px-4">
               <Star size={14} className="shrink-0 text-amber-400" />
-              <span className="text-center text-[11px] font-medium text-[#666666] sm:text-xs">
+              <span className="text-center text-[11px] font-medium text-muted-foreground sm:text-xs">
                 Patterns from 500+ companies · free score
               </span>
             </div>
@@ -1347,18 +1379,19 @@ const InterviewReady = () => {
 
           {/* Headline — short */}
           <div className="mx-auto mb-6 max-w-xl text-center lg:mb-8">
-            <h1 className="text-4xl font-black leading-[1.08] tracking-tight text-[#1A1A1A] sm:text-5xl md:text-6xl">
+            <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-5xl md:text-6xl leading-[1.08]">
               Interview{' '}
               <span className="bg-gradient-to-r from-[#FF9500] to-amber-500 bg-clip-text text-transparent">Readiness</span>
               <br />
-              <span className="text-[#1A1A1A]">Check</span>
+              <span className="text-foreground">Check</span>
             </h1>
-            <p className="mt-3 text-base text-[#555555] sm:text-lg">
-              Two ways to start — pick one. <span className="whitespace-nowrap text-[#444444] font-semibold">~5 min.</span>{' '}
+            <p className="mt-3 text-base text-muted-foreground sm:text-lg">
+              Two ways to start — pick one.{' '}
+              <span className="whitespace-nowrap font-semibold text-foreground-muted">~5 min.</span>{' '}
               <span className="whitespace-nowrap">Free.</span> No signup.
             </p>
             {/* Trust row — single line */}
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-medium text-[#666666]">
+            <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-medium text-hint">
               {[
                 { Icon: Clock, text: '~5 min' },
                 { Icon: Sparkles, text: 'Instant score' },
@@ -1374,9 +1407,11 @@ const InterviewReady = () => {
 
           {/* How it works — above path choice (timeline / flow, not card grid) */}
           <div className="mx-auto mb-8 w-full max-w-3xl sm:mb-10">
-            <div className="mb-6 flex items-center justify-center gap-2 text-center sm:mb-8">
+            <div className="mb-6 flex flex-wrap items-center justify-center gap-2 text-center sm:mb-8">
               <Zap size={18} className="shrink-0 text-[#FF9500]" />
-              <h2 className="text-base font-semibold text-[#1A1A1A] sm:text-lg">How it works &amp; what you get</h2>
+              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                How it works &amp; what you get
+              </h2>
             </div>
             <HowItWorksFlow />
           </div>
@@ -1384,10 +1419,8 @@ const InterviewReady = () => {
           {/* Primary action — path cards */}
           <div className="mx-auto w-full max-w-3xl flex-1">
             <div className="mb-6 text-center sm:mb-7">
-              <h2 className="text-base font-semibold tracking-tight text-[#1A1A1A] sm:text-lg">
-                Choose your path
-              </h2>
-              <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-[#666666]">
+              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Choose your path</h2>
+              <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
                 Select one option below to continue.
               </p>
               <div className="mx-auto mt-5 h-px w-16 bg-[#E0DCCF]" aria-hidden />
@@ -1412,7 +1445,7 @@ const InterviewReady = () => {
                 <div className="mb-0.5 w-fit">
                   <LimitedRewardLabel />
                 </div>
-                <p className="text-sm text-[#444444] leading-snug">{READINESS_TEST_COUPON_BADGE}</p>
+                <p className="text-sm leading-snug text-foreground-muted">{READINESS_TEST_COUPON_BADGE}</p>
               </div>
             </div>
           </div>
@@ -2133,6 +2166,7 @@ const InterviewReady = () => {
         profile={profile}
         onSubmit={handleEvalSubmit}
         loading={loading}
+        error={error}
       />
     );
   }
@@ -2158,7 +2192,7 @@ const InterviewReady = () => {
         : result.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT
           ? 'Interview readiness'
           : '—';
-    const roleShort = result.userCategory.replace(/_/g, ' ');
+    const roleShort = (result.userCategory ? String(result.userCategory) : '').replace(/_/g, ' ');
     const areaShort = result.techStack || '—';
     const nextSteps = nextStepsForScoreBand(pct);
     const peerDims = peerDimensionsFromResult(pct, strengthSignal, gapPressure);

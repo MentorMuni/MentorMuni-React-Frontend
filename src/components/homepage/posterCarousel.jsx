@@ -93,7 +93,7 @@ function PosterSlideVisual({ slide, fillParent = false }) {
             <Icon className="h-7 w-7 text-[#ea580c] sm:h-8 sm:w-8" strokeWidth={1.15} aria-hidden />
           </div>
           <p className="mt-2 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#9A3412]/90 sm:text-[10px]">{slide.visualKicker}</p>
-          <p className="mt-0.5 max-w-[280px] text-center text-[11px] font-medium leading-snug text-neutral-600 sm:text-xs">
+          <p className="mt-0.5 max-w-[280px] text-center text-[11px] font-medium leading-snug text-muted-foreground sm:text-xs">
             {slide.visualLine}
           </p>
         </div>
@@ -158,14 +158,14 @@ export function MentorMuniPosterCarousel({ className = '' }) {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
               >
-                <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-zinc-500">{slide.title}</p>
-                <div className="rounded-xl border border-zinc-200/90 bg-zinc-50/90 px-3.5 py-3">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-zinc-500">Problem</p>
-                  <p className="mt-1.5 text-[13px] leading-relaxed text-zinc-700 sm:text-sm">{slide.problem}</p>
+                <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">{slide.title}</p>
+                <div className="rounded-xl border border-neutral-200/90 bg-neutral-50/90 px-3.5 py-3">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Problem</p>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-foreground-muted sm:text-sm">{slide.problem}</p>
                 </div>
                 <div className="rounded-xl border border-[#FF9500]/25 bg-gradient-to-br from-[#FFFDFB] to-[#FFF4E0]/50 px-3.5 py-3 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#B45309]">MentorMuni solution</p>
-                  <p className="mt-1.5 text-[13px] font-medium leading-relaxed text-[#1A1A1A] sm:text-sm">{slide.solution}</p>
+                  <p className="mt-1.5 text-[13px] font-medium leading-relaxed text-foreground sm:text-sm">{slide.solution}</p>
                 </div>
               </motion.div>
             </AnimatePresence>
