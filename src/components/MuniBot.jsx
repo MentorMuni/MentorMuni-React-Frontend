@@ -43,7 +43,7 @@ function renderBoldSegments(line) {
   const parts = line.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((part, i) =>
     part.startsWith('**') && part.endsWith('**') ? (
-      <strong key={i} className="font-semibold text-[#1a1a1a]">
+      <strong key={i} className="font-semibold text-foreground">
         {part.slice(2, -2)}
       </strong>
     ) : (
@@ -152,7 +152,7 @@ export default function MuniBot() {
         className="pointer-events-none fixed bottom-[5.5rem] right-6 z-[9997] hidden max-w-[220px] sm:block"
         aria-hidden
       >
-        <div className="pointer-events-none rounded-2xl border border-[#E0DCCF] bg-white/95 px-3 py-2 text-xs font-medium text-[#444] shadow-lg backdrop-blur">
+        <div className="pointer-events-none rounded-2xl border border-[#E0DCCF] bg-white/95 px-3 py-2 text-xs font-medium text-foreground-muted shadow-lg backdrop-blur">
           <span className="inline-flex items-center gap-1.5">
             <Sparkles className="h-3.5 w-3.5 shrink-0 text-[#FF9500]" />
             Ask MuniBot anything
@@ -201,14 +201,14 @@ export default function MuniBot() {
                   <img src={LOGO_SRC} alt="" className="h-full w-full object-cover" width={44} height={44} />
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate font-bold text-[#1A1A1A]">MuniBot</p>
-                  <p className="truncate text-xs text-neutral-500">MentorMuni · interviews · AI help</p>
+                  <p className="truncate font-bold text-foreground">MuniBot</p>
+                  <p className="truncate text-xs text-muted-foreground">MentorMuni · interviews · AI help</p>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setIsOpen(false)}
-                className="shrink-0 rounded-xl p-2 text-neutral-500 transition-colors hover:bg-black/5 hover:text-[#1A1A1A]"
+                className="shrink-0 rounded-xl p-2 text-muted-foreground transition-colors hover:bg-black/5 hover:text-foreground"
                 aria-label="Close chat"
               >
                 <X className="h-5 w-5" />
@@ -222,7 +222,7 @@ export default function MuniBot() {
               {isTyping && <TypingIndicator />}
               {showQuickReplies && (
                 <div className="pt-1">
-                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-neutral-500">
+                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
                     Quick questions
                   </p>
                   <div className="flex flex-wrap gap-1.5">
@@ -231,7 +231,7 @@ export default function MuniBot() {
                         key={q}
                         type="button"
                         onClick={() => handleQuickQuestion(q)}
-                        className="rounded-full border border-[#E0DCCF] bg-white px-2.5 py-1.5 text-[11px] font-medium text-[#444] transition hover:border-[#FFB347] hover:bg-[#FFF4E0] hover:text-[#CC7000]"
+                        className="rounded-full border border-[#E0DCCF] bg-white px-2.5 py-1.5 text-[11px] font-medium text-foreground-muted transition hover:border-[#FFB347] hover:bg-[#FFF4E0] hover:text-[#CC7000]"
                       >
                         {q}
                       </button>
@@ -254,7 +254,7 @@ export default function MuniBot() {
               <Link
                 to="/contact"
                 onClick={() => setIsOpen(false)}
-                className="flex flex-1 items-center justify-center gap-1 rounded-xl border border-[#E0DCCF] bg-[#FFFDF8] py-2.5 text-xs font-bold text-[#444] transition hover:border-[#FFB347]"
+                className="flex flex-1 items-center justify-center gap-1 rounded-xl border border-[#E0DCCF] bg-[#FFFDF8] py-2.5 text-xs font-bold text-foreground-muted transition hover:border-[#FFB347]"
               >
                 Contact
               </Link>
@@ -268,7 +268,7 @@ export default function MuniBot() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                 placeholder="Ask about MentorMuni, interviews, AI…"
-                className="min-w-0 flex-1 rounded-xl border border-[#E0DCCF] bg-white px-3 py-2.5 text-sm text-[#1a1a1a] placeholder:text-neutral-400 focus:border-[#FFB347] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/25"
+                className="min-w-0 flex-1 rounded-xl border border-[#E0DCCF] bg-white px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-[#FFB347] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/25"
               />
               <button
                 type="button"

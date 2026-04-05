@@ -75,7 +75,7 @@ const ImpactStats = () => {
                 </h3>
 
                 {/* Description */}
-                <p className="text-slate-400 text-sm leading-relaxed">
+                <p className="text-muted-foreground text-sm leading-relaxed">
                   {stat.description}
                 </p>
               </div>

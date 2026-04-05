@@ -84,7 +84,7 @@ export default function HowItWorksSection() {
                   {/* Arrow to next step (mobile only) */}
                   {index < steps.length - 1 && (
                     <div className="md:hidden flex justify-center mt-6">
-                      <ArrowRight size={24} className="text-slate-500 rotate-90" />
+                      <ArrowRight size={24} className="text-muted-foreground rotate-90" />
                     </div>
                   )}
                 </div>
@@ -95,7 +95,7 @@ export default function HowItWorksSection() {
 
         {/* CTA Section */}
         <div className="mt-16 text-center">
-          <p className="text-slate-400 mb-6">
+          <p className="text-muted-foreground mb-6">
             Ready to start your journey?
           </p>
           <a

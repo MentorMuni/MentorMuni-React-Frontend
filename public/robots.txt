@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Block build artifacts and dev internals
+Disallow: /src/
+Disallow: /*.json$
+
+Sitemap: https://mentormuni.com/MentorMuni-React-Frontend/sitemap.xml

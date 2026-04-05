@@ -1,5 +1,7 @@
-import React, { Suspense, lazy, useEffect } from "react";
+import React, { Suspense, lazy, useEffect, useState } from "react";
 import { HashRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { ROUTE_TITLES } from "./constants/brandCopy";
+import { goToStartAssessment } from "./utils/startAssessmentNavigation";
 
 import Navbar from "./components/navbar";
 import HomePage from "./components/homepage";
@@ -44,7 +46,7 @@ function PageFallback() {
   return <div className="min-h-[60vh] bg-background" />;
 }
 
-/** HashRouter SPA: reset scroll when the route changes so new pages (including home) start at the top. */
+/** Reset scroll position on every route change. */
 function ScrollToTop() {
   const { pathname } = useLocation();
   useEffect(() => {
@@ -53,11 +55,67 @@ function ScrollToTop() {
   return null;
 }
 
+/**
+ * Dismissible announcement bar — shown on every page, persists across routes,
+ * dismissed for the session via sessionStorage (returns on new tab/session).
+ */
+function AnnouncementBar() {
+  const [visible, setVisible] = useState(() => {
+    try { return !sessionStorage.getItem('mm-promo-dismissed-v2'); }
+    catch { return true; }
+  });
+
+  if (!visible) return null;
+
+  return (
+    <div
+      role="banner"
+      aria-label="Early bird promotional offer"
+      className="relative flex items-center justify-center gap-2 bg-gradient-to-r from-[#E88600] via-[#FF9500] to-[#FFB347] px-10 py-2 text-center text-[11px] font-semibold text-white sm:text-xs"
+    >
+      <span aria-hidden className="shrink-0 text-sm">🎁</span>
+      <span>
+        <strong>Early Bird:</strong> 1 free 1:1 mentorship + 1 AI mock — take the free 5-min readiness test to claim.
+      </span>
+      <button
+        type="button"
+        onClick={goToStartAssessment}
+        className="ml-1 shrink-0 rounded-full bg-white/25 px-2.5 py-0.5 text-[11px] font-bold transition hover:bg-white/35 sm:text-xs"
+      >
+        Claim →
+      </button>
+      <button
+        type="button"
+        aria-label="Dismiss announcement"
+        onClick={() => {
+          setVisible(false);
+          try { sessionStorage.setItem('mm-promo-dismissed-v2', '1'); } catch {}
+        }}
+        className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 transition hover:bg-white/20 sm:right-3"
+      >
+        <span className="text-white/90 text-base leading-none">×</span>
+      </button>
+    </div>
+  );
+}
+
+/** Update document.title per route for better SEO and browser tab clarity. */
+function RouteTitle() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    const title = ROUTE_TITLES[pathname] ?? 'MentorMuni — Interview Readiness for Engineers';
+    document.title = title;
+  }, [pathname]);
+  return null;
+}
+
 function App() {
   return (
     <Router>
       <ScrollToTop />
+      <RouteTitle />
       <div className="flex min-h-screen flex-col bg-background text-foreground-muted font-sans antialiased">
+        <AnnouncementBar />
         <Navbar />
         <main className="flex-grow relative z-0">
           <Suspense fallback={<PageFallback />}>

@@ -6,7 +6,7 @@ const Plan = ({ title, price, bullets, cta, href, primary }) => (
   <div className="card-dark rounded-xl p-6 md:p-8 flex flex-col">
     <div className="text-lg font-bold text-white">{title}</div>
     <div className="mt-2 text-3xl font-black text-white">{price}</div>
-    <ul className="mt-4 text-sm text-slate-400 space-y-2 flex-grow">
+    <ul className="mt-4 text-sm text-muted-foreground space-y-2 flex-grow">
       {bullets.map((b, i) => (
         <li key={i} className="flex items-center gap-2">
           <Check className="w-4 h-4 text-emerald-400 shrink-0" />

@@ -70,7 +70,7 @@ const MissingSkillsSection = ({ skills }) => {
               <p className={`font-semibold ${priorityConfig[priority].color}`}>
                 {priorityConfig[priority].label}
               </p>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-muted-foreground">
                 {priorityConfig[priority].description}
               </p>
             </div>
@@ -81,7 +81,7 @@ const MissingSkillsSection = ({ skills }) => {
             </span>
             <ChevronDown
               size={20}
-              className={`text-slate-400 transition-transform ${
+              className={`text-muted-foreground transition-transform ${
                 expandedPriority === priority ? 'rotate-180' : ''
               }`}
             />
@@ -92,14 +92,14 @@ const MissingSkillsSection = ({ skills }) => {
           <div className="mt-3 ml-4 space-y-4">
             {Object.entries(grouped).map(([category, skillList]) => (
               <div key={category}>
-                <p className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-2">
+                <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-2">
                   {skillsByCategory[category] || category}
                 </p>
                 <div className="grid md:grid-cols-2 gap-2">
                   {skillList.map(skillName => (
                     <div
                       key={skillName}
-                      className="bg-slate-700/50 border border-slate-600 rounded-lg px-4 py-2 text-sm text-slate-300 hover:border-slate-500 transition-colors"
+                      className="bg-[#FFF4E0] border border-[#E0DCCF] rounded-lg px-4 py-2 text-sm text-foreground hover:border-[#FFB347] transition-colors"
                     >
                       {skillName}
                     </div>
@@ -114,10 +114,10 @@ const MissingSkillsSection = ({ skills }) => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl border border-slate-600 p-8">
+    <div className="bg-white rounded-2xl border border-[#E0DCCF] p-8 shadow-sm">
       <div className="mb-6">
-        <h2 className="text-3xl font-bold text-white mb-2">Missing Skills Analysis</h2>
-        <p className="text-slate-300">
+        <h2 className="text-3xl font-bold text-foreground mb-2">Missing Skills Analysis</h2>
+        <p className="text-muted-foreground">
           {totalSkills} skills identified across {Object.keys(skillsByCategory).length} categories
         </p>
       </div>
@@ -129,28 +129,28 @@ const MissingSkillsSection = ({ skills }) => {
       </div>
 
       {/* Learning Strategy */}
-      <div className="mt-8 bg-slate-700/50 border border-slate-600 rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-white mb-4">Recommended Learning Strategy</h3>
-        <ol className="space-y-3 text-slate-300">
+      <div className="mt-8 bg-[#FFF4E0] border border-[#FFB347]/30 rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-foreground mb-4">Recommended Learning Strategy</h3>
+        <ol className="space-y-3 text-muted-foreground">
           <li className="flex gap-3">
-            <span className="font-bold text-emerald-400 flex-shrink-0">1.</span>
+            <span className="font-bold text-[#1A8C55] flex-shrink-0">1.</span>
             <div>
-              <p className="font-semibold text-white">Focus on Critical Skills First</p>
-              <p className="text-sm text-slate-400">These are necessary for the role. Dedicate 4-6 weeks here.</p>
+              <p className="font-semibold text-foreground">Focus on Critical Skills First</p>
+              <p className="text-sm text-muted-foreground">These are necessary for the role. Dedicate 4-6 weeks here.</p>
             </div>
           </li>
           <li className="flex gap-3">
-            <span className="font-bold text-cyan-400 flex-shrink-0">2.</span>
+            <span className="font-bold text-[#FF9500] flex-shrink-0">2.</span>
             <div>
-              <p className="font-semibold text-white">Master Important Skills</p>
-              <p className="text-sm text-slate-400">Build depth with hands-on projects. 4-5 weeks of learning.</p>
+              <p className="font-semibold text-foreground">Master Important Skills</p>
+              <p className="text-sm text-muted-foreground">Build depth with hands-on projects. 4-5 weeks of learning.</p>
             </div>
           </li>
           <li className="flex gap-3">
-            <span className="font-bold text-purple-400 flex-shrink-0">3.</span>
+            <span className="font-bold text-purple-600 flex-shrink-0">3.</span>
             <div>
-              <p className="font-semibold text-white">Add Nice-to-Have Skills</p>
-              <p className="text-sm text-slate-400">Differentiators that help you stand out. Time permitting.</p>
+              <p className="font-semibold text-foreground">Add Nice-to-Have Skills</p>
+              <p className="text-sm text-muted-foreground">Differentiators that help you stand out. Time permitting.</p>
             </div>
           </li>
         </ol>

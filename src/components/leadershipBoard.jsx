@@ -43,9 +43,9 @@ const COLLEGE_AUDIENCE_SEGMENTS = AUDIENCE_SEGMENTS.filter(
 );
 
 function segmentChipClass(id) {
-  if (id === 'prefinal') return 'border-cyan-500/35 bg-cyan-500/10 text-cyan-200/95';
-  if (id === 'final_year') return 'border-violet-500/35 bg-violet-500/10 text-violet-200/95';
-  return 'border-emerald-500/35 bg-emerald-500/10 text-emerald-200/95';
+  if (id === 'prefinal') return 'border-cyan-500/40 bg-cyan-500/10 text-cyan-700';
+  if (id === 'final_year') return 'border-violet-500/40 bg-violet-500/10 text-violet-700';
+  return 'border-emerald-500/40 bg-emerald-500/10 text-emerald-700';
 }
 
 /** Populated from API / SQL later — empty until real opt-ins exist. */
@@ -53,7 +53,7 @@ const MOCK_LEADERS = [];
 
 function rankBadgeMeta(globalRank) {
   if (globalRank === 1) return { label: '1st', className: 'from-amber-400 via-yellow-300 to-amber-500 text-amber-950 shadow-amber-500/40', icon: Crown };
-  if (globalRank === 2) return { label: '2nd', className: 'from-slate-300 via-slate-100 to-slate-400 text-slate-900 shadow-slate-400/35', icon: Trophy };
+  if (globalRank === 2) return { label: '2nd', className: 'from-slate-300 via-slate-100 to-slate-400 text-foreground shadow-slate-400/35', icon: Trophy };
   if (globalRank === 3) return { label: '3rd', className: 'from-orange-400 via-amber-700 to-orange-600 text-amber-50 shadow-orange-600/35', icon: Trophy };
   if (globalRank <= 10) return { label: 'Top 10', className: 'from-fuchsia-500/90 to-violet-600 text-white shadow-fuchsia-500/30', icon: Sparkles };
   return null;
@@ -137,20 +137,12 @@ export default function LeadershipBoard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#07070c] text-zinc-100 pt-[4.75rem] pb-16">
+    <div className="min-h-screen bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE] text-foreground pt-[4.75rem] pb-16">
       {/* ambient */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-[#FF9500]/12 blur-[100px]" />
-        <div className="absolute right-0 top-40 h-[380px] w-[380px] rounded-full bg-fuchsia-600/10 blur-[90px]" />
-        <div className="absolute bottom-0 left-1/3 h-[300px] w-[300px] rounded-full bg-cyan-500/8 blur-[80px]" />
-        <div
-          className="absolute inset-0 opacity-[0.07]"
-          style={{
-            backgroundImage: `linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
-              linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px)`,
-            backgroundSize: '48px 48px',
-          }}
-        />
+        <div className="absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-[#FF9500]/8 blur-[100px]" />
+        <div className="absolute right-0 top-40 h-[380px] w-[380px] rounded-full bg-fuchsia-400/8 blur-[90px]" />
+        <div className="absolute bottom-0 left-1/3 h-[300px] w-[300px] rounded-full bg-cyan-400/6 blur-[80px]" />
       </div>
 
       <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6">
@@ -160,17 +152,15 @@ export default function LeadershipBoard() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
-            className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-zinc-400"
+            className="inline-flex items-center gap-2 rounded-full border border-[#FFB347]/30 bg-[#FFF4E0] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#CC7000]"
           >
-            <Flame className="h-3.5 w-3.5 text-orange-400" aria-hidden />
+            <Flame className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
             Open leaderboard · Be early
           </motion.div>
-          <h1 className="mt-5 font-black tracking-tight text-[2rem] leading-[1.1] sm:text-5xl">
-            <span className="bg-gradient-to-r from-white via-zinc-100 to-zinc-400 bg-clip-text text-transparent">
-              Leadership Board
-            </span>
+          <h1 className="mt-5 font-black tracking-tight text-[2rem] leading-[1.1] sm:text-5xl text-foreground">
+            Leadership Board
           </h1>
-          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-zinc-400 sm:text-base">
+          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
             We&apos;re a startup building in public — this scoreboard starts empty without you. Take the Interview
             Readiness check and be among the first names on the board.
           </p>
@@ -185,14 +175,14 @@ export default function LeadershipBoard() {
 
         {/* mode toggle */}
         <div className="mt-8 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-center sm:gap-4">
-          <div className="flex rounded-2xl border border-white/10 bg-zinc-900/80 p-1 shadow-inner shadow-black/40">
+          <div className="flex rounded-2xl border border-[#E0DCCF] bg-white p-1 shadow-sm">
             <button
               type="button"
               onClick={() => setMode('general')}
               className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all sm:flex-initial sm:px-6 ${
                 mode === 'general'
-                  ? 'bg-gradient-to-r from-[#FF9500] to-orange-600 text-white shadow-lg shadow-orange-500/25'
-                  : 'text-zinc-400 hover:text-white'
+                  ? 'bg-gradient-to-r from-[#FF9500] to-[#E88600] text-white shadow-lg shadow-orange-500/25'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               <Globe className="h-4 w-4" aria-hidden />
@@ -204,7 +194,7 @@ export default function LeadershipBoard() {
               className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all sm:flex-initial sm:px-6 ${
                 mode === 'college'
                   ? 'bg-gradient-to-r from-fuchsia-600 to-violet-600 text-white shadow-lg shadow-fuchsia-500/25'
-                  : 'text-zinc-400 hover:text-white'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               <GraduationCap className="h-4 w-4" aria-hidden />
@@ -215,7 +205,7 @@ export default function LeadershipBoard() {
 
         {/* Audience — filters board by student / professional segment */}
         <div className="mx-auto mt-6 max-w-3xl">
-          <p className="mb-2 text-center text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+          <p className="mb-2 text-center text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
             Audience
           </p>
           <div className="flex flex-wrap items-center justify-center gap-2">
@@ -227,9 +217,9 @@ export default function LeadershipBoard() {
                 className={`inline-flex items-center gap-1.5 rounded-xl border px-3 py-2 text-xs font-bold transition sm:text-[13px] ${
                   effectiveAudience === id
                     ? mode === 'college'
-                      ? 'border-fuchsia-500/55 bg-fuchsia-500/15 text-white shadow-[0_0_20px_-8px_rgba(192,38,211,0.45)]'
-                      : 'border-[#FF9500]/60 bg-[#FF9500]/20 text-white shadow-[0_0_20px_-8px_rgba(255,149,0,0.5)]'
-                    : 'border-white/10 bg-zinc-900/60 text-zinc-400 hover:border-white/20 hover:text-zinc-200'
+                      ? 'border-fuchsia-500/50 bg-fuchsia-500/15 text-fuchsia-700 shadow-[0_0_20px_-8px_rgba(192,38,211,0.3)]'
+                      : 'border-[#FF9500]/50 bg-[#FF9500]/15 text-[#CC7000] shadow-[0_0_20px_-8px_rgba(255,149,0,0.3)]'
+                    : 'border-[#E0DCCF] bg-white text-muted-foreground hover:border-[#FFB347]/50 hover:text-foreground'
                 }`}
               >
                 <Icon className="h-3.5 w-3.5 shrink-0 opacity-90" aria-hidden />
@@ -237,7 +227,7 @@ export default function LeadershipBoard() {
               </button>
             ))}
           </div>
-          <p className="mx-auto mt-2 max-w-md text-center text-[11px] leading-relaxed text-zinc-600">
+          <p className="mx-auto mt-2 max-w-md text-center text-[11px] leading-relaxed text-muted-foreground">
             {mode === 'college'
               ? 'College leaderboard: pre-final vs final year — search a college to see ranks.'
               : 'All‑India: filter by everyone, pre-final, final year, or IT professionals.'}
@@ -248,12 +238,12 @@ export default function LeadershipBoard() {
         {mode === 'college' && (
           <div className="mx-auto mt-6 max-w-md">
             <label className="block">
-              <span className="mb-2 block text-center text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+              <span className="mb-2 block text-center text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 Search college by name
               </span>
               <div className="relative">
                 <Search
-                  className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-500"
+                  className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
                   strokeWidth={2}
                   aria-hidden
                 />
@@ -262,7 +252,7 @@ export default function LeadershipBoard() {
                   value={collegeQuery}
                   onChange={(e) => setCollegeQuery(e.target.value)}
                   placeholder="Type to filter — SQL + full directory soon"
-                  className="w-full rounded-2xl border border-white/10 bg-zinc-900/90 py-3 pl-10 pr-4 text-sm text-white placeholder:text-zinc-600 focus:border-fuchsia-500/50 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/30"
+                  className="w-full rounded-2xl border border-[#E0DCCF] bg-white py-3 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-fuchsia-500/50 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/20"
                 />
               </div>
             </label>
@@ -271,14 +261,14 @@ export default function LeadershipBoard() {
 
         {/* share */}
         <div className="mx-auto mt-8 flex flex-wrap items-center justify-center gap-2">
-          <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-500">
+          <span className="flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
             <Share2 className="h-3.5 w-3.5" aria-hidden />
             Share the board
           </span>
           <button
             type="button"
             onClick={() => handleShare('whatsapp')}
-            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-300 transition hover:bg-emerald-500/20"
+            className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1.5 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-500/20"
           >
             <MessageCircle className="h-3.5 w-3.5" aria-hidden />
             WhatsApp
@@ -286,7 +276,7 @@ export default function LeadershipBoard() {
           <button
             type="button"
             onClick={() => handleShare('twitter')}
-            className="inline-flex items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1.5 text-xs font-semibold text-sky-300 transition hover:bg-sky-500/20"
+            className="inline-flex items-center gap-1.5 rounded-full border border-sky-500/30 bg-sky-500/10 px-3 py-1.5 text-xs font-semibold text-sky-700 transition hover:bg-sky-500/20"
           >
             <Twitter className="h-3.5 w-3.5" aria-hidden />
             X
@@ -294,7 +284,7 @@ export default function LeadershipBoard() {
           <button
             type="button"
             onClick={() => handleShare('linkedin')}
-            className="inline-flex items-center gap-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1.5 text-xs font-semibold text-blue-300 transition hover:bg-blue-500/20"
+            className="inline-flex items-center gap-1.5 rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1.5 text-xs font-semibold text-blue-700 transition hover:bg-blue-500/20"
           >
             <Linkedin className="h-3.5 w-3.5" aria-hidden />
             LinkedIn
@@ -302,22 +292,22 @@ export default function LeadershipBoard() {
           <button
             type="button"
             onClick={() => handleShare('copy')}
-            className="inline-flex items-center gap-1.5 rounded-full border border-zinc-600 bg-zinc-800/80 px-3 py-1.5 text-xs font-semibold text-zinc-200 transition hover:bg-zinc-700"
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#E0DCCF] bg-white px-3 py-1.5 text-xs font-semibold text-foreground transition hover:bg-[#FFF4E0]"
           >
-            {copied ? <Check className="h-3.5 w-3.5 text-emerald-400" /> : <Link2 className="h-3.5 w-3.5" aria-hidden />}
+            {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Link2 className="h-3.5 w-3.5" aria-hidden />}
             {copied ? 'Copied' : 'Copy link'}
           </button>
         </div>
 
         {/* list */}
-        <div className="mt-10 rounded-3xl border border-white/10 bg-zinc-900/40 p-1 shadow-[0_0_0_1px_rgba(255,255,255,0.04)] backdrop-blur-sm">
-          <div className="flex flex-col gap-1 border-b border-white/5 px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
-            <div className="flex flex-wrap items-center gap-2 text-sm font-bold text-white">
+        <div className="mt-10 rounded-3xl border border-[#E0DCCF] bg-white p-1 shadow-sm">
+          <div className="flex flex-col gap-1 border-b border-[#F0ECE0] px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+            <div className="flex flex-wrap items-center gap-2 text-sm font-bold text-foreground">
               <Trophy className="h-5 w-5 shrink-0 text-[#FF9500]" aria-hidden />
               <span>
                 {mode === 'college' ? 'College leaderboard' : 'National leaderboard'}
                 {effectiveAudience !== 'all' && (
-                  <span className="font-semibold text-zinc-400">
+                  <span className="font-semibold text-muted-foreground">
                     {' '}
                     ·{' '}
                     {AUDIENCE_SEGMENTS.find((s) => s.id === effectiveAudience)?.label}
@@ -326,7 +316,7 @@ export default function LeadershipBoard() {
               </span>
             </div>
             {filtered.length > 0 && (
-              <span className="rounded-full bg-white/5 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+              <span className="rounded-full bg-[#FFF4E0] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#CC7000]">
                 Page {safePage} / {totalPages}
               </span>
             )}
@@ -334,13 +324,13 @@ export default function LeadershipBoard() {
 
           {mode === 'college' && !collegeQuery.trim() && (
             <div className="px-6 py-16 text-center">
-              <Sparkles className="mx-auto h-10 w-10 text-fuchsia-400/80" aria-hidden />
-              <p className="mt-4 text-lg font-bold text-white">Pick a college to unlock the board</p>
-              <p className="mx-auto mt-2 max-w-sm text-sm text-zinc-500">
+              <Sparkles className="mx-auto h-10 w-10 text-fuchsia-500" aria-hidden />
+              <p className="mt-4 text-lg font-bold text-foreground">Pick a college to unlock the board</p>
+              <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
                 Search by name — we&apos;ll plug in a live directory + SQL soon. For now, try{' '}
                 <button
                   type="button"
-                  className="text-fuchsia-400 underline decoration-fuchsia-500/50 underline-offset-2"
+                  className="text-fuchsia-600 underline decoration-fuchsia-500/50 underline-offset-2"
                   onClick={() => setCollegeQuery('NIT Trichy')}
                 >
                   NIT Trichy
@@ -348,7 +338,7 @@ export default function LeadershipBoard() {
                 or{' '}
                 <button
                   type="button"
-                  className="text-fuchsia-400 underline decoration-fuchsia-500/50 underline-offset-2"
+                  className="text-fuchsia-600 underline decoration-fuchsia-500/50 underline-offset-2"
                   onClick={() => setCollegeQuery('BITS')}
                 >
                   BITS
@@ -359,22 +349,22 @@ export default function LeadershipBoard() {
           )}
 
           {mode === 'college' && collegeQuery.trim() && filtered.length === 0 && (
-            <div className="px-6 py-14 text-center text-sm text-zinc-500">
+            <div className="px-6 py-14 text-center text-sm text-muted-foreground">
               No entries for this college yet — the board is empty until students opt in.
             </div>
           )}
 
           {mode === 'general' && filtered.length === 0 && (
             <div className="px-6 py-16 text-center">
-              <p className="text-base font-semibold text-zinc-300">Board is empty</p>
-              <p className="mx-auto mt-2 max-w-sm text-sm text-zinc-500">
+              <p className="text-base font-semibold text-foreground">Board is empty</p>
+              <p className="mx-auto mt-2 max-w-sm text-sm text-muted-foreground">
                 No rankings yet. Take the Interview Readiness check to be among the first on the list.
               </p>
             </div>
           )}
 
           {(mode === 'general' || (collegeQuery.trim() && filtered.length > 0)) && filtered.length > 0 && (
-              <ul className="divide-y divide-white/5">
+              <ul className="divide-y divide-[#F0ECE0]">
                 {pageSlice.map((row, i) => {
                   const globalRank = (safePage - 1) * PAGE_SIZE + i + 1;
                   const badge = rankBadgeMeta(globalRank);
@@ -385,7 +375,7 @@ export default function LeadershipBoard() {
                       className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:gap-4 sm:px-5"
                     >
                       <div className="flex items-center gap-3 sm:w-28 sm:shrink-0">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-zinc-800 to-zinc-950 font-black tabular-nums text-lg text-white ring-1 ring-white/10">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FF9500] to-[#E88600] font-black tabular-nums text-lg text-white shadow-sm">
                           {globalRank}
                         </span>
                         {badge && (
@@ -398,25 +388,25 @@ export default function LeadershipBoard() {
                         )}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="truncate font-bold text-white">{row.name}</p>
-                        <p className="truncate text-xs text-zinc-500">{row.handle}</p>
+                        <p className="truncate font-bold text-foreground">{row.name}</p>
+                        <p className="truncate text-xs text-muted-foreground">{row.handle}</p>
                         <span
                           className={`mt-1 inline-block w-fit rounded-md border px-1.5 py-0.5 text-[10px] font-semibold ${segmentChipClass(row.segment)}`}
                         >
                           {AUDIENCE_SEGMENTS.find((s) => s.id === row.segment)?.short ?? row.segment}
                         </span>
                         {mode === 'college' && (
-                          <p className="mt-1 truncate text-[11px] text-zinc-500 sm:hidden">{row.college}</p>
+                          <p className="mt-1 truncate text-[11px] text-muted-foreground sm:hidden">{row.college}</p>
                         )}
                       </div>
                       {mode === 'college' && (
-                        <p className="hidden text-sm text-zinc-400 sm:block sm:max-w-[140px] sm:truncate">{row.college}</p>
+                        <p className="hidden text-sm text-muted-foreground sm:block sm:max-w-[140px] sm:truncate">{row.college}</p>
                       )}
                       <div className="flex flex-wrap items-center gap-3 sm:justify-end">
-                        <span className="inline-flex items-center gap-1 rounded-lg border border-orange-500/20 bg-orange-500/10 px-2 py-1 text-xs font-bold tabular-nums text-orange-300">
+                        <span className="inline-flex items-center gap-1 rounded-lg border border-[#FF9500]/30 bg-[#FF9500]/10 px-2 py-1 text-xs font-bold tabular-nums text-[#CC7000]">
                           {row.readinessScore} / 100
                         </span>
-                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-400/90">
+                        <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-600">
                           <Flame className="h-3.5 w-3.5" aria-hidden />
                           {row.streak} streak
                         </span>
@@ -429,12 +419,12 @@ export default function LeadershipBoard() {
 
           {/* pagination */}
           {(mode === 'general' || (collegeQuery.trim() && filtered.length > 0)) && totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 border-t border-white/5 px-4 py-4">
+            <div className="flex items-center justify-center gap-2 border-t border-[#F0ECE0] px-4 py-4">
               <button
                 type="button"
                 disabled={safePage <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="inline-flex items-center gap-1 rounded-xl border border-white/10 bg-zinc-800/80 px-3 py-2 text-xs font-bold text-white disabled:opacity-30"
+                className="inline-flex items-center gap-1 rounded-xl border border-[#E0DCCF] bg-white px-3 py-2 text-xs font-bold text-foreground disabled:opacity-30"
               >
                 <ChevronLeft className="h-4 w-4" aria-hidden />
                 Prev
@@ -447,8 +437,8 @@ export default function LeadershipBoard() {
                     onClick={() => setPage(n)}
                     className={`h-9 min-w-[2.25rem] rounded-xl text-xs font-bold transition ${
                       n === safePage
-                        ? 'bg-gradient-to-r from-[#FF9500] to-orange-600 text-white shadow-lg shadow-orange-500/20'
-                        : 'border border-white/5 bg-zinc-800/50 text-zinc-400 hover:text-white'
+                        ? 'bg-gradient-to-r from-[#FF9500] to-[#E88600] text-white shadow-lg shadow-orange-500/20'
+                        : 'border border-[#E0DCCF] bg-white text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     {n}
@@ -459,7 +449,7 @@ export default function LeadershipBoard() {
                 type="button"
                 disabled={safePage >= totalPages}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                className="inline-flex items-center gap-1 rounded-xl border border-white/10 bg-zinc-800/80 px-3 py-2 text-xs font-bold text-white disabled:opacity-30"
+                className="inline-flex items-center gap-1 rounded-xl border border-[#E0DCCF] bg-white px-3 py-2 text-xs font-bold text-foreground disabled:opacity-30"
               >
                 Next
                 <ChevronRight className="h-4 w-4" aria-hidden />
@@ -468,14 +458,14 @@ export default function LeadershipBoard() {
           )}
         </div>
 
-        <p className="mt-8 text-center text-[11px] text-zinc-600">
+        <p className="mt-8 text-center text-[11px] text-muted-foreground">
           Showing preview rows until enough students opt in — then this becomes your live board.
         </p>
 
         <div className="mt-10 text-center">
           <Link
             to="/"
-            className="text-sm font-semibold text-orange-400/90 underline decoration-orange-500/40 underline-offset-4 hover:text-orange-300"
+            className="text-sm font-semibold text-[#FF9500] underline decoration-[#FF9500]/40 underline-offset-4 hover:text-[#E88600]"
           >
             ← Back to home
           </Link>

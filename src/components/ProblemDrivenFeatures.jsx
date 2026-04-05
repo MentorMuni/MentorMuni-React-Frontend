@@ -100,7 +100,7 @@ const ProblemDrivenFeatures = () => {
 
         {/* Engagement CTA */}
         <div className="mt-12 text-center">
-          <p className="text-slate-400 mb-6 text-sm">
+          <p className="text-muted-foreground mb-6 text-sm">
             All assessments are free: <span className="text-emerald-300 font-semibold">No signup. No credit card.</span>
           </p>
         </div>

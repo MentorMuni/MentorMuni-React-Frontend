@@ -52,7 +52,7 @@ const CoursesPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-[#444444] font-sans antialiased">
+    <div className="min-h-screen bg-[#FFFDF8] text-foreground-muted font-sans antialiased">
       {/* --- HEADER --- */}
       <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-[#F0ECE0] px-5 py-2">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between py-2">
@@ -65,7 +65,7 @@ const CoursesPage = () => {
               <a 
                 key={item} 
                 href={`/${item.toLowerCase().replace(' ', '-')}`} 
-                className="text-sm font-semibold text-[#666666] hover:text-white transition-colors"
+                className="text-sm font-semibold text-muted-foreground hover:text-[#FF9500] transition-colors"
               >
                 {item}
               </a>
@@ -73,20 +73,20 @@ const CoursesPage = () => {
             
             {/* Courses Dropdown */}
             <div className="relative group">
-              <button className="text-sm font-semibold text-[#06B6D4] flex items-center gap-1 hover:text-white transition-colors">
+              <button className="text-sm font-semibold text-[#FF9500] flex items-center gap-1 hover:text-[#E88600] transition-colors">
                 Courses
                 <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
               </button>
-              <div className="absolute left-0 mt-0 w-48 bg-[#1E293B] border border-[#E0DCCF] rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              <div className="absolute left-0 mt-0 w-48 bg-white border border-[#E0DCCF] rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                 <a 
                   href="/courses" 
-                  className="block px-4 py-3 text-sm font-semibold text-[#666666] hover:text-white hover:bg-white/5 first:rounded-t-lg transition-colors"
+                  className="block px-4 py-3 text-sm font-semibold text-foreground hover:text-[#FF9500] hover:bg-[#FFF4E0] first:rounded-t-lg transition-colors"
                 >
                   Placement Tracks
                 </a>
                 <a 
                   href="/free-tutorials" 
-                  className="block px-4 py-3 text-sm font-semibold text-[#666666] hover:text-white hover:bg-white/5 last:rounded-b-lg transition-colors"
+                  className="block px-4 py-3 text-sm font-semibold text-foreground hover:text-[#FF9500] hover:bg-[#FFF4E0] last:rounded-b-lg transition-colors"
                 >
                   Free Tutorials
                 </a>
@@ -94,7 +94,7 @@ const CoursesPage = () => {
             </div>
           </nav>
 
-          <button className="md:hidden text-white" onClick={() => setIsNavOpen(!isNavOpen)}>
+          <button className="md:hidden text-foreground" onClick={() => setIsNavOpen(!isNavOpen)}>
             {isNavOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
@@ -102,22 +102,22 @@ const CoursesPage = () => {
         {isNavOpen && (
           <div className="md:hidden absolute top-full left-0 right-0 bg-[#FFFDF8] border-b border-[#E0DCCF] p-5 flex flex-col gap-4 shadow-2xl">
             {['Home', 'Interview Readiness', 'Outcomes', 'Contact'].map((item) => (
-              <a key={item} href="#" className="font-bold text-[#666666] hover:text-white">{item}</a>
+              <a key={item} href="#" className="font-bold text-muted-foreground hover:text-[#FF9500]">{item}</a>
             ))}
             
             {/* Mobile Courses Dropdown */}
             <div className="border-t border-[#E0DCCF] pt-4">
               <button 
                 onClick={() => setIsCoursesDropdownOpen(!isCoursesDropdownOpen)}
-                className="font-bold text-[#06B6D4] hover:text-white flex items-center gap-2 w-full"
+                className="font-bold text-[#FF9500] hover:text-[#E88600] flex items-center gap-2 w-full"
               >
                 Courses
                 <ChevronDown size={16} className={isCoursesDropdownOpen ? 'rotate-180' : ''} />
               </button>
               {isCoursesDropdownOpen && (
                 <div className="pl-4 space-y-2 pt-2">
-                  <a href="/courses" className="block text-sm font-semibold text-[#666666] hover:text-white p-2">Placement Tracks</a>
-                  <a href="/free-tutorials" className="block text-sm font-semibold text-[#666666] hover:text-white p-2">Free Tutorials</a>
+                  <a href="/courses" className="block text-sm font-semibold text-foreground hover:text-[#FF9500] p-2">Placement Tracks</a>
+                  <a href="/free-tutorials" className="block text-sm font-semibold text-foreground hover:text-[#FF9500] p-2">Free Tutorials</a>
                 </div>
               )}
             </div>
@@ -128,10 +128,10 @@ const CoursesPage = () => {
       {/* --- MAIN CONTENT --- */}
       <main className="max-w-[1200px] mx-auto px-6 py-16 md:py-24">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-extrabold mb-4 bg-gradient-to-r from-white to-[#94A3B8] bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-5xl font-extrabold mb-4 text-foreground">
             Our Placement Courses
           </h2>
-          <p className="text-[#666666] text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             AI-powered training and mentorship for all-round placement prep.
           </p>
         </div>
@@ -141,18 +141,18 @@ const CoursesPage = () => {
           {courses.map((course, index) => (
             <article 
               key={index} 
-              className="group bg-gradient-to-br from-[#1a2234] to-[#141b28] border border-[#F0ECE0] rounded-3xl p-8 flex flex-col transition-all duration-300 hover:-translate-y-2 hover:border-[#06B6D4]/30 hover:shadow-[0_20px_40px_rgba(0,0,0,0.4)]"
+              className="group bg-white border border-[#E0DCCF] rounded-3xl p-8 flex flex-col transition-all duration-300 hover:-translate-y-2 hover:border-[#FF9500]/30 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
             >
               <div className="flex-1">
-                <h3 className="text-2xl font-bold mb-2 group-hover:text-[#06B6D4] transition-colors">
+                <h3 className="text-2xl font-bold mb-2 text-foreground group-hover:text-[#FF9500] transition-colors">
                   {course.title}
                 </h3>
-                <p className="text-xs font-bold uppercase tracking-widest text-[#06B6D4] mb-6 opacity-80">
+                <p className="text-xs font-bold uppercase tracking-widest text-[#FF9500] mb-6 opacity-80">
                   {course.meta}
                 </p>
                 <ul className="space-y-4 mb-8">
                   {course.points.map((point, idx) => (
-                    <li key={idx} className="flex items-start gap-3 text-[#666666] text-sm">
+                    <li key={idx} className="flex items-start gap-3 text-muted-foreground text-sm">
                       <CheckCircle2 size={18} className="text-[#FF9500] shrink-0 mt-0.5" />
                       {point}
                     </li>
@@ -162,12 +162,12 @@ const CoursesPage = () => {
 
               <div className="pt-6 border-t border-[#F0ECE0] flex items-center justify-between">
                 <div>
-                  <span className="text-2xl font-bold text-white">{course.price}</span>
-                  <span className="text-xs text-[#666666] ml-1">{course.period}</span>
+                  <span className="text-2xl font-bold text-foreground">{course.price}</span>
+                  <span className="text-xs text-muted-foreground ml-1">{course.period}</span>
                 </div>
                 <a 
                   href="/contact" 
-                  className="bg-white/5 hover:bg-[#06B6D4] text-white p-3 rounded-full transition-all group-hover:px-6 flex items-center gap-2"
+                  className="bg-[#FFF4E0] hover:bg-[#FF9500] text-[#CC7000] hover:text-white p-3 rounded-full transition-all group-hover:px-6 flex items-center gap-2"
                 >
                   <span className="hidden group-hover:block text-sm font-bold">Enroll</span>
                   <ArrowRight size={20} />
@@ -183,23 +183,23 @@ const CoursesPage = () => {
         <div className="max-w-[1200px] mx-auto grid md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1">
             <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 rounded-full object-contain mb-6" />
-            <p className="text-[#666666] text-sm leading-relaxed">Guiding your journey to knowledge and professional excellence.</p>
+            <p className="text-muted-foreground text-sm leading-relaxed">Guiding your journey to knowledge and professional excellence.</p>
           </div>
           <div>
-            <h4 className="font-bold mb-4 text-white">Courses</h4>
-            <a href="/courses" className="text-[#666666] text-sm hover:text-[#06B6D4] block mb-2">All Courses</a>
+            <h4 className="font-bold mb-4 text-foreground">Courses</h4>
+            <a href="/courses" className="text-muted-foreground text-sm hover:text-[#FF9500] block mb-2">All Courses</a>
           </div>
           <div>
-            <h4 className="font-bold mb-4 text-white">Company</h4>
-            <a href="/about" className="text-[#666666] text-sm hover:text-[#06B6D4] block mb-2">About Us</a>
+            <h4 className="font-bold mb-4 text-foreground">Company</h4>
+            <a href="/about" className="text-muted-foreground text-sm hover:text-[#FF9500] block mb-2">About Us</a>
           </div>
           <div>
-            <h4 className="font-bold mb-4 text-white">Support</h4>
-            <p className="text-[#666666] text-sm mb-2">enroll@mentormuni.com</p>
-            <p className="text-[#666666] text-sm">+91 91464 21302</p>
+            <h4 className="font-bold mb-4 text-foreground">Support</h4>
+            <p className="text-muted-foreground text-sm mb-2">enroll@mentormuni.com</p>
+            <p className="text-muted-foreground text-sm">+91 91464 21302</p>
           </div>
         </div>
-        <div className="text-center text-[#475569] text-xs pt-8 border-t border-[#F0ECE0]">
+        <div className="text-center text-muted-foreground text-xs pt-8 border-t border-[#F0ECE0]">
           © {new Date().getFullYear()} MentorMuni. All rights reserved.
         </div>
       </footer>

@@ -52,10 +52,10 @@ const CapabilitySection = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">
             Build Real-World Job Readiness
           </h2>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto">
+          <p className="text-xl text-foreground-muted max-w-3xl mx-auto">
             Our AI evaluates your skills, identifies gaps, and helps you prepare for real tech interviews with a complete career preparation ecosystem.
           </p>
         </div>
@@ -83,11 +83,11 @@ const CapabilitySection = () => {
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-xl font-bold text-slate-900 mb-3">
+                  <h3 className="text-xl font-bold text-foreground mb-3">
                     {capability.title}
                   </h3>
 
-                  <p className="text-slate-600 text-sm mb-6 leading-relaxed flex-grow">
+                  <p className="text-foreground-muted text-sm mb-6 leading-relaxed flex-grow">
                     {capability.description}
                   </p>
 
@@ -96,7 +96,7 @@ const CapabilitySection = () => {
                     {capability.points.map((point, idx) => (
                       <li key={idx} className="flex items-start gap-3">
                         <Star className={`w-4 h-4 mt-0.5 flex-shrink-0 text-${capability.color}-600`} fill="currentColor" />
-                        <span className="text-sm text-slate-700">{point}</span>
+                        <span className="text-sm text-foreground-muted">{point}</span>
                       </li>
                     ))}
                   </ul>
@@ -132,21 +132,21 @@ const CapabilitySection = () => {
 
         {/* Feature Comparison Table */}
         <div className="mb-16">
-          <h3 className="text-2xl font-bold text-slate-900 text-center mb-8">
+          <h3 className="text-2xl font-bold text-foreground text-center mb-8">
             How MentorMuni Stands Out
           </h3>
           <div className="overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b-2 border-slate-300">
-                  <th className="text-left py-4 px-6 font-bold text-slate-900">Capability</th>
+                  <th className="text-left py-4 px-6 font-bold text-foreground">Capability</th>
                   <th className="text-center py-4 px-6 font-bold text-[#FF9500]">MentorMuni</th>
-                  <th className="text-center py-4 px-6 font-bold text-slate-500">Others</th>
+                  <th className="text-center py-4 px-6 font-bold text-muted-foreground">Others</th>
                 </tr>
               </thead>
               <tbody>
                 <tr className="border-b border-slate-200 hover:bg-slate-50 transition-colors">
-                  <td className="py-4 px-6 font-semibold text-slate-900">AI Resume Feedback</td>
+                  <td className="py-4 px-6 font-semibold text-foreground">AI Resume Feedback</td>
                   <td className="text-center py-4 px-6">
                     <div className="inline-flex items-center justify-center w-6 h-6 bg-green-100 rounded-full">
                       <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
@@ -163,7 +163,7 @@ const CapabilitySection = () => {
                   </td>
                 </tr>
                 <tr className="border-b border-slate-200 hover:bg-slate-50 transition-colors">
-                  <td className="py-4 px-6 font-semibold text-slate-900">Skill Gap Analysis</td>
+                  <td className="py-4 px-6 font-semibold text-foreground">Skill Gap Analysis</td>
                   <td className="text-center py-4 px-6">
                     <div className="inline-flex items-center justify-center w-6 h-6 bg-green-100 rounded-full">
                       <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
@@ -180,7 +180,7 @@ const CapabilitySection = () => {
                   </td>
                 </tr>
                 <tr className="border-b border-slate-200 hover:bg-slate-50 transition-colors">
-                  <td className="py-4 px-6 font-semibold text-slate-900">Guided Projects</td>
+                  <td className="py-4 px-6 font-semibold text-foreground">Guided Projects</td>
                   <td className="text-center py-4 px-6">
                     <div className="inline-flex items-center justify-center w-6 h-6 bg-green-100 rounded-full">
                       <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">
@@ -197,7 +197,7 @@ const CapabilitySection = () => {
                   </td>
                 </tr>
                 <tr className="border-b border-slate-200 hover:bg-slate-50 transition-colors">
-                  <td className="py-4 px-6 font-semibold text-slate-900">Mentor Community</td>
+                  <td className="py-4 px-6 font-semibold text-foreground">Mentor Community</td>
                   <td className="text-center py-4 px-6">
                     <div className="inline-flex items-center justify-center w-6 h-6 bg-green-100 rounded-full">
                       <svg className="w-4 h-4 text-green-600" fill="currentColor" viewBox="0 0 20 20">

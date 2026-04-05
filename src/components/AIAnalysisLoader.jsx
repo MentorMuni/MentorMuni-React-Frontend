@@ -53,7 +53,7 @@ export default function AIAnalysisLoader({ onComplete, duration = 4000 }) {
   }, [currentStep, stepDuration, totalSteps, onComplete]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen flex items-center justify-center px-6 bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE]">
       {/* Animated background blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[#FF9500]/10 rounded-full blur-3xl animate-pulse" />
@@ -80,7 +80,7 @@ export default function AIAnalysisLoader({ onComplete, duration = 4000 }) {
         <div className="text-center mb-12">
           <div className="h-12 flex items-center justify-center">
             <p
-              className={`text-xl font-semibold text-white transition-all duration-300 ${
+              className={`text-xl font-semibold text-foreground transition-all duration-300 ${
                 fadeIn ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
               }`}
             >
@@ -93,7 +93,7 @@ export default function AIAnalysisLoader({ onComplete, duration = 4000 }) {
 
         {/* Progress bar */}
         <div className="mb-8">
-          <div className="relative h-2 bg-slate-700/50 rounded-full overflow-hidden backdrop-blur-sm border border-slate-600/30">
+          <div className="relative h-2 bg-[#E0DCCF] rounded-full overflow-hidden backdrop-blur-sm border border-[#E0DCCF]">
             {/* Animated gradient progress bar */}
             <div
               className="h-full bg-gradient-to-r from-[#FF9500] via-cyan-500 to-blue-500 rounded-full transition-all duration-300 ease-out shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)]"
@@ -106,7 +106,7 @@ export default function AIAnalysisLoader({ onComplete, duration = 4000 }) {
 
           {/* Progress percentage */}
           <div className="mt-3 flex justify-between items-center">
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-muted-foreground">
               Step {currentStep + 1} of {totalSteps}
             </p>
             <p className="text-xs text-[#FF9500] font-semibold">
@@ -122,10 +122,10 @@ export default function AIAnalysisLoader({ onComplete, duration = 4000 }) {
               key={index}
               className={`h-2 rounded-full transition-all duration-300 ${
                 index < currentStep
-                  ? 'bg-gradient-to-r from-[#FF9500] to-cyan-500 w-6'
+                  ? 'bg-gradient-to-r from-[#FF9500] to-[#E88600] w-6'
                   : index === currentStep
                   ? 'bg-[#FFB347] w-8 animate-pulse'
-                  : 'bg-slate-600 w-2'
+                  : 'bg-[#E0DCCF] w-2'
               }`}
             />
           ))}
@@ -133,7 +133,7 @@ export default function AIAnalysisLoader({ onComplete, duration = 4000 }) {
 
         {/* Sub-message */}
         <div className="text-center">
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-muted-foreground">
             AI is analyzing your profile to provide personalized insights...
           </p>
         </div>

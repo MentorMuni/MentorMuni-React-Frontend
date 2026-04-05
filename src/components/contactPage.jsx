@@ -38,7 +38,7 @@ const FadeUp = ({ children, delay = 0, className = '' }) => {
 };
 
 const inputBase =
-  'w-full rounded-xl border bg-white px-4 py-3 text-[0.9375rem] text-foreground shadow-sm transition-[box-shadow,border-color] duration-200 outline-none placeholder:text-neutral-400';
+  'w-full rounded-xl border bg-white px-4 py-3 text-[0.9375rem] text-foreground shadow-sm transition-[box-shadow,border-color] duration-200 outline-none placeholder:text-muted-foreground';
 
 const AUDIENCES = [
   { id: 'students', param: null, label: 'Students & learners', short: 'Learners', Icon: UserRound },
@@ -364,11 +364,11 @@ const ContactPage = () => {
           </div>
           <div className="mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-hint">
             <span className="inline-flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5 shrink-0 text-neutral-400" aria-hidden />
+              <Clock className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />
               Response within 24h · business days (IST)
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <Shield className="h-3.5 w-3.5 shrink-0 text-neutral-400" aria-hidden />
+              <Shield className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />
               Enquiries routed to the right team
             </span>
           </div>
@@ -413,14 +413,14 @@ const ContactPage = () => {
             <FadeUp>
               <div className="rounded-2xl border border-neutral-200/90 bg-white p-6 shadow-sm">
                 <div className="mb-5 flex items-center gap-2">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100 text-neutral-600">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100 text-foreground-muted">
                     <MessageSquare className="h-4 w-4" strokeWidth={2} aria-hidden />
                   </div>
                   <h2 className="text-lg font-semibold text-foreground">Direct channels</h2>
                 </div>
                 <ul className="space-y-5">
                   <li className="flex gap-4">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-neutral-600">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-foreground-muted">
                       <Mail className="h-[18px] w-[18px]" strokeWidth={2} />
                     </div>
                     <div>
@@ -435,7 +435,7 @@ const ContactPage = () => {
                     </div>
                   </li>
                   <li className="flex gap-4">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-neutral-600">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-foreground-muted">
                       <Phone className="h-[18px] w-[18px]" strokeWidth={2} />
                     </div>
                     <div>
@@ -450,7 +450,7 @@ const ContactPage = () => {
                     </div>
                   </li>
                   <li className="flex gap-4">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-neutral-600">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-foreground-muted">
                       <MapPin className="h-[18px] w-[18px]" strokeWidth={2} />
                     </div>
                     <div>

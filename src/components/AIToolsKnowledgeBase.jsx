@@ -145,12 +145,12 @@ function FaqItem({ q, a }) {
         onClick={() => setOpen(v => !v)}
         className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left"
       >
-        <span className="font-semibold text-[#1A1A1A] text-sm leading-snug">{q}</span>
-        <ChevronDown size={16} className={`shrink-0 text-[#666666] transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
+        <span className="font-semibold text-foreground text-sm leading-snug">{q}</span>
+        <ChevronDown size={16} className={`shrink-0 text-muted-foreground transition-transform duration-200 ${open ? 'rotate-180' : ''}`} />
       </button>
       {open && (
         <div className="px-5 pb-5">
-          <p className="text-sm text-[#555555] leading-relaxed">{a}</p>
+          <p className="text-sm text-foreground-muted leading-relaxed">{a}</p>
         </div>
       )}
     </div>
@@ -168,7 +168,7 @@ export default function AIToolsKnowledgeBase() {
   );
 
   return (
-    <div className="bg-[#FFFDF8] text-[#1A1A1A] min-h-screen">
+    <div className="bg-[#FFFDF8] text-foreground min-h-screen">
 
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-[#F0ECE0]">
@@ -187,7 +187,7 @@ export default function AIToolsKnowledgeBase() {
               Knowledge Base
             </span>
           </h1>
-          <p className="text-lg text-[#555555] max-w-2xl leading-relaxed mb-8">
+          <p className="text-lg text-foreground-muted max-w-2xl leading-relaxed mb-8">
             Everything an engineering student needs to know about LLMs and AI tools — from first principles to the tools interviewers now expect you to know.
           </p>
           <div className="flex flex-wrap gap-3">
@@ -198,7 +198,7 @@ export default function AIToolsKnowledgeBase() {
             ].map(({ icon: Icon, color, label }) => (
               <div key={label} className="flex items-center gap-2 bg-[#FFF8EE] border border-[#E0DCCF] rounded-lg px-4 py-2">
                 <Icon size={14} className={color} />
-                <span className="text-sm font-semibold text-[#444444]">{label}</span>
+                <span className="text-sm font-semibold text-foreground-muted">{label}</span>
               </div>
             ))}
           </div>
@@ -212,13 +212,13 @@ export default function AIToolsKnowledgeBase() {
             <div>
               <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest block mb-3">Foundation</span>
               <h2 className="text-2xl md:text-3xl font-black mb-4 leading-tight">What is an LLM?</h2>
-              <p className="text-[#555555] leading-relaxed mb-4">
-                A <span className="text-[#1A1A1A] font-semibold">Large Language Model (LLM)</span> is an AI system trained on massive amounts of text — books, websites, code, scientific papers — to understand and generate human language.
+              <p className="text-foreground-muted leading-relaxed mb-4">
+                A <span className="text-foreground font-semibold">Large Language Model (LLM)</span> is an AI system trained on massive amounts of text — books, websites, code, scientific papers — to understand and generate human language.
               </p>
-              <p className="text-[#555555] leading-relaxed mb-4">
+              <p className="text-foreground-muted leading-relaxed mb-4">
                 It uses a neural network architecture called a <span className="text-[#CC7000] font-semibold">Transformer</span>, introduced by Google in 2017. The model learns the statistical patterns of language and can predict the next word, answer questions, write code or summarise documents.
               </p>
-              <p className="text-[#555555] leading-relaxed">
+              <p className="text-foreground-muted leading-relaxed">
                 When you type a prompt, the LLM does not look things up — it generates a response from patterns internalised during training across trillions of words.
               </p>
             </div>
@@ -235,8 +235,8 @@ export default function AIToolsKnowledgeBase() {
                 return (
                   <div key={i} className={`flex flex-col gap-2 p-4 rounded-xl border border-[#E0DCCF] ${item.bg}`}>
                     <Icon size={18} className={item.color} />
-                    <span className="text-sm font-bold text-[#1A1A1A]">{item.title}</span>
-                    <span className="text-xs text-[#666666] leading-snug">{item.desc}</span>
+                    <span className="text-sm font-bold text-foreground">{item.title}</span>
+                    <span className="text-xs text-muted-foreground leading-snug">{item.desc}</span>
                   </div>
                 );
               })}
@@ -250,7 +250,7 @@ export default function AIToolsKnowledgeBase() {
         <div className="max-w-5xl mx-auto">
           <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest block mb-3">AI tools landscape</span>
           <h2 className="text-2xl md:text-3xl font-black mb-2 leading-tight">Major LLMs compared</h2>
-          <p className="text-[#555555] text-sm mb-8 max-w-xl">There are 1,000+ LLMs publicly available. Here are the 8 you actually need to know.</p>
+          <p className="text-foreground-muted text-sm mb-8 max-w-xl">There are 1,000+ LLMs publicly available. Here are the 8 you actually need to know.</p>
           <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
             {LLMS.map((llm) => (
               <div key={llm.name} className="flex flex-col gap-3 p-4 rounded-xl border border-[#E0DCCF] bg-[#FFF8EE]/80 hover:border-[#FF9500]/30 transition-colors">
@@ -258,9 +258,9 @@ export default function AIToolsKnowledgeBase() {
                   <div>
                     <div className="flex items-center gap-2 mb-0.5">
                       <span className="w-2 h-2 rounded-full shrink-0" style={{ background: llm.color }} />
-                      <span className="text-sm font-black text-[#1A1A1A]">{llm.name}</span>
+                      <span className="text-sm font-black text-foreground">{llm.name}</span>
                     </div>
-                    <span className="text-xs text-[#666666]">{llm.maker}</span>
+                    <span className="text-xs text-muted-foreground">{llm.maker}</span>
                   </div>
                   <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full shrink-0 ${typeBadge[llm.tier]}`}>
                     {llm.tier === 'free' ? 'FREE' : 'PAID'}
@@ -275,22 +275,22 @@ export default function AIToolsKnowledgeBase() {
                   {llm.expertise.map((e, i) => (
                     <div key={i} className="flex items-start gap-1.5">
                       <span className="mt-1 w-1 h-1 rounded-full shrink-0" style={{ background: llm.color }} />
-                      <span className="text-[11px] text-[#555555] leading-snug">{e}</span>
+                      <span className="text-[11px] text-foreground-muted leading-snug">{e}</span>
                     </div>
                   ))}
                 </div>
                 <div className="mt-auto pt-2 border-t border-[#F0ECE0] flex flex-col gap-1">
                   <div className="flex justify-between gap-2">
-                    <span className="text-[10px] text-[#555555] shrink-0">Best for</span>
-                    <span className="text-[10px] text-[#444444] font-medium text-right">{llm.best_for}</span>
+                    <span className="text-[10px] text-foreground-muted shrink-0">Best for</span>
+                    <span className="text-[10px] text-foreground-muted font-medium text-right">{llm.best_for}</span>
                   </div>
                   <div className="flex justify-between gap-2">
-                    <span className="text-[10px] text-[#555555] shrink-0">Free tier</span>
-                    <span className="text-[10px] text-[#444444] font-medium text-right">{llm.free}</span>
+                    <span className="text-[10px] text-foreground-muted shrink-0">Free tier</span>
+                    <span className="text-[10px] text-foreground-muted font-medium text-right">{llm.free}</span>
                   </div>
                   <div className="flex justify-between gap-2">
-                    <span className="text-[10px] text-[#555555] shrink-0">Released</span>
-                    <span className="text-[10px] text-[#444444] font-medium">{llm.release}</span>
+                    <span className="text-[10px] text-foreground-muted shrink-0">Released</span>
+                    <span className="text-[10px] text-foreground-muted font-medium">{llm.release}</span>
                   </div>
                 </div>
               </div>
@@ -307,7 +307,7 @@ export default function AIToolsKnowledgeBase() {
             <span className="text-xs font-bold text-green-400 uppercase tracking-widest">MentorMuni · Free</span>
           </div>
           <h2 className="text-2xl md:text-3xl font-black mb-2 leading-tight">Interview & Career Tools</h2>
-          <p className="text-[#555555] text-sm mb-8 max-w-xl">
+          <p className="text-foreground-muted text-sm mb-8 max-w-xl">
             Purpose-built AI tools for engineering students preparing for campus placements. All free, no signup required.
           </p>
           <div className="grid md:grid-cols-3 gap-5">
@@ -326,11 +326,11 @@ export default function AIToolsKnowledgeBase() {
                     <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${tool.badgeCls}`}>{tool.badge}</span>
                   </div>
                   <div>
-                    <h3 className="text-base font-black text-[#1A1A1A] mb-1.5 group-hover:text-[#CC7000] transition-colors">{tool.title}</h3>
-                    <p className="text-xs text-[#555555] leading-relaxed">{tool.desc}</p>
+                    <h3 className="text-base font-black text-foreground mb-1.5 group-hover:text-[#CC7000] transition-colors">{tool.title}</h3>
+                    <p className="text-xs text-foreground-muted leading-relaxed">{tool.desc}</p>
                   </div>
                   <div className="mt-auto">
-                    <div className="text-[11px] text-[#666666] mb-3">{tool.highlight}</div>
+                    <div className="text-[11px] text-muted-foreground mb-3">{tool.highlight}</div>
                     <div className={`inline-flex items-center gap-1.5 text-xs font-bold ${tool.color} group-hover:gap-2.5 transition-all`}>
                       {tool.cta} <ChevronRight size={13} />
                     </div>
@@ -347,7 +347,7 @@ export default function AIToolsKnowledgeBase() {
         <div className="max-w-5xl mx-auto">
           <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest block mb-3">For Developers</span>
           <h2 className="text-2xl font-black mb-2 leading-tight">Coding & Development AI Tools</h2>
-          <p className="text-[#555555] text-sm mb-6 max-w-xl">
+          <p className="text-foreground-muted text-sm mb-6 max-w-xl">
             Tools every engineering student should know — and be able to talk about in a technical interview.
           </p>
           <div className="flex flex-wrap gap-3 mb-6">
@@ -360,13 +360,13 @@ export default function AIToolsKnowledgeBase() {
             ))}
           </div>
           <div className="relative mb-6 max-w-sm">
-            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#666666]" />
+            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
               placeholder="Search tools…"
               value={search}
               onChange={e => setSearch(e.target.value)}
-              className="w-full pl-8 pr-4 py-2.5 text-sm bg-white border border-[#E0DCCF] rounded-lg text-[#1A1A1A] placeholder-[#888888] focus:outline-none focus:border-[#FF9500]/50 transition-colors"
+              className="w-full pl-8 pr-4 py-2.5 text-sm bg-white border border-[#E0DCCF] rounded-lg text-foreground placeholder-[#888888] focus:outline-none focus:border-[#FF9500]/50 transition-colors"
             />
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -379,22 +379,22 @@ export default function AIToolsKnowledgeBase() {
                 className="group flex flex-col gap-2.5 p-4 rounded-xl border border-[#E0DCCF] bg-[#FFF8EE]/50 hover:border-[#FF9500]/35 hover:bg-[#E88600]/5 transition-all"
               >
                 <div className="flex items-start justify-between gap-2">
-                  <span className="text-sm font-bold text-[#1A1A1A] group-hover:text-[#CC7000] transition-colors leading-tight">{tool.name}</span>
+                  <span className="text-sm font-bold text-foreground group-hover:text-[#CC7000] transition-colors leading-tight">{tool.name}</span>
                   <div className="flex items-center gap-1.5 shrink-0">
                     <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${typeBadge[tool.type]}`}>
                       {tool.type === 'freemium' ? 'Free+' : tool.type === 'free' ? 'Free' : 'Paid'}
                     </span>
                   </div>
                 </div>
-                <p className="text-xs text-[#555555] leading-relaxed">{tool.desc}</p>
-                <div className="flex items-center gap-1 text-xs text-[#666666] group-hover:text-[#FF9500] transition-colors mt-auto pt-1">
+                <p className="text-xs text-foreground-muted leading-relaxed">{tool.desc}</p>
+                <div className="flex items-center gap-1 text-xs text-muted-foreground group-hover:text-[#FF9500] transition-colors mt-auto pt-1">
                   <ExternalLink size={11} /> <span>Visit</span>
                 </div>
               </a>
             ))}
           </div>
           {filteredCoding.length === 0 && (
-            <p className="text-sm text-[#666666] py-6 text-center">No tools match "{search}"</p>
+            <p className="text-sm text-muted-foreground py-6 text-center">No tools match "{search}"</p>
           )}
         </div>
       </section>
@@ -424,8 +424,8 @@ export default function AIToolsKnowledgeBase() {
                   <div key={i} className="flex items-start gap-2">
                     <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 bg-green-400" />
                     <span>
-                      <span className="text-sm font-semibold text-[#1A1A1A]">{t.name}</span>
-                      <span className="text-xs text-[#666666] ml-2">{t.use}</span>
+                      <span className="text-sm font-semibold text-foreground">{t.name}</span>
+                      <span className="text-xs text-muted-foreground ml-2">{t.use}</span>
                     </span>
                   </div>
                 ))}
@@ -450,8 +450,8 @@ export default function AIToolsKnowledgeBase() {
                   <div key={i} className="flex items-start gap-2">
                     <span className="mt-1.5 w-1.5 h-1.5 rounded-full shrink-0 bg-amber-400" />
                     <span>
-                      <span className="text-sm font-semibold text-[#1A1A1A]">{t.name}</span>
-                      <span className="text-xs text-[#666666] ml-2">{t.use}</span>
+                      <span className="text-sm font-semibold text-foreground">{t.name}</span>
+                      <span className="text-xs text-muted-foreground ml-2">{t.use}</span>
                     </span>
                   </div>
                 ))}
@@ -476,7 +476,7 @@ export default function AIToolsKnowledgeBase() {
       <section className="py-16 px-6">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-2xl md:text-3xl font-black mb-3">Ready to put AI to work for your placement?</h2>
-          <p className="text-[#555555] text-sm mb-8 leading-relaxed">
+          <p className="text-foreground-muted text-sm mb-8 leading-relaxed">
             Check your interview readiness score in 5 minutes — free. Get a personalised gap analysis and a study plan built specifically around your strengths and timeline.
           </p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">

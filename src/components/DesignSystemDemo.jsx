@@ -15,7 +15,7 @@ import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 
 export default function DesignSystemDemo() {
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-[#1A1A1A] py-20 px-6">
+    <div className="min-h-screen bg-[#FFFDF8] text-foreground py-20 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-20">
@@ -37,7 +37,7 @@ export default function DesignSystemDemo() {
           {/* Primary Color */}
           <div className="mb-12">
             <h3 className="text-2xl font-bold text-white mb-4">Primary - Indigo/Blue</h3>
-            <p className="text-slate-400 mb-6">Use for primary buttons, links, and main interactive elements.</p>
+            <p className="text-muted-foreground mb-6">Use for primary buttons, links, and main interactive elements.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-gradient-to-r from-[#FF9500] to-blue-600 rounded-2xl p-8 text-center">
                 <p className="font-bold">Gradient Background</p>
@@ -53,7 +53,7 @@ export default function DesignSystemDemo() {
           {/* Secondary Color */}
           <div className="mb-12">
             <h3 className="text-2xl font-bold text-white mb-4">Secondary - Purple</h3>
-            <p className="text-slate-400 mb-6">Use for section highlights and secondary features.</p>
+            <p className="text-muted-foreground mb-6">Use for section highlights and secondary features.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-gradient-to-r from-purple-600 to-pink-600 rounded-2xl p-8 text-center">
                 <p className="font-bold">Gradient Background</p>
@@ -69,7 +69,7 @@ export default function DesignSystemDemo() {
           {/* Accent Color */}
           <div className="mb-12">
             <h3 className="text-2xl font-bold text-white mb-4">Accent - Orange (CTA Only)</h3>
-            <p className="text-slate-400 mb-6">Use ONLY for upgrade buttons and critical CTAs.</p>
+            <p className="text-muted-foreground mb-6">Use ONLY for upgrade buttons and critical CTAs.</p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-gradient-to-r from-orange-600 to-red-600 rounded-2xl p-8 text-center">
                 <p className="font-bold">Upgrade Button</p>
@@ -89,28 +89,28 @@ export default function DesignSystemDemo() {
           
           <div className="space-y-8">
             <div className="border border-slate-700 rounded-2xl p-8">
-              <p className="text-xs text-slate-500 mb-2">Hero Heading - 48-56px, font-black</p>
+              <p className="text-xs text-muted-foreground mb-2">Hero Heading - 48-56px, font-black</p>
               <h1 className="text-5xl md:text-6xl font-black text-white">
                 Get Job Ready in Tech
               </h1>
             </div>
 
             <div className="border border-slate-700 rounded-2xl p-8">
-              <p className="text-xs text-slate-500 mb-2">Section Heading - 28-36px, font-black</p>
+              <p className="text-xs text-muted-foreground mb-2">Section Heading - 28-36px, font-black</p>
               <h2 className="text-4xl font-black text-white">
                 Popular Career Transitions
               </h2>
             </div>
 
             <div className="border border-slate-700 rounded-2xl p-8">
-              <p className="text-xs text-slate-500 mb-2">Card Title - 20px, font-bold</p>
+              <p className="text-xs text-muted-foreground mb-2">Card Title - 20px, font-bold</p>
               <h3 className="text-xl font-bold text-white">
                 Manual Testing to QA Engineer
               </h3>
             </div>
 
             <div className="border border-slate-700 rounded-2xl p-8">
-              <p className="text-xs text-slate-500 mb-2">Body Text - 16px, font-normal</p>
+              <p className="text-xs text-muted-foreground mb-2">Body Text - 16px, font-normal</p>
               <p className="text-base text-slate-300 leading-relaxed">
                 Learn software testing fundamentals, automation tools, and testing frameworks 
                 to transition into QA roles and advance your career in quality assurance.
@@ -126,7 +126,7 @@ export default function DesignSystemDemo() {
           <div className="space-y-8">
             {/* Primary Button */}
             <div>
-              <p className="text-sm text-slate-400 mb-3">Primary Button (Indigo)</p>
+              <p className="text-sm text-muted-foreground mb-3">Primary Button (Indigo)</p>
               <button className="px-8 py-3 rounded-lg font-bold text-white 
                               bg-gradient-to-r from-[#FF9500] to-blue-600 
                               hover:from-[#FF9500] hover:to-blue-500 
@@ -138,7 +138,7 @@ export default function DesignSystemDemo() {
 
             {/* Secondary Button */}
             <div>
-              <p className="text-sm text-slate-400 mb-3">Secondary Button (Purple)</p>
+              <p className="text-sm text-muted-foreground mb-3">Secondary Button (Purple)</p>
               <button className="px-8 py-3 rounded-lg font-bold text-slate-300 
                               border border-purple-500/30 
                               bg-purple-500/10 hover:bg-purple-500/20 
@@ -150,7 +150,7 @@ export default function DesignSystemDemo() {
 
             {/* CTA Button */}
             <div>
-              <p className="text-sm text-slate-400 mb-3">CTA Button (Orange - Upgrade Only)</p>
+              <p className="text-sm text-muted-foreground mb-3">CTA Button (Orange - Upgrade Only)</p>
               <button className="px-8 py-3 rounded-lg font-bold text-white 
                               bg-gradient-to-r from-orange-600 to-red-600 
                               hover:from-orange-500 hover:to-red-500 
@@ -162,7 +162,7 @@ export default function DesignSystemDemo() {
 
             {/* Outline Button */}
             <div>
-              <p className="text-sm text-slate-400 mb-3">Outline Button</p>
+              <p className="text-sm text-muted-foreground mb-3">Outline Button</p>
               <button className="px-8 py-3 rounded-lg font-bold text-[#FF9500] 
                               border border-[#FF9500]/35 
                               hover:border-[#FF9500]/60 hover:bg-[#E88600]/10
@@ -194,7 +194,7 @@ export default function DesignSystemDemo() {
             <div className="bg-gradient-to-br from-slate-800/50 to-slate-800/20 
                           border border-slate-700/50 rounded-2xl p-6 
                           hover:border-slate-600 transition-all">
-              <Code className="w-6 h-6 text-slate-400 mb-3" />
+              <Code className="w-6 h-6 text-muted-foreground mb-3" />
               <h3 className="text-xl font-bold text-white mb-2">Information Card</h3>
               <p className="text-slate-300 text-sm">
                 Simple cards for displaying information without heavy interactivity.
@@ -236,7 +236,7 @@ export default function DesignSystemDemo() {
 
         {/* FOOTER NOTE */}
         <div className="border-t border-slate-800 pt-12">
-          <p className="text-slate-400 text-sm">
+          <p className="text-muted-foreground text-sm">
             <strong>How to use this:</strong> Keep this page open in another tab while developing. 
             Reference the patterns above when creating new components. Import from 
             <code className="bg-slate-800 px-2 py-1 rounded text-xs ml-2">designSystem.js</code> 

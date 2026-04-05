@@ -223,56 +223,56 @@ const SkillGapAnalyzer = () => {
 
   // ==================== UI: Intro Section ====================
   const IntroSection = () => (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+    <div className="min-h-screen bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE] text-foreground">
       <div className="max-w-6xl mx-auto px-6 py-20">
 
 
         <div className="text-center mb-16">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <TrendingUp size={40} className="text-emerald-400" />
-            <h1 className="text-5xl font-bold">Skill Gap Analyzer</h1>
+            <TrendingUp size={40} className="text-[#FF9500]" />
+            <h1 className="text-5xl font-bold text-foreground">Skill Gap Analyzer</h1>
           </div>
-          <p className="text-xl text-slate-300">
+          <p className="text-xl text-muted-foreground">
             Find your gap and chart your path to your next role
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 mb-12">
-          <div className="bg-slate-800/50 backdrop-blur p-8 rounded-2xl border border-slate-700 hover:border-emerald-500 transition-colors">
-            <Target size={32} className="text-emerald-400 mb-4" />
-            <h3 className="text-xl font-bold mb-3">Analyze Your Gap</h3>
-            <p className="text-slate-400">
+          <div className="bg-white p-8 rounded-2xl border border-[#E0DCCF] hover:border-[#FF9500]/50 transition-colors shadow-sm">
+            <Target size={32} className="text-[#FF9500] mb-4" />
+            <h3 className="text-xl font-bold mb-3 text-foreground">Analyze Your Gap</h3>
+            <p className="text-muted-foreground">
               Compare your current role with your target role to identify skill gaps
             </p>
           </div>
 
-          <div className="bg-slate-800/50 backdrop-blur p-8 rounded-2xl border border-slate-700 hover:border-emerald-500 transition-colors">
-            <Zap size={32} className="text-emerald-400 mb-4" />
-            <h3 className="text-xl font-bold mb-3">Recommended Courses</h3>
-            <p className="text-slate-400">
+          <div className="bg-white p-8 rounded-2xl border border-[#E0DCCF] hover:border-[#FF9500]/50 transition-colors shadow-sm">
+            <Zap size={32} className="text-[#FF9500] mb-4" />
+            <h3 className="text-xl font-bold mb-3 text-foreground">Recommended Courses</h3>
+            <p className="text-muted-foreground">
               Get personalized course recommendations to bridge your skill gaps
             </p>
           </div>
 
-          <div className="bg-slate-800/50 backdrop-blur p-8 rounded-2xl border border-slate-700 hover:border-emerald-500 transition-colors">
-            <TrendingUp size={32} className="text-emerald-400 mb-4" />
-            <h3 className="text-xl font-bold mb-3">Transition Roadmap</h3>
-            <p className="text-slate-400">
+          <div className="bg-white p-8 rounded-2xl border border-[#E0DCCF] hover:border-[#FF9500]/50 transition-colors shadow-sm">
+            <TrendingUp size={32} className="text-[#FF9500] mb-4" />
+            <h3 className="text-xl font-bold mb-3 text-foreground">Transition Roadmap</h3>
+            <p className="text-muted-foreground">
               Follow a structured 4-phase roadmap to reach your career goal
             </p>
           </div>
         </div>
 
-        <div className="bg-gradient-to-r from-emerald-600 to-cyan-600 p-1 rounded-2xl">
-          <div className="bg-slate-900 p-12 rounded-2xl text-center">
-            <h2 className="text-3xl font-bold mb-4">Ready to Transition?</h2>
-            <p className="text-slate-300 mb-8">
+        <div className="bg-gradient-to-r from-[#FF9500] to-[#E88600] p-1 rounded-2xl">
+          <div className="bg-white p-12 rounded-2xl text-center">
+            <h2 className="text-3xl font-bold mb-4 text-foreground">Ready to Transition?</h2>
+            <p className="text-muted-foreground mb-8">
               Whether you want to switch from QA to Automation, Testing to Development, 
               or explore AI Engineering, we'll show you exactly what you need to learn
             </p>
             <button
               onClick={() => setFormStep(1)}
-              className="bg-gradient-to-r from-emerald-600 to-cyan-600 px-8 py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-emerald-500/50 transition-all"
+              className="bg-gradient-to-r from-[#FF9500] to-[#E88600] text-white px-8 py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-[#FF9500]/30 transition-all"
             >
               Start Analysis
             </button>
@@ -284,20 +284,20 @@ const SkillGapAnalyzer = () => {
 
   // ==================== UI: FORM SECTION ====================
   const FormSection = () => (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white py-12">
+    <div className="min-h-screen bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE] text-foreground py-12">
       <div className="max-w-2xl mx-auto px-6">
         <button
           onClick={() => setFormStep(0)}
-          className="text-emerald-400 hover:text-emerald-300 font-semibold mb-8 flex items-center gap-2"
+          className="text-[#FF9500] hover:text-[#E88600] font-semibold mb-8 flex items-center gap-2"
         >
           ← Back
         </button>
 
-        <div className="bg-slate-800/50 backdrop-blur p-8 rounded-2xl border border-slate-700">
-          <h2 className="text-3xl font-bold mb-6">Skill Gap Analysis</h2>
+        <div className="bg-white p-8 rounded-2xl border border-[#E0DCCF] shadow-sm">
+          <h2 className="text-3xl font-bold mb-6 text-foreground">Skill Gap Analysis</h2>
 
           {/* Free Usage Counter */}
-          <div className="mb-6 p-4 bg-gradient-to-r from-[#FF9500]/20 to-cyan-600/20 border border-[#FF9500]/35 rounded-lg">
+          <div className="mb-6 p-4 bg-gradient-to-r from-[#FF9500]/10 to-[#FFB347]/10 border border-[#FF9500]/30 rounded-lg">
             <FreeUsageCounter
               toolName="skill_gap_analyzer"
               onLimitReached={() => setShowUpgradeModal(true)}
@@ -307,15 +307,15 @@ const SkillGapAnalyzer = () => {
 
           {/* Roles Loading Error Banner */}
           {rolesError && (
-            <div className="bg-yellow-900/30 border border-yellow-700 rounded-lg p-4 mb-6 flex gap-3">
-              <AlertCircle size={20} className="text-yellow-400 flex-shrink-0 mt-0.5" />
+            <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4 mb-6 flex gap-3">
+              <AlertCircle size={20} className="text-yellow-600 flex-shrink-0 mt-0.5" />
               <div className="flex-1">
-                <p className="text-yellow-200 font-semibold">Using fallback roles</p>
-                <p className="text-yellow-300 text-sm">{rolesError} - Showing sample roles instead</p>
+                <p className="text-yellow-800 font-semibold">Using fallback roles</p>
+                <p className="text-yellow-700 text-sm">{rolesError} - Showing sample roles instead</p>
               </div>
               <button
                 onClick={fetchRoles}
-                className="text-yellow-300 hover:text-yellow-200 transition-colors"
+                className="text-yellow-700 hover:text-yellow-800 transition-colors"
                 title="Retry loading roles"
               >
                 <RefreshCw size={18} />
@@ -325,17 +325,17 @@ const SkillGapAnalyzer = () => {
 
           {/* Form Error Banner */}
           {error && (
-            <div className="bg-red-900/30 border border-red-700 rounded-lg p-4 mb-6 flex gap-3">
-              <AlertCircle size={20} className="text-red-400 flex-shrink-0 mt-0.5" />
-              <p className="text-red-200">{error}</p>
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6 flex gap-3">
+              <AlertCircle size={20} className="text-red-500 flex-shrink-0 mt-0.5" />
+              <p className="text-red-700">{error}</p>
             </div>
           )}
 
           {/* Roles Loading State */}
           {rolesLoading && (
-            <div className="bg-slate-700/50 border border-slate-600 rounded-lg p-4 mb-6 flex gap-3 items-center">
-              <Loader size={20} className="text-emerald-400 animate-spin" />
-              <p className="text-slate-300">Loading available roles...</p>
+            <div className="bg-[#FFF4E0] border border-[#FFB347]/30 rounded-lg p-4 mb-6 flex gap-3 items-center">
+              <Loader size={20} className="text-[#FF9500] animate-spin" />
+              <p className="text-muted-foreground">Loading available roles...</p>
             </div>
           )}
 
@@ -351,7 +351,7 @@ const SkillGapAnalyzer = () => {
                 value={formData.current_role}
                 onChange={handleInputChange}
                 disabled={rolesLoading}
-                className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:border-emerald-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full bg-white border border-[#E0DCCF] rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <option value="">
                   {rolesLoading ? 'Loading roles...' : 'Select your current role...'}
@@ -368,7 +368,7 @@ const SkillGapAnalyzer = () => {
                 ))}
               </select>
               {formData.current_role === formData.target_role && formData.target_role && (
-                <p className="text-yellow-400 text-sm mt-2">⚠ Cannot select the same role as current</p>
+                <p className="text-yellow-600 text-sm mt-2">⚠ Cannot select the same role as current</p>
               )}
             </div>
 
@@ -383,7 +383,7 @@ const SkillGapAnalyzer = () => {
                 value={formData.target_role}
                 onChange={handleInputChange}
                 disabled={rolesLoading}
-                className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:border-emerald-500 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full bg-white border border-[#E0DCCF] rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <option value="">
                   {rolesLoading ? 'Loading roles...' : 'Select your target role...'}
@@ -400,7 +400,7 @@ const SkillGapAnalyzer = () => {
                 ))}
               </select>
               {formData.current_role === formData.target_role && formData.target_role && (
-                <p className="text-yellow-400 text-sm mt-2">⚠ Cannot select the same role as target</p>
+                <p className="text-yellow-600 text-sm mt-2">⚠ Cannot select the same role as target</p>
               )}
             </div>
 
@@ -417,15 +417,15 @@ const SkillGapAnalyzer = () => {
                 max="50"
                 value={formData.experience_years}
                 onChange={handleInputChange}
-                className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:border-emerald-500 focus:outline-none transition-colors"
+                className="w-full bg-white border border-[#E0DCCF] rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 transition-colors"
               />
-              <p className="text-slate-400 text-sm mt-1">0-50 years</p>
+              <p className="text-muted-foreground text-sm mt-1">0-50 years</p>
             </div>
 
             {/* Skills Input */}
             <div>
               <label htmlFor="skill-input" className="block text-sm font-semibold mb-2">
-                Your Skills <span className="text-slate-500">(Optional)</span>
+                Your Skills <span className="text-muted-foreground">(Optional)</span>
               </label>
               <div className="flex gap-2 mb-3">
                 <input
@@ -441,7 +441,7 @@ const SkillGapAnalyzer = () => {
                   }}
                   placeholder="e.g., React, JavaScript, Node.js..."
                   autoComplete="off"
-                  className="flex-1 bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:border-emerald-500 focus:outline-none transition-colors"
+                  className="flex-1 bg-white border border-[#E0DCCF] rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 transition-colors"
                 />
                 <button
                   type="button"
@@ -449,7 +449,7 @@ const SkillGapAnalyzer = () => {
                     handleAddSkill();
                     setTimeout(() => document.getElementById('skill-input')?.focus(), 0);
                   }}
-                  className="bg-emerald-600 hover:bg-emerald-700 px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50"
+                  className="bg-[#FF9500] hover:bg-[#E88600] text-white px-4 py-2 rounded-lg font-semibold transition-colors disabled:opacity-50"
                   disabled={!skillInput.trim()}
                 >
                   Add
@@ -462,13 +462,13 @@ const SkillGapAnalyzer = () => {
                   {formData.self_skills.map(skill => (
                     <div
                       key={skill}
-                      className="bg-emerald-600/30 border border-emerald-600 rounded-full px-3 py-1 text-sm flex items-center gap-2 animate-in fade-in-50 duration-200"
+                      className="bg-[#FF9500]/15 border border-[#FF9500]/40 text-[#CC7000] rounded-full px-3 py-1 text-sm flex items-center gap-2 animate-in fade-in-50 duration-200"
                     >
                       {skill}
                       <button
                         type="button"
                         onClick={() => handleRemoveSkill(skill)}
-                        className="hover:text-red-400 font-bold ml-1 transition-colors"
+                        className="hover:text-red-500 font-bold ml-1 transition-colors"
                         aria-label={`Remove ${skill}`}
                       >
                         ×
@@ -479,7 +479,7 @@ const SkillGapAnalyzer = () => {
               )}
 
               {formData.self_skills.length > 0 && (
-                <p className="text-slate-400 text-sm mt-2">
+                <p className="text-muted-foreground text-sm mt-2">
                   {formData.self_skills.length} skill(s) added
                 </p>
               )}
@@ -488,7 +488,7 @@ const SkillGapAnalyzer = () => {
             {/* Resume Text */}
             <div>
               <label htmlFor="resume_text" className="block text-sm font-semibold mb-2">
-                Resume Text <span className="text-slate-500">(Optional)</span>
+                Resume Text <span className="text-muted-foreground">(Optional)</span>
               </label>
               <textarea
                 id="resume_text"
@@ -497,9 +497,9 @@ const SkillGapAnalyzer = () => {
                 onChange={handleInputChange}
                 placeholder="Paste your resume text here for skill extraction..."
                 rows="4"
-                className="w-full bg-slate-700 border border-slate-600 rounded-lg px-4 py-2 text-white focus:border-emerald-500 focus:outline-none transition-colors resize-none"
+                className="w-full bg-white border border-[#E0DCCF] rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 transition-colors resize-none"
               />
-              <p className="text-slate-400 text-sm mt-1">
+              <p className="text-muted-foreground text-sm mt-1">
                 Helps us extract your existing skills
               </p>
             </div>
@@ -508,7 +508,7 @@ const SkillGapAnalyzer = () => {
             <button
               type="submit"
               disabled={analyzing || !isFormValid || rolesLoading}
-              className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-emerald-500/50 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+              className="w-full bg-gradient-to-r from-[#FF9500] to-[#E88600] text-white py-3 rounded-lg font-semibold hover:shadow-lg hover:shadow-[#FF9500]/30 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
               title={!isFormValid ? validationErrors[0] : 'Analyze your skill gap'}
             >
               {analyzing ? (
@@ -531,14 +531,14 @@ const SkillGapAnalyzer = () => {
 
   // ==================== UI: Results Section ====================
   const ResultsSection = () => (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white py-12">
+    <div className="min-h-screen bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE] text-foreground py-12">
       <div className="max-w-6xl mx-auto px-6">
         <button
           onClick={() => {
             setFormStep(0);
             setAnalysisResult(null);
           }}
-          className="text-emerald-400 hover:text-emerald-300 font-semibold mb-8 flex items-center gap-2"
+          className="text-[#FF9500] hover:text-[#E88600] font-semibold mb-8 flex items-center gap-2"
         >
           ← New Analysis
         </button>

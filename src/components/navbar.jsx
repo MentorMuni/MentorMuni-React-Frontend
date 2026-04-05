@@ -138,7 +138,7 @@ const Navbar = () => {
               alt="MentorMuni Logo"
               className="h-11 w-11 shrink-0 rounded-full object-contain ring-2 ring-[#F0ECE0] transition-all group-hover:ring-[#FFB347]/50 sm:h-12 sm:w-12"
             />
-            <span className="hidden text-xl font-extrabold tracking-tight text-[#1A1A1A] sm:inline sm:text-[1.4rem]">
+            <span className="hidden text-xl font-extrabold tracking-tight text-foreground sm:inline sm:text-[1.4rem]">
               Mentor<span className="text-[#FF9500]">Muni</span>
             </span>
           </Link>
@@ -184,8 +184,8 @@ const Navbar = () => {
                             <Icon size={17} className={tool.color} strokeWidth={2} />
                           </span>
                           <span>
-                            <span className="block text-[0.9375rem] font-semibold text-[#1A1A1A] group-hover:text-[#FF9500] transition-colors">{tool.title}</span>
-                            <span className="block text-[13px] text-[#666666] leading-snug mt-0.5">{tool.desc}</span>
+                            <span className="block text-[0.9375rem] font-semibold text-foreground group-hover:text-[#FF9500] transition-colors">{tool.title}</span>
+                            <span className="block text-[13px] text-muted-foreground leading-snug mt-0.5">{tool.desc}</span>
                           </span>
                         </Link>
                       );
@@ -195,7 +195,7 @@ const Navbar = () => {
                     <div className="mb-1.5 w-fit">
                       <LimitedRewardLabel className="text-[8px] px-2 py-0.5 [&_svg]:h-2.5 [&_svg]:w-2.5" />
                     </div>
-                    <p className="text-[12px] text-[#444444] leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
+                    <p className="text-[12px] text-foreground-muted leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
                     <Link
                       to="/interview-readiness-tools"
                       onClick={() => setToolsOpen(false)}
@@ -256,7 +256,7 @@ const Navbar = () => {
 
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 text-[#444444] hover:text-[#FF9500] transition-colors"
+            className="lg:hidden p-2 text-foreground-muted hover:text-[#FF9500] transition-colors"
             aria-label="Toggle mobile menu"
           >
             {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -282,7 +282,7 @@ const Navbar = () => {
                   className={`px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
                     isActive(item.path, item.exact)
                       ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
-                      : 'text-[#444444] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+                      : 'text-foreground-muted hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
                   }`}
                 >
                   {item.label}
@@ -290,7 +290,7 @@ const Navbar = () => {
               ))}
 
               <div className="border-t border-[#F0ECE0] my-2 pt-2">
-                <p className="px-4 py-1 text-xs font-bold text-[#888888] uppercase tracking-widest">Tools</p>
+                <p className="px-4 py-1 text-xs font-bold text-hint uppercase tracking-widest">Tools</p>
                 {TOOLS.map((tool) => {
                   const Icon = tool.icon;
                   return (
@@ -298,7 +298,7 @@ const Navbar = () => {
                       key={tool.href}
                       to={tool.href}
                       onClick={handleNavClick}
-                      className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-[#444444] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)] transition-all"
+                      className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-foreground-muted hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)] transition-all"
                     >
                       <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${tool.bg}`}>
                         <Icon size={13} className={tool.color} />
@@ -311,7 +311,7 @@ const Navbar = () => {
                   <div className="mb-1.5 w-fit">
                     <LimitedRewardLabel className="text-[8px] px-2 py-0.5 [&_svg]:h-2.5 [&_svg]:w-2.5" />
                   </div>
-                  <p className="text-xs text-[#444444] leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
+                  <p className="text-xs text-foreground-muted leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
                   <button
                     type="button"
                     onClick={() => {
@@ -331,7 +331,7 @@ const Navbar = () => {
                 className={`px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
                   isActive('/colleges', true)
                     ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
-                    : 'text-[#444444] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+                    : 'text-foreground-muted hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
                 }`}
               >
                 For colleges
@@ -342,7 +342,7 @@ const Navbar = () => {
                 className={`px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
                   isActive('/contact', true)
                     ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
-                    : 'text-[#444444] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+                    : 'text-foreground-muted hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
                 }`}
               >
                 Contact us

@@ -37,7 +37,7 @@ const MockInterviews = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-[#1A1A1A]">
+    <div className="min-h-screen bg-[#FFFDF8] text-foreground">
       {/* Ambient background — matches homepage / resume analyzer */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[rgba(255,149,0,0.12)] rounded-full blur-[130px]" />
@@ -58,7 +58,7 @@ const MockInterviews = () => {
                   <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FF9500]/10 border border-[#FF9500]/25">
                     <Mic size={22} className="text-[#FF9500]" />
                   </div>
-                  <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-[#1A1A1A]">
+                  <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-foreground">
                     Mock{' '}
                     <span
                       style={{
@@ -71,7 +71,7 @@ const MockInterviews = () => {
                     </span>
                   </h1>
                 </div>
-                <p className="text-[#555555] text-base max-w-xl leading-relaxed">
+                <p className="text-foreground-muted text-base max-w-xl leading-relaxed">
                   Practice with real-time evaluation and feedback aligned to campus and off-campus tech rounds — same visual language as the rest of MentorMuni.
                 </p>
               </div>
@@ -85,7 +85,7 @@ const MockInterviews = () => {
                     className="flex items-center gap-1.5 rounded-lg border border-[#E0DCCF] bg-[#FFF8EE] px-3 py-1.5"
                   >
                     <Icon size={13} className="text-[#FF9500]" />
-                    <span className="text-xs font-semibold text-[#444444]">{label}</span>
+                    <span className="text-xs font-semibold text-foreground-muted">{label}</span>
                   </div>
                 ))}
               </div>
@@ -104,8 +104,8 @@ const MockInterviews = () => {
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#FF9500]/10 border border-[#FF9500]/15 mb-4">
                   <Icon size={20} className="text-[#FF9500]" />
                 </div>
-                <h3 className="text-lg font-bold text-[#1A1A1A] mb-2">{title}</h3>
-                <p className="text-sm text-[#666666] leading-relaxed mb-5">{desc}</p>
+                <h3 className="text-lg font-bold text-foreground mb-2">{title}</h3>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-5">{desc}</p>
                 <Link
                   to={href}
                   className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#FF9500] hover:text-[#CC7000] transition-colors"
@@ -123,8 +123,8 @@ const MockInterviews = () => {
                 <Sparkles size={12} />
                 Coming soon
               </div>
-              <h2 className="text-2xl md:text-3xl font-black text-[#1A1A1A] mb-3">Full mock interview platform</h2>
-              <p className="text-[#555555] text-sm max-w-2xl mx-auto leading-relaxed mb-8">
+              <h2 className="text-2xl md:text-3xl font-black text-foreground mb-3">Full mock interview platform</h2>
+              <p className="text-foreground-muted text-sm max-w-2xl mx-auto leading-relaxed mb-8">
                 Live mentors, AI evaluation, and performance analytics — built for engineering students in India. Be among the first to get access.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">

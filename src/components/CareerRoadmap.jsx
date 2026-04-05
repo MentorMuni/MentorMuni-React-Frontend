@@ -78,10 +78,10 @@ const CareerRoadmap = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">
             Your Journey to a Tech Job
           </h2>
-          <p className="text-lg text-slate-600 max-w-2xl mx-auto">
+          <p className="text-lg text-foreground-muted max-w-2xl mx-auto">
             Follow a clear roadmap to go from student to job-ready professional.
           </p>
         </div>
@@ -110,10 +110,10 @@ const CareerRoadmap = () => {
 
                     {/* Card */}
                     <div className={`${colors.bg} border ${colors.border} rounded-lg p-6 text-center w-full max-w-xs transition-all duration-300 group-hover:shadow-xl group-hover:-translate-y-1`}>
-                      <h3 className="text-lg font-bold text-slate-900 mb-3">
+                      <h3 className="text-lg font-bold text-foreground mb-3">
                         {step.title}
                       </h3>
-                      <p className="text-sm text-slate-600 leading-relaxed">
+                      <p className="text-sm text-foreground-muted leading-relaxed">
                         {step.description}
                       </p>
                     </div>
@@ -154,14 +154,14 @@ const CareerRoadmap = () => {
                   {/* Card */}
                   <div className={`${colors.bg} border ${colors.border} rounded-lg p-5 flex-1 transition-all duration-300 hover:shadow-lg hover:-translate-y-1`}>
                     <div className="flex items-center gap-3 mb-2">
-                      <h3 className="text-lg font-bold text-slate-900">
+                      <h3 className="text-lg font-bold text-foreground">
                         {step.title}
                       </h3>
                       <div className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gradient-to-r from-[#FF9500] to-purple-600 text-white text-xs font-bold">
                         {step.id}
                       </div>
                     </div>
-                    <p className="text-sm text-slate-600 leading-relaxed">
+                    <p className="text-sm text-foreground-muted leading-relaxed">
                       {step.description}
                     </p>
                   </div>
@@ -173,7 +173,7 @@ const CareerRoadmap = () => {
 
         {/* CTA Section */}
         <div className="text-center pt-12 border-t border-slate-200">
-          <p className="text-slate-600 mb-6 max-w-2xl mx-auto">
+          <p className="text-foreground-muted mb-6 max-w-2xl mx-auto">
             Start your transformation today. Our platform guides you through each step with curated content, expert mentorship, and real-world projects.
           </p>
           <a

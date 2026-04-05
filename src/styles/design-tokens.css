@@ -4,10 +4,11 @@
   --bg-secondary: #fff8ee;
   --bg-card: #ffffff;
   --bg-soft-peach: #fff4e0;
-  --text-primary: #1a1a1a;
-  --text-secondary: #666666;
-  --text-muted: #999999;
-  --text-hint: #888888;
+  --text-primary: #18181b;      /* zinc-900 — stronger for headings */
+  --text-secondary: #52525b;    /* zinc-600 — readable secondary */
+  --text-muted: #71717a;        /* zinc-500 — muted but still readable */
+  --text-hint: #a1a1aa;         /* zinc-400 — captions, fine print */
+  --text-body: #3f3f46;         /* zinc-700 — main body text, high contrast */
   --accent: #ff9500;
   --accent-hover: #e88600;
   --accent-soft: #fff4e0;
@@ -27,8 +28,7 @@
   --shadow-button: 0 4px 14px rgba(255, 149, 0, 0.25);
 
   --main-bg: var(--bg-primary);
-  --text-heading: #1a1a1a;
-  --text-body: #444444;
+  --text-heading: #18181b;      /* zinc-900 */
   --primary: var(--accent);
   --secondary: var(--accent-secondary);
   --secondary-bg: var(--bg-secondary);

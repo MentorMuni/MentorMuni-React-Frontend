@@ -11,7 +11,7 @@ const steps = [
 
 function ActivityBubble({ message }) {
   return (
-    <div className="mt-4 inline-flex items-center gap-3 text-sm text-slate-400">
+    <div className="mt-4 inline-flex items-center gap-3 text-sm text-muted-foreground">
       <div className="w-3 h-3 rounded-full bg-[#FFB347] animate-pulse" />
       <span>{message}</span>
     </div>
@@ -58,14 +58,14 @@ export default function CareerDiagnostic() {
               ? 'bg-[#FF9500] text-white'
               : active
                 ? 'bg-[#FF9500]/30 text-[#CC7000]'
-                : 'bg-slate-700/80 text-slate-400'
+                : 'bg-slate-700/80 text-muted-foreground'
           }`}
         >
           {done ? '✓' : index + 1}
         </div>
         <div className="min-w-0">
           <div className="font-semibold text-white">{s.title}</div>
-          <div className="text-sm text-slate-400">
+          <div className="text-sm text-muted-foreground">
             {done ? 'Complete' : active ? <ActivityBubble message={s.activity} /> : 'Pending'}
           </div>
         </div>
@@ -119,14 +119,14 @@ export default function CareerDiagnostic() {
                 </button>
               )}
             </div>
-            <p className="text-sm text-slate-500">
-              Status: <strong className="text-slate-400">{status}</strong>
+            <p className="text-sm text-muted-foreground">
+              Status: <strong className="text-muted-foreground">{status}</strong>
             </p>
           </div>
 
           <div className="card-dark rounded-xl p-6">
             <div className="font-semibold text-white mb-3">Live activity</div>
-            <div className="min-h-[120px] text-sm text-slate-400">
+            <div className="min-h-[120px] text-sm text-muted-foreground">
               {status === 'idle' && (
                 <p>Start the diagnostic to see AI activity and progress.</p>
               )}
@@ -139,7 +139,7 @@ export default function CareerDiagnostic() {
               {log.length > 0 && (
                 <div className="mt-3 space-y-2">
                   {log.map((l, i) => (
-                    <div key={i} className="text-slate-400">{l}</div>
+                    <div key={i} className="text-muted-foreground">{l}</div>
                   ))}
                 </div>
               )}

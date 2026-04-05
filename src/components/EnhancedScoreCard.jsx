@@ -29,9 +29,9 @@ const ScoreCard = ({ title, score, icon: Icon, tooltipText, maxScore = 100 }) =>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <div className="p-2 bg-gray-100 rounded-lg">
-              <Icon size={24} className="text-gray-600" />
+              <Icon size={24} className="text-foreground-muted" />
             </div>
-            <h3 className="text-sm font-semibold text-gray-700">{title}</h3>
+            <h3 className="text-sm font-semibold text-foreground-muted">{title}</h3>
           </div>
           
           <div className="relative">
@@ -40,7 +40,7 @@ const ScoreCard = ({ title, score, icon: Icon, tooltipText, maxScore = 100 }) =>
               onMouseLeave={() => setShowTooltip(false)}
               className="p-1 hover:bg-gray-100 rounded-full transition-colors"
             >
-              <Info size={16} className="text-gray-400" />
+              <Info size={16} className="text-muted-foreground" />
             </button>
             
             {/* Tooltip */}
@@ -59,7 +59,7 @@ const ScoreCard = ({ title, score, icon: Icon, tooltipText, maxScore = 100 }) =>
             <span className="text-4xl font-bold" style={{ color: getScoreColor() }}>
               {score}
             </span>
-            <span className="text-gray-400 text-sm">/ {maxScore}</span>
+            <span className="text-muted-foreground text-sm">/ {maxScore}</span>
           </div>
           <p className="text-xs font-semibold" style={{ color: getScoreColor() }}>
             {getScoreLabel()}

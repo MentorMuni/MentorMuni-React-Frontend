@@ -2,16 +2,168 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+
+    <!-- ═══ Core SEO ═══════════════════════════════════════════════════════ -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MentorMuni — Know Your Interview Readiness Score in 5 Minutes</title>
+    <meta name="description" content="Free interview readiness check for engineering students in India. Get your score, discover your gaps, and prep with AI mock interviews + mentor-backed guidance before placement season." />
+    <meta name="keywords" content="interview readiness, placement preparation, engineering students India, TCS interview prep, Infosys placement, AI mock interviews, resume ATS checker, coding interview, campus placement, MentorMuni" />
+    <meta name="author" content="MentorMuni" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://mentormuni.com/MentorMuni-React-Frontend/" />
+
+    <!-- ═══ Open Graph (Facebook, LinkedIn, WhatsApp rich previews) ═══════ -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="MentorMuni" />
+    <meta property="og:locale" content="en_IN" />
+    <meta property="og:url" content="https://mentormuni.com/MentorMuni-React-Frontend/" />
+    <meta property="og:title" content="MentorMuni — Know Your Interview Readiness Score in 5 Min" />
+    <meta property="og:description" content="Free interview readiness check for engineering students. Get your score, find your gaps, and prep with AI mocks + mentor-backed guidance before placement season. No signup. Instant result." />
+    <meta property="og:image" content="https://mentormuni.com/MentorMuni-React-Frontend/mentormuni-brand-banner-new.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="MentorMuni — Free Interview Readiness Score for Engineering Students" />
+
+    <!-- ═══ Twitter / X Card ════════════════════════════════════════════════ -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="MentorMuni — Know Your Interview Readiness Score in 5 Min" />
+    <meta name="twitter:description" content="Free interview readiness check for engineering students. Find your gaps before placement season. No signup. Instant score." />
+    <meta name="twitter:image" content="https://mentormuni.com/MentorMuni-React-Frontend/mentormuni-brand-banner-new.png" />
+
+    <!-- ═══ PWA / Mobile ════════════════════════════════════════════════════ -->
+    <meta name="theme-color" content="#FF9500" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="MentorMuni" />
+
+    <!-- ═══ Favicon & Icons ════════════════════════════════════════════════ -->
+    <link rel="icon" type="image/png" href="/MentorMuni-React-Frontend/mentormuni-logo.png" />
+    <link rel="apple-touch-icon" href="/MentorMuni-React-Frontend/mentormuni-logo.png" />
+
+    <!-- ═══ Fonts (preconnect first, then stylesheet) ══════════════════════ -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap"
       rel="stylesheet"
     />
-    <link rel="icon" type="image/png" href="/MentorMuni-React-Frontend/mentormuni-logo.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="MentorMuni — interview readiness scores, AI mock interviews, and mentor-backed prep for engineering placements." />
-    <title>MentorMuni — Interview readiness for engineers</title>
+
+    <!-- ═══ Structured Data — Organization ════════════════════════════════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "MentorMuni",
+      "url": "https://mentormuni.com",
+      "logo": "https://mentormuni.com/MentorMuni-React-Frontend/mentormuni-logo.png",
+      "description": "Interview readiness platform for engineering students in India. AI mock interviews, resume ATS checker, and mentor-backed prep for campus placements.",
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+91-91464-21302",
+        "email": "hello@mentormuni.com",
+        "contactType": "customer support",
+        "areaServed": "IN",
+        "availableLanguage": "English"
+      },
+      "sameAs": []
+    }
+    </script>
+
+    <!-- ═══ Structured Data — FAQ (appears as rich result in Google search) ══ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "What is MentorMuni?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MentorMuni is a free interview readiness platform for engineering students in India. It gives you a score across DSA, System Design, and HR readiness in ~5 minutes — with AI mock interviews, resume ATS checking, and mentor-backed prep to help you close the gaps before placement season."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Is the interview readiness check really free?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The interview readiness check is completely free, takes about 5 minutes, and requires no signup. You get an instant score with a topic-by-topic breakdown."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Which companies does MentorMuni prepare students for?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MentorMuni covers company-specific patterns for TCS (NQT and Digital), Infosys (SP and DSP), Wipro (NLTH and Turbo), Cognizant (GenC and GenC Pro), Accenture (ASE and ASEL), HCL Technologies, Capgemini, and LTIMindtree."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "What is an AI mock interview?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MentorMuni's AI mock interviews simulate real campus placement panels with real-time voice practice. You get feedback on clarity, depth, and structure — closer to a real interview than practicing alone."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "Who are the mentors at MentorMuni?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "MentorMuni mentors are senior engineers and tech leads from India's leading IT companies with 12–15 years of experience. They have each conducted 100+ interviews and are actively using AI tools like GitHub Copilot and ChatGPT in their daily work."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "When should I start interview prep?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Start as early as possible. 2nd and 3rd year students can use the readiness check to align with what interviews actually test. 4th year students facing placement season should start immediately — most students who fail have no structured prep baseline going in."
+          }
+        }
+      ]
+    }
+    </script>
+
+    <!-- ═══ Structured Data — WebSite (enables Sitelinks search box) ══════ -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "MentorMuni",
+      "url": "https://mentormuni.com/MentorMuni-React-Frontend/",
+      "description": "Free interview readiness check for engineering students in India."
+    }
+    </script>
+
+    <!-- ═══ Google Analytics 4 ═════════════════════════════════════════════
+         IMPORTANT: Replace G-XXXXXXXXXX with your actual GA4 Measurement ID.
+         Get it from: analytics.google.com → Admin → Data Streams → Measurement ID
+    ════════════════════════════════════════════════════════════════════════ -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX', { page_path: window.location.href });
+    </script>
+
+    <!-- ═══ Microsoft Clarity — free heatmaps + session recordings ══════════
+         Replace YOUR_CLARITY_ID with your project tag ID.
+         Create your free project at: clarity.microsoft.com
+    ════════════════════════════════════════════════════════════════════════ -->
+    <script type="text/javascript">
+      (function(c,l,a,r,i,t,y){
+        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+      })(window, document, "clarity", "script", "YOUR_CLARITY_ID");
+    </script>
+
+    <!-- GitHub Pages SPA redirect helper — do not remove -->
     <script type="text/javascript">
       (function(l) {
         if (l.search[1] === '/' ) {
@@ -24,6 +176,7 @@
         }
       }(window.location))
     </script>
+    <title>MentorMuni — Know Your Interview Readiness Score in 5 Minutes</title>
   </head>
   <body style="background-color:#fffdf8;color:#444444">
     <div id="root"></div>

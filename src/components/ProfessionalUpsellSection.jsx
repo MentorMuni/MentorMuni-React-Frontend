@@ -98,14 +98,14 @@ const ProfessionalUpsellSection = ({ atsScore = 70, targetRole = 'Backend Develo
         <h2 className={`text-3xl md:text-4xl font-black mb-3 ${heading.color}`}>
           {heading.title}
         </h2>
-        <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+        <p className="text-foreground-muted text-lg max-w-2xl mx-auto">
           {heading.subtitle}
         </p>
 
         {/* ATS Score Badge */}
         <div className="flex justify-center mt-6">
           <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-gray-200 shadow-sm">
-            <span className="text-sm text-gray-600">Your ATS Score:</span>
+            <span className="text-sm text-foreground-muted">Your ATS Score:</span>
             <span className="text-xl font-bold text-[#FF9500]">{atsScore}/100</span>
           </div>
         </div>
@@ -141,10 +141,10 @@ const ProfessionalUpsellSection = ({ atsScore = 70, targetRole = 'Backend Develo
                   <div className="w-12 h-12 bg-[#FFF4E0] rounded-lg flex items-center justify-center mb-3">
                     <Icon size={28} className="text-[#FF9500]" />
                   </div>
-                  <h3 className="text-lg font-bold text-gray-900 mb-1">
+                  <h3 className="text-lg font-bold text-foreground mb-1">
                     {service.title}
                   </h3>
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-foreground-muted">
                     {service.subtitle}
                   </p>
                 </div>
@@ -152,18 +152,18 @@ const ProfessionalUpsellSection = ({ atsScore = 70, targetRole = 'Backend Develo
                 {/* Pricing and Duration */}
                 <div className="mb-6 pb-6 border-b border-gray-200">
                   <div className="flex items-baseline gap-2 mb-2">
-                    <span className="text-3xl font-bold text-gray-900">
+                    <span className="text-3xl font-bold text-foreground">
                       {service.price}
                     </span>
                   </div>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     {service.duration}
                   </p>
                 </div>
 
                 {/* Includes List */}
                 <div className="mb-6 flex-1">
-                  <p className="text-xs font-semibold text-gray-500 uppercase mb-3">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase mb-3">
                     Service Includes:
                   </p>
                   <ul className="space-y-2">
@@ -173,7 +173,7 @@ const ProfessionalUpsellSection = ({ atsScore = 70, targetRole = 'Backend Develo
                           size={16}
                           className="text-green-600 flex-shrink-0 mt-0.5"
                         />
-                        <span className="text-sm text-gray-700">{item}</span>
+                        <span className="text-sm text-foreground-muted">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -186,13 +186,13 @@ const ProfessionalUpsellSection = ({ atsScore = 70, targetRole = 'Backend Develo
                     className={`w-full py-3 px-4 rounded-lg font-semibold transition-all flex items-center justify-center gap-2 ${
                       service.recommended
                         ? 'bg-[#FF9500] text-white hover:bg-[#CC7000]'
-                        : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
+                        : 'bg-gray-100 text-foreground hover:bg-gray-200'
                     }`}
                   >
                     {service.cta}
                     <ArrowRight size={16} />
                   </button>
-                  <button className="w-full py-2 px-4 rounded-lg font-semibold text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-all text-sm">
+                  <button className="w-full py-2 px-4 rounded-lg font-semibold text-foreground-muted hover:text-foreground hover:bg-gray-100 transition-all text-sm">
                     {service.ctaSecondary}
                   </button>
                 </div>
@@ -212,16 +212,16 @@ const ProfessionalUpsellSection = ({ atsScore = 70, targetRole = 'Backend Develo
       {/* Why Choose Section */}
       <div className="mt-8 grid md:grid-cols-3 gap-4 text-center text-sm">
         <div>
-          <p className="font-semibold text-gray-900 mb-1">Expert Reviewers</p>
-          <p className="text-gray-600">Industry professionals with 5+ years experience</p>
+          <p className="font-semibold text-foreground mb-1">Expert Reviewers</p>
+          <p className="text-foreground-muted">Industry professionals with 5+ years experience</p>
         </div>
         <div>
-          <p className="font-semibold text-gray-900 mb-1">Quick Turnaround</p>
-          <p className="text-gray-600">Most services completed within 2-3 business days</p>
+          <p className="font-semibold text-foreground mb-1">Quick Turnaround</p>
+          <p className="text-foreground-muted">Most services completed within 2-3 business days</p>
         </div>
         <div>
-          <p className="font-semibold text-gray-900 mb-1">India-Focused</p>
-          <p className="text-gray-600">Optimized for Indian job market and companies</p>
+          <p className="font-semibold text-foreground mb-1">India-Focused</p>
+          <p className="text-foreground-muted">Optimized for Indian job market and companies</p>
         </div>
       </div>
     </div>

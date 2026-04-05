@@ -90,13 +90,13 @@ function TimelineStep({ step, index, isLast }) {
         <p style={{ color: step.tagColor, fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 6, marginTop: 12 }}>
           {step.tag}
         </p>
-        <h3 style={{ fontSize: 20, fontWeight: 700, color: '#1a1a1a', marginBottom: 10, lineHeight: 1.3 }}>{step.title}</h3>
-        <p style={{ fontSize: 14, color: '#444444', lineHeight: 1.75, marginBottom: 16 }}>{step.body}</p>
+        <h3 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-heading)', marginBottom: 10, lineHeight: 1.3 }}>{step.title}</h3>
+        <p style={{ fontSize: 14, color: 'var(--text-body)', lineHeight: 1.75, marginBottom: 16 }}>{step.body}</p>
         <div style={{ background: step.cardBg, border: `1px solid ${step.cardBorder}`, borderRadius: 10, padding: '14px 18px' }}>
           {step.items.map((item, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: 10, marginBottom: i < step.items.length - 1 ? 9 : 0 }}>
               <span style={{ color: step.dotColor, fontSize: 16, lineHeight: 1, marginTop: 2, flexShrink: 0 }}>•</span>
-              <span style={{ fontSize: 13, color: '#444444', lineHeight: 1.6 }}>{item}</span>
+              <span style={{ fontSize: 13, color: 'var(--text-body)', lineHeight: 1.6 }}>{item}</span>
             </div>
           ))}
         </div>
@@ -117,10 +117,10 @@ function MentorTeaserCard({ initials, avColor, name, role, badge, stat, lockMsg 
           </div>
           <div>
             <p style={{ fontWeight: 600, fontSize: 15, color: '#1a1a1a', marginBottom: 2 }}>{name}</p>
-            <p style={{ fontSize: 13, color: '#666666' }}>{role}</p>
+            <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{role}</p>
           </div>
         </div>
-        <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 6, padding: '5px 10px', display: 'inline-block', fontSize: 12, color: '#666666', marginBottom: 10 }}>
+        <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 6, padding: '5px 10px', display: 'inline-block', fontSize: 12, color: 'var(--text-secondary)', marginBottom: 10 }}>
           {badge}
         </div>
         <p style={{ fontSize: 12, color: '#4ade80', fontWeight: 500 }}>{stat}</p>
@@ -136,7 +136,7 @@ function MentorTeaserCard({ initials, avColor, name, role, badge, stat, lockMsg 
         gap: 10, padding: '0 20px', textAlign: 'center',
       }}>
         <span style={{ fontSize: 22 }}>🔒</span>
-        <p style={{ fontSize: 13, color: '#666666', lineHeight: 1.5, maxWidth: 160 }}>{lockMsg}</p>
+        <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5, maxWidth: 160 }}>{lockMsg}</p>
       </div>
     </div>
   );
@@ -149,7 +149,7 @@ function FeatureCard({ icon, title, body }) {
       <span style={{ fontSize: 26, flexShrink: 0, marginTop: 2 }}>{icon}</span>
       <div>
         <p style={{ fontWeight: 700, fontSize: 15, color: '#1a1a1a', marginBottom: 6 }}>{title}</p>
-        <p style={{ fontSize: 13, color: '#666666', lineHeight: 1.7 }}>{body}</p>
+        <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>{body}</p>
       </div>
     </div>
   );
@@ -244,7 +244,7 @@ export default function Mentors() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fffdf8] font-sans text-[#1a1a1a] antialiased">
+    <div className="min-h-screen bg-[#fffdf8] font-sans text-foreground antialiased">
       <style>{`
         @keyframes mentors-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
         @keyframes mentors-amber-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
@@ -269,7 +269,7 @@ export default function Mentors() {
           </h1>
 
           {/* Subtext */}
-          <p style={{ fontSize: 15, color: '#666666', lineHeight: 1.75, maxWidth: 480, margin: '0 auto' }}>
+          <p style={{ fontSize: 15, color: 'var(--text-secondary)', lineHeight: 1.75, maxWidth: 480, margin: '0 auto' }}>
             Every student gets matched to a mentor based on their exact gaps, target role, and interview timeline. No random assignments. The right expert for your specific situation.
           </p>
         </div>
@@ -324,12 +324,12 @@ export default function Mentors() {
           </p>
 
           {/* Title */}
-          <h2 style={{ fontSize: 20, fontWeight: 700, color: '#1a1a1a', marginBottom: 10, lineHeight: 1.35 }}>
+          <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--text-heading)', marginBottom: 10, lineHeight: 1.35 }}>
             Take the assessment. We'll notify you the moment your mentor match is ready.
           </h2>
 
           {/* Subtext */}
-          <p style={{ fontSize: 14, color: '#666666', lineHeight: 1.7, marginBottom: 24 }}>
+          <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 24 }}>
             Leave your WhatsApp — we&apos;ll message you when your matched mentor is available to book.
           </p>
 
@@ -344,7 +344,7 @@ export default function Mentors() {
                 <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#FF9500', color: '#1a1a1a', fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
                   {i + 1}
                 </div>
-                <p style={{ fontSize: 12, color: '#666666', lineHeight: 1.5 }}>{text}</p>
+                <p style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{text}</p>
               </div>
             ))}
           </div>
@@ -353,7 +353,7 @@ export default function Mentors() {
           {submitted ? (
             <div style={{ background: 'rgba(74,222,128,0.10)', border: '1px solid rgba(74,222,128,0.3)', borderRadius: 10, padding: '16px 20px', textAlign: 'center' }}>
               <p style={{ fontSize: 15, fontWeight: 600, color: '#4ade80', marginBottom: 4 }}>You're on the list!</p>
-              <p style={{ fontSize: 13, color: '#666666' }}>We'll WhatsApp you when your mentor is ready.</p>
+              <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>We'll WhatsApp you when your mentor is ready.</p>
             </div>
           ) : (
             <div style={{ maxWidth: 360, margin: '0 auto' }}>
@@ -433,7 +433,7 @@ export default function Mentors() {
           <h2 style={{ fontSize: 24, fontWeight: 700, color: '#1a1a1a', marginBottom: 12 }}>
             Find out who your mentor will be.
           </h2>
-          <p style={{ fontSize: 14, color: '#666666', lineHeight: 1.7, maxWidth: 400, margin: '0 auto' }}>
+          <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, maxWidth: 400, margin: '0 auto' }}>
             Take the free assessment — 5 minutes, no signup. We'll show you your score, your gaps, and the type of mentor we'd match you with.
           </p>
 
@@ -453,7 +453,7 @@ export default function Mentors() {
               onClick={() => navigate('/waitlist')}
               onMouseEnter={e => { e.currentTarget.style.borderColor = '#FFB347'; e.currentTarget.style.color = '#CC7000'; }}
               onMouseLeave={e => { e.currentTarget.style.borderColor = '#F0ECE0'; e.currentTarget.style.color = '#666666'; }}
-              style={{ background: 'transparent', color: '#666666', border: '1px solid #F0ECE0', padding: '13px 24px', borderRadius: 9, fontSize: 14, fontWeight: 500, cursor: 'pointer', transition: 'border-color 0.15s, color 0.15s', whiteSpace: 'nowrap' }}
+              style={{ background: 'transparent', color: 'var(--text-secondary)', border: '1px solid #F0ECE0', padding: '13px 24px', borderRadius: 9, fontSize: 14, fontWeight: 500, cursor: 'pointer', transition: 'border-color 0.15s, color 0.15s', whiteSpace: 'nowrap' }}
             >
               Join the waitlist
             </button>

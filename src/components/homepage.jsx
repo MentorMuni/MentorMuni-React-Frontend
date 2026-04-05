@@ -1302,7 +1302,6 @@ const HomePage = () => {
                   </button>
                 </li>
                 <li><Link to="/mock-interviews" className="hover:text-[#FF9500] transition-colors">Mock Interviews</Link></li>
-                <li><Link to="/skill-gap-analyzer" className="hover:text-[#FF9500] transition-colors">Skill Gap Analyzer</Link></li>
                 <li><Link to="/resume-analyzer" className="hover:text-[#FF9500] transition-colors">Resume Analyzer</Link></li>
               </ul>
             </div>

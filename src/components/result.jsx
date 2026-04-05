@@ -45,7 +45,7 @@ function ScoreRing({ score }) {
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center">
         <span className="text-5xl font-black text-white tabular-nums" style={{ color }}>{score}</span>
-        <span className="text-xs text-slate-500 mt-0.5">out of 100</span>
+        <span className="text-xs text-muted-foreground mt-0.5">out of 100</span>
       </div>
     </div>
   );
@@ -189,12 +189,12 @@ export default function ResultPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-[#1A1A1A] font-sans antialiased py-12 px-4">
+    <div className="min-h-screen bg-[#FFFDF8] text-foreground font-sans antialiased py-12 px-4">
       <div className="max-w-2xl mx-auto space-y-6">
 
         {/* ── Score ring + verdict ── */}
         <div className="bg-white border border-[#F0ECE0] rounded-2xl p-8 text-center">
-          <p className="text-xs text-slate-500 uppercase tracking-wider mb-5 font-medium">Your Interview Readiness Score</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wider mb-5 font-medium">Your Interview Readiness Score</p>
           <ScoreRing score={totalScore} />
           <div className="mt-4 mb-2">
             <span className={`inline-block px-3 py-1 rounded-full text-xs font-bold ${verdict.cls}`}>
@@ -202,7 +202,7 @@ export default function ResultPage() {
             </span>
           </div>
           <p className="text-slate-300 text-sm max-w-sm mx-auto mt-2">{getVerdictText(totalScore)}</p>
-          <p className="text-xs text-slate-600 mt-3">Role assessed: {role}</p>
+          <p className="text-xs text-foreground-muted mt-3">Role assessed: {role}</p>
         </div>
 
         {/* ── Score breakdown bars ── */}
@@ -242,7 +242,7 @@ export default function ResultPage() {
             </div>
           ) : (
             <>
-              <p className="text-xs text-slate-500 uppercase tracking-wider font-medium mb-1">Early access waitlist</p>
+              <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium mb-1">Early access waitlist</p>
               <h3 className="text-lg font-bold text-white mb-1">
                 Students at {totalScore}/100 reach 85+ in 3–4 weeks with a mentor.
               </h3>
@@ -251,7 +251,7 @@ export default function ResultPage() {
               </p>
               <div className="flex gap-2">
                 <div className="relative flex-1">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm">+91</span>
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm">+91</span>
                   <input
                     type="tel" value={wlPhone}
                     onChange={e => setWlPhone(e.target.value.replace(/\D/g,'').slice(0,10))}
@@ -271,7 +271,7 @@ export default function ResultPage() {
         {/* ── Share card ── */}
         <div className="bg-white border border-[#F0ECE0] rounded-2xl p-6">
           <h2 className="font-bold text-white text-sm mb-2">Share your result</h2>
-          <p className="text-slate-500 text-xs mb-5">Challenge your friends or show recruiters you took the test.</p>
+          <p className="text-muted-foreground text-xs mb-5">Challenge your friends or show recruiters you took the test.</p>
 
           {/* Hidden card rendered for html2canvas */}
           <div className="overflow-hidden" style={{ height: 0, pointerEvents: 'none', position: 'absolute', left: -9999 }}>
@@ -293,7 +293,7 @@ export default function ResultPage() {
             </button>
           </div>
           <button onClick={handleDownload}
-            className="mt-3 w-full flex items-center justify-center gap-2 text-xs text-slate-500 hover:text-slate-300 transition-colors py-2">
+            className="mt-3 w-full flex items-center justify-center gap-2 text-xs text-muted-foreground hover:text-slate-300 transition-colors py-2">
             ↓ Download score card as image
           </button>
         </div>

@@ -29,10 +29,10 @@ const RecommendedCoursesSection = ({ courses }) => {
   };
 
   return (
-    <div className="bg-gradient-to-r from-slate-800 to-slate-700 rounded-2xl border border-slate-600 p-8">
+    <div className="bg-white rounded-2xl border border-[#E0DCCF] p-8 shadow-sm">
       <div className="mb-8">
-        <h2 className="text-3xl font-bold text-white mb-2">Recommended Courses</h2>
-        <p className="text-slate-300">
+        <h2 className="text-3xl font-bold text-foreground mb-2">Recommended Courses</h2>
+        <p className="text-muted-foreground">
           {courses.length} curated courses to bridge your skill gaps
         </p>
       </div>
@@ -41,15 +41,15 @@ const RecommendedCoursesSection = ({ courses }) => {
         {courses.map((course, index) => (
           <div
             key={course.id}
-            className="bg-slate-700/50 border border-slate-600 rounded-xl p-6 hover:border-emerald-500/50 transition-all hover:shadow-lg hover:shadow-emerald-500/10"
+            className="bg-[#FFFDF8] border border-[#E0DCCF] rounded-xl p-6 hover:border-[#FF9500]/50 transition-all hover:shadow-lg"
           >
             {/* Header with Provider and Type */}
             <div className="flex items-start justify-between mb-3">
               <div>
-                <p className="text-xs uppercase tracking-wider text-slate-400 font-semibold">
+                <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">
                   {course.provider}
                 </p>
-                <h3 className="text-lg font-bold text-white mt-1 mb-2 leading-snug">
+                <h3 className="text-lg font-bold text-foreground mt-1 mb-2 leading-snug">
                   {course.title}
                 </h3>
               </div>
@@ -59,12 +59,12 @@ const RecommendedCoursesSection = ({ courses }) => {
             </div>
 
             {/* Description */}
-            <p className="text-sm text-slate-300 mb-4 line-clamp-2">
+            <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
               {course.description}
             </p>
 
             {/* Meta Info */}
-            <div className="flex flex-wrap gap-3 mb-4 pb-4 border-b border-slate-600">
+            <div className="flex flex-wrap gap-3 mb-4 pb-4 border-b border-[#E0DCCF]">
               {/* Level */}
               <div className={`flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full border ${getLevelColor(course.level)}`}>
                 <BarChart3 size={14} />
@@ -72,7 +72,7 @@ const RecommendedCoursesSection = ({ courses }) => {
               </div>
 
               {/* Duration */}
-              <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-slate-600/50 text-slate-300 border border-slate-600">
+              <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-[#FFF4E0] text-foreground border border-[#E0DCCF]">
                 <Clock size={14} />
                 {course.duration_hours} hrs
               </div>
@@ -88,20 +88,20 @@ const RecommendedCoursesSection = ({ courses }) => {
 
             {/* Skills Covered */}
             <div className="mb-4">
-              <p className="text-xs uppercase tracking-wider text-slate-400 font-semibold mb-2">
+              <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-2">
                 Skills Covered
               </p>
               <div className="flex flex-wrap gap-2">
                 {course.skills_covered.slice(0, 3).map(skill => (
                   <span
                     key={skill}
-                    className="bg-emerald-600/20 text-emerald-300 text-xs px-2 py-1 rounded-md border border-emerald-600/50"
+                    className="bg-[#FF9500]/15 text-[#CC7000] text-xs px-2 py-1 rounded-md border border-[#FF9500]/40"
                   >
                     {skill}
                   </span>
                 ))}
                 {course.skills_covered.length > 3 && (
-                  <span className="text-xs text-slate-400 px-2 py-1">
+                  <span className="text-xs text-muted-foreground px-2 py-1">
                     +{course.skills_covered.length - 3} more
                   </span>
                 )}
@@ -110,13 +110,13 @@ const RecommendedCoursesSection = ({ courses }) => {
 
             {/* Enrollment Info */}
             {course.students_enrolled > 0 && (
-              <div className="text-xs text-slate-400 mb-4">
+              <div className="text-xs text-muted-foreground mb-4">
                 {course.students_enrolled.toLocaleString()} students enrolled
               </div>
             )}
 
             {/* CTA Button */}
-            <button className="w-full bg-gradient-to-r from-emerald-600 to-cyan-600 text-white font-semibold py-2 rounded-lg hover:shadow-lg hover:shadow-emerald-500/30 transition-all flex items-center justify-center gap-2">
+            <button className="w-full bg-gradient-to-r from-[#FF9500] to-[#E88600] text-white font-semibold py-2 rounded-lg hover:shadow-lg hover:shadow-[#FF9500]/30 transition-all flex items-center justify-center gap-2">
               <BookOpen size={16} />
               {course.affiliate_url ? 'View Course' : 'Enroll Now'}
               {course.affiliate_url && <ExternalLink size={14} />}
@@ -128,28 +128,28 @@ const RecommendedCoursesSection = ({ courses }) => {
       {/* Empty State */}
       {courses.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-slate-400 text-lg">No courses recommended at this time.</p>
+          <p className="text-muted-foreground text-lg">No courses recommended at this time.</p>
         </div>
       )}
 
       {/* Learning Path Suggestion */}
-      <div className="mt-8 bg-slate-700/50 border border-slate-600 rounded-xl p-6">
-        <h3 className="text-lg font-semibold text-white mb-3">How to Use These Courses</h3>
-        <ul className="space-y-2 text-slate-300 text-sm">
+      <div className="mt-8 bg-[#FFF4E0] border border-[#FFB347]/30 rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-foreground mb-3">How to Use These Courses</h3>
+        <ul className="space-y-2 text-muted-foreground text-sm">
           <li className="flex gap-3">
-            <span className="text-emerald-400 font-bold">▪</span>
-            <span>Start with courses marked as <strong>Beginner</strong></span>
+            <span className="text-[#1A8C55] font-bold">▪</span>
+            <span>Start with courses marked as <strong className="text-foreground">Beginner</strong></span>
           </li>
           <li className="flex gap-3">
-            <span className="text-yellow-400 font-bold">▪</span>
-            <span>Progress to <strong>Intermediate</strong> once you're comfortable</span>
+            <span className="text-yellow-500 font-bold">▪</span>
+            <span>Progress to <strong className="text-foreground">Intermediate</strong> once you're comfortable</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-red-400 font-bold">▪</span>
+            <span className="text-red-500 font-bold">▪</span>
             <span>Advanced courses help you master advanced concepts</span>
           </li>
           <li className="flex gap-3">
-            <span className="text-cyan-400 font-bold">▪</span>
+            <span className="text-[#FF9500] font-bold">▪</span>
             <span>Combine courses with hands-on projects for better learning</span>
           </li>
         </ul>

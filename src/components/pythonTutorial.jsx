@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Copy, Menu, X, Check, AlertCircle } from 'lucide-react';
 import logo from '../assets/logo.png';
 
@@ -61,7 +62,7 @@ const PythonTutorial = () => {
     return (
       <div className="bg-[#1e1e1e] rounded-lg border border-[#E0DCCF] my-4">
         <div className="flex justify-between items-center px-4 py-2 border-b border-[#E0DCCF]">
-          <span className="text-xs text-[#666666]">Python</span>
+          <span className="text-xs text-muted-foreground">Python</span>
           <button
             onClick={copyToClipboard}
             className="flex items-center gap-2 px-3 py-1 bg-[#FF9500] hover:bg-[#FF9500]/80 rounded text-white text-xs transition-all"
@@ -77,7 +78,7 @@ const PythonTutorial = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-[#444444] font-sans antialiased">
+    <div className="min-h-screen bg-[#FFFDF8] text-foreground-muted font-sans antialiased">
       {/* Meta Tags for SEO */}
       <head>
         <title>Python for Beginners - Learn Python Step by Step | Complete Tutorial</title>
@@ -88,14 +89,14 @@ const PythonTutorial = () => {
       {/* HEADER */}
       <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-[#F0ECE0] px-5">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between py-4">
-          <a href="/" className="transition-transform hover:scale-[1.02]">
+          <Link to="/" className="transition-transform hover:scale-[1.02]">
             <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
-          </a>
+          </Link>
 
           <nav className="hidden md:flex items-center gap-8">
-            <a href="/free-tutorials" className="text-sm font-semibold text-[#666666] hover:text-white transition-colors flex items-center gap-2">
+            <Link to="/free-tutorials" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
               ← Back to Free Tutorials
-            </a>
+            </Link>
           </nav>
 
           <button onClick={() => setIsNavOpen(!isNavOpen)} className="md:hidden text-white">
@@ -119,7 +120,7 @@ const PythonTutorial = () => {
                   className={`w-full text-left px-4 py-2 rounded-lg transition-all text-sm font-semibold ${
                     activeSection === topic.id
                       ? 'bg-[#FF9500] text-white'
-                      : 'text-[#666666] hover:text-white hover:bg-white/5'
+                      : 'text-muted-foreground hover:text-white hover:bg-white/5'
                   }`}
                 >
                   {topic.title}
@@ -137,7 +138,7 @@ const PythonTutorial = () => {
           <h1 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-[#4F46E5] to-[#06B6D4] bg-clip-text text-transparent">
             Python for Beginners
           </h1>
-          <p className="text-xl text-[#666666] leading-relaxed mb-4">
+          <p className="text-xl text-muted-foreground leading-relaxed mb-4">
             Learn Python step by step with this complete beginner-friendly tutorial. Perfect for someone with zero programming experience who wants to master Python basics and start their programming journey.
           </p>
           <div className="flex gap-4 flex-wrap">
@@ -149,7 +150,7 @@ const PythonTutorial = () => {
 
         <div className="mb-16 bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
           <h2 className="text-2xl font-bold mb-4">What You'll Learn</h2>
-          <ol className="space-y-2 text-[#666666]">
+          <ol className="space-y-2 text-muted-foreground">
             <li>1. What is Python and why learn it</li>
             <li>2. Installing Python on your computer</li>
             <li>3. Writing your first program</li>
@@ -173,10 +174,10 @@ const PythonTutorial = () => {
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What is Python?</h3>
-            <p className="text-[#666666] mb-4 leading-relaxed">
+            <p className="text-muted-foreground mb-4 leading-relaxed">
               Python is a programming language that lets you give instructions to computers in a way that reads almost like English. Created in 1991 by Guido van Rossum, Python has become one of the most popular programming languages in the world because it's easy to learn and incredibly powerful.
             </p>
-            <p className="text-[#666666] mb-4 leading-relaxed">
+            <p className="text-muted-foreground mb-4 leading-relaxed">
               <strong>Think of Python like writing recipes:</strong> Just as you give step-by-step instructions to cook food, Python lets you give step-by-step instructions to tell a computer what to do!
             </p>
           </div>
@@ -187,17 +188,17 @@ const PythonTutorial = () => {
             <div className="space-y-4">
               <div>
                 <h4 className="font-bold text-cyan-400 mb-2">1. Super Easy to Learn</h4>
-                <p className="text-[#666666]">Python reads like English. If you can read English, you can understand Python code. It's the perfect first programming language.</p>
+                <p className="text-muted-foreground">Python reads like English. If you can read English, you can understand Python code. It's the perfect first programming language.</p>
               </div>
 
               <div>
                 <h4 className="font-bold text-cyan-400 mb-2">2. Highly Demanded Skill</h4>
-                <p className="text-[#666666]">Companies worldwide need Python developers. Great career opportunities and excellent salaries. Used by companies like Google, Netflix, Instagram, and Spotify.</p>
+                <p className="text-muted-foreground">Companies worldwide need Python developers. Great career opportunities and excellent salaries. Used by companies like Google, Netflix, Instagram, and Spotify.</p>
               </div>
 
               <div>
                 <h4 className="font-bold text-cyan-400 mb-2">3. Used Everywhere</h4>
-                <ul className="text-[#666666] ml-4 space-y-1">
+                <ul className="text-muted-foreground ml-4 space-y-1">
                   <li>• Web development (building websites)</li>
                   <li>• Data science (analyzing huge amounts of data)</li>
                   <li>• Artificial intelligence and machine learning</li>
@@ -208,7 +209,7 @@ const PythonTutorial = () => {
 
               <div>
                 <h4 className="font-bold text-cyan-400 mb-2">4. Strong Community</h4>
-                <p className="text-[#666666]">Millions of Python developers. Tons of free libraries (pre-written code) to use. Easy to find help and solutions online.</p>
+                <p className="text-muted-foreground">Millions of Python developers. Tons of free libraries (pre-written code) to use. Easy to find help and solutions online.</p>
               </div>
             </div>
           </div>
@@ -219,22 +220,22 @@ const PythonTutorial = () => {
             <div className="grid md:grid-cols-2 gap-6">
               <div>
                 <h4 className="font-bold text-[#FF9500] mb-2">Data Science</h4>
-                <p className="text-[#666666] text-sm">Analyzing data, creating charts, predicting trends</p>
+                <p className="text-muted-foreground text-sm">Analyzing data, creating charts, predicting trends</p>
               </div>
 
               <div>
                 <h4 className="font-bold text-[#FF9500] mb-2">Artificial Intelligence</h4>
-                <p className="text-[#666666] text-sm">ChatGPT, image recognition, smart assistants</p>
+                <p className="text-muted-foreground text-sm">ChatGPT, image recognition, smart assistants</p>
               </div>
 
               <div>
                 <h4 className="font-bold text-[#FF9500] mb-2">Web Development</h4>
-                <p className="text-[#666666] text-sm">Building Instagram, Spotify, YouTube backends</p>
+                <p className="text-muted-foreground text-sm">Building Instagram, Spotify, YouTube backends</p>
               </div>
 
               <div>
                 <h4 className="font-bold text-[#FF9500] mb-2">Automation</h4>
-                <p className="text-[#666666] text-sm">Making computers do repetitive tasks automatically</p>
+                <p className="text-muted-foreground text-sm">Making computers do repetitive tasks automatically</p>
               </div>
             </div>
           </div>
@@ -248,7 +249,7 @@ const PythonTutorial = () => {
             <h3 className="text-2xl font-bold mb-4">Step-by-Step Installation</h3>
 
             <h4 className="text-xl font-bold mb-4 text-cyan-400">For Windows:</h4>
-            <ol className="text-[#666666] space-y-2 ml-4 mb-6">
+            <ol className="text-muted-foreground space-y-2 ml-4 mb-6">
               <li>1. Go to: https://www.python.org/</li>
               <li>2. Click "Downloads"</li>
               <li>3. Download Python 3.12 (or latest version)</li>
@@ -259,7 +260,7 @@ const PythonTutorial = () => {
             </ol>
 
             <h4 className="text-xl font-bold mb-4 text-cyan-400">For Mac:</h4>
-            <ol className="text-[#666666] space-y-2 ml-4 mb-6">
+            <ol className="text-muted-foreground space-y-2 ml-4 mb-6">
               <li>1. Go to: https://www.python.org/</li>
               <li>2. Download macOS installer</li>
               <li>3. Run the installer</li>
@@ -273,7 +274,7 @@ sudo apt-get install python3 python3-pip`}
               id="linux-install"
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30 flex items-center gap-2">
+            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30 flex items-center gap-2">
               <Check size={16} className="text-green-400 flex-shrink-0" /> Python is now installed on your computer!  
             </p>
           </div>
@@ -281,14 +282,14 @@ sudo apt-get install python3 python3-pip`}
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Verify Installation</h3>
 
-            <p className="text-[#666666] mb-4">Open Command Prompt (Windows) or Terminal (Mac/Linux) and type:</p>
+            <p className="text-muted-foreground mb-4">Open Command Prompt (Windows) or Terminal (Mac/Linux) and type:</p>
 
             <CodeBlock
               code={`python --version`}
               id="verify-python"
             />
 
-            <p className="text-[#666666] mt-4">You should see something like: <code className="bg-[#1e1e1e] px-2 py-1 rounded">Python 3.12.0</code></p>
+            <p className="text-muted-foreground mt-4">You should see something like: <code className="bg-[#1e1e1e] px-2 py-1 rounded">Python 3.12.0</code></p>
           </div>
         </section>
 
@@ -298,7 +299,7 @@ sudo apt-get install python3 python3-pip`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">The print() Function</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               The simplest way to use Python is to print text to the screen using the <code className="bg-[#1e1e1e] px-2 py-1 rounded">print()</code> function.
             </p>
 
@@ -307,7 +308,7 @@ sudo apt-get install python3 python3-pip`}
               id="hello-world"
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30">
+            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30">
               <strong>Output:</strong> <code>Hello, World!</code>
             </p>
           </div>
@@ -316,7 +317,7 @@ sudo apt-get install python3 python3-pip`}
             <h3 className="text-2xl font-bold mb-4">How to Run Python Code</h3>
 
             <h4 className="text-lg font-bold mb-4 text-cyan-400">Step 1: Create a file</h4>
-            <p className="text-[#666666] mb-4">Create a new file named <code className="bg-[#1e1e1e] px-2 py-1 rounded">hello.py</code> (the .py extension means it's a Python file)</p>
+            <p className="text-muted-foreground mb-4">Create a new file named <code className="bg-[#1e1e1e] px-2 py-1 rounded">hello.py</code> (the .py extension means it's a Python file)</p>
 
             <h4 className="text-lg font-bold mb-4 text-cyan-400">Step 2: Write the code</h4>
             <CodeBlock
@@ -325,13 +326,13 @@ sudo apt-get install python3 python3-pip`}
             />
 
             <h4 className="text-lg font-bold mb-4 text-cyan-400">Step 3: Run the code</h4>
-            <p className="text-[#666666] mb-2">Open Command Prompt/Terminal and type:</p>
+            <p className="text-muted-foreground mb-2">Open Command Prompt/Terminal and type:</p>
             <CodeBlock
               code={`python hello.py`}
               id="run-python"
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
+            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
               You should see: <code>Hello, World!</code>
             </p>
           </div>
@@ -348,7 +349,7 @@ print(True)`}
               id="print-examples"
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
+            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
               <strong>Output:</strong><br/>
               Python is awesome!<br/>
               I'm learning to code<br/>
@@ -365,7 +366,7 @@ print(True)`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What is a Variable?</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               A variable is like a box that stores information. You give it a name, and then you can use that name to refer to the information stored in the box.
             </p>
 
@@ -382,7 +383,7 @@ print(is_student)`}
               id="variables-intro"
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
+            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
               <strong>Output:</strong><br/>
               Alice<br/>
               25<br/>
@@ -426,7 +427,7 @@ is_active = False`} id="bool-type" />
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Checking Data Types</h3>
-            <p className="text-[#666666] mb-4">Use the <code className="bg-[#1e1e1e] px-2 py-1 rounded">type()</code> function:</p>
+            <p className="text-muted-foreground mb-4">Use the <code className="bg-[#1e1e1e] px-2 py-1 rounded">type()</code> function:</p>
 
             <CodeBlock
               code={`print(type(25))       # &lt;class 'int'&gt;
@@ -439,7 +440,7 @@ print(type(True))     # &lt;class 'bool'&gt;`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Variable Naming Rules</h3>
-            <ul className="text-[#666666] space-y-2 ml-4">
+            <ul className="text-muted-foreground space-y-2 ml-4">
               <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Start with a letter or underscore: <code className="bg-[#1e1e1e] px-1">name</code>, <code className="bg-[#1e1e1e] px-1">_age</code></li>
               <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Use lowercase with underscores: <code className="bg-[#1e1e1e] px-1">student_name</code>, <code className="bg-[#1e1e1e] px-1">is_active</code></li>
               <li><span className="flex items-center gap-1"><AlertCircle size={16} className="text-red-400" /></span> Don't use spaces or special characters: <code className="bg-[#1e1e1e] px-1">my age</code> ❌, <code className="bg-[#1e1e1e] px-1">age@</code> ❌</li>
@@ -455,7 +456,7 @@ print(type(True))     # &lt;class 'bool'&gt;`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Getting Input from Users</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Use the <code className="bg-[#1e1e1e] px-2 py-1 rounded">input()</code> function to ask users to type something:
             </p>
 
@@ -465,7 +466,7 @@ print("Hello, " + name)`}
               id="input-example"
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
+            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
               <strong>Output:</strong><br/>
               What is your name? <strong>Alice</strong><br/>
               Hello, Alice
@@ -474,7 +475,7 @@ print("Hello, " + name)`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Converting Input to Numbers</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               By default, <code className="bg-[#1e1e1e] px-2 py-1 rounded">input()</code> gives you text (string). To do math, convert it to a number:
             </p>
 
@@ -487,7 +488,7 @@ print("Total with tax: " + str(price * 1.1))`}
               id="input-conversion"
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-[#1E293B] rounded-lg border border-yellow-400/30">
+            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-yellow-400/30">
               ⚠️ Remember: <code className="bg-[#1e1e1e] px-1">int()</code> converts to integer, <code className="bg-[#1e1e1e] px-1">float()</code> converts to decimal
             </p>
           </div>
@@ -499,7 +500,7 @@ print("Total with tax: " + str(price * 1.1))`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Arithmetic Operators</h3>
-            <p className="text-[#666666] mb-4">Used to do math:</p>
+            <p className="text-muted-foreground mb-4">Used to do math:</p>
 
             <CodeBlock
               code={`x = 10
@@ -518,7 +519,7 @@ print(x ** y)  # 1000 (exponent - power)`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Comparison Operators</h3>
-            <p className="text-[#666666] mb-4">Compare values (returns True or False):</p>
+            <p className="text-muted-foreground mb-4">Compare values (returns True or False):</p>
 
             <CodeBlock
               code={`x = 5
@@ -536,7 +537,7 @@ print(x &gt;= y)  # False (greater than or equal)`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Logical Operators</h3>
-            <p className="text-[#666666] mb-4">Combine conditions:</p>
+            <p className="text-muted-foreground mb-4">Combine conditions:</p>
 
             <CodeBlock
               code={`is_student = True
@@ -556,7 +557,7 @@ print(not is_student)           # False (reverses value)`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">if Statement</h3>
-            <p className="text-[#666666] mb-4">Do something only if a condition is true:</p>
+            <p className="text-muted-foreground mb-4">Do something only if a condition is true:</p>
 
             <CodeBlock
               code={`age = 18
@@ -566,14 +567,14 @@ if age >= 18:
               id="if-statement"
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
+            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
               Note: Python uses indentation (spaces) to show what code belongs to the if block.
             </p>
           </div>
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">if-else Statement</h3>
-            <p className="text-[#666666] mb-4">Do one thing if true, something else if false:</p>
+            <p className="text-muted-foreground mb-4">Do one thing if true, something else if false:</p>
 
             <CodeBlock
               code={`age = 15
@@ -588,7 +589,7 @@ else:
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">if-elif-else Statement</h3>
-            <p className="text-[#666666] mb-4">Multiple conditions:</p>
+            <p className="text-muted-foreground mb-4">Multiple conditions:</p>
 
             <CodeBlock
               code={`score = 85
@@ -612,7 +613,7 @@ else:
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">for Loop</h3>
-            <p className="text-[#666666] mb-4">Repeat code a specific number of times:</p>
+            <p className="text-muted-foreground mb-4">Repeat code a specific number of times:</p>
 
             <CodeBlock
               code={`for i in range(5):
@@ -622,7 +623,7 @@ else:
               id="for-loop-basic"
             />
 
-            <p className="text-[#666666] mt-4">Or loop through a list:</p>
+            <p className="text-muted-foreground mt-4">Or loop through a list:</p>
 
             <CodeBlock
               code={`fruits = ["apple", "banana", "orange"]
@@ -635,7 +636,7 @@ for fruit in fruits:
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">while Loop</h3>
-            <p className="text-[#666666] mb-4">Repeat while a condition is true:</p>
+            <p className="text-muted-foreground mb-4">Repeat while a condition is true:</p>
 
             <CodeBlock
               code={`count = 0
@@ -652,7 +653,7 @@ while count &lt; 3:
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">break and continue</h3>
 
-            <p className="text-[#666666] mb-4"><strong className="text-cyan-400">break</strong> - Exit loop immediately:</p>
+            <p className="text-muted-foreground mb-4"><strong className="text-cyan-400">break</strong> - Exit loop immediately:</p>
             <CodeBlock
               code={`for i in range(10):
     if i == 5:
@@ -663,7 +664,7 @@ while count &lt; 3:
               id="break-example"
             />
 
-            <p className="text-[#666666] my-4"><strong className="text-cyan-400">continue</strong> - Skip to next iteration:</p>
+            <p className="text-muted-foreground my-4"><strong className="text-cyan-400">continue</strong> - Skip to next iteration:</p>
             <CodeBlock
               code={`for i in range(5):
     if i == 2:
@@ -697,7 +698,7 @@ print("World" in text)     # True (contains?)`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Indexing (Getting Characters)</h3>
-            <p className="text-[#666666] mb-4">Remember: Counting starts at 0!</p>
+            <p className="text-muted-foreground mb-4">Remember: Counting starts at 0!</p>
 
             <CodeBlock
               code={`text = "Python"
@@ -779,7 +780,7 @@ for number in numbers:
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Tuples (Lists You Can't Change)</h3>
-            <p className="text-[#666666] mb-4">Tuples are like lists but you can't modify them after creating:</p>
+            <p className="text-muted-foreground mb-4">Tuples are like lists but you can't modify them after creating:</p>
 
             <CodeBlock
               code={`colors = ("red", "green", "blue")
@@ -794,7 +795,7 @@ print(len(colors)) # 3
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Sets (Unique Values Only)</h3>
-            <p className="text-[#666666] mb-4">Sets can only contain unique values. Duplicates are automatically removed:</p>
+            <p className="text-muted-foreground mb-4">Sets can only contain unique values. Duplicates are automatically removed:</p>
 
             <CodeBlock
               code={`numbers = {1, 2, 3, 2, 1}
@@ -813,7 +814,7 @@ print(numbers)  # {1, 2, 3, 4}`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What are Dictionaries?</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Dictionaries store data as key-value pairs. Think of it like a real dictionary where you look up a word (key) to find its definition (value).
             </p>
 
@@ -870,7 +871,7 @@ for key in student:
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Creating Functions</h3>
-            <p className="text-[#666666] mb-4">Functions let you write code once and use it many times:</p>
+            <p className="text-muted-foreground mb-4">Functions let you write code once and use it many times:</p>
 
             <CodeBlock
               code={`def greet():
@@ -884,7 +885,7 @@ greet()  # Call it again`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Functions with Parameters</h3>
-            <p className="text-[#666666] mb-4">Pass information to functions:</p>
+            <p className="text-muted-foreground mb-4">Pass information to functions:</p>
 
             <CodeBlock
               code={`def greet(name):
@@ -898,7 +899,7 @@ greet("Bob")    # Hello, Bob`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Functions with Return Values</h3>
-            <p className="text-[#666666] mb-4">Get results back from functions:</p>
+            <p className="text-muted-foreground mb-4">Get results back from functions:</p>
 
             <CodeBlock
               code={`def add(a, b):
@@ -937,7 +938,7 @@ print("Your grade is:", grade)  # Your grade is: B`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">try-except Blocks</h3>
-            <p className="text-[#666666] mb-4">Handle errors gracefully without crashing:</p>
+            <p className="text-muted-foreground mb-4">Handle errors gracefully without crashing:</p>
 
             <CodeBlock
               code={`try:
@@ -1000,10 +1001,10 @@ print(i)  # Error! Wrong indentation`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Project Description</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Create a simple game where the computer picks a random number between 1-100, and the player tries to guess it!
             </p>
-            <ul className="text-[#666666] space-y-2 ml-4">
+            <ul className="text-muted-foreground space-y-2 ml-4">
               <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Computer picks a random number</li>
               <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Player makes guesses</li>
               <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Program tells if guess is too high or too low</li>
@@ -1051,7 +1052,7 @@ print("Thanks for playing!")`}
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Basics</h4>
-              <ul className="text-[#666666] text-sm space-y-1">
+              <ul className="text-muted-foreground text-sm space-y-1">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Variables store data</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Data types: int, float, str, bool</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> print() shows output</li>
@@ -1061,7 +1062,7 @@ print("Thanks for playing!")`}
 
             <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Control Flow</h4>
-              <ul className="text-[#666666] text-sm space-y-1">
+              <ul className="text-muted-foreground text-sm space-y-1">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> if/else for decisions</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> for/while for loops</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> break to exit early</li>
@@ -1071,7 +1072,7 @@ print("Thanks for playing!")`}
 
             <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Data Structures</h4>
-              <ul className="text-[#666666] text-sm space-y-1">
+              <ul className="text-muted-foreground text-sm space-y-1">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Strings for text</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Lists for collections</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Tuples for immutable lists</li>
@@ -1081,7 +1082,7 @@ print("Thanks for playing!")`}
 
             <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Functions &amp; Errors</h4>
-              <ul className="text-[#666666] text-sm space-y-1">
+              <ul className="text-muted-foreground text-sm space-y-1">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> def to create functions</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> return to send back results</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> try-except for error handling</li>
@@ -1100,7 +1101,7 @@ print("Thanks for playing!")`}
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 1. What's the difference between lists and tuples?
               </summary>
-              <p className="text-[#666666] text-sm">
+              <p className="text-muted-foreground text-sm">
                 <strong>Lists:</strong> Can be changed (add, remove, modify) using methods like append() and remove().<br/>
                 <strong>Tuples:</strong> Cannot be changed after creation. They're "immutable".<br/>
                 Use lists when you need flexibility, tuples when you need fixed data.
@@ -1111,7 +1112,7 @@ print("Thanks for playing!")`}
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 2. When should you use a dictionary instead of a list?
               </summary>
-              <p className="text-[#666666] text-sm">
+              <p className="text-muted-foreground text-sm">
                 Use dictionaries when your data has labels (keys). For example, student information (name, age, gpa) is better as a dictionary than a list because you can access it by key, not position.
               </p>
             </details>
@@ -1120,7 +1121,7 @@ print("Thanks for playing!")`}
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 3. What's the purpose of try-except?
               </summary>
-              <p className="text-[#666666] text-sm">
+              <p className="text-muted-foreground text-sm">
                 Try-except prevents your program from crashing when an error occurs. It "catches" the error and lets you decide what to do (like print a friendly message).
               </p>
             </details>
@@ -1129,7 +1130,7 @@ print("Thanks for playing!")`}
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 4. What is indentation and why is it important?
               </summary>
-              <p className="text-[#666666] text-sm">
+              <p className="text-muted-foreground text-sm">
                 Indentation (spaces at the beginning of lines) tells Python which code belongs to a block (like inside a function or if statement). Without correct indentation, Python gives errors.
               </p>
             </details>
@@ -1138,7 +1139,7 @@ print("Thanks for playing!")`}
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 5. How do you convert a string to a number?
               </summary>
-              <p className="text-[#666666] text-sm">
+              <p className="text-muted-foreground text-sm">
                 Use <code className="bg-[#1e1e1e] px-2 py-1 rounded">int()</code> for whole numbers or <code className="bg-[#1e1e1e] px-2 py-1 rounded">float()</code> for decimals. Example: <code className="bg-[#1e1e1e] px-2 py-1 rounded">age = int("25")</code>
               </p>
             </details>
@@ -1205,7 +1206,7 @@ print("Thanks for playing!")`}
       </main>
       </div>
 
-      <footer className="py-10 text-center text-slate-500 text-sm border-t border-[#F0ECE0] mt-16">
+      <footer className="py-10 text-center text-muted-foreground text-sm border-t border-[#F0ECE0] mt-16">
         © 2026 MentorMuni. Learn Python for Beginners - Free Tutorial with Practical Examples.
       </footer>
     </div>

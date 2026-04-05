@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Zap, AlertCircle } from 'lucide-react';
 
+const MAX_FREE_ATTEMPTS = 3;
+
 export default function FreeUsageCounter({ toolName, onLimitReached, compact = false }) {
-  const MAX_ATTEMPTS = 3;
+  const MAX_ATTEMPTS = MAX_FREE_ATTEMPTS;
   const storageKey = `mentormuni_${toolName}_usage`;
 
   const [attemptsUsed, setAttemptsUsed] = useState(0);
@@ -141,7 +143,7 @@ export default function FreeUsageCounter({ toolName, onLimitReached, compact = f
       <div className="mt-2 hidden">
         <button
           onClick={resetUsage}
-          className="text-xs text-slate-500 hover:text-slate-400"
+          className="text-xs text-muted-foreground hover:text-muted-foreground"
         >
           [Dev: Reset]
         </button>

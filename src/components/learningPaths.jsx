@@ -51,16 +51,14 @@ const LearningPaths = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+    <div className="min-h-screen bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE] text-foreground">
       {/* Header */}
       <div className="max-w-6xl mx-auto px-6 py-20">
         <div className="text-center mb-20">
-          <h1 className="text-5xl md:text-6xl font-black mb-4">
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF9500] to-cyan-400">
-              Learning Paths
-            </span>
+          <h1 className="text-5xl md:text-6xl font-black mb-4 text-foreground">
+            Learning Paths
           </h1>
-          <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Choose your perfect learning journey. Whether you're a beginner or advancing your skills, 
             we have the right path for you to become interview-ready.
           </p>
@@ -74,24 +72,24 @@ const LearningPaths = () => {
               href={path.href}
               className="group relative"
             >
-              <div className={`absolute inset-0 bg-gradient-to-r ${path.color} rounded-3xl opacity-0 group-hover:opacity-10 transition-opacity duration-300`}></div>
+              <div className={`absolute inset-0 bg-gradient-to-r ${path.color} rounded-3xl opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
               
-              <div className="relative bg-white/5 backdrop-blur border border-[#E0DCCF] hover:border-[#E0DCCF] rounded-3xl p-8 transition-all duration-300 hover:shadow-2xl">
+              <div className="relative bg-white border border-[#E0DCCF] hover:border-[#FF9500]/30 rounded-3xl p-8 transition-all duration-300 hover:shadow-lg">
                 {/* Badge */}
                 <div className={`absolute top-6 right-6 bg-gradient-to-r ${path.color} text-white text-xs font-bold px-4 py-1 rounded-full`}>
                   {path.badge}
                 </div>
 
                 {/* Icon */}
-                <div className="mb-6 p-4 bg-white/5 w-fit rounded-2xl group-hover:bg-white/10 transition-colors">
+                <div className="mb-6 p-4 bg-[#FFF4E0] w-fit rounded-2xl group-hover:bg-[#FFE8C2] transition-colors">
                   {path.icon}
                 </div>
 
                 {/* Content */}
-                <h3 className="text-2xl font-bold mb-3 group-hover:text-[#FF9500] transition-colors">
+                <h3 className="text-2xl font-bold mb-3 text-foreground group-hover:text-[#FF9500] transition-colors">
                   {path.title}
                 </h3>
-                <p className="text-slate-300 mb-8 leading-relaxed">
+                <p className="text-muted-foreground mb-8 leading-relaxed">
                   {path.description}
                 </p>
 
@@ -106,31 +104,31 @@ const LearningPaths = () => {
         </div>
 
         {/* Why Choose Section */}
-        <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border border-[#E0DCCF] rounded-3xl p-12 mb-12">
-          <h2 className="text-3xl font-black mb-8 text-center">Why Choose MentorMuni?</h2>
+        <div className="bg-white border border-[#E0DCCF] rounded-3xl p-12 mb-12 shadow-sm">
+          <h2 className="text-3xl font-black mb-8 text-center text-foreground">Why Choose MentorMuni?</h2>
           <div className="grid md:grid-cols-4 gap-6">
             <div className="text-center">
               <div className="text-4xl font-black text-[#FF9500] mb-2">AI-Powered</div>
-              <p className="text-slate-300">Real-time AI feedback and personalized recommendations</p>
+              <p className="text-muted-foreground">Real-time AI feedback and personalized recommendations</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-black text-cyan-400 mb-2">Expert Mentors</div>
-              <p className="text-slate-300">1:1 guidance from industry professionals</p>
+              <div className="text-4xl font-black text-cyan-600 mb-2">Expert Mentors</div>
+              <p className="text-muted-foreground">1:1 guidance from industry professionals</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-black text-emerald-400 mb-2">100% Job-Ready</div>
-              <p className="text-slate-300">Curriculum aligned with current job market</p>
+              <div className="text-4xl font-black text-emerald-600 mb-2">100% Job-Ready</div>
+              <p className="text-muted-foreground">Curriculum aligned with current job market</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-black text-rose-400 mb-2">Flexible Learning</div>
-              <p className="text-slate-300">Learn at your own pace, anytime, anywhere</p>
+              <div className="text-4xl font-black text-rose-500 mb-2">Flexible Learning</div>
+              <p className="text-muted-foreground">Learn at your own pace, anytime, anywhere</p>
             </div>
           </div>
         </div>
 
         {/* CTA Section */}
-        <div className="bg-gradient-to-r from-[#FF9500] to-cyan-600 rounded-3xl p-12 text-center">
-          <h2 className="text-3xl font-bold mb-4">Not sure where to start?</h2>
+        <div className="bg-gradient-to-r from-[#FF9500] to-[#E88600] rounded-3xl p-12 text-center">
+          <h2 className="text-3xl font-bold mb-4 text-white">Not sure where to start?</h2>
           <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
             Take our free interview readiness assessment to discover which learning path is perfect for your goals.
           </p>

@@ -93,10 +93,10 @@ const Tools = () => {
           <p className="text-xs font-semibold uppercase tracking-widest text-[#CC7000] mb-3">
             Free tools · Same mission as the rest of MentorMuni
           </p>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-[#1A1A1A] mb-4 tracking-tight leading-tight">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground mb-4 tracking-tight leading-tight">
             Know your gaps before the shortlist does
           </h1>
-          <p className="text-base md:text-lg text-[#666666] leading-relaxed">
+          <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
             Measure first, then fix what filters you out—without guessing where to start.
           </p>
         </motion.div>
@@ -110,8 +110,8 @@ const Tools = () => {
               <div className="mb-1.5 w-fit">
                 <LimitedRewardLabel />
               </div>
-              <p className="text-sm font-bold leading-tight text-[#1A1A1A]">{READINESS_TEST_COUPON_OFFER_HEADLINE}</p>
-              <p className="mt-1 text-xs font-medium leading-snug text-[#666666]">{READINESS_TEST_COUPON_OFFER_HOW}</p>
+              <p className="text-sm font-bold leading-tight text-foreground">{READINESS_TEST_COUPON_OFFER_HEADLINE}</p>
+              <p className="mt-1 text-xs font-medium leading-snug text-muted-foreground">{READINESS_TEST_COUPON_OFFER_HOW}</p>
             </div>
           </div>
         </div>
@@ -138,15 +138,15 @@ const Tools = () => {
                 >
                   <Icon className={`h-6 w-6 ${c.text}`} strokeWidth={2} />
                 </div>
-                <h3 className="text-xl font-bold text-[#1A1A1A] mb-2 group-hover:text-[#CC7000] transition-colors">
+                <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-[#CC7000] transition-colors">
                   {tool.title}
                 </h3>
-                <p className="text-sm text-[#666666] leading-relaxed mb-5">{tool.description}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed mb-5">{tool.description}</p>
                 <div className="flex flex-wrap gap-2 mb-5">
                   {tool.highlights.map((highlight) => (
                     <span
                       key={highlight}
-                      className="text-xs px-2.5 py-1 rounded-full bg-[#FFF8EE] border border-[#F0ECE0] text-[#555555] font-medium"
+                      className="text-xs px-2.5 py-1 rounded-full bg-[#FFF8EE] border border-[#F0ECE0] text-foreground-muted font-medium"
                     >
                       {highlight}
                     </span>
@@ -169,8 +169,8 @@ const Tools = () => {
           transition={{ duration: 0.4 }}
           className="mt-14 rounded-2xl border border-[#F0ECE0] bg-[#FFF8EE] px-6 py-8 text-center"
         >
-          <p className="text-sm text-[#666666] mb-5 max-w-xl mx-auto">
-            Start with the <span className="font-semibold text-[#1A1A1A]">readiness score</span> to see where you stand in minutes —{' '}
+          <p className="text-sm text-muted-foreground mb-5 max-w-xl mx-auto">
+            Start with the <span className="font-semibold text-foreground">readiness score</span> to see where you stand in minutes —{' '}
             <span className="font-semibold text-[#9A3412]">{READINESS_TEST_COUPON_BADGE}</span>.
             Other tools stay free to try with fair usage limits.
           </p>

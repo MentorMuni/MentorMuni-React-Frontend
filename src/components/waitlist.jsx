@@ -96,12 +96,12 @@ export default function WaitlistPage() {
   };
 
   const inputCls = (k) =>
-    `w-full px-4 py-3 rounded-xl border bg-white text-[#1A1A1A] placeholder-[#AAAAAA] outline-none transition-all text-sm ${
+    `w-full px-4 py-3 rounded-xl border bg-white text-foreground placeholder-[#AAAAAA] outline-none transition-all text-sm ${
       errors[k] ? 'border-red-500/50' : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/25'
     }`;
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-[#1A1A1A] font-sans antialiased">
+    <div className="min-h-screen bg-[#FFFDF8] text-foreground font-sans antialiased">
       <div className="max-w-3xl mx-auto px-5 pt-16 pb-24">
 
         {/* ── Hero ── */}
@@ -114,8 +114,8 @@ export default function WaitlistPage() {
               Mentorship program
             </span>
             <span className="w-px h-3.5 bg-[#F0ECE0]" />
-            <span className="text-sm font-bold text-[#1A1A1A]">First batch starting April</span>
-            <span className="text-xs font-semibold bg-red-500/20 text-red-300 border border-red-400/25 rounded-full px-2.5 py-0.5 leading-none">
+            <span className="text-sm font-bold text-foreground">First batch starting April</span>
+            <span className="text-xs font-semibold bg-red-500/10 text-red-600 border border-red-400/30 rounded-full px-2.5 py-0.5 leading-none">
               Limited seats
             </span>
           </div>
@@ -125,10 +125,10 @@ export default function WaitlistPage() {
             Be the first to get placed with <span className="text-[#FF9500]">MentorMuni</span> — Mentorship and interview preparation.
           </h1>
 
-          <p className="text-[#666666] leading-relaxed mb-8 max-w-lg mx-auto">
+          <p className="text-muted-foreground leading-relaxed mb-8 max-w-lg mx-auto">
             Full 1-on-1 mentorship, AI mock interviews, sessions from placed students,
             and a direct path to your first offer.{' '}
-            <span className="text-[#1A1A1A] font-semibold">Early access students get 30% off.</span>
+            <span className="text-foreground font-semibold">Early access students get 30% off.</span>
           </p>
 
           {/* Social proof */}
@@ -140,8 +140,8 @@ export default function WaitlistPage() {
                 </div>
               ))}
             </div>
-              <p className="text-sm text-slate-300">
-              <span className="text-green-400 font-bold">{count}+</span>
+              <p className="text-sm text-muted-foreground">
+              <span className="text-[#1A8C55] font-bold">{count}+</span>
               {' '}students already on the waitlist
             </p>
           </div>
@@ -154,8 +154,8 @@ export default function WaitlistPage() {
               <div className="w-16 h-16 rounded-full bg-green-500/15 border border-green-500/30 flex items-center justify-center mx-auto mb-4">
                 <Check size={28} className="text-green-400" />
               </div>
-              <h2 className="text-2xl font-bold text-[#1A1A1A] mb-2">You're on the list!</h2>
-              <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-sm mx-auto">
+              <h2 className="text-2xl font-bold text-foreground mb-2">You're on the list!</h2>
+              <p className="text-muted-foreground text-sm leading-relaxed mb-6 max-w-sm mx-auto">
                 We'll WhatsApp you the moment mentorship opens — with your early access link and 30% discount.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -170,22 +170,22 @@ export default function WaitlistPage() {
             </div>
           ) : (
             <>
-              <h2 className="text-lg font-bold text-[#1A1A1A] mb-1">Join the waitlist</h2>
-              <p className="text-slate-500 text-sm mb-6">Takes 30 seconds. Spot is saved instantly.</p>
+              <h2 className="text-lg font-bold text-foreground mb-1">Join the waitlist</h2>
+              <p className="text-muted-foreground text-sm mb-6">Takes 30 seconds. Spot is saved instantly.</p>
 
               <form onSubmit={handleSubmit} className="space-y-4" noValidate>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-semibold text-slate-400 block mb-1.5">Full name <span className="text-red-400">*</span></label>
+                    <label className="text-xs font-semibold text-muted-foreground block mb-1.5">Full name <span className="text-red-400">*</span></label>
                     <input type="text" value={form.name} onChange={e => set('name', e.target.value)}
                       placeholder="Priya Sharma" className={inputCls('name')} />
                     {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-slate-400 block mb-1.5">WhatsApp number <span className="text-red-400">*</span></label>
+                    <label className="text-xs font-semibold text-muted-foreground block mb-1.5">WhatsApp number <span className="text-red-400">*</span></label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-medium">+91</span>
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground text-sm font-medium">+91</span>
                       <input type="tel" value={form.phone} onChange={e => set('phone', e.target.value.replace(/\D/g, '').slice(0, 10))}
                         placeholder="9876543210" className={`${inputCls('phone')} pl-11`} />
                     </div>
@@ -194,7 +194,7 @@ export default function WaitlistPage() {
                 </div>
 
                 <div>
-                  <label className="text-xs font-semibold text-slate-400 block mb-1.5">College name <span className="text-red-400">*</span></label>
+                  <label className="text-xs font-semibold text-muted-foreground block mb-1.5">College name <span className="text-red-400">*</span></label>
                   <input type="text" value={form.college} onChange={e => set('college', e.target.value)}
                     placeholder="e.g. VIT Vellore, NIT Trichy, SRM Chennai" className={inputCls('college')} />
                   {errors.college && <p className="text-red-400 text-xs mt-1">{errors.college}</p>}
@@ -202,7 +202,7 @@ export default function WaitlistPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-xs font-semibold text-slate-400 block mb-1.5">Year of study <span className="text-red-400">*</span></label>
+                    <label className="text-xs font-semibold text-muted-foreground block mb-1.5">Year of study <span className="text-red-400">*</span></label>
                     <select value={form.year} onChange={e => set('year', e.target.value)}
                       className={`${inputCls('year')} appearance-none`}>
                       <option value="" disabled>Select year</option>
@@ -211,7 +211,7 @@ export default function WaitlistPage() {
                     {errors.year && <p className="text-red-400 text-xs mt-1">{errors.year}</p>}
                   </div>
                   <div>
-                    <label className="text-xs font-semibold text-slate-400 block mb-1.5">Target role <span className="text-red-400">*</span></label>
+                    <label className="text-xs font-semibold text-muted-foreground block mb-1.5">Target role <span className="text-red-400">*</span></label>
                     <select value={form.role} onChange={e => set('role', e.target.value)}
                       className={`${inputCls('role')} appearance-none`}>
                       <option value="" disabled>Select role</option>
@@ -224,7 +224,7 @@ export default function WaitlistPage() {
                 <label className="flex items-start gap-3 cursor-pointer">
                   <input type="checkbox" checked={form.whatsapp} onChange={e => set('whatsapp', e.target.checked)}
                     className="mt-0.5 w-4 h-4 rounded accent-[#FF9500] shrink-0" />
-                  <span className="text-sm text-slate-400">Send me updates on WhatsApp when mentorship opens</span>
+                  <span className="text-sm text-muted-foreground">Send me updates on WhatsApp when mentorship opens</span>
                 </label>
 
                 <button ref={btnRef} type="submit" disabled={loading}
@@ -232,7 +232,7 @@ export default function WaitlistPage() {
                   {loading ? 'Saving your spot…' : <>Join Waitlist — Free <ArrowRight size={16} /></>}
                 </button>
 
-                <p className="text-center text-xs text-slate-600">
+                <p className="text-center text-xs text-foreground-muted">
                   <span className="text-green-500">✓</span> No spam{'  '}
                   <span className="text-green-500">✓</span> Cancel anytime{'  '}
                   <span className="text-green-500">✓</span> Early access perks
@@ -244,13 +244,13 @@ export default function WaitlistPage() {
 
         {/* ── What you unlock ── */}
         <div>
-          <p className="text-xs text-slate-500 uppercase tracking-wider font-medium text-center mb-5">What you unlock when mentorship opens</p>
+          <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium text-center mb-5">What you unlock when mentorship opens</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {PERKS.map(({ emoji, title, desc }) => (
               <div key={title} className="bg-white border border-[#F0ECE0] rounded-xl p-5">
                 <div className="text-2xl mb-3">{emoji}</div>
-                <h3 className="font-semibold text-white text-sm mb-1.5">{title}</h3>
-                <p className="text-slate-500 text-xs leading-relaxed">{desc}</p>
+                <h3 className="font-semibold text-foreground text-sm mb-1.5">{title}</h3>
+                <p className="text-muted-foreground text-xs leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>

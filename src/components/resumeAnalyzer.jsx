@@ -140,8 +140,8 @@ function BarMetric({ label, value, color }) {
   return (
     <div>
       <div className="flex justify-between items-center mb-1.5">
-        <span className="text-xs font-semibold text-[#444444]">{label}</span>
-        <span className="text-xs font-bold text-[#1A1A1A] tabular-nums">{value}%</span>
+        <span className="text-xs font-semibold text-foreground-muted">{label}</span>
+        <span className="text-xs font-bold text-foreground tabular-nums">{value}%</span>
       </div>
       <div className="h-1.5 rounded-full bg-neutral-200/90 overflow-hidden">
         <div
@@ -248,7 +248,7 @@ export default function ResumeAnalyzer() {
   const canAnalyze = file && role && !analyzing;
 
   return (
-    <div className="bg-[#FFFDF8] text-[#1A1A1A] min-h-screen">
+    <div className="bg-[#FFFDF8] text-foreground min-h-screen">
 
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-[#F0ECE0]">
@@ -263,13 +263,13 @@ export default function ResumeAnalyzer() {
           </div>
           <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
             <div>
-              <h1 className="text-3xl md:text-4xl font-extrabold mb-2 leading-tight tracking-tight text-[#1A1A1A]">
+              <h1 className="text-3xl md:text-4xl font-extrabold mb-2 leading-tight tracking-tight text-foreground">
                 Resume{' '}
                 <span style={{ background: 'linear-gradient(90deg,#CC7000,#FF9500)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
                   ATS Checker
                 </span>
               </h1>
-              <p className="text-[#555555] text-sm max-w-xl leading-relaxed">
+              <p className="text-foreground-muted text-sm max-w-xl leading-relaxed">
                 75% of resumes are rejected before a human sees them. Upload yours and see your ATS score, keyword gaps, and exactly what to fix.
               </p>
             </div>
@@ -281,7 +281,7 @@ export default function ResumeAnalyzer() {
               ].map(({ icon: Icon, color, label }) => (
                 <div key={label} className="flex items-center gap-1.5 bg-[#FFF8EE] border border-[#E0DCCF] rounded-lg px-3 py-1.5">
                   <Icon size={13} className={color} />
-                  <span className="text-xs font-semibold text-[#444444]">{label}</span>
+                  <span className="text-xs font-semibold text-foreground-muted">{label}</span>
                 </div>
               ))}
             </div>
@@ -299,8 +299,8 @@ export default function ResumeAnalyzer() {
             {/* Upload zone */}
             <div className="rounded-2xl border border-[#E0DCCF] bg-white shadow-sm overflow-hidden">
               <div className="px-5 pt-5 pb-4 border-b border-[#F0ECE0]">
-                <h2 className="text-sm font-black text-[#1A1A1A]">Upload Resume</h2>
-                <p className="text-xs text-slate-500 mt-0.5">PDF, DOC, or DOCX only · Max 5MB</p>
+                <h2 className="text-sm font-black text-foreground">Upload Resume</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">PDF, DOC, or DOCX only · Max 5MB</p>
               </div>
               <div className="p-5">
                 {!file ? (
@@ -319,10 +319,10 @@ export default function ResumeAnalyzer() {
                       <UploadCloud size={24} className="text-[#FF9500]" />
                     </div>
                     <div className="text-center">
-                      <p className="text-sm font-semibold text-[#1A1A1A]">
+                      <p className="text-sm font-semibold text-foreground">
                         {dragging ? 'Drop your file here' : 'Drag & drop your resume'}
                       </p>
-                      <p className="text-xs text-slate-500 mt-1">or click to browse from your device</p>
+                      <p className="text-xs text-muted-foreground mt-1">or click to browse from your device</p>
                     </div>
                     <button
                       type="button"
@@ -341,12 +341,12 @@ export default function ResumeAnalyzer() {
                       <FileText size={18} className="text-[#FF9500]" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-semibold text-[#1A1A1A] truncate">{file.name}</p>
-                      <p className="text-xs text-slate-500">{(file.size / 1024).toFixed(0)} KB · Ready to analyse</p>
+                      <p className="text-sm font-semibold text-foreground truncate">{file.name}</p>
+                      <p className="text-xs text-muted-foreground">{(file.size / 1024).toFixed(0)} KB · Ready to analyse</p>
                     </div>
                     <button
                       onClick={() => { setFile(null); setResult(null); setFileError(null); }}
-                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg hover:bg-neutral-200/80 text-slate-600 hover:text-[#1A1A1A] transition-colors"
+                      className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg hover:bg-neutral-200/80 text-foreground-muted hover:text-foreground transition-colors"
                     >
                       <X size={15} />
                     </button>
@@ -358,8 +358,8 @@ export default function ResumeAnalyzer() {
             {/* Role selector */}
             <div className="rounded-2xl border border-[#E0DCCF] bg-white shadow-sm overflow-hidden">
               <div className="px-5 pt-5 pb-4 border-b border-[#F0ECE0]">
-                <h2 className="text-sm font-black text-[#1A1A1A]">Target Role</h2>
-                <p className="text-xs text-slate-500 mt-0.5">We match keywords specific to this role</p>
+                <h2 className="text-sm font-black text-foreground">Target Role</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">We match keywords specific to this role</p>
               </div>
               <div className="p-5">
                 <div className="flex flex-wrap gap-2">
@@ -370,7 +370,7 @@ export default function ResumeAnalyzer() {
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                         role === r
                           ? 'bg-[#FF9500] text-white border border-[#FF9500]'
-                          : 'bg-white border border-[#E0DCCF] text-[#555555] hover:border-[#FF9500]/45 hover:bg-[#FFF4E0] hover:text-[#1A1A1A]'
+                          : 'bg-white border border-[#E0DCCF] text-foreground-muted hover:border-[#FF9500]/45 hover:bg-[#FFF4E0] hover:text-foreground'
                       }`}
                     >
                       {r}
@@ -387,7 +387,7 @@ export default function ResumeAnalyzer() {
               className={`w-full flex items-center justify-center gap-2.5 py-4 rounded-xl font-bold text-base transition-all ${
                 canAnalyze
                   ? 'bg-[#FF9500] hover:bg-[#E88600] text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)]'
-                  : 'bg-neutral-100 border border-[#E0DCCF] text-neutral-500 cursor-not-allowed'
+                  : 'bg-neutral-100 border border-[#E0DCCF] text-muted-foreground cursor-not-allowed'
               }`}
             >
               {analyzing ? (
@@ -413,7 +413,7 @@ export default function ResumeAnalyzer() {
             )}
 
             {!file && !role && (
-              <p className="text-xs text-slate-600 text-center">Upload your resume and select a role to get started</p>
+              <p className="text-xs text-foreground-muted text-center">Upload your resume and select a role to get started</p>
             )}
           </div>
 
@@ -422,11 +422,11 @@ export default function ResumeAnalyzer() {
             {!result && !analyzing && (
               <div className="rounded-2xl border border-[#E0DCCF] bg-white p-8 flex flex-col items-center justify-center gap-4 text-center min-h-[320px] shadow-sm">
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#FFF8EE] border border-[#E0DCCF]">
-                  <Target size={22} className="text-slate-600" />
+                  <Target size={22} className="text-foreground-muted" />
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-[#666666]">Your results will appear here</p>
-                  <p className="text-xs text-slate-600 mt-1 max-w-[220px]">Upload your resume and pick a role to see your ATS score and fix suggestions</p>
+                  <p className="text-sm font-semibold text-muted-foreground">Your results will appear here</p>
+                  <p className="text-xs text-foreground-muted mt-1 max-w-[220px]">Upload your resume and pick a role to see your ATS score and fix suggestions</p>
                 </div>
               </div>
             )}
@@ -441,8 +441,8 @@ export default function ResumeAnalyzer() {
                   </div>
                 </div>
                 <div className="text-center">
-                  <p className="text-sm font-bold text-[#1A1A1A]">Scanning your resume…</p>
-                  <p className="text-xs text-slate-500 mt-1">Checking ATS compatibility and keyword match</p>
+                  <p className="text-sm font-bold text-foreground">Scanning your resume…</p>
+                  <p className="text-xs text-muted-foreground mt-1">Checking ATS compatibility and keyword match</p>
                 </div>
                 <div className="flex gap-1.5">
                   {[0, 1, 2].map(i => (
@@ -458,8 +458,8 @@ export default function ResumeAnalyzer() {
                 <div className="rounded-2xl border border-[#E0DCCF] bg-white p-6 shadow-sm">
                   <div className="flex items-center justify-between mb-5">
                     <div>
-                      <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">ATS Score</p>
-                      <p className="text-xs text-slate-500 max-w-[200px] leading-relaxed">{result.summary}</p>
+                      <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">ATS Score</p>
+                      <p className="text-xs text-muted-foreground max-w-[200px] leading-relaxed">{result.summary}</p>
                     </div>
                     <ScoreRing score={result.score} />
                   </div>
@@ -481,7 +481,7 @@ export default function ResumeAnalyzer() {
                     {result.fixes.map((fix, i) => (
                       <div key={i} className="flex items-start gap-2.5">
                         <span className="mt-1 text-[10px] font-black text-amber-500 bg-amber-500/15 rounded px-1.5 py-0.5 shrink-0">{i + 1}</span>
-                        <p className="text-xs text-[#555555] leading-relaxed">{fix}</p>
+                        <p className="text-xs text-foreground-muted leading-relaxed">{fix}</p>
                       </div>
                     ))}
                   </div>
@@ -489,7 +489,7 @@ export default function ResumeAnalyzer() {
 
                 {/* Keywords */}
                 <div className="rounded-2xl border border-[#E0DCCF] bg-white p-5 shadow-sm">
-                  <h3 className="text-sm font-black text-[#1A1A1A] mb-4">Keyword Analysis</h3>
+                  <h3 className="text-sm font-black text-foreground mb-4">Keyword Analysis</h3>
                   <div className="mb-3">
                     <p className="text-xs font-semibold text-green-800 mb-2">✓ Matched in your resume</p>
                     <div className="flex flex-wrap gap-2">
@@ -518,7 +518,7 @@ export default function ResumeAnalyzer() {
                     {result.strengths.map((s, i) => (
                       <div key={i} className="flex items-center gap-2">
                         <span className="w-1.5 h-1.5 rounded-full shrink-0 bg-green-400" />
-                        <span className="text-xs text-[#555555]">{s}</span>
+                        <span className="text-xs text-foreground-muted">{s}</span>
                       </div>
                     ))}
                   </div>
@@ -532,8 +532,8 @@ export default function ResumeAnalyzer() {
       {/* ── Why ATS Matters ── */}
       <section className="border-t border-[#F0ECE0] py-14 px-6">
         <div className="max-w-5xl mx-auto">
-          <span className="text-xs font-bold text-slate-500 uppercase tracking-widest block mb-3">Why this matters</span>
-          <h2 className="text-xl font-black text-[#1A1A1A] mb-6">What ATS filtering means for your application</h2>
+          <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest block mb-3">Why this matters</span>
+          <h2 className="text-xl font-black text-foreground mb-6">What ATS filtering means for your application</h2>
           <div className="grid sm:grid-cols-3 gap-4">
             {[
               { stat: '75%',   color: 'text-red-400',    border: 'border-red-500/20',    bg: 'bg-red-500/5',    label: 'Resumes rejected by ATS before a recruiter reads them' },
@@ -542,7 +542,7 @@ export default function ResumeAnalyzer() {
             ].map(({ stat, color, border, bg, label }) => (
               <div key={stat} className={`rounded-xl border ${border} ${bg} p-5`}>
                 <div className={`text-3xl font-black mb-2 ${color}`}>{stat}</div>
-                <p className="text-xs text-[#555555] leading-relaxed">{label}</p>
+                <p className="text-xs text-foreground-muted leading-relaxed">{label}</p>
               </div>
             ))}
           </div>
@@ -552,8 +552,8 @@ export default function ResumeAnalyzer() {
       {/* ── CTA ── */}
       <section className="py-12 px-6 border-t border-[#F0ECE0]">
         <div className="max-w-2xl mx-auto text-center">
-          <h2 className="text-xl font-black text-[#1A1A1A] mb-2">Also check your interview readiness</h2>
-          <p className="text-[#666666] text-sm mb-6">A strong resume gets you the interview — preparation gets you the offer.</p>
+          <h2 className="text-xl font-black text-foreground mb-2">Also check your interview readiness</h2>
+          <p className="text-muted-foreground text-sm mb-6">A strong resume gets you the interview — preparation gets you the offer.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to="/start-assessment"

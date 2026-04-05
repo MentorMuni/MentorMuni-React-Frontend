@@ -104,13 +104,13 @@ const CareerDiagnosticJourney = () => {
             <Sparkles className="w-4 h-4" />
             AI-Powered Career Diagnosis
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-slate-900 mb-6">
+          <h2 className="text-4xl md:text-5xl font-black text-foreground mb-6">
             Your AI Career Diagnostic
           </h2>
-          <p className="text-xl text-slate-600 max-w-3xl mx-auto mb-4">
+          <p className="text-xl text-foreground-muted max-w-3xl mx-auto mb-4">
             A guided 4-step journey to identify exactly what you need to land your next tech job.
           </p>
-          <p className="text-slate-500 max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             From resume optimization through interview mastery—let our AI diagnose your current state and create a personalized action plan.
           </p>
         </div>
@@ -153,24 +153,24 @@ const CareerDiagnosticJourney = () => {
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-lg font-bold text-slate-900 mb-2">
+                      <h3 className="text-lg font-bold text-foreground mb-2">
                         {step.title}
                       </h3>
 
                       {/* Problem Question */}
-                      <p className="text-sm font-semibold text-slate-700 mb-3 line-clamp-2">
+                      <p className="text-sm font-semibold text-foreground-muted mb-3 line-clamp-2">
                         {step.problemQuestion}
                       </p>
 
                       {/* Description */}
-                      <p className="text-sm text-slate-600 mb-4 leading-relaxed">
+                      <p className="text-sm text-foreground-muted mb-4 leading-relaxed">
                         {step.description}
                       </p>
 
                       {/* Benefits */}
                       <ul className="mb-6 space-y-2">
                         {step.benefits.map((benefit, idx) => (
-                          <li key={idx} className="text-xs text-slate-600 flex items-center gap-2">
+                          <li key={idx} className="text-xs text-foreground-muted flex items-center gap-2">
                             <CheckCircle className="w-3 h-3 flex-shrink-0" />
                             {benefit}
                           </li>
@@ -226,24 +226,24 @@ const CareerDiagnosticJourney = () => {
                     </div>
 
                     {/* Title */}
-                    <h3 className="text-lg font-bold text-slate-900 mb-2">
+                    <h3 className="text-lg font-bold text-foreground mb-2">
                       {step.title}
                     </h3>
 
                     {/* Problem Question */}
-                    <p className="text-xs font-semibold text-slate-700 mb-2">
+                    <p className="text-xs font-semibold text-foreground-muted mb-2">
                       {step.problemQuestion}
                     </p>
 
                     {/* Description */}
-                    <p className="text-sm text-slate-600 mb-4 leading-relaxed">
+                    <p className="text-sm text-foreground-muted mb-4 leading-relaxed">
                       {step.description}
                     </p>
 
                     {/* Benefits */}
                     <ul className="mb-4 space-y-1">
                       {step.benefits.map((benefit, idx) => (
-                        <li key={idx} className="text-xs text-slate-600 flex items-center gap-2">
+                        <li key={idx} className="text-xs text-foreground-muted flex items-center gap-2">
                           <CheckCircle className="w-3 h-3 flex-shrink-0" />
                           {benefit}
                         </li>

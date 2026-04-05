@@ -62,7 +62,7 @@ export default function AboutMentorMuniVideo() {
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
             Meet MentorMuni — Our Story in a Video
           </h2>
-          <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
             Our motto, what we offer students, and how we help you crack placements. Watch the short video below.
           </p>
         </div>
@@ -81,7 +81,7 @@ export default function AboutMentorMuniVideo() {
                 className="absolute inset-0 w-full h-full object-cover"
               />
               <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors" />
-              <div className="relative z-10 w-20 h-20 rounded-full bg-white/95 flex items-center justify-center text-slate-900 shadow-xl group-hover:scale-110 transition-transform">
+              <div className="relative z-10 w-20 h-20 rounded-full bg-white/95 flex items-center justify-center text-foreground shadow-xl group-hover:scale-110 transition-transform">
                 <Play className="w-10 h-10 ml-1" fill="currentColor" />
               </div>
               <p className="relative z-10 mt-4 text-white font-semibold drop-shadow-lg">MentorMuni — Our story & what we offer students</p>
@@ -125,7 +125,7 @@ export default function AboutMentorMuniVideo() {
                 className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center cursor-pointer"
                 onClick={togglePlay}
               >
-                <div className="w-20 h-20 rounded-full bg-white/90 flex items-center justify-center text-slate-900 shadow-xl">
+                <div className="w-20 h-20 rounded-full bg-white/90 flex items-center justify-center text-foreground shadow-xl">
                   {playing ? (
                     <Pause className="w-10 h-10" fill="currentColor" />
                   ) : (
@@ -149,7 +149,7 @@ export default function AboutMentorMuniVideo() {
 
         {/* Short summary below video */}
         <div className="mt-8 text-center">
-          <p className="text-slate-400 text-sm max-w-xl mx-auto">
+          <p className="text-muted-foreground text-sm max-w-xl mx-auto">
             We help students know their placement readiness, practice with AI mock interviews, and improve with mentor guidance. Start with free tools — no signup required.
           </p>
         </div>

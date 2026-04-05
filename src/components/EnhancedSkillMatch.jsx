@@ -37,10 +37,10 @@ const EnhancedSkillMatch = ({
       {/* Skill Match Percentage */}
       <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-lg font-bold text-gray-800">Skill Match Analysis</h3>
+          <h3 className="text-lg font-bold text-foreground">Skill Match Analysis</h3>
           <div className="text-right">
             <p className="text-3xl font-bold text-[#FF9500]">{matchPercentage}%</p>
-            <p className="text-xs text-gray-500">Match Percentage</p>
+            <p className="text-xs text-muted-foreground">Match Percentage</p>
           </div>
         </div>
 
@@ -56,15 +56,15 @@ const EnhancedSkillMatch = ({
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
             <p className="text-2xl font-bold text-green-600">{strongSkills.length}</p>
-            <p className="text-xs text-gray-600">Strong Skills</p>
+            <p className="text-xs text-foreground-muted">Strong Skills</p>
           </div>
           <div>
             <p className="text-2xl font-bold text-amber-600">{missingSkills.length}</p>
-            <p className="text-xs text-gray-600">Missing Skills</p>
+            <p className="text-xs text-foreground-muted">Missing Skills</p>
           </div>
           <div>
             <p className="text-2xl font-bold text-blue-600">{Math.round(matchPercentage / 10)}/10</p>
-            <p className="text-xs text-gray-600">Score</p>
+            <p className="text-xs text-foreground-muted">Score</p>
           </div>
         </div>
       </div>
@@ -72,8 +72,8 @@ const EnhancedSkillMatch = ({
       {/* Benchmark Comparison */}
       <div className="bg-white rounded-2xl p-6 border border-gray-100">
         <div className="flex items-center gap-2 mb-4">
-          <TrendingUp size={18} className="text-gray-600" />
-          <h4 className="font-semibold text-gray-800">Top 10% {targetRole.replace(/-/g, ' ')} Have:</h4>
+          <TrendingUp size={18} className="text-foreground-muted" />
+          <h4 className="font-semibold text-foreground">Top 10% {targetRole.replace(/-/g, ' ')} Have:</h4>
         </div>
         
         <div className="flex flex-wrap gap-2">
@@ -83,7 +83,7 @@ const EnhancedSkillMatch = ({
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                 strongSkills.some(s => s.toLowerCase().includes(skill.toLowerCase()))
                   ? 'bg-green-100 text-green-700 border border-green-200'
-                  : 'bg-gray-100 text-gray-600 border border-gray-200'
+                  : 'bg-gray-100 text-foreground-muted border border-gray-200'
               }`}
             >
               {skill}
@@ -91,7 +91,7 @@ const EnhancedSkillMatch = ({
             </div>
           ))}
         </div>
-        <p className="text-xs text-gray-500 mt-3">
+        <p className="text-xs text-muted-foreground mt-3">
           Industry benchmark skills for {targetRole.replace(/-/g, ' ')} roles in India
         </p>
       </div>
@@ -107,10 +107,10 @@ const EnhancedSkillMatch = ({
             className="flex items-center justify-between cursor-pointer"
             onClick={() => setExpandMissing(!expandMissing)}
           >
-            <h4 className="font-semibold text-gray-800">
+            <h4 className="font-semibold text-foreground">
               {expandMissing ? 'All Missing Skills' : 'Top 5 Missing Skills'}
             </h4>
-            <div className="text-gray-400">
+            <div className="text-muted-foreground">
               {expandMissing ? <EyeOff size={18} /> : <Eye size={18} />}
             </div>
           </div>
@@ -123,7 +123,7 @@ const EnhancedSkillMatch = ({
                 className={`px-3 py-2 rounded-lg text-sm transition-all ${
                   isPremium
                     ? 'bg-red-50 text-red-700 border border-red-200'
-                    : 'bg-gradient-to-r from-gray-200 to-gray-300 text-gray-600 border border-gray-300'
+                    : 'bg-gradient-to-r from-gray-200 to-gray-300 text-foreground-muted border border-gray-300'
                 }`}
                 style={!isPremium ? { filter: 'blur(2px)' } : {}}
               >

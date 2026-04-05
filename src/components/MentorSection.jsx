@@ -99,7 +99,7 @@ const MentorSection = () => {
 
               {/* Role */}
               <div className="flex items-center gap-2 mb-3 justify-center">
-                <Briefcase className="w-4 h-4 text-slate-400" />
+                <Briefcase className="w-4 h-4 text-muted-foreground" />
                 <p className="text-sm text-slate-300 font-semibold">
                   {mentor.role}
                 </p>
@@ -111,13 +111,13 @@ const MentorSection = () => {
               </p>
 
               {/* Expertise */}
-              <p className="text-xs text-slate-400 mb-4 flex-grow">
+              <p className="text-xs text-muted-foreground mb-4 flex-grow">
                 <span className="font-semibold text-slate-300">Expertise:</span> {mentor.expertise}
               </p>
 
               {/* CTA Card appearance for consistency */}
               <div className="w-full pt-4 border-t border-slate-700/50">
-                <p className="text-xs text-slate-400">Learn from this mentor</p>
+                <p className="text-xs text-muted-foreground">Learn from this mentor</p>
               </div>
             </div>
           ))}

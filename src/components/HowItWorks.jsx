@@ -138,14 +138,14 @@ function PhaseCard({ phase, index }) {
             <Icon size={22} strokeWidth={1.75} />
           </div>
           <div className="min-w-0 flex-1 pt-0.5">
-            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500">Phase {phase.step}</p>
-            <h3 className="mt-1 text-lg font-bold leading-snug text-[#1A1A1A]">{phase.title}</h3>
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">Phase {phase.step}</p>
+            <h3 className="mt-1 text-lg font-bold leading-snug text-foreground">{phase.title}</h3>
           </div>
         </div>
-        <p className="relative mt-4 text-sm leading-relaxed text-slate-400">{phase.summary}</p>
+        <p className="relative mt-4 text-sm leading-relaxed text-muted-foreground">{phase.summary}</p>
         <ul className="relative mt-4 space-y-2.5 border-t border-[#F0ECE0] pt-4">
           {phase.outcomes.map((line) => (
-            <li key={line} className="flex gap-2.5 text-sm text-[#444444]">
+            <li key={line} className="flex gap-2.5 text-sm text-foreground-muted">
               <Check size={16} className="mt-0.5 shrink-0 text-[#FF9500]" strokeWidth={2.5} />
               <span className="leading-snug">{line}</span>
             </li>
@@ -240,7 +240,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
 
         <motion.h1
           variants={item}
-          className="mx-auto max-w-4xl text-center text-[1.65rem] font-black leading-[1.15] tracking-tight text-[#1A1A1A] sm:text-4xl md:text-[2.65rem] md:leading-[1.1]"
+          className="mx-auto max-w-4xl text-center text-2xl font-extrabold leading-snug sm:text-4xl md:text-5xl tracking-tight text-foreground sm:text-4xl md:text-[2.5rem] md:leading-snug"
         >
           Don&apos;t let your{' '}
           <span className="bg-gradient-to-r from-[#FF9500] via-[#FFB347] to-[#ea580c] bg-clip-text text-transparent">
@@ -263,10 +263,10 @@ function HowItWorksStoryHero({ reduceMotion }) {
               <span className="relative inline-flex rounded-md bg-red-500/[0.08] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-red-800">
                 The problem
               </span>
-              <h2 className="relative mt-4 text-xl font-black leading-[1.25] tracking-tight text-[#1A1A1A] md:text-2xl md:leading-[1.2]">
+              <h2 className="relative mt-4 text-xl font-black leading-[1.25] tracking-tight text-foreground md:text-2xl md:leading-[1.2]">
                 For too many students, a real hiring panel was the first time they felt real interview pressure.
               </h2>
-              <p className="relative mt-4 text-[15px] leading-[1.7] text-[#555555] md:text-base">
+              <p className="relative mt-4 text-[15px] leading-[1.7] text-foreground-muted md:text-base">
                 We started MentorMuni after the same story, over and over: students walking into placement interviews with
                 almost no serious mock practice—no baseline, no pressure rehearsal—then getting rejected without a clear map
                 of what to fix. Hiring is tighter now; you don&apos;t get unlimited shots.
@@ -285,10 +285,10 @@ function HowItWorksStoryHero({ reduceMotion }) {
               <span className="relative inline-flex rounded-md bg-[#FF9500]/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#9A3412]">
                 What we built
               </span>
-              <h2 className="relative mt-4 text-xl font-black leading-[1.25] tracking-tight text-[#1A1A1A] md:text-2xl md:leading-[1.2]">
+              <h2 className="relative mt-4 text-xl font-black leading-[1.25] tracking-tight text-foreground md:text-2xl md:leading-[1.2]">
                 One flow—readiness check, AI mocks, mentor prep—before the rounds that actually count.
               </h2>
-              <p className="relative mt-4 text-[15px] leading-[1.7] text-[#444444] md:text-base">
+              <p className="relative mt-4 text-[15px] leading-[1.7] text-foreground-muted md:text-base">
                 You get a measured baseline, out-loud AI mocks, and mentor support when you want it—so you aren&apos;t
                 improvising when the panel is real. Next: four phases from first check to structured prep—not guesswork.
               </p>
@@ -307,7 +307,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
 
           <motion.aside variants={item} className="lg:col-span-5">
             <div className="lg:sticky lg:top-28">
-              <p className="mb-4 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-[#888888] lg:text-left">
+              <p className="mb-4 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-hint lg:text-left">
                 The thread we follow
               </p>
               <div className="relative rounded-2xl border border-[#F0ECE0] bg-white/90 p-5 shadow-[0_12px_40px_-20px_rgba(0,0,0,0.08)] backdrop-blur-sm md:p-6">
@@ -354,8 +354,8 @@ function HowItWorksStoryHero({ reduceMotion }) {
                         </motion.div>
                         <div className="min-w-0 pt-0.5">
                           <p className="text-[10px] font-bold uppercase tracking-wider text-[#999999]">Step {row.step}</p>
-                          <p className="mt-0.5 font-bold text-[#1A1A1A]">{row.title}</p>
-                          <p className="mt-1 text-sm leading-snug text-[#666666]">{row.line}</p>
+                          <p className="mt-0.5 font-bold text-foreground">{row.title}</p>
+                          <p className="mt-1 text-sm leading-snug text-muted-foreground">{row.line}</p>
                         </div>
                       </motion.li>
                     );
@@ -373,15 +373,15 @@ function HowItWorksStoryHero({ reduceMotion }) {
 export default function HowItWorks() {
   const reduceMotion = useReducedMotion();
   return (
-    <div className="min-h-screen bg-[#FFFDF8] font-sans text-[#1A1A1A]">
+    <div className="min-h-screen bg-[#FFFDF8] font-sans text-foreground">
       <HowItWorksStoryHero reduceMotion={reduceMotion} />
 
       {/* Phases grid */}
       <section className="mx-auto max-w-5xl px-6 py-16 md:py-20">
         <FadeUp>
           <div className="mb-10 max-w-2xl">
-            <h2 className="text-xl font-bold text-[#1A1A1A] md:text-2xl">What happens, in order</h2>
-            <p className="mt-2 text-sm leading-relaxed text-[#666666]">
+            <h2 className="text-xl font-bold text-foreground md:text-2xl">What happens, in order</h2>
+            <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               Start with the free readiness check today—know your gaps before you burn a real round. Add AI mocks and
               mentor support when you want hands-on guidance, so you walk in measured, practiced, and aligned—not
               hoping luck covers weak spots.
@@ -401,7 +401,7 @@ export default function HowItWorks() {
           <FadeUp>
             <blockquote className="rounded-2xl border border-[#F0ECE0] bg-white p-8 md:p-10">
               <p className="text-[11px] font-bold uppercase tracking-widest text-[#FF9500]/90">Student feedback</p>
-              <p className="mt-4 text-base leading-relaxed text-[#444444] md:text-lg">
+              <p className="mt-4 text-base leading-relaxed text-foreground-muted md:text-lg">
                 After the skill gap analysis I finally knew what to focus on. The mock interview feedback was specific—
                 not generic advice—and changed how I structure answers under pressure.
               </p>
@@ -410,7 +410,7 @@ export default function HowItWorks() {
                   V
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-[#1A1A1A]">4th year · Engineering</p>
+                  <p className="text-sm font-semibold text-foreground">4th year · Engineering</p>
                 </div>
               </footer>
             </blockquote>
@@ -422,8 +422,8 @@ export default function HowItWorks() {
       <section className="border-t border-[#F0ECE0] bg-gradient-to-b from-[#FFF8EE] to-[#FFFDF8] px-6 py-16 md:py-20">
         <FadeUp>
           <div className="mx-auto max-w-lg text-center">
-            <h2 className="text-2xl font-bold text-[#1A1A1A]">Start with the free readiness check</h2>
-            <p className="mt-3 text-sm leading-relaxed text-[#666666]">
+            <h2 className="text-2xl font-bold text-foreground">Start with the free readiness check</h2>
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               Get your score and prioritized gaps in minutes—no signup. Stack mocks and mentorship after that so your
               next interview isn&apos;t the first time you feel real pressure.
             </p>
@@ -443,7 +443,7 @@ export default function HowItWorks() {
                 Join mentorship waitlist
               </Link>
             </div>
-            <p className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-slate-600">
+            <p className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-foreground-muted">
               <span className="flex items-center gap-1.5">
                 <Check size={12} className="text-emerald-500" /> Free tier
               </span>

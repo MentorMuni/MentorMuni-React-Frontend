@@ -106,7 +106,7 @@ const CareerJourney = () => {
                   <h3 className="text-xl font-bold text-white mb-3 flex-grow">
                     {step.title}
                   </h3>
-                  <p className="text-slate-400 text-sm leading-relaxed mb-6">
+                  <p className="text-muted-foreground text-sm leading-relaxed mb-6">
                     {step.description}
                   </p>
 
@@ -143,7 +143,7 @@ const CareerJourney = () => {
 
         {/* CTA Below Steps */}
         <div className="mt-14 text-center">
-          <p className="text-slate-400 mb-6">All tools are completely free with your first 3 attempts on each.</p>
+          <p className="text-muted-foreground mb-6">All tools are completely free with your first 3 attempts on each.</p>
           <Link 
             to="/start-assessment" 
             className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#FF9500] hover:to-[#CC7000] text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] group"

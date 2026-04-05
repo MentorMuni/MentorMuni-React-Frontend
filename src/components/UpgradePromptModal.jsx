@@ -48,7 +48,7 @@ export default function UpgradePromptModal({ isOpen, onClose, toolName = 'Resume
             className="absolute top-4 right-4 p-2 hover:bg-white/10 rounded-lg transition-colors"
             aria-label="Close"
           >
-            <X size={20} className="text-slate-400" />
+            <X size={20} className="text-muted-foreground" />
           </button>
 
           {/* Icon */}
@@ -68,7 +68,7 @@ export default function UpgradePromptModal({ isOpen, onClose, toolName = 'Resume
             You've used all <span className="font-bold text-[#CC7000]">3 free analyses</span>.
           </p>
 
-          <p className="text-center text-slate-400 text-sm mb-8 leading-relaxed">
+          <p className="text-center text-muted-foreground text-sm mb-8 leading-relaxed">
             Unlock unlimited analysis, get a personalized career roadmap, and connect with experienced mentors to ace your interviews.
           </p>
 
@@ -107,7 +107,7 @@ export default function UpgradePromptModal({ isOpen, onClose, toolName = 'Resume
                 <Star key={i} size={14} className="fill-amber-400 text-amber-400" />
               ))}
             </div>
-            <p className="text-center text-xs text-slate-500">
+            <p className="text-center text-xs text-muted-foreground">
               Join 200+ students already getting interview ready
             </p>
           </div>

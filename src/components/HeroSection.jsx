@@ -83,7 +83,7 @@ const HeroSection = () => {
 
             {/* Social Proof / Quick Stats */}
             <div className="border-t border-slate-700 pt-6">
-              <p className="text-xs text-slate-500 mb-3">What you'll get from a free assessment:</p>
+              <p className="text-xs text-muted-foreground mb-3">What you'll get from a free assessment:</p>
               <div className="flex flex-wrap gap-x-6 gap-y-2">
                 <span className="flex items-center gap-2 text-sm text-slate-300">
                   <Check className="w-4 h-4 text-[#FF9500]" /> Interview Readiness Score

@@ -17,7 +17,7 @@ import LimitedRewardLabel from './LimitedRewardLabel';
 import AIAnalysisLoader from './AIAnalysisLoader';
 import { useFreeUsageTracker } from './FreeUsageCounter';
 import UpgradePromptModal from './UpgradePromptModal';
-const FREE_TIER_LIMIT = 1;
+const FREE_TIER_LIMIT = 3;
 
 /** Same as Swagger: generate_plan_interview_ready_plan_post → POST /interview-ready/plan */
 const INTERVIEW_PLAN_PATH = '/interview-ready/plan';
@@ -237,11 +237,11 @@ function ReadinessScoreRing({ pct }) {
           initial={{ scale: 0.92, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 0.25, type: 'spring', stiffness: 280, damping: 22 }}
-          className="text-5xl font-black tabular-nums tracking-tight text-[#1A1A1A] sm:text-[3.25rem]"
+          className="text-5xl font-black tabular-nums tracking-tight text-foreground sm:text-[3.25rem]"
         >
           {pct}%
         </motion.span>
-        <span className="mt-1.5 text-[10px] font-bold uppercase tracking-[0.28em] text-[#666666]">Readiness</span>
+        <span className="mt-1.5 text-[10px] font-bold uppercase tracking-[0.28em] text-muted-foreground">Readiness</span>
       </div>
     </div>
   );
@@ -275,10 +275,10 @@ function ScoreFactorRow({ label, value, hint, icon: Icon, variant = 'orange', de
         )}
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
-            <span className="text-sm font-semibold text-[#1A1A1A]">{label}</span>
-            <span className="tabular-nums text-sm font-bold text-[#444444]">{Math.round(v)}%</span>
+            <span className="text-sm font-semibold text-foreground">{label}</span>
+            <span className="tabular-nums text-sm font-bold text-foreground-muted">{Math.round(v)}%</span>
           </div>
-          {hint ? <p className="mt-0.5 text-xs leading-snug text-[#666666]">{hint}</p> : null}
+          {hint ? <p className="mt-0.5 text-xs leading-snug text-muted-foreground">{hint}</p> : null}
           <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-[#EDE8E0]">
             <motion.div
               className="h-full rounded-full"
@@ -448,7 +448,7 @@ function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
               {option.title}
             </h3>
             <p
-              className={`font-semibold uppercase tracking-wide ${isHero ? 'text-[11px] mt-1.5 text-[#CC7000]' : `text-xs mb-3 ${selected ? 'text-[#FF9500]' : 'text-slate-500'}`}`}
+              className={`font-semibold uppercase tracking-wide ${isHero ? 'text-[11px] mt-1.5 text-[#CC7000]' : `text-xs mb-3 ${selected ? 'text-[#FF9500]' : 'text-muted-foreground'}`}`}
             >
               {option.badge}
             </p>
@@ -458,7 +458,7 @@ function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
               <div className="space-y-1.5">
                 {option.details.map((d) => (
                   <div key={d} className="flex items-start gap-1.5 text-xs text-muted-foreground">
-                    <Check size={11} className={`mt-0.5 shrink-0 ${selected ? 'text-[#FF9500]' : 'text-slate-600'}`} />
+                    <Check size={11} className={`mt-0.5 shrink-0 ${selected ? 'text-[#FF9500]' : 'text-foreground-muted'}`} />
                     {d}
                   </div>
                 ))}
@@ -606,12 +606,12 @@ function PlanGenerationLoader() {
             <Sparkles className="relative z-10 h-9 w-9 text-[#FF9500]" strokeWidth={2} />
           </div>
 
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#888888]">Please wait</p>
-          <h2 className="mt-2 text-2xl font-black tracking-tight text-[#1A1A1A] sm:text-3xl">Preparing your questions</h2>
-          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-[#555555]">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-hint">Please wait</p>
+          <h2 className="mt-2 text-2xl font-black tracking-tight text-foreground sm:text-3xl">Preparing your questions</h2>
+          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-foreground-muted">
             We&apos;re tailoring Yes/No items to your profile and focus. This can take up to a minute on a slow connection.
           </p>
-          <p className="mt-2 text-xs text-[#888888]">Do not close this tab.</p>
+          <p className="mt-2 text-xs text-hint">Do not close this tab.</p>
         </motion.div>
 
         <motion.div
@@ -620,11 +620,11 @@ function PlanGenerationLoader() {
           transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="mt-10 rounded-2xl border border-[#E8E4DC] bg-white/95 p-6 shadow-lg shadow-black/[0.04] backdrop-blur-sm sm:p-7"
         >
-          <div className="mb-4 flex items-center justify-center gap-2 text-[#1A1A1A]">
+          <div className="mb-4 flex items-center justify-center gap-2 text-foreground">
             <Users className="h-5 w-5 shrink-0 text-[#FF9500]" strokeWidth={2} />
             <h3 className="text-base font-bold sm:text-lg">Bridge the gap with MentorMuni</h3>
           </div>
-          <p className="text-center text-sm leading-relaxed text-[#555555]">
+          <p className="text-center text-sm leading-relaxed text-foreground-muted">
             Practice alone only gets you so far. Join MentorMuni for{' '}
             <span className="font-semibold text-[#333333]">1:1 mentorship</span> and{' '}
             <span className="font-semibold text-[#333333]">AI mock interviews</span> — structured to build confidence before
@@ -658,10 +658,10 @@ function EvaluatingAnswersLoader() {
     <div className="min-h-screen bg-[#FFFDF8] px-4 py-12 font-sans sm:px-6">
       <div className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center text-center">
         <div className="mx-auto mb-6 h-16 w-16 rounded-full border-4 border-[#FF9500]/25 border-t-[#FF9500] animate-spin" />
-        <h2 className="text-xl font-black text-[#1A1A1A] sm:text-2xl">Scoring your readiness</h2>
-        <p className="mt-2 text-sm text-[#666666]">Analyzing your answers — almost there.</p>
-        <p className="mx-auto mt-8 max-w-sm rounded-xl border border-[#F0ECE0] bg-white px-4 py-3 text-xs leading-relaxed text-[#666666]">
-          <span className="font-semibold text-[#444444]">MentorMuni</span> pairs you with mentors and AI mocks so gaps turn
+        <h2 className="text-xl font-black text-foreground sm:text-2xl">Scoring your readiness</h2>
+        <p className="mt-2 text-sm text-muted-foreground">Analyzing your answers — almost there.</p>
+        <p className="mx-auto mt-8 max-w-sm rounded-xl border border-[#F0ECE0] bg-white px-4 py-3 text-xs leading-relaxed text-muted-foreground">
+          <span className="font-semibold text-foreground-muted">MentorMuni</span> pairs you with mentors and AI mocks so gaps turn
           into confidence — explore after your score appears.
         </p>
       </div>
@@ -704,34 +704,34 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
             <div className="flex flex-wrap items-start justify-between gap-3 gap-y-2">
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-lg font-bold leading-tight text-[#1A1A1A] sm:text-xl">{quizTitle}</h2>
+                  <h2 className="text-lg font-bold leading-tight text-foreground sm:text-xl">{quizTitle}</h2>
                   <span className="shrink-0 rounded-full border border-[#E8D9C8] bg-[#FFF8EE] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#8B6914] sm:text-[11px]">
                     Yes/No · {questions.length}
                   </span>
                 </div>
-                <p className="mt-1.5 line-clamp-2 text-xs leading-snug text-[#666666] sm:text-sm">
+                <p className="mt-1.5 line-clamp-2 text-xs leading-snug text-muted-foreground sm:text-sm">
                   {isSkillQuiz
                     ? 'Scoped to your skill — not a full interview-round mix.'
                     : 'Broad engineering-style checks for overall readiness.'}
                 </p>
-                <p className="mt-1 truncate text-xs text-[#888888]">
+                <p className="mt-1 truncate text-xs text-hint">
                   {isSkillQuiz ? 'Skill: ' : 'Context: '}
-                  <span className="font-medium text-[#444444]">{skillSnippet}</span>
+                  <span className="font-medium text-foreground-muted">{skillSnippet}</span>
                   {roleLabel ? (
                     <>
                       {' · '}
-                      <span className="font-medium text-[#444444]">{roleLabel}</span>
+                      <span className="font-medium text-foreground-muted">{roleLabel}</span>
                     </>
                   ) : null}
                 </p>
               </div>
               <div className="shrink-0 rounded-lg border border-[#E0DCCF] bg-[#FFFDF8] px-3 py-2 text-right">
-                <div className="text-lg font-black tabular-nums leading-none text-[#1A1A1A] sm:text-xl">
+                <div className="text-lg font-black tabular-nums leading-none text-foreground sm:text-xl">
                   {answered}
                   <span className="text-[#999999]">/</span>
                   {questions.length}
                 </div>
-                <p className="text-[10px] font-medium uppercase tracking-wide text-[#888888]">Answered</p>
+                <p className="text-[10px] font-medium uppercase tracking-wide text-hint">Answered</p>
               </div>
             </div>
             <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-[#F0ECE0]">
@@ -749,8 +749,8 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
             }`}
           >
             <div className="flex items-center justify-between gap-3">
-              <p className="min-w-0 truncate text-sm font-semibold text-[#1A1A1A]">{quizTitle}</p>
-              <span className="shrink-0 text-xs font-bold tabular-nums text-[#555555]">
+              <p className="min-w-0 truncate text-sm font-semibold text-foreground">{quizTitle}</p>
+              <span className="shrink-0 text-xs font-bold tabular-nums text-foreground-muted">
                 {answered}/{questions.length}
               </span>
             </div>
@@ -769,7 +769,7 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
           >
             {questions.map((q, i) => (
               <div key={i} className="border-b border-[#F0ECE0] pb-6 last:border-0 last:pb-2">
-                <p className="mb-4 flex items-start gap-3 text-base font-semibold leading-relaxed text-[#1A1A1A]">
+                <p className="mb-4 flex items-start gap-3 text-base font-semibold leading-relaxed text-foreground">
                   <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-600 text-xs font-black text-white">
                     {i + 1}
                   </span>
@@ -782,7 +782,7 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
                     className={`flex-1 rounded-xl border-2 py-2.5 text-sm font-bold transition-all sm:py-3 ${
                       answers[i] === 'Yes'
                         ? 'border-emerald-500 bg-emerald-600 text-white shadow-md shadow-emerald-500/25'
-                        : 'border-[#E0DCCF] bg-white text-[#444444] hover:border-emerald-400/60 hover:bg-emerald-50'
+                        : 'border-[#E0DCCF] bg-white text-foreground-muted hover:border-emerald-400/60 hover:bg-emerald-50'
                     }`}
                   >
                     Yes
@@ -793,7 +793,7 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
                     className={`flex-1 rounded-xl border-2 py-2.5 text-sm font-bold transition-all sm:py-3 ${
                       answers[i] === 'No'
                         ? 'border-rose-500 bg-rose-600 text-white shadow-md shadow-rose-500/25'
-                        : 'border-[#E0DCCF] bg-white text-[#444444] hover:border-rose-400/60 hover:bg-rose-50'
+                        : 'border-[#E0DCCF] bg-white text-foreground-muted hover:border-rose-400/60 hover:bg-rose-50'
                     }`}
                   >
                     No
@@ -1078,16 +1078,12 @@ const InterviewReady = () => {
     }
 
     const emailStr = String(profile.email ?? '').trim();
-    if (!emailStr) {
-      errors.email = 'Email is required';
-    } else if (!validateEmail(emailStr)) {
+    if (emailStr && !validateEmail(emailStr)) {
       errors.email = 'Invalid email format';
     }
 
     const phoneStr = String(profile.contactNumber ?? '').trim();
-    if (!phoneStr) {
-      errors.phone = 'Phone number is required';
-    } else if (!validatePhone(phoneStr)) {
+    if (phoneStr && !validatePhone(phoneStr)) {
       errors.phone = 'Enter a valid phone number (at least 10 digits)';
     }
 
@@ -1317,8 +1313,8 @@ const InterviewReady = () => {
             <div className="mb-6">
               <div className="mx-auto h-14 w-14 rounded-full border-4 border-[#FF9500]/25 border-t-[#FF9500] animate-spin" />
             </div>
-            <h2 className="mb-2 text-2xl font-black text-[#1A1A1A]">Processing your request</h2>
-            <p className="text-[#666666]">Please wait a moment…</p>
+            <h2 className="mb-2 text-2xl font-black text-foreground">Processing your request</h2>
+            <p className="text-muted-foreground">Please wait a moment…</p>
           </div>
         </div>
       </div>
@@ -1331,8 +1327,8 @@ const InterviewReady = () => {
       <div className="min-h-screen bg-[#FFFDF8] py-10 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-3xl mx-auto">
           <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-[#F0ECE0]">
-            <h2 className="text-3xl md:text-4xl font-black text-[#1A1A1A] mb-2 tracking-tight">Choose what to measure</h2>
-            <p className="text-[#666666] text-sm md:text-base mb-6 leading-relaxed">
+            <h2 className="text-3xl md:text-4xl font-black text-foreground mb-2 tracking-tight">Choose what to measure</h2>
+            <p className="text-muted-foreground text-sm md:text-base mb-6 leading-relaxed">
               One skill in depth, or a broad interview mix — tap a card to continue.
             </p>
             <AssessmentModeGrid
@@ -1346,7 +1342,7 @@ const InterviewReady = () => {
             <button
               type="button"
               onClick={() => navigate('/interview-readiness-tools')}
-              className="mt-6 px-6 py-3 font-bold text-[#666666] hover:text-[#1A1A1A] hover:bg-[#FFF8EE] rounded-xl transition-all border border-[#F0ECE0] hover:border-[#E0DCCF] text-sm"
+              className="mt-6 px-6 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-[#FFF8EE] rounded-xl transition-all border border-[#F0ECE0] hover:border-[#E0DCCF] text-sm"
             >
               ← Back to tools
             </button>
@@ -1465,9 +1461,9 @@ const InterviewReady = () => {
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#FF9500]/20 border border-[#FF9500]">
                   <Mail className="text-[#FF9500]" size={24} />
                 </div>
-                <h2 className="text-3xl font-black text-[#1A1A1A]">Verify Your Contact</h2>
+                <h2 className="text-3xl font-black text-foreground">Verify Your Contact</h2>
               </div>
-              <p className="text-[#666666] text-base">
+              <p className="text-muted-foreground text-base">
                 We'll send you an OTP to verify your email and phone
               </p>
             </div>
@@ -1485,7 +1481,7 @@ const InterviewReady = () => {
                     setValidationErrors({...validationErrors, email: ''});
                   }}
                   placeholder="your.email@example.com"
-                  className={`w-full px-4 py-3 rounded-xl border bg-white border border-[#E0DCCF] outline-none transition-all text-[#1A1A1A] placeholder-[#AAAAAA] ${
+                  className={`w-full px-4 py-3 rounded-xl border bg-white border border-[#E0DCCF] outline-none transition-all text-foreground placeholder-[#AAAAAA] ${
                     validationErrors.email 
                       ? 'border-red-500/50 bg-red-500/10' 
                       : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
@@ -1512,7 +1508,7 @@ const InterviewReady = () => {
                     setValidationErrors({...validationErrors, phone: ''});
                   }}
                   placeholder="+91 9876543210"
-                  className={`w-full px-4 py-3 rounded-xl border bg-white border border-[#E0DCCF] outline-none transition-all text-[#1A1A1A] placeholder-[#AAAAAA] ${
+                  className={`w-full px-4 py-3 rounded-xl border bg-white border border-[#E0DCCF] outline-none transition-all text-foreground placeholder-[#AAAAAA] ${
                     validationErrors.phone 
                       ? 'border-red-500/50 bg-red-500/10' 
                       : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
@@ -1538,7 +1534,7 @@ const InterviewReady = () => {
                 <button 
                   type="button" 
                   onClick={() => setStep(0)}
-                  className="flex-1 py-3 font-bold text-[#444444] hover:text-[#1A1A1A] hover:bg-[#FFF8EE] rounded-2xl transition-all border border-[#E0DCCF] hover:border-[#E0DCCF]"
+                  className="flex-1 py-3 font-bold text-foreground-muted hover:text-foreground hover:bg-[#FFF8EE] rounded-2xl transition-all border border-[#E0DCCF] hover:border-[#E0DCCF]"
                 >
                   Back
                 </button>
@@ -1568,9 +1564,9 @@ const InterviewReady = () => {
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-500">
                   <Lock className="text-cyan-400" size={24} />
                 </div>
-                <h2 className="text-3xl font-black text-[#1A1A1A]">Verify OTP</h2>
+                <h2 className="text-3xl font-black text-foreground">Verify OTP</h2>
               </div>
-              <p className="text-[#666666] text-base">
+              <p className="text-muted-foreground text-base">
                 Enter the 6-digit code sent to your email and phone
               </p>
               <p className="text-xs text-cyan-400/80 mt-3 bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-3">
@@ -1589,7 +1585,7 @@ const InterviewReady = () => {
                   onChange={(e) => setOtpCode(e.target.value.slice(0, 6))}
                   placeholder="000000"
                   maxLength="6"
-                  className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] outline-none text-center text-3xl font-black tracking-widest text-[#1A1A1A] placeholder-[#AAAAAA] hover:border-[#E0DCCF] focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30 transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] outline-none text-center text-3xl font-black tracking-widest text-foreground placeholder-[#AAAAAA] hover:border-[#E0DCCF] focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30 transition-all"
                   required
                 />
               </div>
@@ -1605,7 +1601,7 @@ const InterviewReady = () => {
                 <button 
                   type="button" 
                   onClick={() => setOtpSent(false)}
-                  className="flex-1 py-3 font-bold text-[#444444] hover:text-[#1A1A1A] hover:bg-[#FFF8EE] rounded-2xl transition-all border border-[#E0DCCF] hover:border-[#E0DCCF]"
+                  className="flex-1 py-3 font-bold text-foreground-muted hover:text-foreground hover:bg-[#FFF8EE] rounded-2xl transition-all border border-[#E0DCCF] hover:border-[#E0DCCF]"
                 >
                   Back
                 </button>
@@ -1690,10 +1686,10 @@ const InterviewReady = () => {
               </div>
             )}
 
-            <h2 className="text-3xl md:text-4xl font-black text-[#1A1A1A] mb-2 tracking-tight">
+            <h2 className="text-3xl md:text-4xl font-black text-foreground mb-2 tracking-tight">
               Select your professional profile
             </h2>
-            <p className="text-[#666666] text-base mb-8 leading-relaxed">
+            <p className="text-muted-foreground text-base mb-8 leading-relaxed">
               Choose the option that best reflects your current stage. We’ll tailor questions to your context.
             </p>
 
@@ -1728,12 +1724,12 @@ const InterviewReady = () => {
                       </div>
                     )}
                     <div className="text-3xl mb-3">{option.emoji}</div>
-                    <h3 className="font-bold text-[#1A1A1A] text-sm mb-1">{option.label}</h3>
-                    <p className={`text-xs font-medium mb-3 ${selected ? 'text-[#FF9500]' : 'text-slate-500'}`}>{option.badge}</p>
+                    <h3 className="font-bold text-foreground text-sm mb-1">{option.label}</h3>
+                    <p className={`text-xs font-medium mb-3 ${selected ? 'text-[#FF9500]' : 'text-muted-foreground'}`}>{option.badge}</p>
                     <div className="space-y-1.5">
                       {option.details.map((d) => (
-                        <div key={d} className="flex items-start gap-1.5 text-xs text-[#666666]">
-                          <Check size={11} className={`mt-0.5 shrink-0 ${selected ? 'text-[#FF9500]' : 'text-slate-600'}`} />
+                        <div key={d} className="flex items-start gap-1.5 text-xs text-muted-foreground">
+                          <Check size={11} className={`mt-0.5 shrink-0 ${selected ? 'text-[#FF9500]' : 'text-foreground-muted'}`} />
                           {d}
                         </div>
                       ))}
@@ -1751,7 +1747,7 @@ const InterviewReady = () => {
                   if (fromToolsEntry) setStep(12);
                   else setStep(0);
                 }}
-                className="px-6 py-3 font-bold text-[#666666] hover:text-[#1A1A1A] hover:bg-[#FFF8EE] rounded-xl transition-all border border-[#F0ECE0] hover:border-[#E0DCCF] text-sm"
+                className="px-6 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-[#FFF8EE] rounded-xl transition-all border border-[#F0ECE0] hover:border-[#E0DCCF] text-sm"
               >
                 ← Back
               </button>
@@ -1762,7 +1758,7 @@ const InterviewReady = () => {
                 className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all ${
                   profile.userCategory
                     ? 'bg-gradient-to-r from-[#FF9500] to-[#FFB347] text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.3)] hover:from-[#FF9500] hover:to-[#FFB347] active:scale-[0.98]'
-                    : 'cursor-not-allowed border border-[#F0ECE0] bg-white/[0.04] text-slate-600'
+                    : 'cursor-not-allowed border border-[#F0ECE0] bg-white/[0.04] text-foreground-muted'
                 }`}
               >
                 Continue
@@ -1807,14 +1803,14 @@ const InterviewReady = () => {
 
             <div className="mb-6 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center rounded-full border border-[#FF9500]/35 bg-[#FF9500]/10 px-3 py-1.5 text-xs font-semibold text-[#CC7000]">
-                Profile: <span className="ml-1 text-[#444444]">{roleLabel}</span>
+                Profile: <span className="ml-1 text-foreground-muted">{roleLabel}</span>
               </span>
             </div>
 
-            <h2 className="text-3xl md:text-4xl font-black text-[#1A1A1A] mb-2 tracking-tight">
+            <h2 className="text-3xl md:text-4xl font-black text-foreground mb-2 tracking-tight">
               {isPro ? 'Your experience & organization' : 'Your college or university'}
             </h2>
-            <p className="text-[#666666] text-base mb-8 leading-relaxed max-w-2xl">
+            <p className="text-muted-foreground text-base mb-8 leading-relaxed max-w-2xl">
               {isPro
                 ? 'We use this to calibrate question difficulty and seniority—same as how real interviews adapt to your level.'
                 : 'Helps us tailor examples and expectations to your academic context (campus drives, coursework, projects).'}
@@ -1842,7 +1838,7 @@ const InterviewReady = () => {
                         );
                       }}
                       placeholder="e.g. 2.5"
-                      className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-[#1A1A1A] outline-none transition-all placeholder:text-slate-500 ${
+                      className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
                         validationErrors.experienceYears
                           ? 'border-red-500/50 bg-red-500/10'
                           : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
@@ -1870,7 +1866,7 @@ const InterviewReady = () => {
                         );
                       }}
                       placeholder="Company or employer name"
-                      className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-[#1A1A1A] outline-none transition-all placeholder:text-slate-500 ${
+                      className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
                         validationErrors.currentOrganization
                           ? 'border-red-500/50 bg-red-500/10'
                           : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
@@ -1898,7 +1894,7 @@ const InterviewReady = () => {
                       setValidationErrors((prev) => (prev.collegeName ? { ...prev, collegeName: '' } : prev));
                     }}
                     placeholder="e.g. IIT Madras, VIT Vellore, state university…"
-                    className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-[#1A1A1A] outline-none transition-all placeholder:text-slate-500 ${
+                    className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
                       validationErrors.collegeName
                         ? 'border-red-500/50 bg-red-500/10'
                         : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
@@ -1915,11 +1911,15 @@ const InterviewReady = () => {
             </div>
 
             <div className="mt-8 space-y-5 rounded-2xl border border-[#E0DCCF] bg-white/[0.03] p-5 md:p-6">
-              <p className="text-[11px] font-bold uppercase tracking-wider text-slate-500">Email &amp; phone</p>
+              <div className="flex items-center justify-between">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Email &amp; phone</p>
+                <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-700">Optional</span>
+              </div>
+              <p className="text-xs text-muted-foreground -mt-2">Add your email to receive your detailed score report. Skip if you prefer — your score still shows instantly.</p>
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-bold text-[#333333]">
                   <Mail size={16} className="text-[#FF9500]" />
-                  Email address <span className="text-red-400">*</span>
+                  Email address <span className="text-[10px] font-medium text-muted-foreground ml-1">(for score report)</span>
                 </label>
                 <input
                   type="email"
@@ -1930,8 +1930,8 @@ const InterviewReady = () => {
                     setProfile((p) => ({ ...p, email: e.target.value }));
                     setValidationErrors((prev) => (prev.email ? { ...prev, email: '' } : prev));
                   }}
-                  placeholder="you@example.com"
-                  className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-[#1A1A1A] outline-none transition-all placeholder:text-slate-500 ${
+                  placeholder="you@example.com (optional)"
+                  className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
                     validationErrors.email
                       ? 'border-red-500/50 bg-red-500/10'
                       : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
@@ -1947,7 +1947,7 @@ const InterviewReady = () => {
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-bold text-[#333333]">
                   <Phone size={16} className="text-[#FF9500]" />
-                  Phone number <span className="text-red-400">*</span>
+                  Phone number <span className="text-[10px] font-medium text-muted-foreground ml-1">(optional)</span>
                 </label>
                 <input
                   type="tel"
@@ -1958,8 +1958,8 @@ const InterviewReady = () => {
                     setProfile((p) => ({ ...p, contactNumber: e.target.value }));
                     setValidationErrors((prev) => (prev.phone ? { ...prev, phone: '' } : prev));
                   }}
-                  placeholder="+91 9876543210"
-                  className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-[#1A1A1A] outline-none transition-all placeholder:text-slate-500 ${
+                  placeholder="+91 9876543210 (optional)"
+                  className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
                     validationErrors.phone
                       ? 'border-red-500/50 bg-red-500/10'
                       : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
@@ -1972,14 +1972,17 @@ const InterviewReady = () => {
                   </div>
                 )}
               </div>
-              <p className="text-xs text-slate-500">For your report and follow-up only.</p>
+              <p className="text-xs text-emerald-600 flex items-center gap-1.5">
+                <Check size={12} />
+                No spam, ever. Just your score report if you add email.
+              </p>
             </div>
 
             <div className="mt-8 flex gap-3">
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="rounded-xl border border-[#F0ECE0] px-6 py-3 text-sm font-bold text-[#666666] transition-all hover:border-[#E0DCCF] hover:bg-white/5 hover:text-white"
+                className="rounded-xl border border-[#F0ECE0] px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-[#E0DCCF] hover:bg-white/5 hover:text-white"
               >
                 ← Back
               </button>
@@ -2033,13 +2036,13 @@ const InterviewReady = () => {
             </div>
 
             <div className="mb-6 space-y-3">
-              <h2 className="text-2xl font-black tracking-tight text-[#1A1A1A] md:text-3xl">
+              <h2 className="text-2xl font-black tracking-tight text-foreground md:text-3xl">
                 {isSkillFocus ? 'Your skill focus' : 'Interview focus areas'}
               </h2>
-              <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-[#666666]">
+              <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
                 {profile.assessmentMode && (
                   <>
-                    <span className="font-semibold text-[#444444]">
+                    <span className="font-semibold text-foreground-muted">
                       {ASSESSMENT_MODE_LABEL[profile.assessmentMode]}
                     </span>
                     <span className="text-[#D4D0C8]" aria-hidden>
@@ -2055,17 +2058,17 @@ const InterviewReady = () => {
                   {usageInfo.remaining_attempts}/{FREE_TIER_LIMIT} free
                 </span>
               </p>
-              <p className="max-w-2xl text-sm leading-relaxed text-[#555555]">
+              <p className="max-w-2xl text-sm leading-relaxed text-foreground-muted">
                 {isSkillFocus ? (
                   <>
                     One skill only — we&apos;ll keep every question on it.{' '}
-                    <span className="text-[#888888]">({PLAN_PRIMARY_SKILL_MAX} characters max)</span>
+                    <span className="text-hint">({PLAN_PRIMARY_SKILL_MAX} characters max)</span>
                   </>
                 ) : (
                   <>
                     Add subjects for context (e.g. DSA, OOP, DBMS). You&apos;ll get a{' '}
                     <span className="font-medium text-[#333333]">broad interview mix</span>, not drills on one language.{' '}
-                    <span className="text-[#888888]">({PLAN_PRIMARY_SKILL_MAX} characters max)</span>
+                    <span className="text-hint">({PLAN_PRIMARY_SKILL_MAX} characters max)</span>
                   </>
                 )}
               </p>
@@ -2094,15 +2097,15 @@ const InterviewReady = () => {
               />
 
               <div className="rounded-lg border border-[#E8E4DC] bg-[#FAFAFA] px-3 py-2.5">
-                <p className="text-xs leading-snug text-[#555555]">
+                <p className="text-xs leading-snug text-foreground-muted">
                   {isSkillFocus ? (
                     <>
-                      <span className="font-semibold text-[#444444]">Tip:</span> Best with a single stack (e.g. Java or
+                      <span className="font-semibold text-foreground-muted">Tip:</span> Best with a single stack (e.g. Java or
                       Python), not a long list.
                     </>
                   ) : (
                     <>
-                      <span className="font-semibold text-[#444444]">Tip:</span> Comma-separated is fine; questions stay
+                      <span className="font-semibold text-foreground-muted">Tip:</span> Comma-separated is fine; questions stay
                       general across topics.
                     </>
                   )}
@@ -2130,7 +2133,7 @@ const InterviewReady = () => {
                 <button
                   type="button"
                   onClick={() => setStep(3)}
-                  className="rounded-xl border border-[#F0ECE0] px-6 py-3 text-sm font-bold text-[#666666] transition-all hover:border-[#E0DCCF] hover:bg-white/5 hover:text-white"
+                  className="rounded-xl border border-[#F0ECE0] px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-[#E0DCCF] hover:bg-white/5 hover:text-white"
                 >
                   ← Back
                 </button>
@@ -2201,9 +2204,9 @@ const InterviewReady = () => {
       <div className="min-h-screen bg-[#FFFDF8] py-8 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="mx-auto max-w-3xl space-y-6">
           <div>
-            <h1 className="text-xl font-bold tracking-tight text-[#1A1A1A] sm:text-2xl">Your readiness score</h1>
-            <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-[#666666]">
-              <span className="font-medium text-[#444444]">{modeLabel}</span>
+            <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">Your readiness score</h1>
+            <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
+              <span className="font-medium text-foreground-muted">{modeLabel}</span>
               <span className="text-[#D4D0C8]" aria-hidden>
                 ·
               </span>
@@ -2243,15 +2246,15 @@ const InterviewReady = () => {
                   <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500" aria-hidden />
                   {band.label}
                 </motion.div>
-                <h2 className="mt-4 text-2xl font-black leading-tight text-[#1A1A1A] sm:text-3xl">
+                <h2 className="mt-4 text-2xl font-black leading-tight text-foreground sm:text-3xl">
                   {result.readiness_label}
                 </h2>
-                <p className="mt-2 max-w-sm text-sm text-[#555555]">{band.sub}</p>
-                <p className="mt-3 text-xs leading-relaxed text-[#888888]">{result.summary}</p>
+                <p className="mt-2 max-w-sm text-sm text-foreground-muted">{band.sub}</p>
+                <p className="mt-3 text-xs leading-relaxed text-hint">{result.summary}</p>
               </div>
 
               <div className="rounded-2xl border border-[#E8E4DC] bg-[#FAFAFA]/80 p-5 sm:p-6">
-                <p className="mb-5 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-[#666666]">
+                <p className="mb-5 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">
                   <BarChart3 size={15} className="text-[#FF9500]" />
                   Score factors
                 </p>
@@ -2281,7 +2284,7 @@ const InterviewReady = () => {
                     delay={0.24}
                   />
                 </div>
-                <p className="mt-5 border-t border-[#EDE8E0] pt-4 text-[10px] leading-relaxed text-[#888888]">
+                <p className="mt-5 border-t border-[#EDE8E0] pt-4 text-[10px] leading-relaxed text-hint">
                   Directional only — derived from your score and how many strength vs gap topics we detected.
                 </p>
               </div>
@@ -2303,15 +2306,15 @@ const InterviewReady = () => {
                   </span>
                   <Gift className="h-5 w-5 text-[#CC7000]" aria-hidden />
                 </div>
-                <h3 className="mt-3 text-lg font-black text-[#1A1A1A] sm:text-xl">
+                <h3 className="mt-3 text-lg font-black text-foreground sm:text-xl">
                   {READINESS_TEST_COUPON_OFFER_HEADLINE}
                 </h3>
-                <p className="mt-2 text-sm text-[#555555]">
+                <p className="mt-2 text-sm text-foreground-muted">
                   Your early-bird coupon is below — copy it and use it when you claim your reward (waitlist, mentor
                   session, or checkout when we share the link).
                 </p>
                 <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <code className="break-all rounded-2xl border border-[#E0DCCF] bg-white px-4 py-3 text-center font-mono text-lg font-bold tracking-wide text-[#1A1A1A] shadow-inner sm:text-xl">
+                  <code className="break-all rounded-2xl border border-[#E0DCCF] bg-white px-4 py-3 text-center font-mono text-lg font-bold tracking-wide text-foreground shadow-inner sm:text-xl">
                     {earlyBirdCouponCode}
                   </code>
                   <button
@@ -2340,7 +2343,7 @@ const InterviewReady = () => {
                     )}
                   </button>
                 </div>
-                <p className="mt-4 text-xs text-[#888888]">
+                <p className="mt-4 text-xs text-hint">
                   {READINESS_TEST_COUPON_BADGE} · Codes are chosen at random from our early-bird pool for each score
                   card.
                 </p>
@@ -2380,8 +2383,8 @@ const InterviewReady = () => {
             transition={{ delay: 0.25 }}
             className="rounded-2xl border border-[#E0DCCF] bg-white p-6 shadow-sm sm:p-7"
           >
-            <h3 className="text-base font-bold text-[#1A1A1A] sm:text-lg">Your next steps</h3>
-            <p className="mt-1 text-xs text-[#666666]">Prioritized for your current band — do them in order.</p>
+            <h3 className="text-base font-bold text-foreground sm:text-lg">Your next steps</h3>
+            <p className="mt-1 text-xs text-muted-foreground">Prioritized for your current band — do them in order.</p>
             <ol className="mt-5 space-y-4">
               {nextSteps.map((stepItem, i) => (
                 <li key={stepItem.title} className="flex gap-4">
@@ -2389,8 +2392,8 @@ const InterviewReady = () => {
                     {i + 1}
                   </span>
                   <div>
-                    <p className="font-semibold text-[#1A1A1A]">{stepItem.title}</p>
-                    <p className="mt-1 text-sm leading-relaxed text-[#666666]">{stepItem.sub}</p>
+                    <p className="font-semibold text-foreground">{stepItem.title}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{stepItem.sub}</p>
                   </div>
                 </li>
               ))}
@@ -2403,8 +2406,8 @@ const InterviewReady = () => {
             transition={{ delay: 0.3 }}
             className="rounded-2xl border border-[#E0DCCF] bg-white p-6 shadow-sm sm:p-7"
           >
-            <h3 className="text-base font-bold text-[#1A1A1A] sm:text-lg">How you compare</h3>
-            <p className="mt-1 text-xs text-[#666666]">
+            <h3 className="text-base font-bold text-foreground sm:text-lg">How you compare</h3>
+            <p className="mt-1 text-xs text-muted-foreground">
               Illustrative peer lens — derived from your score profile (not a live benchmark survey).
             </p>
             <div className="mt-6 space-y-6">
@@ -2434,14 +2437,14 @@ const InterviewReady = () => {
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <Share2 size={16} className="text-[#666666]" />
-                  <p className="text-sm font-bold text-[#1A1A1A]">Challenge your friends</p>
+                  <Share2 size={16} className="text-muted-foreground" />
+                  <p className="text-sm font-bold text-foreground">Challenge your friends</p>
                 </div>
-                <p className="mt-1 text-sm text-[#555555]">
+                <p className="mt-1 text-sm text-foreground-muted">
                   Dare your squad to beat your {pct}% — same free ~5 min interview readiness check. Bragging rights
                   optional, interview prep mandatory.
                 </p>
-                <div className="mt-4 flex flex-wrap gap-3">
+                <div className="mt-4 flex flex-wrap gap-2">
                   <a
                     href={`https://wa.me/?text=${encodeURIComponent(
                       buildWhatsAppChallengeMessage(
@@ -2452,23 +2455,37 @@ const InterviewReady = () => {
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-emerald-900/25 transition hover:bg-[#20bd5a]"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-900/25 transition hover:bg-[#20bd5a]"
                   >
-                    Share on WhatsApp
+                    <Share2 size={14} />
+                    Dare on WhatsApp
                   </a>
                   <a
                     href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(getInterviewReadinessShareUrl())}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0A66C2] px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-950/30 transition hover:bg-[#095195]"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0A66C2] px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-950/30 transition hover:bg-[#095195]"
                   >
-                    <Linkedin size={18} aria-hidden />
-                    Share on LinkedIn
+                    <Linkedin size={14} aria-hidden />
+                    LinkedIn
                   </a>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const msg = buildWhatsAppChallengeMessage(pct, result.readiness_label, result.assessmentMode ? ASSESSMENT_MODE_LABEL[result.assessmentMode] : '');
+                      navigator.clipboard.writeText(msg);
+                    }}
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#E0DCCF] bg-white px-4 py-2.5 text-sm font-semibold text-foreground transition hover:bg-[#FAFAFA]"
+                  >
+                    <Copy size={14} />
+                    Copy message
+                  </button>
                 </div>
-                <p className="mt-3 text-[11px] text-slate-500">
-                  LinkedIn shares the assessment link — add your score in the post so friends know what to beat.
-                </p>
+                <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-2.5">
+                  <p className="text-xs font-semibold text-amber-800">
+                    🎯 Invite 3 friends who complete the test → Earn 1 free mentor session!
+                  </p>
+                </div>
               </div>
             </div>
           </motion.div>
@@ -2482,19 +2499,19 @@ const InterviewReady = () => {
             {reportSent ? (
               <div className="py-2 text-center">
                 <CheckCircle size={28} className="mx-auto mb-2 text-green-600" />
-                <p className="text-sm font-semibold text-[#1A1A1A]">Report sent! Check your inbox.</p>
+                <p className="text-sm font-semibold text-foreground">Report sent! Check your inbox.</p>
               </div>
             ) : (
               <>
-                <p className="mb-1 text-sm font-semibold text-[#1A1A1A]">Get your full report in your inbox</p>
-                <p className="mb-3 text-xs text-[#666666]">Score breakdown, study plan, and resource links — sent once, no spam.</p>
+                <p className="mb-1 text-sm font-semibold text-foreground">Get your full report in your inbox</p>
+                <p className="mb-3 text-xs text-muted-foreground">Score breakdown, study plan, and resource links — sent once, no spam.</p>
                 <div className="flex gap-2">
                   <input
                     type="email"
                     value={reportEmail}
                     onChange={(e) => setReportEmail(e.target.value)}
                     placeholder="your@email.com"
-                    className="flex-1 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] px-4 py-2.5 text-sm text-[#1A1A1A] outline-none transition-colors placeholder:text-[#888888] focus:border-[#FF9500]"
+                    className="flex-1 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] px-4 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-hint focus:border-[#FF9500]"
                   />
                   <button
                     type="button"
@@ -2528,7 +2545,7 @@ const InterviewReady = () => {
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.05 * i }}
-                      className="rounded-xl border border-[#E0DCCF] bg-white p-4 text-left text-sm text-[#444444]"
+                      className="rounded-xl border border-[#E0DCCF] bg-white p-4 text-left text-sm text-foreground-muted"
                     >
                       {rec}
                     </motion.p>
@@ -2543,8 +2560,8 @@ const InterviewReady = () => {
                       <p className="text-[10px] font-bold uppercase tracking-wider text-[#CC7000]">
                         {rec.priority || 'Focus'}
                       </p>
-                      <p className="mt-1 font-semibold text-[#1A1A1A]">{rec.topic}</p>
-                      {rec.why && <p className="mt-1 text-sm text-[#666666]">{rec.why}</p>}
+                      <p className="mt-1 font-semibold text-foreground">{rec.topic}</p>
+                      {rec.why && <p className="mt-1 text-sm text-muted-foreground">{rec.why}</p>}
                     </motion.div>
                   )
                 )}
@@ -2555,13 +2572,13 @@ const InterviewReady = () => {
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {result.strengths && result.strengths.length > 0 && (
               <div className="rounded-2xl border border-[#E0DCCF] bg-white p-6 shadow-sm ring-1 ring-emerald-500/10">
-                <h3 className="mb-1 flex items-center gap-2.5 text-base font-semibold tracking-tight text-[#1A1A1A] sm:text-lg">
+                <h3 className="mb-1 flex items-center gap-2.5 text-base font-semibold tracking-tight text-foreground sm:text-lg">
                   <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100">
                     <CheckCircle2 size={20} className="text-emerald-600" strokeWidth={2} aria-hidden />
                   </span>
                   Your strengths
                 </h3>
-                <p className="mb-4 text-xs leading-relaxed text-[#666666]">Topics where your answers showed solid understanding.</p>
+                <p className="mb-4 text-xs leading-relaxed text-muted-foreground">Topics where your answers showed solid understanding.</p>
                 <motion.div
                   variants={resultsListContainer}
                   initial="hidden"
@@ -2584,13 +2601,13 @@ const InterviewReady = () => {
 
             {result.gaps && result.gaps.length > 0 && (
               <div className="rounded-2xl border border-[#E0DCCF] bg-white p-6 shadow-sm ring-1 ring-amber-500/10">
-                <h3 className="mb-1 flex items-center gap-2.5 text-base font-semibold tracking-tight text-[#1A1A1A] sm:text-lg">
+                <h3 className="mb-1 flex items-center gap-2.5 text-base font-semibold tracking-tight text-foreground sm:text-lg">
                   <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 text-amber-800 ring-1 ring-amber-100">
                     <AlertTriangle size={20} className="text-amber-600" strokeWidth={2} aria-hidden />
                   </span>
                   Areas to improve
                 </h3>
-                <p className="mb-4 text-xs leading-relaxed text-[#666666]">Prioritize these for your next study block.</p>
+                <p className="mb-4 text-xs leading-relaxed text-muted-foreground">Prioritize these for your next study block.</p>
                 <motion.div
                   variants={resultsListContainer}
                   initial="hidden"
@@ -2652,7 +2669,7 @@ const InterviewReady = () => {
               <button
                 type="button"
                 onClick={resetAll}
-                className="w-full rounded-2xl border border-[#E0DCCF] bg-[#FAFAFA] py-4 text-base font-bold text-[#444444] transition-all hover:border-[#E0DCCF] hover:bg-[#FFF8EE]"
+                className="w-full rounded-2xl border border-[#E0DCCF] bg-[#FAFAFA] py-4 text-base font-bold text-foreground-muted transition-all hover:border-[#E0DCCF] hover:bg-[#FFF8EE]"
               >
                 Start fresh
               </button>
@@ -2685,10 +2702,10 @@ const InterviewReady = () => {
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#FF9500]/20 border border-[#FF9500]/45 mb-6">
                 <div className="w-2 h-10 bg-[#FFB347] rounded-full"></div>
               </div>
-              <h1 className="text-4xl font-black text-[#1A1A1A] mb-3">
+              <h1 className="text-4xl font-black text-foreground mb-3">
                 Unlock AI Mock Interviews
               </h1>
-              <p className="text-lg text-[#444444]">
+              <p className="text-lg text-foreground-muted">
                 You've completed your free assessment. Get premium access to unlimited AI mock interviews with advanced features!
               </p>
             </div>
@@ -2708,13 +2725,13 @@ const InterviewReady = () => {
                   setAuthMode('signup');
                   setStep(8);
                 }}
-                className="w-full bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-[#E0DCCF] text-[#444444] font-bold py-4 rounded-2xl transition-all"
+                className="w-full bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-[#E0DCCF] text-foreground-muted font-bold py-4 rounded-2xl transition-all"
               >
                 Create New Account
               </button>
               <button 
                 onClick={resetAll}
-                className="w-full bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-[#E0DCCF] text-[#444444] font-bold py-3 rounded-2xl transition-all text-sm"
+                className="w-full bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-[#E0DCCF] text-foreground-muted font-bold py-3 rounded-2xl transition-all text-sm"
               >
                 Go Back Home
               </button>
@@ -2732,8 +2749,8 @@ const InterviewReady = () => {
         <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
           <div className="max-w-md mx-auto">
             <div className="bg-white border border-[#E0DCCF] rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
-              <h2 className="text-3xl font-black text-[#1A1A1A] mb-2">Sign In</h2>
-              <p className="text-[#666666] mb-8">Access your premium interviews</p>
+              <h2 className="text-3xl font-black text-foreground mb-2">Sign In</h2>
+              <p className="text-muted-foreground mb-8">Access your premium interviews</p>
 
               <form onSubmit={(e) => {
                 e.preventDefault();
@@ -2746,7 +2763,7 @@ const InterviewReady = () => {
                     value={signInData.email}
                     onChange={(e) => setSignInData({...signInData, email: e.target.value})}
                     placeholder="you@example.com"
-                    className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] text-[#1A1A1A] placeholder-[#888888] outline-none focus:border-[#FF9500]"
+                    className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] text-foreground placeholder-[#888888] outline-none focus:border-[#FF9500]"
                     required
                   />
                 </div>
@@ -2758,7 +2775,7 @@ const InterviewReady = () => {
                     value={signInData.password}
                     onChange={(e) => setSignInData({...signInData, password: e.target.value})}
                     placeholder="••••••••"
-                    className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] text-[#1A1A1A] placeholder-[#888888] outline-none focus:border-[#FF9500]"
+                    className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] text-foreground placeholder-[#888888] outline-none focus:border-[#FF9500]"
                     required
                   />
                 </div>
@@ -2767,7 +2784,7 @@ const InterviewReady = () => {
                   <button 
                     type="button"
                     onClick={() => setStep(7)}
-                    className="flex-1 py-3 font-bold text-[#444444] hover:text-[#1A1A1A] hover:bg-[#FFF8EE] rounded-2xl transition-all border border-[#E0DCCF]"
+                    className="flex-1 py-3 font-bold text-foreground-muted hover:text-foreground hover:bg-[#FFF8EE] rounded-2xl transition-all border border-[#E0DCCF]"
                   >
                     Back
                   </button>
@@ -2780,7 +2797,7 @@ const InterviewReady = () => {
                 </div>
               </form>
 
-              <p className="text-xs text-slate-500 text-center mt-6">
+              <p className="text-xs text-muted-foreground text-center mt-6">
                 Don't have an account? <button onClick={() => setAuthMode('signup')} className="text-[#FF9500] font-semibold hover:text-[#CC7000]">Sign up here</button>
               </p>
             </div>
@@ -2794,8 +2811,8 @@ const InterviewReady = () => {
       <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-md mx-auto">
           <div className="bg-white border border-[#E0DCCF] rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
-            <h2 className="text-3xl font-black text-[#1A1A1A] mb-2">Create Account</h2>
-            <p className="text-[#666666] mb-8">Join thousands of job seekers mastering interviews</p>
+            <h2 className="text-3xl font-black text-foreground mb-2">Create Account</h2>
+            <p className="text-muted-foreground mb-8">Join thousands of job seekers mastering interviews</p>
 
             <form onSubmit={(e) => {
               e.preventDefault();
@@ -2865,7 +2882,7 @@ const InterviewReady = () => {
                 <button 
                   type="button"
                   onClick={() => setStep(7)}
-                  className="flex-1 py-3 font-bold text-[#444444] hover:text-[#1A1A1A] hover:bg-[#FFF8EE] rounded-2xl transition-all border border-[#E0DCCF]"
+                  className="flex-1 py-3 font-bold text-foreground-muted hover:text-foreground hover:bg-[#FFF8EE] rounded-2xl transition-all border border-[#E0DCCF]"
                 >
                   Back
                 </button>
@@ -2878,7 +2895,7 @@ const InterviewReady = () => {
               </div>
             </form>
 
-            <p className="text-xs text-slate-500 text-center mt-6">
+            <p className="text-xs text-muted-foreground text-center mt-6">
               Already have an account? <button onClick={() => setAuthMode('signin')} className="text-[#FF9500] font-semibold hover:text-[#CC7000]">Sign in here</button>
             </p>
           </div>
@@ -2949,7 +2966,7 @@ const InterviewReady = () => {
             <h1 className="text-4xl md:text-5xl font-black text-white mb-4">
               AI Mock Interview Plans
             </h1>
-            <p className="text-xl text-[#444444] max-w-2xl mx-auto">
+            <p className="text-xl text-foreground-muted max-w-2xl mx-auto">
               Choose the perfect plan to ace your interviews with AI-powered simulations
             </p>
           </div>
@@ -2978,11 +2995,11 @@ const InterviewReady = () => {
                     : 'bg-white/5'
                 } p-8 h-full`}>
                   <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
-                  <p className={`text-sm ${plan.highlighted ? 'text-cyan-400' : 'text-[#666666]'} mb-6`}>{plan.duration}</p>
+                  <p className={`text-sm ${plan.highlighted ? 'text-cyan-400' : 'text-muted-foreground'} mb-6`}>{plan.duration}</p>
 
                   <div className="mb-6">
                     <div className="text-4xl font-black text-white mb-1">₹{plan.price}</div>
-                    <div className="text-sm text-[#666666]">
+                    <div className="text-sm text-muted-foreground">
                       {plan.interviews} AI Mock Interviews
                     </div>
                   </div>
@@ -2991,7 +3008,7 @@ const InterviewReady = () => {
                     {plan.features.map((feature, i) => (
                       <div key={i} className="flex items-start gap-3">
                         <CheckCircle size={18} className={`flex-shrink-0 mt-0.5 ${plan.highlighted ? 'text-cyan-400' : 'text-[#FF9500]'}`} />
-                        <span className="text-sm text-[#444444]">{feature}</span>
+                        <span className="text-sm text-foreground-muted">{feature}</span>
                       </div>
                     ))}
                   </div>
@@ -3035,13 +3052,13 @@ const InterviewReady = () => {
           <div className="flex gap-4 justify-center mt-8">
             <button
               onClick={() => setStep(6)}
-              className="bg-white/5 hover:bg-white/10 border border-[#E0DCCF] text-[#444444] font-bold py-3 px-8 rounded-2xl transition-all"
+              className="bg-white/5 hover:bg-white/10 border border-[#E0DCCF] text-foreground-muted font-bold py-3 px-8 rounded-2xl transition-all"
             >
               ← Back
             </button>
             <button
               onClick={resetAll}
-              className="bg-white/5 hover:bg-white/10 border border-[#E0DCCF] text-[#444444] font-bold py-3 px-8 rounded-2xl transition-all"
+              className="bg-white/5 hover:bg-white/10 border border-[#E0DCCF] text-foreground-muted font-bold py-3 px-8 rounded-2xl transition-all"
             >
               Skip for Now
             </button>
@@ -3062,7 +3079,7 @@ const InterviewReady = () => {
 
   return (
     <div className="min-h-screen bg-[#FFFDF8] flex flex-col items-center justify-center gap-4 px-4 py-12">
-      <p className="text-[#444444] text-center max-w-md">Something went wrong loading this screen.</p>
+      <p className="text-foreground-muted text-center max-w-md">Something went wrong loading this screen.</p>
       <button
         type="button"
         onClick={resetAll}

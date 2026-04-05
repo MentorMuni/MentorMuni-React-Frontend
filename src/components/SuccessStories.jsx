@@ -82,7 +82,7 @@ const SuccessStories = () => {
                 {/* Details */}
                 <div className="flex-grow">
                   <h3 className="font-bold text-white text-sm">{story.name}</h3>
-                  <p className="text-xs text-slate-400">{story.background}</p>
+                  <p className="text-xs text-muted-foreground">{story.background}</p>
                 </div>
               </div>
 
@@ -94,7 +94,7 @@ const SuccessStories = () => {
 
               {/* Company */}
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-slate-400">Joined:</span>
+                <span className="text-xs font-semibold text-muted-foreground">Joined:</span>
                 <span className="px-3 py-1 bg-[#FF9500]/20 border border-[#FF9500]/35 rounded-full text-xs font-bold text-[#CC7000]">
                   {story.company}
                 </span>

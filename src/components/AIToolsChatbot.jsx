@@ -225,7 +225,7 @@ export default function AIToolsChatbot() {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="p-2 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+              className="p-2 rounded-lg text-muted-foreground hover:text-white hover:bg-white/10 transition-colors"
               aria-label="Close chat"
             >
               <X size={18} />
@@ -247,7 +247,7 @@ export default function AIToolsChatbot() {
                 >
                   {msg.role === 'bot' ? (
                     msg.text === '__LOADING__' ? (
-                      <span className="text-slate-500 italic">Looking up…</span>
+                      <span className="text-muted-foreground italic">Looking up…</span>
                     ) : (
                       <span className="whitespace-pre-wrap [&_strong]:text-[#CC7000] [&_strong]:font-semibold">
                         {msg.text.split('**').map((part, j) =>
@@ -298,13 +298,13 @@ export default function AIToolsChatbot() {
                   key={s}
                   type="button"
                   onClick={() => pushExchange(s)}
-                  className="text-[10px] font-medium rounded-full border border-[#E0DCCF] bg-white/5 px-2 py-1 text-slate-400 hover:text-[#CC7000] hover:border-[#FF9500]/35 transition-colors"
+                  className="text-[10px] font-medium rounded-full border border-[#E0DCCF] bg-white/5 px-2 py-1 text-muted-foreground hover:text-[#CC7000] hover:border-[#FF9500]/35 transition-colors"
                 >
                   {s}
                 </button>
               ))}
             </div>
-            <p className="mt-2 text-[10px] text-slate-600 text-center leading-snug">
+            <p className="mt-2 text-[10px] text-foreground-muted text-center leading-snug">
               Local knowledge base + rules; may add a Wikipedia excerpt (not ChatGPT).{' '}
               <Link to="/start-assessment" className="text-[#FF9500] hover:underline">
                 Readiness test

@@ -162,7 +162,7 @@ const LearningPathsDropdown = ({ isActive, learningPathsItems, variant }) => {
 
             {/* Optional: Divider line at bottom */}
             <div className="mt-5 pt-5 border-t border-[#F0ECE0]">
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-muted-foreground">
                 Tip: Choose a learning path that matches your goals and skill level
               </p>
             </div>

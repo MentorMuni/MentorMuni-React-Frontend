@@ -109,7 +109,7 @@ const CareerSwitchPaths = () => {
 
           {/* Popular Transitions */}
           <div className="inline-block">
-            <p className="text-sm font-semibold text-slate-400 mb-4">Popular career transitions:</p>
+            <p className="text-sm font-semibold text-muted-foreground mb-4">Popular career transitions:</p>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {transitions.map((transition, index) => (
                 <div
@@ -117,7 +117,7 @@ const CareerSwitchPaths = () => {
                   className="px-4 py-2 rounded-full bg-gradient-to-r from-[#FF9500]/10 to-cyan-500/10 border border-[#FF9500]/25 text-sm text-slate-300 hover:border-[#FF9500]/45 transition-colors"
                 >
                   <span className="font-semibold text-[#CC7000]">{transition.from}</span>
-                  <span className="mx-2 text-slate-500">→</span>
+                  <span className="mx-2 text-muted-foreground">→</span>
                   <span className="font-semibold text-cyan-300">{transition.to}</span>
                 </div>
               ))}

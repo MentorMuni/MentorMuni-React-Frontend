@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Copy, Menu, X, Check, AlertCircle } from 'lucide-react';
 import logo from '../assets/logo.png';
 
@@ -61,7 +62,7 @@ const SqlTutorial = () => {
     return (
       <div className="bg-[#1e1e1e] rounded-lg border border-[#E0DCCF] my-4">
         <div className="flex justify-between items-center px-4 py-2 border-b border-[#E0DCCF]">
-          <span className="text-xs text-[#666666]">SQL</span>
+          <span className="text-xs text-muted-foreground">SQL</span>
           <button
             onClick={copyToClipboard}
             className="flex items-center gap-2 px-3 py-1 bg-[#FF9500] hover:bg-[#FF9500]/80 rounded text-white text-xs transition-all"
@@ -77,7 +78,7 @@ const SqlTutorial = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-[#444444] font-sans antialiased">
+    <div className="min-h-screen bg-[#FFFDF8] text-foreground-muted font-sans antialiased">
       {/* Meta Tags for SEO */}
       <head>
         <title>SQL for Beginners - Learn SQL Step by Step | Complete SQL Basics Tutorial</title>
@@ -88,14 +89,14 @@ const SqlTutorial = () => {
       {/* HEADER */}
       <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-[#F0ECE0] px-5">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between py-4">
-          <a href="/" className="transition-transform hover:scale-[1.02]">
+          <Link to="/" className="transition-transform hover:scale-[1.02]">
             <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
-          </a>
+          </Link>
 
           <nav className="hidden md:flex items-center gap-8">
-            <a href="/free-tutorials" className="text-sm font-semibold text-[#666666] hover:text-white transition-colors flex items-center gap-2">
+            <Link to="/free-tutorials" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
               ← Back to Free Tutorials
-            </a>
+            </Link>
           </nav>
 
           <button onClick={() => setIsNavOpen(!isNavOpen)} className="md:hidden text-white">
@@ -119,7 +120,7 @@ const SqlTutorial = () => {
                   className={`w-full text-left px-4 py-2 rounded-lg transition-all text-sm font-semibold ${
                     activeSection === topic.id
                       ? 'bg-[#FF9500] text-white'
-                      : 'text-[#666666] hover:text-white hover:bg-white/5'
+                      : 'text-muted-foreground hover:text-white hover:bg-white/5'
                   }`}
                 >
                   {topic.title}
@@ -137,7 +138,7 @@ const SqlTutorial = () => {
           <h1 className="text-5xl md:text-6xl font-black mb-6 bg-gradient-to-r from-[#4F46E5] to-[#06B6D4] bg-clip-text text-transparent">
             SQL for Beginners
           </h1>
-          <p className="text-xl text-[#666666] leading-relaxed mb-4">
+          <p className="text-xl text-muted-foreground leading-relaxed mb-4">
             Learn SQL step by step with this complete beginner-friendly tutorial. Perfect for someone with zero database knowledge who wants to master SQL basics and start working with data.
           </p>
           <div className="flex gap-4 flex-wrap">
@@ -149,7 +150,7 @@ const SqlTutorial = () => {
 
         <div className="mb-16 bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
           <h2 className="text-2xl font-bold mb-4">What You'll Learn</h2>
-          <ol className="space-y-2 text-[#666666]">
+          <ol className="space-y-2 text-muted-foreground">
             <li>1. What is SQL and why it matters</li>
             <li>2. Creating databases and tables</li>
             <li>3. Inserting, selecting, and filtering data</li>
@@ -168,15 +169,15 @@ const SqlTutorial = () => {
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What is a Database?</h3>
-            <p className="text-[#666666] mb-4 leading-relaxed">
+            <p className="text-muted-foreground mb-4 leading-relaxed">
               A database is like a digital filing cabinet. Instead of storing papers in folders, you store data (information) in an organized way so you can find it quickly.
             </p>
-            <p className="text-[#666666] mb-4 leading-relaxed">
+            <p className="text-muted-foreground mb-4 leading-relaxed">
               <strong>Real-World Example:</strong> When you shop on Amazon, all customer information (names, addresses, orders) is stored in a database. When you log in, the database instantly retrieves your data.
             </p>
 
             <h4 className="text-xl font-bold mb-4 mt-6">Common Examples You Use Every Day:</h4>
-            <ul className="text-[#666666] space-y-3 ml-4">
+            <ul className="text-muted-foreground space-y-3 ml-4">
               <li><strong className="text-cyan-400">• Banking:</strong> Your account balance, transaction history, loan details</li>
               <li><strong className="text-cyan-400">• Social Media:</strong> Facebook stores posts, messages, photos, followers</li>
               <li><strong className="text-cyan-400">• E-commerce:</strong> Amazon stores products, prices, inventory, customer orders</li>
@@ -187,16 +188,16 @@ const SqlTutorial = () => {
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What is DBMS?</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               <strong>DBMS = Database Management System</strong>
             </p>
-            <p className="text-[#666666] mb-4 leading-relaxed">
+            <p className="text-muted-foreground mb-4 leading-relaxed">
               It's software that helps you create, organize, and manage your data. Think of it as the librarian of your digital filing cabinet—it helps you store, find, and organize information.
             </p>
 
             <div className="bg-[#1E293B] p-4 rounded-lg border border-[#E0DCCF] mt-4">
-              <p className="text-[#666666] text-sm"><strong>Popular DBMS Examples:</strong></p>
-              <ul className="text-[#666666] text-sm mt-2 space-y-1 ml-4">
+              <p className="text-muted-foreground text-sm"><strong>Popular DBMS Examples:</strong></p>
+              <ul className="text-muted-foreground text-sm mt-2 space-y-1 ml-4">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> MySQL - Free, widely used</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> PostgreSQL - Powerful, free, open-source</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> SQL Server - Made by Microsoft</li>
@@ -212,22 +213,22 @@ const SqlTutorial = () => {
             <div className="space-y-4">
               <div>
                 <h4 className="font-bold text-cyan-400 mb-2">1. High Demand Skill</h4>
-                <p className="text-[#666666]">Nearly every company needs people who can handle data. Good salary and career opportunities.</p>
+                <p className="text-muted-foreground">Nearly every company needs people who can handle data. Good salary and career opportunities.</p>
               </div>
 
               <div>
                 <h4 className="font-bold text-cyan-400 mb-2">2. Universal Language</h4>
-                <p className="text-[#666666]">Works with all major databases. Learn once, use everywhere.</p>
+                <p className="text-muted-foreground">Works with all major databases. Learn once, use everywhere.</p>
               </div>
 
               <div>
                 <h4 className="font-bold text-cyan-400 mb-2">3. Foundation for Other Skills</h4>
-                <p className="text-[#666666]">Essential for Data Analysis, Business Intelligence, Web Development, and Data Science.</p>
+                <p className="text-muted-foreground">Essential for Data Analysis, Business Intelligence, Web Development, and Data Science.</p>
               </div>
 
               <div>
                 <h4 className="font-bold text-cyan-400 mb-2">4. Relatively Easy to Learn</h4>
-                <p className="text-[#666666]">SQL reads almost like English. Much easier than programming languages like Python or Java.</p>
+                <p className="text-muted-foreground">SQL reads almost like English. Much easier than programming languages like Python or Java.</p>
               </div>
             </div>
           </div>
@@ -239,18 +240,18 @@ const SqlTutorial = () => {
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">SQL Definition</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               <strong>SQL = Structured Query Language</strong>
             </p>
-            <p className="text-[#666666] mb-6 leading-relaxed">
+            <p className="text-muted-foreground mb-6 leading-relaxed">
               SQL is a language used to talk to databases. It lets you ask questions (queries) like "Show me all students with grades above 80" or "How many orders did we get this month?"
             </p>
 
             <h4 className="text-xl font-bold mb-4">Simple Analogy</h4>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               If a database is like a library, SQL is the language you use to ask the librarian:
             </p>
-            <ul className="text-[#666666] space-y-2 ml-4">
+            <ul className="text-muted-foreground space-y-2 ml-4">
               <li>• "Find me all books by Stephen King" (SELECT based on author)</li>
               <li>• "Add this new book to the catalog" (INSERT)</li>
               <li>• "Update the location of this book" (UPDATE)</li>
@@ -260,7 +261,7 @@ const SqlTutorial = () => {
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Basic SQL Commands</h3>
-            <p className="text-[#666666] mb-6">Here's what you'll learn in this tutorial:</p>
+            <p className="text-muted-foreground mb-6">Here's what you'll learn in this tutorial:</p>
 
             <div className="space-y-4">
               <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
@@ -292,17 +293,17 @@ const SqlTutorial = () => {
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Relational Databases</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               <strong>Most common type.</strong> Data is organized in tables (like Excel spreadsheets) connected by relationships.
             </p>
 
             <div className="bg-[#1E293B] p-4 rounded-lg border border-cyan-400/30 mb-4">
-              <p className="text-[#666666] text-sm"><strong>Examples:</strong> MySQL, PostgreSQL, SQL Server, Oracle, MariaDB</p>
+              <p className="text-muted-foreground text-sm"><strong>Examples:</strong> MySQL, PostgreSQL, SQL Server, Oracle, MariaDB</p>
             </div>
 
             <h4 className="text-lg font-bold mb-3">Example: Simple Student Table</h4>
             <div className="overflow-x-auto">
-              <table className="w-full text-sm text-[#666666]">
+              <table className="w-full text-sm text-muted-foreground">
                 <thead>
                   <tr className="border-b border-[#E0DCCF]">
                     <th className="text-left p-2 bg-[#1e1e1e]">StudentID</th>
@@ -328,15 +329,15 @@ const SqlTutorial = () => {
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Non-Relational Databases</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               <strong>Newer approach.</strong> Data doesn't need to be in tables. Good for complex, unstructured data like images, videos, or documents.
             </p>
 
             <div className="bg-[#1E293B] p-4 rounded-lg border border-cyan-400/30">
-              <p className="text-[#666666] text-sm"><strong>Examples:</strong> MongoDB, CouchDB, Redis, Firebase</p>
+              <p className="text-muted-foreground text-sm"><strong>Examples:</strong> MongoDB, CouchDB, Redis, Firebase</p>
             </div>
 
-            <p className="text-[#666666] mt-4"><strong>For beginners:</strong> Focus on relational databases first. They're more common and easier to understand.</p>
+            <p className="text-muted-foreground mt-4"><strong>For beginners:</strong> Focus on relational databases first. They're more common and easier to understand.</p>
           </div>
         </section>
 
@@ -346,12 +347,12 @@ const SqlTutorial = () => {
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What is a Table?</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Think of it like an Excel spreadsheet. It has rows and columns to organize data.
             </p>
 
             <div className="overflow-x-auto mb-4">
-              <table className="w-full text-sm text-[#666666]">
+              <table className="w-full text-sm text-muted-foreground">
                 <thead>
                   <tr className="border-b border-[#E0DCCF]">
                     <th className="text-left p-3 bg-[#1e1e1e]">ID (Column)</th>
@@ -377,7 +378,7 @@ const SqlTutorial = () => {
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Primary Key</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               A unique identifier for each row. No two rows can have the same primary key. Like a student ID—each student has a unique ID.
             </p>
 
@@ -393,7 +394,7 @@ const SqlTutorial = () => {
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Foreign Key</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Creates a link between two tables. Example: A student belongs to a class. StudentID in Enrollments table links to Students table.
             </p>
 
@@ -410,27 +411,27 @@ const SqlTutorial = () => {
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Constraints</h3>
-            <p className="text-[#666666] mb-4">Rules to ensure data quality:</p>
+            <p className="text-muted-foreground mb-4">Rules to ensure data quality:</p>
 
             <div className="space-y-4">
               <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
                 <strong className="text-cyan-400">NOT NULL</strong> - Value must be provided
-                <p className="text-[#666666] text-sm mt-2">Every student must have a name</p>
+                <p className="text-muted-foreground text-sm mt-2">Every student must have a name</p>
               </div>
 
               <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
                 <strong className="text-cyan-400">UNIQUE</strong> - No duplicate values
-                <p className="text-[#666666] text-sm mt-2">Each email must be unique, no two students same email</p>
+                <p className="text-muted-foreground text-sm mt-2">Each email must be unique, no two students same email</p>
               </div>
 
               <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
                 <strong className="text-cyan-400">DEFAULT</strong> - Automatically set if not provided
-                <p className="text-[#666666] text-sm mt-2">If no creation date given, use today's date</p>
+                <p className="text-muted-foreground text-sm mt-2">If no creation date given, use today's date</p>
               </div>
 
               <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
                 <strong className="text-cyan-400">CHECK</strong> - Value must meet a condition
-                <p className="text-[#666666] text-sm mt-2">Age must be between 5 and 100</p>
+                <p className="text-muted-foreground text-sm mt-2">Age must be between 5 and 100</p>
               </div>
             </div>
           </div>
@@ -442,7 +443,7 @@ const SqlTutorial = () => {
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">CREATE DATABASE</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Before creating tables, you need to create a database. Think of it as creating a new filing cabinet.
             </p>
 
@@ -451,14 +452,14 @@ const SqlTutorial = () => {
               id="create-db" 
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30">
+            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30">
               📌 <strong>Naming tip:</strong> Use descriptive names with underscores. Good: <code className="bg-[#FFFDF8] px-2 py-1">school_db</code>, Bad: <code className="bg-[#FFFDF8] px-2 py-1">db1</code>
             </p>
           </div>
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">USE Database</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Before working with a database, tell SQL which one to use. Like opening a specific filing cabinet.
             </p>
 
@@ -467,7 +468,7 @@ const SqlTutorial = () => {
               id="use-db" 
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-[#1E293B] rounded-lg border border-yellow-400/30">
+            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-yellow-400/30">
               ⚠️ <strong>Important:</strong> Always run <code className="bg-[#FFFDF8] px-2 py-1">USE database_name;</code> before creating tables!
             </p>
           </div>
@@ -479,7 +480,7 @@ const SqlTutorial = () => {
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">CREATE TABLE Basics</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               A table is where you store your actual data. Define columns and their data types.
             </p>
 
@@ -550,7 +551,7 @@ CREATE TABLE students (
               id="complete-table-example" 
             />
 
-            <p className="text-[#666666] mt-6 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
+            <p className="text-muted-foreground mt-6 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
               <strong>Explanation:</strong><br/>
               • <code className="bg-[#FFFDF8] px-1">AUTO_INCREMENT</code> - ID increases automatically<br/>
               • <code className="bg-[#FFFDF8] px-1">NOT NULL</code> - Must have a value<br/>
@@ -567,7 +568,7 @@ CREATE TABLE students (
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">INSERT Single Row</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Add one student record to the table:
             </p>
 
@@ -577,14 +578,14 @@ VALUES ('Alice Johnson', 'alice@email.com', 20, 3.8);`}
               id="insert-single" 
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
+            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
               Note: We don't specify StudentID because it's AUTO_INCREMENT. Also, JoinDate and IsActive use defaults.
             </p>
           </div>
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">INSERT Multiple Rows</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Add multiple students at once:
             </p>
 
@@ -600,7 +601,7 @@ VALUES
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Quick Practice</h3>
-            <p className="text-[#666666] mb-4"><strong>Add two students: Emma (22, emma@gmail.com, 3.85) and Frank (20, frank@gmail.com, 3.45)</strong></p>
+            <p className="text-muted-foreground mb-4"><strong>Add two students: Emma (22, emma@gmail.com, 3.85) and Frank (20, frank@gmail.com, 3.45)</strong></p>
             
             <details className="cursor-pointer">
               <summary className="text-[#FF9500] font-bold mb-4 hover:text-[#CC7000]">Click to see solution</summary>
@@ -621,7 +622,7 @@ VALUES
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">SELECT All Data</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Get all columns and rows from a table:
             </p>
 
@@ -633,7 +634,7 @@ VALUES
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">SELECT Specific Columns</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Get only the columns you need. Faster and cleaner:
             </p>
 
@@ -645,7 +646,7 @@ VALUES
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">WHERE Clause - Filter Data</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Show only students with GPA above 3.7:
             </p>
 
@@ -654,7 +655,7 @@ VALUES
               id="select-where" 
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
+            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
               <strong>More WHERE examples:</strong><br/>
               • <code className="bg-[#FFFDF8] px-1">WHERE Age = 20</code> - Exact match<br/>
               • <code className="bg-[#FFFDF8] px-1">WHERE Age &gt;= 20</code> - Greater than or equal<br/>
@@ -664,7 +665,7 @@ VALUES
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">AND & OR Operators</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Combine multiple conditions:
             </p>
 
@@ -682,7 +683,7 @@ WHERE Name = 'Alice' OR Name = 'Bob';`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">ORDER BY - Sort Results</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Sort students by GPA (highest first):
             </p>
 
@@ -699,7 +700,7 @@ ORDER BY GPA ASC;`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">LIMIT - Get First N Rows</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Show only the top 3 students by GPA:
             </p>
 
@@ -718,7 +719,7 @@ LIMIT 3;`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">UPDATE - Modify Data</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Update Alice's GPA to 4.0:
             </p>
 
@@ -729,14 +730,14 @@ WHERE Name = 'Alice';`}
               id="update-example" 
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-[#1E293B] rounded-lg border border-yellow-400/30">
+            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-yellow-400/30">
               ⚠️ <strong>CRITICAL:</strong> Always use WHERE to specify which rows to update! Without WHERE, you update ALL rows!
             </p>
           </div>
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">UPDATE Multiple Columns</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Update multiple columns at once:
             </p>
 
@@ -750,7 +751,7 @@ WHERE Name = 'Alice';`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">DELETE - Remove Data</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Remove a student by name:
             </p>
 
@@ -759,14 +760,14 @@ WHERE Name = 'Alice';`}
               id="delete-example" 
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-[#1E293B] rounded-lg border border-red-400/30">
+            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-red-400/30">
               🚨 <strong>DANGEROUS:</strong> DELETE without WHERE removes ALL rows! This is the #1 mistake beginners make!
             </p>
           </div>
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Safe Deletion Pattern</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Always verify before deleting:
             </p>
 
@@ -787,7 +788,7 @@ DELETE FROM students WHERE Name = 'Bob';`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">COUNT - Count Results</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               How many students are in the database?
             </p>
 
@@ -796,12 +797,12 @@ DELETE FROM students WHERE Name = 'Bob';`}
               id="aggregate-count" 
             />
 
-            <p className="text-[#666666] mt-4">Result: <strong>6</strong> (total number of students)</p>
+            <p className="text-muted-foreground mt-4">Result: <strong>6</strong> (total number of students)</p>
           </div>
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">SUM - Add Up Values</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Total GPA of all students:
             </p>
 
@@ -813,7 +814,7 @@ DELETE FROM students WHERE Name = 'Bob';`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">AVG - Average</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               What's the average GPA?
             </p>
 
@@ -825,7 +826,7 @@ DELETE FROM students WHERE Name = 'Bob';`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">MIN & MAX</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Highest and lowest GPA:
             </p>
 
@@ -840,7 +841,7 @@ FROM students;`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">GROUP BY - Group Results</h3>
-            <p className="text-[#666666] mb-4 leading-relaxed">
+            <p className="text-muted-foreground mb-4 leading-relaxed">
               If you had a Courses table too, count how many students are in each course:
             </p>
 
@@ -854,7 +855,7 @@ GROUP BY CourseID;`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">HAVING - Filter Groups</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Which courses have more than 5 students?
             </p>
 
@@ -874,14 +875,14 @@ HAVING COUNT(*) > 5;`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What are Joins?</h3>
-            <p className="text-[#666666] mb-4 leading-relaxed">
+            <p className="text-muted-foreground mb-4 leading-relaxed">
               Joins connect data from multiple tables. Imagine you have a Students table and a Courses table. A join lets you show which students enrolled in which courses.
             </p>
           </div>
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">INNER JOIN</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Show students AND their courses (only matching records):
             </p>
 
@@ -893,14 +894,14 @@ INNER JOIN courses ON enrollments.CourseID = courses.CourseID;`}
               id="inner-join-example" 
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
+            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
               Only students who actually enrolled appear in results. Students with no enrollments don't show up.
             </p>
           </div>
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">LEFT JOIN</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Show ALL students, and their courses if they have any:
             </p>
 
@@ -912,7 +913,7 @@ LEFT JOIN courses ON enrollments.CourseID = courses.CourseID;`}
               id="left-join-example" 
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
+            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
               All students appear, even if they haven't enrolled in any course (course shows as NULL).
             </p>
           </div>
@@ -924,28 +925,28 @@ LEFT JOIN courses ON enrollments.CourseID = courses.CourseID;`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What is an Index?</h3>
-            <p className="text-[#666666] mb-4 leading-relaxed">
+            <p className="text-muted-foreground mb-4 leading-relaxed">
               An index is like the index in a book. Instead of reading every page to find a topic, you look it up in the index. Indexes make searches MUCH faster.
             </p>
           </div>
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Without Index:</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Searching 1 million students by email = Check all 1 million emails ❌ SLOW
             </p>
           </div>
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">With Index:</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Searching 1 million students by email = Direct lookup ✓ FAST
             </p>
           </div>
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Creating an Index</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Create an index on the Email column:
             </p>
 
@@ -954,14 +955,14 @@ LEFT JOIN courses ON enrollments.CourseID = courses.CourseID;`}
               id="create-index" 
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
+            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
               Now searches on Email are very fast!
             </p>
           </div>
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">When to Use Indexes</h3>
-            <ul className="text-[#666666] space-y-3 ml-4">
+            <ul className="text-muted-foreground space-y-3 ml-4">
               <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Columns used frequently in WHERE clauses</li>
               <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Foreign keys (for joins)</li>
               <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Columns with large tables</li>
@@ -978,7 +979,7 @@ LEFT JOIN courses ON enrollments.CourseID = courses.CourseID;`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">UNIQUE Constraint</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Ensures no duplicate values:
             </p>
 
@@ -991,12 +992,12 @@ LEFT JOIN courses ON enrollments.CourseID = courses.CourseID;`}
               id="unique-constraint" 
             />
 
-            <p className="text-[#666666] mt-4">Result: No two users can have the same username or email.</p>
+            <p className="text-muted-foreground mt-4">Result: No two users can have the same username or email.</p>
           </div>
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">DEFAULT Constraint</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Automatically set value if none provided:
             </p>
 
@@ -1011,12 +1012,12 @@ LEFT JOIN courses ON enrollments.CourseID = courses.CourseID;`}
               id="default-constraint" 
             />
 
-            <p className="text-[#666666] mt-4">Result: New posts automatically get today's date and IsActive = TRUE</p>
+            <p className="text-muted-foreground mt-4">Result: New posts automatically get today's date and IsActive = TRUE</p>
           </div>
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">CHECK Constraint</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Validate that data meets specific conditions:
             </p>
 
@@ -1030,7 +1031,7 @@ LEFT JOIN courses ON enrollments.CourseID = courses.CourseID;`}
               id="check-constraint" 
             />
 
-            <p className="text-[#666666] mt-4">Result: Price must be positive, Stock can't be negative</p>
+            <p className="text-muted-foreground mt-4">Result: Price must be positive, Stock can't be negative</p>
           </div>
         </section>
 
@@ -1040,10 +1041,10 @@ LEFT JOIN courses ON enrollments.CourseID = courses.CourseID;`}
 
           <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Project Description</h3>
-            <p className="text-[#666666] mb-4">
+            <p className="text-muted-foreground mb-4">
               Create a simple database to manage students and their courses.
             </p>
-            <ul className="text-[#666666] space-y-2 ml-4">
+            <ul className="text-muted-foreground space-y-2 ml-4">
               <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Store student information</li>
               <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Store course information</li>
               <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Track which students enrolled in which courses</li>
@@ -1169,7 +1170,7 @@ DELETE FROM students WHERE Name = 'Bob';`}
               id="mistake-delete" 
             />
 
-            <p className="text-[#666666] mt-4 p-4 bg-red-900/30 rounded-lg border border-red-400/30">
+            <p className="text-muted-foreground mt-4 p-4 bg-red-900/30 rounded-lg border border-red-400/30">
               🚨 Always use WHERE with DELETE!
             </p>
           </div>
@@ -1246,7 +1247,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
           <div className="grid md:grid-cols-2 gap-6">
             <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Core Concepts</h4>
-              <ul className="text-[#666666] text-sm space-y-1">
+              <ul className="text-muted-foreground text-sm space-y-1">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Databases store organized data in tables</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Tables have columns (fields) and rows (records)</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Primary Key = unique identifier for each row</li>
@@ -1256,7 +1257,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
 
             <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Main Commands</h4>
-              <ul className="text-[#666666] text-sm space-y-1">
+              <ul className="text-muted-foreground text-sm space-y-1">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> CREATE - Make databases and tables</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> INSERT - Add data</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> SELECT - Retrieve data</li>
@@ -1267,7 +1268,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
 
             <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Filtering & Analysis</h4>
-              <ul className="text-[#666666] text-sm space-y-1">
+              <ul className="text-muted-foreground text-sm space-y-1">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> WHERE - Filter for specific records</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> AND / OR - Combine conditions</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> ORDER BY - Sort results</li>
@@ -1277,7 +1278,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
 
             <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Advanced Features</h4>
-              <ul className="text-[#666666] text-sm space-y-1">
+              <ul className="text-muted-foreground text-sm space-y-1">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> COUNT, SUM, AVG, MIN, MAX</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> GROUP BY - Group similar records</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> JOIN - Connect tables</li>
@@ -1296,7 +1297,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 1. What's the difference between PRIMARY KEY and FOREIGN KEY?
               </summary>
-              <p className="text-[#666666] text-sm">
+              <p className="text-muted-foreground text-sm">
                 <strong>PRIMARY KEY:</strong> Uniquely identifies each row in a table. No two rows have the same PK.<br/>
                 <strong>FOREIGN KEY:</strong> References a PK in another table. Creates relationships between tables.
               </p>
@@ -1306,7 +1307,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 2. When should you use WHERE in DELETE?
               </summary>
-              <p className="text-[#666666] text-sm">
+              <p className="text-muted-foreground text-sm">
                 ALWAYS use WHERE with DELETE! Without WHERE, you delete all rows. It's the most common SQL mistake.
               </p>
             </details>
@@ -1315,7 +1316,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 3. What data type should you use for email addresses?
               </summary>
-              <p className="text-[#666666] text-sm">
+              <p className="text-muted-foreground text-sm">
                 <strong>VARCHAR(100)</strong> or larger. Email addresses need text storage with variable length.
               </p>
             </details>
@@ -1324,7 +1325,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 4. How do you check for NULL values?
               </summary>
-              <p className="text-[#666666] text-sm">
+              <p className="text-muted-foreground text-sm">
                 Use <code className="bg-[#1e1e1e] px-2 py-1 rounded">IS NULL</code> or <code className="bg-[#1e1e1e] px-2 py-1 rounded">IS NOT NULL</code>. Never use = NULL.
               </p>
             </details>
@@ -1333,7 +1334,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 5. What does INNER JOIN do?
               </summary>
-              <p className="text-[#666666] text-sm">
+              <p className="text-muted-foreground text-sm">
                 INNER JOIN returns only matching records from both tables. If a student has no course enrollment, they won't appear in the result.
               </p>
             </details>
@@ -1400,7 +1401,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
       </main>
       </div>
 
-      <footer className="py-10 text-center text-slate-500 text-sm border-t border-[#F0ECE0] mt-16">
+      <footer className="py-10 text-center text-muted-foreground text-sm border-t border-[#F0ECE0] mt-16">
         © 2026 MentorMuni. Learn SQL for Beginners - Free Tutorial with Practical Examples.
       </footer>
     </div>

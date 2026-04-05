@@ -37,7 +37,7 @@ export default function InterviewReadinessToolsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-[#1A1A1A] relative overflow-hidden">
+    <div className="min-h-screen bg-[#FFFDF8] text-foreground relative overflow-hidden">
       {/* Ambient glow — same language as homepage / mock interviews */}
       <div className="pointer-events-none fixed inset-0">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[rgba(255,149,0,0.12)] rounded-full blur-[130px]" />
@@ -50,8 +50,8 @@ export default function InterviewReadinessToolsPage() {
           <Link to="/tools" className="text-[#FF9500] hover:text-[#CC7000] transition-colors">
             Tools
           </Link>
-          <ChevronRight size={12} className="text-slate-600" />
-          <span className="text-[#666666]">Interview Readiness</span>
+          <ChevronRight size={12} className="text-foreground-muted" />
+          <span className="text-muted-foreground">Interview Readiness</span>
         </nav>
 
         <div className="mb-8 rounded-2xl border border-orange-200/70 bg-gradient-to-r from-amber-50/95 to-orange-50/40 px-4 py-3.5 sm:px-5 sm:py-4">
@@ -63,8 +63,8 @@ export default function InterviewReadinessToolsPage() {
               <div className="mb-1.5 w-fit">
                 <LimitedRewardLabel />
               </div>
-              <p className="text-sm font-bold leading-tight text-[#1A1A1A]">{READINESS_TEST_COUPON_OFFER_HEADLINE}</p>
-              <p className="mt-1 text-xs font-medium leading-snug text-[#666666]">{READINESS_TEST_COUPON_OFFER_HOW}</p>
+              <p className="text-sm font-bold leading-tight text-foreground">{READINESS_TEST_COUPON_OFFER_HEADLINE}</p>
+              <p className="mt-1 text-xs font-medium leading-snug text-muted-foreground">{READINESS_TEST_COUPON_OFFER_HOW}</p>
             </div>
           </div>
         </div>
@@ -92,7 +92,7 @@ export default function InterviewReadinessToolsPage() {
               </span>
             </h1>
 
-            <p className="text-slate-400 text-sm sm:text-base leading-relaxed max-w-md mb-8">
+            <p className="text-muted-foreground text-sm sm:text-base leading-relaxed max-w-md mb-8">
               A focused entry from Tools for the same free assessment. About five minutes, no signup — a score
               out of 100 and a clear view of where you stand before your next drive.
             </p>
@@ -105,7 +105,7 @@ export default function InterviewReadinessToolsPage() {
               ].map(({ icon: Icon, text }) => (
                 <span
                   key={text}
-                  className="inline-flex items-center gap-2 rounded-lg border border-[#E0DCCF] bg-[#FFF8EE] px-3 py-2 text-xs font-semibold text-[#444444]"
+                  className="inline-flex items-center gap-2 rounded-lg border border-[#E0DCCF] bg-[#FFF8EE] px-3 py-2 text-xs font-semibold text-foreground-muted"
                 >
                   <Icon size={14} className="text-[#FF9500]" />
                   {text}
@@ -129,7 +129,7 @@ export default function InterviewReadinessToolsPage() {
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#FF9500]/10 border border-[#FF9500]/25">
                   <ClipboardCheck size={18} className="text-[#FF9500]" />
                 </div>
-                <span className="text-sm font-bold text-[#1A1A1A]">What happens next</span>
+                <span className="text-sm font-bold text-foreground">What happens next</span>
               </div>
               <ol className="space-y-5">
                 {steps.map((s) => (
@@ -138,8 +138,8 @@ export default function InterviewReadinessToolsPage() {
                       {s.n}
                     </span>
                     <div>
-                      <p className="text-sm font-semibold text-[#1A1A1A] mb-1">{s.title}</p>
-                      <p className="text-xs text-[#666666] leading-relaxed">{s.body}</p>
+                      <p className="text-sm font-semibold text-foreground mb-1">{s.title}</p>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{s.body}</p>
                     </div>
                   </li>
                 ))}
