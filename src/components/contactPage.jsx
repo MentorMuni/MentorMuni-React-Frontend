@@ -184,7 +184,7 @@ const ContactPage = () => {
     `${inputBase} ${
       errors[name]
         ? 'border-rose-400/90 ring-2 ring-rose-100 focus:border-rose-500'
-        : 'border-[#E0DCCF] focus:border-[#FFB347] focus:ring-2 focus:ring-[#FF9500]/25'
+        : 'border-border focus:border-[#FFB347] focus:ring-2 focus:ring-[#FF9500]/25'
     }`;
 
   const linkClass =
@@ -325,7 +325,7 @@ const ContactPage = () => {
   }[audience];
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#FAFAF8] text-foreground-muted">
+    <div className="relative min-h-screen overflow-hidden bg-[#FAFAF8] text-muted-foreground">
       <div
         className="pointer-events-none absolute inset-0 overflow-hidden"
         aria-hidden
@@ -384,7 +384,7 @@ const ContactPage = () => {
           <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-5xl md:text-6xl leading-[1.08]">
             {hero.title}
           </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-foreground-muted md:text-lg">
+          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
             {hero.subtitle}
           </p>
           {audience === 'students' && (
@@ -413,14 +413,14 @@ const ContactPage = () => {
             <FadeUp>
               <div className="rounded-2xl border border-neutral-200/90 bg-white p-6 shadow-sm">
                 <div className="mb-5 flex items-center gap-2">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100 text-foreground-muted">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100 text-muted-foreground">
                     <MessageSquare className="h-4 w-4" strokeWidth={2} aria-hidden />
                   </div>
                   <h2 className="text-lg font-semibold text-foreground">Direct channels</h2>
                 </div>
                 <ul className="space-y-5">
                   <li className="flex gap-4">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-foreground-muted">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-muted-foreground">
                       <Mail className="h-[18px] w-[18px]" strokeWidth={2} />
                     </div>
                     <div>
@@ -435,7 +435,7 @@ const ContactPage = () => {
                     </div>
                   </li>
                   <li className="flex gap-4">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-foreground-muted">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-muted-foreground">
                       <Phone className="h-[18px] w-[18px]" strokeWidth={2} />
                     </div>
                     <div>
@@ -450,7 +450,7 @@ const ContactPage = () => {
                     </div>
                   </li>
                   <li className="flex gap-4">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-foreground-muted">
+                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-muted-foreground">
                       <MapPin className="h-[18px] w-[18px]" strokeWidth={2} />
                     </div>
                     <div>
@@ -468,7 +468,7 @@ const ContactPage = () => {
                 <h3 className="mb-4 text-base font-semibold text-foreground">{whyReachOutTitle}</h3>
                 <ul className="space-y-3">
                   {whyReachOutLines[audience].map((line) => (
-                    <li key={line} className="flex gap-3 text-sm leading-snug text-foreground-muted">
+                    <li key={line} className="flex gap-3 text-sm leading-snug text-muted-foreground">
                       <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
                         <Check className="h-3 w-3" strokeWidth={3} aria-hidden />
                       </span>
@@ -603,7 +603,7 @@ const ContactPage = () => {
                   <button
                     type="button"
                     onClick={handleReset}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white px-6 py-3 text-[0.9375rem] font-semibold text-foreground-muted transition hover:border-neutral-300 hover:bg-neutral-50"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white px-6 py-3 text-[0.9375rem] font-semibold text-muted-foreground transition hover:border-neutral-300 hover:bg-neutral-50"
                   >
                     <RotateCcw className="h-4 w-4" aria-hidden />
                     Clear form

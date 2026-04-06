@@ -117,7 +117,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
           <h1 className="text-4xl md:text-5xl font-black text-foreground mb-3">
             Career Health Score
           </h1>
-          <p className="text-lg text-foreground-muted">
+          <p className="text-lg text-muted-foreground">
             Track your progress toward becoming job-ready.
           </p>
         </div>
@@ -165,7 +165,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
                 {metrics.resumeScore}
                 <span className="text-2xl text-muted-foreground"> / 100</span>
               </div>
-              <p className="text-sm text-foreground-muted mb-4">
+              <p className="text-sm text-muted-foreground mb-4">
                 How strong your resume is compared to industry expectations.
               </p>
             </div>
@@ -189,7 +189,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
 
             {expandedMetric === 'resume' && (
               <div className="pt-6 border-t border-slate-200">
-                <p className="text-sm text-foreground-muted mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                   <strong>Recommendation:</strong> {getRecommendation('resumeScore')}
                 </p>
                 <button className="w-full px-4 py-2 text-sm bg-[#FFF4E0] text-[#FF9500] font-semibold rounded-lg hover:bg-[#FFF4E0] transition-all flex items-center justify-center gap-2">
@@ -214,7 +214,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
               <div className="text-2xl font-black text-foreground mb-3">
                 {metrics.missingSkills.length} skills
               </div>
-              <p className="text-sm text-foreground-muted mb-4">
+              <p className="text-sm text-muted-foreground mb-4">
                 Key skills missing from your profile.
               </p>
             </div>
@@ -233,7 +233,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
 
             {expandedMetric === 'skills' && (
               <div className="pt-6 border-t border-slate-200">
-                <p className="text-sm text-foreground-muted mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                   <strong>Recommendation:</strong> {getRecommendation('missingSkills')}
                 </p>
                 <button className="w-full px-4 py-2 text-sm bg-purple-50 text-purple-600 font-semibold rounded-lg hover:bg-purple-100 transition-all flex items-center justify-center gap-2">
@@ -258,7 +258,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
               <div className={`text-3xl font-black mb-2 ${interviewColor.text}`}>
                 {metrics.interviewLevel}
               </div>
-              <p className="text-sm text-foreground-muted mb-4">
+              <p className="text-sm text-muted-foreground mb-4">
                 Your current readiness for technical interviews.
               </p>
             </div>
@@ -285,7 +285,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
 
             {expandedMetric === 'interview' && (
               <div className="pt-6 border-t border-slate-200">
-                <p className="text-sm text-foreground-muted mb-4">
+                <p className="text-sm text-muted-foreground mb-4">
                   <strong>Next Steps:</strong> {getRecommendation('interviewLevel')}
                 </p>
                 <button className="w-full px-4 py-2 text-sm bg-orange-50 text-orange-600 font-semibold rounded-lg hover:bg-orange-100 transition-all flex items-center justify-center gap-2">
@@ -309,7 +309,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
               <div className="text-4xl font-black text-[#FF9500] mb-2">
                 {metrics.projectsCompleted}
               </div>
-              <p className="text-sm text-foreground-muted font-medium">Projects Completed</p>
+              <p className="text-sm text-muted-foreground font-medium">Projects Completed</p>
               <p className="text-xs text-muted-foreground mt-2">Target: 5 projects</p>
             </div>
 
@@ -317,7 +317,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
               <div className="text-4xl font-black text-purple-600 mb-2">
                 3
               </div>
-              <p className="text-sm text-foreground-muted font-medium">GitHub Repositories</p>
+              <p className="text-sm text-muted-foreground font-medium">GitHub Repositories</p>
               <p className="text-xs text-muted-foreground mt-2">Public portfolio</p>
             </div>
 
@@ -325,12 +325,12 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
               <div className="text-4xl font-black text-amber-600 mb-2">
                 12
               </div>
-              <p className="text-sm text-foreground-muted font-medium">Contributions</p>
+              <p className="text-sm text-muted-foreground font-medium">Contributions</p>
               <p className="text-xs text-muted-foreground mt-2">Open source activity</p>
             </div>
           </div>
 
-          <p className="text-sm text-foreground-muted mt-6 p-4 bg-slate-50 rounded-lg flex items-start gap-3">
+          <p className="text-sm text-muted-foreground mt-6 p-4 bg-slate-50 rounded-lg flex items-start gap-3">
             <AlertCircle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
             <span><strong>Recommendation:</strong> Build 2-3 more projects to reach your portfolio goal and make yourself more competitive.</span>
           </p>

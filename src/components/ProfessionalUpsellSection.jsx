@@ -98,14 +98,14 @@ const ProfessionalUpsellSection = ({ atsScore = 70, targetRole = 'Backend Develo
         <h2 className={`text-3xl md:text-4xl font-black mb-3 ${heading.color}`}>
           {heading.title}
         </h2>
-        <p className="text-foreground-muted text-lg max-w-2xl mx-auto">
+        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
           {heading.subtitle}
         </p>
 
         {/* ATS Score Badge */}
         <div className="flex justify-center mt-6">
           <div className="inline-flex items-center gap-2 bg-white px-4 py-2 rounded-full border border-gray-200 shadow-sm">
-            <span className="text-sm text-foreground-muted">Your ATS Score:</span>
+            <span className="text-sm text-muted-foreground">Your ATS Score:</span>
             <span className="text-xl font-bold text-[#FF9500]">{atsScore}/100</span>
           </div>
         </div>
@@ -144,7 +144,7 @@ const ProfessionalUpsellSection = ({ atsScore = 70, targetRole = 'Backend Develo
                   <h3 className="text-lg font-bold text-foreground mb-1">
                     {service.title}
                   </h3>
-                  <p className="text-sm text-foreground-muted">
+                  <p className="text-sm text-muted-foreground">
                     {service.subtitle}
                   </p>
                 </div>
@@ -173,7 +173,7 @@ const ProfessionalUpsellSection = ({ atsScore = 70, targetRole = 'Backend Develo
                           size={16}
                           className="text-green-600 flex-shrink-0 mt-0.5"
                         />
-                        <span className="text-sm text-foreground-muted">{item}</span>
+                        <span className="text-sm text-muted-foreground">{item}</span>
                       </li>
                     ))}
                   </ul>
@@ -192,7 +192,7 @@ const ProfessionalUpsellSection = ({ atsScore = 70, targetRole = 'Backend Develo
                     {service.cta}
                     <ArrowRight size={16} />
                   </button>
-                  <button className="w-full py-2 px-4 rounded-lg font-semibold text-foreground-muted hover:text-foreground hover:bg-gray-100 transition-all text-sm">
+                  <button className="w-full py-2 px-4 rounded-lg font-semibold text-muted-foreground hover:text-foreground hover:bg-gray-100 transition-all text-sm">
                     {service.ctaSecondary}
                   </button>
                 </div>
@@ -213,15 +213,15 @@ const ProfessionalUpsellSection = ({ atsScore = 70, targetRole = 'Backend Develo
       <div className="mt-8 grid md:grid-cols-3 gap-4 text-center text-sm">
         <div>
           <p className="font-semibold text-foreground mb-1">Expert Reviewers</p>
-          <p className="text-foreground-muted">Industry professionals with 5+ years experience</p>
+          <p className="text-muted-foreground">Industry professionals with 5+ years experience</p>
         </div>
         <div>
           <p className="font-semibold text-foreground mb-1">Quick Turnaround</p>
-          <p className="text-foreground-muted">Most services completed within 2-3 business days</p>
+          <p className="text-muted-foreground">Most services completed within 2-3 business days</p>
         </div>
         <div>
           <p className="font-semibold text-foreground mb-1">India-Focused</p>
-          <p className="text-foreground-muted">Optimized for Indian job market and companies</p>
+          <p className="text-muted-foreground">Optimized for Indian job market and companies</p>
         </div>
       </div>
     </div>

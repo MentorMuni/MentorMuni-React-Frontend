@@ -24,8 +24,8 @@ const ForRecruiters = () => {
 
         {/* Features Grid */}
         <div className="grid md:grid-cols-3 gap-6 mb-14">
-          <div className="bg-white p-7 rounded-2xl border border-[#F0ECE0] shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:border-[#FFB347]/50 hover:shadow-[0_8px_24px_rgba(255,149,0,0.08)] transition-all">
-            <div className="w-12 h-12 rounded-xl bg-[#FFF4E0] border border-[#F0ECE0] flex items-center justify-center mb-4">
+          <div className="bg-white p-7 rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:border-[#FFB347]/50 hover:shadow-[0_8px_24px_rgba(255,149,0,0.08)] transition-all">
+            <div className="w-12 h-12 rounded-xl bg-[#FFF4E0] border border-border flex items-center justify-center mb-4">
               <Users size={24} className="text-[#FF9500]" />
             </div>
             <h3 className="text-lg font-bold text-foreground mb-2">Pre-vetted talent pool</h3>
@@ -40,8 +40,8 @@ const ForRecruiters = () => {
             </Link>
           </div>
 
-          <div className="bg-white p-7 rounded-2xl border border-[#F0ECE0] shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:border-[#FFB347]/50 hover:shadow-[0_8px_24px_rgba(255,149,0,0.08)] transition-all">
-            <div className="w-12 h-12 rounded-xl bg-[#FFF4E0] border border-[#F0ECE0] flex items-center justify-center mb-4">
+          <div className="bg-white p-7 rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:border-[#FFB347]/50 hover:shadow-[0_8px_24px_rgba(255,149,0,0.08)] transition-all">
+            <div className="w-12 h-12 rounded-xl bg-[#FFF4E0] border border-border flex items-center justify-center mb-4">
               <BarChart3 size={24} className="text-[#FF9500]" />
             </div>
             <h3 className="text-lg font-bold text-foreground mb-2">Skill analytics</h3>
@@ -56,8 +56,8 @@ const ForRecruiters = () => {
             </Link>
           </div>
 
-          <div className="bg-white p-7 rounded-2xl border border-[#F0ECE0] shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:border-[#FFB347]/50 hover:shadow-[0_8px_24px_rgba(255,149,0,0.08)] transition-all">
-            <div className="w-12 h-12 rounded-xl bg-[#FFF4E0] border border-[#F0ECE0] flex items-center justify-center mb-4">
+          <div className="bg-white p-7 rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:border-[#FFB347]/50 hover:shadow-[0_8px_24px_rgba(255,149,0,0.08)] transition-all">
+            <div className="w-12 h-12 rounded-xl bg-[#FFF4E0] border border-border flex items-center justify-center mb-4">
               <Target size={24} className="text-[#FF9500]" />
             </div>
             <h3 className="text-lg font-bold text-foreground mb-2">Targeted matching</h3>
@@ -74,7 +74,7 @@ const ForRecruiters = () => {
         </div>
 
         {/* What you get */}
-        <div className="bg-white rounded-2xl border border-[#F0ECE0] p-8 md:p-10 mb-14 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
+        <div className="bg-white rounded-2xl border border-border p-8 md:p-10 mb-14 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
           <h2 className="text-xl md:text-2xl font-bold text-foreground mb-6 text-center">What you get with MentorMuni</h2>
           <div className="grid md:grid-cols-2 gap-4 max-w-3xl mx-auto">
             {[
@@ -87,7 +87,7 @@ const ForRecruiters = () => {
             ].map((item) => (
               <div key={item} className="flex items-start gap-3">
                 <CheckCircle size={18} className="text-emerald-500 shrink-0 mt-0.5" />
-                <span className="text-sm text-foreground-muted">{item}</span>
+                <span className="text-sm text-muted-foreground">{item}</span>
               </div>
             ))}
           </div>

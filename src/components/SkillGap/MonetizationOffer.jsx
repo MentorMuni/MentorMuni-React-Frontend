@@ -50,7 +50,7 @@ const MonetizationOffer = ({ offer }) => {
         {/* Left side - Offer details */}
         <div>
           <div className="flex items-start gap-4 mb-6">
-            <div className={`p-3 rounded-full bg-[#FFF4E0] border border-[#E0DCCF]`}>
+            <div className={`p-3 rounded-full bg-[#FFF4E0] border border-border`}>
               <Icon size={28} className={colors.accent} />
             </div>
             <div>
@@ -67,7 +67,7 @@ const MonetizationOffer = ({ offer }) => {
           </div>
 
           {/* Price */}
-          <div className="mb-6 p-4 bg-[#FFF4E0] border border-[#E0DCCF] rounded-lg">
+          <div className="mb-6 p-4 bg-[#FFF4E0] border border-border rounded-lg">
             <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-1">
               Recommended Price
             </p>
@@ -98,7 +98,7 @@ const MonetizationOffer = ({ offer }) => {
           <div className="space-y-3">
             {offer.included_items.map((item, idx) => (
               <div key={idx} className="flex gap-3 items-start">
-                <div className={`flex-shrink-0 mt-0.5 p-1 rounded-full bg-[#FFF4E0] border border-[#E0DCCF]`}>
+                <div className={`flex-shrink-0 mt-0.5 p-1 rounded-full bg-[#FFF4E0] border border-border`}>
                   <Check size={16} className={colors.accent} />
                 </div>
                 <p className="text-foreground flex-1">
@@ -109,7 +109,7 @@ const MonetizationOffer = ({ offer }) => {
           </div>
 
           {/* Trust badge */}
-          <div className="mt-6 pt-6 border-t border-[#E0DCCF]">
+          <div className="mt-6 pt-6 border-t border-border">
             <div className="flex items-center gap-2 text-sm text-foreground">
               <Star size={16} className="text-yellow-400" />
               <span>
@@ -127,7 +127,7 @@ const MonetizationOffer = ({ offer }) => {
       </div>
 
       {/* Bottom message */}
-      <div className="mt-8 pt-6 border-t border-[#E0DCCF] text-center text-sm text-foreground">
+      <div className="mt-8 pt-6 border-t border-border text-center text-sm text-foreground">
         <p>
           Limited offer for learners with your readiness level. This personalized package is tailored 
           to your current skill level and career goals.

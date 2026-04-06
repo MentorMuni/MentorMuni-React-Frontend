@@ -43,7 +43,7 @@ const CareerRoadmap = () => {
   const colorMap = {
     indigo: {
       bg: "bg-[#FFF4E0]",
-      border: "border-[#F0ECE0]",
+      border: "border-border",
       icon: "bg-[#FFF4E0] text-[#FF9500]",
       hover: "hover:bg-[#FFF4E0]"
     },
@@ -81,7 +81,7 @@ const CareerRoadmap = () => {
           <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">
             Your Journey to a Tech Job
           </h2>
-          <p className="text-lg text-foreground-muted max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Follow a clear roadmap to go from student to job-ready professional.
           </p>
         </div>
@@ -113,7 +113,7 @@ const CareerRoadmap = () => {
                       <h3 className="text-lg font-bold text-foreground mb-3">
                         {step.title}
                       </h3>
-                      <p className="text-sm text-foreground-muted leading-relaxed">
+                      <p className="text-sm text-muted-foreground leading-relaxed">
                         {step.description}
                       </p>
                     </div>
@@ -161,7 +161,7 @@ const CareerRoadmap = () => {
                         {step.id}
                       </div>
                     </div>
-                    <p className="text-sm text-foreground-muted leading-relaxed">
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                       {step.description}
                     </p>
                   </div>
@@ -173,7 +173,7 @@ const CareerRoadmap = () => {
 
         {/* CTA Section */}
         <div className="text-center pt-12 border-t border-slate-200">
-          <p className="text-foreground-muted mb-6 max-w-2xl mx-auto">
+          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
             Start your transformation today. Our platform guides you through each step with curated content, expert mentorship, and real-world projects.
           </p>
           <a

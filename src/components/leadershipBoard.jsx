@@ -175,7 +175,7 @@ export default function LeadershipBoard() {
 
         {/* mode toggle */}
         <div className="mt-8 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-center sm:gap-4">
-          <div className="flex rounded-2xl border border-[#E0DCCF] bg-white p-1 shadow-sm">
+          <div className="flex rounded-2xl border border-border bg-white p-1 shadow-sm">
             <button
               type="button"
               onClick={() => setMode('general')}
@@ -219,7 +219,7 @@ export default function LeadershipBoard() {
                     ? mode === 'college'
                       ? 'border-fuchsia-500/50 bg-fuchsia-500/15 text-fuchsia-700 shadow-[0_0_20px_-8px_rgba(192,38,211,0.3)]'
                       : 'border-[#FF9500]/50 bg-[#FF9500]/15 text-[#CC7000] shadow-[0_0_20px_-8px_rgba(255,149,0,0.3)]'
-                    : 'border-[#E0DCCF] bg-white text-muted-foreground hover:border-[#FFB347]/50 hover:text-foreground'
+                    : 'border-border bg-white text-muted-foreground hover:border-[#FFB347]/50 hover:text-foreground'
                 }`}
               >
                 <Icon className="h-3.5 w-3.5 shrink-0 opacity-90" aria-hidden />
@@ -252,7 +252,7 @@ export default function LeadershipBoard() {
                   value={collegeQuery}
                   onChange={(e) => setCollegeQuery(e.target.value)}
                   placeholder="Type to filter — SQL + full directory soon"
-                  className="w-full rounded-2xl border border-[#E0DCCF] bg-white py-3 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-fuchsia-500/50 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/20"
+                  className="w-full rounded-2xl border border-border bg-white py-3 pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus:border-fuchsia-500/50 focus:outline-none focus:ring-2 focus:ring-fuchsia-500/20"
                 />
               </div>
             </label>
@@ -292,7 +292,7 @@ export default function LeadershipBoard() {
           <button
             type="button"
             onClick={() => handleShare('copy')}
-            className="inline-flex items-center gap-1.5 rounded-full border border-[#E0DCCF] bg-white px-3 py-1.5 text-xs font-semibold text-foreground transition hover:bg-[#FFF4E0]"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-3 py-1.5 text-xs font-semibold text-foreground transition hover:bg-[#FFF4E0]"
           >
             {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Link2 className="h-3.5 w-3.5" aria-hidden />}
             {copied ? 'Copied' : 'Copy link'}
@@ -300,8 +300,8 @@ export default function LeadershipBoard() {
         </div>
 
         {/* list */}
-        <div className="mt-10 rounded-3xl border border-[#E0DCCF] bg-white p-1 shadow-sm">
-          <div className="flex flex-col gap-1 border-b border-[#F0ECE0] px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
+        <div className="mt-10 rounded-3xl border border-border bg-white p-1 shadow-sm">
+          <div className="flex flex-col gap-1 border-b border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
             <div className="flex flex-wrap items-center gap-2 text-sm font-bold text-foreground">
               <Trophy className="h-5 w-5 shrink-0 text-[#FF9500]" aria-hidden />
               <span>
@@ -419,12 +419,12 @@ export default function LeadershipBoard() {
 
           {/* pagination */}
           {(mode === 'general' || (collegeQuery.trim() && filtered.length > 0)) && totalPages > 1 && (
-            <div className="flex items-center justify-center gap-2 border-t border-[#F0ECE0] px-4 py-4">
+            <div className="flex items-center justify-center gap-2 border-t border-border px-4 py-4">
               <button
                 type="button"
                 disabled={safePage <= 1}
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
-                className="inline-flex items-center gap-1 rounded-xl border border-[#E0DCCF] bg-white px-3 py-2 text-xs font-bold text-foreground disabled:opacity-30"
+                className="inline-flex items-center gap-1 rounded-xl border border-border bg-white px-3 py-2 text-xs font-bold text-foreground disabled:opacity-30"
               >
                 <ChevronLeft className="h-4 w-4" aria-hidden />
                 Prev
@@ -438,7 +438,7 @@ export default function LeadershipBoard() {
                     className={`h-9 min-w-[2.25rem] rounded-xl text-xs font-bold transition ${
                       n === safePage
                         ? 'bg-gradient-to-r from-[#FF9500] to-[#E88600] text-white shadow-lg shadow-orange-500/20'
-                        : 'border border-[#E0DCCF] bg-white text-muted-foreground hover:text-foreground'
+                        : 'border border-border bg-white text-muted-foreground hover:text-foreground'
                     }`}
                   >
                     {n}
@@ -449,7 +449,7 @@ export default function LeadershipBoard() {
                 type="button"
                 disabled={safePage >= totalPages}
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                className="inline-flex items-center gap-1 rounded-xl border border-[#E0DCCF] bg-white px-3 py-2 text-xs font-bold text-foreground disabled:opacity-30"
+                className="inline-flex items-center gap-1 rounded-xl border border-border bg-white px-3 py-2 text-xs font-bold text-foreground disabled:opacity-30"
               >
                 Next
                 <ChevronRight className="h-4 w-4" aria-hidden />

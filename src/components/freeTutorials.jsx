@@ -87,7 +87,7 @@ const FreeTutorials = () => {
           {tutorials.map((tutorial) => (
             <div 
               key={tutorial.id} 
-              className="group bg-white p-8 rounded-3xl border border-[#E0DCCF] hover:border-[#FF9500]/50 transition-all hover:shadow-lg"
+              className="group bg-white p-8 rounded-3xl border border-border hover:border-[#FF9500]/50 transition-all hover:shadow-lg"
             >
               <div className="w-12 h-1 bg-gradient-to-r from-[#FF9500] to-[#FFB347] mb-6 rounded-full"></div>
               <h3 className="text-2xl font-bold mb-3 text-foreground">{tutorial.title}</h3>
@@ -105,7 +105,7 @@ const FreeTutorials = () => {
         </div>
 
         {/* Additional Resources */}
-        <div className="bg-white border border-[#E0DCCF] rounded-3xl p-12 shadow-sm">
+        <div className="bg-white border border-border rounded-3xl p-12 shadow-sm">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-2xl font-bold mb-4 text-foreground">Why Our Free Tutorials?</h3>

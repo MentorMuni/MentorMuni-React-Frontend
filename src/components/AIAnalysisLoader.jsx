@@ -93,7 +93,7 @@ export default function AIAnalysisLoader({ onComplete, duration = 4000 }) {
 
         {/* Progress bar */}
         <div className="mb-8">
-          <div className="relative h-2 bg-[#E0DCCF] rounded-full overflow-hidden backdrop-blur-sm border border-[#E0DCCF]">
+          <div className="relative h-2 bg-[#E0DCCF] rounded-full overflow-hidden backdrop-blur-sm border border-border">
             {/* Animated gradient progress bar */}
             <div
               className="h-full bg-gradient-to-r from-[#FF9500] via-cyan-500 to-blue-500 rounded-full transition-all duration-300 ease-out shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)]"

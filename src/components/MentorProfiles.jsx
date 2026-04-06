@@ -5,7 +5,7 @@ const MentorCard = ({name, role, company}) => (
     <div className="w-14 h-14 rounded-full bg-gray-200" />
     <div>
       <div className="font-semibold">{name}</div>
-      <div className="text-sm text-foreground-muted">{role} • {company}</div>
+      <div className="text-sm text-muted-foreground">{role} • {company}</div>
     </div>
   </div>
 );
@@ -15,7 +15,7 @@ export default function MentorProfiles(){
     <section className="py-12 bg-gray-50">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <h3 className="text-2xl font-bold">Mentors</h3>
-        <p className="text-foreground-muted mt-2">Find experienced mentors who guide you through interviews and projects.</p>
+        <p className="text-muted-foreground mt-2">Find experienced mentors who guide you through interviews and projects.</p>
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
           <MentorCard name="Priya K" role="Senior Frontend Engineer" company="Acme" />
           <MentorCard name="Rahul M" role="Data Scientist" company="DataCorp" />

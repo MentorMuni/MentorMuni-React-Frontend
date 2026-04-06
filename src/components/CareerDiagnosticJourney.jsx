@@ -59,7 +59,7 @@ const CareerDiagnosticJourney = () => {
   const colorMap = {
     indigo: {
       bg: "bg-[#FFF4E0]",
-      border: "border-[#F0ECE0]",
+      border: "border-border",
       icon: "bg-[#FFF4E0] text-[#FF9500]",
       badge: "bg-[#FFF4E0] text-[#CC7000]",
       button: "from-[#FF9500] to-blue-600",
@@ -107,7 +107,7 @@ const CareerDiagnosticJourney = () => {
           <h2 className="text-4xl md:text-5xl font-black text-foreground mb-6">
             Your AI Career Diagnostic
           </h2>
-          <p className="text-xl text-foreground-muted max-w-3xl mx-auto mb-4">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
             A guided 4-step journey to identify exactly what you need to land your next tech job.
           </p>
           <p className="text-muted-foreground max-w-2xl mx-auto">
@@ -158,19 +158,19 @@ const CareerDiagnosticJourney = () => {
                       </h3>
 
                       {/* Problem Question */}
-                      <p className="text-sm font-semibold text-foreground-muted mb-3 line-clamp-2">
+                      <p className="text-sm font-semibold text-muted-foreground mb-3 line-clamp-2">
                         {step.problemQuestion}
                       </p>
 
                       {/* Description */}
-                      <p className="text-sm text-foreground-muted mb-4 leading-relaxed">
+                      <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
                         {step.description}
                       </p>
 
                       {/* Benefits */}
                       <ul className="mb-6 space-y-2">
                         {step.benefits.map((benefit, idx) => (
-                          <li key={idx} className="text-xs text-foreground-muted flex items-center gap-2">
+                          <li key={idx} className="text-xs text-muted-foreground flex items-center gap-2">
                             <CheckCircle className="w-3 h-3 flex-shrink-0" />
                             {benefit}
                           </li>
@@ -231,19 +231,19 @@ const CareerDiagnosticJourney = () => {
                     </h3>
 
                     {/* Problem Question */}
-                    <p className="text-xs font-semibold text-foreground-muted mb-2">
+                    <p className="text-xs font-semibold text-muted-foreground mb-2">
                       {step.problemQuestion}
                     </p>
 
                     {/* Description */}
-                    <p className="text-sm text-foreground-muted mb-4 leading-relaxed">
+                    <p className="text-sm text-muted-foreground mb-4 leading-relaxed">
                       {step.description}
                     </p>
 
                     {/* Benefits */}
                     <ul className="mb-4 space-y-1">
                       {step.benefits.map((benefit, idx) => (
-                        <li key={idx} className="text-xs text-foreground-muted flex items-center gap-2">
+                        <li key={idx} className="text-xs text-muted-foreground flex items-center gap-2">
                           <CheckCircle className="w-3 h-3 flex-shrink-0" />
                           {benefit}
                         </li>

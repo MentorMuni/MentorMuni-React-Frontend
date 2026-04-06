@@ -29,9 +29,9 @@ const ScoreCard = ({ title, score, icon: Icon, tooltipText, maxScore = 100 }) =>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <div className="p-2 bg-gray-100 rounded-lg">
-              <Icon size={24} className="text-foreground-muted" />
+              <Icon size={24} className="text-muted-foreground" />
             </div>
-            <h3 className="text-sm font-semibold text-foreground-muted">{title}</h3>
+            <h3 className="text-sm font-semibold text-muted-foreground">{title}</h3>
           </div>
           
           <div className="relative">

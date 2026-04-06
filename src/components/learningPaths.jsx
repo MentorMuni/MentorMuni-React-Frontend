@@ -74,7 +74,7 @@ const LearningPaths = () => {
             >
               <div className={`absolute inset-0 bg-gradient-to-r ${path.color} rounded-3xl opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
               
-              <div className="relative bg-white border border-[#E0DCCF] hover:border-[#FF9500]/30 rounded-3xl p-8 transition-all duration-300 hover:shadow-lg">
+              <div className="relative bg-white border border-border hover:border-[#FF9500]/30 rounded-3xl p-8 transition-all duration-300 hover:shadow-lg">
                 {/* Badge */}
                 <div className={`absolute top-6 right-6 bg-gradient-to-r ${path.color} text-white text-xs font-bold px-4 py-1 rounded-full`}>
                   {path.badge}
@@ -104,7 +104,7 @@ const LearningPaths = () => {
         </div>
 
         {/* Why Choose Section */}
-        <div className="bg-white border border-[#E0DCCF] rounded-3xl p-12 mb-12 shadow-sm">
+        <div className="bg-white border border-border rounded-3xl p-12 mb-12 shadow-sm">
           <h2 className="text-3xl font-black mb-8 text-center text-foreground">Why Choose MentorMuni?</h2>
           <div className="grid md:grid-cols-4 gap-6">
             <div className="text-center">

@@ -46,7 +46,7 @@ const MockInterviews = () => {
 
       <div className="relative">
         {/* Hero */}
-        <section className="border-b border-[#F0ECE0]">
+        <section className="border-b border-border">
           <div className="max-w-5xl mx-auto px-6 pt-14 pb-12">
             <div className="flex items-center gap-2 mb-4">
               <span className="w-1.5 h-1.5 rounded-full bg-[#FFB347] animate-pulse" />
@@ -71,7 +71,7 @@ const MockInterviews = () => {
                     </span>
                   </h1>
                 </div>
-                <p className="text-foreground-muted text-base max-w-xl leading-relaxed">
+                <p className="text-muted-foreground text-base max-w-xl leading-relaxed">
                   Practice with real-time evaluation and feedback aligned to campus and off-campus tech rounds — same visual language as the rest of MentorMuni.
                 </p>
               </div>
@@ -82,10 +82,10 @@ const MockInterviews = () => {
                 ].map(({ icon: Icon, label }) => (
                   <div
                     key={label}
-                    className="flex items-center gap-1.5 rounded-lg border border-[#E0DCCF] bg-[#FFF8EE] px-3 py-1.5"
+                    className="flex items-center gap-1.5 rounded-lg border border-border bg-[#FFF8EE] px-3 py-1.5"
                   >
                     <Icon size={13} className="text-[#FF9500]" />
-                    <span className="text-xs font-semibold text-foreground-muted">{label}</span>
+                    <span className="text-xs font-semibold text-muted-foreground">{label}</span>
                   </div>
                 ))}
               </div>
@@ -99,7 +99,7 @@ const MockInterviews = () => {
             {features.map(({ icon: Icon, title, desc, cta, href }) => (
               <div
                 key={title}
-                className="group rounded-2xl border border-[#E0DCCF] bg-white p-6 shadow-sm transition-all hover:border-[#FF9500]/40 hover:shadow-md"
+                className="group rounded-2xl border border-border bg-white p-6 shadow-sm transition-all hover:border-[#FF9500]/40 hover:shadow-md"
               >
                 <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#FF9500]/10 border border-[#FF9500]/15 mb-4">
                   <Icon size={20} className="text-[#FF9500]" />
@@ -124,7 +124,7 @@ const MockInterviews = () => {
                 Coming soon
               </div>
               <h2 className="text-2xl md:text-3xl font-black text-foreground mb-3">Full mock interview platform</h2>
-              <p className="text-foreground-muted text-sm max-w-2xl mx-auto leading-relaxed mb-8">
+              <p className="text-muted-foreground text-sm max-w-2xl mx-auto leading-relaxed mb-8">
                 Live mentors, AI evaluation, and performance analytics — built for engineering students in India. Be among the first to get access.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">

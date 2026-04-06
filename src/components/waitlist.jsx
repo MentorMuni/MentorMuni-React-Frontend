@@ -97,7 +97,7 @@ export default function WaitlistPage() {
 
   const inputCls = (k) =>
     `w-full px-4 py-3 rounded-xl border bg-white text-foreground placeholder-[#AAAAAA] outline-none transition-all text-sm ${
-      errors[k] ? 'border-red-500/50' : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/25'
+      errors[k] ? 'border-red-500/50' : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/25'
     }`;
 
   return (
@@ -148,7 +148,7 @@ export default function WaitlistPage() {
         </div>
 
         {/* ── Form card ── */}
-        <div className="bg-white border border-[#F0ECE0] rounded-2xl p-6 md:p-8 mb-12">
+        <div className="bg-white border border-border rounded-2xl p-6 md:p-8 mb-12">
           {submitted ? (
             <div className="text-center py-8">
               <div className="w-16 h-16 rounded-full bg-green-500/15 border border-green-500/30 flex items-center justify-center mx-auto mb-4">
@@ -232,7 +232,7 @@ export default function WaitlistPage() {
                   {loading ? 'Saving your spot…' : <>Join Waitlist — Free <ArrowRight size={16} /></>}
                 </button>
 
-                <p className="text-center text-xs text-foreground-muted">
+                <p className="text-center text-xs text-muted-foreground">
                   <span className="text-green-500">✓</span> No spam{'  '}
                   <span className="text-green-500">✓</span> Cancel anytime{'  '}
                   <span className="text-green-500">✓</span> Early access perks
@@ -247,7 +247,7 @@ export default function WaitlistPage() {
           <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium text-center mb-5">What you unlock when mentorship opens</p>
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {PERKS.map(({ emoji, title, desc }) => (
-              <div key={title} className="bg-white border border-[#F0ECE0] rounded-xl p-5">
+              <div key={title} className="bg-white border border-border rounded-xl p-5">
                 <div className="text-2xl mb-3">{emoji}</div>
                 <h3 className="font-semibold text-foreground text-sm mb-1.5">{title}</h3>
                 <p className="text-muted-foreground text-xs leading-relaxed">{desc}</p>

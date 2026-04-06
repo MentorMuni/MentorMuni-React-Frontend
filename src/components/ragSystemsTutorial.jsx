@@ -100,8 +100,8 @@ const RAGSystemsTutorial = () => {
     };
 
     return (
-      <div className="bg-[#1e1e1e] rounded-lg border border-[#E0DCCF] my-4">
-        <div className="flex justify-between items-center px-4 py-2 border-b border-[#E0DCCF]">
+      <div className="bg-[#1e1e1e] rounded-lg border border-border my-4">
+        <div className="flex justify-between items-center px-4 py-2 border-b border-border">
           <span className="text-xs text-muted-foreground">{language}</span>
           <button
             onClick={copyToClipboard}
@@ -118,7 +118,7 @@ const RAGSystemsTutorial = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-foreground-muted font-sans antialiased">
+    <div className="min-h-screen bg-[#FFFDF8] text-muted-foreground font-sans antialiased">
       {/* Meta Tags for SEO */}
       <head>
         <title>RAG Systems Tutorial - Retrieval-Augmented Generation Explained | Complete Guide</title>
@@ -143,7 +143,7 @@ const RAGSystemsTutorial = () => {
       </script>
 
       {/* HEADER */}
-      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-[#F0ECE0] px-5">
+      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-border px-5">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between py-4">
           <Link to="/" className="transition-transform hover:scale-[1.02]">
             <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
@@ -166,7 +166,7 @@ const RAGSystemsTutorial = () => {
         
         {/* LEFT SIDEBAR NAVIGATION */}
         <aside className="hidden lg:block w-64 sticky top-24 h-[calc(100vh-100px)] overflow-y-auto">
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+          <div className="bg-white/5 border border-border rounded-xl p-6">
             <h3 className="text-lg font-bold mb-6 text-[#FF9500]">📑 Course Contents</h3>
             <nav className="space-y-2">
               {topics.map((topic) => (
@@ -205,14 +205,14 @@ const RAGSystemsTutorial = () => {
           </div>
 
           {/* TABLE OF CONTENTS */}
-          <div className="mb-16 bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+          <div className="mb-16 bg-white/5 border border-border rounded-xl p-8">
             <h2 className="text-2xl font-bold mb-6">What You'll Learn</h2>
             <div className="grid md:grid-cols-2 gap-4">
               {topics.map((topic, idx) => (
                 <button
                   key={topic.id}
                   onClick={() => scrollToSection(topic.id)}
-                  className="text-left p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-all border border-[#F0ECE0] hover:border-cyan-400/30"
+                  className="text-left p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-all border border-border hover:border-cyan-400/30"
                 >
                   <span className="text-cyan-400 font-bold">{idx + 1}.</span> {topic.title}
                 </button>
@@ -224,7 +224,7 @@ const RAGSystemsTutorial = () => {
           <section id="intro" className="mb-16">
             <h2 className="text-4xl font-black mb-6">Introduction to RAG</h2>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">What is Retrieval-Augmented Generation?</h3>
               <p className="text-muted-foreground mb-4">
                 RAG (Retrieval-Augmented Generation) is an architecture that combines a retrieval system with a generative language model. Instead of relying solely on the LLM's pre-trained knowledge, RAG retrieves relevant documents from your data, injects them as context into the prompt, and then generates accurate responses grounded in actual information.
@@ -234,7 +234,7 @@ const RAGSystemsTutorial = () => {
               </p>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Why RAG is Essential</h3>
               <div className="space-y-4">
                 <div className="bg-[#1e1e1e] p-4 rounded-lg border border-red-400/30">
@@ -248,12 +248,12 @@ const RAGSystemsTutorial = () => {
               </div>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">RAG vs Other Approaches</h3>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm text-muted-foreground">
                   <thead>
-                    <tr className="border-b border-[#E0DCCF]">
+                    <tr className="border-b border-border">
                       <th className="text-left p-3 text-white font-bold">Approach</th>
                       <th className="text-left p-3 text-white font-bold">Cost</th>
                       <th className="text-left p-3 text-white font-bold">Speed</th>
@@ -261,19 +261,19 @@ const RAGSystemsTutorial = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    <tr className="border-b border-[#F0ECE0]">
+                    <tr className="border-b border-border">
                       <td className="p-3">Pure LLM</td>
                       <td className="p-3">Low</td>
                       <td className="p-3">Fast</td>
                       <td className="p-3">Low</td>
                     </tr>
-                    <tr className="border-b border-[#F0ECE0]">
+                    <tr className="border-b border-border">
                       <td className="p-3">Fine-tuning</td>
                       <td className="p-3">Very High</td>
                       <td className="p-3">Slow</td>
                       <td className="p-3">High</td>
                     </tr>
-                    <tr className="border-b border-[#F0ECE0]">
+                    <tr className="border-b border-border">
                       <td className="p-3">RAG</td>
                       <td className="p-3">Medium</td>
                       <td className="p-3">Medium</td>
@@ -295,7 +295,7 @@ const RAGSystemsTutorial = () => {
           <section id="how-rag-works" className="mb-16">
             <h2 className="text-4xl font-black mb-6">⚙️ How RAG Works: The Complete Flow</h2>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">The RAG Pipeline: Step-by-Step</h3>
               <ol className="text-muted-foreground space-y-4 ml-4">
                 <li className="flex gap-3">
@@ -329,22 +329,22 @@ const RAGSystemsTutorial = () => {
               </ol>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Key Components Explained</h3>
               <div className="space-y-4">
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-[#FF9500]">Embedding Model</strong>
                   <p className="text-muted-foreground text-sm mt-2">Converts text (documents, queries) into numerical vectors. Examples: text-embedding-ada-002, Sentence-BERT, multilingual-e5-large. Higher quality embeddings = better retrieval.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-[#FF9500]">Vector Database</strong>
                   <p className="text-muted-foreground text-sm mt-2">Stores embeddings and enable fast similarity search. Examples: FAISS, Pinecone, Weaviate. Optimized for billions of vectors with millisecond retrieval.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-[#FF9500]">Similarity Search</strong>
                   <p className="text-muted-foreground text-sm mt-2">Finds vectors closest to query embedding using cosine similarity or L2 distance. retrieves most relevant documents for context injection.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-[#FF9500]">Context Window</strong>
                   <p className="text-muted-foreground text-sm mt-2">The LLM's maximum input length. Retrieved documents must fit (typically 4K-100K tokens). Careful chunking and selection ensures quality context.</p>
                 </div>
@@ -356,7 +356,7 @@ const RAGSystemsTutorial = () => {
           <section id="architecture" className="mb-16">
             <h2 className="text-4xl font-black mb-6">🏗️ RAG Architecture Deep Dive</h2>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Data Ingestion Pipeline</h3>
               <p className="text-muted-foreground mb-4">Before RAG can retrieve, your data must be prepared:</p>
               <ol className="text-muted-foreground space-y-3 ml-4">
@@ -369,13 +369,13 @@ const RAGSystemsTutorial = () => {
               </ol>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Complete RAG Architecture Diagram (Text Description)</h3>
-              <div className="bg-[#1e1e1e] p-6 rounded-lg border border-[#E0DCCF] text-sm text-muted-foreground space-y-3">
+              <div className="bg-[#1e1e1e] p-6 rounded-lg border border-border text-sm text-muted-foreground space-y-3">
                 <div className="font-bold text-cyan-400">OFFLINE PHASE (Data Preparation):</div>
                 <div>📄 Documents → 🔄 Chunking → 🧮 Embeddings → 📦 Vector DB</div>
                 
-                <div className="border-t border-[#E0DCCF] pt-3 mt-3 font-bold text-cyan-400">ONLINE PHASE (Query Time):</div>
+                <div className="border-t border-border pt-3 mt-3 font-bold text-cyan-400">ONLINE PHASE (Query Time):</div>
                 <div>❓ User Query → 🧮 Embed Query → 🔍 Search Vector DB → 📋 Get Top-K</div>
                 <div>📋 Retrieved Docs → 📝 Create Prompt → 🤖 LLM → 💬 Response</div>
               </div>
@@ -387,7 +387,7 @@ const RAGSystemsTutorial = () => {
             <h2 className="text-4xl font-black mb-6">🗂️ Vector Databases Explained</h2>
 
             <div className="space-y-4 mb-8">
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">FAISS (Facebook AI Similarity Search)</h3>
                 <p className="text-muted-foreground text-sm mb-3">Open-source, CPU/GPU optimized. Best for:</p>
                 <ul className="text-muted-foreground text-sm space-y-1 ml-4">
@@ -399,7 +399,7 @@ const RAGSystemsTutorial = () => {
                 </ul>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Pinecone</h3>
                 <p className="text-muted-foreground text-sm mb-3">Managed vector database. Best for:</p>
                 <ul className="text-muted-foreground text-sm space-y-1 ml-4">
@@ -411,7 +411,7 @@ const RAGSystemsTutorial = () => {
                 </ul>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Weaviate</h3>
                 <p className="text-muted-foreground text-sm mb-3">Open-source + managed. Best for:</p>
                 <ul className="text-muted-foreground text-sm space-y-1 ml-4">
@@ -423,7 +423,7 @@ const RAGSystemsTutorial = () => {
                 </ul>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Chroma</h3>
                 <p className="text-muted-foreground text-sm mb-3">Lightweight & embeddable. Best for:</p>
                 <ul className="text-muted-foreground text-sm space-y-1 ml-4">
@@ -436,9 +436,9 @@ const RAGSystemsTutorial = () => {
               </div>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Choosing the Right Vector Database</h3>
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                 <p className="text-muted-foreground text-sm mb-3"><strong>For Prototyping:</strong> Chroma or FAISS (free, simple)</p>
                 <p className="text-muted-foreground text-sm mb-3"><strong>For Production (small):</strong> Pinecone or self-hosted Weaviate</p>
                 <p className="text-muted-foreground text-sm mb-3"><strong>For Production (large):</strong> Pinecone, Weaviate, or Elasticsearch with vectors</p>
@@ -451,7 +451,7 @@ const RAGSystemsTutorial = () => {
           <section id="implementation" className="mb-16">
             <h2 className="text-4xl font-black mb-6">💻 Step-by-Step Python Implementation</h2>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Building a Simple RAG System with LangChain</h3>
               <p className="text-muted-foreground mb-4">Here's a complete example using OpenAI and Chroma:</p>
               <CodeBlock
@@ -503,7 +503,7 @@ print(response)`}
               />
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Using LlamaIndex for RAG</h3>
               <CodeBlock
                 code={`from llama_index import SimpleDirectoryReader, GPTVectorStoreIndex, ServiceContext
@@ -535,25 +535,25 @@ print(response)`}
             <h2 className="text-4xl font-black mb-6">✂️ Chunking Strategies</h2>
 
             <div className="space-y-4">
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Fixed-Size Chunking</h3>
                 <p className="text-muted-foreground text-sm mb-3">Split documents into fixed token chunks (e.g., 512 tokens).</p>
                 <p className="text-muted-foreground text-sm"><span className="flex items-center gap-1 inline-flex"><Check size={14} className="text-green-400" /> Simple, fast</span> | <span className="flex items-center gap-1 inline-flex"><AlertCircle size={14} className="text-red-400" /> May break sentences, loses context</span></p>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Overlap Chunking (Sliding Window)</h3>
                 <p className="text-muted-foreground text-sm mb-3">Use overlap between chunks (e.g., 512 tokens with 50-token overlap).</p>
                 <p className="text-muted-foreground text-sm"><span className="flex items-center gap-1 inline-flex"><Check size={14} className="text-green-400" /> Preserves context</span> | <span className="flex items-center gap-1 inline-flex"><AlertCircle size={14} className="text-red-400" /> Redundant data, slightly larger index</span></p>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Semantic Chunking</h3>
                 <p className="text-muted-foreground text-sm mb-3">Split based on meaning (sentences, paragraphs, sections).</p>
                 <p className="text-muted-foreground text-sm"><span className="flex items-center gap-1 inline-flex"><Check size={14} className="text-green-400" /> Preserves semantics</span> | <span className="flex items-center gap-1 inline-flex"><AlertCircle size={14} className="text-red-400" /> Variable sizes, slower processing</span></p>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Hierarchical Chunking</h3>
                 <p className="text-muted-foreground text-sm mb-3">Build hierarchy: Document → Sections → Paragraphs → Sentences.</p>
                 <p className="text-muted-foreground text-sm"><span className="flex items-center gap-1 inline-flex"><Check size={14} className="text-green-400" /> Rich context</span> | <span className="flex items-center gap-1 inline-flex"><AlertCircle size={14} className="text-red-400" /> Complex, requires meta setup</span></p>
@@ -565,29 +565,29 @@ print(response)`}
           <section id="evaluation" className="mb-16">
             <h2 className="text-4xl font-black mb-6">📊 RAG Evaluation Metrics</h2>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Key Metrics to Measure</h3>
               <div className="space-y-4">
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-cyan-400">Retrieval Accuracy (Recall@K)</strong>
                   <p className="text-muted-foreground text-sm mt-2">What % of relevant documents were retrieved in top-K results? Goal: {'>'} 80% recall@5</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-cyan-400">Precision</strong>
                   <p className="text-muted-foreground text-sm mt-2">What % of retrieved documents are actually relevant? Goal: {'>'} 70% precision</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-cyan-400">Hallucination Rate</strong>
                   <p className="text-muted-foreground text-sm mt-2">How often does LLM generate false info not in retrieved docs? Goal: {'<'} 10% hallucination</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-cyan-400">Answer Relevance</strong>
                   <p className="text-muted-foreground text-sm mt-2">How relevant is generated answer to query? Use LLM-based evaluation or human scores</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Measuring Hallucination</h3>
               <CodeBlock
                 code={`def check_hallucination(retrieved_docs, generated_answer):
@@ -615,27 +615,27 @@ print(response)`}
             <h2 className="text-4xl font-black mb-6">🚀 Advanced RAG Techniques</h2>
 
             <div className="space-y-4">
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Hybrid Search (BM25 + Vector)</h3>
                 <p className="text-muted-foreground text-sm">Combine keyword search + vector similarity. BM25 for lexical matches, vectors for semantic. Better recall.</p>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Re-ranking</h3>
                 <p className="text-muted-foreground text-sm">Retrieve top-100 candidates, re-rank with expensive model. Trade cost for accuracy.</p>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Metadata Filtering</h3>
                 <p className="text-muted-foreground text-sm">Filter by date, source, category before retrieval. Reduces irrelevant results.</p>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Multi-Query Retrieval</h3>
                 <p className="text-muted-foreground text-sm">Generate multiple query variations, retrieve for each, deduplicate. Improves coverage.</p>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Conversational Memory RAG</h3>
                 <p className="text-muted-foreground text-sm">Keep conversation history, use multi-turn queries. Better for dialogues.</p>
               </div>
@@ -647,7 +647,7 @@ print(response)`}
             <h2 className="text-4xl font-black mb-6">⚡ Production Considerations</h2>
 
             <div className="space-y-4">
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Scaling</h3>
                 <ul className="text-muted-foreground text-sm space-y-2 ml-4">
                   <li>• Use managed vector DB (Pinecone, Weaviate cloud)</li>
@@ -657,7 +657,7 @@ print(response)`}
                 </ul>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Cost Optimization</h3>
                 <ul className="text-muted-foreground text-sm space-y-2 ml-4">
                   <li>• Use cheaper embedding models where possible</li>
@@ -667,7 +667,7 @@ print(response)`}
                 </ul>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Monitoring & Logging</h3>
                 <ul className="text-muted-foreground text-sm space-y-2 ml-4">
                   <li>• Track retrieval latency and quality</li>
@@ -677,7 +677,7 @@ print(response)`}
                 </ul>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Security & Privacy</h3>
                 <ul className="text-muted-foreground text-sm space-y-2 ml-4">
                   <li>• Encrypt data at rest and in transit</li>
@@ -731,27 +731,27 @@ print(response)`}
             <h2 className="text-4xl font-black mb-6">💼 Real-World RAG Use Cases</h2>
 
             <div className="space-y-4">
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Enterprise Knowledge Base</h3>
                 <p className="text-muted-foreground text-sm">Employees query internal docs, policies, FAQs. RAG finds relevant sections and generates contextual answers.</p>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Legal Document Assistant</h3>
                 <p className="text-muted-foreground text-sm">Search contracts, legal precedents, case law. RAG retrieves relevant clauses and explains implications.</p>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Healthcare Documentation Search</h3>
                 <p className="text-muted-foreground text-sm">Doctors query medical records, research papers, treatment guidelines. RAG returns evidence-based recommendations.</p>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Customer Support AI</h3>
                 <p className="text-muted-foreground text-sm">Support bot retrieves relevant FAQs, tickets, product docs. Generates personalized, accurate responses.</p>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Academic Research Assistant</h3>
                 <p className="text-muted-foreground text-sm">Students/researchers ask questions about papers, textbooks. RAG retrieves citations and generates summaries.</p>
               </div>
@@ -765,7 +765,7 @@ print(response)`}
             <div className="space-y-6">
               <div>
                 <h3 className="font-bold text-[#FF9500] mb-3 text-lg">Beginner Level</h3>
-                <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6 mb-4">
+                <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6 mb-4">
                   <summary className="font-bold text-[#FF9500] cursor-pointer">1. What is the main purpose of RAG?</summary>
                   <p className="text-muted-foreground text-sm mt-3">RAG grounds LLM responses in retrieved documents to improve accuracy, reduce hallucinations, and provide up-to-date information without retraining.</p>
                 </details>
@@ -773,7 +773,7 @@ print(response)`}
 
               <div>
                 <h3 className="font-bold text-cyan-400 mb-3 text-lg">Intermediate Level</h3>
-                <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6 mb-4">
+                <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6 mb-4">
                   <summary className="font-bold text-cyan-400 cursor-pointer">2. How would you optimize retrieval performance for a RAG system with 10M documents?</summary>
                   <p className="text-muted-foreground text-sm mt-3">Use hierarchical indexing, implement caching for frequent queries, employ hybrid search (BM25+vectors), apply metadata filtering, re-rank top candidates with expensive models, and monitor latency continuously.</p>
                 </details>
@@ -781,7 +781,7 @@ print(response)`}
 
               <div>
                 <h3 className="font-bold text-green-400 mb-3 text-lg">Advanced Level</h3>
-                <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+                <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
                   <summary className="font-bold text-green-400 cursor-pointer">3. Design a production RAG system that handles multi-lingual documents and real-time updates.</summary>
                   <p className="text-muted-foreground text-sm mt-3">Use multilingual embedding model, maintain separate or unified vector spaces per language, implement streaming ingestion pipeline, use message queues for async updates, employ distributed vector DB for scaling, add language detection at query time, implement monitoring per language, and include cross-language retrieval capability.</p>
                 </details>
@@ -793,29 +793,29 @@ print(response)`}
           <section id="project" className="mb-16">
             <h2 className="text-4xl font-black mb-6">🛠️ Mini Project: Build Your Own RAG Chatbot</h2>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Project: Document Q&A Chatbot</h3>
               <p className="text-muted-foreground mb-6">Build a chatbot that answers questions about any PDF documents you upload.</p>
 
               <div className="space-y-4">
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-cyan-400">📋 Requirements:</strong>
                   <p className="text-muted-foreground text-sm mt-2">• Accept PDF uploads • Extract and chunk text • Create embeddings • Store in vector DB • Enable conversational queries • Show source citations</p>
                 </div>
 
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-cyan-400">🛠️ Tech Stack:</strong>
                   <p className="text-muted-foreground text-sm mt-2">• Python + LangChain • OpenAI API • Chroma vector DB • Streamlit UI • PyPDF2 for extraction</p>
                 </div>
 
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-cyan-400">Challenge Goals:</strong>
                   <p className="text-muted-foreground text-sm mt-2">1. Support multi-document queries • 2. Add conversation memory • 3. Implement metadata filtering • 4. Add response evaluation • 5. Deploy on Hugging Face Spaces</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Starter Code</h3>
               <CodeBlock
                 code={`import streamlit as st
@@ -879,7 +879,7 @@ if uploaded_file:
                   onClick={() => setExpandedFAQ(expandedFAQ === index ? null : index)}
                   className="w-full text-left"
                 >
-                  <div className="bg-white/5 border border-[#E0DCCF] hover:border-[#FFB347]/40 rounded-xl p-6 transition-all cursor-pointer">
+                  <div className="bg-white/5 border border-border hover:border-[#FFB347]/40 rounded-xl p-6 transition-all cursor-pointer">
                     <div className="flex justify-between items-start gap-4">
                       <h3 className="font-bold text-[#FF9500] text-lg">{item.question}</h3>
                       <span className="text-cyan-400 text-2xl font-bold flex-shrink-0">
@@ -900,7 +900,7 @@ if uploaded_file:
               <div className="grid md:grid-cols-3 gap-6">
                 <a 
                   href="/tutorials/generative-ai-for-beginners"
-                  className="group bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-[#FFB347]/40 rounded-lg p-6 transition-all"
+                  className="group bg-white/5 hover:bg-white/10 border border-border hover:border-[#FFB347]/40 rounded-lg p-6 transition-all"
                 >
                   <div className="text-3xl mb-3">🤖</div>
                   <h4 className="font-bold mb-2 group-hover:text-[#FF9500] transition-colors">Generative AI for Beginners</h4>
@@ -909,7 +909,7 @@ if uploaded_file:
 
                 <a 
                   href="/courses/prompt-engineering-masterclass"
-                  className="group bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-cyan-400/30 rounded-lg p-6 transition-all"
+                  className="group bg-white/5 hover:bg-white/10 border border-border hover:border-cyan-400/30 rounded-lg p-6 transition-all"
                 >
                   <div className="text-3xl mb-3">✍️</div>
                   <h4 className="font-bold mb-2 group-hover:text-cyan-400 transition-colors">Prompt Engineering Masterclass</h4>
@@ -918,7 +918,7 @@ if uploaded_file:
 
                 <a 
                   href="/start-assessment"
-                  className="group bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-green-400/30 rounded-lg p-6 transition-all"
+                  className="group bg-white/5 hover:bg-white/10 border border-border hover:border-green-400/30 rounded-lg p-6 transition-all"
                 >
                   <div className="text-3xl mb-3">📊</div>
                   <h4 className="font-bold mb-2 group-hover:text-green-400 transition-colors">Interview Assessment</h4>
@@ -930,7 +930,7 @@ if uploaded_file:
 
           {/* FINAL CTA */}
           <section className="mb-16">
-            <div className="bg-gradient-to-r from-[#4F46E5] via-[#06B6D4] to-[#9333EA] rounded-2xl p-12 text-center border border-[#E0DCCF]">
+            <div className="bg-gradient-to-r from-[#4F46E5] via-[#06B6D4] to-[#9333EA] rounded-2xl p-12 text-center border border-border">
               <h2 className="text-3xl font-black mb-4">Ready to Build RAG Systems?</h2>
               <p className="text-lg mb-8 text-white/90">
                 Take your skills further. Test your understanding with our interview assessment.
@@ -946,7 +946,7 @@ if uploaded_file:
         </main>
       </div>
 
-      <footer className="py-10 text-center text-muted-foreground text-sm border-t border-[#F0ECE0] mt-16">
+      <footer className="py-10 text-center text-muted-foreground text-sm border-t border-border mt-16">
         © 2026 MentorMuni. RAG Systems Tutorial - Complete Guide from Basics to Production.
       </footer>
     </div>

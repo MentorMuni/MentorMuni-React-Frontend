@@ -168,7 +168,7 @@ export function AnimatedPrepMapPanel() {
                 <Target size={12} className="text-[#FF9500]" strokeWidth={2.5} aria-hidden />
                 Interview readiness score
               </div>
-              <p className="text-[11px] font-semibold text-foreground-muted">Example only — not your result</p>
+              <p className="text-[11px] font-semibold text-muted-foreground">Example only — not your result</p>
               <p className="mt-2 text-xl font-black leading-tight text-foreground sm:text-2xl">{illustrativeBand.label}</p>
               <p className="mt-1.5 text-sm leading-snug text-muted-foreground">{illustrativeBand.sub}</p>
             </div>
@@ -211,7 +211,7 @@ export function AnimatedPrepMapPanel() {
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-xs font-bold uppercase tracking-wide text-[#9A3412]">{READINESS_TEST_COUPON_CARD_HEADLINE}</p>
-              <p className="mt-1 text-sm leading-snug text-foreground-muted">{READINESS_TEST_COUPON_CARD_BODY}</p>
+              <p className="mt-1 text-sm leading-snug text-muted-foreground">{READINESS_TEST_COUPON_CARD_BODY}</p>
             </div>
             <button
               type="button"

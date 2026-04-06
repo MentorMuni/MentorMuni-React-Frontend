@@ -56,15 +56,15 @@ const EnhancedSkillMatch = ({
         <div className="grid grid-cols-3 gap-4 text-center">
           <div>
             <p className="text-2xl font-bold text-green-600">{strongSkills.length}</p>
-            <p className="text-xs text-foreground-muted">Strong Skills</p>
+            <p className="text-xs text-muted-foreground">Strong Skills</p>
           </div>
           <div>
             <p className="text-2xl font-bold text-amber-600">{missingSkills.length}</p>
-            <p className="text-xs text-foreground-muted">Missing Skills</p>
+            <p className="text-xs text-muted-foreground">Missing Skills</p>
           </div>
           <div>
             <p className="text-2xl font-bold text-blue-600">{Math.round(matchPercentage / 10)}/10</p>
-            <p className="text-xs text-foreground-muted">Score</p>
+            <p className="text-xs text-muted-foreground">Score</p>
           </div>
         </div>
       </div>
@@ -72,7 +72,7 @@ const EnhancedSkillMatch = ({
       {/* Benchmark Comparison */}
       <div className="bg-white rounded-2xl p-6 border border-gray-100">
         <div className="flex items-center gap-2 mb-4">
-          <TrendingUp size={18} className="text-foreground-muted" />
+          <TrendingUp size={18} className="text-muted-foreground" />
           <h4 className="font-semibold text-foreground">Top 10% {targetRole.replace(/-/g, ' ')} Have:</h4>
         </div>
         
@@ -83,7 +83,7 @@ const EnhancedSkillMatch = ({
               className={`px-3 py-2 rounded-lg text-sm font-medium transition-all ${
                 strongSkills.some(s => s.toLowerCase().includes(skill.toLowerCase()))
                   ? 'bg-green-100 text-green-700 border border-green-200'
-                  : 'bg-gray-100 text-foreground-muted border border-gray-200'
+                  : 'bg-gray-100 text-muted-foreground border border-gray-200'
               }`}
             >
               {skill}
@@ -123,7 +123,7 @@ const EnhancedSkillMatch = ({
                 className={`px-3 py-2 rounded-lg text-sm transition-all ${
                   isPremium
                     ? 'bg-red-50 text-red-700 border border-red-200'
-                    : 'bg-gradient-to-r from-gray-200 to-gray-300 text-foreground-muted border border-gray-300'
+                    : 'bg-gradient-to-r from-gray-200 to-gray-300 text-muted-foreground border border-gray-300'
                 }`}
                 style={!isPremium ? { filter: 'blur(2px)' } : {}}
               >

@@ -21,7 +21,7 @@ const QUICK_QUESTIONS = [
 
 function TypingIndicator() {
   return (
-    <div className="flex items-center gap-1 rounded-2xl rounded-bl-md border border-[#E0DCCF] bg-white px-3 py-2.5 shadow-sm w-fit">
+    <div className="flex items-center gap-1 rounded-2xl rounded-bl-md border border-border bg-white px-3 py-2.5 shadow-sm w-fit">
       <span
         className="h-2 w-2 rounded-full bg-[#FF9500] animate-bounce"
         style={{ animationDelay: '0ms' }}
@@ -86,14 +86,14 @@ function MessageBubble({ text, isBot, isMarkdown }) {
   return (
     <div className={`flex gap-2.5 ${isBot ? '' : 'flex-row-reverse'}`}>
       {isBot && (
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#E0DCCF] bg-white shadow-sm ring-2 ring-[#FFF4E0]">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-white shadow-sm ring-2 ring-[#FFF4E0]">
           <img src={LOGO_SRC} alt="" className="h-full w-full object-cover" width={36} height={36} />
         </div>
       )}
       <div
         className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 shadow-sm ${
           isBot
-            ? 'rounded-bl-md border border-[#E0DCCF] bg-white'
+            ? 'rounded-bl-md border border-border bg-white'
             : 'rounded-br-md bg-gradient-to-br from-[#FF9500] to-[#E88600] text-white'
         }`}
       >
@@ -152,7 +152,7 @@ export default function MuniBot() {
         className="pointer-events-none fixed bottom-[5.5rem] right-6 z-[9997] hidden max-w-[220px] sm:block"
         aria-hidden
       >
-        <div className="pointer-events-none rounded-2xl border border-[#E0DCCF] bg-white/95 px-3 py-2 text-xs font-medium text-foreground-muted shadow-lg backdrop-blur">
+        <div className="pointer-events-none rounded-2xl border border-border bg-white/95 px-3 py-2 text-xs font-medium text-muted-foreground shadow-lg backdrop-blur">
           <span className="inline-flex items-center gap-1.5">
             <Sparkles className="h-3.5 w-3.5 shrink-0 text-[#FF9500]" />
             Ask MuniBot anything
@@ -188,16 +188,16 @@ export default function MuniBot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.96 }}
             transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-            className="fixed bottom-24 right-6 z-[9999] flex h-[min(72vh,540px)] w-[calc(100vw-1.5rem)] max-w-md flex-col overflow-hidden rounded-2xl border border-[#E0DCCF] bg-[#FFFDF8] shadow-2xl"
+            className="fixed bottom-24 right-6 z-[9999] flex h-[min(72vh,540px)] w-[calc(100vw-1.5rem)] max-w-md flex-col overflow-hidden rounded-2xl border border-border bg-[#FFFDF8] shadow-2xl"
             style={{
               boxShadow: '0 25px 50px -12px rgba(0,0,0,0.18), 0 0 0 1px rgba(255,149,0,0.08)',
             }}
             role="dialog"
             aria-label="MuniBot chat"
           >
-            <div className="flex items-center justify-between border-b border-[#F0ECE0] bg-gradient-to-r from-[#FFFDF8] to-[#FFF8EE] px-3 py-2.5">
+            <div className="flex items-center justify-between border-b border-border bg-gradient-to-r from-[#FFFDF8] to-[#FFF8EE] px-3 py-2.5">
               <div className="flex min-w-0 items-center gap-3">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-[#E0DCCF] bg-white shadow-sm ring-2 ring-[#FFB347]/25">
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-white shadow-sm ring-2 ring-[#FFB347]/25">
                   <img src={LOGO_SRC} alt="" className="h-full w-full object-cover" width={44} height={44} />
                 </div>
                 <div className="min-w-0">
@@ -231,7 +231,7 @@ export default function MuniBot() {
                         key={q}
                         type="button"
                         onClick={() => handleQuickQuestion(q)}
-                        className="rounded-full border border-[#E0DCCF] bg-white px-2.5 py-1.5 text-[11px] font-medium text-foreground-muted transition hover:border-[#FFB347] hover:bg-[#FFF4E0] hover:text-[#CC7000]"
+                        className="rounded-full border border-border bg-white px-2.5 py-1.5 text-[11px] font-medium text-muted-foreground transition hover:border-[#FFB347] hover:bg-[#FFF4E0] hover:text-[#CC7000]"
                       >
                         {q}
                       </button>
@@ -242,7 +242,7 @@ export default function MuniBot() {
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="flex gap-2 border-t border-[#F0ECE0] bg-white/90 px-3 py-2">
+            <div className="flex gap-2 border-t border-border bg-white/90 px-3 py-2">
               <Link
                 to="/start-assessment"
                 onClick={() => setIsOpen(false)}
@@ -254,7 +254,7 @@ export default function MuniBot() {
               <Link
                 to="/contact"
                 onClick={() => setIsOpen(false)}
-                className="flex flex-1 items-center justify-center gap-1 rounded-xl border border-[#E0DCCF] bg-[#FFFDF8] py-2.5 text-xs font-bold text-foreground-muted transition hover:border-[#FFB347]"
+                className="flex flex-1 items-center justify-center gap-1 rounded-xl border border-border bg-[#FFFDF8] py-2.5 text-xs font-bold text-muted-foreground transition hover:border-[#FFB347]"
               >
                 Contact
               </Link>
@@ -268,7 +268,7 @@ export default function MuniBot() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
                 placeholder="Ask about MentorMuni, interviews, AI…"
-                className="min-w-0 flex-1 rounded-xl border border-[#E0DCCF] bg-white px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-[#FFB347] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/25"
+                className="min-w-0 flex-1 rounded-xl border border-border bg-white px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-[#FFB347] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/25"
               />
               <button
                 type="button"

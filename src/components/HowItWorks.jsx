@@ -125,7 +125,7 @@ function PhaseCard({ phase, index }) {
   return (
     <FadeUp delay={index * 0.06}>
       <article
-        className={`relative h-full overflow-hidden rounded-2xl border border-[#F0ECE0] bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.05)] transition-colors hover:border-[#FFB347] ${phase.borderAccent} border-t-2`}
+        className={`relative h-full overflow-hidden rounded-2xl border border-border bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.05)] transition-colors hover:border-[#FFB347] ${phase.borderAccent} border-t-2`}
       >
         <div
           className={`pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br ${phase.accent} opacity-[0.07] blur-2xl`}
@@ -133,7 +133,7 @@ function PhaseCard({ phase, index }) {
         />
         <div className="relative flex items-start gap-4">
           <div
-            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#E0DCCF] ${phase.iconBg}`}
+            className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-border ${phase.iconBg}`}
           >
             <Icon size={22} strokeWidth={1.75} />
           </div>
@@ -143,9 +143,9 @@ function PhaseCard({ phase, index }) {
           </div>
         </div>
         <p className="relative mt-4 text-sm leading-relaxed text-muted-foreground">{phase.summary}</p>
-        <ul className="relative mt-4 space-y-2.5 border-t border-[#F0ECE0] pt-4">
+        <ul className="relative mt-4 space-y-2.5 border-t border-border pt-4">
           {phase.outcomes.map((line) => (
-            <li key={line} className="flex gap-2.5 text-sm text-foreground-muted">
+            <li key={line} className="flex gap-2.5 text-sm text-muted-foreground">
               <Check size={16} className="mt-0.5 shrink-0 text-[#FF9500]" strokeWidth={2.5} />
               <span className="leading-snug">{line}</span>
             </li>
@@ -184,7 +184,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
   return (
     <section
       ref={heroRef}
-      className="relative overflow-hidden border-b border-[#F0ECE0] px-5 pb-20 pt-24 sm:px-6 md:pb-24 md:pt-28"
+      className="relative overflow-hidden border-b border-border px-5 pb-20 pt-24 sm:px-6 md:pb-24 md:pt-28"
     >
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.35]"
@@ -266,7 +266,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
               <h2 className="relative mt-4 text-xl font-black leading-[1.25] tracking-tight text-foreground md:text-2xl md:leading-[1.2]">
                 For too many students, a real hiring panel was the first time they felt real interview pressure.
               </h2>
-              <p className="relative mt-4 text-[15px] leading-[1.7] text-foreground-muted md:text-base">
+              <p className="relative mt-4 text-[15px] leading-[1.7] text-muted-foreground md:text-base">
                 We started MentorMuni after the same story, over and over: students walking into placement interviews with
                 almost no serious mock practice—no baseline, no pressure rehearsal—then getting rejected without a clear map
                 of what to fix. Hiring is tighter now; you don&apos;t get unlimited shots.
@@ -288,7 +288,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
               <h2 className="relative mt-4 text-xl font-black leading-[1.25] tracking-tight text-foreground md:text-2xl md:leading-[1.2]">
                 One flow—readiness check, AI mocks, mentor prep—before the rounds that actually count.
               </h2>
-              <p className="relative mt-4 text-[15px] leading-[1.7] text-foreground-muted md:text-base">
+              <p className="relative mt-4 text-[15px] leading-[1.7] text-muted-foreground md:text-base">
                 You get a measured baseline, out-loud AI mocks, and mentor support when you want it—so you aren&apos;t
                 improvising when the panel is real. Next: four phases from first check to structured prep—not guesswork.
               </p>
@@ -310,7 +310,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
               <p className="mb-4 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-hint lg:text-left">
                 The thread we follow
               </p>
-              <div className="relative rounded-2xl border border-[#F0ECE0] bg-white/90 p-5 shadow-[0_12px_40px_-20px_rgba(0,0,0,0.08)] backdrop-blur-sm md:p-6">
+              <div className="relative rounded-2xl border border-border bg-white/90 p-5 shadow-[0_12px_40px_-20px_rgba(0,0,0,0.08)] backdrop-blur-sm md:p-6">
                 <motion.div
                   className="absolute left-[1.35rem] top-14 bottom-14 w-px bg-gradient-to-b from-[#FF9500]/50 via-amber-200/90 to-cyan-400/40 md:left-[1.5rem]"
                   aria-hidden
@@ -396,16 +396,16 @@ export default function HowItWorks() {
       </section>
 
       {/* Social proof */}
-      <section className="border-t border-[#F0ECE0] px-6 py-16 md:py-20">
+      <section className="border-t border-border px-6 py-16 md:py-20">
         <div className="mx-auto max-w-3xl">
           <FadeUp>
-            <blockquote className="rounded-2xl border border-[#F0ECE0] bg-white p-8 md:p-10">
+            <blockquote className="rounded-2xl border border-border bg-white p-8 md:p-10">
               <p className="text-[11px] font-bold uppercase tracking-widest text-[#FF9500]/90">Student feedback</p>
-              <p className="mt-4 text-base leading-relaxed text-foreground-muted md:text-lg">
+              <p className="mt-4 text-base leading-relaxed text-muted-foreground md:text-lg">
                 After the skill gap analysis I finally knew what to focus on. The mock interview feedback was specific—
                 not generic advice—and changed how I structure answers under pressure.
               </p>
-              <footer className="mt-6 flex flex-wrap items-center gap-3 border-t border-[#F0ECE0] pt-6">
+              <footer className="mt-6 flex flex-wrap items-center gap-3 border-t border-border pt-6">
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FF9500]/30 text-sm font-bold text-[#CC7000]">
                   V
                 </div>
@@ -419,7 +419,7 @@ export default function HowItWorks() {
       </section>
 
       {/* CTA */}
-      <section className="border-t border-[#F0ECE0] bg-gradient-to-b from-[#FFF8EE] to-[#FFFDF8] px-6 py-16 md:py-20">
+      <section className="border-t border-border bg-gradient-to-b from-[#FFF8EE] to-[#FFFDF8] px-6 py-16 md:py-20">
         <FadeUp>
           <div className="mx-auto max-w-lg text-center">
             <h2 className="text-2xl font-bold text-foreground">Start with the free readiness check</h2>
@@ -443,7 +443,7 @@ export default function HowItWorks() {
                 Join mentorship waitlist
               </Link>
             </div>
-            <p className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-foreground-muted">
+            <p className="mt-6 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5">
                 <Check size={12} className="text-emerald-500" /> Free tier
               </span>

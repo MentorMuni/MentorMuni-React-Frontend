@@ -50,7 +50,7 @@ export default function InterviewReadinessToolsPage() {
           <Link to="/tools" className="text-[#FF9500] hover:text-[#CC7000] transition-colors">
             Tools
           </Link>
-          <ChevronRight size={12} className="text-foreground-muted" />
+          <ChevronRight size={12} className="text-muted-foreground" />
           <span className="text-muted-foreground">Interview Readiness</span>
         </nav>
 
@@ -105,7 +105,7 @@ export default function InterviewReadinessToolsPage() {
               ].map(({ icon: Icon, text }) => (
                 <span
                   key={text}
-                  className="inline-flex items-center gap-2 rounded-lg border border-[#E0DCCF] bg-[#FFF8EE] px-3 py-2 text-xs font-semibold text-foreground-muted"
+                  className="inline-flex items-center gap-2 rounded-lg border border-border bg-[#FFF8EE] px-3 py-2 text-xs font-semibold text-muted-foreground"
                 >
                   <Icon size={14} className="text-[#FF9500]" />
                   {text}
@@ -124,8 +124,8 @@ export default function InterviewReadinessToolsPage() {
 
           {/* Right column — steps card */}
           <div className="w-full lg:w-[380px] shrink-0">
-            <div className="rounded-2xl border border-[#E0DCCF] bg-white p-6 shadow-lg shadow-black/5">
-              <div className="flex items-center gap-2 mb-5 pb-4 border-b border-[#E0DCCF]">
+            <div className="rounded-2xl border border-border bg-white p-6 shadow-lg shadow-black/5">
+              <div className="flex items-center gap-2 mb-5 pb-4 border-b border-border">
                 <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#FF9500]/10 border border-[#FF9500]/25">
                   <ClipboardCheck size={18} className="text-[#FF9500]" />
                 </div>

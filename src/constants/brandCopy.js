@@ -29,6 +29,53 @@ export const HERO_SOLUTION =
   'A free score, your gaps by topic, and what to fix first—then AI mocks and mentors when you want more.';
 export const HERO_PROOF_STAT = '~5 min · Free · No signup · Instant score';
 
+/**
+ * Homepage hero — personalized by academic year or experience level.
+ * Copy is product-accurate: same assessment; framing matches urgency.
+ */
+export const HERO_YEAR_COPY = {
+  y2: {
+    headline: 'Build the right foundations—before placement pressure hits.',
+    accent: 'Get a readiness baseline in ~5 minutes.',
+    sub:
+      'Campus drives feel far away until they are not. Map DSA, System Design, HR, and projects to where you are now—so when OA season starts, you are not guessing what to fix first.',
+  },
+  y3: {
+    headline: 'Internship season rewards clarity—not endless grinding.',
+    accent: 'Know your gaps before the OA and interview window.',
+    sub:
+      'Shortlists go to people who sound clear under pressure—not who solved the most random problems. Benchmark tech + HR readiness, then prep the top gaps before your next online assessment.',
+  },
+  y4: {
+    headline: HERO_HEADLINE,
+    accent: HERO_HEADLINE_ACCENT,
+    sub:
+      'Placement season is noisy—CGPA, OA, HR, tech. One readiness score across four areas shows what to fix first, then AI mocks and mentors when you want depth.',
+  },
+  /** Working professionals — interview + skill readiness (same rubric; framing matches career moves). */
+  yexp: {
+    headline: 'Switching roles or levelling up? Measure before you commit months to the wrong prep.',
+    accent: 'Interview readiness + skill readiness—in one structured baseline (~5 min).',
+    sub:
+      'Panels care how you communicate trade-offs, not only years on a CV. Benchmark interview readiness alongside skill signals across DSA, System Design, HR, and projects—then close gaps with mocks and mentors aligned to where you actually want to land.',
+  },
+};
+
+/** Eyebrow above the compact hero proof strip */
+export const HERO_PROOF_SECTION_EYEBROW = 'What the test covers';
+
+/** Four scored pillars — shown as compact chips (not repeated in body copy). */
+export const HERO_PROOF_PILLARS = ['DSA', 'System Design', 'HR', 'Projects'];
+
+/**
+ * Tight secondary row: icon + one short line each (timer · gauge · gift).
+ */
+export const HERO_PROOF_FACTS = [
+  { icon: 'timer', text: '~5 min · no account' },
+  { icon: 'gauge', text: '0–100 readiness score' },
+  { icon: 'gift', text: 'Free — mentor + AI mock coupon after' },
+];
+
 /** Mission / positioning — footer, meta, tool intros */
 export const MISSION_TAGLINE =
   'Readiness scores, specific gaps, and mentor-backed practice—so you walk into interviews prepared, not guessing.';
@@ -56,6 +103,39 @@ export const READINESS_TEST_COUPON_CARD_CTA = 'Check my readiness';
 export const MENTORSHIP_BANNER = 'Mentorship programme · Limited seats per batch';
 
 export const MENTORSHIP_TRUST_BADGE = 'Mentorship cohorts · Waitlist open · Limited seats';
+
+/** Sticky mobile bar — second line under Join waitlist */
+export const WAITLIST_STICKY_TEASER = 'Cohort seats · limited';
+
+/** Homepage — “why start here” section (conversion) */
+export const CONVERSION_WHY_SECTION_HEADLINE = 'Why students start with the free test';
+export const CONVERSION_WHY_SECTION_SUB =
+  'No payment. No signup. A clear score—then you choose depth: AI mocks, mentors, or placement tracks when you are ready.';
+
+/** Three pillars — order matches icon column on homepage */
+export const CONVERSION_WHY_CARDS = [
+  {
+    title: 'A number that cuts through the noise',
+    body: 'One score with DSA, System Design, HR, and project signals—so you know what to fix first, not what to scroll next.',
+    kicker: 'Free · ~5 min · no signup',
+  },
+  {
+    title: 'Early-bird reward after you finish',
+    body: 'Complete the test and get a coupon for 1 free 1:1 mentor session + 1 AI mock—emailed to you.',
+    kicker: 'Coupon unlocks after the test',
+  },
+  {
+    title: 'Mentorship when you want depth',
+    body: 'Join the waitlist for cohort-based mentor prep matched to your readiness—not a one-size syllabus.',
+    kicker: 'Limited seats per batch',
+  },
+];
+
+/** Homepage — final CTA block (above footer) */
+export const FINAL_CTA_HEADLINE = 'Stop guessing what to study this week.';
+export const FINAL_CTA_HEADLINE_ACCENT = 'Take the free test—then choose how deep you go.';
+export const FINAL_CTA_BODY =
+  'Random prep hides your real gap. Get one readiness score, see where you stand in DSA, System Design, HR, and projects, and what to fix first—then unlock AI mocks and mentorship when you want more.';
 
 /** Footer / nav: name of the free assessment product (not “mock interviews”) */
 export const PRODUCT_READINESS_SCORE = 'Interview readiness score';

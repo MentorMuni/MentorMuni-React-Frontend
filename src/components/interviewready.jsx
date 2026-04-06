@@ -140,10 +140,10 @@ const InputField = ({ label, type, name, value, onChange, placeholder, error, ma
         placeholder={placeholder}
         maxLength={maxLength}
         rows={3}
-        className={`w-full px-4 py-3 rounded-xl border bg-white border border-[#E0DCCF] outline-none transition-all resize-none text-foreground placeholder:text-hint ${
+        className={`w-full px-4 py-3 rounded-xl border bg-white border border-border outline-none transition-all resize-none text-foreground placeholder:text-hint ${
           error
             ? 'border-red-500/50 bg-red-500/10'
-            : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
+            : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
         }`}
         required
       />
@@ -155,10 +155,10 @@ const InputField = ({ label, type, name, value, onChange, placeholder, error, ma
         onChange={onChange}
         placeholder={placeholder}
         maxLength={maxLength}
-        className={`w-full px-4 py-3 rounded-xl border bg-white border border-[#E0DCCF] outline-none transition-all text-foreground placeholder:text-hint ${
+        className={`w-full px-4 py-3 rounded-xl border bg-white border border-border outline-none transition-all text-foreground placeholder:text-hint ${
           error
             ? 'border-red-500/50 bg-red-500/10'
-            : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
+            : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
         }`}
         required
       />
@@ -276,7 +276,7 @@ function ScoreFactorRow({ label, value, hint, icon: Icon, variant = 'orange', de
         <div className="min-w-0 flex-1">
           <div className="flex items-center justify-between gap-2">
             <span className="text-sm font-semibold text-foreground">{label}</span>
-            <span className="tabular-nums text-sm font-bold text-foreground-muted">{Math.round(v)}%</span>
+            <span className="tabular-nums text-sm font-bold text-muted-foreground">{Math.round(v)}%</span>
           </div>
           {hint ? <p className="mt-0.5 text-xs leading-snug text-muted-foreground">{hint}</p> : null}
           <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-[#EDE8E0]">
@@ -424,7 +424,7 @@ function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
                 : `cursor-pointer p-5 rounded-2xl text-left transition-all border-2 group relative ${
                     selected
                       ? 'border-[#FF9500] bg-[#FF9500]/15 shadow-lg shadow-[0_2px_12px_rgba(255,149,0,0.15)]'
-                      : 'border-[#F0ECE0] bg-white hover:border-[#E0DCCF] hover:bg-[#FFFDF8]'
+                      : 'border-border bg-white hover:border-border hover:bg-[#FFFDF8]'
                   }`
             }
           >
@@ -458,7 +458,7 @@ function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
               <div className="space-y-1.5">
                 {option.details.map((d) => (
                   <div key={d} className="flex items-start gap-1.5 text-xs text-muted-foreground">
-                    <Check size={11} className={`mt-0.5 shrink-0 ${selected ? 'text-[#FF9500]' : 'text-foreground-muted'}`} />
+                    <Check size={11} className={`mt-0.5 shrink-0 ${selected ? 'text-[#FF9500]' : 'text-muted-foreground'}`} />
                     {d}
                   </div>
                 ))}
@@ -601,14 +601,14 @@ function PlanGenerationLoader() {
           className="text-center"
         >
           <div className="relative mx-auto mb-8 flex h-20 w-20 items-center justify-center" aria-hidden>
-            <div className="absolute inset-0 rounded-full border-2 border-[#F0ECE0] bg-white/80" />
+            <div className="absolute inset-0 rounded-full border-2 border-border bg-white/80" />
             <div className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-[#FF9500] border-r-[#FF9500]/30" />
             <Sparkles className="relative z-10 h-9 w-9 text-[#FF9500]" strokeWidth={2} />
           </div>
 
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-hint">Please wait</p>
           <h2 className="mt-2 text-2xl font-black tracking-tight text-foreground sm:text-3xl">Preparing your questions</h2>
-          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-foreground-muted">
+          <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
             We&apos;re tailoring Yes/No items to your profile and focus. This can take up to a minute on a slow connection.
           </p>
           <p className="mt-2 text-xs text-hint">Do not close this tab.</p>
@@ -624,7 +624,7 @@ function PlanGenerationLoader() {
             <Users className="h-5 w-5 shrink-0 text-[#FF9500]" strokeWidth={2} />
             <h3 className="text-base font-bold sm:text-lg">Bridge the gap with MentorMuni</h3>
           </div>
-          <p className="text-center text-sm leading-relaxed text-foreground-muted">
+          <p className="text-center text-sm leading-relaxed text-muted-foreground">
             Practice alone only gets you so far. Join MentorMuni for{' '}
             <span className="font-semibold text-[#333333]">1:1 mentorship</span> and{' '}
             <span className="font-semibold text-[#333333]">AI mock interviews</span> — structured to build confidence before
@@ -640,7 +640,7 @@ function PlanGenerationLoader() {
             </Link>
             <Link
               to="/mock-interviews"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] px-5 py-3 text-sm font-semibold text-[#333333] transition-all hover:border-[#FF9500]/40 hover:bg-[#FFF8EE] sm:w-auto"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-[#FAFAFA] px-5 py-3 text-sm font-semibold text-[#333333] transition-all hover:border-[#FF9500]/40 hover:bg-[#FFF8EE] sm:w-auto"
             >
               AI mock interviews
               <ArrowRight className="h-4 w-4" aria-hidden />
@@ -660,8 +660,8 @@ function EvaluatingAnswersLoader() {
         <div className="mx-auto mb-6 h-16 w-16 rounded-full border-4 border-[#FF9500]/25 border-t-[#FF9500] animate-spin" />
         <h2 className="text-xl font-black text-foreground sm:text-2xl">Scoring your readiness</h2>
         <p className="mt-2 text-sm text-muted-foreground">Analyzing your answers — almost there.</p>
-        <p className="mx-auto mt-8 max-w-sm rounded-xl border border-[#F0ECE0] bg-white px-4 py-3 text-xs leading-relaxed text-muted-foreground">
-          <span className="font-semibold text-foreground-muted">MentorMuni</span> pairs you with mentors and AI mocks so gaps turn
+        <p className="mx-auto mt-8 max-w-sm rounded-xl border border-border bg-white px-4 py-3 text-xs leading-relaxed text-muted-foreground">
+          <span className="font-semibold text-muted-foreground">MentorMuni</span> pairs you with mentors and AI mocks so gaps turn
           into confidence — explore after your score appears.
         </p>
       </div>
@@ -693,10 +693,10 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
   return (
     <div className="min-h-screen bg-[#FFFDF8] py-6 px-4 font-sans sm:px-6 sm:py-8 lg:px-8">
       <div className="mx-auto max-w-3xl">
-        <div className="overflow-hidden rounded-2xl border border-[#E0DCCF] bg-white shadow-xl sm:rounded-3xl">
+        <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-xl sm:rounded-3xl">
           {/* Expanded header — hidden once user scrolls the question list */}
           <div
-            className={`border-b border-[#F0ECE0] px-4 transition-all duration-200 sm:px-6 ${
+            className={`border-b border-border px-4 transition-all duration-200 sm:px-6 ${
               scrolled ? 'max-h-0 overflow-hidden border-0 opacity-0' : 'max-h-[220px] opacity-100 py-4 sm:py-5'
             }`}
             aria-hidden={scrolled}
@@ -716,16 +716,16 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
                 </p>
                 <p className="mt-1 truncate text-xs text-hint">
                   {isSkillQuiz ? 'Skill: ' : 'Context: '}
-                  <span className="font-medium text-foreground-muted">{skillSnippet}</span>
+                  <span className="font-medium text-muted-foreground">{skillSnippet}</span>
                   {roleLabel ? (
                     <>
                       {' · '}
-                      <span className="font-medium text-foreground-muted">{roleLabel}</span>
+                      <span className="font-medium text-muted-foreground">{roleLabel}</span>
                     </>
                   ) : null}
                 </p>
               </div>
-              <div className="shrink-0 rounded-lg border border-[#E0DCCF] bg-[#FFFDF8] px-3 py-2 text-right">
+              <div className="shrink-0 rounded-lg border border-border bg-[#FFFDF8] px-3 py-2 text-right">
                 <div className="text-lg font-black tabular-nums leading-none text-foreground sm:text-xl">
                   {answered}
                   <span className="text-[#999999]">/</span>
@@ -744,13 +744,13 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
 
           {/* Slim bar — only after scrolling */}
           <div
-            className={`border-b border-[#F0ECE0] bg-[#FAFAFA]/95 px-4 backdrop-blur-sm transition-all duration-200 sm:px-6 ${
+            className={`border-b border-border bg-[#FAFAFA]/95 px-4 backdrop-blur-sm transition-all duration-200 sm:px-6 ${
               scrolled ? 'max-h-24 py-2.5 opacity-100' : 'max-h-0 overflow-hidden border-0 py-0 opacity-0'
             }`}
           >
             <div className="flex items-center justify-between gap-3">
               <p className="min-w-0 truncate text-sm font-semibold text-foreground">{quizTitle}</p>
-              <span className="shrink-0 text-xs font-bold tabular-nums text-foreground-muted">
+              <span className="shrink-0 text-xs font-bold tabular-nums text-muted-foreground">
                 {answered}/{questions.length}
               </span>
             </div>
@@ -768,7 +768,7 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
             className="max-h-[min(75dvh,720px)] space-y-6 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5"
           >
             {questions.map((q, i) => (
-              <div key={i} className="border-b border-[#F0ECE0] pb-6 last:border-0 last:pb-2">
+              <div key={i} className="border-b border-border pb-6 last:border-0 last:pb-2">
                 <p className="mb-4 flex items-start gap-3 text-base font-semibold leading-relaxed text-foreground">
                   <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-600 text-xs font-black text-white">
                     {i + 1}
@@ -782,7 +782,7 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
                     className={`flex-1 rounded-xl border-2 py-2.5 text-sm font-bold transition-all sm:py-3 ${
                       answers[i] === 'Yes'
                         ? 'border-emerald-500 bg-emerald-600 text-white shadow-md shadow-emerald-500/25'
-                        : 'border-[#E0DCCF] bg-white text-foreground-muted hover:border-emerald-400/60 hover:bg-emerald-50'
+                        : 'border-border bg-white text-muted-foreground hover:border-emerald-400/60 hover:bg-emerald-50'
                     }`}
                   >
                     Yes
@@ -793,7 +793,7 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
                     className={`flex-1 rounded-xl border-2 py-2.5 text-sm font-bold transition-all sm:py-3 ${
                       answers[i] === 'No'
                         ? 'border-rose-500 bg-rose-600 text-white shadow-md shadow-rose-500/25'
-                        : 'border-[#E0DCCF] bg-white text-foreground-muted hover:border-rose-400/60 hover:bg-rose-50'
+                        : 'border-border bg-white text-muted-foreground hover:border-rose-400/60 hover:bg-rose-50'
                     }`}
                   >
                     No
@@ -803,7 +803,7 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
             ))}
           </div>
 
-          <div className="border-t border-[#F0ECE0] bg-[#FFFCF9] px-4 py-4 sm:px-6">
+          <div className="border-t border-border bg-[#FFFCF9] px-4 py-4 sm:px-6">
             {error && (
               <div
                 className="mb-4 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-3 text-left text-sm font-medium text-red-800"
@@ -1309,7 +1309,7 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="mx-auto max-w-2xl">
-          <div className="rounded-3xl border border-[#E0DCCF] bg-white p-10 text-center shadow-xl backdrop-blur animate-in fade-in duration-500">
+          <div className="rounded-3xl border border-border bg-white p-10 text-center shadow-xl backdrop-blur animate-in fade-in duration-500">
             <div className="mb-6">
               <div className="mx-auto h-14 w-14 rounded-full border-4 border-[#FF9500]/25 border-t-[#FF9500] animate-spin" />
             </div>
@@ -1326,7 +1326,7 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen bg-[#FFFDF8] py-10 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-[#F0ECE0]">
+          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-border">
             <h2 className="text-3xl md:text-4xl font-black text-foreground mb-2 tracking-tight">Choose what to measure</h2>
             <p className="text-muted-foreground text-sm md:text-base mb-6 leading-relaxed">
               One skill in depth, or a broad interview mix — tap a card to continue.
@@ -1342,7 +1342,7 @@ const InterviewReady = () => {
             <button
               type="button"
               onClick={() => navigate('/interview-readiness-tools')}
-              className="mt-6 px-6 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-[#FFF8EE] rounded-xl transition-all border border-[#F0ECE0] hover:border-[#E0DCCF] text-sm"
+              className="mt-6 px-6 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-[#FFF8EE] rounded-xl transition-all border border-border hover:border-border text-sm"
             >
               ← Back to tools
             </button>
@@ -1355,7 +1355,7 @@ const InterviewReady = () => {
   // ========== STEP 0: LANDING ==========
   if (step === 0) {
     return (
-      <div className="relative min-h-screen overflow-hidden bg-[#FFFDF8] text-foreground-muted font-sans">
+      <div className="relative min-h-screen overflow-hidden bg-[#FFFDF8] text-muted-foreground font-sans">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -left-20 top-10 h-72 w-72 rounded-full bg-[#FF9500]/12 blur-3xl" />
           <div className="absolute -right-16 top-1/3 h-64 w-64 rounded-full bg-cyan-400/10 blur-3xl" />
@@ -1365,7 +1365,7 @@ const InterviewReady = () => {
         <div className="relative z-10 mx-auto flex min-h-screen max-w-3xl flex-col px-4 pb-12 pt-8 sm:px-6 sm:pt-10 lg:max-w-5xl lg:px-8">
           {/* Credibility — compact */}
           <div className="mb-5 flex justify-center sm:mb-6">
-            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-[#F0ECE0] bg-white/90 px-3 py-1.5 shadow-sm backdrop-blur sm:px-4">
+            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-border bg-white/90 px-3 py-1.5 shadow-sm backdrop-blur sm:px-4">
               <Star size={14} className="shrink-0 text-amber-400" />
               <span className="text-center text-[11px] font-medium text-muted-foreground sm:text-xs">
                 Patterns from 500+ companies · free score
@@ -1383,7 +1383,7 @@ const InterviewReady = () => {
             </h1>
             <p className="mt-3 text-base text-muted-foreground sm:text-lg">
               Two ways to start — pick one.{' '}
-              <span className="whitespace-nowrap font-semibold text-foreground-muted">~5 min.</span>{' '}
+              <span className="whitespace-nowrap font-semibold text-muted-foreground">~5 min.</span>{' '}
               <span className="whitespace-nowrap">Free.</span> No signup.
             </p>
             {/* Trust row — single line */}
@@ -1441,7 +1441,7 @@ const InterviewReady = () => {
                 <div className="mb-0.5 w-fit">
                   <LimitedRewardLabel />
                 </div>
-                <p className="text-sm leading-snug text-foreground-muted">{READINESS_TEST_COUPON_BADGE}</p>
+                <p className="text-sm leading-snug text-muted-foreground">{READINESS_TEST_COUPON_BADGE}</p>
               </div>
             </div>
           </div>
@@ -1455,7 +1455,7 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white border border-[#E0DCCF] rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
+          <div className="bg-white border border-border rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#FF9500]/20 border border-[#FF9500]">
@@ -1481,10 +1481,10 @@ const InterviewReady = () => {
                     setValidationErrors({...validationErrors, email: ''});
                   }}
                   placeholder="your.email@example.com"
-                  className={`w-full px-4 py-3 rounded-xl border bg-white border border-[#E0DCCF] outline-none transition-all text-foreground placeholder-[#AAAAAA] ${
+                  className={`w-full px-4 py-3 rounded-xl border bg-white border border-border outline-none transition-all text-foreground placeholder-[#AAAAAA] ${
                     validationErrors.email 
                       ? 'border-red-500/50 bg-red-500/10' 
-                      : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
+                      : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
                   }`}
                   required
                 />
@@ -1508,10 +1508,10 @@ const InterviewReady = () => {
                     setValidationErrors({...validationErrors, phone: ''});
                   }}
                   placeholder="+91 9876543210"
-                  className={`w-full px-4 py-3 rounded-xl border bg-white border border-[#E0DCCF] outline-none transition-all text-foreground placeholder-[#AAAAAA] ${
+                  className={`w-full px-4 py-3 rounded-xl border bg-white border border-border outline-none transition-all text-foreground placeholder-[#AAAAAA] ${
                     validationErrors.phone 
                       ? 'border-red-500/50 bg-red-500/10' 
-                      : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
+                      : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
                   }`}
                   required
                 />
@@ -1534,7 +1534,7 @@ const InterviewReady = () => {
                 <button 
                   type="button" 
                   onClick={() => setStep(0)}
-                  className="flex-1 py-3 font-bold text-foreground-muted hover:text-foreground hover:bg-[#FFF8EE] rounded-2xl transition-all border border-[#E0DCCF] hover:border-[#E0DCCF]"
+                  className="flex-1 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-[#FFF8EE] rounded-2xl transition-all border border-border hover:border-border"
                 >
                   Back
                 </button>
@@ -1558,7 +1558,7 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white border border-[#E0DCCF] rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
+          <div className="bg-white border border-border rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-500">
@@ -1585,7 +1585,7 @@ const InterviewReady = () => {
                   onChange={(e) => setOtpCode(e.target.value.slice(0, 6))}
                   placeholder="000000"
                   maxLength="6"
-                  className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] outline-none text-center text-3xl font-black tracking-widest text-foreground placeholder-[#AAAAAA] hover:border-[#E0DCCF] focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30 transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-[#FAFAFA] outline-none text-center text-3xl font-black tracking-widest text-foreground placeholder-[#AAAAAA] hover:border-border focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30 transition-all"
                   required
                 />
               </div>
@@ -1601,7 +1601,7 @@ const InterviewReady = () => {
                 <button 
                   type="button" 
                   onClick={() => setOtpSent(false)}
-                  className="flex-1 py-3 font-bold text-foreground-muted hover:text-foreground hover:bg-[#FFF8EE] rounded-2xl transition-all border border-[#E0DCCF] hover:border-[#E0DCCF]"
+                  className="flex-1 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-[#FFF8EE] rounded-2xl transition-all border border-border hover:border-border"
                 >
                   Back
                 </button>
@@ -1659,7 +1659,7 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen bg-[#FFFDF8] py-10 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-[#F0ECE0]">
+          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-border">
 
             {/* Progress bar only — no step numbers or labels */}
             <div className="mb-6">
@@ -1715,7 +1715,7 @@ const InterviewReady = () => {
                     className={`p-5 rounded-2xl text-left transition-all border-2 group relative ${
                       selected
                         ? 'border-[#FF9500] bg-[#FF9500]/15 shadow-lg shadow-[0_2px_12px_rgba(255,149,0,0.15)]'
-                        : 'border-[#F0ECE0] bg-white/[0.03] hover:border-[#E0DCCF] hover:bg-white/[0.06]'
+                        : 'border-border bg-white/[0.03] hover:border-border hover:bg-white/[0.06]'
                     }`}
                   >
                     {selected && (
@@ -1729,7 +1729,7 @@ const InterviewReady = () => {
                     <div className="space-y-1.5">
                       {option.details.map((d) => (
                         <div key={d} className="flex items-start gap-1.5 text-xs text-muted-foreground">
-                          <Check size={11} className={`mt-0.5 shrink-0 ${selected ? 'text-[#FF9500]' : 'text-foreground-muted'}`} />
+                          <Check size={11} className={`mt-0.5 shrink-0 ${selected ? 'text-[#FF9500]' : 'text-muted-foreground'}`} />
                           {d}
                         </div>
                       ))}
@@ -1747,7 +1747,7 @@ const InterviewReady = () => {
                   if (fromToolsEntry) setStep(12);
                   else setStep(0);
                 }}
-                className="px-6 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-[#FFF8EE] rounded-xl transition-all border border-[#F0ECE0] hover:border-[#E0DCCF] text-sm"
+                className="px-6 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-[#FFF8EE] rounded-xl transition-all border border-border hover:border-border text-sm"
               >
                 ← Back
               </button>
@@ -1758,7 +1758,7 @@ const InterviewReady = () => {
                 className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all ${
                   profile.userCategory
                     ? 'bg-gradient-to-r from-[#FF9500] to-[#FFB347] text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.3)] hover:from-[#FF9500] hover:to-[#FFB347] active:scale-[0.98]'
-                    : 'cursor-not-allowed border border-[#F0ECE0] bg-white/[0.04] text-foreground-muted'
+                    : 'cursor-not-allowed border border-border bg-white/[0.04] text-muted-foreground'
                 }`}
               >
                 Continue
@@ -1784,7 +1784,7 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen bg-[#FFFDF8] py-10 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-[#F0ECE0] animate-in slide-in-from-bottom-4 duration-500">
+          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-border animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-6">
               <div
                 className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden"
@@ -1803,7 +1803,7 @@ const InterviewReady = () => {
 
             <div className="mb-6 flex flex-wrap items-center gap-2">
               <span className="inline-flex items-center rounded-full border border-[#FF9500]/35 bg-[#FF9500]/10 px-3 py-1.5 text-xs font-semibold text-[#CC7000]">
-                Profile: <span className="ml-1 text-foreground-muted">{roleLabel}</span>
+                Profile: <span className="ml-1 text-muted-foreground">{roleLabel}</span>
               </span>
             </div>
 
@@ -1838,10 +1838,10 @@ const InterviewReady = () => {
                         );
                       }}
                       placeholder="e.g. 2.5"
-                      className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
+                      className={`w-full rounded-xl border border-border bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
                         validationErrors.experienceYears
                           ? 'border-red-500/50 bg-red-500/10'
-                          : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
+                          : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
                       }`}
                     />
                     {validationErrors.experienceYears && (
@@ -1866,10 +1866,10 @@ const InterviewReady = () => {
                         );
                       }}
                       placeholder="Company or employer name"
-                      className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
+                      className={`w-full rounded-xl border border-border bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
                         validationErrors.currentOrganization
                           ? 'border-red-500/50 bg-red-500/10'
-                          : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
+                          : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
                       }`}
                     />
                     {validationErrors.currentOrganization && (
@@ -1894,10 +1894,10 @@ const InterviewReady = () => {
                       setValidationErrors((prev) => (prev.collegeName ? { ...prev, collegeName: '' } : prev));
                     }}
                     placeholder="e.g. IIT Madras, VIT Vellore, state university…"
-                    className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
+                    className={`w-full rounded-xl border border-border bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
                       validationErrors.collegeName
                         ? 'border-red-500/50 bg-red-500/10'
-                        : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
+                        : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
                     }`}
                   />
                   {validationErrors.collegeName && (
@@ -1910,7 +1910,7 @@ const InterviewReady = () => {
               )}
             </div>
 
-            <div className="mt-8 space-y-5 rounded-2xl border border-[#E0DCCF] bg-white/[0.03] p-5 md:p-6">
+            <div className="mt-8 space-y-5 rounded-2xl border border-border bg-white/[0.03] p-5 md:p-6">
               <div className="flex items-center justify-between">
                 <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Email &amp; phone</p>
                 <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-700">Optional</span>
@@ -1931,10 +1931,10 @@ const InterviewReady = () => {
                     setValidationErrors((prev) => (prev.email ? { ...prev, email: '' } : prev));
                   }}
                   placeholder="you@example.com (optional)"
-                  className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
+                  className={`w-full rounded-xl border border-border bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
                     validationErrors.email
                       ? 'border-red-500/50 bg-red-500/10'
-                      : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
+                      : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
                   }`}
                 />
                 {validationErrors.email && (
@@ -1959,10 +1959,10 @@ const InterviewReady = () => {
                     setValidationErrors((prev) => (prev.phone ? { ...prev, phone: '' } : prev));
                   }}
                   placeholder="+91 9876543210 (optional)"
-                  className={`w-full rounded-xl border border-[#E0DCCF] bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
+                  className={`w-full rounded-xl border border-border bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
                     validationErrors.phone
                       ? 'border-red-500/50 bg-red-500/10'
-                      : 'border-[#E0DCCF] hover:border-[#E0DCCF] focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
+                      : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
                   }`}
                 />
                 {validationErrors.phone && (
@@ -1982,7 +1982,7 @@ const InterviewReady = () => {
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="rounded-xl border border-[#F0ECE0] px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-[#E0DCCF] hover:bg-white/5 hover:text-white"
+                className="rounded-xl border border-border px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-border hover:bg-white/5 hover:text-white"
               >
                 ← Back
               </button>
@@ -2017,7 +2017,7 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen bg-[#FFFDF8] py-10 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-[#F0ECE0] animate-in slide-in-from-bottom-4 duration-500">
+          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-border animate-in slide-in-from-bottom-4 duration-500">
             {/* Progress — matches role step */}
             <div className="mb-6">
               <div
@@ -2042,7 +2042,7 @@ const InterviewReady = () => {
               <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
                 {profile.assessmentMode && (
                   <>
-                    <span className="font-semibold text-foreground-muted">
+                    <span className="font-semibold text-muted-foreground">
                       {ASSESSMENT_MODE_LABEL[profile.assessmentMode]}
                     </span>
                     <span className="text-[#D4D0C8]" aria-hidden>
@@ -2058,7 +2058,7 @@ const InterviewReady = () => {
                   {usageInfo.remaining_attempts}/{FREE_TIER_LIMIT} free
                 </span>
               </p>
-              <p className="max-w-2xl text-sm leading-relaxed text-foreground-muted">
+              <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
                 {isSkillFocus ? (
                   <>
                     One skill only — we&apos;ll keep every question on it.{' '}
@@ -2097,15 +2097,15 @@ const InterviewReady = () => {
               />
 
               <div className="rounded-lg border border-[#E8E4DC] bg-[#FAFAFA] px-3 py-2.5">
-                <p className="text-xs leading-snug text-foreground-muted">
+                <p className="text-xs leading-snug text-muted-foreground">
                   {isSkillFocus ? (
                     <>
-                      <span className="font-semibold text-foreground-muted">Tip:</span> Best with a single stack (e.g. Java or
+                      <span className="font-semibold text-muted-foreground">Tip:</span> Best with a single stack (e.g. Java or
                       Python), not a long list.
                     </>
                   ) : (
                     <>
-                      <span className="font-semibold text-foreground-muted">Tip:</span> Comma-separated is fine; questions stay
+                      <span className="font-semibold text-muted-foreground">Tip:</span> Comma-separated is fine; questions stay
                       general across topics.
                     </>
                   )}
@@ -2133,7 +2133,7 @@ const InterviewReady = () => {
                 <button
                   type="button"
                   onClick={() => setStep(3)}
-                  className="rounded-xl border border-[#F0ECE0] px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-[#E0DCCF] hover:bg-white/5 hover:text-white"
+                  className="rounded-xl border border-border px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-border hover:bg-white/5 hover:text-white"
                 >
                   ← Back
                 </button>
@@ -2206,7 +2206,7 @@ const InterviewReady = () => {
           <div>
             <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">Your readiness score</h1>
             <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
-              <span className="font-medium text-foreground-muted">{modeLabel}</span>
+              <span className="font-medium text-muted-foreground">{modeLabel}</span>
               <span className="text-[#D4D0C8]" aria-hidden>
                 ·
               </span>
@@ -2230,7 +2230,7 @@ const InterviewReady = () => {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="relative overflow-hidden rounded-3xl border border-[#E0DCCF] bg-white p-6 shadow-xl sm:p-8"
+            className="relative overflow-hidden rounded-3xl border border-border bg-white p-6 shadow-xl sm:p-8"
           >
             <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-[#FF9500]/10 blur-3xl" />
 
@@ -2249,7 +2249,7 @@ const InterviewReady = () => {
                 <h2 className="mt-4 text-2xl font-black leading-tight text-foreground sm:text-3xl">
                   {result.readiness_label}
                 </h2>
-                <p className="mt-2 max-w-sm text-sm text-foreground-muted">{band.sub}</p>
+                <p className="mt-2 max-w-sm text-sm text-muted-foreground">{band.sub}</p>
                 <p className="mt-3 text-xs leading-relaxed text-hint">{result.summary}</p>
               </div>
 
@@ -2309,12 +2309,12 @@ const InterviewReady = () => {
                 <h3 className="mt-3 text-lg font-black text-foreground sm:text-xl">
                   {READINESS_TEST_COUPON_OFFER_HEADLINE}
                 </h3>
-                <p className="mt-2 text-sm text-foreground-muted">
+                <p className="mt-2 text-sm text-muted-foreground">
                   Your early-bird coupon is below — copy it and use it when you claim your reward (waitlist, mentor
                   session, or checkout when we share the link).
                 </p>
                 <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <code className="break-all rounded-2xl border border-[#E0DCCF] bg-white px-4 py-3 text-center font-mono text-lg font-bold tracking-wide text-foreground shadow-inner sm:text-xl">
+                  <code className="break-all rounded-2xl border border-border bg-white px-4 py-3 text-center font-mono text-lg font-bold tracking-wide text-foreground shadow-inner sm:text-xl">
                     {earlyBirdCouponCode}
                   </code>
                   <button
@@ -2381,14 +2381,14 @@ const InterviewReady = () => {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            className="rounded-2xl border border-[#E0DCCF] bg-white p-6 shadow-sm sm:p-7"
+            className="rounded-2xl border border-border bg-white p-6 shadow-sm sm:p-7"
           >
             <h3 className="text-base font-bold text-foreground sm:text-lg">Your next steps</h3>
             <p className="mt-1 text-xs text-muted-foreground">Prioritized for your current band — do them in order.</p>
             <ol className="mt-5 space-y-4">
               {nextSteps.map((stepItem, i) => (
                 <li key={stepItem.title} className="flex gap-4">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FFF8EE] text-sm font-black text-[#CC7000] ring-1 ring-[#F0ECE0]">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FFF8EE] text-sm font-black text-[#CC7000] ring-1 ring-border">
                     {i + 1}
                   </span>
                   <div>
@@ -2404,7 +2404,7 @@ const InterviewReady = () => {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="rounded-2xl border border-[#E0DCCF] bg-white p-6 shadow-sm sm:p-7"
+            className="rounded-2xl border border-border bg-white p-6 shadow-sm sm:p-7"
           >
             <h3 className="text-base font-bold text-foreground sm:text-lg">How you compare</h3>
             <p className="mt-1 text-xs text-muted-foreground">
@@ -2440,7 +2440,7 @@ const InterviewReady = () => {
                   <Share2 size={16} className="text-muted-foreground" />
                   <p className="text-sm font-bold text-foreground">Challenge your friends</p>
                 </div>
-                <p className="mt-1 text-sm text-foreground-muted">
+                <p className="mt-1 text-sm text-muted-foreground">
                   Dare your squad to beat your {pct}% — same free ~5 min interview readiness check. Bragging rights
                   optional, interview prep mandatory.
                 </p>
@@ -2475,7 +2475,7 @@ const InterviewReady = () => {
                       const msg = buildWhatsAppChallengeMessage(pct, result.readiness_label, result.assessmentMode ? ASSESSMENT_MODE_LABEL[result.assessmentMode] : '');
                       navigator.clipboard.writeText(msg);
                     }}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#E0DCCF] bg-white px-4 py-2.5 text-sm font-semibold text-foreground transition hover:bg-[#FAFAFA]"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-white px-4 py-2.5 text-sm font-semibold text-foreground transition hover:bg-[#FAFAFA]"
                   >
                     <Copy size={14} />
                     Copy message
@@ -2494,7 +2494,7 @@ const InterviewReady = () => {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="rounded-2xl border border-[#F0ECE0] bg-white p-6"
+            className="rounded-2xl border border-border bg-white p-6"
           >
             {reportSent ? (
               <div className="py-2 text-center">
@@ -2511,7 +2511,7 @@ const InterviewReady = () => {
                     value={reportEmail}
                     onChange={(e) => setReportEmail(e.target.value)}
                     placeholder="your@email.com"
-                    className="flex-1 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] px-4 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-hint focus:border-[#FF9500]"
+                    className="flex-1 rounded-xl border border-border bg-[#FAFAFA] px-4 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-hint focus:border-[#FF9500]"
                   />
                   <button
                     type="button"
@@ -2545,7 +2545,7 @@ const InterviewReady = () => {
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.05 * i }}
-                      className="rounded-xl border border-[#E0DCCF] bg-white p-4 text-left text-sm text-foreground-muted"
+                      className="rounded-xl border border-border bg-white p-4 text-left text-sm text-muted-foreground"
                     >
                       {rec}
                     </motion.p>
@@ -2555,7 +2555,7 @@ const InterviewReady = () => {
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.05 * i }}
-                      className="rounded-xl border border-[#E0DCCF] bg-white p-4 text-left"
+                      className="rounded-xl border border-border bg-white p-4 text-left"
                     >
                       <p className="text-[10px] font-bold uppercase tracking-wider text-[#CC7000]">
                         {rec.priority || 'Focus'}
@@ -2571,7 +2571,7 @@ const InterviewReady = () => {
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {result.strengths && result.strengths.length > 0 && (
-              <div className="rounded-2xl border border-[#E0DCCF] bg-white p-6 shadow-sm ring-1 ring-emerald-500/10">
+              <div className="rounded-2xl border border-border bg-white p-6 shadow-sm ring-1 ring-emerald-500/10">
                 <h3 className="mb-1 flex items-center gap-2.5 text-base font-semibold tracking-tight text-foreground sm:text-lg">
                   <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100">
                     <CheckCircle2 size={20} className="text-emerald-600" strokeWidth={2} aria-hidden />
@@ -2600,7 +2600,7 @@ const InterviewReady = () => {
             )}
 
             {result.gaps && result.gaps.length > 0 && (
-              <div className="rounded-2xl border border-[#E0DCCF] bg-white p-6 shadow-sm ring-1 ring-amber-500/10">
+              <div className="rounded-2xl border border-border bg-white p-6 shadow-sm ring-1 ring-amber-500/10">
                 <h3 className="mb-1 flex items-center gap-2.5 text-base font-semibold tracking-tight text-foreground sm:text-lg">
                   <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 text-amber-800 ring-1 ring-amber-100">
                     <AlertTriangle size={20} className="text-amber-600" strokeWidth={2} aria-hidden />
@@ -2633,7 +2633,7 @@ const InterviewReady = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.35 }}
-            className="rounded-3xl border border-[#E0DCCF] bg-white p-8 shadow-2xl"
+            className="rounded-3xl border border-border bg-white p-8 shadow-2xl"
           >
             <div className="space-y-3">
               {usageInfo.remaining_attempts > 0 ? (
@@ -2669,7 +2669,7 @@ const InterviewReady = () => {
               <button
                 type="button"
                 onClick={resetAll}
-                className="w-full rounded-2xl border border-[#E0DCCF] bg-[#FAFAFA] py-4 text-base font-bold text-foreground-muted transition-all hover:border-[#E0DCCF] hover:bg-[#FFF8EE]"
+                className="w-full rounded-2xl border border-border bg-[#FAFAFA] py-4 text-base font-bold text-muted-foreground transition-all hover:border-border hover:bg-[#FFF8EE]"
               >
                 Start fresh
               </button>
@@ -2705,7 +2705,7 @@ const InterviewReady = () => {
               <h1 className="text-4xl font-black text-foreground mb-3">
                 Unlock AI Mock Interviews
               </h1>
-              <p className="text-lg text-foreground-muted">
+              <p className="text-lg text-muted-foreground">
                 You've completed your free assessment. Get premium access to unlimited AI mock interviews with advanced features!
               </p>
             </div>
@@ -2725,13 +2725,13 @@ const InterviewReady = () => {
                   setAuthMode('signup');
                   setStep(8);
                 }}
-                className="w-full bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-[#E0DCCF] text-foreground-muted font-bold py-4 rounded-2xl transition-all"
+                className="w-full bg-white/5 hover:bg-white/10 border border-border hover:border-border text-muted-foreground font-bold py-4 rounded-2xl transition-all"
               >
                 Create New Account
               </button>
               <button 
                 onClick={resetAll}
-                className="w-full bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-[#E0DCCF] text-foreground-muted font-bold py-3 rounded-2xl transition-all text-sm"
+                className="w-full bg-white/5 hover:bg-white/10 border border-border hover:border-border text-muted-foreground font-bold py-3 rounded-2xl transition-all text-sm"
               >
                 Go Back Home
               </button>
@@ -2748,7 +2748,7 @@ const InterviewReady = () => {
       return (
         <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
           <div className="max-w-md mx-auto">
-            <div className="bg-white border border-[#E0DCCF] rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
+            <div className="bg-white border border-border rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
               <h2 className="text-3xl font-black text-foreground mb-2">Sign In</h2>
               <p className="text-muted-foreground mb-8">Access your premium interviews</p>
 
@@ -2763,7 +2763,7 @@ const InterviewReady = () => {
                     value={signInData.email}
                     onChange={(e) => setSignInData({...signInData, email: e.target.value})}
                     placeholder="you@example.com"
-                    className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] text-foreground placeholder-[#888888] outline-none focus:border-[#FF9500]"
+                    className="w-full px-4 py-3 rounded-xl border border-border bg-[#FAFAFA] text-foreground placeholder-[#888888] outline-none focus:border-[#FF9500]"
                     required
                   />
                 </div>
@@ -2775,7 +2775,7 @@ const InterviewReady = () => {
                     value={signInData.password}
                     onChange={(e) => setSignInData({...signInData, password: e.target.value})}
                     placeholder="••••••••"
-                    className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-[#FAFAFA] text-foreground placeholder-[#888888] outline-none focus:border-[#FF9500]"
+                    className="w-full px-4 py-3 rounded-xl border border-border bg-[#FAFAFA] text-foreground placeholder-[#888888] outline-none focus:border-[#FF9500]"
                     required
                   />
                 </div>
@@ -2784,7 +2784,7 @@ const InterviewReady = () => {
                   <button 
                     type="button"
                     onClick={() => setStep(7)}
-                    className="flex-1 py-3 font-bold text-foreground-muted hover:text-foreground hover:bg-[#FFF8EE] rounded-2xl transition-all border border-[#E0DCCF]"
+                    className="flex-1 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-[#FFF8EE] rounded-2xl transition-all border border-border"
                   >
                     Back
                   </button>
@@ -2810,7 +2810,7 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
         <div className="max-w-md mx-auto">
-          <div className="bg-white border border-[#E0DCCF] rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
+          <div className="bg-white border border-border rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
             <h2 className="text-3xl font-black text-foreground mb-2">Create Account</h2>
             <p className="text-muted-foreground mb-8">Join thousands of job seekers mastering interviews</p>
 
@@ -2825,7 +2825,7 @@ const InterviewReady = () => {
                   value={authData.fullName}
                   onChange={(e) => setAuthData({...authData, fullName: e.target.value})}
                   placeholder="John Doe"
-                  className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
                   required
                 />
               </div>
@@ -2837,7 +2837,7 @@ const InterviewReady = () => {
                   value={authData.email}
                   onChange={(e) => setAuthData({...authData, email: e.target.value})}
                   placeholder="you@example.com"
-                  className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
                   required
                 />
               </div>
@@ -2849,7 +2849,7 @@ const InterviewReady = () => {
                   value={authData.phone}
                   onChange={(e) => setAuthData({...authData, phone: e.target.value})}
                   placeholder="+91 9876543210"
-                  className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
                   required
                 />
               </div>
@@ -2861,7 +2861,7 @@ const InterviewReady = () => {
                   value={authData.password}
                   onChange={(e) => setAuthData({...authData, password: e.target.value})}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
                   required
                 />
               </div>
@@ -2873,7 +2873,7 @@ const InterviewReady = () => {
                   value={authData.confirmPassword}
                   onChange={(e) => setAuthData({...authData, confirmPassword: e.target.value})}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 rounded-xl border border-[#E0DCCF] bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
                   required
                 />
               </div>
@@ -2882,7 +2882,7 @@ const InterviewReady = () => {
                 <button 
                   type="button"
                   onClick={() => setStep(7)}
-                  className="flex-1 py-3 font-bold text-foreground-muted hover:text-foreground hover:bg-[#FFF8EE] rounded-2xl transition-all border border-[#E0DCCF]"
+                  className="flex-1 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-[#FFF8EE] rounded-2xl transition-all border border-border"
                 >
                   Back
                 </button>
@@ -2966,7 +2966,7 @@ const InterviewReady = () => {
             <h1 className="text-4xl md:text-5xl font-black text-white mb-4">
               AI Mock Interview Plans
             </h1>
-            <p className="text-xl text-foreground-muted max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Choose the perfect plan to ace your interviews with AI-powered simulations
             </p>
           </div>
@@ -2978,7 +2978,7 @@ const InterviewReady = () => {
                 className={`relative rounded-3xl transition-all transform hover:scale-105 ${
                   plan.highlighted
                     ? 'bg-gradient-to-br from-[#FF9500] to-cyan-600 p-1 md:scale-105'
-                    : 'border border-[#E0DCCF]'
+                    : 'border border-border'
                 }`}
               >
                 {plan.highlighted && (
@@ -3008,7 +3008,7 @@ const InterviewReady = () => {
                     {plan.features.map((feature, i) => (
                       <div key={i} className="flex items-start gap-3">
                         <CheckCircle size={18} className={`flex-shrink-0 mt-0.5 ${plan.highlighted ? 'text-cyan-400' : 'text-[#FF9500]'}`} />
-                        <span className="text-sm text-foreground-muted">{feature}</span>
+                        <span className="text-sm text-muted-foreground">{feature}</span>
                       </div>
                     ))}
                   </div>
@@ -3022,7 +3022,7 @@ const InterviewReady = () => {
                           : 'bg-[#FF9500] text-white'
                         : plan.highlighted
                         ? 'bg-cyan-600/30 border border-cyan-600 text-cyan-400 hover:bg-cyan-600/50'
-                        : 'bg-white/5 border border-[#E0DCCF] text-white hover:bg-white/10'
+                        : 'bg-white/5 border border-border text-white hover:bg-white/10'
                     }`}
                   >
                     {selectedPlan === plan.id ? (
@@ -3052,13 +3052,13 @@ const InterviewReady = () => {
           <div className="flex gap-4 justify-center mt-8">
             <button
               onClick={() => setStep(6)}
-              className="bg-white/5 hover:bg-white/10 border border-[#E0DCCF] text-foreground-muted font-bold py-3 px-8 rounded-2xl transition-all"
+              className="bg-white/5 hover:bg-white/10 border border-border text-muted-foreground font-bold py-3 px-8 rounded-2xl transition-all"
             >
               ← Back
             </button>
             <button
               onClick={resetAll}
-              className="bg-white/5 hover:bg-white/10 border border-[#E0DCCF] text-foreground-muted font-bold py-3 px-8 rounded-2xl transition-all"
+              className="bg-white/5 hover:bg-white/10 border border-border text-muted-foreground font-bold py-3 px-8 rounded-2xl transition-all"
             >
               Skip for Now
             </button>
@@ -3079,7 +3079,7 @@ const InterviewReady = () => {
 
   return (
     <div className="min-h-screen bg-[#FFFDF8] flex flex-col items-center justify-center gap-4 px-4 py-12">
-      <p className="text-foreground-muted text-center max-w-md">Something went wrong loading this screen.</p>
+      <p className="text-muted-foreground text-center max-w-md">Something went wrong loading this screen.</p>
       <button
         type="button"
         onClick={resetAll}

@@ -60,8 +60,8 @@ const JavaTutorial = () => {
     };
 
     return (
-      <div className="bg-[#1e1e1e] rounded-lg border border-[#E0DCCF] my-4">
-        <div className="flex justify-between items-center px-4 py-2 border-b border-[#E0DCCF]">
+      <div className="bg-[#1e1e1e] rounded-lg border border-border my-4">
+        <div className="flex justify-between items-center px-4 py-2 border-b border-border">
           <span className="text-xs text-muted-foreground">Java</span>
           <button
             onClick={copyToClipboard}
@@ -78,7 +78,7 @@ const JavaTutorial = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-foreground-muted font-sans antialiased">
+    <div className="min-h-screen bg-[#FFFDF8] text-muted-foreground font-sans antialiased">
       {/* Meta Tags for SEO */}
       <head>
         <title>Java for Beginners - Learn Java Step by Step | Complete Tutorial</title>
@@ -87,7 +87,7 @@ const JavaTutorial = () => {
       </head>
 
       {/* HEADER */}
-      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-[#F0ECE0] px-5">
+      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-border px-5">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between py-4">
           <Link to="/" className="transition-transform hover:scale-[1.02]">
             <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
@@ -110,7 +110,7 @@ const JavaTutorial = () => {
         
         {/* LEFT SIDEBAR NAVIGATION - DESKTOP ONLY */}
         <aside className="hidden lg:block w-64 sticky top-24 h-[calc(100vh-100px)] overflow-y-auto">
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+          <div className="bg-white/5 border border-border rounded-xl p-6">
             <h3 className="text-lg font-bold mb-6 text-[#FF9500]">Topics</h3>
             <nav className="space-y-2">
               {topics.map((topic) => (
@@ -149,7 +149,7 @@ const JavaTutorial = () => {
         </div>
 
         {/* TABLE OF CONTENTS */}
-        <div className="bg-white/5 border border-[#E0DCCF] rounded-2xl p-8 mb-16">
+        <div className="bg-white/5 border border-border rounded-2xl p-8 mb-16">
           <h2 className="text-2xl font-bold mb-6">What You'll Learn</h2>
           <ol className="space-y-2 text-muted-foreground">
             <li>1. Introduction to Java</li>
@@ -173,7 +173,7 @@ const JavaTutorial = () => {
         <section id="intro" className="mb-16">
           <h2 className="text-4xl font-black mb-6">1️⃣ Introduction to Java</h2>
           
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What is Java?</h3>
             <p className="text-muted-foreground mb-4 leading-relaxed">
               Java is a powerful programming language that lets you write instructions that computers can understand and execute. Created in 1995 by James Gosling at Sun Microsystems, Java has become one of the most widely-used programming languages in the world.
@@ -190,7 +190,7 @@ const JavaTutorial = () => {
             </ul>
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Why Learn Java?</h3>
             
             <div className="space-y-4">
@@ -222,7 +222,7 @@ const JavaTutorial = () => {
             </div>
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Where is Java Used?</h3>
             
             <div className="grid md:grid-cols-2 gap-6">
@@ -253,7 +253,7 @@ const JavaTutorial = () => {
         <section id="installation" className="mb-16">
           <h2 className="text-4xl font-black mb-6">2️⃣ Installing Java & Setting Up Environment</h2>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-6">Step 1: Download & Install JDK</h3>
 
             <h4 className="text-xl font-bold mb-4 text-cyan-400">For Windows:</h4>
@@ -282,7 +282,7 @@ sudo apt-get install openjdk-21-jdk`}
             />
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Step 2: Verify Installation</h3>
             <p className="text-muted-foreground mb-4">Open Command Prompt (Windows) or Terminal (Mac/Linux) and type:</p>
             <CodeBlock
@@ -292,7 +292,7 @@ sudo apt-get install openjdk-21-jdk`}
             <p className="text-muted-foreground mt-4">Should show something like: <code className="bg-[#1e1e1e] px-2 py-1 rounded">openjdk version "21.0.1"</code></p>
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Step 3: Choose Your Editor</h3>
 
             <div className="space-y-6">
@@ -334,7 +334,7 @@ sudo apt-get install openjdk-21-jdk`}
         <section id="structure" className="mb-16">
           <h2 className="text-4xl font-black mb-6">3️⃣ Structure of a Java Program</h2>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-6">Your First "Hello World" Program</h3>
 
             <CodeBlock
@@ -356,7 +356,7 @@ sudo apt-get install openjdk-21-jdk`}
             </ul>
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">How to Run the Program</h3>
             
             <p className="text-muted-foreground mb-4"><strong>Step 1: Save the file as</strong> <code className="bg-[#1e1e1e] px-2 py-1 rounded">HelloWorld.java</code></p>
@@ -387,13 +387,13 @@ sudo apt-get install openjdk-21-jdk`}
         <section id="variables" className="mb-16">
           <h2 className="text-4xl font-black mb-6">4️⃣ Variables and Data Types</h2>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What is a Variable?</h3>
             <p className="text-muted-foreground mb-4">A variable is like a box that stores information. You can put different things in the box, and later retrieve them.</p>
 
             <h4 className="text-xl font-bold mb-4 mt-6">Basic Data Types</h4>
             <div className="space-y-4">
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                 <strong className="text-[#FF9500]">int</strong> - Whole numbers (no decimals)
                 <CodeBlock
                   code={`int age = 25;
@@ -402,7 +402,7 @@ int year = 2026;`}
                 />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                 <strong className="text-[#FF9500]">double</strong> - Decimal numbers (precise)
                 <CodeBlock
                   code={`double price = 99.99;
@@ -411,7 +411,7 @@ double height = 5.8;`}
                 />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                 <strong className="text-[#FF9500]">String</strong> - Text (always in quotes)
                 <CodeBlock
                   code={`String name = "Alice";
@@ -420,7 +420,7 @@ String city = "New York";`}
                 />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                 <strong className="text-[#FF9500]">boolean</strong> - True or False only
                 <CodeBlock
                   code={`boolean isStudent = true;
@@ -429,7 +429,7 @@ boolean isGraduate = false;`}
                 />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                 <strong className="text-[#FF9500]">char</strong> - Single character
                 <CodeBlock
                   code={`char grade = 'A';
@@ -440,7 +440,7 @@ char firstLetter = 'J';`}
             </div>
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Complete Example Program</h3>
             <CodeBlock
               code={`public class StudentInfo {
@@ -467,7 +467,7 @@ char firstLetter = 'J';`}
             </p>
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Practice Exercise</h3>
             <p className="text-muted-foreground mb-4"><strong>Create a program that stores and prints your personal information (name, age, height, graduation year)</strong></p>
             
@@ -497,7 +497,7 @@ char firstLetter = 'J';`}
         <section id="operators" className="mb-16">
           <h2 className="text-4xl font-black mb-6">5️⃣ Operators</h2>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Arithmetic Operators</h3>
             <p className="text-muted-foreground mb-4">Used to do math calculations:</p>
             
@@ -514,7 +514,7 @@ System.out.println("Remainder: " + (a % b));      // Output: 1`}
             />
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Comparison Operators</h3>
             <p className="text-muted-foreground mb-4">Used to compare values (returns true or false):</p>
             
@@ -532,7 +532,7 @@ System.out.println(x >= y);  // false (greater than or equal)`}
             />
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Logical Operators</h3>
             <p className="text-muted-foreground mb-4">Used to combine multiple conditions:</p>
             
@@ -557,7 +557,7 @@ System.out.println(!isStudent); // false`}
         <section id="userinput" className="mb-16">
           <h2 className="text-4xl font-black mb-6">6️⃣ User Input with Scanner</h2>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Taking Input from User</h3>
             <p className="text-muted-foreground mb-6">We use the <strong>Scanner</strong> class to read user input:</p>
 
@@ -605,7 +605,7 @@ public class UserInput {
         <section id="conditionals" className="mb-16">
           <h2 className="text-4xl font-black mb-6">7️⃣ Conditional Statements</h2>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">if Statement</h3>
             <p className="text-muted-foreground mb-4">Execute code only if a condition is true:</p>
             
@@ -619,7 +619,7 @@ if (age >= 18) {
             />
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">if-else Statement</h3>
             <p className="text-muted-foreground mb-4">Do one thing if true, something else if false:</p>
             
@@ -635,7 +635,7 @@ if (marks >= 60) {
             />
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">if-else-if Statement</h3>
             <p className="text-muted-foreground mb-4">Multiple conditions:</p>
             
@@ -658,7 +658,7 @@ System.out.println("Your grade: " + grade); // Output: B`}
             />
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">switch Statement</h3>
             <p className="text-muted-foreground mb-4">When you have many options:</p>
             
@@ -690,7 +690,7 @@ System.out.println("Day: " + dayName); // Output: Wednesday`}
         <section id="loops" className="mb-16">
           <h2 className="text-4xl font-black mb-6">8️⃣ Loops</h2>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">for Loop</h3>
             <p className="text-muted-foreground mb-4">Repeat code a specific number of times:</p>
             
@@ -710,7 +710,7 @@ Number: 5
               id="for-loop"
             />
 
-            <p className="text-muted-foreground mt-6 bg-[#1E293B] p-4 rounded-lg border border-[#E0DCCF]">
+            <p className="text-muted-foreground mt-6 bg-[#1E293B] p-4 rounded-lg border border-border">
               <strong>How it works:</strong><br/>
               <code>i = 1</code> - Start at 1<br/>
               <code>i &lt;= 5</code> - Continue while i is 5 or less<br/>
@@ -718,7 +718,7 @@ Number: 5
             </p>
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">while Loop</h3>
             <p className="text-muted-foreground mb-4">Repeat while a condition is true:</p>
             
@@ -738,7 +738,7 @@ Count: 3
             />
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">do-while Loop</h3>
             <p className="text-muted-foreground mb-4">Runs at least once, then checks the condition:</p>
             
@@ -758,7 +758,7 @@ Value: 3
             />
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">break and continue</h3>
             
             <p className="text-muted-foreground mb-4"><strong className="text-cyan-400">break</strong> - Exit the loop immediately</p>
@@ -793,7 +793,7 @@ Value: 3
         <section id="arrays" className="mb-16">
           <h2 className="text-4xl font-black mb-6">9️⃣ Arrays</h2>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What is an Array?</h3>
             <p className="text-muted-foreground mb-4">An array is like a collection of boxes of the same type, arranged in a line. Each box has a number (index) starting from 0.</p>
 
@@ -811,7 +811,7 @@ int[] scores = new int[3];`}
             />
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Accessing Array Elements</h3>
             <p className="text-muted-foreground mb-4">Remember: First element is at index 0!</p>
             
@@ -828,7 +828,7 @@ fruits[1] = "Mango";  // Now index 1 is "Mango"`}
             />
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Looping Through Arrays</h3>
             
             <CodeBlock
@@ -852,7 +852,7 @@ for (int age : ages) {
         <section id="strings" className="mb-16">
           <h2 className="text-4xl font-black mb-6">Strings</h2>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Common String Methods</h3>
             
             <CodeBlock
@@ -879,7 +879,7 @@ System.out.println(text.replace("World", "Java")); // Hello Java`}
             />
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">String Comparison</h3>
             
             <CodeBlock
@@ -905,7 +905,7 @@ System.out.println(name1.equalsIgnoreCase("ALICE")); // true`}
         <section id="methods" className="mb-16">
           <h2 className="text-4xl font-black mb-6">1️⃣1️⃣ Methods</h2>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What is a Method?</h3>
             <p className="text-muted-foreground mb-4">A method is a reusable block of code that performs a specific task. It's like a recipe that you can use again and again.</p>
 
@@ -921,7 +921,7 @@ greet();  // Output: Hello!`}
             />
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Methods with Parameters</h3>
             <p className="text-muted-foreground mb-4">Pass information to the method:</p>
             
@@ -938,7 +938,7 @@ greet("Bob");    // Output: Hello, Bob`}
             />
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Methods with Return Values</h3>
             <p className="text-muted-foreground mb-4">Get a result back from the method:</p>
             
@@ -956,7 +956,7 @@ System.out.println("Sum: " + result);  // Output: Sum: 8`}
             />
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Complete Example</h3>
             
             <CodeBlock
@@ -987,7 +987,7 @@ System.out.println("Sum: " + result);  // Output: Sum: 8`}
         <section id="oop" className="mb-16">
           <h2 className="text-4xl font-black mb-6">1️⃣2️⃣ OOP Basics - Classes and Objects</h2>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What is OOP?</h3>
             <p className="text-muted-foreground mb-4">Object-Oriented Programming is a way to organize code by creating "objects" that represent real-world things.</p>
 
@@ -996,7 +996,7 @@ System.out.println("Sum: " + result);  // Output: Sum: 8`}
             <p className="text-muted-foreground mb-4"><strong>Object</strong> = Real thing created from the blueprint (like an actual house)</p>
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Creating a Class</h3>
             
             <CodeBlock
@@ -1030,7 +1030,7 @@ student1.study();  // Output: Alice is studying`}
             />
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Constructor - Set Initial Values</h3>
             <p className="text-muted-foreground mb-4">A constructor runs automatically when you create an object:</p>
             
@@ -1062,7 +1062,7 @@ student.display();  // Output: Name: Charlie, Age: 21`}
         <section id="exceptions" className="mb-16">
           <h2 className="text-4xl font-black mb-6">1️⃣3️⃣ Exception Handling</h2>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">What is an Exception?</h3>
             <p className="text-muted-foreground mb-4">An error that happens while the program is running. Exception handling prevents the program from crashing.</p>
 
@@ -1113,7 +1113,7 @@ public class SafeDivision {
         <section id="project" className="mb-16">
           <h2 className="text-4xl font-black mb-6">1️⃣4️⃣ Mini Project: Student Grade System</h2>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Project Description</h3>
             <p className="text-muted-foreground mb-4">Create a program that:</p>
             <ul className="text-muted-foreground space-y-2 ml-4">
@@ -1124,7 +1124,7 @@ public class SafeDivision {
             </ul>
           </div>
 
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+          <div className="bg-white/5 border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Complete Solution</h3>
             
             <CodeBlock
@@ -1202,7 +1202,7 @@ public class StudentGradeSystem {
           <h2 className="text-4xl font-black mb-6">Quick Recap Summary</h2>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+            <div className="bg-white/5 border border-border rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Fundamentals</h4>
               <ul className="text-muted-foreground text-sm space-y-1">
                 <li>✓ Java is "write once, run anywhere"</li>
@@ -1212,7 +1212,7 @@ public class StudentGradeSystem {
               </ul>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+            <div className="bg-white/5 border border-border rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Control Flow</h4>
               <ul className="text-muted-foreground text-sm space-y-1">
                 <li>✓ if/else for decisions</li>
@@ -1222,7 +1222,7 @@ public class StudentGradeSystem {
               </ul>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+            <div className="bg-white/5 border border-border rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Data Structures</h4>
               <ul className="text-muted-foreground text-sm space-y-1">
                 <li>✓ Arrays store multiple values</li>
@@ -1232,7 +1232,7 @@ public class StudentGradeSystem {
               </ul>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+            <div className="bg-white/5 border border-border rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Organization</h4>
               <ul className="text-muted-foreground text-sm space-y-1">
                 <li>✓ Methods organize code into tasks</li>
@@ -1249,7 +1249,7 @@ public class StudentGradeSystem {
           <h2 className="text-4xl font-black mb-6">Practice Questions</h2>
 
           <div className="space-y-6">
-            <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+            <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 1. What are the main differences between int and double?
               </summary>
@@ -1260,7 +1260,7 @@ public class StudentGradeSystem {
               </p>
             </details>
 
-            <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+            <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 2. What does System.out.println() do?
               </summary>
@@ -1270,7 +1270,7 @@ public class StudentGradeSystem {
               </p>
             </details>
 
-            <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+            <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 3. Explain the difference between for and while loops
               </summary>
@@ -1280,7 +1280,7 @@ public class StudentGradeSystem {
               </p>
             </details>
 
-            <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+            <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 4. What is the purpose of a constructor?
               </summary>
@@ -1291,7 +1291,7 @@ public class StudentGradeSystem {
               </p>
             </details>
 
-            <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+            <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 5. Why do we need exception handling?
               </summary>
@@ -1353,7 +1353,7 @@ public class StudentGradeSystem {
 
         {/* FINAL CTA */}
         <section className="mb-16">
-          <div className="bg-gradient-to-r from-[#4F46E5] to-[#06B6D4] rounded-2xl p-12 text-center border border-[#E0DCCF]">
+          <div className="bg-gradient-to-r from-[#4F46E5] to-[#06B6D4] rounded-2xl p-12 text-center border border-border">
             <h2 className="text-3xl font-black mb-4">Ready to Master Java?</h2>
             <p className="text-lg mb-8 text-white/90">Join thousands of students learning Java with our interactive courses and 1:1 mentorship.</p>
             <button className="bg-white text-[#4F46E5] px-8 py-4 rounded-xl font-bold hover:bg-white/90 transition-all text-lg">
@@ -1364,7 +1364,7 @@ public class StudentGradeSystem {
       </main>
       </div>
 
-      <footer className="py-10 text-center text-muted-foreground text-sm border-t border-[#F0ECE0] mt-16">
+      <footer className="py-10 text-center text-muted-foreground text-sm border-t border-border mt-16">
         © 2026 MentorMuni. Learn Java for Beginners - Free Tutorial with Practical Examples.
       </footer>
     </div>

@@ -35,7 +35,7 @@ const TransitionRoadmapTimeline = ({ roadmap }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E0DCCF] p-8 shadow-sm">
+    <div className="bg-white rounded-2xl border border-border p-8 shadow-sm">
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-foreground mb-2">Transition Roadmap</h2>
         <p className="text-muted-foreground">
@@ -57,7 +57,7 @@ const TransitionRoadmapTimeline = ({ roadmap }) => {
                 className={`w-full bg-gradient-to-r ${phaseColors[phase.phase]} border rounded-xl p-4 flex items-center justify-between hover:opacity-80 transition-opacity`}
               >
                 <div className="flex items-center gap-4">
-                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#FFF4E0] border border-[#E0DCCF]">
+                  <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#FFF4E0] border border-border">
                     <span className={`font-bold text-lg ${phaseTextColors[phase.phase]}`}>
                       {index + 1}
                     </span>
@@ -93,7 +93,7 @@ const TransitionRoadmapTimeline = ({ roadmap }) => {
 
               {/* Phase Details */}
               {isExpanded && (
-                <div className="mt-2 ml-4 bg-[#FFFDF8] border border-[#E0DCCF] rounded-xl p-6 space-y-4">
+                <div className="mt-2 ml-4 bg-[#FFFDF8] border border-border rounded-xl p-6 space-y-4">
                   {/* Focus Areas */}
                   <div>
                     <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-2">
@@ -103,7 +103,7 @@ const TransitionRoadmapTimeline = ({ roadmap }) => {
                       {phase.focus_areas.map(area => (
                         <span
                           key={area}
-                          className={`bg-[#FFF4E0] text-foreground text-sm px-3 py-1 rounded-full border border-[#E0DCCF]`}
+                          className={`bg-[#FFF4E0] text-foreground text-sm px-3 py-1 rounded-full border border-border`}
                         >
                           {area}
                         </span>
@@ -144,7 +144,7 @@ const TransitionRoadmapTimeline = ({ roadmap }) => {
                   </div>
 
                   {/* Learning Tips */}
-                  <div className="bg-[#FFF4E0] border border-[#E0DCCF] rounded-lg p-3 mt-4">
+                  <div className="bg-[#FFF4E0] border border-border rounded-lg p-3 mt-4">
                     <p className="text-xs text-muted-foreground mb-2 font-semibold">Learning Tips:</p>
                     <ul className="space-y-1 text-xs text-foreground">
                       <li>• Combine theory with hands-on practice</li>
@@ -168,7 +168,7 @@ const TransitionRoadmapTimeline = ({ roadmap }) => {
       </div>
 
       {/* Timeline Visualization */}
-      <div className="mt-8 bg-[#FFFDF8] border border-[#E0DCCF] rounded-xl p-6">
+      <div className="mt-8 bg-[#FFFDF8] border border-border rounded-xl p-6">
         <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-3">
           Timeline Breakdown
         </p>

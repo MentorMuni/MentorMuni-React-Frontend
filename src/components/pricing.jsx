@@ -28,7 +28,7 @@ const PLANS = [
     ],
     cta: 'Start free',
     ctaTo: '/start-assessment',
-    ctaStyle: 'border border-[#F0ECE0] bg-white text-foreground-muted hover:bg-[#FFF8EE] hover:border-[#FFB347]',
+    ctaStyle: 'border border-border bg-white text-muted-foreground hover:bg-[#FFF8EE] hover:border-[#FFB347]',
   },
   {
     id: 'core',
@@ -68,7 +68,7 @@ const PLANS = [
     ],
     cta: 'Apply for Elite',
     ctaTo: '/contact',
-    ctaStyle: 'border border-[#F0ECE0] bg-white text-foreground-muted hover:bg-[#FFF8EE] hover:border-[#FFB347]',
+    ctaStyle: 'border border-border bg-white text-muted-foreground hover:bg-[#FFF8EE] hover:border-[#FFB347]',
   },
 ];
 
@@ -147,12 +147,12 @@ const PricingPage = () => {
               className={`relative rounded-2xl p-6 flex flex-col h-full transition-all ${
                 plan.highlight
                   ? 'bg-[#FF9500]/10 border-2 border-[#FF9500] shadow-xl shadow-[0_2px_12px_rgba(255,149,0,0.15)]'
-                  : 'bg-white border border-[#F0ECE0]'
+                  : 'bg-white border border-border'
               }`}
             >
               {plan.badge && (
                 <div className={`absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
-                  plan.highlight ? 'bg-[#FF9500] text-white' : 'bg-[#FFF8EE] text-muted-foreground border border-[#F0ECE0]'
+                  plan.highlight ? 'bg-[#FF9500] text-white' : 'bg-[#FFF8EE] text-muted-foreground border border-border'
                 }`}>
                   {plan.badge}
                 </div>
@@ -173,7 +173,7 @@ const PricingPage = () => {
                     {f.yes
                       ? <CheckCircle2 size={15} className={`mt-0.5 shrink-0 ${plan.highlight ? 'text-[#FF9500]' : 'text-emerald-600'}`} />
                       : <X size={15} className="mt-0.5 shrink-0 text-[#BBBBBB]" />}
-                    <span className={f.yes ? 'text-foreground-muted' : 'text-[#999999]'}>{f.text}</span>
+                    <span className={f.yes ? 'text-muted-foreground' : 'text-[#999999]'}>{f.text}</span>
                   </li>
                 ))}
               </ul>
@@ -188,7 +188,7 @@ const PricingPage = () => {
             </div>
           ))}
         </div>
-        <p className="text-center text-xs text-foreground-muted mt-4">All prices in INR · GST applicable · EMI available via RazorPay</p>
+        <p className="text-center text-xs text-muted-foreground mt-4">All prices in INR · GST applicable · EMI available via RazorPay</p>
       </section>
 
       {/* ── Value breakdown ── */}
@@ -196,14 +196,14 @@ const PricingPage = () => {
         <h2 className="text-xl font-bold text-foreground mb-1 text-center">What you&apos;d pay separately</h2>
         <p className="text-muted-foreground text-sm text-center mb-6">This is why ₹10,000 is not expensive — it&apos;s what you&apos;re saving.</p>
 
-        <div className="bg-white border border-[#F0ECE0] rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
+        <div className="bg-white border border-border rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
           {VALUE_ROWS.map((row, i) => (
-            <div key={row.label} className={`flex items-center justify-between px-5 py-3.5 ${i < VALUE_ROWS.length - 1 ? 'border-b border-[#F0ECE0]' : ''}`}>
-              <span className="text-sm text-foreground-muted">{row.label}</span>
+            <div key={row.label} className={`flex items-center justify-between px-5 py-3.5 ${i < VALUE_ROWS.length - 1 ? 'border-b border-border' : ''}`}>
+              <span className="text-sm text-muted-foreground">{row.label}</span>
               <span className="text-sm font-semibold text-hint">{row.market}</span>
             </div>
           ))}
-          <div className="flex items-center justify-between px-5 py-3.5 border-t border-[#F0ECE0] bg-[#FFFDF8]">
+          <div className="flex items-center justify-between px-5 py-3.5 border-t border-border bg-[#FFFDF8]">
             <span className="text-sm text-muted-foreground">Market value total</span>
             <span className="text-sm font-bold text-hint line-through">₹36,000</span>
           </div>
@@ -231,7 +231,7 @@ const PricingPage = () => {
               { icon: '👤', label: 'Small batch', sub: 'More attention per student' },
               { icon: '🤝', label: "Till you're placed", sub: 'Mentorship support through your placement journey' },
             ].map(c => (
-              <div key={c.label} className="bg-white border border-[#F0ECE0] rounded-xl p-3 shadow-sm">
+              <div key={c.label} className="bg-white border border-border rounded-xl p-3 shadow-sm">
                 <span className="text-xl block mb-1">{c.icon}</span>
                 <p className="text-xs font-bold text-foreground mb-0.5">{c.label}</p>
                 <p className="text-[10px] text-muted-foreground leading-snug">{c.sub}</p>
@@ -246,7 +246,7 @@ const PricingPage = () => {
         <h2 className="text-xl font-bold text-foreground mb-6 text-center">Common questions</h2>
         <div className="space-y-2">
           {FAQS.map((faq, i) => (
-            <div key={i} className="bg-white border border-[#F0ECE0] rounded-xl overflow-hidden shadow-sm">
+            <div key={i} className="bg-white border border-border rounded-xl overflow-hidden shadow-sm">
               <button
                 type="button"
                 className="w-full flex items-center justify-between px-5 py-4 text-left"
@@ -260,7 +260,7 @@ const PricingPage = () => {
                 </span>
               </button>
               {openFaq === i && (
-                <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed border-t border-[#F0ECE0] pt-3">
+                <div className="px-5 pb-4 text-sm text-muted-foreground leading-relaxed border-t border-border pt-3">
                   {faq.a}
                   <span className="inline-block ml-2 text-emerald-600 font-semibold">✓</span>
                 </div>
@@ -279,7 +279,7 @@ const PricingPage = () => {
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
               to="/start-assessment"
-              className="flex-1 flex items-center justify-center gap-2 border border-[#F0ECE0] bg-white text-foreground-muted hover:bg-[#FFF8EE] font-semibold text-sm py-3 rounded-xl transition-all"
+              className="flex-1 flex items-center justify-center gap-2 border border-border bg-white text-muted-foreground hover:bg-[#FFF8EE] font-semibold text-sm py-3 rounded-xl transition-all"
             >
               {PRIMARY_CTA_LABEL}
             </Link>
@@ -295,7 +295,7 @@ const PricingPage = () => {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-[#F0ECE0] bg-[#FFF8EE] py-14 px-6">
+      <footer className="border-t border-border bg-[#FFF8EE] py-14 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 mb-10">
             <div className="md:col-span-1">
@@ -333,7 +333,7 @@ const PricingPage = () => {
               </ul>
             </div>
           </div>
-          <div className="border-t border-[#F0ECE0] pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-muted-foreground">
+          <div className="border-t border-border pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-muted-foreground">
             <p>© {new Date().getFullYear()} MentorMuni. All rights reserved.</p>
             <div className="flex gap-5">
               <Link to="/contact" className="hover:text-[#FF9500] transition-colors">Terms</Link>

@@ -68,13 +68,13 @@ const AssessmentBadge = ({ atsScore, targetRole }) => {
         </div>
 
         {/* Explanation */}
-        <p className="text-foreground-muted text-sm leading-relaxed">
+        <p className="text-muted-foreground text-sm leading-relaxed">
           {assessment.explanation}
         </p>
 
         {/* Action Hint */}
         <div className="mt-4 pt-4 border-t border-gray-300 border-opacity-40">
-          <p className="text-xs text-foreground-muted font-semibold">
+          <p className="text-xs text-muted-foreground font-semibold">
             💡 Tip: Use our professional services to optimize your resume
           </p>
         </div>

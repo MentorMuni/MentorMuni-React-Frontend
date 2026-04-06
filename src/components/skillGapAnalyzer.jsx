@@ -238,7 +238,7 @@ const SkillGapAnalyzer = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 mb-12">
-          <div className="bg-white p-8 rounded-2xl border border-[#E0DCCF] hover:border-[#FF9500]/50 transition-colors shadow-sm">
+          <div className="bg-white p-8 rounded-2xl border border-border hover:border-[#FF9500]/50 transition-colors shadow-sm">
             <Target size={32} className="text-[#FF9500] mb-4" />
             <h3 className="text-xl font-bold mb-3 text-foreground">Analyze Your Gap</h3>
             <p className="text-muted-foreground">
@@ -246,7 +246,7 @@ const SkillGapAnalyzer = () => {
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-2xl border border-[#E0DCCF] hover:border-[#FF9500]/50 transition-colors shadow-sm">
+          <div className="bg-white p-8 rounded-2xl border border-border hover:border-[#FF9500]/50 transition-colors shadow-sm">
             <Zap size={32} className="text-[#FF9500] mb-4" />
             <h3 className="text-xl font-bold mb-3 text-foreground">Recommended Courses</h3>
             <p className="text-muted-foreground">
@@ -254,7 +254,7 @@ const SkillGapAnalyzer = () => {
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-2xl border border-[#E0DCCF] hover:border-[#FF9500]/50 transition-colors shadow-sm">
+          <div className="bg-white p-8 rounded-2xl border border-border hover:border-[#FF9500]/50 transition-colors shadow-sm">
             <TrendingUp size={32} className="text-[#FF9500] mb-4" />
             <h3 className="text-xl font-bold mb-3 text-foreground">Transition Roadmap</h3>
             <p className="text-muted-foreground">
@@ -293,7 +293,7 @@ const SkillGapAnalyzer = () => {
           ← Back
         </button>
 
-        <div className="bg-white p-8 rounded-2xl border border-[#E0DCCF] shadow-sm">
+        <div className="bg-white p-8 rounded-2xl border border-border shadow-sm">
           <h2 className="text-3xl font-bold mb-6 text-foreground">Skill Gap Analysis</h2>
 
           {/* Free Usage Counter */}
@@ -351,7 +351,7 @@ const SkillGapAnalyzer = () => {
                 value={formData.current_role}
                 onChange={handleInputChange}
                 disabled={rolesLoading}
-                className="w-full bg-white border border-[#E0DCCF] rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full bg-white border border-border rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <option value="">
                   {rolesLoading ? 'Loading roles...' : 'Select your current role...'}
@@ -383,7 +383,7 @@ const SkillGapAnalyzer = () => {
                 value={formData.target_role}
                 onChange={handleInputChange}
                 disabled={rolesLoading}
-                className="w-full bg-white border border-[#E0DCCF] rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full bg-white border border-border rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <option value="">
                   {rolesLoading ? 'Loading roles...' : 'Select your target role...'}
@@ -417,7 +417,7 @@ const SkillGapAnalyzer = () => {
                 max="50"
                 value={formData.experience_years}
                 onChange={handleInputChange}
-                className="w-full bg-white border border-[#E0DCCF] rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 transition-colors"
+                className="w-full bg-white border border-border rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 transition-colors"
               />
               <p className="text-muted-foreground text-sm mt-1">0-50 years</p>
             </div>
@@ -441,7 +441,7 @@ const SkillGapAnalyzer = () => {
                   }}
                   placeholder="e.g., React, JavaScript, Node.js..."
                   autoComplete="off"
-                  className="flex-1 bg-white border border-[#E0DCCF] rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 transition-colors"
+                  className="flex-1 bg-white border border-border rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 transition-colors"
                 />
                 <button
                   type="button"
@@ -497,7 +497,7 @@ const SkillGapAnalyzer = () => {
                 onChange={handleInputChange}
                 placeholder="Paste your resume text here for skill extraction..."
                 rows="4"
-                className="w-full bg-white border border-[#E0DCCF] rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 transition-colors resize-none"
+                className="w-full bg-white border border-border rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 transition-colors resize-none"
               />
               <p className="text-muted-foreground text-sm mt-1">
                 Helps us extract your existing skills

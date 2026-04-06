@@ -27,7 +27,7 @@ export default function DarkModeToggle() {
       {theme === 'dark' ? (
         <Sun className="w-5 h-5 text-yellow-400" />
       ) : (
-        <Moon className="w-5 h-5 text-foreground-muted" />
+        <Moon className="w-5 h-5 text-muted-foreground" />
       )}
     </button>
   )

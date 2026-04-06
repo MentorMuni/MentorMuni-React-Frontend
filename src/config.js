@@ -13,3 +13,11 @@ export const API_BASE = import.meta.env.VITE_API_URL ?? PRODUCTION_API_URL;
 /** Full URL for POST resume ATS analysis (multipart: file + target_role). Override with VITE_RESUME_ATS_URL. */
 export const RESUME_ATS_URL =
   import.meta.env.VITE_RESUME_ATS_URL ?? `${API_BASE}/api/resume/ats`;
+
+/**
+ * Hero muted loop (WebM + MP4) under public/MentorMuni-React-Frontend/videos/
+ * — hero-loop.webm, hero-loop.mp4, optional hero-poster.jpg
+ * Set VITE_HERO_LOOP_VIDEO=true in .env when files are present (avoids 404s before that).
+ */
+export const HERO_LOOP_VIDEO_ENABLED =
+  import.meta.env.VITE_HERO_LOOP_VIDEO === 'true' || import.meta.env.VITE_HERO_LOOP_VIDEO === '1';

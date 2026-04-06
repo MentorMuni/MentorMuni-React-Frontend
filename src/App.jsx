@@ -1,12 +1,16 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
 import { HashRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { motion } from "framer-motion";
 import { ROUTE_TITLES } from "./constants/brandCopy";
 import { goToStartAssessment } from "./utils/startAssessmentNavigation";
 
 import Navbar from "./components/navbar";
 import HomePage from "./components/homepage";
 import MuniBot from "./components/MuniBot";
+import StickyConversionBar from "./components/StickyConversionBar";
 import "./index.css";
+
+const MotionMain = motion.main;
 
 // Lazy-load all other pages so only Home + Navbar load on first visit
 const InterviewReady = lazy(() => import("./components/interviewready"));
@@ -17,7 +21,6 @@ const ResultPage = lazy(() => import("./components/result"));
 const MentorDashboard = lazy(() => import("./components/mentordashboard"));
 const HowItWorks = lazy(() => import("./components/HowItWorks"));
 const Tools = lazy(() => import("./components/Tools"));
-const Mentorship = lazy(() => import("./components/Mentorship"));
 const Mentors    = lazy(() => import("./components/Mentors"));
 const JavaTutorial = lazy(() => import("./components/javaTutorial"));
 const SqlTutorial = lazy(() => import("./components/sqlTutorial"));
@@ -43,7 +46,34 @@ const InterviewReadinessToolsPage = lazy(() => import("./components/InterviewRea
 const LeadershipBoard = lazy(() => import("./components/leadershipBoard"));
 
 function PageFallback() {
-  return <div className="min-h-[60vh] bg-background" />;
+  return (
+    <div className="min-h-[60vh] bg-background px-4 py-12">
+      <div className="mx-auto max-w-2xl space-y-4">
+        <div className="h-9 w-2/3 max-w-md animate-pulse rounded-xl bg-[#F0ECE0]" />
+        <div className="h-4 w-full animate-pulse rounded-lg bg-[#F5F0E8]/90" />
+        <div className="h-4 w-5/6 animate-pulse rounded-lg bg-[#F5F0E8]/90" />
+        <div className="h-4 w-4/6 animate-pulse rounded-lg bg-[#F5F0E8]/80" />
+        <div className="mt-10 h-52 animate-pulse rounded-2xl bg-gradient-to-br from-[#FFF4E0]/90 via-[#FFFDF8] to-[#F0ECE0]/80" />
+      </div>
+    </div>
+  );
+}
+
+/** Subtle route transition — skip enter animation on home to protect LCP. */
+function AnimatedMain({ children, className = "" }) {
+  const { pathname } = useLocation();
+  const isHome = pathname === "/";
+  return (
+    <MotionMain
+      key={pathname}
+      initial={isHome ? false : { opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+      className={`relative z-0 flex-grow ${className}`}
+    >
+      {children}
+    </MotionMain>
+  );
 }
 
 /** Reset scroll position on every route change. */
@@ -89,7 +119,11 @@ function AnnouncementBar() {
         aria-label="Dismiss announcement"
         onClick={() => {
           setVisible(false);
-          try { sessionStorage.setItem('mm-promo-dismissed-v2', '1'); } catch {}
+          try {
+            sessionStorage.setItem('mm-promo-dismissed-v2', '1');
+          } catch {
+            /* ignore storage errors */
+          }
         }}
         className="absolute right-2 top-1/2 -translate-y-1/2 rounded p-1 transition hover:bg-white/20 sm:right-3"
       >
@@ -114,10 +148,10 @@ function App() {
     <Router>
       <ScrollToTop />
       <RouteTitle />
-      <div className="flex min-h-screen flex-col bg-background text-foreground-muted font-sans antialiased">
+      <div className="flex min-h-screen flex-col bg-background text-muted-foreground font-sans antialiased">
         <AnnouncementBar />
         <Navbar />
-        <main className="flex-grow relative z-0">
+        <AnimatedMain>
           <Suspense fallback={<PageFallback />}>
             <Routes>
               <Route path="/" element={<HomePage />} />
@@ -170,7 +204,8 @@ function App() {
               <Route path="/design-system" element={<DesignSystemDemo />} />
             </Routes>
           </Suspense>
-        </main>
+        </AnimatedMain>
+        <StickyConversionBar />
         <MuniBot />
       </div>
     </Router>

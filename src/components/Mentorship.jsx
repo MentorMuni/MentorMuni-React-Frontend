@@ -35,7 +35,7 @@ const Mentorship = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-foreground-muted pt-20 pb-20">
+    <div className="min-h-screen bg-[#FFFDF8] text-muted-foreground pt-20 pb-20">
       <div className="max-w-6xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-16">

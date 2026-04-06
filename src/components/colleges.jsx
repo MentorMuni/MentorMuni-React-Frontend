@@ -61,7 +61,7 @@ const checklist = [
 
 const Colleges = () => {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#FFFDF8] text-foreground-muted">
+    <div className="relative min-h-screen overflow-hidden bg-[#FFFDF8] text-muted-foreground">
       <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
         <div className="absolute -left-24 top-16 h-72 w-72 rounded-full bg-[#1A6FC4]/10 blur-3xl" />
         <div className="absolute -right-20 top-40 h-80 w-80 rounded-full bg-[#FF9500]/12 blur-3xl" />
@@ -75,12 +75,12 @@ const Colleges = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
         >
-          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-[#E0DCCF] bg-white/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground shadow-sm">
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-white/90 px-4 py-1.5 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground shadow-sm">
             <Building2 className="h-4 w-4 text-[#1A6FC4]" aria-hidden />
             College collaboration · Phase 1
           </div>
           <div className="mb-4 flex flex-wrap items-center justify-center gap-3">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#E0DCCF] bg-gradient-to-br from-[#E8F3FF] to-white shadow-md">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-border bg-gradient-to-br from-[#E8F3FF] to-white shadow-md">
               <GraduationCap className="h-8 w-8 text-[#1A6FC4]" strokeWidth={1.75} />
             </div>
             <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-5xl md:text-6xl leading-[1.08]">
@@ -105,7 +105,7 @@ const Colleges = () => {
             </Link>
             <Link
               to="/leadership-board"
-              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#E0DCCF] bg-white px-6 py-3.5 text-sm font-bold text-foreground-muted transition hover:border-[#FFB347] hover:bg-[#FFF8EE]"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-white px-6 py-3.5 text-sm font-bold text-muted-foreground transition hover:border-[#FFB347] hover:bg-[#FFF8EE]"
             >
               See the leadership board
               <Trophy className="h-4 w-4 text-[#FF9500]" />
@@ -154,7 +154,7 @@ const Colleges = () => {
                       competitions, badges, and bragging rights tied to real prep
                     </span>
                   </h2>
-                  <p className="mt-4 text-sm leading-relaxed text-foreground-muted sm:text-[0.9375rem]">
+                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground sm:text-[0.9375rem]">
                     Hook your batch with an{' '}
                     <strong className="font-semibold text-foreground">Interview Readiness Competition</strong>: timed rounds, clear
                     scoring on readiness and practice milestones, and live movement on the leadership board so every rank-up
@@ -294,7 +294,7 @@ const Colleges = () => {
               return (
                 <div
                   key={item.step}
-                  className="relative rounded-2xl border border-[#F0ECE0] bg-white p-5 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.08)]"
+                  className="relative rounded-2xl border border-border bg-white p-5 shadow-[0_4px_20px_-8px_rgba(0,0,0,0.08)]"
                 >
                   <span className="absolute right-4 top-4 text-2xl font-black tabular-nums text-[#FF9500]/25">
                     {item.step}
@@ -313,14 +313,14 @@ const Colleges = () => {
           </p>
         </section>
 
-        <section className="mx-auto mt-16 max-w-3xl rounded-3xl border border-[#E0DCCF] bg-white px-6 py-10 shadow-lg sm:px-10">
+        <section className="mx-auto mt-16 max-w-3xl rounded-3xl border border-border bg-white px-6 py-10 shadow-lg sm:px-10">
           <div className="mb-6 flex items-center gap-2 text-[#1A6FC4]">
             <BarChart3 className="h-6 w-6" />
             <span className="text-sm font-semibold uppercase tracking-wider text-foreground">Typical engagement</span>
           </div>
           <ul className="space-y-3">
             {checklist.map((item) => (
-              <li key={item} className="flex gap-3 text-sm text-foreground-muted">
+              <li key={item} className="flex gap-3 text-sm text-muted-foreground">
                 <CheckCircle2 className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" />
                 <span>{item}</span>
               </li>
@@ -333,7 +333,7 @@ const Colleges = () => {
         </section>
 
         <section className="mx-auto mt-16 grid max-w-5xl gap-8 md:grid-cols-2 md:items-center">
-          <div className="rounded-2xl border border-[#F0ECE0] bg-gradient-to-br from-white to-[#FFF8EE] p-6 sm:p-8">
+          <div className="rounded-2xl border border-border bg-gradient-to-br from-white to-[#FFF8EE] p-6 sm:p-8">
             <Mic2 className="mb-3 h-8 w-8 text-[#FF9500]" />
             <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">What Phase 1 focuses on</h2>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
@@ -353,7 +353,7 @@ const Colleges = () => {
           <div className="rounded-2xl border-2 border-[#FF9500]/40 bg-[#FF9500]/8 p-6 sm:p-8">
             <Sparkles className="mb-3 h-8 w-8 text-[#CC7000]" />
             <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">Next step</h2>
-            <p className="mt-3 text-sm leading-relaxed text-foreground-muted">
+            <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               Send college name, approximate batch size, and placement window—we&apos;ll reply with a short call proposal and
               next steps.
             </p>

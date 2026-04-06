@@ -53,8 +53,8 @@ const GenerativeAITutorial = () => {
     };
 
     return (
-      <div className="bg-[#1e1e1e] rounded-lg border border-[#E0DCCF] my-4">
-        <div className="flex justify-between items-center px-4 py-2 border-b border-[#E0DCCF]">
+      <div className="bg-[#1e1e1e] rounded-lg border border-border my-4">
+        <div className="flex justify-between items-center px-4 py-2 border-b border-border">
           <span className="text-xs text-muted-foreground">Prompt Example</span>
           <button
             onClick={copyToClipboard}
@@ -71,7 +71,7 @@ const GenerativeAITutorial = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-foreground-muted font-sans antialiased">
+    <div className="min-h-screen bg-[#FFFDF8] text-muted-foreground font-sans antialiased">
       {/* Meta Tags for SEO */}
       <head>
         <title>Generative AI for Beginners - Learn GPT, LLMs & Prompt Engineering</title>
@@ -80,7 +80,7 @@ const GenerativeAITutorial = () => {
       </head>
 
       {/* HEADER */}
-      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-[#F0ECE0] px-5">
+      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-border px-5">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between py-4">
           <Link to="/" className="transition-transform hover:scale-[1.02]">
             <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
@@ -103,7 +103,7 @@ const GenerativeAITutorial = () => {
         
         {/* LEFT SIDEBAR NAVIGATION - DESKTOP ONLY */}
         <aside className="hidden lg:block w-64 sticky top-24 h-[calc(100vh-100px)] overflow-y-auto">
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+          <div className="bg-white/5 border border-border rounded-xl p-6">
             <h3 className="text-lg font-bold mb-6 text-[#FF9500]">Topics</h3>
             <nav className="space-y-2">
               {topics.map((topic) => (
@@ -141,7 +141,7 @@ const GenerativeAITutorial = () => {
             </div>
           </div>
 
-          <div className="mb-16 bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+          <div className="mb-16 bg-white/5 border border-border rounded-xl p-8">
             <h2 className="text-2xl font-bold mb-4">What You'll Learn</h2>
             <ul className="grid md:grid-cols-2 gap-4 text-muted-foreground">
               <li className="flex gap-3">
@@ -175,7 +175,7 @@ const GenerativeAITutorial = () => {
           <section id="intro" className="mb-16">
             <h2 className="text-4xl font-black mb-6">Introduction to Generative AI</h2>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">What is Generative AI?</h3>
               <p className="text-muted-foreground mb-4">
                 Generative AI is a type of artificial intelligence that can create new content. Instead of just analyzing or classifying data, it <strong>generates</strong> new text, images, code, music, or other content based on what it learned from training data.
@@ -185,22 +185,22 @@ const GenerativeAITutorial = () => {
               </p>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Generative AI vs Other AI Types</h3>
               <div className="space-y-4">
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-cyan-400">Generative AI</strong> - Creates new content (ChatGPT, DALL-E)
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-[#FF9500]">Discriminative AI</strong> - Classifies or recognizes patterns (email spam filter, image recognition)
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-green-400">Predictive AI</strong> - Forecasts future outcomes (weather prediction, stock prices)
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Key Breakthroughs</h3>
               <ul className="text-muted-foreground space-y-3">
                 <li className="flex gap-3">
@@ -227,7 +227,7 @@ const GenerativeAITutorial = () => {
           <section id="how-it-works" className="mb-16">
             <h2 className="text-4xl font-black mb-6">⚙️ How Generative AI Works</h2>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">The Three Main Steps</h3>
               <div className="space-y-6">
                 <div className="bg-[#1e1e1e] p-6 rounded-lg border border-[#FFB347]/40">
@@ -253,7 +253,7 @@ const GenerativeAITutorial = () => {
               </div>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">What is a Large Language Model (LLM)?</h3>
               <p className="text-muted-foreground mb-4">
                 An LLM is a type of Generative AI trained on huge amounts of text data. "Large" means billions of parameters (adjustable weights), and "Language" means it specializes in understanding and generating human language.
@@ -265,7 +265,7 @@ const GenerativeAITutorial = () => {
               </ul>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Simple Example: Predicting the Next Word</h3>
               <p className="text-muted-foreground mb-4">Imagine you train a model with these sentences:</p>
               <CodeBlock
@@ -287,7 +287,7 @@ const GenerativeAITutorial = () => {
             <h2 className="text-4xl font-black mb-6">Popular AI Models</h2>
 
             <div className="space-y-4 mb-8">
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <div className="flex items-start gap-4">
                   <div className="w-1 h-12 bg-red-500 rounded-full flex-shrink-0"></div>
                   <div className="flex-1">
@@ -300,7 +300,7 @@ const GenerativeAITutorial = () => {
                 </div>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <div className="flex items-start gap-4">
                   <div className="w-1 h-12 bg-blue-500 rounded-full flex-shrink-0"></div>
                   <div className="flex-1">
@@ -313,7 +313,7 @@ const GenerativeAITutorial = () => {
                 </div>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <div className="flex items-start gap-4">
                   <div className="w-1 h-12 bg-slate-600 rounded-full flex-shrink-0"></div>
                   <div className="flex-1">
@@ -326,7 +326,7 @@ const GenerativeAITutorial = () => {
                 </div>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <div className="flex items-start gap-4">
                   <div className="w-1 h-12 bg-amber-600 rounded-full flex-shrink-0"></div>
                   <div className="flex-1">
@@ -339,7 +339,7 @@ const GenerativeAITutorial = () => {
                 </div>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <div className="flex items-start gap-4">
                   <div className="w-1 h-12 bg-purple-500 rounded-full flex-shrink-0"></div>
                   <div className="flex-1">
@@ -359,7 +359,7 @@ const GenerativeAITutorial = () => {
             <h2 className="text-4xl font-black mb-6">Real-World Applications</h2>
 
             <div className="grid md:grid-cols-2 gap-6 mb-8">
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h4 className="font-bold text-cyan-400 mb-3">Content Creation</h4>
                 <ul className="text-muted-foreground text-sm space-y-2">
                   <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Blog posts and articles</li>
@@ -369,7 +369,7 @@ const GenerativeAITutorial = () => {
                 </ul>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h4 className="font-bold text-cyan-400 mb-3">Software Development</h4>
                 <ul className="text-muted-foreground text-sm space-y-2">
                   <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Code generation (Copilot)</li>
@@ -379,7 +379,7 @@ const GenerativeAITutorial = () => {
                 </ul>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h4 className="font-bold text-cyan-400 mb-3">Healthcare</h4>
                 <ul className="text-muted-foreground text-sm space-y-2">
                   <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Medical report summarization</li>
@@ -389,7 +389,7 @@ const GenerativeAITutorial = () => {
                 </ul>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h4 className="font-bold text-cyan-400 mb-3">Customer Service</h4>
                 <ul className="text-muted-foreground text-sm space-y-2">
                   <li>✓ AI chatbots (24/7 support)</li>
@@ -399,7 +399,7 @@ const GenerativeAITutorial = () => {
                 </ul>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h4 className="font-bold text-cyan-400 mb-3">Business Intelligence</h4>
                 <ul className="text-muted-foreground text-sm space-y-2">
                   <li>✓ Data analysis reports</li>
@@ -409,7 +409,7 @@ const GenerativeAITutorial = () => {
                 </ul>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h4 className="font-bold text-cyan-400 mb-3">Creative Industries</h4>
                 <ul className="text-muted-foreground text-sm space-y-2">
                   <li>✓ Image generation</li>
@@ -425,7 +425,7 @@ const GenerativeAITutorial = () => {
           <section id="prompt-engineering" className="mb-16">
             <h2 className="text-4xl font-black mb-6">✍️ Prompt Engineering Basics</h2>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">What is a Prompt?</h3>
               <p className="text-muted-foreground mb-4">
                 A prompt is an instruction or question you give to an AI model. The quality of your prompt directly affects the quality of the response.
@@ -435,7 +435,7 @@ const GenerativeAITutorial = () => {
               </p>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Principles of Good Prompts</h3>
               <div className="space-y-4">
                 <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
@@ -484,7 +484,7 @@ const GenerativeAITutorial = () => {
           <section id="hands-on" className="mb-16">
             <h2 className="text-4xl font-black mb-6">Hands-On Prompt Examples</h2>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Example 1: Explaining Complex Topics</h3>
               <p className="text-muted-foreground mb-2 font-semibold">Prompt:</p>
               <CodeBlock
@@ -497,7 +497,7 @@ Keep it under 200 words.`}
                 id="example-js-closure"
               />
               <p className="text-muted-foreground mt-4 mb-2 font-semibold">What the AI might respond:</p>
-              <div className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-[#E0DCCF]">
+              <div className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
                 <p className="mb-2">
                   <strong>Simple Definition:</strong> A closure is a function that remembers values from the scope where it was created, even after that scope is gone.
                 </p>
@@ -511,7 +511,7 @@ Keep it under 200 words.`}
               </div>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Example 2: Content Creation</h3>
               <p className="text-muted-foreground mb-2 font-semibold">Prompt:</p>
               <CodeBlock
@@ -531,7 +531,7 @@ Keep it under 200 words.`}
               </ul>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Example 3: Problem Solving</h3>
               <p className="text-muted-foreground mb-2 font-semibold">Prompt:</p>
               <CodeBlock
@@ -553,7 +553,7 @@ What project should I build and how?`}
               </ul>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Example 4: Interview Preparation</h3>
               <p className="text-muted-foreground mb-2 font-semibold">Prompt:</p>
               <CodeBlock
@@ -578,7 +578,7 @@ and brief answers for each (50-75 words).`}
           <section id="risks" className="mb-16">
             <h2 className="text-4xl font-black mb-6">⚠️ Risks & Limitations</h2>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Important Limitations to Know</h3>
               <div className="space-y-4">
                 <div className="bg-red-500/10 border border-red-500/30 rounded-lg p-4">
@@ -619,7 +619,7 @@ and brief answers for each (50-75 words).`}
               </div>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Best Practices for Safe AI Use</h3>
               <ul className="text-muted-foreground space-y-2">
                 <li className="flex gap-3">
@@ -716,7 +716,7 @@ and brief answers for each (50-75 words).`}
               </div>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Getting Started: Learning Path</h3>
               <ol className="text-muted-foreground space-y-3 ml-4">
                 <li className="flex gap-3">
@@ -748,7 +748,7 @@ and brief answers for each (50-75 words).`}
             <h2 className="text-4xl font-black mb-6">Practice Questions</h2>
 
             <div className="space-y-6 mb-8">
-              <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
                 <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4 cursor-pointer">
                   1️⃣ What's the main difference between Generative AI and traditional AI?
                 </summary>
@@ -757,7 +757,7 @@ and brief answers for each (50-75 words).`}
                 </p>
               </details>
 
-              <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
                 <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4 cursor-pointer">
                   2️⃣ Why do we call them "Large Language Models"?
                 </summary>
@@ -766,7 +766,7 @@ and brief answers for each (50-75 words).`}
                 </p>
               </details>
 
-              <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
                 <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4 cursor-pointer">
                   3️⃣ What is hallucination in AI?
                 </summary>
@@ -775,7 +775,7 @@ and brief answers for each (50-75 words).`}
                 </p>
               </details>
 
-              <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
                 <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4 cursor-pointer">
                   4️⃣ How does a prompt relate to AI output quality?
                 </summary>
@@ -784,7 +784,7 @@ and brief answers for each (50-75 words).`}
                 </p>
               </details>
 
-              <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
                 <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4 cursor-pointer">
                   5️⃣ What's a knowledge cutoff and why does it matter?
                 </summary>
@@ -794,7 +794,7 @@ and brief answers for each (50-75 words).`}
               </details>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Scenario-Based Questions</h3>
 
               <div className="space-y-6">
@@ -806,7 +806,7 @@ and brief answers for each (50-75 words).`}
                   <p className="text-muted-foreground text-sm mb-3">
                     <strong>Your Question:</strong> What precautions would you take to ensure the AI-generated responses are safe to send to customers?
                   </p>
-                  <p className="text-muted-foreground text-sm p-3 bg-[#FFFDF8] rounded border border-[#E0DCCF]">
+                  <p className="text-muted-foreground text-sm p-3 bg-[#FFFDF8] rounded border border-border">
                     <strong>Suggested Answer:</strong> Verify accuracy (AI hallucinations), check for brand compliance, test with sensitive topics, have humans review before sending, Set clear guardrails in prompts, monitor for bias, keep backups of original guidelines, and implement a review process.
                   </p>
                 </div>
@@ -819,7 +819,7 @@ and brief answers for each (50-75 words).`}
                   <p className="text-muted-foreground text-sm mb-3">
                     <strong>Your Question:</strong> How would you evaluate which model is best for your use case?
                   </p>
-                  <p className="text-muted-foreground text-sm p-3 bg-[#FFFDF8] rounded border border-[#E0DCCF]">
+                  <p className="text-muted-foreground text-sm p-3 bg-[#FFFDF8] rounded border border-border">
                     <strong>Suggested Answer:</strong> Consider cost per API call, model accuracy for your task, privacy/data retention policies, speed requirements, customization options, support availability, and integration difficulty. Test each with your specific use case before deciding.
                   </p>
                 </div>
@@ -832,7 +832,7 @@ and brief answers for each (50-75 words).`}
             <h2 className="text-4xl font-black mb-6">Summary & Key Takeaways</h2>
 
             <div className="grid md:grid-cols-2 gap-6 mb-8">
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h4 className="font-bold text-[#FF9500] mb-3">What You Learned</h4>
                 <ul className="text-muted-foreground text-sm space-y-2">
                   <li>✓ Generative AI creates new content</li>
@@ -844,7 +844,7 @@ and brief answers for each (50-75 words).`}
                 </ul>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <div className="bg-white/5 border border-border rounded-xl p-6">
                 <h4 className="font-bold text-[#FF9500] mb-3">Career Opportunities</h4>
                 <ul className="text-muted-foreground text-sm space-y-2">
                   <li>✓ ML Engineers build AI systems</li>
@@ -857,7 +857,7 @@ and brief answers for each (50-75 words).`}
               </div>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Your Next Steps</h3>
               <ol className="space-y-4 text-muted-foreground">
                 <li className="flex gap-3">
@@ -886,7 +886,7 @@ and brief answers for each (50-75 words).`}
 
           {/* FINAL CTA */}
           <section id="cta" className="mb-16">
-            <div className="bg-gradient-to-r from-[#4F46E5] to-[#06B6D4] rounded-2xl p-12 text-center border border-[#E0DCCF]">
+            <div className="bg-gradient-to-r from-[#4F46E5] to-[#06B6D4] rounded-2xl p-12 text-center border border-border">
               <h2 className="text-3xl font-black mb-4">Ready to Test Your AI Knowledge?</h2>
               <p className="text-lg mb-8 text-white/90">Take our AI interview assessment to evaluate your understanding and get personalized feedback.</p>
               <button 
@@ -900,7 +900,7 @@ and brief answers for each (50-75 words).`}
         </main>
       </div>
 
-      <footer className="py-10 text-center text-muted-foreground text-sm border-t border-[#F0ECE0] mt-16">
+      <footer className="py-10 text-center text-muted-foreground text-sm border-t border-border mt-16">
         © 2026 MentorMuni. Generative AI for Beginners - Free Tutorial with Practical Examples.
       </footer>
     </div>

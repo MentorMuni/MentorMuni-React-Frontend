@@ -120,7 +120,7 @@ export function MentorMuniPosterCarousel({ className = '' }) {
 
   return (
     <div
-      className={`relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-[#F0ECE0] bg-white shadow-[0_8px_32px_rgba(0,0,0,0.06)] ${className}`}
+      className={`relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-[0_8px_32px_rgba(0,0,0,0.06)] ${className}`}
       role="region"
       aria-roledescription="carousel"
       aria-label="How MentorMuni addresses common prep problems"
@@ -147,7 +147,7 @@ export function MentorMuniPosterCarousel({ className = '' }) {
           </div>
         </div>
 
-        <div className="relative flex-1 border-t border-[#F0ECE0] bg-white px-4 py-4 sm:px-5 sm:py-5" aria-live="polite">
+        <div className="relative flex-1 border-t border-border bg-white px-4 py-4 sm:px-5 sm:py-5" aria-live="polite">
           <div className="relative min-h-[200px] sm:min-h-[200px]">
             <AnimatePresence initial={false} mode="sync">
               <motion.div
@@ -161,7 +161,7 @@ export function MentorMuniPosterCarousel({ className = '' }) {
                 <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.16em] text-muted-foreground">{slide.title}</p>
                 <div className="rounded-xl border border-neutral-200/90 bg-neutral-50/90 px-3.5 py-3">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Problem</p>
-                  <p className="mt-1.5 text-[13px] leading-relaxed text-foreground-muted sm:text-sm">{slide.problem}</p>
+                  <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground sm:text-sm">{slide.problem}</p>
                 </div>
                 <div className="rounded-xl border border-[#FF9500]/25 bg-gradient-to-br from-[#FFFDFB] to-[#FFF4E0]/50 px-3.5 py-3 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
                   <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#B45309]">MentorMuni solution</p>
@@ -173,7 +173,7 @@ export function MentorMuniPosterCarousel({ className = '' }) {
         </div>
       </div>
 
-      <div className="flex items-center justify-center gap-2 border-t border-[#F0ECE0] bg-[#FFFDF8] px-4 py-3">
+      <div className="flex items-center justify-center gap-2 border-t border-border bg-[#FFFDF8] px-4 py-3">
         <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
           {POSTER_CAROUSEL_SLIDES.map((s, i) => (
             <button

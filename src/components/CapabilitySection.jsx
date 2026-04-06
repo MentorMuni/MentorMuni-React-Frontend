@@ -55,7 +55,7 @@ const CapabilitySection = () => {
           <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">
             Build Real-World Job Readiness
           </h2>
-          <p className="text-xl text-foreground-muted max-w-3xl mx-auto">
+          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
             Our AI evaluates your skills, identifies gaps, and helps you prepare for real tech interviews with a complete career preparation ecosystem.
           </p>
         </div>
@@ -87,7 +87,7 @@ const CapabilitySection = () => {
                     {capability.title}
                   </h3>
 
-                  <p className="text-foreground-muted text-sm mb-6 leading-relaxed flex-grow">
+                  <p className="text-muted-foreground text-sm mb-6 leading-relaxed flex-grow">
                     {capability.description}
                   </p>
 
@@ -96,7 +96,7 @@ const CapabilitySection = () => {
                     {capability.points.map((point, idx) => (
                       <li key={idx} className="flex items-start gap-3">
                         <Star className={`w-4 h-4 mt-0.5 flex-shrink-0 text-${capability.color}-600`} fill="currentColor" />
-                        <span className="text-sm text-foreground-muted">{point}</span>
+                        <span className="text-sm text-muted-foreground">{point}</span>
                       </li>
                     ))}
                   </ul>

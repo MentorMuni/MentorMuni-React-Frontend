@@ -55,7 +55,7 @@ const MentorDashboard = () => {
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE] text-foreground flex items-center justify-center px-4">
-        <div className="max-w-md w-full bg-white border border-[#E0DCCF] rounded-2xl p-8 text-center shadow-sm">
+        <div className="max-w-md w-full bg-white border border-border rounded-2xl p-8 text-center shadow-sm">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF9500]/15 border border-[#FF9500]/35 mb-6">
             <AlertCircle size={32} className="text-[#FF9500]" />
           </div>
@@ -72,7 +72,7 @@ const MentorDashboard = () => {
             </button>
             <button
               onClick={() => window.location.href = '/'}
-              className="w-full bg-[#FFF4E0] hover:bg-[#FFE8C2] border border-[#E0DCCF] text-foreground font-bold py-3 rounded-lg transition-all"
+              className="w-full bg-[#FFF4E0] hover:bg-[#FFE8C2] border border-border text-foreground font-bold py-3 rounded-lg transition-all"
             >
               Back to Home
             </button>
@@ -92,14 +92,14 @@ const MentorDashboard = () => {
             <a href="/" className="flex-shrink-0">
               <img src="/MentorMuni-React-Frontend/mentormuni-logo.png" alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
             </a>
-            <nav className="hidden md:flex gap-6 text-sm font-medium text-foreground-muted">
+            <nav className="hidden md:flex gap-6 text-sm font-medium text-muted-foreground">
               <a href="/index.html" className="hover:text-[#FF9500] transition-colors">Home</a>
               <a href="/index.html#courses" className="hover:text-[#FF9500] transition-colors">Courses</a>
               <a href="/index.html#contact" className="hover:text-[#FF9500] transition-colors">Contact</a>
             </nav>
           </div>
           <div className="flex items-center gap-4">
-            <button className="p-2 text-muted-foreground hover:text-foreground-muted"><Settings size={20} /></button>
+            <button className="p-2 text-muted-foreground hover:text-muted-foreground"><Settings size={20} /></button>
             <div className="h-8 w-8 rounded-full bg-[#FF9500] flex items-center justify-center text-white text-xs font-bold">JD</div>
           </div>
         </div>
@@ -168,7 +168,7 @@ const MentorDashboard = () => {
             </div>
             <div className="p-4 flex-grow space-y-3">
               {students.map((student) => (
-                <div key={student.id} className="p-4 rounded-2xl border border-slate-50 bg-slate-50/50 flex items-center justify-between group hover:border-[#F0ECE0] hover:bg-white transition-all">
+                <div key={student.id} className="p-4 rounded-2xl border border-slate-50 bg-slate-50/50 flex items-center justify-between group hover:border-border hover:bg-white transition-all">
                   <div>
                     <p className="font-bold text-foreground text-sm">{student.name}</p>
                     <p className="text-xs text-muted-foreground">{student.course}</p>

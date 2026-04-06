@@ -17,7 +17,7 @@ const GapSummaryCard = ({ summary }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E0DCCF] p-8 shadow-sm">
+    <div className="bg-white rounded-2xl border border-border p-8 shadow-sm">
       <div className="flex items-center justify-between mb-6">
         <div>
           <h2 className="text-3xl font-bold text-foreground mb-2">Your Readiness Score</h2>

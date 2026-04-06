@@ -146,7 +146,7 @@ const Tools = () => {
                   {tool.highlights.map((highlight) => (
                     <span
                       key={highlight}
-                      className="text-xs px-2.5 py-1 rounded-full bg-[#FFF8EE] border border-[#F0ECE0] text-foreground-muted font-medium"
+                      className="text-xs px-2.5 py-1 rounded-full bg-[#FFF8EE] border border-border text-muted-foreground font-medium"
                     >
                       {highlight}
                     </span>
@@ -167,7 +167,7 @@ const Tools = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
-          className="mt-14 rounded-2xl border border-[#F0ECE0] bg-[#FFF8EE] px-6 py-8 text-center"
+          className="mt-14 rounded-2xl border border-border bg-[#FFF8EE] px-6 py-8 text-center"
         >
           <p className="text-sm text-muted-foreground mb-5 max-w-xl mx-auto">
             Start with the <span className="font-semibold text-foreground">readiness score</span> to see where you stand in minutes —{' '}

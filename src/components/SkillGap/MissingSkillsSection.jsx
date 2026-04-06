@@ -99,7 +99,7 @@ const MissingSkillsSection = ({ skills }) => {
                   {skillList.map(skillName => (
                     <div
                       key={skillName}
-                      className="bg-[#FFF4E0] border border-[#E0DCCF] rounded-lg px-4 py-2 text-sm text-foreground hover:border-[#FFB347] transition-colors"
+                      className="bg-[#FFF4E0] border border-border rounded-lg px-4 py-2 text-sm text-foreground hover:border-[#FFB347] transition-colors"
                     >
                       {skillName}
                     </div>
@@ -114,7 +114,7 @@ const MissingSkillsSection = ({ skills }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E0DCCF] p-8 shadow-sm">
+    <div className="bg-white rounded-2xl border border-border p-8 shadow-sm">
       <div className="mb-6">
         <h2 className="text-3xl font-bold text-foreground mb-2">Missing Skills Analysis</h2>
         <p className="text-muted-foreground">

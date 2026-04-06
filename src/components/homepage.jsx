@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, lazy, Suspense, createElement } from 'react';
 import { motion, useInView, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
@@ -10,27 +10,36 @@ import {
   CONTACT_PHONE_HREF,
   HERO_EYEBROW,
   HERO_EARLY_BIRD_RIBBON,
-  HERO_HEADLINE,
-  HERO_HEADLINE_ACCENT,
-  HERO_SUBHEADLINE,
   HERO_PROBLEM_LABEL,
   HERO_PROBLEM,
   HERO_SOLUTION_LABEL,
   HERO_SOLUTION,
-  HERO_PROOF_STAT,
+  HERO_YEAR_COPY,
   READINESS_TEST_COUPON_BADGE,
   READINESS_TEST_COUPON_OFFER_HEADLINE,
   READINESS_TEST_COUPON_OFFER_HOW,
+  CONVERSION_WHY_SECTION_HEADLINE,
+  CONVERSION_WHY_SECTION_SUB,
+  CONVERSION_WHY_CARDS,
+  FINAL_CTA_HEADLINE,
+  FINAL_CTA_HEADLINE_ACCENT,
+  FINAL_CTA_BODY,
 } from '../constants/brandCopy';
 import { AnimatedPrepMapPanel } from './homepage/prepMapPanel';
-import { MentorMuniPosterCarousel } from './homepage/posterCarousel';
+import { HeroFlagshipVisual } from './homepage/HeroFlagshipVisual';
+import { HeroLoopVideo } from './homepage/HeroLoopVideo';
+import { HeroProofSpec } from './homepage/HeroProofSpec';
+
+const MentorMuniPosterCarousel = lazy(() =>
+  import('./homepage/posterCarousel').then((m) => ({ default: m.MentorMuniPosterCarousel }))
+);
 import {
   ArrowRight, Brain, Target,
   BarChart3, Cpu, TrendingUp,
   GraduationCap, Building2, Users,
   Mail, Phone, Check, X,
   BookOpen, Layers, Sparkles, CalendarClock, Mic2,
-  Clock, Gift, UserX, Gauge,
+  Gift, Gauge,
 } from 'lucide-react';
 
 /* ─── Scroll-reveal wrapper ─────────────────────────────────── */
@@ -51,7 +60,7 @@ const FadeUp = ({ children, delay = 0, className = '' }) => {
 };
 
 /** Staggered line for long “Why MentorMuni” copy — readable at a glance */
-const StoryLine = ({ children, className = '', delay = 0, as: Tag = 'p' }) => {
+const StoryLine = ({ children, className = '', delay = 0, as: Comp = 'p' }) => {
   const reduceMotion = useReducedMotion();
   return (
     <motion.div
@@ -64,7 +73,7 @@ const StoryLine = ({ children, className = '', delay = 0, as: Tag = 'p' }) => {
         ease: [0.22, 1, 0.36, 1],
       }}
     >
-      <Tag className={className}>{children}</Tag>
+      {createElement(Comp, { className }, children)}
     </motion.div>
   );
 };
@@ -110,6 +119,7 @@ const STUDENT_SNIPPETS = [
     tag: '4th Year · CSE',
     insight: 'Named the real gap',
     text: 'Seniors kept saying “practice more,” but nobody said what to practice. The readiness breakdown pointed at System Design—not everything at once—so I could prep with a target instead of a guess.',
+    proofMetric: 'Outcome: top gap named in one flow — not “study everything”',
     Icon: Target,
   },
   {
@@ -119,6 +129,7 @@ const STUDENT_SNIPPETS = [
     tag: 'Final Year · IT',
     insight: 'Feedback on how you sound',
     text: 'The AI mock was blunt: my answers sounded memorised, not understood. I changed how I open and structure answers under pressure—not just the facts inside them.',
+    proofMetric: 'Panel-style feedback: how you sound, not memorised lines',
     Icon: Mic2,
   },
   {
@@ -128,6 +139,7 @@ const STUDENT_SNIPPETS = [
     tag: '3rd Year · CSE',
     insight: 'Specific weak spot',
     text: 'The score split my DSA by pattern and showed strings were the weak link. Random LeetCode never made that obvious; I finally knew what to drill instead of grinding everything.',
+    proofMetric: 'DSA split by pattern — knew to drill strings, not random LC',
     Icon: BarChart3,
   },
 ];
@@ -152,7 +164,7 @@ const studentStoryCard = {
 /* ─── 2nd / 3rd year prep — tab data + benefit tiles ───────────────── */
 const EARLY_YEAR_TRACKS = {
   y2: {
-    label: '2nd year',
+    label: '1st–2nd year',
     shortLine: 'Foundations · core subjects · first projects',
     detail:
       "See how interview-style thinking maps to what you're in class now.",
@@ -204,7 +216,9 @@ const earlyBenefitItem = {
    ═══════════════════════════════════════════════════════════════ */
 const HomePage = () => {
   const [earlyYear, setEarlyYear] = useState('y2');
+  const [heroYear, setHeroYear] = useState('y4');
   const reduceMotion = useReducedMotion();
+  const heroCopy = HERO_YEAR_COPY[heroYear];
 
   return (
     <div className="bg-background text-foreground overflow-x-hidden">
@@ -231,22 +245,11 @@ const HomePage = () => {
           33% { transform: translate(3%, 2%) scale(1.05); opacity: 0.65; }
           66% { transform: translate(-2%, -1%) scale(0.98); opacity: 0.55; }
         }
-        .mm-hero-proof-strip {
-          background-size: 200% 200%;
-          animation: mm-hero-proof-shimmer 12s ease-in-out infinite;
-        }
-        @keyframes mm-hero-proof-shimmer {
-          0%, 100% { background-position: 0% 50%; }
-          50% { background-position: 100% 50%; }
-        }
         .mm-hero-value-mesh {
           background-image:
             radial-gradient(ellipse 80% 60% at 10% 20%, rgba(255, 149, 0, 0.09), transparent 50%),
             radial-gradient(ellipse 70% 50% at 90% 80%, rgba(6, 182, 212, 0.07), transparent 45%),
             linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 251, 245, 0.96) 50%, rgba(248, 250, 252, 0.94) 100%);
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .mm-hero-proof-strip { animation: none !important; background-position: 0% 50% !important; }
         }
         /* Eyebrow pills: soft glow pulse (text stays sharp — no sliding gradient) */
         .mm-hero-eyebrow-pill {
@@ -272,144 +275,201 @@ const HomePage = () => {
         }
       `}</style>
 
-      {/* ════════════════ HERO — editorial layout, calm canvas, strong type ════════════════ */}
-      <section className="relative flex min-h-[min(85vh,760px)] items-start border-b border-neutral-200/60 bg-gradient-to-b from-neutral-50 via-[#fffdf8] to-[#faf8f5] pt-8 pb-14 md:pt-10 md:pb-16 lg:pt-10 lg:pb-20">
+      {/* ════════════════ HERO — year-personalized copy + flagship visual + early bird ════════════════ */}
+      <section className="relative flex min-h-[min(88vh,840px)] items-start border-b border-neutral-200/60 bg-gradient-to-b from-neutral-50 via-[#fffdf8] to-[#faf8f5] pt-8 pb-14 md:pt-10 md:pb-16 lg:pt-12 lg:pb-20">
         <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
           <div
-            className="mm-hero-orb absolute -right-32 top-0 h-[520px] w-[520px] rounded-full bg-[rgba(255,149,0,0.06)] blur-[120px]"
+            className="mm-hero-orb absolute -right-32 top-0 h-[520px] w-[520px] rounded-full bg-[rgba(255,149,0,0.07)] blur-[120px]"
             style={{ animation: 'mm-orb-drift 18s ease-in-out infinite' }}
           />
           <div
-            className="mm-hero-orb absolute -bottom-32 left-1/4 h-[380px] w-[380px] rounded-full bg-[rgba(251,146,60,0.05)] blur-[100px]"
+            className="mm-hero-orb absolute -bottom-32 left-1/4 h-[380px] w-[380px] rounded-full bg-[rgba(251,146,60,0.06)] blur-[100px]"
             style={{ animation: 'mm-orb-drift 22s ease-in-out infinite reverse' }}
           />
+          <div
+            className="absolute inset-0 opacity-[0.35]"
+            style={{
+              backgroundImage: `radial-gradient(circle at 20% 30%, rgba(255,149,0,0.04) 0%, transparent 45%),
+                radial-gradient(circle at 80% 70%, rgba(6,182,212,0.05) 0%, transparent 40%)`,
+            }}
+          />
+          <div className="mm-grain absolute inset-0 z-[1]" aria-hidden />
         </div>
 
-        <div className="relative mx-auto flex w-full max-w-7xl flex-col items-stretch gap-10 px-5 sm:px-6 lg:gap-12 lg:px-8">
-          {/* Mobile: headline → early bird strip → … | lg: grid with early bird left, headline right */}
-          <div className="flex flex-col gap-6 lg:grid lg:grid-cols-[minmax(260px,320px)_minmax(0,1fr)] lg:items-start lg:gap-10 xl:grid-cols-[minmax(280px,340px)_minmax(0,1fr)] xl:gap-12">
-            {/* Headline block — first on mobile, right column on lg */}
-            <div className="order-1 w-full text-center lg:order-2 lg:min-w-0 lg:text-left">
-              <motion.h1
-                initial={{ opacity: 0, y: 14 }}
+        <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-stretch gap-8 px-5 sm:px-6 lg:gap-10 lg:px-8">
+          {/*
+            Hero grid (lg+): left = Early bird + live scorecard preview; right = I am in + headline + sub.
+            Mobile: headline column first (value prop), then promo + scorecard.
+          */}
+          {/* First column is content-width (cards ~420–440px), not 50% — avoids a huge dead zone beside narrow cards */}
+          <div className="grid w-full grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)] lg:gap-x-6 lg:gap-y-0 xl:gap-x-8">
+            {/* Left column — Early bird, then scorecard (desktop); stacks below copy on mobile */}
+            <div className="order-2 flex w-full min-w-0 flex-col gap-6 sm:gap-7 lg:order-1 xl:gap-8">
+              <motion.div
+                initial={reduceMotion ? false : { opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.03 }}
-                className="mx-auto max-w-[42rem] text-4xl font-black leading-[1.08] tracking-tight text-foreground sm:text-5xl md:max-w-[48rem] md:text-6xl lg:mx-0 lg:max-w-[40rem] xl:max-w-[44rem]"
+                transition={{ duration: 0.45, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
+                className="w-full lg:max-w-none"
+                aria-label={`${HERO_EARLY_BIRD_RIBBON}: ${READINESS_TEST_COUPON_OFFER_HEADLINE}`}
               >
-                <span className="block">{HERO_HEADLINE}</span>
-                <span className="mt-2 block sm:mt-3 mm-hero-accent bg-gradient-to-r from-[#ea580c] via-[#FF9500] to-[#f59e0b] bg-clip-text text-transparent">
-                  {HERO_HEADLINE_ACCENT}
-                </span>
-              </motion.h1>
-
-              <motion.p
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, delay: 0.08 }}
-                className="mx-auto mt-4 max-w-[36rem] px-1 text-base leading-relaxed text-muted-foreground sm:mt-5 sm:text-lg lg:mx-0 lg:max-w-xl"
-              >
-                {HERO_SUBHEADLINE}
-              </motion.p>
+                <div className="rounded-2xl border border-amber-200/80 bg-gradient-to-br from-[#fff4e6] via-[#fffbeb] to-[#fff4e6] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_12px_40px_-20px_rgba(234,88,12,0.18)] sm:p-6">
+                  <div className="flex flex-col gap-4">
+                    <span className="inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full bg-gradient-to-r from-[#FF9500] to-[#EA580C] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-white shadow-[0_2px_8px_rgba(234,88,12,0.35)]">
+                      <Sparkles className="h-3.5 w-3.5 text-amber-100" strokeWidth={2.5} aria-hidden />
+                      {HERO_EARLY_BIRD_RIBBON}
+                    </span>
+                    <div className="min-w-0 space-y-2 text-left">
+                      <p className="text-[15px] font-bold leading-snug text-foreground sm:text-base">
+                        {READINESS_TEST_COUPON_OFFER_HEADLINE}
+                      </p>
+                      <p className="text-sm font-medium leading-relaxed text-muted-foreground">
+                        {READINESS_TEST_COUPON_OFFER_HOW}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={goToStartAssessment}
+                      className="group relative inline-flex w-full min-h-[44px] items-center justify-center gap-2 overflow-hidden rounded-full bg-[#FF9500] px-4 py-3 text-sm font-bold text-white shadow-[0_4px_14px_-4px_rgba(234,88,12,0.55)] transition-all hover:bg-[#E88600] active:scale-[0.98] sm:min-h-[48px] sm:text-[15px]"
+                    >
+                      <span
+                        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+                        style={{
+                          background:
+                            'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.25) 50%, transparent 60%)',
+                          transform: 'translateX(-30%)',
+                        }}
+                        aria-hidden
+                      />
+                      <span className="relative text-center leading-tight">{PRIMARY_CTA_LABEL}</span>
+                      <ArrowRight size={18} className="relative shrink-0 opacity-95 transition-transform group-hover:translate-x-0.5" aria-hidden />
+                    </button>
+                  </div>
+                </div>
+              </motion.div>
 
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
-                transition={{ delay: 0.12 }}
-                className="mt-5 flex flex-wrap items-center justify-center gap-2 sm:mt-6 lg:justify-start"
-                aria-label={HERO_PROOF_STAT}
+                transition={{ delay: 0.1 }}
+                className="w-full"
               >
-                {[
-                  { Icon: Clock, text: '~5 min' },
-                  { Icon: Gift, text: 'Free' },
-                  { Icon: UserX, text: 'No signup' },
-                  { Icon: Gauge, text: 'Instant score' },
-                ].map(({ Icon, text }) => (
-                  <span
-                    key={text}
-                    className="mm-hero-proof-strip inline-flex items-center gap-1.5 rounded-xl border border-orange-200/50 bg-gradient-to-r from-[#FFF8F0] via-white to-[#FFFDF8] px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground shadow-[0_2px_12px_-4px_rgba(255,149,0,0.2)] sm:gap-2 sm:px-3 sm:text-[11px]"
-                  >
-                    <Icon className="h-3.5 w-3.5 shrink-0 text-[#EA580C] sm:h-4 sm:w-4" strokeWidth={2.2} aria-hidden />
-                    {text}
-                  </span>
-                ))}
+                <HeroFlagshipVisual className="lg:mx-0" />
               </motion.div>
             </div>
 
-            {/* Early bird — full-width strip (<lg); left column card (lg+) — one CTA */}
-            <motion.div
-              initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.45, delay: 0.14, ease: [0.22, 1, 0.36, 1] }}
-              className="order-2 -mx-5 w-[calc(100%+2.5rem)] sm:-mx-6 sm:w-[calc(100%+3rem)] lg:order-1 lg:mx-0 lg:w-full lg:max-w-[340px] lg:self-start xl:max-w-[360px]"
-              aria-label={`${HERO_EARLY_BIRD_RIBBON}: ${READINESS_TEST_COUPON_OFFER_HEADLINE}`}
-            >
-              <div className="border-y border-amber-200/80 bg-gradient-to-r from-[#fff4e6] via-[#fffbeb] to-[#fff4e6] py-3.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9)] sm:py-4 lg:rounded-2xl lg:border lg:border-amber-200/80 lg:bg-gradient-to-b lg:from-[#fff8f0] lg:via-[#fffbeb] lg:to-[#fff4e6] lg:py-5 lg:shadow-[0_12px_40px_-16px_rgba(234,88,12,0.2)]">
-                <div className="mx-auto flex max-w-3xl flex-col items-stretch gap-3 px-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:px-6 lg:max-w-none lg:flex-col lg:items-stretch lg:gap-4 lg:px-5">
-                  <div className="flex min-w-0 flex-col items-center gap-2.5 text-center sm:flex-row sm:items-center sm:gap-4 sm:text-left lg:flex-col lg:items-start lg:gap-3 lg:text-left">
-                    <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-gradient-to-r from-[#FF9500] to-[#EA580C] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.22em] text-white shadow-[0_2px_8px_rgba(234,88,12,0.35)]">
-                      <Sparkles className="h-3.5 w-3.5 text-amber-100" strokeWidth={2.5} aria-hidden />
-                      {HERO_EARLY_BIRD_RIBBON}
-                    </span>
-                    <div className="min-w-0">
-                      <p className="text-[15px] font-bold leading-snug text-foreground sm:text-base lg:text-[15px] xl:text-base">
-                        {READINESS_TEST_COUPON_OFFER_HEADLINE}
-                      </p>
-                      <p className="mt-1 text-[11px] font-medium leading-snug text-muted-foreground sm:text-xs">
-                        {READINESS_TEST_COUPON_OFFER_HOW}
-                      </p>
-                    </div>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={goToStartAssessment}
-                    className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-full bg-[#FF9500] px-5 py-2.5 text-xs font-bold text-white shadow-[0_4px_14px_-4px_rgba(234,88,12,0.55)] transition hover:bg-[#E88600] sm:w-auto sm:min-w-[12rem] sm:py-2.5 sm:text-sm lg:w-full lg:min-w-0 xl:text-sm"
-                  >
-                    {PRIMARY_CTA_LABEL}
-                    <ArrowRight size={16} className="opacity-95" aria-hidden />
-                  </button>
+            {/* Right column — eyebrow pills, then year selector + headline */}
+            <div className="order-1 flex w-full min-w-0 flex-col gap-4 sm:gap-5 lg:order-2 lg:gap-6 lg:pt-1">
+              <div className="-mx-1 w-full lg:mx-0">
+                <div className="flex max-w-full flex-wrap items-center justify-center gap-1.5 sm:gap-2 lg:justify-start">
+                  {HERO_EYEBROW.split(' · ').map((part, idx) => (
+                    <motion.span
+                      key={`hero-eyebrow-${part}-${idx}`}
+                      initial={reduceMotion ? false : { opacity: 0, y: 10, scale: 0.94 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={
+                        reduceMotion
+                          ? { duration: 0 }
+                          : {
+                              delay: 0.05 + idx * 0.14,
+                              type: 'spring',
+                              stiffness: 420,
+                              damping: 26,
+                              mass: 0.7,
+                            }
+                      }
+                      whileHover={
+                        reduceMotion
+                          ? undefined
+                          : { scale: 1.03, transition: { type: 'spring', stiffness: 500, damping: 22 } }
+                      }
+                      className={`mm-hero-eyebrow-pill mm-hero-eyebrow-pill-glow inline-flex shrink-0 items-center gap-1 rounded-full border border-orange-200/60 px-2 py-1 text-[9px] font-bold uppercase leading-snug tracking-[0.08em] text-foreground ring-1 ring-white/90 sm:px-2.5 sm:py-1.5 sm:text-[10px] sm:tracking-[0.1em] md:gap-1.5 md:px-3 md:text-[11px] md:tracking-[0.12em] ${idx === 1 ? 'mm-eyebrow-d1' : ''} ${idx === 2 ? 'mm-eyebrow-d2' : ''}`}
+                    >
+                      {idx === 0 ? (
+                        <GraduationCap className="h-2.5 w-2.5 shrink-0 text-[#EA580C] sm:h-3 sm:w-3 md:h-3.5 md:w-3.5" strokeWidth={2.2} aria-hidden />
+                      ) : idx === 1 ? (
+                        <Mic2 className="h-2.5 w-2.5 shrink-0 text-[#0891B2] sm:h-3 sm:w-3 md:h-3.5 md:w-3.5" strokeWidth={2.2} aria-hidden />
+                      ) : (
+                        <Sparkles className="h-2.5 w-2.5 shrink-0 text-[#EA580C] sm:h-3 sm:w-3 md:h-3.5 md:w-3.5" strokeWidth={2.2} aria-hidden />
+                      )}
+                      {part}
+                    </motion.span>
+                  ))}
                 </div>
               </div>
-            </motion.div>
+
+              <div className="flex flex-col gap-3 sm:gap-3.5">
+                <p className="text-center text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground lg:text-left">
+                  I am in
+                </p>
+                <div
+                  className="flex flex-wrap justify-center gap-2 lg:justify-start"
+                  role="tablist"
+                  aria-label="Select your year of study or experience level"
+                >
+                  {[
+                    { id: 'y2', label: '1st–2nd year' },
+                    { id: 'y3', label: '3rd year' },
+                    { id: 'y4', label: '4th / grad' },
+                    { id: 'yexp', label: 'Experienced' },
+                  ].map((y) => (
+                    <button
+                      key={y.id}
+                      type="button"
+                      role="tab"
+                      aria-selected={heroYear === y.id}
+                      onClick={() => setHeroYear(y.id)}
+                      className={`rounded-full border px-4 py-2.5 text-xs font-bold transition-all duration-200 sm:text-sm ${
+                        heroYear === y.id
+                          ? 'border-[#FF9500] bg-[#FFF4E0] text-[#CC7000] shadow-[0_4px_24px_-10px_rgba(255,149,0,0.45)] ring-2 ring-[#FFB347]/35'
+                          : 'border-border bg-white/90 text-muted-foreground hover:border-[#FFB347]/60 hover:text-foreground active:scale-[0.98]'
+                      }`}
+                    >
+                      {y.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="w-full text-center lg:text-left">
+                <motion.h1
+                  key={heroYear}
+                  initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                  className="typo-display mx-auto max-w-[44rem] text-foreground lg:mx-0 lg:max-w-[34rem]"
+                >
+                  <span className="block">{heroCopy.headline}</span>
+                  <span className="mt-2 block sm:mt-3 mm-hero-accent bg-gradient-to-r from-[#ea580c] via-[#FF9500] to-[#f59e0b] bg-clip-text text-transparent">
+                    {heroCopy.accent}
+                  </span>
+                </motion.h1>
+
+                <motion.p
+                  key={`${heroYear}-sub`}
+                  initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.38, delay: 0.04 }}
+                  className="typo-body-lg mx-auto mt-4 max-w-prose-marketing px-1 text-muted-foreground sm:mt-5 lg:mx-0 lg:max-w-[36rem] lg:px-0"
+                >
+                  {heroCopy.sub}
+                </motion.p>
+              </div>
+            </div>
           </div>
 
-          {/* ── Intro: eyebrow chips ── */}
-          <div className="mx-auto w-full max-w-[36rem]">
-            <div className="mb-6">
-              <div className="-mx-1 flex max-w-full flex-nowrap items-center gap-1 overflow-x-auto px-1 pb-0.5 [-ms-overflow-style:none] [scrollbar-width:none] sm:mx-0 sm:gap-1.5 sm:overflow-visible sm:px-0 [&::-webkit-scrollbar]:hidden">
-                {HERO_EYEBROW.split(' · ').map((part, idx) => (
-                  <motion.span
-                    key={`${part}-${idx}`}
-                    initial={reduceMotion ? false : { opacity: 0, y: 10, scale: 0.94 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    transition={
-                      reduceMotion
-                        ? { duration: 0 }
-                        : {
-                            delay: 0.05 + idx * 0.14,
-                            type: 'spring',
-                            stiffness: 420,
-                            damping: 26,
-                            mass: 0.7,
-                          }
-                    }
-                    whileHover={
-                      reduceMotion
-                        ? undefined
-                        : { scale: 1.03, transition: { type: 'spring', stiffness: 500, damping: 22 } }
-                    }
-                    className={`mm-hero-eyebrow-pill mm-hero-eyebrow-pill-glow inline-flex shrink-0 items-center gap-1 rounded-full border border-orange-200/60 px-2 py-1 text-[9px] font-bold uppercase leading-snug tracking-[0.08em] text-foreground ring-1 ring-white/90 sm:px-2.5 sm:py-1.5 sm:text-[10px] sm:tracking-[0.1em] md:gap-1.5 md:px-3 md:text-[11px] md:tracking-[0.12em] ${idx === 1 ? 'mm-eyebrow-d1' : ''} ${idx === 2 ? 'mm-eyebrow-d2' : ''}`}
-                  >
-                    {idx === 0 ? (
-                      <GraduationCap className="h-2.5 w-2.5 shrink-0 text-[#EA580C] sm:h-3 sm:w-3 md:h-3.5 md:w-3.5" strokeWidth={2.2} aria-hidden />
-                    ) : idx === 1 ? (
-                      <Mic2 className="h-2.5 w-2.5 shrink-0 text-[#0891B2] sm:h-3 sm:w-3 md:h-3.5 md:w-3.5" strokeWidth={2.2} aria-hidden />
-                    ) : (
-                      <Sparkles className="h-2.5 w-2.5 shrink-0 text-[#EA580C] sm:h-3 sm:w-3 md:h-3.5 md:w-3.5" strokeWidth={2.2} aria-hidden />
-                    )}
-                    {part}
-                  </motion.span>
-                ))}
-              </div>
+          {/* Proof strip + loop video — full width below the hero grid */}
+          <div className="flex w-full flex-col items-center gap-8 lg:gap-10">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.1 }}
+              className="w-full max-w-2xl"
+            >
+              <HeroProofSpec />
+            </motion.div>
+
+            <div className="flex w-full max-w-3xl justify-center">
+              <HeroLoopVideo />
             </div>
           </div>
 
@@ -445,13 +505,13 @@ const HomePage = () => {
                 />
                 <div className="mm-hero-value-mesh relative flex min-h-0 flex-1 flex-col space-y-0 p-5 sm:p-7">
                   <div className="relative rounded-2xl border border-orange-200/45 bg-gradient-to-br from-orange-50/90 via-white/60 to-transparent p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] sm:p-5">
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-orange-200/60 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#9A3412] shadow-sm">
+                    <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-orange-200/60 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground shadow-sm">
                       <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-amber-500 text-white shadow-sm">
                         <span className="h-2 w-2 rounded-full bg-white" aria-hidden />
                       </span>
                       {HERO_PROBLEM_LABEL}
                     </div>
-                    <p className="text-[15px] leading-[1.65] text-foreground-muted sm:text-base">{HERO_PROBLEM}</p>
+                    <p className="text-base leading-relaxed text-muted-foreground">{HERO_PROBLEM}</p>
                   </div>
 
                   <div className="relative shrink-0 py-4 sm:py-5">
@@ -462,13 +522,13 @@ const HomePage = () => {
                   </div>
 
                   <div className="relative rounded-2xl border border-cyan-200/40 bg-gradient-to-br from-cyan-50/80 via-white/70 to-[#FAFAF9] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] sm:p-5">
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-200/55 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-cyan-950 shadow-sm">
+                    <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-200/55 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-900 shadow-sm">
                       <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-teal-600 text-white shadow-sm">
                         <Check className="h-3 w-3" strokeWidth={3} aria-hidden />
                       </span>
                       {HERO_SOLUTION_LABEL}
                     </div>
-                    <p className="text-[15px] font-medium leading-[1.65] text-foreground sm:text-base">{HERO_SOLUTION}</p>
+                    <p className="text-base font-medium leading-relaxed text-foreground">{HERO_SOLUTION}</p>
                   </div>
                 </div>
               </div>
@@ -480,7 +540,19 @@ const HomePage = () => {
               transition={{ duration: 0.5, delay: 0.1 }}
               className="flex h-full min-h-[min(52vh,520px)] flex-col"
             >
-              <MentorMuniPosterCarousel className="h-full w-full min-h-[min(52vh,520px)] shadow-[0_24px_80px_-48px_rgba(0,0,0,0.35)] ring-1 ring-black/[0.04]" />
+              <Suspense
+                fallback={
+                  <div
+                    className="flex h-full min-h-[min(52vh,520px)] w-full animate-pulse flex-col rounded-[1.25rem] bg-gradient-to-br from-[#FFF8EE] via-[#FFFDF8] to-white ring-1 ring-border"
+                    aria-hidden
+                  >
+                    <div className="m-4 h-8 w-1/3 rounded-lg bg-[#F0ECE0]" />
+                    <div className="mx-4 flex-1 rounded-xl bg-[#faf8f5]" />
+                  </div>
+                }
+              >
+                <MentorMuniPosterCarousel className="h-full w-full min-h-[min(52vh,520px)] shadow-[0_24px_80px_-48px_rgba(0,0,0,0.35)] ring-1 ring-black/[0.04]" />
+              </Suspense>
             </motion.div>
           </motion.div>
 
@@ -494,7 +566,7 @@ const HomePage = () => {
               <button
                 type="button"
                 onClick={goToStartAssessment}
-                className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-8 py-3.5 text-sm font-semibold text-white shadow-[0_8px_32px_-12px_rgba(234,88,12,0.55)] transition hover:bg-[#E88600] sm:w-auto sm:py-4 sm:text-[15px]"
+                className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-8 py-3.5 text-sm font-semibold text-white shadow-[0_8px_32px_-12px_rgba(234,88,12,0.55)] transition hover:bg-[#E88600] sm:w-auto sm:py-4 sm:text-base"
               >
                 {PRIMARY_CTA_LABEL}
                 <ArrowRight size={18} className="transition-transform group-hover:translate-x-0.5" />
@@ -515,7 +587,7 @@ const HomePage = () => {
             >
               <Link
                 to="/waitlist"
-                className="font-medium text-foreground-muted underline decoration-neutral-300 underline-offset-4 transition hover:text-[#CC7000] hover:decoration-[#FFB347]"
+                className="font-medium text-muted-foreground underline decoration-neutral-300 underline-offset-4 transition hover:text-[#CC7000] hover:decoration-[#FFB347]"
               >
                 Mentorship waitlist
               </Link>
@@ -526,7 +598,7 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ 2ND & 3RD YEAR — scannable flow + tab + animated map ════════════════ */}
-      <section className="relative overflow-hidden border-t border-[#F0ECE0] bg-[#FFF8EE] py-16 px-6">
+      <section className="relative overflow-hidden border-t border-border bg-[#FFF8EE] py-16 px-6">
         <style>{`
           @keyframes mm-flow-arrow {
             0%, 100% { transform: translateX(0); opacity: 0.35; }
@@ -593,7 +665,7 @@ const HomePage = () => {
                   </span>
                 </h2>
 
-                <div className="mb-6 rounded-2xl border border-[#F0ECE0] bg-white/90 px-3 py-4 shadow-sm sm:px-5">
+                <div className="mb-6 rounded-2xl border border-border bg-white/90 px-3 py-4 shadow-sm sm:px-5">
                   <p className="mb-3 text-center text-[10px] font-medium uppercase tracking-[0.14em] text-hint">
                     Your prep journey
                   </p>
@@ -649,7 +721,7 @@ const HomePage = () => {
                           >
                             {s.step}
                           </span>
-                          <span className="max-w-[8rem] text-[9px] font-bold uppercase leading-tight tracking-wide text-foreground-muted sm:max-w-[9rem] sm:text-[10px]">
+                          <span className="max-w-[8rem] text-[10px] font-bold uppercase leading-tight tracking-wide text-muted-foreground sm:max-w-[9rem]">
                             {s.label}
                           </span>
                         </motion.div>
@@ -662,7 +734,7 @@ const HomePage = () => {
                 </div>
 
                 <div
-                  className="mb-5 flex max-w-md rounded-2xl border border-[#F0ECE0] bg-[#FFF4E0]/50 p-1.5"
+                  className="mb-5 flex max-w-md rounded-2xl border border-border bg-[#FFF4E0]/50 p-1.5"
                   role="tablist"
                   aria-label="Choose year focus"
                 >
@@ -674,7 +746,7 @@ const HomePage = () => {
                       aria-selected={earlyYear === key}
                       onClick={() => setEarlyYear(key)}
                       className={`relative flex-1 rounded-xl py-3 text-sm font-bold transition-colors ${
-                        earlyYear === key ? 'text-foreground' : 'text-hint hover:text-foreground-muted'
+                        earlyYear === key ? 'text-foreground' : 'text-hint hover:text-muted-foreground'
                       }`}
                     >
                       {earlyYear === key && (
@@ -699,7 +771,7 @@ const HomePage = () => {
                     className="mb-5 max-w-xl rounded-2xl border border-[#FFB347]/35 bg-gradient-to-br from-white via-[#FFFCF7] to-[#FFF4E0]/70 p-5 shadow-[0_8px_32px_rgba(255,149,0,0.08)]"
                   >
                     <p className="text-sm font-bold text-foreground">{EARLY_YEAR_TRACKS[earlyYear].shortLine}</p>
-                    <p className="mt-2 text-sm leading-relaxed text-foreground-muted">{EARLY_YEAR_TRACKS[earlyYear].detail}</p>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{EARLY_YEAR_TRACKS[earlyYear].detail}</p>
                   </motion.div>
                 </AnimatePresence>
 
@@ -721,7 +793,7 @@ const HomePage = () => {
                       variants={earlyBenefitItem}
                       whileHover={{ y: -5, scale: 1.02 }}
                       transition={{ type: 'spring', stiffness: 400, damping: 24 }}
-                      className="group relative overflow-hidden rounded-2xl border border-[#F0ECE0] bg-white p-3.5 shadow-sm"
+                      className="group relative overflow-hidden rounded-2xl border border-border bg-white p-3.5 shadow-sm"
                     >
                       <div
                         className={`absolute -right-6 -top-6 h-16 w-16 rounded-full bg-gradient-to-br ${b.gradient} opacity-20 blur-2xl transition-opacity group-hover:opacity-45`}
@@ -735,7 +807,7 @@ const HomePage = () => {
                         </div>
                       </div>
                       <p className="text-xs font-semibold text-foreground">{b.title}</p>
-                      <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">{b.sub}</p>
+                      <p className="mt-0.5 text-xs leading-snug text-muted-foreground">{b.sub}</p>
                     </motion.div>
                   ))}
                 </motion.div>
@@ -748,15 +820,19 @@ const HomePage = () => {
                   Check prep on my topics — free
                   <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
                 </button>
-                <div className="mt-3 max-w-xl space-y-2 text-xs leading-relaxed text-foreground-muted sm:text-sm">
+                <div className="mt-3 max-w-xl space-y-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
                   <p className="font-medium text-foreground">When you begin, pick the option that fits you:</p>
                   <p>
-                    <span className="font-semibold text-[#FF9500]">2nd and 3rd year</span>
+                    <span className="font-semibold text-[#FF9500]">1st–2nd and 3rd year</span>
                     {' — '}internships, core subjects, and building readiness before final year.
                   </p>
                   <p>
-                    <span className="font-semibold text-[#CC7000]">4th Year</span>
+                    <span className="font-semibold text-[#CC7000]">4th year / graduate</span>
                     {' — '}when placements and full-time hiring are your main focus.
+                  </p>
+                  <p>
+                    <span className="font-semibold text-[#0891b2]">Experienced</span>
+                    {' — '}interview readiness for panels and moves, plus skill readiness to see where you stand before you invest months in the wrong stack.
                   </p>
                 </div>
               </motion.div>
@@ -775,7 +851,7 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ WHY MENTORMUNI — origin story + urgency (leads the page narrative) ════════════════ */}
-      <section className="relative py-16 md:py-20 px-6 border-t border-[#F0ECE0] overflow-hidden bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE]">
+      <section className="relative py-16 md:py-20 px-6 border-t border-border overflow-hidden bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE]">
         <div className="pointer-events-none absolute right-0 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-[rgba(255,149,0,0.1)] blur-[100px]" aria-hidden />
         <div className="max-w-5xl mx-auto relative">
           <div className="mb-10">
@@ -805,7 +881,7 @@ const HomePage = () => {
                 />
                 <StoryLine
                   delay={0.12}
-                  className="mb-3 pl-4 text-[10px] font-bold uppercase tracking-[0.18em] text-[#B45309]"
+                  className="mb-3 pl-4 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground"
                   as="p"
                 >
                   What we kept seeing
@@ -813,19 +889,19 @@ const HomePage = () => {
                 <div className="space-y-3 pl-4">
                   <StoryLine
                     delay={0.18}
-                    className="relative text-sm leading-relaxed text-foreground-muted md:text-[15px]"
+                    className="relative text-sm leading-relaxed text-muted-foreground md:text-base"
                   >
                     We started MentorMuni after seeing the same pattern: final-year students showing up for interviews with almost no structured prep.
                   </StoryLine>
                   <StoryLine
                     delay={0.28}
-                    className="relative text-sm leading-relaxed text-foreground-muted md:text-[15px]"
+                    className="relative text-sm leading-relaxed text-muted-foreground md:text-base"
                   >
                     No measured baseline, no serious mock round—sometimes no practice speaking answers under pressure.
                   </StoryLine>
                   <StoryLine
                     delay={0.38}
-                    className="relative text-sm font-medium leading-relaxed text-foreground-muted md:text-[15px]"
+                    className="relative text-sm font-medium leading-relaxed text-muted-foreground md:text-base"
                   >
                     The first time they truly get evaluated is often already the real interview—and the rejection email follows.
                   </StoryLine>
@@ -839,7 +915,7 @@ const HomePage = () => {
                 />
                 <StoryLine
                   delay={0.22}
-                  className="mb-3 pl-4 text-[10px] font-bold uppercase tracking-[0.18em] text-emerald-800"
+                  className="mb-3 pl-4 text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-800"
                   as="p"
                 >
                   Why we built it
@@ -847,19 +923,19 @@ const HomePage = () => {
                 <div className="space-y-3 pl-4">
                   <StoryLine
                     delay={0.3}
-                    className="relative text-sm leading-relaxed text-foreground-muted md:text-[15px]"
+                    className="relative text-sm leading-relaxed text-muted-foreground md:text-base"
                   >
                     Hiring is tighter and panels are unforgiving. You don&apos;t get unlimited shots.
                   </StoryLine>
                   <StoryLine
                     delay={0.4}
-                    className="relative text-sm leading-relaxed text-foreground-muted md:text-[15px]"
+                    className="relative text-sm leading-relaxed text-muted-foreground md:text-base"
                   >
                     That&apos;s why we built MentorMuni so you can go in at full strength:
                   </StoryLine>
                   <StoryLine
                     delay={0.5}
-                    className="relative text-sm font-semibold leading-relaxed text-foreground md:text-[15px]"
+                    className="relative text-sm font-semibold leading-relaxed text-foreground md:text-base"
                   >
                     Interview readiness check, AI mock interviews, and mentor-backed prep—all before the rounds that actually count.
                   </StoryLine>
@@ -892,14 +968,14 @@ const HomePage = () => {
           <FadeUp delay={0.15}>
             <div className="grid md:grid-cols-2 gap-4 mb-8">
               <div className="rounded-2xl border border-red-500/20 bg-red-500/[0.04] p-5 md:p-6">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-red-600 mb-3">Showing up under-prepared</p>
+                <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-red-600">Showing up under-prepared</p>
                 <ul className="space-y-2.5">
                   {[
                     'Placement season without a real mock interview or timed practice',
                     'No readiness benchmark—only hope after every rejection',
                     'Cramming topics instead of fixing the gaps the panel actually tests',
                   ].map((p) => (
-                    <li key={p} className="flex gap-2 text-sm text-foreground-muted">
+                    <li key={p} className="flex gap-2 text-sm text-muted-foreground">
                       <X size={14} className="text-red-500 shrink-0 mt-0.5" />
                       {p}
                     </li>
@@ -907,14 +983,14 @@ const HomePage = () => {
                 </ul>
               </div>
               <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/[0.05] p-5 md:p-6">
-                <p className="text-[10px] font-bold uppercase tracking-widest text-emerald-700 mb-3">Going in with MentorMuni</p>
+                <p className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-700">Going in with MentorMuni</p>
                 <ul className="space-y-2.5">
                   {[
                     'Free interview readiness check—a clear score and what to fix first',
                     'AI mock interviews so your first “real” panel isn’t your first time under pressure',
                     'Mentorship to close gaps and align prep to the companies you’re targeting',
                   ].map((p) => (
-                    <li key={p} className="flex gap-2 text-sm text-foreground-muted">
+                    <li key={p} className="flex gap-2 text-sm text-muted-foreground">
                       <Check size={14} className="text-emerald-600 shrink-0 mt-0.5" />
                       {p}
                     </li>
@@ -925,8 +1001,8 @@ const HomePage = () => {
           </FadeUp>
 
           <FadeUp delay={0.22}>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-[#F0ECE0] bg-white p-5 md:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
-              <p className="text-sm md:text-base text-foreground-muted font-medium max-w-xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-border bg-white p-5 md:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
+              <p className="text-sm md:text-base text-muted-foreground font-medium max-w-xl">
                 Don’t use real interviews as practice. Start with the free check—then stack mocks and mentors until you’re ready for the panel.
               </p>
               <button
@@ -943,10 +1019,10 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ HOW IT WORKS — what we give (after the “why”) ════════════════ */}
-      <section className="py-14 px-6 border-t border-[#F0ECE0]">
+      <section className="py-14 px-6 border-t border-border">
         <div className="max-w-5xl mx-auto">
           <FadeUp>
-            <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest block mb-3">How it works</span>
+            <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-primary">How it works</span>
             <h2 className="mb-2 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
               What we give you—before you face the real panel
             </h2>
@@ -963,17 +1039,17 @@ const HomePage = () => {
           <div className="grid md:grid-cols-2 gap-5">
             {FEATURES.map((f, i) => (
               <FadeUp key={f.title} delay={i * 0.07}>
-                <div className="group flex gap-4 bg-white border border-[#F0ECE0] shadow-[0_2px_12px_rgba(0,0,0,0.05)] rounded-2xl p-6 hover:border-[#FFB347] transition-all h-full">
-                  <div className="w-10 h-10 bg-[#FFF4E0] border border-[#F0ECE0] rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#FFF8EE] transition-colors mt-0.5">
+                <div className="group flex gap-4 bg-white border border-border shadow-[0_2px_12px_rgba(0,0,0,0.05)] rounded-2xl p-6 hover:border-[#FFB347] transition-all h-full">
+                  <div className="w-10 h-10 bg-[#FFF4E0] border border-border rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#FFF8EE] transition-colors mt-0.5">
                     <f.Icon size={18} className="text-[#FF9500]" />
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                       <h3 className="text-base font-semibold text-foreground">{f.title}</h3>
-                      <span className="text-[9px] font-bold text-[#CC7000] bg-[#FFF4E0] border border-[#F0ECE0] rounded px-1.5 py-0.5 uppercase tracking-wider">{f.tag}</span>
+                      <span className="rounded border border-border bg-[#FFF4E0] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#CC7000]">{f.tag}</span>
                     </div>
                     <p className="text-muted-foreground text-xs leading-relaxed mb-2">{f.desc}</p>
-                    <span className="text-[10px] font-semibold text-[#1A8C55]">{f.highlight}</span>
+                    <span className="text-xs font-semibold text-[#1A8C55]">{f.highlight}</span>
                   </div>
                 </div>
               </FadeUp>
@@ -995,7 +1071,7 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ STUDENT STORIES — animated cards ════════════════ */}
-      <section className="relative overflow-hidden border-t border-[#F0ECE0] bg-gradient-to-b from-[#FFFDF8] via-[#FFFCF7] to-[#FFF8EE] py-14 md:py-16 px-6">
+      <section className="relative overflow-hidden border-t border-border bg-gradient-to-b from-[#FFFDF8] via-[#FFFCF7] to-[#FFF8EE] py-14 md:py-16 px-6">
         <div className="pointer-events-none absolute -left-32 top-1/4 h-72 w-72 rounded-full bg-[rgba(255,149,0,0.15)] blur-[100px]" aria-hidden />
         <div className="pointer-events-none absolute -right-24 bottom-0 h-64 w-64 rounded-full bg-[rgba(8,145,178,0.1)] blur-[90px]" aria-hidden />
 
@@ -1009,7 +1085,7 @@ const HomePage = () => {
           >
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#FFB347]/35 bg-white/80 px-3 py-1.5 shadow-sm backdrop-blur-sm md:mb-4">
               <Sparkles size={14} className="text-[#FF9500]" aria-hidden />
-              <span className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#CC7000]">
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#CC7000]">
                 Real voices
               </span>
             </div>
@@ -1047,7 +1123,7 @@ const HomePage = () => {
                     className={`pointer-events-none absolute -inset-0.5 rounded-3xl bg-gradient-to-br ${t.gradient} opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-70`}
                     aria-hidden
                   />
-                  <div className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-[#F0ECE0] bg-white/90 p-5 shadow-[0_4px_24px_rgba(0,0,0,0.06)] backdrop-blur-md transition-all duration-300 group-hover:border-[#FFB347]/45 group-hover:shadow-[0_16px_48px_rgba(255,149,0,0.14)] md:p-6">
+                  <div className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-border bg-white/90 p-5 shadow-[0_4px_24px_rgba(0,0,0,0.06)] backdrop-blur-md transition-all duration-300 group-hover:border-[#FFB347]/45 group-hover:shadow-[0_16px_48px_rgba(255,149,0,0.14)] md:p-6">
                     <div className="absolute right-4 top-4 text-[4rem] font-serif font-bold leading-none text-[#FF9500]/[0.07] transition-transform duration-500 group-hover:scale-110 group-hover:text-[#FF9500]/10">
                       &ldquo;
                     </div>
@@ -1072,7 +1148,7 @@ const HomePage = () => {
                         className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${t.gradient} p-[1px] shadow-sm`}
                       >
                         <div className="flex h-full w-full items-center justify-center rounded-[11px] bg-white/95">
-                          <CardIcon size={18} className="text-foreground-muted" strokeWidth={2} aria-hidden />
+                          <CardIcon size={18} className="text-muted-foreground" strokeWidth={2} aria-hidden />
                         </div>
                       </div>
                     </div>
@@ -1080,7 +1156,12 @@ const HomePage = () => {
                     <p className="relative mb-3 inline-flex w-fit rounded-full bg-[#FFF4E0] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#CC7000] ring-1 ring-[#FFB347]/30">
                       {t.insight}
                     </p>
-                    <p className="relative text-[15px] leading-relaxed text-foreground-muted">{t.text}</p>
+                    <p className="relative text-base leading-relaxed text-muted-foreground">{t.text}</p>
+                    {t.proofMetric && (
+                      <p className="relative mt-4 border-t border-border pt-3 text-[10px] font-semibold uppercase tracking-[0.12em] text-[#1A8C55]">
+                        {t.proofMetric}
+                      </p>
+                    )}
 
                     <div
                       className="pointer-events-none absolute bottom-0 left-0 right-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-[#FF9500] to-[#FFB347] transition-transform duration-300 ease-out group-hover:scale-x-100"
@@ -1095,11 +1176,11 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ MENTORS — INDUSTRY EXPERTS ════════════════ */}
-      <section className="py-14 px-6 border-t border-[#F0ECE0]">
+      <section className="py-14 px-6 border-t border-border">
         <div className="max-w-5xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
             <FadeUp>
-              <span className="text-xs font-bold text-[#CC7000] uppercase tracking-widest block mb-3">Expert Mentorship</span>
+              <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-[#CC7000]">Expert Mentorship</span>
               <h2 className="mb-3 text-2xl font-bold leading-tight tracking-tight text-foreground md:text-3xl">
                 Mentors with 12–15 years<br />
                 <span className="text-[#FF9500]">of industry experience.</span>
@@ -1114,7 +1195,7 @@ const HomePage = () => {
                   { Icon: Target, title: 'Company-specific pattern knowledge', desc: 'TCS Digital vs TCS NQT. Cognizant GenC vs GenC Pro. Infosys SP vs DSP. Each track asks different things. Your mentor knows them all.' },
                 ].map(item => (
                   <div key={item.title} className="flex gap-3 items-start">
-                    <div className="w-8 h-8 bg-[#FFF4E0] border border-[#F0ECE0] rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <div className="w-8 h-8 bg-[#FFF4E0] border border-border rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
                       <item.Icon size={14} className="text-[#FF9500]" />
                     </div>
                     <div>
@@ -1140,7 +1221,7 @@ const HomePage = () => {
                   { icon: '🤖', label: 'Actively using AI tools in current role', desc: 'GitHub Copilot, ChatGPT, Cursor — daily. They teach you to use and talk about AI the way interviewers expect today.' },
                   { icon: '📱', label: 'WhatsApp access throughout', desc: 'Not just during sessions. Reachable for quick doubts, mock Q&A, and morale support all week.' },
                 ].map(c => (
-                  <div key={c.label} className="flex gap-3 items-start bg-white border border-[#F0ECE0] shadow-[0_2px_12px_rgba(0,0,0,0.05)] rounded-xl p-3.5">
+                  <div key={c.label} className="flex gap-3 items-start bg-white border border-border shadow-[0_2px_12px_rgba(0,0,0,0.05)] rounded-xl p-3.5">
                     <span className="text-lg mt-0.5">{c.icon}</span>
                     <div>
                       <p className="text-sm font-bold text-foreground mb-0.5">{c.label}</p>
@@ -1151,7 +1232,7 @@ const HomePage = () => {
               </div>
 
               {/* Honest launch notice */}
-              <div className="bg-[#FFF4E0] border border-[#F0ECE0] rounded-xl p-4">
+              <div className="bg-[#FFF4E0] border border-border rounded-xl p-4">
                 <p className="text-xs font-bold text-[#CC7000] mb-1">✦ Mentorship cohorts · Waitlist open</p>
                 <p className="text-xs text-muted-foreground leading-relaxed">
                   We&apos;re onboarding mentors in batches. Join the waitlist—you&apos;ll be matched based on your readiness profile when your cohort opens.
@@ -1165,34 +1246,85 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* ════════════════ WHY START — conversion clarity ════════════════ */}
+      <section className="border-t border-border bg-gradient-to-b from-[#FFFDF8] to-white py-14 px-6 md:py-16">
+        <div className="mx-auto max-w-5xl">
+          <FadeUp>
+            <p className="mb-2 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-[#CC7000] md:text-left">
+              Why MentorMuni
+            </p>
+            <h2 className="mb-3 text-center text-2xl font-bold tracking-tight text-foreground md:text-left md:text-3xl">
+              {CONVERSION_WHY_SECTION_HEADLINE}
+            </h2>
+            <p className="mx-auto mb-10 max-w-2xl text-center text-sm leading-relaxed text-muted-foreground md:mx-0 md:text-left">
+              {CONVERSION_WHY_SECTION_SUB}
+            </p>
+          </FadeUp>
+          <div className="grid gap-5 md:grid-cols-3">
+            {CONVERSION_WHY_CARDS.map((card, idx) => {
+              const CardIcon = [Gauge, Gift, Users][idx];
+              return (
+                <FadeUp key={card.title} delay={idx * 0.06}>
+                  <div className="group flex h-full flex-col rounded-2xl border border-border bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] transition-all hover:border-[#FFB347]/50 hover:shadow-[0_12px_40px_-28px_rgba(255,149,0,0.2)]">
+                    <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-[#FFF4E0] ring-1 ring-border">
+                      <CardIcon className="h-5 w-5 text-[#FF9500]" strokeWidth={2} aria-hidden />
+                    </div>
+                    <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-[#1A8C55]">{card.kicker}</p>
+                    <h3 className="mb-2 text-lg font-bold text-foreground">{card.title}</h3>
+                    <p className="text-sm leading-relaxed text-muted-foreground">{card.body}</p>
+                  </div>
+                </FadeUp>
+              );
+            })}
+          </div>
+          <FadeUp delay={0.2}>
+            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row sm:flex-wrap">
+              <button
+                type="button"
+                onClick={goToStartAssessment}
+                className="inline-flex w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-8 py-4 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-[#E88600] active:scale-[0.98] sm:w-auto"
+              >
+                {PRIMARY_CTA_LABEL} <ArrowRight size={16} aria-hidden />
+              </button>
+              <Link
+                to="/waitlist"
+                className="text-center text-sm font-semibold text-[#FF9500] underline decoration-[#FFB347]/50 underline-offset-4 transition hover:text-[#E88600]"
+              >
+                Want mentorship cohorts? Join the waitlist →
+              </Link>
+            </div>
+          </FadeUp>
+        </div>
+      </section>
+
       {/* ════════════════ FINAL CTA ════════════════ */}
-      <section className="py-16 px-6 border-t border-[#F0ECE0]">
+      <section className="py-16 px-6 border-t border-border">
         <div className="max-w-2xl mx-auto text-center">
           <FadeUp>
-            <span className="text-xs font-bold text-[#1A8C55] uppercase tracking-widest block mb-4">Free · 5 Minutes · Instant Result</span>
-            <p className="mb-4 inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-2xl border border-orange-200/70 bg-gradient-to-r from-orange-50/95 to-amber-50/80 px-4 py-2.5 text-center text-[12px] font-semibold leading-snug text-foreground shadow-sm sm:text-sm">
+            <span className="mb-4 block text-[10px] font-bold uppercase tracking-[0.2em] text-[#1A8C55]">Free · 5 Minutes · Instant Result</span>
+            <p className="mb-4 inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-2xl border border-orange-200/70 bg-gradient-to-r from-orange-50/95 to-amber-50/80 px-4 py-2.5 text-center text-sm font-semibold leading-snug text-foreground shadow-sm">
               <Gift size={16} className="shrink-0 text-[#EA580C]" aria-hidden />
               {READINESS_TEST_COUPON_BADGE}
             </p>
             <h2 className="mb-4 text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl">
-              Know your readiness score.
+              {FINAL_CTA_HEADLINE}
               <br />
-              <span className="text-[#FF9500]">Walk into your interview prepared.</span>
+              <span className="text-[#FF9500]">{FINAL_CTA_HEADLINE_ACCENT}</span>
             </h2>
             <p className="text-muted-foreground mb-8 leading-relaxed text-sm max-w-lg mx-auto">
-              A strong score means you walk in with confidence. A low score gives you a clear, prioritised plan to improve — with enough time before your placement season to act on it.
+              {FINAL_CTA_BODY}
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
               <button
                 type="button"
                 onClick={goToStartAssessment}
-                className="flex items-center justify-center gap-2 bg-[#FF9500] hover:bg-[#E88600] text-white font-bold px-8 py-4 rounded-xl shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all text-sm"
+                className="flex items-center justify-center gap-2 bg-[#FF9500] hover:bg-[#E88600] text-white font-bold px-8 py-4 rounded-xl shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all text-sm active:scale-[0.98]"
               >
                 {PRIMARY_CTA_LABEL} <ArrowRight size={16} />
               </button>
               <Link
                 to="/waitlist"
-                className="flex items-center justify-center gap-2 border border-[#FF9500] hover:bg-[#FFF4E0] text-[#FF9500] font-medium px-7 py-4 rounded-xl transition-all text-sm"
+                className="flex items-center justify-center gap-2 border border-[#FF9500] hover:bg-[#FFF4E0] text-[#FF9500] font-medium px-7 py-4 rounded-xl transition-all text-sm active:scale-[0.98]"
               >
                 Join the mentorship waitlist
               </Link>
@@ -1209,18 +1341,18 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ FOR COLLEGES ════════════════ */}
-      <section className="py-14 px-6 border-t border-[#F0ECE0]">
+      <section className="py-14 px-6 border-t border-border">
         <div className="max-w-3xl mx-auto">
           <p className="text-xs text-hint uppercase tracking-wider font-medium text-center mb-5">Are you a placement officer?</p>
           <FadeUp>
-            <div className="bg-white border border-[#F0ECE0] shadow-[0_2px_12px_rgba(0,0,0,0.05)] rounded-2xl p-8 flex flex-col md:flex-row gap-8 items-start">
+            <div className="bg-white border border-border shadow-[0_2px_12px_rgba(0,0,0,0.05)] rounded-2xl p-8 flex flex-col md:flex-row gap-8 items-start">
               <div className="w-12 h-12 bg-[#E8F3FF] rounded-xl flex items-center justify-center flex-shrink-0">
                 <Building2 size={22} className="text-[#1A6FC4]" />
               </div>
               <div>
                 <p className="text-xs text-[#1A6FC4] font-medium mb-1">For placement officers & TPOs</p>
                 <h3 className="text-xl font-bold text-foreground mb-2">MentorMuni for Colleges</h3>
-                <p className="text-foreground-muted text-sm leading-relaxed mb-5">
+                <p className="text-muted-foreground text-sm leading-relaxed mb-5">
                   Give your entire batch a readiness score before placement season. Identify who
                   needs what, track improvement week over week, and go in prepared — not hoping.
                 </p>
@@ -1256,7 +1388,7 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ FOOTER ════════════════ */}
-      <footer className="border-t border-[#F0ECE0] bg-[#FFF8EE] py-14 px-6">
+      <footer className="border-t border-border bg-[#FFF8EE] py-14 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-8 mb-10">
             <div className="md:col-span-2">
@@ -1268,8 +1400,8 @@ const HomePage = () => {
                 <div className="flex gap-2.5">
                   <Gift className="h-4 w-4 shrink-0 text-[#CC7000] mt-0.5" aria-hidden />
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-wider text-[#9A3412] mb-1">Limited offer</p>
-                    <p className="text-xs text-foreground-muted leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
+                    <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Limited offer</p>
+                    <p className="text-xs text-muted-foreground leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
                     <button
                       type="button"
                       onClick={goToStartAssessment}
@@ -1325,7 +1457,7 @@ const HomePage = () => {
               </ul>
             </div>
           </div>
-          <div className="border-t border-[#F0ECE0] pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-muted-foreground">
+          <div className="border-t border-border pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-muted-foreground">
             <p>© {new Date().getFullYear()} MentorMuni. All rights reserved.</p>
             <div className="flex gap-5">
               <Link to="/contact" className="hover:text-[#FF9500] transition-colors">Terms</Link>

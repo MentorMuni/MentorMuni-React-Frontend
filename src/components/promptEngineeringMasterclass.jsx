@@ -90,8 +90,8 @@ const PromptEngineeringMasterclass = () => {
     };
 
     return (
-      <div className="bg-[#1e1e1e] rounded-lg border border-[#E0DCCF] my-4">
-        <div className="flex justify-between items-center px-4 py-2 border-b border-[#E0DCCF]">
+      <div className="bg-[#1e1e1e] rounded-lg border border-border my-4">
+        <div className="flex justify-between items-center px-4 py-2 border-b border-border">
           <span className="text-xs text-muted-foreground">{language}</span>
           <button
             onClick={copyToClipboard}
@@ -108,7 +108,7 @@ const PromptEngineeringMasterclass = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-foreground-muted font-sans antialiased">
+    <div className="min-h-screen bg-[#FFFDF8] text-muted-foreground font-sans antialiased">
       {/* Meta Tags for SEO */}
       <head>
         <title>Prompt Engineering Masterclass - From Beginner to Advanced | Complete Tutorial</title>
@@ -133,7 +133,7 @@ const PromptEngineeringMasterclass = () => {
       </script>
 
       {/* HEADER */}
-      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-[#F0ECE0] px-5">
+      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-border px-5">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between py-4">
           <Link to="/" className="transition-transform hover:scale-[1.02]">
             <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
@@ -156,7 +156,7 @@ const PromptEngineeringMasterclass = () => {
         
         {/* LEFT SIDEBAR NAVIGATION */}
         <aside className="hidden lg:block w-64 sticky top-24 h-[calc(100vh-100px)] overflow-y-auto">
-          <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+          <div className="bg-white/5 border border-border rounded-xl p-6">
             <h3 className="text-lg font-bold mb-6 text-[#FF9500]">Course Contents</h3>
             <nav className="space-y-2">
               {topics.map((topic) => (
@@ -195,14 +195,14 @@ const PromptEngineeringMasterclass = () => {
           </div>
 
           {/* TABLE OF CONTENTS */}
-          <div className="mb-16 bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+          <div className="mb-16 bg-white/5 border border-border rounded-xl p-8">
             <h2 className="text-2xl font-bold mb-6">What You'll Learn</h2>
             <div className="grid md:grid-cols-2 gap-4">
               {topics.slice(0, -1).map((topic, idx) => (
                 <button
                   key={topic.id}
                   onClick={() => scrollToSection(topic.id)}
-                  className="text-left p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-all border border-[#F0ECE0] hover:border-[#FFB347]/40"
+                  className="text-left p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-all border border-border hover:border-[#FFB347]/40"
                 >
                   <span className="text-cyan-400 font-bold">{idx + 1}.</span> {topic.title}
                 </button>
@@ -214,7 +214,7 @@ const PromptEngineeringMasterclass = () => {
           <section id="intro" className="mb-16">
             <h2 className="text-4xl font-black mb-6">Introduction to Prompt Engineering</h2>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">What is Prompt Engineering?</h3>
               <p className="text-muted-foreground mb-4">
                 Prompt engineering is the practice of crafting, refining, and optimizing text inputs (prompts) to elicit the best possible outputs from Large Language Models (LLMs). It's the bridge between human intent and machine understanding.
@@ -224,7 +224,7 @@ const PromptEngineeringMasterclass = () => {
               </p>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Why Prompt Engineering Matters</h3>
               <div className="space-y-4">
                 <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
@@ -246,7 +246,7 @@ const PromptEngineeringMasterclass = () => {
               </div>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Who Should Learn Prompt Engineering?</h3>
               <ul className="text-muted-foreground space-y-3">
                 <li className="flex gap-3">
@@ -277,32 +277,32 @@ const PromptEngineeringMasterclass = () => {
           <section id="how-llms-work" className="mb-16">
             <h2 className="text-4xl font-black mb-6">⚙️ How Large Language Models Work</h2>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">The Basics of LLM Architecture</h3>
               <p className="text-muted-foreground mb-4">
                 LLMs are deep learning models built on Transformer architecture. They process language by predicting the probability of the next token (word fragment) based on all preceding tokens.
               </p>
               <div className="space-y-4">
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-[#FF9500]">Token</strong>
                   <p className="text-muted-foreground text-sm mt-2">Small units of text (roughly 1 token ≈ 4 characters). "Hello world" = ~3 tokens.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-[#FF9500]">Embedding</strong>
                   <p className="text-muted-foreground text-sm mt-2">Each token is converted to a vector (list of numbers) representing its meaning in context.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-[#FF9500]">Attention Mechanism</strong>
                   <p className="text-muted-foreground text-sm mt-2">The model weighs the importance of different tokens when predicting the next one. "The cat sat on the mat" - 'mat' depends more on 'cat' and 'sat' than 'the'.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                   <strong className="text-[#FF9500]">Probability Distribution</strong>
                   <p className="text-muted-foreground text-sm mt-2">The model outputs probabilities for thousands of possible next tokens. Temperature controls randomness (0 = deterministic, 1 = creative).</p>
                 </div>
               </div>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">How a Model Responds to Your Prompt</h3>
               <ol className="text-muted-foreground space-y-4 ml-4">
                 <li className="flex gap-3">
@@ -332,7 +332,7 @@ const PromptEngineeringMasterclass = () => {
               </ol>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Key Constraints to Know</h3>
               <ul className="text-muted-foreground space-y-3">
                 <li className="flex gap-3">
@@ -359,7 +359,7 @@ const PromptEngineeringMasterclass = () => {
           <section id="prompt-types" className="mb-16">
             <h2 className="text-4xl font-black mb-6">📋 Types of Prompts</h2>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Zero-Shot Prompting</h3>
               <p className="text-muted-foreground mb-4">
                 You ask the model to perform a task without providing any examples. The model relies on its general knowledge.
@@ -372,7 +372,7 @@ const PromptEngineeringMasterclass = () => {
               />
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Few-Shot Prompting</h3>
               <p className="text-muted-foreground mb-4">
                 You provide a few examples before asking the actual task. This helps the model understand the pattern and desired output format.
@@ -394,7 +394,7 @@ Input: "Banana"\nOutput: ?`}
               />
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Chain-of-Thought Prompting</h3>
               <p className="text-muted-foreground mb-4">
                 You ask the model to explain its reasoning step-by-step before giving the answer. This improves accuracy for complex tasks.
@@ -412,7 +412,7 @@ Input: "Banana"\nOutput: ?`}
           <section id="prompt-structure" className="mb-16">
             <h2 className="text-4xl font-black mb-6">🏗️ The Prompt Structure Formula</h2>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">The CRISPR Framework</h3>
               <p className="text-muted-foreground mb-4">A proven structure for effective prompts:</p>
               <div className="space-y-4">
@@ -443,7 +443,7 @@ Input: "Banana"\nOutput: ?`}
               </div>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Complete CRISPR Prompt Example</h3>
               <CodeBlock
                 code={`Context: You are an expert UX writer with 7 years of experience designing user experiences for SaaS products.
@@ -473,7 +473,7 @@ Now write the documentation.`}
             <h2 className="text-4xl font-black mb-6">💼 Real-World ChatGPT Prompt Examples</h2>
 
             <div className="space-y-6">
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+              <div className="bg-white/5 border border-border rounded-xl p-8">
                 <h3 className="text-2xl font-bold mb-4">Example 1: Content Creation</h3>
                 <p className="text-muted-foreground mb-3 font-semibold">Task: Write LinkedIn post about AI</p>
                 <CodeBlock
@@ -490,7 +490,7 @@ Post for maximum engagement and shares.`}
                 />
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+              <div className="bg-white/5 border border-border rounded-xl p-8">
                 <h3 className="text-2xl font-bold mb-4">Example 2: Code Generation</h3>
                 <p className="text-muted-foreground mb-3 font-semibold">Task: Generate Python function</p>
                 <CodeBlock
@@ -510,7 +510,7 @@ Return only the function code with tests. No explanation needed.`}
                 />
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+              <div className="bg-white/5 border border-border rounded-xl p-8">
                 <h3 className="text-2xl font-bold mb-4">Example 3: Data Analysis</h3>
                 <p className="text-muted-foreground mb-3 font-semibold">Task: Analyze customer data</p>
                 <CodeBlock
@@ -539,7 +539,7 @@ Focus on business value and implementability.`}
           <section id="role-based" className="mb-16">
             <h2 className="text-4xl font-black mb-6">🎭 Role-Based Prompting</h2>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Why Assign Roles?</h3>
               <p className="text-muted-foreground mb-4">
                 When you assign a specific role to the LLM, it activates relevant knowledge and communication patterns from its training. The model adjust its response style, expertise level, and focus accordingly.
@@ -550,22 +550,22 @@ Focus on business value and implementability.`}
             </div>
 
             <div className="space-y-4">
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                 <strong className="text-cyan-400">Software Engineer Role</strong>
                 <p className="text-muted-foreground text-sm mt-2">"You are a senior software engineer with 15 years of backend development experience..." - Gets technical, architecture-focused responses</p>
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                 <strong className="text-cyan-400">Teacher Role</strong>
                 <p className="text-muted-foreground text-sm mt-2">"You are an experienced high school teacher..." - Gets simplified, educational responses with examples</p>
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                 <strong className="text-cyan-400">Project Manager Role</strong>
                 <p className="text-muted-foreground text-sm mt-2">"You are a project manager at a Fortune 500 company..." - Gets business-focused, stakeholder-aware responses</p>
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF]">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                 <strong className="text-cyan-400">Creative Writer Role</strong>
                 <p className="text-muted-foreground text-sm mt-2">"You are a bestselling fiction author..." - Gets creative, narrative-driven responses</p>
               </div>
@@ -576,7 +576,7 @@ Focus on business value and implementability.`}
           <section id="evaluation" className="mb-16">
             <h2 className="text-4xl font-black mb-6">✅ Prompt Evaluation & Iteration</h2>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8 mb-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">How to Evaluate Prompt Quality</h3>
               <div className="space-y-4">
                 <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
@@ -602,7 +602,7 @@ Focus on business value and implementability.`}
               </div>
             </div>
 
-            <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+            <div className="bg-white/5 border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Iteration Strategy</h3>
               <ol className="text-muted-foreground space-y-3 ml-4">
                 <li className="flex gap-3">
@@ -693,7 +693,7 @@ Focus on business value and implementability.`}
             <h2 className="text-4xl font-black mb-6">📝 Ready-to-Use Prompt Templates</h2>
 
             <div className="space-y-6">
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+              <div className="bg-white/5 border border-border rounded-xl p-8">
                 <h3 className="text-xl font-bold mb-4">Content Creation Template</h3>
                 <CodeBlock
                   code={`You are [ROLE]. Create [CONTENT_TYPE] about [TOPIC] for [AUDIENCE].
@@ -711,7 +711,7 @@ Deliver [CONTENT_TYPE] that resonates with [AUDIENCE].`}
                 />
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+              <div className="bg-white/5 border border-border rounded-xl p-8">
                 <h3 className="text-xl font-bold mb-4">Analysis Template</h3>
                 <CodeBlock
                   code={`You are [EXPERT_ROLE]. Analyze [SUBJECT] from these perspectives:
@@ -728,7 +728,7 @@ Conclude with top 3 recommendations.`}
                 />
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+              <div className="bg-white/5 border border-border rounded-xl p-8">
                 <h3 className="text-xl font-bold mb-4">Problem Solving Template</h3>
                 <CodeBlock
                   code={`You are [EXPERT]. Help me solve this problem:
@@ -755,12 +755,12 @@ Please provide:
             <h2 className="text-4xl font-black mb-6">🛠️ Mini Projects to Practice</h2>
 
             <div className="space-y-6">
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+              <div className="bg-white/5 border border-border rounded-xl p-8">
                 <h3 className="text-xl font-bold mb-4">Project 1: Personal Brand Content Generator</h3>
                 <p className="text-muted-foreground mb-4">
                   <strong>Goal:</strong> Create a prompt that generates personalized LinkedIn content consistently
                 </p>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF] mb-4">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border mb-4">
                   <p className="text-muted-foreground text-sm">
                     Create a prompt that generates LinkedIn posts about your niche (e.g., AI, marketing, design). The prompt should ensure consistent tone, mention industry insights, include engagement-driving elements, and be original each time.
                   </p>
@@ -774,12 +774,12 @@ Please provide:
                 </ul>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+              <div className="bg-white/5 border border-border rounded-xl p-8">
                 <h3 className="text-xl font-bold mb-4">Project 2: Tutorial Maker</h3>
                 <p className="text-muted-foreground mb-4">
                   <strong>Goal:</strong> Create a prompt that turns complex topics into step-by-step tutorials
                 </p>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF] mb-4">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border mb-4">
                   <p className="text-muted-foreground text-sm">
                     Create a prompt that transforms a complex concept (e.g., "Docker containers") into a beginner-friendly tutorial with steps, examples, and a practice exercise.
                   </p>
@@ -793,12 +793,12 @@ Please provide:
                 </ul>
               </div>
 
-              <div className="bg-white/5 border border-[#E0DCCF] rounded-xl p-8">
+              <div className="bg-white/5 border border-border rounded-xl p-8">
                 <h3 className="text-xl font-bold mb-4">Project 3: Customer Support Optimizer</h3>
                 <p className="text-muted-foreground mb-4">
                   <strong>Goal:</strong> Create a prompt that generates helpful, consistent customer support responses
                 </p>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#E0DCCF] mb-4">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border mb-4">
                   <p className="text-muted-foreground text-sm">
                     Create a prompt that takes a customer question and generates a support response that's helpful, on-brand, offers solutions, and includes follow-up options.
                   </p>
@@ -819,7 +819,7 @@ Please provide:
             <h2 className="text-4xl font-black mb-6">💪 Interview Questions on Prompt Engineering</h2>
 
             <div className="space-y-6">
-              <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
                 <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4 cursor-pointer">
                   1️⃣ Explain the difference between temperature and top_p parameters in LLM generation.
                 </summary>
@@ -828,7 +828,7 @@ Please provide:
                 </p>
               </details>
 
-              <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
                 <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4 cursor-pointer">
                   2️⃣ How would you debug a prompt that's producing inconsistent results?
                 </summary>
@@ -837,7 +837,7 @@ Please provide:
                 </p>
               </details>
 
-              <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
                 <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4 cursor-pointer">
                   3️⃣ Describe a scenario where chain-of-thought prompting would significantly improve results.
                 </summary>
@@ -846,7 +846,7 @@ Please provide:
                 </p>
               </details>
 
-              <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
                 <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4 cursor-pointer">
                   4️⃣ How do you handle prompt injection attacks in production?
                 </summary>
@@ -855,7 +855,7 @@ Please provide:
                 </p>
               </details>
 
-              <details className="group cursor-pointer bg-white/5 border border-[#E0DCCF] rounded-xl p-6">
+              <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
                 <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4 cursor-pointer">
                   5️⃣ What metrics would you use to measure prompt engineering effectiveness?
                 </summary>
@@ -877,7 +877,7 @@ Please provide:
                   onClick={() => setExpandedFAQ(expandedFAQ === index ? null : index)}
                   className="w-full text-left"
                 >
-                  <div className="bg-white/5 border border-[#E0DCCF] hover:border-[#FFB347]/40 rounded-xl p-6 transition-all cursor-pointer">
+                  <div className="bg-white/5 border border-border hover:border-[#FFB347]/40 rounded-xl p-6 transition-all cursor-pointer">
                     <div className="flex justify-between items-start gap-4">
                       <h3 className="font-bold text-[#FF9500] text-lg">{item.question}</h3>
                       <span className="text-cyan-400 text-2xl font-bold flex-shrink-0">
@@ -898,7 +898,7 @@ Please provide:
               <div className="grid md:grid-cols-3 gap-6">
                 <a 
                   href="/tutorials/generative-ai-for-beginners"
-                  className="group bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-[#FFB347]/40 rounded-lg p-6 transition-all"
+                  className="group bg-white/5 hover:bg-white/10 border border-border hover:border-[#FFB347]/40 rounded-lg p-6 transition-all"
                 >
                   <div className="text-3xl mb-3">🤖</div>
                   <h4 className="font-bold mb-2 group-hover:text-[#FF9500] transition-colors">Generative AI for Beginners</h4>
@@ -907,7 +907,7 @@ Please provide:
 
                 <a 
                   href="/start-assessment"
-                  className="group bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-cyan-400/30 rounded-lg p-6 transition-all"
+                  className="group bg-white/5 hover:bg-white/10 border border-border hover:border-cyan-400/30 rounded-lg p-6 transition-all"
                 >
                   <div className="text-3xl mb-3">📊</div>
                   <h4 className="font-bold mb-2 group-hover:text-cyan-400 transition-colors">Interview Assessment</h4>
@@ -916,7 +916,7 @@ Please provide:
 
                 <a 
                   href="/resume-analyzer"
-                  className="group bg-white/5 hover:bg-white/10 border border-[#E0DCCF] hover:border-green-400/30 rounded-lg p-6 transition-all"
+                  className="group bg-white/5 hover:bg-white/10 border border-border hover:border-green-400/30 rounded-lg p-6 transition-all"
                 >
                   <div className="text-3xl mb-3">📄</div>
                   <h4 className="font-bold mb-2 group-hover:text-green-400 transition-colors">Resume Analyzer</h4>
@@ -928,7 +928,7 @@ Please provide:
 
           {/* FINAL CTA */}
           <section className="mb-16">
-            <div className="bg-gradient-to-r from-[#4F46E5] via-[#9333EA] to-[#06B6D4] rounded-2xl p-12 text-center border border-[#E0DCCF]">
+            <div className="bg-gradient-to-r from-[#4F46E5] via-[#9333EA] to-[#06B6D4] rounded-2xl p-12 text-center border border-border">
               <h2 className="text-3xl font-black mb-4">Ready to Master Prompt Engineering?</h2>
               <p className="text-lg mb-8 text-white/90">
                 Take the next step in your AI journey. Assess your knowledge and identify areas for improvement.
@@ -944,7 +944,7 @@ Please provide:
         </main>
       </div>
 
-      <footer className="py-10 text-center text-muted-foreground text-sm border-t border-[#F0ECE0] mt-16">
+      <footer className="py-10 text-center text-muted-foreground text-sm border-t border-border mt-16">
         © 2026 MentorMuni. Prompt Engineering Masterclass - Complete Tutorial with Real-World Examples.
       </footer>
     </div>

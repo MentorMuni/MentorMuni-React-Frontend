@@ -52,9 +52,9 @@ const CoursesPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-foreground-muted font-sans antialiased">
+    <div className="min-h-screen bg-[#FFFDF8] text-muted-foreground font-sans antialiased">
       {/* --- HEADER --- */}
-      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-[#F0ECE0] px-5 py-2">
+      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-border px-5 py-2">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between py-2">
           <a href="/">
             <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain transition-transform hover:scale-105" />
@@ -77,7 +77,7 @@ const CoursesPage = () => {
                 Courses
                 <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
               </button>
-              <div className="absolute left-0 mt-0 w-48 bg-white border border-[#E0DCCF] rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+              <div className="absolute left-0 mt-0 w-48 bg-white border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
                 <a 
                   href="/courses" 
                   className="block px-4 py-3 text-sm font-semibold text-foreground hover:text-[#FF9500] hover:bg-[#FFF4E0] first:rounded-t-lg transition-colors"
@@ -100,13 +100,13 @@ const CoursesPage = () => {
         </div>
 
         {isNavOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-[#FFFDF8] border-b border-[#E0DCCF] p-5 flex flex-col gap-4 shadow-2xl">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-[#FFFDF8] border-b border-border p-5 flex flex-col gap-4 shadow-2xl">
             {['Home', 'Interview Readiness', 'Outcomes', 'Contact'].map((item) => (
               <a key={item} href="#" className="font-bold text-muted-foreground hover:text-[#FF9500]">{item}</a>
             ))}
             
             {/* Mobile Courses Dropdown */}
-            <div className="border-t border-[#E0DCCF] pt-4">
+            <div className="border-t border-border pt-4">
               <button 
                 onClick={() => setIsCoursesDropdownOpen(!isCoursesDropdownOpen)}
                 className="font-bold text-[#FF9500] hover:text-[#E88600] flex items-center gap-2 w-full"
@@ -141,7 +141,7 @@ const CoursesPage = () => {
           {courses.map((course, index) => (
             <article 
               key={index} 
-              className="group bg-white border border-[#E0DCCF] rounded-3xl p-8 flex flex-col transition-all duration-300 hover:-translate-y-2 hover:border-[#FF9500]/30 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
+              className="group bg-white border border-border rounded-3xl p-8 flex flex-col transition-all duration-300 hover:-translate-y-2 hover:border-[#FF9500]/30 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
             >
               <div className="flex-1">
                 <h3 className="text-2xl font-bold mb-2 text-foreground group-hover:text-[#FF9500] transition-colors">
@@ -160,7 +160,7 @@ const CoursesPage = () => {
                 </ul>
               </div>
 
-              <div className="pt-6 border-t border-[#F0ECE0] flex items-center justify-between">
+              <div className="pt-6 border-t border-border flex items-center justify-between">
                 <div>
                   <span className="text-2xl font-bold text-foreground">{course.price}</span>
                   <span className="text-xs text-muted-foreground ml-1">{course.period}</span>
@@ -179,7 +179,7 @@ const CoursesPage = () => {
       </main>
 
       {/* --- FOOTER --- */}
-      <footer className="bg-[#FFF8EE] border-t border-[#F0ECE0] pt-16 pb-8 px-6">
+      <footer className="bg-[#FFF8EE] border-t border-border pt-16 pb-8 px-6">
         <div className="max-w-[1200px] mx-auto grid md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1">
             <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 rounded-full object-contain mb-6" />
@@ -199,7 +199,7 @@ const CoursesPage = () => {
             <p className="text-muted-foreground text-sm">+91 91464 21302</p>
           </div>
         </div>
-        <div className="text-center text-muted-foreground text-xs pt-8 border-t border-[#F0ECE0]">
+        <div className="text-center text-muted-foreground text-xs pt-8 border-t border-border">
           © {new Date().getFullYear()} MentorMuni. All rights reserved.
         </div>
       </footer>

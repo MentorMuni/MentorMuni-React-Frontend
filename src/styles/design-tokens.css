@@ -110,7 +110,7 @@
  * | Display/H1  | text-4xl font-black tracking-tight text-foreground sm:text-5xl md:text-6xl leading-[1.08] |
  * | Section H2  | text-2xl font-bold tracking-tight text-foreground md:text-3xl |
  * | Card H3     | text-base font-semibold text-foreground |
- * | Body        | text-base text-foreground-muted leading-relaxed |
+ * | Body        | text-base text-muted-foreground leading-relaxed |
  * | Supporting  | text-sm text-muted-foreground leading-relaxed |
  * | Eyebrow     | text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground |
  * | Chip/label  | text-[11px] sm:text-xs font-semibold uppercase tracking-wide text-muted-foreground |

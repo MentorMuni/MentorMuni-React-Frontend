@@ -70,44 +70,6 @@ const Navbar = () => {
     return location.pathname.startsWith(path);
   };
 
-  const learningPathsItems = [
-    {
-      id: 1,
-      icon: null,
-      title: 'Placement Track',
-      href: '/placement-tracks',
-      description: 'Full structured program with mentorship'
-    },
-    {
-      id: 2,
-      icon: null,
-      title: 'Free Tutorials',
-      href: '/free-tutorials',
-      description: 'Self-paced learning modules'
-    },
-    {
-      id: 3,
-      icon: null,
-      title: 'Mock Interviews',
-      href: '/mock-interviews',
-      description: 'Practice with real-time evaluation'
-    },
-    {
-      id: 4,
-      icon: null,
-      title: 'Skill Gap Analyzer',
-      href: '/skill-gap-analyzer',
-      description: 'AI-driven improvement insights'
-    },
-    {
-      id: 5,
-      icon: null,
-      title: 'Resume Analyzer',
-      href: '/resume-analyzer',
-      description: 'Optimize your resume with ATS scoring'
-    }
-  ];
-
   const handleNavClick = () => {
     setIsOpen(false);
   };
@@ -129,14 +91,14 @@ const Navbar = () => {
     }`;
 
   return (
-    <header className="sticky top-0 z-[100] border-b border-[#F0ECE0] bg-white/95 shadow-[0_1px_0_rgba(0,0,0,0.04)] backdrop-blur-md">
+    <header className="sticky top-0 z-[100] border-b border-border bg-white/95 shadow-[0_1px_0_rgba(0,0,0,0.04)] backdrop-blur-md">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-[4.25rem] items-center gap-3 lg:h-[4.5rem] lg:gap-4">
           <Link to="/" onClick={handleHomeClick} className="group flex shrink-0 items-center gap-2.5 sm:gap-3">
             <img
               src="/MentorMuni-React-Frontend/mentormuni-logo.png"
               alt="MentorMuni Logo"
-              className="h-11 w-11 shrink-0 rounded-full object-contain ring-2 ring-[#F0ECE0] transition-all group-hover:ring-[#FFB347]/50 sm:h-12 sm:w-12"
+              className="h-11 w-11 shrink-0 rounded-full object-contain ring-2 ring-border transition-all group-hover:ring-[#FFB347]/50 sm:h-12 sm:w-12"
             />
             <span className="hidden text-xl font-extrabold tracking-tight text-foreground sm:inline sm:text-[1.4rem]">
               Mentor<span className="text-[#FF9500]">Muni</span>
@@ -169,7 +131,7 @@ const Navbar = () => {
               </button>
 
               {toolsOpen && (
-                <div className="absolute top-full left-0 mt-2 w-[19rem] rounded-xl border border-[#F0ECE0] bg-white shadow-[0_8px_32px_rgba(0,0,0,0.10)] overflow-hidden z-50">
+                <div className="absolute top-full left-0 mt-2 w-[19rem] rounded-xl border border-border bg-white shadow-[0_8px_32px_rgba(0,0,0,0.10)] overflow-hidden z-50">
                   <div className="p-2">
                     {TOOLS.map((tool) => {
                       const Icon = tool.icon;
@@ -191,11 +153,11 @@ const Navbar = () => {
                       );
                     })}
                   </div>
-                  <div className="border-t border-[#F0ECE0] px-4 py-3 bg-gradient-to-r from-amber-50/90 to-[#FFF8EE]">
+                  <div className="border-t border-border px-4 py-3 bg-gradient-to-r from-amber-50/90 to-[#FFF8EE]">
                     <div className="mb-1.5 w-fit">
                       <LimitedRewardLabel className="text-[8px] px-2 py-0.5 [&_svg]:h-2.5 [&_svg]:w-2.5" />
                     </div>
-                    <p className="text-[12px] text-foreground-muted leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
+                    <p className="text-[12px] text-muted-foreground leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
                     <Link
                       to="/interview-readiness-tools"
                       onClick={() => setToolsOpen(false)}
@@ -234,14 +196,14 @@ const Navbar = () => {
             `}</style>
             <Link
               to="/waitlist"
-              className="inline-flex h-11 min-w-[7.5rem] items-center justify-center rounded-xl border-2 border-[#FF9500] px-4 text-[0.8125rem] font-semibold text-[#FF9500] transition-all hover:bg-[#FFF4E0] xl:text-[0.875rem]"
+              className="inline-flex h-11 min-w-[7.5rem] items-center justify-center rounded-xl border-2 border-[#FF9500] px-4 text-[0.8125rem] font-semibold text-[#FF9500] transition-all hover:bg-[#FFF4E0] active:scale-[0.98] xl:text-[0.875rem]"
             >
               Join Waitlist
             </Link>
             <button
               type="button"
               onClick={goToStartAssessment}
-              className="nb-cta relative inline-flex h-11 max-w-[16.5rem] items-center justify-center gap-2 overflow-hidden rounded-xl bg-[#FF9500] px-4 text-[0.8125rem] font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-colors hover:bg-[#E88600] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9500] xl:max-w-none xl:px-5 xl:text-[0.875rem]"
+              className="nb-cta relative inline-flex h-11 max-w-[16.5rem] items-center justify-center gap-2 overflow-hidden rounded-xl bg-[#FF9500] px-4 text-[0.8125rem] font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-[#E88600] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9500] xl:max-w-none xl:px-5 xl:text-[0.875rem]"
             >
               <span className="nb-shine pointer-events-none absolute inset-0 w-1/3 bg-white/25 blur-sm" style={{ transform: 'translateX(-100%) skewX(-15deg)' }} />
               <span className="relative flex h-2 w-2 shrink-0">
@@ -256,7 +218,7 @@ const Navbar = () => {
 
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 text-foreground-muted hover:text-[#FF9500] transition-colors"
+            className="lg:hidden p-2 text-muted-foreground hover:text-[#FF9500] transition-colors"
             aria-label="Toggle mobile menu"
           >
             {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -271,7 +233,7 @@ const Navbar = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:hidden border-t border-[#F0ECE0] bg-[#FFF8EE]"
+            className="lg:hidden border-t border-border bg-[#FFF8EE]"
           >
             <nav className="flex max-h-[calc(100vh-5.5rem)] flex-col space-y-2 overflow-y-auto p-4">
               {navItems.map((item) => (
@@ -282,14 +244,14 @@ const Navbar = () => {
                   className={`px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
                     isActive(item.path, item.exact)
                       ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
-                      : 'text-foreground-muted hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+                      : 'text-muted-foreground hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
                   }`}
                 >
                   {item.label}
                 </Link>
               ))}
 
-              <div className="border-t border-[#F0ECE0] my-2 pt-2">
+              <div className="border-t border-border my-2 pt-2">
                 <p className="px-4 py-1 text-xs font-bold text-hint uppercase tracking-widest">Tools</p>
                 {TOOLS.map((tool) => {
                   const Icon = tool.icon;
@@ -298,7 +260,7 @@ const Navbar = () => {
                       key={tool.href}
                       to={tool.href}
                       onClick={handleNavClick}
-                      className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-foreground-muted hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)] transition-all"
+                      className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-muted-foreground hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)] transition-all"
                     >
                       <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${tool.bg}`}>
                         <Icon size={13} className={tool.color} />
@@ -311,7 +273,7 @@ const Navbar = () => {
                   <div className="mb-1.5 w-fit">
                     <LimitedRewardLabel className="text-[8px] px-2 py-0.5 [&_svg]:h-2.5 [&_svg]:w-2.5" />
                   </div>
-                  <p className="text-xs text-foreground-muted leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
+                  <p className="text-xs text-muted-foreground leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
                   <button
                     type="button"
                     onClick={() => {
@@ -331,7 +293,7 @@ const Navbar = () => {
                 className={`px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
                   isActive('/colleges', true)
                     ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
-                    : 'text-foreground-muted hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+                    : 'text-muted-foreground hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
                 }`}
               >
                 For colleges
@@ -342,13 +304,13 @@ const Navbar = () => {
                 className={`px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
                   isActive('/contact', true)
                     ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
-                    : 'text-foreground-muted hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+                    : 'text-muted-foreground hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
                 }`}
               >
                 Contact us
               </Link>
 
-              <div className="border-t border-[#F0ECE0] my-2"></div>
+              <div className="border-t border-border my-2"></div>
 
               <Link
                 to="/waitlist"

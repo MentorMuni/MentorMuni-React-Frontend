@@ -208,11 +208,11 @@ export default function AIToolsChatbot() {
       {open && (
         <div
           id="ai-tools-chatbot-panel"
-          className="pointer-events-auto w-[min(100vw-2rem,400px)] rounded-2xl border border-[#E0DCCF] bg-white/95 shadow-2xl shadow-[0_8px_32px_rgba(0,0,0,0.1)] backdrop-blur-xl flex flex-col overflow-hidden max-h-[min(520px,70vh)]"
+          className="pointer-events-auto w-[min(100vw-2rem,400px)] rounded-2xl border border-border bg-white/95 shadow-2xl shadow-[0_8px_32px_rgba(0,0,0,0.1)] backdrop-blur-xl flex flex-col overflow-hidden max-h-[min(520px,70vh)]"
           role="dialog"
           aria-label="AI Tools chat assistant"
         >
-          <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-[#E0DCCF] bg-gradient-to-r from-[#FF9500]/30 to-[#FFB347]/20">
+          <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-border bg-gradient-to-r from-[#FF9500]/30 to-[#FFB347]/20">
             <div className="flex items-center gap-2 min-w-0">
               <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#FF9500]/30 border border-[#FFB347]/40">
                 <Bot size={18} className="text-[#CC7000] shrink-0" />
@@ -242,7 +242,7 @@ export default function AIToolsChatbot() {
                   className={`max-w-[92%] rounded-2xl px-3.5 py-2.5 leading-relaxed ${
                     msg.role === 'user'
                       ? 'bg-[#FF9500] text-white rounded-br-md'
-                      : 'bg-white/8 border border-[#E0DCCF] text-slate-200 rounded-bl-md'
+                      : 'bg-white/8 border border-border text-slate-200 rounded-bl-md'
                   }`}
                 >
                   {msg.role === 'bot' ? (
@@ -268,7 +268,7 @@ export default function AIToolsChatbot() {
             <div ref={bottomRef} />
           </div>
 
-          <div className="p-3 border-t border-[#E0DCCF] bg-[#FFF8EE]/90">
+          <div className="p-3 border-t border-border bg-[#FFF8EE]/90">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -276,7 +276,7 @@ export default function AIToolsChatbot() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && send()}
                 placeholder="Prompting, Gen AI, LLMs, tools…"
-                className="flex-1 min-w-0 rounded-xl border border-[#E0DCCF] bg-white/5 px-3 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:border-[#FF9500]/50"
+                className="flex-1 min-w-0 rounded-xl border border-border bg-white/5 px-3 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:border-[#FF9500]/50"
               />
               <button
                 type="button"
@@ -298,13 +298,13 @@ export default function AIToolsChatbot() {
                   key={s}
                   type="button"
                   onClick={() => pushExchange(s)}
-                  className="text-[10px] font-medium rounded-full border border-[#E0DCCF] bg-white/5 px-2 py-1 text-muted-foreground hover:text-[#CC7000] hover:border-[#FF9500]/35 transition-colors"
+                  className="text-[10px] font-medium rounded-full border border-border bg-white/5 px-2 py-1 text-muted-foreground hover:text-[#CC7000] hover:border-[#FF9500]/35 transition-colors"
                 >
                   {s}
                 </button>
               ))}
             </div>
-            <p className="mt-2 text-[10px] text-foreground-muted text-center leading-snug">
+            <p className="mt-2 text-[10px] text-muted-foreground text-center leading-snug">
               Local knowledge base + rules; may add a Wikipedia excerpt (not ChatGPT).{' '}
               <Link to="/start-assessment" className="text-[#FF9500] hover:underline">
                 Readiness test

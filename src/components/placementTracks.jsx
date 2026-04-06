@@ -135,7 +135,7 @@ const PlacementTracks = () => {
               {placementTracks.map((track) => (
                 <div 
                   key={track.id} 
-                  className="bg-white p-6 rounded-2xl border border-[#F0ECE0] shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:border-[#FFB347]/50 hover:shadow-[0_8px_24px_rgba(255,149,0,0.10)] transition-all cursor-pointer group"
+                  className="bg-white p-6 rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:border-[#FFB347]/50 hover:shadow-[0_8px_24px_rgba(255,149,0,0.10)] transition-all cursor-pointer group"
                 >
                   <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">{track.icon}</div>
                   <h3 className="text-xl font-bold text-foreground mb-2">{track.title}</h3>
@@ -213,7 +213,7 @@ const PlacementTracks = () => {
                     className={`bg-white rounded-xl border transition-all cursor-pointer ${
                       expandedModule === index 
                         ? 'border-[#FF9500] shadow-[0_4px_16px_rgba(255,149,0,0.12)]' 
-                        : 'border-[#F0ECE0] hover:border-[#FFB347]/50'
+                        : 'border-border hover:border-[#FFB347]/50'
                     }`}
                   >
                     <button
@@ -236,13 +236,13 @@ const PlacementTracks = () => {
                     </button>
                     
                     {expandedModule === index && (
-                      <div className="px-5 pb-5 pt-2 border-t border-[#F0ECE0]">
+                      <div className="px-5 pb-5 pt-2 border-t border-border">
                         <p className="text-xs text-muted-foreground mb-3 font-medium">Topics covered:</p>
                         <ul className="grid sm:grid-cols-2 gap-2">
                           {module.topics.map((topic, topicIndex) => (
                             <li 
                               key={topicIndex}
-                              className="flex items-center gap-2 text-sm text-foreground-muted"
+                              className="flex items-center gap-2 text-sm text-muted-foreground"
                             >
                               <span className="w-1.5 h-1.5 rounded-full bg-[#FF9500] shrink-0" />
                               {topic}

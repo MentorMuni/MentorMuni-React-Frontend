@@ -29,7 +29,7 @@ const RecommendedCoursesSection = ({ courses }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-[#E0DCCF] p-8 shadow-sm">
+    <div className="bg-white rounded-2xl border border-border p-8 shadow-sm">
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-foreground mb-2">Recommended Courses</h2>
         <p className="text-muted-foreground">
@@ -41,7 +41,7 @@ const RecommendedCoursesSection = ({ courses }) => {
         {courses.map((course, index) => (
           <div
             key={course.id}
-            className="bg-[#FFFDF8] border border-[#E0DCCF] rounded-xl p-6 hover:border-[#FF9500]/50 transition-all hover:shadow-lg"
+            className="bg-[#FFFDF8] border border-border rounded-xl p-6 hover:border-[#FF9500]/50 transition-all hover:shadow-lg"
           >
             {/* Header with Provider and Type */}
             <div className="flex items-start justify-between mb-3">
@@ -64,7 +64,7 @@ const RecommendedCoursesSection = ({ courses }) => {
             </p>
 
             {/* Meta Info */}
-            <div className="flex flex-wrap gap-3 mb-4 pb-4 border-b border-[#E0DCCF]">
+            <div className="flex flex-wrap gap-3 mb-4 pb-4 border-b border-border">
               {/* Level */}
               <div className={`flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full border ${getLevelColor(course.level)}`}>
                 <BarChart3 size={14} />
@@ -72,7 +72,7 @@ const RecommendedCoursesSection = ({ courses }) => {
               </div>
 
               {/* Duration */}
-              <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-[#FFF4E0] text-foreground border border-[#E0DCCF]">
+              <div className="flex items-center gap-2 text-xs font-semibold px-3 py-1 rounded-full bg-[#FFF4E0] text-foreground border border-border">
                 <Clock size={14} />
                 {course.duration_hours} hrs
               </div>
