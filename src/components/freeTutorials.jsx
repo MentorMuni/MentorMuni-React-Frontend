@@ -79,8 +79,8 @@ const FreeTutorials = () => {
             <BookOpen size={40} className="text-[#FF9500]" />
             <h1 className="text-5xl md:text-6xl font-black text-foreground">Free Tutorials</h1>
           </div>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Self-paced learning modules designed for beginners. Start learning for free and upgrade to advanced courses when you're ready.
+          <p className="text-lg sm:text-xl text-foreground/85 max-w-2xl mx-auto leading-relaxed">
+            Self-paced learning modules designed for beginners. Start learning for free and upgrade to advanced courses when you&apos;re ready.
           </p>
         </div>
 
@@ -97,11 +97,11 @@ const FreeTutorials = () => {
               <button
                 type="button"
                 onClick={() => navigate(tutorial.route)}
-                className="text-[#FF9500] font-bold flex items-center gap-2 hover:gap-3 transition-all group-hover:text-[#E88600]"
+                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FF9500] to-[#E88600] px-5 py-3 text-sm font-bold text-white shadow-md shadow-[#FF9500]/25 transition-all hover:from-[#E88600] hover:to-[#CC7000] hover:shadow-lg sm:justify-start"
               >
-                <Code size={18} />
+                <Code size={18} className="shrink-0" aria-hidden />
                 Start Learning
-                <ArrowRight size={18} />
+                <ArrowRight size={18} className="shrink-0" aria-hidden />
               </button>
             </div>
           ))}

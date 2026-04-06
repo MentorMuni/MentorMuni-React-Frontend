@@ -128,7 +128,7 @@ const QuantumComputingTutorial = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-muted-foreground font-sans antialiased">
+    <div className="min-h-screen bg-[#FFFDF8] text-foreground font-sans antialiased">
       {/* Meta Tags for SEO */}
       <head>
         <title>Quantum Computing Tutorial - Complete Guide from Foundations to Algorithms</title>
@@ -165,7 +165,12 @@ const QuantumComputingTutorial = () => {
             </Link>
           </nav>
 
-          <button onClick={() => setIsNavOpen(!isNavOpen)} className="md:hidden text-white">
+          <button
+            type="button"
+            onClick={() => setIsNavOpen(!isNavOpen)}
+            className="md:hidden rounded-lg p-2 text-foreground hover:bg-[#FFF4E0] transition-colors"
+            aria-label={isNavOpen ? 'Close menu' : 'Open menu'}
+          >
             {isNavOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
@@ -176,7 +181,7 @@ const QuantumComputingTutorial = () => {
         
         {/* LEFT SIDEBAR NAVIGATION */}
         <aside className="hidden lg:block w-64 sticky top-24 h-[calc(100vh-100px)] overflow-y-auto">
-          <div className="bg-white/5 border border-border rounded-xl p-6">
+          <div className="bg-white border border-border rounded-xl p-6">
             <h3 className="text-lg font-bold mb-6 text-[#FF9500]">📑 Course Contents</h3>
             <nav className="space-y-2">
               {topics.map((topic) => (
@@ -186,7 +191,7 @@ const QuantumComputingTutorial = () => {
                   className={`w-full text-left px-4 py-2 rounded-lg transition-all text-sm font-semibold ${
                     activeSection === topic.id
                       ? 'bg-[#FF9500] text-white'
-                      : 'text-muted-foreground hover:text-white hover:bg-white/5'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-[#FFF4E0]'
                   }`}
                 >
                   {topic.title}
@@ -215,14 +220,14 @@ const QuantumComputingTutorial = () => {
           </div>
 
           {/* TABLE OF CONTENTS */}
-          <div className="mb-16 bg-white/5 border border-border rounded-xl p-8">
+          <div className="mb-16 bg-white border border-border rounded-xl p-8">
             <h2 className="text-2xl font-bold mb-6">What You'll Learn</h2>
             <div className="grid md:grid-cols-2 gap-4">
               {topics.map((topic, idx) => (
                 <button
                   key={topic.id}
                   onClick={() => scrollToSection(topic.id)}
-                  className="text-left p-3 bg-white/5 hover:bg-white/10 rounded-lg transition-all border border-border hover:border-cyan-400/30"
+                  className="text-left p-3 bg-white hover:bg-white/10 rounded-lg transition-all border border-border hover:border-cyan-400/30"
                 >
                   <span className="text-cyan-400 font-bold">{idx + 1}.</span> {topic.title}
                 </button>
@@ -234,7 +239,7 @@ const QuantumComputingTutorial = () => {
           <section id="intro" className="mb-16">
             <h2 className="text-4xl font-black mb-6">🌌 Introduction to Quantum Computing</h2>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+            <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Welcome to the Quantum Revolution</h3>
               <p className="text-muted-foreground mb-4">
                 Quantum computing represents a paradigm shift in computation. While classical computers process information using bits (0 or 1), quantum computers harness the principles of quantum mechanics to use qubits that can exist in superposition of both states simultaneously.
@@ -244,7 +249,7 @@ const QuantumComputingTutorial = () => {
               </p>
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+            <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Why Learn Quantum Computing Now?</h3>
               <div className="space-y-4">
                 <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
@@ -262,7 +267,7 @@ const QuantumComputingTutorial = () => {
               </div>
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8">
+            <div className="bg-white border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Course Structure</h3>
               <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
                 <p className="text-muted-foreground text-sm mb-3"><strong>Part 1: Theory (Sections 1-6)</strong> - Quantum mechanics foundations, qubits, gates, circuits</p>
@@ -277,7 +282,7 @@ const QuantumComputingTutorial = () => {
           <section id="foundations" className="mb-16">
             <h2 className="text-4xl font-black mb-6">📐 Quantum Mechanics Foundations</h2>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+            <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Essential Linear Algebra</h3>
               <div className="space-y-4">
                 <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
@@ -295,7 +300,7 @@ const QuantumComputingTutorial = () => {
               </div>
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8">
+            <div className="bg-white border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Key Quantum Postulates</h3>
               <ol className="text-muted-foreground space-y-3 ml-4">
                 <li className="flex gap-3"><span className="text-cyan-400 font-bold">1.</span> <span><strong>State Postulate:</strong> Quantum system state is vector in Hilbert space</span></li>
@@ -310,7 +315,7 @@ const QuantumComputingTutorial = () => {
           <section id="classical-vs-quantum" className="mb-16">
             <h2 className="text-4xl font-black mb-6">⚡ Classical vs Quantum Computation</h2>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+            <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">The Fundamental Difference</h3>
               <div className="overflow-x-auto">
                 <table className="w-full text-sm text-muted-foreground">
@@ -352,7 +357,7 @@ const QuantumComputingTutorial = () => {
               </div>
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8">
+            <div className="bg-white border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Exponential State Representation</h3>
               <p className="text-muted-foreground mb-4">The key advantage: superposition gives exponential scaling.</p>
               <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
@@ -368,7 +373,7 @@ const QuantumComputingTutorial = () => {
           <section id="qubits" className="mb-16">
             <h2 className="text-4xl font-black mb-6">💎 Qubits in Depth</h2>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+            <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Superposition Mathematically</h3>
               <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border mb-4">
                 <p className="text-muted-foreground text-sm mb-3"><strong>General single-qubit state:</strong></p>
@@ -381,7 +386,7 @@ const QuantumComputingTutorial = () => {
               </p>
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+            <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">The Bloch Sphere</h3>
               <p className="text-muted-foreground mb-4">
                 Visualize single-qubit states as points on a unit sphere. North pole = |0⟩, South pole = |1⟩, equator = superpositions. Important: Any point on sphere is a valid quantum state.
@@ -393,7 +398,7 @@ const QuantumComputingTutorial = () => {
               </div>
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8">
+            <div className="bg-white border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Measurement Postulate</h3>
               <div className="space-y-3 text-muted-foreground">
                 <p>Measuring |ψ⟩ = α|0⟩ + β|1⟩ in computational basis:</p>
@@ -411,7 +416,7 @@ const QuantumComputingTutorial = () => {
           <section id="multiqubit" className="mb-16">
             <h2 className="text-4xl font-black mb-6">🔗 Multi-Qubit Systems</h2>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+            <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Tensor Products & Entanglement</h3>
               <p className="text-muted-foreground mb-4">
                 Two independent qubits: |ψ₁⟩ = α|0⟩ + β|1⟩ and |ψ₂⟩ = γ|0⟩ + δ|1⟩
@@ -426,7 +431,7 @@ const QuantumComputingTutorial = () => {
               </p>
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8">
+            <div className="bg-white border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Bell States (Maximally Entangled)</h3>
               <div className="space-y-3">
                 <div className="bg-[#1e1e1e] p-3 rounded border border-border">
@@ -449,7 +454,7 @@ const QuantumComputingTutorial = () => {
           <section id="gates" className="mb-16">
             <h2 className="text-4xl font-black mb-6">🎛️ Quantum Gates</h2>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+            <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Single-Qubit Gates (Unitary Matrices)</h3>
               <div className="space-y-4">
                 <div className="bg-[#1e1e1e] p-4 rounded border border-border">
@@ -467,7 +472,7 @@ const QuantumComputingTutorial = () => {
               </div>
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8">
+            <div className="bg-white border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Multi-Qubit Gates (Two-Qubit)</h3>
               <div className="space-y-4">
                 <div className="bg-[#1e1e1e] p-4 rounded border border-border">
@@ -490,7 +495,7 @@ const QuantumComputingTutorial = () => {
           <section id="circuits" className="mb-16">
             <h2 className="text-4xl font-black mb-6">⚙️ Quantum Circuits</h2>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+            <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Circuit Representation & Depth</h3>
               <p className="text-muted-foreground mb-4">
                 Quantum circuits visualize sequences of gates. Each horizontal line = qubit. Gates represented as boxes/symbols.
@@ -505,7 +510,7 @@ const QuantumComputingTutorial = () => {
               </p>
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8">
+            <div className="bg-white border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Reversibility & Quantum Advantage</h3>
               <p className="text-muted-foreground">
                 All quantum gates are unitary (reversible). This is fundamental constraint. Unlike classical computing where information is lost (irreversible), quantum operations preserve state completely.
@@ -517,7 +522,7 @@ const QuantumComputingTutorial = () => {
           <section id="algorithms" className="mb-16">
             <h2 className="text-4xl font-black mb-6">🧮 Quantum Algorithms</h2>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+            <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Deutsch-Jozsa Algorithm</h3>
               <p className="text-muted-foreground mb-4">
                 Determines if function is constant or balanced with single query (vs 2ⁿ⁻¹ + 1 classical queries).
@@ -533,7 +538,7 @@ const QuantumComputingTutorial = () => {
 # Measure: 0 = constant, 1 = balanced`} language="python" />
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+            <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Grover's Search Algorithm</h3>
               <p className="text-muted-foreground mb-4">
                 Searches unsorted database of N items in O(√N) vs O(N) classically. Works via amplitude amplification.
@@ -551,7 +556,7 @@ const QuantumComputingTutorial = () => {
 # Classical exhaustive search: O(N)`} language="python" />
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8">
+            <div className="bg-white border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Shor's Factorization Algorithm</h3>
               <p className="text-muted-foreground mb-4">
                 Factors N-bit integers in polynomial time O(n³) vs classical exponential. Breaks RSA cryptography. Requires millions of qubits with error correction.
@@ -567,7 +572,7 @@ const QuantumComputingTutorial = () => {
           <section id="error-correction" className="mb-16">
             <h2 className="text-4xl font-black mb-6">🛡️ Quantum Error Correction</h2>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+            <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">The Decoherence Problem</h3>
               <p className="text-muted-foreground mb-4">
                 Quantum states are fragile. Interaction with environment causes:
@@ -585,7 +590,7 @@ const QuantumComputingTutorial = () => {
               </div>
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8">
+            <div className="bg-white border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Error Correction Code Concept</h3>
               <p className="text-muted-foreground mb-4">
                 Encode 1 logical qubit across multiple physical qubits. Errors can be detected and corrected via syndrome measurement (non-destructive).
@@ -602,22 +607,22 @@ const QuantumComputingTutorial = () => {
             <h2 className="text-4xl font-black mb-6">🔬 Quantum Hardware Landscape</h2>
 
             <div className="space-y-4">
-              <div className="bg-white/5 border border-border rounded-xl p-6">
+              <div className="bg-white border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Superconducting Qubits</h3>
                 <p className="text-muted-foreground text-sm">IBM, Google, Rigetti. Transmons: artificial atoms at mK temperature. Easy control but cooling expensive. Fastest decoherence times (microseconds).</p>
               </div>
 
-              <div className="bg-white/5 border border-border rounded-xl p-6">
+              <div className="bg-white border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Trapped Ions</h3>
                 <p className="text-muted-foreground text-sm">IonQ, Honeywell. Individual atoms trapped by electric fields. Excellent coherence (seconds). Slower operations but higher fidelity.</p>
               </div>
 
-              <div className="bg-white/5 border border-border rounded-xl p-6">
+              <div className="bg-white border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Photonic Systems</h3>
                 <p className="text-muted-foreground text-sm">Xanadu, PsiQuantum. Photons as qubits. Room temperature operation. Challenging to create deterministic gates.</p>
               </div>
 
-              <div className="bg-white/5 border border-border rounded-xl p-6">
+              <div className="bg-white border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Neutral Atoms</h3>
                 <p className="text-muted-foreground text-sm">Atom Computing, Pasqal. Scalable, good coherence. Promising for near-term devices.</p>
               </div>
@@ -628,7 +633,7 @@ const QuantumComputingTutorial = () => {
           <section id="python" className="mb-16">
             <h2 className="text-4xl font-black mb-6">🐍 Quantum Programming with Qiskit</h2>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+            <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Get Started with Qiskit</h3>
               <CodeBlock code={`# Install Qiskit
 # pip install qiskit qiskit-aer
@@ -658,7 +663,7 @@ counts = result.get_counts()
 print(counts)  # Output: {'00': ~500, '11': ~500}`} language="python" />
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+            <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Implementing Grover's Algorithm</h3>
               <CodeBlock code={`# Simple Grover search (marking |11⟩) from qiskit import QuantumCircuit, QuantumRegister, ClassicalRegister
 from qiskit_aer import AerSimulator
@@ -692,7 +697,7 @@ counts = result.get_counts()
 print(counts)  # Mostly |11⟩ (marked state)`} language="python" />
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8">
+            <div className="bg-white border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Running on IBM Quantum Hardware</h3>
               <CodeBlock code={`# Access IBM Quantum computers (free tier)
 from qiskit_ibm_runtime import QiskitRuntimeService
@@ -716,7 +721,7 @@ with Session(service=service, backend="ibm_nairobi") as session:
           <section id="complexity" className="mb-16">
             <h2 className="text-4xl font-black mb-6">📊 Quantum Complexity Theory</h2>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+            <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">BQP (Bounded-error Quantum Polynomial)</h3>
               <p className="text-muted-foreground mb-4">
                 Complexity class for problems solvable by quantum computers in polynomial time with bounded error (success probability {'>'} 2/3).
@@ -730,7 +735,7 @@ with Session(service=service, backend="ibm_nairobi") as session:
               </div>
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8">
+            <div className="bg-white border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Quantum Advantage</h3>
               <p className="text-muted-foreground">
                 Problems in BQP but not in P (or outside efficient P approximation) show quantum advantage. Examples: factoring (Shor), unstructured search (Grover), simulating quantum systems.
@@ -743,27 +748,27 @@ with Session(service=service, backend="ibm_nairobi") as session:
             <h2 className="text-4xl font-black mb-6">Real-World Applications</h2>
 
             <div className="space-y-4">
-              <div className="bg-white/5 border border-border rounded-xl p-6">
+              <div className="bg-white border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Cryptography & Security</h3>
                 <p className="text-muted-foreground text-sm">Threat: Shor breaks RSA. Solution: Post-quantum cryptography (lattice-based, hash-based codes). Opportunity: Quantum Key Distribution (QKD) for theoretically secure communication.</p>
               </div>
 
-              <div className="bg-white/5 border border-border rounded-xl p-6">
+              <div className="bg-white border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Optimization</h3>
                 <p className="text-muted-foreground text-sm">QAOA, VQE solve combinatorial optimization faster. Applications: portfolio optimization, drug discovery, logistics, supply chain.</p>
               </div>
 
-              <div className="bg-white/5 border border-border rounded-xl p-6">
+              <div className="bg-white border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">AI & Machine Learning</h3>
                 <p className="text-muted-foreground text-sm">Quantum ML might accelerate certain algorithms. Variational autoencoders, classification, feature mapping research.</p>
               </div>
 
-              <div className="bg-white/5 border border-border rounded-xl p-6">
+              <div className="bg-white border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Chemistry & Materials</h3>
                 <p className="text-muted-foreground text-sm">Simulate molecular systems (exponential classical complexity). Drug discovery, catalyst design, materials properties.</p>
               </div>
 
-              <div className="bg-white/5 border border-border rounded-xl p-6">
+              <div className="bg-white border border-border rounded-xl p-6">
                 <h3 className="text-xl font-bold mb-3">Financial Modeling</h3>
                 <p className="text-muted-foreground text-sm">Monte Carlo simulations, portfolio optimization, risk analysis with quantum acceleration.</p>
               </div>
@@ -777,7 +782,7 @@ with Session(service=service, backend="ibm_nairobi") as session:
             <div className="space-y-6">
               <div>
                 <h3 className="font-bold text-[#FF9500] mb-3 text-lg">Beginner Level</h3>
-                <details className="group cursor-pointer bg-white/5 border border-border hover:border-[#FFB347]/40 rounded-xl p-6 mb-4">
+                <details className="group cursor-pointer bg-white border border-border hover:border-[#FFB347]/40 rounded-xl p-6 mb-4">
                   <summary className="font-bold text-[#FF9500] cursor-pointer">1. What's the difference between a qubit and a bit?</summary>
                   <p className="text-muted-foreground text-sm mt-3">A bit is 0 or 1. A qubit can be 0, 1, or superposition (both simultaneously) described by |ψ⟩ = α|0⟩ + β|1⟩. Measurement collapses to 0 or 1 with probabilities |α|² and |β|².</p>
                 </details>
@@ -785,7 +790,7 @@ with Session(service=service, backend="ibm_nairobi") as session:
 
               <div>
                 <h3 className="font-bold text-cyan-400 mb-3 text-lg">Intermediate Level</h3>
-                <details className="group cursor-pointer bg-white/5 border border-border hover:border-cyan-400/30 rounded-xl p-6 mb-4">
+                <details className="group cursor-pointer bg-white border border-border hover:border-cyan-400/30 rounded-xl p-6 mb-4">
                   <summary className="font-bold text-cyan-400 cursor-pointer">2. Explain entanglement and why it's important.</summary>
                   <p className="text-muted-foreground text-sm mt-3">Entanglement: qubits are quantum-mechanically linked such that measuring one instantly determines the other. Bell state: (1/√2)(|00⟩ + |11⟩). Importance: enables nonlocal correlations, exponential state space for distributed information, crucial for quantum algorithms (CNOT creates entanglement).</p>
                 </details>
@@ -793,7 +798,7 @@ with Session(service=service, backend="ibm_nairobi") as session:
 
               <div>
                 <h3 className="font-bold text-green-400 mb-3 text-lg">Advanced Level</h3>
-                <details className="group cursor-pointer bg-white/5 border border-border hover:border-green-400/30 rounded-xl p-6">
+                <details className="group cursor-pointer bg-white border border-border hover:border-green-400/30 rounded-xl p-6">
                   <summary className="font-bold text-green-400 cursor-pointer">3. Design a quantum algorithm to solve a specific problem X. What gates would you use?</summary>
                   <p className="text-muted-foreground text-sm mt-3">Approach: (1) Understand classical complexity. (2) Identify quantum advantage (superposition, entanglement, interference). (3) Select appropriate gate set (Hadamard for superposition, CNOT for entanglement, phase gates for interference). (4) Design oracle if needed. (5) Analyze circuit depth, qubit count, error tolerance. Example Grover: Hadamard (superposition), oracle (mark), diffusion (amplify).</p>
                 </details>
@@ -805,7 +810,7 @@ with Session(service=service, backend="ibm_nairobi") as session:
           <section id="projects" className="mb-16">
             <h2 className="text-4xl font-black mb-6">🛠️ Mini Projects</h2>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+            <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Project 1: Bell State Simulator</h3>
               <p className="text-muted-foreground mb-4">Build circuit that creates Bell states and verify entanglement.</p>
               <CodeBlock code={`# Bell state creator
@@ -845,7 +850,7 @@ for state in ['phi_plus', 'phi_minus', 'psi_plus', 'psi_minus']:
     print(f"{state}: {result.get_counts()}")`} language="python" />
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-8">
+            <div className="bg-white border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Project 2: Grover Search Implementation</h3>
               <p className="text-muted-foreground mb-4">Implement Grover's algorithm for 3-qubit search marking |101⟩.</p>
               <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
@@ -865,7 +870,7 @@ for state in ['phi_plus', 'phi_minus', 'psi_plus', 'psi_minus']:
                   onClick={() => setExpandedFAQ(expandedFAQ === index ? null : index)}
                   className="w-full text-left"
                 >
-                  <div className="bg-white/5 border border-border hover:border-[#FFB347]/40 rounded-xl p-6 transition-all cursor-pointer">
+                  <div className="bg-white border border-border hover:border-[#FFB347]/40 rounded-xl p-6 transition-all cursor-pointer">
                     <div className="flex justify-between items-start gap-4">
                       <h3 className="font-bold text-[#FF9500] text-lg">{item.question}</h3>
                       <span className="text-cyan-400 text-2xl font-bold flex-shrink-0">
@@ -886,7 +891,7 @@ for state in ['phi_plus', 'phi_minus', 'psi_plus', 'psi_minus']:
               <div className="grid md:grid-cols-3 gap-6">
                 <a 
                   href="/tutorials/generative-ai-for-beginners"
-                  className="group bg-white/5 hover:bg-white/10 border border-border hover:border-[#FFB347]/40 rounded-lg p-6 transition-all"
+                  className="group bg-white hover:bg-white/10 border border-border hover:border-[#FFB347]/40 rounded-lg p-6 transition-all"
                 >
                   <div className="text-3xl mb-3">🤖</div>
                   <h4 className="font-bold mb-2 group-hover:text-[#FF9500] transition-colors">Generative AI for Beginners</h4>
@@ -895,7 +900,7 @@ for state in ['phi_plus', 'phi_minus', 'psi_plus', 'psi_minus']:
 
                 <a 
                   href="/courses/rag-systems"
-                  className="group bg-white/5 hover:bg-white/10 border border-border hover:border-cyan-400/30 rounded-lg p-6 transition-all"
+                  className="group bg-white hover:bg-white/10 border border-border hover:border-cyan-400/30 rounded-lg p-6 transition-all"
                 >
                   <div className="text-3xl mb-3">🔍</div>
                   <h4 className="font-bold mb-2 group-hover:text-cyan-400 transition-colors">RAG Systems Tutorial</h4>
@@ -904,7 +909,7 @@ for state in ['phi_plus', 'phi_minus', 'psi_plus', 'psi_minus']:
 
                 <a 
                   href="/start-assessment"
-                  className="group bg-white/5 hover:bg-white/10 border border-border hover:border-green-400/30 rounded-lg p-6 transition-all"
+                  className="group bg-white hover:bg-white/10 border border-border hover:border-green-400/30 rounded-lg p-6 transition-all"
                 >
                   <div className="text-3xl mb-3">📊</div>
                   <h4 className="font-bold mb-2 group-hover:text-green-400 transition-colors">Interview Assessment</h4>

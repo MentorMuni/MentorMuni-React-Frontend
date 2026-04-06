@@ -93,12 +93,17 @@ function buildAdminLeadsPayload(profile, primarySkill, experienceYears, isSkillM
   const phone = profile.contactNumber?.trim() || null;
   const isPro = profile.userCategory === 'professional';
 
+  const effectiveSkillLine =
+    isPro && !isSkillMode
+      ? (profile.placementCoreSkill?.trim() || profile.primarySkill?.trim() || primarySkill)
+      : primarySkill;
+
   const payload = {
     email,
     phone,
     user_type: API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'student',
     user_category: profile.userCategory || null,
-    primary_skill: primarySkill,
+    primary_skill: effectiveSkillLine,
     college_name: !isPro && profile.collegeName?.trim() ? profile.collegeName.trim() : null,
     company_name: isPro && profile.currentOrganization?.trim() ? profile.currentOrganization.trim() : null,
     current_organization: isPro && profile.currentOrganization?.trim() ? profile.currentOrganization.trim() : null,
@@ -114,7 +119,7 @@ function buildAdminLeadsPayload(profile, primarySkill, experienceYears, isSkillM
 
   if (!isSkillMode) {
     if (isPro) {
-      payload.core_skill = profile.placementCoreSkill?.trim() || null;
+      payload.core_skill = effectiveSkillLine || null;
       payload.jd_provided = !!profile.placementJdProvided;
       payload.job_description = profile.placementJdProvided ? profile.placementJdText?.trim() || null : null;
       payload.target_company_name =
@@ -1451,6 +1456,12 @@ const InterviewReady = () => {
     }
     if (profile.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT) {
       if (needsInterviewPlacementContextStep(profile.userCategory)) {
+        if (profile.userCategory === 'professional') {
+          setProfile((p) => ({
+            ...p,
+            placementCoreSkill: p.primarySkill.trim().slice(0, PLAN_PRIMARY_SKILL_MAX),
+          }));
+        }
         setStep(13);
         return;
       }
@@ -1492,12 +1503,14 @@ const InterviewReady = () => {
 
     const interviewReadinessPayload = {
       user_type: API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'student',
-      primary_skill: primarySkill,
       experience_years: expParsed,
       target_role: profile.targetRole?.trim() || undefined,
       email: profile.email?.trim() || undefined,
       phone: profile.contactNumber?.trim() || undefined,
     };
+    if (profile.userCategory !== 'professional') {
+      interviewReadinessPayload.primary_skill = primarySkill;
+    }
     if (profile.userCategory === 'professional' && profile.currentOrganization?.trim()) {
       interviewReadinessPayload.current_organization = profile.currentOrganization.trim();
     }
@@ -1510,7 +1523,10 @@ const InterviewReady = () => {
 
     if (!isSkillMode) {
       if (profile.userCategory === 'professional') {
-        interviewReadinessPayload.core_skill = profile.placementCoreSkill?.trim() || undefined;
+        interviewReadinessPayload.core_skill = (
+          profile.placementCoreSkill?.trim() ||
+          profile.primarySkill.trim()
+        ).slice(0, PLAN_PRIMARY_SKILL_MAX);
         interviewReadinessPayload.jd_provided = !!profile.placementJdProvided;
         if (profile.placementJdProvided) {
           interviewReadinessPayload.job_description = profile.placementJdText?.trim() || null;
@@ -2505,7 +2521,11 @@ const InterviewReady = () => {
                   )}
                 </p>
                 <InputField
-                  label={isSkillFocus ? 'Skill or stack for in-depth prep' : 'Major areas & skills (for context)'}
+                  label={
+                    isSkillFocus
+                      ? 'Core skill / stack for in-depth prep'
+                      : 'Core skill & major areas (for context)'
+                  }
                   type="textarea"
                   name="primarySkill"
                   value={profile.primarySkill}
@@ -2837,6 +2857,9 @@ const InterviewReady = () => {
                 <>
                   <div className="space-y-2">
                     <label className="text-sm font-bold text-foreground">Core skill *</label>
+                    <p className="text-xs text-muted-foreground">
+                      Pre-filled from your answer above — change it here if you want to narrow or correct the focus.
+                    </p>
                     <input
                       type="text"
                       value={profile.placementCoreSkill}

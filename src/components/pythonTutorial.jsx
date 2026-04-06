@@ -78,7 +78,7 @@ const PythonTutorial = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-muted-foreground font-sans antialiased">
+    <div className="min-h-screen bg-[#FFFDF8] text-foreground font-sans antialiased">
       {/* Meta Tags for SEO */}
       <head>
         <title>Python for Beginners - Learn Python Step by Step | Complete Tutorial</title>
@@ -99,7 +99,12 @@ const PythonTutorial = () => {
             </Link>
           </nav>
 
-          <button onClick={() => setIsNavOpen(!isNavOpen)} className="md:hidden text-white">
+          <button
+            type="button"
+            onClick={() => setIsNavOpen(!isNavOpen)}
+            className="md:hidden rounded-lg p-2 text-foreground hover:bg-[#FFF4E0] transition-colors"
+            aria-label={isNavOpen ? 'Close menu' : 'Open menu'}
+          >
             {isNavOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
@@ -110,7 +115,7 @@ const PythonTutorial = () => {
         
         {/* LEFT SIDEBAR NAVIGATION - DESKTOP ONLY */}
         <aside className="hidden lg:block w-64 sticky top-24 h-[calc(100vh-100px)] overflow-y-auto">
-          <div className="bg-white/5 border border-border rounded-xl p-6">
+          <div className="bg-white border border-border rounded-xl p-6">
             <h3 className="text-lg font-bold mb-6 text-[#FF9500]">📑 Topics</h3>
             <nav className="space-y-2">
               {topics.map((topic) => (
@@ -120,7 +125,7 @@ const PythonTutorial = () => {
                   className={`w-full text-left px-4 py-2 rounded-lg transition-all text-sm font-semibold ${
                     activeSection === topic.id
                       ? 'bg-[#FF9500] text-white'
-                      : 'text-muted-foreground hover:text-white hover:bg-white/5'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-[#FFF4E0]'
                   }`}
                 >
                   {topic.title}
@@ -148,7 +153,7 @@ const PythonTutorial = () => {
           </div>
         </div>
 
-        <div className="mb-16 bg-white/5 border border-border rounded-xl p-8">
+        <div className="mb-16 bg-white border border-border rounded-xl p-8">
           <h2 className="text-2xl font-bold mb-4">What You'll Learn</h2>
           <ol className="space-y-2 text-muted-foreground">
             <li>1. What is Python and why learn it</li>
@@ -172,7 +177,7 @@ const PythonTutorial = () => {
         <section id="intro" className="mb-16">
           <h2 className="text-4xl font-black mb-6">🐍 Introduction to Python</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What is Python?</h3>
             <p className="text-muted-foreground mb-4 leading-relaxed">
               Python is a programming language that lets you give instructions to computers in a way that reads almost like English. Created in 1991 by Guido van Rossum, Python has become one of the most popular programming languages in the world because it's easy to learn and incredibly powerful.
@@ -182,7 +187,7 @@ const PythonTutorial = () => {
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Why Learn Python?</h3>
 
             <div className="space-y-4">
@@ -214,7 +219,7 @@ const PythonTutorial = () => {
             </div>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Where is Python Used?</h3>
 
             <div className="grid md:grid-cols-2 gap-6">
@@ -245,7 +250,7 @@ const PythonTutorial = () => {
         <section id="installation" className="mb-16">
           <h2 className="text-4xl font-black mb-6">⚙️ Installing Python</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Step-by-Step Installation</h3>
 
             <h4 className="text-xl font-bold mb-4 text-cyan-400">For Windows:</h4>
@@ -279,7 +284,7 @@ sudo apt-get install python3 python3-pip`}
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Verify Installation</h3>
 
             <p className="text-muted-foreground mb-4">Open Command Prompt (Windows) or Terminal (Mac/Linux) and type:</p>
@@ -297,7 +302,7 @@ sudo apt-get install python3 python3-pip`}
         <section id="first-program" className="mb-16">
           <h2 className="text-4xl font-black mb-6">💻 Your First Program</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">The print() Function</h3>
             <p className="text-muted-foreground mb-4">
               The simplest way to use Python is to print text to the screen using the <code className="bg-[#1e1e1e] px-2 py-1 rounded">print()</code> function.
@@ -313,7 +318,7 @@ sudo apt-get install python3 python3-pip`}
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">How to Run Python Code</h3>
 
             <h4 className="text-lg font-bold mb-4 text-cyan-400">Step 1: Create a file</h4>
@@ -337,7 +342,7 @@ sudo apt-get install python3 python3-pip`}
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">More print() Examples</h3>
 
             <CodeBlock
@@ -364,7 +369,7 @@ print(True)`}
         <section id="variables" className="mb-16">
           <h2 className="text-4xl font-black mb-6">📦 Variables & Data Types</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What is a Variable?</h3>
             <p className="text-muted-foreground mb-4">
               A variable is like a box that stores information. You give it a name, and then you can use that name to refer to the information stored in the box.
@@ -392,7 +397,7 @@ print(is_student)`}
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Data Types</h3>
 
             <div className="space-y-4">
@@ -425,7 +430,7 @@ is_active = False`} id="bool-type" />
             </div>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Checking Data Types</h3>
             <p className="text-muted-foreground mb-4">Use the <code className="bg-[#1e1e1e] px-2 py-1 rounded">type()</code> function:</p>
 
@@ -438,7 +443,7 @@ print(type(True))     # &lt;class 'bool'&gt;`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Variable Naming Rules</h3>
             <ul className="text-muted-foreground space-y-2 ml-4">
               <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Start with a letter or underscore: <code className="bg-[#1e1e1e] px-1">name</code>, <code className="bg-[#1e1e1e] px-1">_age</code></li>
@@ -454,7 +459,7 @@ print(type(True))     # &lt;class 'bool'&gt;`}
         <section id="user-input" className="mb-16">
           <h2 className="text-4xl font-black mb-6">⌨️ User Input</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Getting Input from Users</h3>
             <p className="text-muted-foreground mb-4">
               Use the <code className="bg-[#1e1e1e] px-2 py-1 rounded">input()</code> function to ask users to type something:
@@ -473,7 +478,7 @@ print("Hello, " + name)`}
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Converting Input to Numbers</h3>
             <p className="text-muted-foreground mb-4">
               By default, <code className="bg-[#1e1e1e] px-2 py-1 rounded">input()</code> gives you text (string). To do math, convert it to a number:
@@ -498,7 +503,7 @@ print("Total with tax: " + str(price * 1.1))`}
         <section id="operators" className="mb-16">
           <h2 className="text-4xl font-black mb-6">🔢 Operators</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Arithmetic Operators</h3>
             <p className="text-muted-foreground mb-4">Used to do math:</p>
 
@@ -517,7 +522,7 @@ print(x ** y)  # 1000 (exponent - power)`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Comparison Operators</h3>
             <p className="text-muted-foreground mb-4">Compare values (returns True or False):</p>
 
@@ -535,7 +540,7 @@ print(x &gt;= y)  # False (greater than or equal)`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Logical Operators</h3>
             <p className="text-muted-foreground mb-4">Combine conditions:</p>
 
@@ -555,7 +560,7 @@ print(not is_student)           # False (reverses value)`}
         <section id="conditionals" className="mb-16">
           <h2 className="text-4xl font-black mb-6">🔄 Conditionals</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">if Statement</h3>
             <p className="text-muted-foreground mb-4">Do something only if a condition is true:</p>
 
@@ -572,7 +577,7 @@ if age >= 18:
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">if-else Statement</h3>
             <p className="text-muted-foreground mb-4">Do one thing if true, something else if false:</p>
 
@@ -587,7 +592,7 @@ else:
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">if-elif-else Statement</h3>
             <p className="text-muted-foreground mb-4">Multiple conditions:</p>
 
@@ -611,7 +616,7 @@ else:
         <section id="loops" className="mb-16">
           <h2 className="text-4xl font-black mb-6">🔁 Loops</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">for Loop</h3>
             <p className="text-muted-foreground mb-4">Repeat code a specific number of times:</p>
 
@@ -634,7 +639,7 @@ for fruit in fruits:
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">while Loop</h3>
             <p className="text-muted-foreground mb-4">Repeat while a condition is true:</p>
 
@@ -650,7 +655,7 @@ while count &lt; 3:
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">break and continue</h3>
 
             <p className="text-muted-foreground mb-4"><strong className="text-cyan-400">break</strong> - Exit loop immediately:</p>
@@ -681,7 +686,7 @@ while count &lt; 3:
         <section id="strings" className="mb-16">
           <h2 className="text-4xl font-black mb-6">📝 Strings</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">String Basics</h3>
 
             <CodeBlock
@@ -696,7 +701,7 @@ print("World" in text)     # True (contains?)`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Indexing (Getting Characters)</h3>
             <p className="text-muted-foreground mb-4">Remember: Counting starts at 0!</p>
 
@@ -710,7 +715,7 @@ print(text[-1])  # n (last character)`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Slicing (Getting Substrings)</h3>
 
             <CodeBlock
@@ -728,7 +733,7 @@ print(text[:3])    # Pyt (first 3 characters)`}
         <section id="lists" className="mb-16">
           <h2 className="text-4xl font-black mb-6">📋 Lists</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Creating and Accessing Lists</h3>
 
             <CodeBlock
@@ -741,7 +746,7 @@ print(len(fruits))  # 3 (how many items)`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Adding and Removing Items</h3>
 
             <CodeBlock
@@ -759,7 +764,7 @@ print(fruits)  # ["apple"]`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Looping Through Lists</h3>
 
             <CodeBlock
@@ -778,7 +783,7 @@ for number in numbers:
         <section id="tuples-sets" className="mb-16">
           <h2 className="text-4xl font-black mb-6">📦 Tuples &amp; Sets</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Tuples (Lists You Can't Change)</h3>
             <p className="text-muted-foreground mb-4">Tuples are like lists but you can't modify them after creating:</p>
 
@@ -793,7 +798,7 @@ print(len(colors)) # 3
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Sets (Unique Values Only)</h3>
             <p className="text-muted-foreground mb-4">Sets can only contain unique values. Duplicates are automatically removed:</p>
 
@@ -812,7 +817,7 @@ print(numbers)  # {1, 2, 3, 4}`}
         <section id="dictionaries" className="mb-16">
           <h2 className="text-4xl font-black mb-6">🗝️ Dictionaries</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What are Dictionaries?</h3>
             <p className="text-muted-foreground mb-4">
               Dictionaries store data as key-value pairs. Think of it like a real dictionary where you look up a word (key) to find its definition (value).
@@ -831,7 +836,7 @@ print(student["age"])   # 20`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Modifying Dictionaries</h3>
 
             <CodeBlock
@@ -847,7 +852,7 @@ print(student)  # {"age": 21, "gpa": 3.8}`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Looping Through Dictionaries</h3>
 
             <CodeBlock
@@ -869,7 +874,7 @@ for key in student:
         <section id="functions" className="mb-16">
           <h2 className="text-4xl font-black mb-6">Functions</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Creating Functions</h3>
             <p className="text-muted-foreground mb-4">Functions let you write code once and use it many times:</p>
 
@@ -883,7 +888,7 @@ greet()  # Call it again`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Functions with Parameters</h3>
             <p className="text-muted-foreground mb-4">Pass information to functions:</p>
 
@@ -897,7 +902,7 @@ greet("Bob")    # Hello, Bob`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Functions with Return Values</h3>
             <p className="text-muted-foreground mb-4">Get results back from functions:</p>
 
@@ -911,7 +916,7 @@ print(result)  # 8`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Complete Function Example</h3>
 
             <CodeBlock
@@ -936,7 +941,7 @@ print("Your grade is:", grade)  # Your grade is: B`}
         <section id="errors" className="mb-16">
           <h2 className="text-4xl font-black mb-6">⚠️ Error Handling</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">try-except Blocks</h3>
             <p className="text-muted-foreground mb-4">Handle errors gracefully without crashing:</p>
 
@@ -950,7 +955,7 @@ except ValueError:
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Catching Different Errors</h3>
 
             <CodeBlock
@@ -962,7 +967,7 @@ except ZeroDivisionError:
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Common Beginner Mistakes</h3>
 
             <div className="space-y-3">
@@ -999,7 +1004,7 @@ print(i)  # Error! Wrong indentation`}
         <section id="project" className="mb-16">
           <h2 className="text-4xl font-black mb-6">🎮 Mini Project: Number Guessing Game</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Project Description</h3>
             <p className="text-muted-foreground mb-4">
               Create a simple game where the computer picks a random number between 1-100, and the player tries to guess it!
@@ -1012,7 +1017,7 @@ print(i)  # Error! Wrong indentation`}
             </ul>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Complete Solution</h3>
 
             <CodeBlock
@@ -1050,7 +1055,7 @@ print("Thanks for playing!")`}
           <h2 className="text-4xl font-black mb-6">🎓 Quick Recap Summary</h2>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white/5 border border-border rounded-xl p-6">
+            <div className="bg-white border border-border rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Basics</h4>
               <ul className="text-muted-foreground text-sm space-y-1">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Variables store data</li>
@@ -1060,7 +1065,7 @@ print("Thanks for playing!")`}
               </ul>
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-6">
+            <div className="bg-white border border-border rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Control Flow</h4>
               <ul className="text-muted-foreground text-sm space-y-1">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> if/else for decisions</li>
@@ -1070,7 +1075,7 @@ print("Thanks for playing!")`}
               </ul>
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-6">
+            <div className="bg-white border border-border rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Data Structures</h4>
               <ul className="text-muted-foreground text-sm space-y-1">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Strings for text</li>
@@ -1080,7 +1085,7 @@ print("Thanks for playing!")`}
               </ul>
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-6">
+            <div className="bg-white border border-border rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Functions &amp; Errors</h4>
               <ul className="text-muted-foreground text-sm space-y-1">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> def to create functions</li>
@@ -1097,7 +1102,7 @@ print("Thanks for playing!")`}
           <h2 className="text-4xl font-black mb-6">💪 Practice Questions</h2>
 
           <div className="space-y-6">
-            <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
+            <details className="group cursor-pointer bg-white border border-border rounded-xl p-6">
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 1. What's the difference between lists and tuples?
               </summary>
@@ -1108,7 +1113,7 @@ print("Thanks for playing!")`}
               </p>
             </details>
 
-            <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
+            <details className="group cursor-pointer bg-white border border-border rounded-xl p-6">
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 2. When should you use a dictionary instead of a list?
               </summary>
@@ -1117,7 +1122,7 @@ print("Thanks for playing!")`}
               </p>
             </details>
 
-            <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
+            <details className="group cursor-pointer bg-white border border-border rounded-xl p-6">
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 3. What's the purpose of try-except?
               </summary>
@@ -1126,7 +1131,7 @@ print("Thanks for playing!")`}
               </p>
             </details>
 
-            <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
+            <details className="group cursor-pointer bg-white border border-border rounded-xl p-6">
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 4. What is indentation and why is it important?
               </summary>
@@ -1135,7 +1140,7 @@ print("Thanks for playing!")`}
               </p>
             </details>
 
-            <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
+            <details className="group cursor-pointer bg-white border border-border rounded-xl p-6">
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 5. How do you convert a string to a number?
               </summary>

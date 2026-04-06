@@ -78,7 +78,7 @@ const SqlTutorial = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-muted-foreground font-sans antialiased">
+    <div className="min-h-screen bg-[#FFFDF8] text-foreground font-sans antialiased">
       {/* Meta Tags for SEO */}
       <head>
         <title>SQL for Beginners - Learn SQL Step by Step | Complete SQL Basics Tutorial</title>
@@ -99,7 +99,12 @@ const SqlTutorial = () => {
             </Link>
           </nav>
 
-          <button onClick={() => setIsNavOpen(!isNavOpen)} className="md:hidden text-white">
+          <button
+            type="button"
+            onClick={() => setIsNavOpen(!isNavOpen)}
+            className="md:hidden rounded-lg p-2 text-foreground hover:bg-[#FFF4E0] transition-colors"
+            aria-label={isNavOpen ? 'Close menu' : 'Open menu'}
+          >
             {isNavOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
@@ -110,7 +115,7 @@ const SqlTutorial = () => {
         
         {/* LEFT SIDEBAR NAVIGATION - DESKTOP ONLY */}
         <aside className="hidden lg:block w-64 sticky top-24 h-[calc(100vh-100px)] overflow-y-auto">
-          <div className="bg-white/5 border border-border rounded-xl p-6">
+          <div className="bg-white border border-border rounded-xl p-6">
             <h3 className="text-lg font-bold mb-6 text-[#FF9500]">📑 Topics</h3>
             <nav className="space-y-2">
               {topics.map((topic) => (
@@ -120,7 +125,7 @@ const SqlTutorial = () => {
                   className={`w-full text-left px-4 py-2 rounded-lg transition-all text-sm font-semibold ${
                     activeSection === topic.id
                       ? 'bg-[#FF9500] text-white'
-                      : 'text-muted-foreground hover:text-white hover:bg-white/5'
+                      : 'text-muted-foreground hover:text-foreground hover:bg-[#FFF4E0]'
                   }`}
                 >
                   {topic.title}
@@ -148,7 +153,7 @@ const SqlTutorial = () => {
           </div>
         </div>
 
-        <div className="mb-16 bg-white/5 border border-border rounded-xl p-8">
+        <div className="mb-16 bg-white border border-border rounded-xl p-8">
           <h2 className="text-2xl font-bold mb-4">What You'll Learn</h2>
           <ol className="space-y-2 text-muted-foreground">
             <li>1. What is SQL and why it matters</li>
@@ -167,7 +172,7 @@ const SqlTutorial = () => {
         <section id="intro" className="mb-16">
           <h2 className="text-4xl font-black mb-6">📚 Introduction to Databases</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What is a Database?</h3>
             <p className="text-muted-foreground mb-4 leading-relaxed">
               A database is like a digital filing cabinet. Instead of storing papers in folders, you store data (information) in an organized way so you can find it quickly.
@@ -186,7 +191,7 @@ const SqlTutorial = () => {
             </ul>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What is DBMS?</h3>
             <p className="text-muted-foreground mb-4">
               <strong>DBMS = Database Management System</strong>
@@ -207,7 +212,7 @@ const SqlTutorial = () => {
             </div>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Why Learn SQL?</h3>
 
             <div className="space-y-4">
@@ -238,7 +243,7 @@ const SqlTutorial = () => {
         <section id="what-is-sql" className="mb-16">
           <h2 className="text-4xl font-black mb-6">🗄️ What is SQL?</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">SQL Definition</h3>
             <p className="text-muted-foreground mb-4">
               <strong>SQL = Structured Query Language</strong>
@@ -259,7 +264,7 @@ const SqlTutorial = () => {
             </ul>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Basic SQL Commands</h3>
             <p className="text-muted-foreground mb-6">Here's what you'll learn in this tutorial:</p>
 
@@ -291,7 +296,7 @@ const SqlTutorial = () => {
         <section id="database-types" className="mb-16">
           <h2 className="text-4xl font-black mb-6">📊 Types of Databases</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Relational Databases</h3>
             <p className="text-muted-foreground mb-4">
               <strong>Most common type.</strong> Data is organized in tables (like Excel spreadsheets) connected by relationships.
@@ -327,7 +332,7 @@ const SqlTutorial = () => {
             </div>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Non-Relational Databases</h3>
             <p className="text-muted-foreground mb-4">
               <strong>Newer approach.</strong> Data doesn't need to be in tables. Good for complex, unstructured data like images, videos, or documents.
@@ -345,7 +350,7 @@ const SqlTutorial = () => {
         <section id="database-concepts" className="mb-16">
           <h2 className="text-4xl font-black mb-6">🔑 Database Concepts</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What is a Table?</h3>
             <p className="text-muted-foreground mb-4">
               Think of it like an Excel spreadsheet. It has rows and columns to organize data.
@@ -376,7 +381,7 @@ const SqlTutorial = () => {
             </div>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Primary Key</h3>
             <p className="text-muted-foreground mb-4">
               A unique identifier for each row. No two rows can have the same primary key. Like a student ID—each student has a unique ID.
@@ -392,7 +397,7 @@ const SqlTutorial = () => {
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Foreign Key</h3>
             <p className="text-muted-foreground mb-4">
               Creates a link between two tables. Example: A student belongs to a class. StudentID in Enrollments table links to Students table.
@@ -409,7 +414,7 @@ const SqlTutorial = () => {
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Constraints</h3>
             <p className="text-muted-foreground mb-4">Rules to ensure data quality:</p>
 
@@ -441,7 +446,7 @@ const SqlTutorial = () => {
         <section id="create-database" className="mb-16">
           <h2 className="text-4xl font-black mb-6">⚙️ Creating a Database</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">CREATE DATABASE</h3>
             <p className="text-muted-foreground mb-4">
               Before creating tables, you need to create a database. Think of it as creating a new filing cabinet.
@@ -457,7 +462,7 @@ const SqlTutorial = () => {
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">USE Database</h3>
             <p className="text-muted-foreground mb-4">
               Before working with a database, tell SQL which one to use. Like opening a specific filing cabinet.
@@ -478,7 +483,7 @@ const SqlTutorial = () => {
         <section id="create-tables" className="mb-16">
           <h2 className="text-4xl font-black mb-6">📋 Creating Tables</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">CREATE TABLE Basics</h3>
             <p className="text-muted-foreground mb-4">
               A table is where you store your actual data. Define columns and their data types.
@@ -497,7 +502,7 @@ const SqlTutorial = () => {
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Common Data Types</h3>
 
             <div className="space-y-4">
@@ -533,7 +538,7 @@ IsGraduated BOOLEAN`} id="boolean-type" />
             </div>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Complete Example</h3>
 
             <CodeBlock 
@@ -566,7 +571,7 @@ CREATE TABLE students (
         <section id="insert-data" className="mb-16">
           <h2 className="text-4xl font-black mb-6">➕ Inserting Data</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">INSERT Single Row</h3>
             <p className="text-muted-foreground mb-4">
               Add one student record to the table:
@@ -583,7 +588,7 @@ VALUES ('Alice Johnson', 'alice@email.com', 20, 3.8);`}
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">INSERT Multiple Rows</h3>
             <p className="text-muted-foreground mb-4">
               Add multiple students at once:
@@ -599,7 +604,7 @@ VALUES
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Quick Practice</h3>
             <p className="text-muted-foreground mb-4"><strong>Add two students: Emma (22, emma@gmail.com, 3.85) and Frank (20, frank@gmail.com, 3.45)</strong></p>
             
@@ -620,7 +625,7 @@ VALUES
         <section id="select-data" className="mb-16">
           <h2 className="text-4xl font-black mb-6">🔍 Selecting Data</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">SELECT All Data</h3>
             <p className="text-muted-foreground mb-4">
               Get all columns and rows from a table:
@@ -632,7 +637,7 @@ VALUES
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">SELECT Specific Columns</h3>
             <p className="text-muted-foreground mb-4">
               Get only the columns you need. Faster and cleaner:
@@ -644,7 +649,7 @@ VALUES
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">WHERE Clause - Filter Data</h3>
             <p className="text-muted-foreground mb-4">
               Show only students with GPA above 3.7:
@@ -663,7 +668,7 @@ VALUES
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">AND & OR Operators</h3>
             <p className="text-muted-foreground mb-4">
               Combine multiple conditions:
@@ -681,7 +686,7 @@ WHERE Name = 'Alice' OR Name = 'Bob';`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">ORDER BY - Sort Results</h3>
             <p className="text-muted-foreground mb-4">
               Sort students by GPA (highest first):
@@ -698,7 +703,7 @@ ORDER BY GPA ASC;`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">LIMIT - Get First N Rows</h3>
             <p className="text-muted-foreground mb-4">
               Show only the top 3 students by GPA:
@@ -717,7 +722,7 @@ LIMIT 3;`}
         <section id="update-delete" className="mb-16">
           <h2 className="text-4xl font-black mb-6">✏️ Updating & Deleting Data</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">UPDATE - Modify Data</h3>
             <p className="text-muted-foreground mb-4">
               Update Alice's GPA to 4.0:
@@ -735,7 +740,7 @@ WHERE Name = 'Alice';`}
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">UPDATE Multiple Columns</h3>
             <p className="text-muted-foreground mb-4">
               Update multiple columns at once:
@@ -749,7 +754,7 @@ WHERE Name = 'Alice';`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">DELETE - Remove Data</h3>
             <p className="text-muted-foreground mb-4">
               Remove a student by name:
@@ -765,7 +770,7 @@ WHERE Name = 'Alice';`}
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Safe Deletion Pattern</h3>
             <p className="text-muted-foreground mb-4">
               Always verify before deleting:
@@ -786,7 +791,7 @@ DELETE FROM students WHERE Name = 'Bob';`}
         <section id="aggregate" className="mb-16">
           <h2 className="text-4xl font-black mb-6">📈 Aggregate Functions</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">COUNT - Count Results</h3>
             <p className="text-muted-foreground mb-4">
               How many students are in the database?
@@ -800,7 +805,7 @@ DELETE FROM students WHERE Name = 'Bob';`}
             <p className="text-muted-foreground mt-4">Result: <strong>6</strong> (total number of students)</p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">SUM - Add Up Values</h3>
             <p className="text-muted-foreground mb-4">
               Total GPA of all students:
@@ -812,7 +817,7 @@ DELETE FROM students WHERE Name = 'Bob';`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">AVG - Average</h3>
             <p className="text-muted-foreground mb-4">
               What's the average GPA?
@@ -824,7 +829,7 @@ DELETE FROM students WHERE Name = 'Bob';`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">MIN & MAX</h3>
             <p className="text-muted-foreground mb-4">
               Highest and lowest GPA:
@@ -839,7 +844,7 @@ FROM students;`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">GROUP BY - Group Results</h3>
             <p className="text-muted-foreground mb-4 leading-relaxed">
               If you had a Courses table too, count how many students are in each course:
@@ -853,7 +858,7 @@ GROUP BY CourseID;`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">HAVING - Filter Groups</h3>
             <p className="text-muted-foreground mb-4">
               Which courses have more than 5 students?
@@ -873,14 +878,14 @@ HAVING COUNT(*) > 5;`}
         <section id="joins" className="mb-16">
           <h2 className="text-4xl font-black mb-6">🔗 Joins Basics</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What are Joins?</h3>
             <p className="text-muted-foreground mb-4 leading-relaxed">
               Joins connect data from multiple tables. Imagine you have a Students table and a Courses table. A join lets you show which students enrolled in which courses.
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">INNER JOIN</h3>
             <p className="text-muted-foreground mb-4">
               Show students AND their courses (only matching records):
@@ -899,7 +904,7 @@ INNER JOIN courses ON enrollments.CourseID = courses.CourseID;`}
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">LEFT JOIN</h3>
             <p className="text-muted-foreground mb-4">
               Show ALL students, and their courses if they have any:
@@ -923,28 +928,28 @@ LEFT JOIN courses ON enrollments.CourseID = courses.CourseID;`}
         <section id="indexes" className="mb-16">
           <h2 className="text-4xl font-black mb-6">⚡ Indexes</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">What is an Index?</h3>
             <p className="text-muted-foreground mb-4 leading-relaxed">
               An index is like the index in a book. Instead of reading every page to find a topic, you look it up in the index. Indexes make searches MUCH faster.
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Without Index:</h3>
             <p className="text-muted-foreground mb-4">
               Searching 1 million students by email = Check all 1 million emails ❌ SLOW
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">With Index:</h3>
             <p className="text-muted-foreground mb-4">
               Searching 1 million students by email = Direct lookup ✓ FAST
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Creating an Index</h3>
             <p className="text-muted-foreground mb-4">
               Create an index on the Email column:
@@ -960,7 +965,7 @@ LEFT JOIN courses ON enrollments.CourseID = courses.CourseID;`}
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">When to Use Indexes</h3>
             <ul className="text-muted-foreground space-y-3 ml-4">
               <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Columns used frequently in WHERE clauses</li>
@@ -977,7 +982,7 @@ LEFT JOIN courses ON enrollments.CourseID = courses.CourseID;`}
         <section id="constraints" className="mb-16">
           <h2 className="text-4xl font-black mb-6">🛡️ Constraints</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">UNIQUE Constraint</h3>
             <p className="text-muted-foreground mb-4">
               Ensures no duplicate values:
@@ -995,7 +1000,7 @@ LEFT JOIN courses ON enrollments.CourseID = courses.CourseID;`}
             <p className="text-muted-foreground mt-4">Result: No two users can have the same username or email.</p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">DEFAULT Constraint</h3>
             <p className="text-muted-foreground mb-4">
               Automatically set value if none provided:
@@ -1015,7 +1020,7 @@ LEFT JOIN courses ON enrollments.CourseID = courses.CourseID;`}
             <p className="text-muted-foreground mt-4">Result: New posts automatically get today's date and IsActive = TRUE</p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">CHECK Constraint</h3>
             <p className="text-muted-foreground mb-4">
               Validate that data meets specific conditions:
@@ -1039,7 +1044,7 @@ LEFT JOIN courses ON enrollments.CourseID = courses.CourseID;`}
         <section id="mini-project" className="mb-16">
           <h2 className="text-4xl font-black mb-6">Mini Project: Student Management System</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Project Description</h3>
             <p className="text-muted-foreground mb-4">
               Create a simple database to manage students and their courses.
@@ -1052,7 +1057,7 @@ LEFT JOIN courses ON enrollments.CourseID = courses.CourseID;`}
             </ul>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Step 1: Create Database</h3>
 
             <CodeBlock 
@@ -1062,7 +1067,7 @@ USE student_management;`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Step 2: Create Tables</h3>
 
             <CodeBlock 
@@ -1096,7 +1101,7 @@ CREATE TABLE enrollments (
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Step 3: Insert Sample Data</h3>
 
             <CodeBlock 
@@ -1121,7 +1126,7 @@ INSERT INTO enrollments (StudentID, CourseID, Grade) VALUES
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Step 4: Query Examples</h3>
 
             <CodeBlock 
@@ -1158,7 +1163,7 @@ SELECT FirstName, LastName, GPA FROM students WHERE GPA > 3.7;`}
         <section id="mistakes" className="mb-16">
           <h2 className="text-4xl font-black mb-6">⚠️ Common Beginner Mistakes</h2>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4 flex items-center gap-2"><AlertCircle size={24} className="text-red-400" /> Mistake #1: DELETE Without WHERE</h3>
             
             <CodeBlock 
@@ -1175,7 +1180,7 @@ DELETE FROM students WHERE Name = 'Bob';`}
             </p>
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4 flex items-center gap-2"><AlertCircle size={24} className="text-red-400" /> Mistake #2: Wrong Data Type</h3>
             
             <CodeBlock 
@@ -1192,7 +1197,7 @@ CREATE TABLE contacts (
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4 flex items-center gap-2"><AlertCircle size={24} className="text-red-400" /> Mistake #3: Forgetting NOT NULL</h3>
             
             <CodeBlock 
@@ -1209,7 +1214,7 @@ CREATE TABLE students (
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8 mb-8">
+          <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4 flex items-center gap-2"><AlertCircle size={24} className="text-red-400" /> Mistake #4: Case Sensitivity in Text</h3>
             
             <CodeBlock 
@@ -1223,7 +1228,7 @@ SELECT * FROM students WHERE LOWER(Name) = 'alice';`}
             />
           </div>
 
-          <div className="bg-white/5 border border-border rounded-xl p-8">
+          <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4 flex items-center gap-2"><AlertCircle size={24} className="text-red-400" /> Mistake #5: Wrong Comparison for NULL</h3>
             
             <CodeBlock 
@@ -1245,7 +1250,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
           <h2 className="text-4xl font-black mb-6">🎓 Quick Recap Summary</h2>
 
           <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-white/5 border border-border rounded-xl p-6">
+            <div className="bg-white border border-border rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Core Concepts</h4>
               <ul className="text-muted-foreground text-sm space-y-1">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Databases store organized data in tables</li>
@@ -1255,7 +1260,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
               </ul>
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-6">
+            <div className="bg-white border border-border rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Main Commands</h4>
               <ul className="text-muted-foreground text-sm space-y-1">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> CREATE - Make databases and tables</li>
@@ -1266,7 +1271,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
               </ul>
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-6">
+            <div className="bg-white border border-border rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Filtering & Analysis</h4>
               <ul className="text-muted-foreground text-sm space-y-1">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> WHERE - Filter for specific records</li>
@@ -1276,7 +1281,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
               </ul>
             </div>
 
-            <div className="bg-white/5 border border-border rounded-xl p-6">
+            <div className="bg-white border border-border rounded-xl p-6">
               <h4 className="font-bold text-[#FF9500] mb-3">Advanced Features</h4>
               <ul className="text-muted-foreground text-sm space-y-1">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> COUNT, SUM, AVG, MIN, MAX</li>
@@ -1293,7 +1298,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
           <h2 className="text-4xl font-black mb-6">💪 Practice Questions</h2>
 
           <div className="space-y-6">
-            <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
+            <details className="group cursor-pointer bg-white border border-border rounded-xl p-6">
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 1. What's the difference between PRIMARY KEY and FOREIGN KEY?
               </summary>
@@ -1303,7 +1308,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
               </p>
             </details>
 
-            <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
+            <details className="group cursor-pointer bg-white border border-border rounded-xl p-6">
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 2. When should you use WHERE in DELETE?
               </summary>
@@ -1312,7 +1317,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
               </p>
             </details>
 
-            <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
+            <details className="group cursor-pointer bg-white border border-border rounded-xl p-6">
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 3. What data type should you use for email addresses?
               </summary>
@@ -1321,7 +1326,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
               </p>
             </details>
 
-            <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
+            <details className="group cursor-pointer bg-white border border-border rounded-xl p-6">
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 4. How do you check for NULL values?
               </summary>
@@ -1330,7 +1335,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
               </p>
             </details>
 
-            <details className="group cursor-pointer bg-white/5 border border-border rounded-xl p-6">
+            <details className="group cursor-pointer bg-white border border-border rounded-xl p-6">
               <summary className="font-bold text-[#FF9500] mb-4 group-open:mb-4">
                 5. What does INNER JOIN do?
               </summary>
