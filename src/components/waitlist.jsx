@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Check, Zap, Users, Star } from 'lucide-react';
+import { ArrowRight, Check, Users, Mic2, Target, MessagesSquare, Code2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const API_BASE = import.meta.env.VITE_API_URL || '';
@@ -13,10 +13,33 @@ const AVATARS = [
   { init: 'V', bg: 'bg-teal-500' },
 ];
 
-const PERKS = [
-  { emoji: '🤖', title: 'AI Mock Interviews', desc: 'Unlimited practice with instant AI feedback on your answers.' },
-  { emoji: '🧑‍💼', title: 'Real Expert Sessions', desc: 'Live interview simulation with an industry engineer — not just practice.' },
-  { emoji: '🎓', title: 'Placed Student Stories', desc: 'Sessions from students placed in the last 6 months. Real playbook, not theory.' },
+/** What the paid mentorship batch will include — shown on waitlist for clarity */
+const COVERAGE = [
+  {
+    Icon: Users,
+    title: '1:1 mentorship',
+    desc: 'Dedicated mentor time — roadmap, gaps, and accountability tailored to you.',
+  },
+  {
+    Icon: Mic2,
+    title: 'AI mock interviews',
+    desc: 'Voice-style practice with structured feedback so you improve before the real panel.',
+  },
+  {
+    Icon: Target,
+    title: 'Interview readiness test',
+    desc: 'More focused and accurate scoring aligned with how companies actually hire — not generic trivia.',
+  },
+  {
+    Icon: MessagesSquare,
+    title: 'HR preparation',
+    desc: 'Behavioural rounds, stories, and how to present your profile with confidence.',
+  },
+  {
+    Icon: Code2,
+    title: 'Technical interview preparation',
+    desc: 'DSA, system design, and stack depth — aligned to your target role and level.',
+  },
 ];
 
 const YEARS = ['2nd Year', '3rd Year', '4th Year', 'Recent Graduate', 'Working Professional'];
@@ -108,7 +131,7 @@ export default function WaitlistPage() {
         <div className="text-center mb-10">
 
           {/* Pill badge */}
-          <div className="inline-flex items-center gap-2.5 bg-[#FFF4E0] border border-[#FFB347]/40 rounded-full px-5 py-2 mb-7 shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
+          <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-x-2.5 gap-y-2 bg-[#FFF4E0] border border-[#FFB347]/40 rounded-full px-4 py-2.5 sm:px-5 mb-7 shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
             <span className="w-2 h-2 rounded-full bg-[#1A8C55] shrink-0" style={{ animation: 'pulse 1.5s ease-in-out infinite', boxShadow: '0 0 6px rgba(26,140,85,0.5)' }} />
             <span className="text-sm font-semibold text-[#CC7000] tracking-wide">
               Mentorship program
@@ -118,6 +141,10 @@ export default function WaitlistPage() {
             <span className="text-xs font-semibold bg-red-500/10 text-red-600 border border-red-400/30 rounded-full px-2.5 py-0.5 leading-none">
               Limited seats
             </span>
+            <span className="w-px h-3.5 bg-[#F0ECE0] hidden sm:block" />
+            <span className="text-xs font-bold text-[#B45309] sm:text-sm">
+              Pricing — revealing soon
+            </span>
           </div>
           <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
 
@@ -125,10 +152,10 @@ export default function WaitlistPage() {
             Be the first to get placed with <span className="text-[#FF9500]">MentorMuni</span> — Mentorship and interview preparation.
           </h1>
 
-          <p className="text-muted-foreground leading-relaxed mb-8 max-w-lg mx-auto">
-            Full 1-on-1 mentorship, AI mock interviews, sessions from placed students,
-            and a direct path to your first offer.{' '}
-            <span className="text-foreground font-semibold">Early access students get 30% off.</span>
+          <p className="text-muted-foreground leading-relaxed mb-6 max-w-lg mx-auto">
+            Full mentorship with AI mocks, company-aligned readiness, HR and technical prep — built for real hiring bar.
+            {' '}
+            <span className="text-foreground font-semibold">Pricing will be announced soon; waitlist members hear first.</span>
           </p>
 
           {/* Social proof */}
@@ -147,6 +174,35 @@ export default function WaitlistPage() {
           </div>
         </div>
 
+        {/* ── What we'll cover + pricing note ── */}
+        <div className="mb-10 rounded-2xl border border-[#FFB347]/35 bg-gradient-to-br from-[#FFF8EE] via-white to-[#FFFDF8] p-6 md:p-8 shadow-[0_8px_32px_-20px_rgba(234,88,12,0.15)]">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4 mb-6">
+            <div>
+              <h2 className="text-lg font-bold text-foreground tracking-tight">What we'll cover</h2>
+              <p className="text-sm text-muted-foreground mt-1 max-w-xl">
+                The mentorship program is designed around how companies actually run campus and lateral hiring — not generic prep.
+              </p>
+            </div>
+            <div className="shrink-0 rounded-xl border border-dashed border-[#FF9500]/50 bg-[#FFF4E0]/80 px-4 py-2.5 text-center sm:text-right">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-[#CC7000]">Investment</p>
+              <p className="text-base font-black text-foreground">Pricing revealing soon</p>
+            </div>
+          </div>
+          <ul className="space-y-4">
+            {COVERAGE.map(({ Icon, title, desc }) => (
+              <li key={title} className="flex gap-3.5">
+                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#FFF4E0] ring-1 ring-[#FFB347]/30">
+                  <Icon className="h-4 w-4 text-[#FF9500]" strokeWidth={2.25} aria-hidden />
+                </span>
+                <div className="min-w-0">
+                  <p className="font-semibold text-foreground text-sm">{title}</p>
+                  <p className="text-muted-foreground text-xs leading-relaxed mt-0.5">{desc}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+
         {/* ── Form card ── */}
         <div className="bg-white border border-border rounded-2xl p-6 md:p-8 mb-12">
           {submitted ? (
@@ -156,7 +212,7 @@ export default function WaitlistPage() {
               </div>
               <h2 className="text-2xl font-bold text-foreground mb-2">You're on the list!</h2>
               <p className="text-muted-foreground text-sm leading-relaxed mb-6 max-w-sm mx-auto">
-                We'll WhatsApp you the moment mentorship opens — with your early access link and 30% discount.
+                We'll WhatsApp you when mentorship opens — with pricing, launch details, and your early access link.
               </p>
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <Link
@@ -242,19 +298,12 @@ export default function WaitlistPage() {
           )}
         </div>
 
-        {/* ── What you unlock ── */}
-        <div>
-          <p className="text-xs text-muted-foreground uppercase tracking-wider font-medium text-center mb-5">What you unlock when mentorship opens</p>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            {PERKS.map(({ emoji, title, desc }) => (
-              <div key={title} className="bg-white border border-border rounded-xl p-5">
-                <div className="text-2xl mb-3">{emoji}</div>
-                <h3 className="font-semibold text-foreground text-sm mb-1.5">{title}</h3>
-                <p className="text-muted-foreground text-xs leading-relaxed">{desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
+        <p className="text-center text-xs text-muted-foreground">
+          Questions?{' '}
+          <Link to="/contact" className="font-semibold text-[#FF9500] hover:text-[#E88600] transition-colors">
+            Contact us
+          </Link>
+        </p>
 
       </div>
     </div>
