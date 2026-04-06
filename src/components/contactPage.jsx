@@ -15,7 +15,7 @@ import {
   Clock,
   Shield,
 } from 'lucide-react';
-import { API_BASE } from '../config';
+import { INQUIRIES_URL } from '../config';
 import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_HREF, MISSION_TAGLINE } from '../constants/brandCopy';
 
 const easeOut = [0.22, 1, 0.36, 1];
@@ -134,14 +134,24 @@ const ContactPage = () => {
     setSubmitStatus({ type: '', message: '' });
 
     try {
-      const response = await fetch(`${API_BASE}/contact/submit`, {
+      const response = await fetch(INQUIRIES_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          intent: 'contact',
+          source: 'contact_page',
+          submitted_at: new Date().toISOString(),
           name: formData.name.trim(),
           email: formData.email.trim(),
           phone: formData.phone.trim(),
+          college: null,
+          year: null,
+          target_role: null,
+          whatsapp_opt_in: null,
           message: formData.message.trim(),
+          topic: topic || null,
+          audience,
+          score: null,
         }),
       });
 

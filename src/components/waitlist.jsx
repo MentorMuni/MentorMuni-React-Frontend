@@ -2,8 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Check, Users, Mic2, Target, MessagesSquare, Code2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-
-const API_BASE = import.meta.env.VITE_API_URL || '';
+import { INQUIRIES_URL } from '../config';
 
 const AVATARS = [
   { init: 'P', bg: 'bg-[#FF9500]' },
@@ -96,7 +95,22 @@ export default function WaitlistPage() {
     if (!validate()) return;
     setLoading(true);
 
-    const payload = { ...form, score: null, source: 'waitlist_page', timestamp: new Date().toISOString() };
+    const payload = {
+      intent: 'waitlist',
+      source: 'waitlist_page',
+      submitted_at: new Date().toISOString(),
+      name: form.name.trim(),
+      email: null,
+      phone: form.phone.trim(),
+      college: form.college.trim(),
+      year: form.year,
+      target_role: form.role,
+      whatsapp_opt_in: form.whatsapp,
+      message: null,
+      topic: null,
+      audience: null,
+      score: null,
+    };
 
     // Save locally first (fallback)
     localStorage.setItem(JOINED_KEY, JSON.stringify(payload));
@@ -104,9 +118,9 @@ export default function WaitlistPage() {
     localStorage.setItem(STORAGE_KEY, String(newCount));
     setCount(newCount);
 
-    // Try API
+    // Try API (unified enquiries endpoint — backend uses `intent: "waitlist"`)
     try {
-      await fetch(`${API_BASE}/api/waitlist`, {
+      await fetch(INQUIRIES_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

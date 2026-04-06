@@ -19,19 +19,31 @@ import { useFreeUsageTracker } from './FreeUsageCounter';
 import UpgradePromptModal from './UpgradePromptModal';
 const FREE_TIER_LIMIT = 3;
 
-/** Same as Swagger: generate_plan_interview_ready_plan_post → POST /interview-ready/plan */
-const INTERVIEW_PLAN_PATH = '/interview-ready/plan';
+/** Interview readiness (breadth) — POST /interview-ready/interview-readiness/plan */
+const INTERVIEW_PLAN_PATH = '/interview-ready/interview-readiness/plan';
+
+/** Skill preparation (depth) — POST /interview-ready/skill-readiness/plan */
+const SKILL_READINESS_PLAN_PATH = '/interview-ready/skill-readiness/plan';
 
 /**
- * PlanRequest.user_type — must match backend validation exactly:
- * student | working professional | 3rd Year Student | 4th Year Student
- * (UI shows 1st-3rd Year Student for the 3rd_year bucket; API value unchanged.)
+ * POST /interview-ready/interview-readiness/plan — PlanRequest.user_type
  */
 const API_USER_TYPE_BY_CATEGORY = {
   '3rd_year': '3rd Year Student',
   '4th_year': '4th Year Student',
   'recent_graduate': 'student',
   professional: 'working professional',
+};
+
+/**
+ * POST /interview-ready/skill-readiness/plan — user_type (skill readiness API)
+ * 1st–3rd year → college_student_year_1 · 4th year + recent graduate → college_student_year_4 · working → it_professional
+ */
+const SKILL_API_USER_TYPE_BY_CATEGORY = {
+  '3rd_year': 'college_student_year_1',
+  '4th_year': 'college_student_year_4',
+  recent_graduate: 'college_student_year_4',
+  professional: 'it_professional',
 };
 
 /** Pretty labels for UI only (not sent to API) */
@@ -42,10 +54,112 @@ const DISPLAY_ROLE_BY_CATEGORY = {
   professional: 'Working Professional',
 };
 
+/** `3rd_year` option in UI = 1st–3rd year — skip heavy placement step; 4th + grads get full step 13 */
+const PLACEMENT_CONTEXT_EARLY_COLLEGE = '3rd_year';
+
+/** Campus / company / role extras — only when user is 4th year, recent grad, or professional */
+function needsInterviewPlacementContextStep(userCategory) {
+  if (userCategory === 'professional') return true;
+  if (userCategory === '4th_year' || userCategory === 'recent_graduate') return true;
+  return false;
+}
+
+/** Placement flow — specific role dropdown (Interview readiness only) */
+const PLACEMENT_ROLE_OPTIONS = [
+  'Software Engineer',
+  'SDE I / II',
+  'Full Stack Developer',
+  'Backend Engineer',
+  'Frontend Engineer',
+  'Data Engineer',
+  'ML Engineer',
+  'DevOps Engineer',
+  'QA / Test Engineer',
+  'Other',
+];
+
 /** PlanRequest.primary_skill maxLength in OpenAPI schema */
 const PLAN_PRIMARY_SKILL_MAX = 100;
 
-/** POST /interview-ready/plan — skill-deep vs placement-breadth (backend may ignore if unsupported) */
+/** Admin CRM — POST /admin/leads (best-effort when user generates questions) */
+const ADMIN_LEADS_PATH = '/admin/leads';
+
+/**
+ * Snapshot of contact + assessment context for /admin/leads.
+ * Mirrors plan payloads; null when a field does not apply.
+ */
+function buildAdminLeadsPayload(profile, primarySkill, experienceYears, isSkillMode) {
+  const email = profile.email?.trim() || null;
+  const phone = profile.contactNumber?.trim() || null;
+  const isPro = profile.userCategory === 'professional';
+
+  const payload = {
+    email,
+    phone,
+    user_type: API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'student',
+    user_category: profile.userCategory || null,
+    primary_skill: primarySkill,
+    college_name: !isPro && profile.collegeName?.trim() ? profile.collegeName.trim() : null,
+    company_name: isPro && profile.currentOrganization?.trim() ? profile.currentOrganization.trim() : null,
+    current_organization: isPro && profile.currentOrganization?.trim() ? profile.currentOrganization.trim() : null,
+    experience_years: experienceYears,
+    assessment_focus: profile.assessmentMode ?? null,
+    target_role: profile.targetRole?.trim() || null,
+    skill_readiness_user_type: isSkillMode
+      ? SKILL_API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'college_student_year_1'
+      : null,
+    source: 'interview_ready_generate_questions',
+    captured_at: new Date().toISOString(),
+  };
+
+  if (!isSkillMode) {
+    if (isPro) {
+      payload.core_skill = profile.placementCoreSkill?.trim() || null;
+      payload.jd_provided = !!profile.placementJdProvided;
+      payload.job_description = profile.placementJdProvided ? profile.placementJdText?.trim() || null : null;
+      payload.target_company_name =
+        profile.placementHasTargetCompany && profile.placementTargetCompanyName?.trim()
+          ? profile.placementTargetCompanyName.trim()
+          : null;
+    } else if (profile.userCategory !== PLACEMENT_CONTEXT_EARLY_COLLEGE) {
+      payload.campus_or_off_campus = profile.placementCampusType || null;
+      payload.targets_service_mnc = !!profile.placementTargetMnc;
+      payload.targets_product_company = !!profile.placementTargetProduct;
+      payload.target_companies_notes = profile.placementCompaniesNotes?.trim() || null;
+      payload.specific_role_requested = !!profile.placementSpecificRole;
+      if (profile.placementSpecificRole) {
+        const role =
+          profile.placementRoleChoice === 'Other'
+            ? profile.placementRoleOther?.trim()
+            : profile.placementRoleChoice?.trim();
+        payload.specific_role = role || null;
+      } else {
+        payload.specific_role = null;
+      }
+    }
+  }
+
+  return payload;
+}
+
+function postAdminLeadCapture(apiBase, body) {
+  return fetch(`${apiBase}${ADMIN_LEADS_PATH}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  })
+    .then((res) => {
+      if (!res.ok && import.meta.env.DEV) {
+        console.warn('[admin/leads] HTTP', res.status);
+      }
+      return res;
+    })
+    .catch((err) => {
+      if (import.meta.env.DEV) console.warn('[admin/leads]', err);
+    });
+}
+
+/** Assessment mode: skill → POST /interview-ready/skill-readiness/plan · placement → POST /interview-ready/interview-readiness/plan */
 const ASSESSMENT_FOCUS_SKILL = 'skill';
 const ASSESSMENT_FOCUS_PLACEMENT = 'placement';
 
@@ -120,57 +234,79 @@ function readToolsEntryFromHash() {
   }
 }
 
-const InputField = ({ label, type, name, value, onChange, placeholder, error, maxLength, showCharCount }) => (
-  <div className="space-y-2">
-    <div className="flex justify-between items-center">
-      <label className="text-sm font-bold text-foreground">
-        {label} <span className="text-red-400">*</span>
-      </label>
-      {showCharCount && maxLength && (
-        <span className={`text-xs font-medium ${value.length > maxLength * 0.9 ? 'text-red-400' : 'text-hint'}`}>
-          {value.length} / {maxLength}
+/** Strong invalid state: obvious red outline + fill (validation is field-first, not essay-first). */
+const MM_FIELD_INVALID =
+  'border-2 border-red-500 bg-red-50 ring-2 ring-red-500/25 focus:border-red-600 focus:ring-2 focus:ring-red-500/35';
+const MM_FIELD_VALID =
+  'border border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30';
+
+function scrollFirstInvalidFieldIntoView() {
+  if (typeof document === 'undefined') return;
+  requestAnimationFrame(() => {
+    document.querySelector('[data-mm-invalid="true"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+}
+
+const InputField = ({ label, type, name, value, onChange, placeholder, error, maxLength, showCharCount }) => {
+  const showInlineError = error && error !== 'Required';
+  const errId = `${name}-err`;
+  return (
+    <div className="space-y-2" data-mm-invalid={error ? 'true' : undefined}>
+      <div className="flex justify-between items-center">
+        <label htmlFor={name} className={`text-sm font-bold ${error ? 'text-red-900' : 'text-foreground'}`}>
+          {label} <span className="text-red-400">*</span>
+        </label>
+        {showCharCount && maxLength && (
+          <span className={`text-xs font-medium ${value.length > maxLength * 0.9 ? 'text-red-400' : 'text-hint'}`}>
+            {value.length} / {maxLength}
+          </span>
+        )}
+      </div>
+      {type === 'textarea' ? (
+        <textarea
+          id={name}
+          name={name}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          maxLength={maxLength}
+          rows={3}
+          aria-invalid={error ? 'true' : undefined}
+          aria-describedby={error ? errId : undefined}
+          className={`w-full rounded-xl bg-white px-4 py-3 outline-none transition-[border-color,box-shadow,background-color] duration-150 resize-none text-foreground placeholder:text-hint ${
+            error ? MM_FIELD_INVALID : MM_FIELD_VALID
+          }`}
+        />
+      ) : (
+        <input
+          id={name}
+          type={type}
+          name={name}
+          value={value}
+          onChange={onChange}
+          placeholder={placeholder}
+          maxLength={maxLength}
+          aria-invalid={error ? 'true' : undefined}
+          aria-describedby={error ? errId : undefined}
+          className={`w-full rounded-xl bg-white px-4 py-3 outline-none transition-[border-color,box-shadow,background-color] duration-150 text-foreground placeholder:text-hint ${
+            error ? MM_FIELD_INVALID : MM_FIELD_VALID
+          }`}
+        />
+      )}
+      {error === 'Required' && (
+        <span id={errId} className="sr-only" role="alert">
+          This field is required.
         </span>
       )}
+      {showInlineError && (
+        <p id={errId} className="flex items-center gap-1.5 text-xs font-medium text-red-600" role="alert">
+          <AlertCircle size={13} className="shrink-0" aria-hidden />
+          {error}
+        </p>
+      )}
     </div>
-    {type === 'textarea' ? (
-      <textarea
-        name={name}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        maxLength={maxLength}
-        rows={3}
-        className={`w-full px-4 py-3 rounded-xl border bg-white border border-border outline-none transition-all resize-none text-foreground placeholder:text-hint ${
-          error
-            ? 'border-red-500/50 bg-red-500/10'
-            : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
-        }`}
-        required
-      />
-    ) : (
-      <input
-        type={type}
-        name={name}
-        value={value}
-        onChange={onChange}
-        placeholder={placeholder}
-        maxLength={maxLength}
-        className={`w-full px-4 py-3 rounded-xl border bg-white border border-border outline-none transition-all text-foreground placeholder:text-hint ${
-          error
-            ? 'border-red-500/50 bg-red-500/10'
-            : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
-        }`}
-        required
-      />
-    )}
-    {error && (
-      <div className="flex items-center gap-2 text-red-400 text-xs font-medium">
-        <AlertCircle size={14} />
-        {error}
-      </div>
-    )}
-  </div>
-);
+  );
+};
 
 const resultsListContainer = {
   hidden: { opacity: 0 },
@@ -483,7 +619,7 @@ const HOW_IT_WORKS_STEPS = [
   {
     Icon: Zap,
     title: '~5 min score',
-    desc: 'Targeted Yes/No questions and a readiness readout.',
+      desc: 'Mixed question types (Yes/No, MCQ, scenarios, code) and a readiness readout.',
   },
   {
     Icon: ShieldCheck,
@@ -579,7 +715,7 @@ function HowItWorksFlow() {
   );
 }
 
-/** Full-screen loader while POST /interview-ready/plan runs — avoids a frozen UI with generic copy */
+/** Full-screen loader while interview readiness plan POST runs — avoids a frozen UI with generic copy */
 function PlanGenerationLoader() {
   return (
     <div
@@ -609,7 +745,8 @@ function PlanGenerationLoader() {
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-hint">Please wait</p>
           <h2 className="mt-2 text-2xl font-black tracking-tight text-foreground sm:text-3xl">Preparing your questions</h2>
           <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground">
-            We&apos;re tailoring Yes/No items to your profile and focus. This can take up to a minute on a slow connection.
+            We&apos;re building your quiz — Yes/No, A–D multiple choice, short scenarios, and code-style items — tailored to
+            your profile. This can take up to a minute on a slow connection.
           </p>
           <p className="mt-2 text-xs text-hint">Do not close this tab.</p>
         </motion.div>
@@ -669,14 +806,67 @@ function EvaluatingAnswersLoader() {
   );
 }
 
+const MCQ_LETTERS = ['A', 'B', 'C', 'D'];
+
+/** Normalize API question_type to internal kind */
+function normalizePlanQuestionType(raw) {
+  const t = String(raw || '').toLowerCase().replace(/-/g, '_');
+  if (t === 'yes_no' || t === 'yesno') return 'yes_no';
+  if (t === 'multiple_choice' || t === 'mcq' || t === 'multichoice') return 'multiple_choice';
+  if (t === 'scenario') return 'scenario';
+  if (t === 'code_mcq') return 'code_mcq';
+  return '';
+}
+
+function getPlanMcqOptions(item) {
+  if (!item || typeof item !== 'object') return null;
+  if (Array.isArray(item.options) && item.options.length >= 4) return item.options.slice(0, 4).map(String);
+  if (Array.isArray(item.choices) && item.choices.length >= 4) return item.choices.slice(0, 4).map(String);
+  if (Array.isArray(item.answer_options) && item.answer_options.length >= 4) {
+    return item.answer_options.slice(0, 4).map(String);
+  }
+  if (Array.isArray(item.mcq_options) && item.mcq_options.length >= 4) {
+    return item.mcq_options.slice(0, 4).map(String);
+  }
+  const snake = ['option_a', 'option_b', 'option_c', 'option_d'].map((k) => item[k]).filter(Boolean);
+  if (snake.length === 4) return snake.map(String);
+  return null;
+}
+
+/**
+ * Plan items from skill / interview-readiness APIs include `question_type`.
+ * Legacy plans that omit it → render all as Yes/No (do not infer MCQ from options alone).
+ */
+function inferPlanQuestionKind(item) {
+  const normalized = normalizePlanQuestionType(item?.question_type);
+  if (normalized) return normalized;
+  return 'yes_no';
+}
+
+function planQuestionTypeBadge(kind) {
+  switch (kind) {
+    case 'yes_no':
+      return 'Yes / No';
+    case 'multiple_choice':
+      return 'Multiple choice';
+    case 'scenario':
+      return 'Scenario';
+    case 'code_mcq':
+      return 'Code';
+    default:
+      return 'Question';
+  }
+}
+
 /** Step 5: compact header; on list scroll, swap to slim title bar so questions stay visible */
-function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit, loading, error }) {
+function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSubmit, loading, error }) {
   const [scrolled, setScrolled] = useState(false);
   const listRef = useRef(null);
   const isSkillQuiz = profile.assessmentMode === ASSESSMENT_FOCUS_SKILL;
   const quizTitle = isSkillQuiz ? 'Skill preparation quiz' : 'Interview readiness quiz';
+  const items = Array.isArray(evaluationPlan) ? evaluationPlan : [];
   const answered = Object.keys(answers).length;
-  const total = questions.length || 1;
+  const total = items.length || 1;
   const pct = Math.min(100, Math.round((answered / total) * 100));
   const skillSnippet = (profile.primarySkill || '').split(',')[0].trim() || 'your input';
   const roleLabel =
@@ -706,13 +896,13 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
                 <div className="flex flex-wrap items-center gap-2">
                   <h2 className="text-lg font-bold leading-tight text-foreground sm:text-xl">{quizTitle}</h2>
                   <span className="shrink-0 rounded-full border border-[#E8D9C8] bg-[#FFF8EE] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#8B6914] sm:text-[11px]">
-                    Yes/No · {questions.length}
+                    Mixed · {items.length} questions
                   </span>
                 </div>
                 <p className="mt-1.5 line-clamp-2 text-xs leading-snug text-muted-foreground sm:text-sm">
                   {isSkillQuiz
-                    ? 'Scoped to your skill — not a full interview-round mix.'
-                    : 'Broad engineering-style checks for overall readiness.'}
+                    ? 'Yes/No claims plus A–D items — scoped to your skill focus.'
+                    : 'Yes/No, multiple choice, scenarios, and code-style items — broad engineering-style readiness.'}
                 </p>
                 <p className="mt-1 truncate text-xs text-hint">
                   {isSkillQuiz ? 'Skill: ' : 'Context: '}
@@ -729,7 +919,7 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
                 <div className="text-lg font-black tabular-nums leading-none text-foreground sm:text-xl">
                   {answered}
                   <span className="text-[#999999]">/</span>
-                  {questions.length}
+                  {items.length}
                 </div>
                 <p className="text-[10px] font-medium uppercase tracking-wide text-hint">Answered</p>
               </div>
@@ -751,7 +941,7 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
             <div className="flex items-center justify-between gap-3">
               <p className="min-w-0 truncate text-sm font-semibold text-foreground">{quizTitle}</p>
               <span className="shrink-0 text-xs font-bold tabular-nums text-muted-foreground">
-                {answered}/{questions.length}
+                {answered}/{items.length}
               </span>
             </div>
             <div className="mt-2 h-0.5 w-full overflow-hidden rounded-full bg-[#E8E4DC]">
@@ -767,40 +957,95 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
             onScroll={onListScroll}
             className="max-h-[min(75dvh,720px)] space-y-6 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5"
           >
-            {questions.map((q, i) => (
-              <div key={i} className="border-b border-border pb-6 last:border-0 last:pb-2">
-                <p className="mb-4 flex items-start gap-3 text-base font-semibold leading-relaxed text-foreground">
-                  <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-600 text-xs font-black text-white">
-                    {i + 1}
-                  </span>
-                  <span>{q}</span>
-                </p>
-                <div className="flex gap-3 sm:gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setAnswers({ ...answers, [i]: 'Yes' })}
-                    className={`flex-1 rounded-xl border-2 py-2.5 text-sm font-bold transition-all sm:py-3 ${
-                      answers[i] === 'Yes'
-                        ? 'border-emerald-500 bg-emerald-600 text-white shadow-md shadow-emerald-500/25'
-                        : 'border-border bg-white text-muted-foreground hover:border-emerald-400/60 hover:bg-emerald-50'
+            {items.map((item, i) => {
+              const qText = typeof item?.question === 'string' ? item.question : String(item?.question ?? '');
+              const kind = inferPlanQuestionKind(item);
+              const isYesNo = kind === 'yes_no';
+              const needsMcq = !isYesNo;
+              const opts = needsMcq ? getPlanMcqOptions(item) : null;
+              const showMcq = needsMcq && opts && opts.length === 4;
+              const codeStyle = kind === 'code_mcq';
+
+              return (
+                <div key={i} className="border-b border-border pb-6 last:border-0 last:pb-2">
+                  <div className="mb-3 flex flex-wrap items-center gap-2">
+                    <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-600 text-xs font-black text-white">
+                      {i + 1}
+                    </span>
+                    <span className="rounded-full border border-border bg-[#FAFAFA] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+                      {planQuestionTypeBadge(kind)}
+                    </span>
+                  </div>
+                  <p
+                    className={`mb-4 pl-0 text-base font-semibold leading-relaxed text-foreground sm:pl-10 ${
+                      codeStyle ? 'whitespace-pre-wrap break-words font-mono text-sm font-normal text-foreground' : ''
                     }`}
                   >
-                    Yes
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setAnswers({ ...answers, [i]: 'No' })}
-                    className={`flex-1 rounded-xl border-2 py-2.5 text-sm font-bold transition-all sm:py-3 ${
-                      answers[i] === 'No'
-                        ? 'border-rose-500 bg-rose-600 text-white shadow-md shadow-rose-500/25'
-                        : 'border-border bg-white text-muted-foreground hover:border-rose-400/60 hover:bg-rose-50'
-                    }`}
-                  >
-                    No
-                  </button>
+                    {qText}
+                  </p>
+
+                  {isYesNo ? (
+                    <div className="flex gap-3 sm:gap-4 sm:pl-10">
+                      <button
+                        type="button"
+                        onClick={() => setAnswers({ ...answers, [i]: 'Yes' })}
+                        className={`flex-1 rounded-xl border-2 py-2.5 text-sm font-bold transition-all sm:py-3 ${
+                          answers[i] === 'Yes'
+                            ? 'border-emerald-500 bg-emerald-600 text-white shadow-md shadow-emerald-500/25'
+                            : 'border-border bg-white text-muted-foreground hover:border-emerald-400/60 hover:bg-emerald-50'
+                        }`}
+                      >
+                        Yes
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setAnswers({ ...answers, [i]: 'No' })}
+                        className={`flex-1 rounded-xl border-2 py-2.5 text-sm font-bold transition-all sm:py-3 ${
+                          answers[i] === 'No'
+                            ? 'border-rose-500 bg-rose-600 text-white shadow-md shadow-rose-500/25'
+                            : 'border-border bg-white text-muted-foreground hover:border-rose-400/60 hover:bg-rose-50'
+                        }`}
+                      >
+                        No
+                      </button>
+                    </div>
+                  ) : showMcq ? (
+                    <div className="grid grid-cols-1 gap-2 sm:pl-10 sm:grid-cols-2">
+                      {opts.map((label, j) => {
+                        const letter = MCQ_LETTERS[j];
+                        const picked = answers[i] === letter;
+                        return (
+                          <button
+                            key={letter}
+                            type="button"
+                            onClick={() => setAnswers({ ...answers, [i]: letter })}
+                            className={`flex w-full items-start gap-3 rounded-xl border-2 px-3 py-3 text-left text-sm transition-all ${
+                              picked
+                                ? 'border-[#FF9500] bg-[#FFF8EE] text-foreground shadow-md shadow-[#FF9500]/15'
+                                : 'border-border bg-white text-muted-foreground hover:border-[#FFB347]/50 hover:bg-[#FFFCF9]'
+                            }`}
+                          >
+                            <span
+                              className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black ${
+                                picked ? 'bg-[#FF9500] text-white' : 'bg-[#F0ECE0] text-foreground'
+                              }`}
+                            >
+                              {letter}
+                            </span>
+                            <span className="min-w-0 flex-1 leading-snug text-foreground">{label}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <p className="mt-1 text-sm text-amber-800 sm:pl-10">
+                      This item needs four choices (A–D) from the server. Go back and generate questions again, or contact
+                      support if this persists.
+                    </p>
+                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className="border-t border-border bg-[#FFFCF9] px-4 py-4 sm:px-6">
@@ -816,15 +1061,15 @@ function ReadinessQuizPanel({ questions, answers, setAnswers, profile, onSubmit,
             <button
               type="button"
               className={`w-full rounded-2xl py-3.5 text-base font-bold text-white shadow-lg transition-all sm:py-4 ${
-                answered < questions.length
+                answered < items.length
                   ? 'cursor-not-allowed bg-slate-500 text-slate-200'
                   : 'bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#FF9500] hover:to-[#E88600] active:scale-[0.99]'
               }`}
-              disabled={answered < questions.length || loading}
+              disabled={answered < items.length || loading}
               onClick={onSubmit}
             >
-              {answered < questions.length
-                ? `Answer ${questions.length - answered} more ${questions.length - answered === 1 ? 'question' : 'questions'}`
+              {answered < items.length
+                ? `Answer ${items.length - answered} more ${items.length - answered === 1 ? 'question' : 'questions'}`
                 : 'Get My Readiness Score'}
             </button>
           </div>
@@ -871,9 +1116,21 @@ const InterviewReady = () => {
     collegeName: '',
     experienceYears: '',
     currentOrganization: '',
+    /** Interview readiness (placement) only — step 13; ignored for skill mode API */
+    placementCampusType: '',
+    placementTargetMnc: false,
+    placementTargetProduct: false,
+    placementCompaniesNotes: '',
+    placementSpecificRole: false,
+    placementRoleChoice: '',
+    placementRoleOther: '',
+    placementCoreSkill: '',
+    placementJdProvided: false,
+    placementJdText: '',
+    placementHasTargetCompany: false,
+    placementTargetCompanyName: '',
   });
 
-  const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
   const [evaluationData, setEvaluationData] = useState(null);
   const [result, setResult] = useState(null);
@@ -919,6 +1176,15 @@ const InterviewReady = () => {
     }
   }, [step, profile.assessmentMode, fromToolsEntry]);
 
+  /** 1st–3rd year users never see step 13 — bounce back if state is inconsistent */
+  useEffect(() => {
+    if (step !== 13) return;
+    if (profile.assessmentMode !== ASSESSMENT_FOCUS_PLACEMENT) return;
+    if (profile.userCategory === PLACEMENT_CONTEXT_EARLY_COLLEGE) {
+      setStep(4);
+    }
+  }, [step, profile.assessmentMode, profile.userCategory]);
+
   const checkBackendHealth = async () => {
     try {
       const res = await fetch(`${API_BASE}/health`);
@@ -945,15 +1211,15 @@ const InterviewReady = () => {
     const errors = {};
     
     if (!contactInfo.email.trim()) {
-      errors.email = 'Email is required';
+      errors.email = 'Required';
     } else if (!validateEmail(contactInfo.email)) {
-      errors.email = 'Invalid email format';
+      errors.email = 'Invalid email';
     }
-    
+
     if (!contactInfo.phone.trim()) {
-      errors.phone = 'Phone number is required';
+      errors.phone = 'Required';
     } else if (!validatePhone(contactInfo.phone)) {
-      errors.phone = 'Please enter a valid phone number (at least 10 digits)';
+      errors.phone = 'Enter a valid number (10+ digits)';
     }
     
     setValidationErrors(errors);
@@ -964,9 +1230,10 @@ const InterviewReady = () => {
     e.preventDefault();
     
     if (!validateContactInfo()) {
+      scrollFirstInvalidFieldIntoView();
       return;
     }
-    
+
     setLoading(true);
     setError(null);
     
@@ -1061,30 +1328,34 @@ const InterviewReady = () => {
     if (profile.userCategory === 'professional') {
       const raw = String(profile.experienceYears ?? '').trim();
       if (!raw) {
-        errors.experienceYears = 'Enter years of experience';
+        errors.experienceYears = 'Required';
       } else {
         const n = parseFloat(raw, 10);
         if (Number.isNaN(n) || n < 0 || n > 50) {
-          errors.experienceYears = 'Enter a number between 0 and 50';
+          errors.experienceYears = 'Use a number from 0 to 50';
         }
       }
       if (!profile.currentOrganization?.trim()) {
-        errors.currentOrganization = 'Current organization is required';
+        errors.currentOrganization = 'Required';
       }
     } else if (profile.userCategory && profile.userCategory !== 'professional') {
       if (!profile.collegeName?.trim()) {
-        errors.collegeName = 'College or university name is required';
+        errors.collegeName = 'Required';
       }
     }
 
     const emailStr = String(profile.email ?? '').trim();
-    if (emailStr && !validateEmail(emailStr)) {
-      errors.email = 'Invalid email format';
+    if (!emailStr) {
+      errors.email = 'Required';
+    } else if (!validateEmail(emailStr)) {
+      errors.email = 'Invalid email';
     }
 
     const phoneStr = String(profile.contactNumber ?? '').trim();
-    if (phoneStr && !validatePhone(phoneStr)) {
-      errors.phone = 'Enter a valid phone number (at least 10 digits)';
+    if (!phoneStr) {
+      errors.phone = 'Required';
+    } else if (!validatePhone(phoneStr)) {
+      errors.phone = 'Enter a valid number (10+ digits)';
     }
 
     setValidationErrors((prev) => {
@@ -1103,26 +1374,101 @@ const InterviewReady = () => {
     const errors = {};
 
     if (!profile.userCategory.trim()) {
-      errors.userCategory = 'Please select a category';
+      errors.userCategory = 'Required';
     }
 
     if (!profile.primarySkill.trim()) {
-      errors.primarySkill =
-        profile.assessmentMode === ASSESSMENT_FOCUS_SKILL
-          ? 'Enter the skill you want to practice'
-          : 'Enter your major subjects or areas (for interview context)';
+      errors.primarySkill = 'Required';
     } else if (profile.primarySkill.trim().length > PLAN_PRIMARY_SKILL_MAX) {
-      errors.primarySkill = `Keep your stack to ${PLAN_PRIMARY_SKILL_MAX} characters or less (API limit)`;
+      errors.primarySkill = `Max ${PLAN_PRIMARY_SKILL_MAX} characters`;
     }
 
-    setValidationErrors(errors);
+    setValidationErrors((prev) => {
+      const next = { ...prev };
+      delete next.userCategory;
+      delete next.primarySkill;
+      return { ...next, ...errors };
+    });
     return Object.keys(errors).length === 0;
+  };
+
+  /** Interview readiness (placement) — step 13 fields. Skill mode skips this entirely. */
+  const validatePlacementContext = () => {
+    const errors = {};
+    const isPro = profile.userCategory === 'professional';
+
+    if (isPro) {
+      if (!profile.placementCoreSkill?.trim()) {
+        errors.placementCoreSkill = 'Required';
+      }
+      if (profile.placementJdProvided && !profile.placementJdText?.trim()) {
+        errors.placementJdText = 'Paste the JD or turn off “JD provided”';
+      }
+      if (profile.placementHasTargetCompany && !profile.placementTargetCompanyName?.trim()) {
+        errors.placementTargetCompanyName = 'Enter a company or uncheck target company';
+      }
+    } else if (profile.userCategory !== PLACEMENT_CONTEXT_EARLY_COLLEGE) {
+      if (!profile.placementCampusType) {
+        errors.placementCampusType = 'Required';
+      }
+      const hasCompanySignal =
+        profile.placementTargetMnc ||
+        profile.placementTargetProduct ||
+        (profile.placementCompaniesNotes && profile.placementCompaniesNotes.trim().length > 0);
+      if (!hasCompanySignal) {
+        errors.placementCompanies = 'Pick at least one company type or add names below';
+      }
+      if (profile.placementSpecificRole) {
+        if (!profile.placementRoleChoice) {
+          errors.placementRoleChoice = 'Required';
+        }
+      }
+    }
+
+    setValidationErrors((prev) => {
+      const next = { ...prev };
+      [
+        'placementCoreSkill',
+        'placementJdText',
+        'placementTargetCompanyName',
+        'placementCampusType',
+        'placementCompanies',
+        'placementRoleChoice',
+        'placementRoleOther',
+      ].forEach((k) => delete next[k]);
+      return { ...next, ...errors };
+    });
+    return Object.keys(errors).length === 0;
+  };
+
+  /** Step 4: skill → generate plan immediately; interview readiness → step 13 (extra context) first. */
+  const handleStep4Submit = (e) => {
+    e.preventDefault();
+    setError(null);
+    if (!validateForm()) {
+      scrollFirstInvalidFieldIntoView();
+      return;
+    }
+    if (profile.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT) {
+      if (needsInterviewPlacementContextStep(profile.userCategory)) {
+        setStep(13);
+        return;
+      }
+    }
+    handleGetReadinessPlan(e);
   };
 
   const handleGetReadinessPlan = async (e) => {
     e.preventDefault();
     
     if (!validateForm()) {
+      scrollFirstInvalidFieldIntoView();
+      return;
+    }
+
+    const isSkillMode = profile.assessmentMode === ASSESSMENT_FOCUS_SKILL;
+    if (!isSkillMode && !validatePlacementContext()) {
+      scrollFirstInvalidFieldIntoView();
       return;
     }
 
@@ -1134,9 +1480,18 @@ const InterviewReady = () => {
       profile.userCategory === 'professional'
         ? Math.min(50, Math.max(0, parseFloat(String(profile.experienceYears).trim(), 10) || 0))
         : 0;
-    const payload = {
-      user_type:
-        API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'student',
+
+    const planPath = isSkillMode ? SKILL_READINESS_PLAN_PATH : INTERVIEW_PLAN_PATH;
+
+    /** Skill readiness: dedicated payload — no email/phone; target_role / target_company_type omitted (empty). */
+    const skillReadinessPayload = {
+      user_type: SKILL_API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'college_student_year_1',
+      primary_skill: primarySkill,
+      experience_years: expParsed,
+    };
+
+    const interviewReadinessPayload = {
+      user_type: API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'student',
       primary_skill: primarySkill,
       experience_years: expParsed,
       target_role: profile.targetRole?.trim() || undefined,
@@ -1144,20 +1499,50 @@ const InterviewReady = () => {
       phone: profile.contactNumber?.trim() || undefined,
     };
     if (profile.userCategory === 'professional' && profile.currentOrganization?.trim()) {
-      payload.current_organization = profile.currentOrganization.trim();
+      interviewReadinessPayload.current_organization = profile.currentOrganization.trim();
     }
     if (profile.userCategory && profile.userCategory !== 'professional' && profile.collegeName?.trim()) {
-      payload.college_name = profile.collegeName.trim();
+      interviewReadinessPayload.college_name = profile.collegeName.trim();
     }
     if (profile.assessmentMode === ASSESSMENT_FOCUS_SKILL || profile.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT) {
-      payload.assessment_focus = profile.assessmentMode;
+      interviewReadinessPayload.assessment_focus = profile.assessmentMode;
     }
+
+    if (!isSkillMode) {
+      if (profile.userCategory === 'professional') {
+        interviewReadinessPayload.core_skill = profile.placementCoreSkill?.trim() || undefined;
+        interviewReadinessPayload.jd_provided = !!profile.placementJdProvided;
+        if (profile.placementJdProvided) {
+          interviewReadinessPayload.job_description = profile.placementJdText?.trim() || null;
+        }
+        if (profile.placementHasTargetCompany && profile.placementTargetCompanyName?.trim()) {
+          interviewReadinessPayload.target_company_name = profile.placementTargetCompanyName.trim();
+        }
+      } else if (profile.userCategory !== PLACEMENT_CONTEXT_EARLY_COLLEGE) {
+        interviewReadinessPayload.campus_or_off_campus = profile.placementCampusType;
+        interviewReadinessPayload.targets_service_mnc = !!profile.placementTargetMnc;
+        interviewReadinessPayload.targets_product_company = !!profile.placementTargetProduct;
+        interviewReadinessPayload.target_companies_notes = profile.placementCompaniesNotes?.trim() || undefined;
+        interviewReadinessPayload.specific_role_requested = !!profile.placementSpecificRole;
+        if (profile.placementSpecificRole) {
+          const role =
+            profile.placementRoleChoice === 'Other'
+              ? profile.placementRoleOther?.trim()
+              : profile.placementRoleChoice?.trim();
+          if (role) interviewReadinessPayload.specific_role = role;
+        }
+      }
+    }
+
+    const payload = isSkillMode ? skillReadinessPayload : interviewReadinessPayload;
+
+    void postAdminLeadCapture(API_BASE, buildAdminLeadsPayload(profile, primarySkill, expParsed, isSkillMode));
 
     const controller = new AbortController();
     const timeoutId = window.setTimeout(() => controller.abort(), PLAN_FETCH_TIMEOUT_MS);
 
     try {
-      const res = await fetch(`${API_BASE}${INTERVIEW_PLAN_PATH}`, {
+      const res = await fetch(`${API_BASE}${planPath}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -1173,7 +1558,7 @@ const InterviewReady = () => {
         }
         const msg = formatPlanApiError(data);
         if (import.meta.env.DEV) {
-          console.warn('[interview-ready/plan] error', res.status, data);
+          console.warn(`[${planPath}] error`, res.status, data);
         }
         setError(explainPlanHttpError(res.status, msg));
         return;
@@ -1184,7 +1569,6 @@ const InterviewReady = () => {
         return;
       }
 
-      setQuestions(data.evaluation_plan.map((q) => q.question));
       setEvaluationData(data.evaluation_plan);
       setStep(5);
     } catch (err) {
@@ -1208,10 +1592,10 @@ const InterviewReady = () => {
 
     try {
       const payload = {
-        questions: evaluationData.map(q => q.question),
+        questions: evaluationData.map((q) => q.question),
         answers: evaluationData.map((_, i) => answers[i] || ''),
-        correct_answers: evaluationData.map(q => q.correct_answer),
-        study_topics: evaluationData.map(q => q.study_topic),
+        correct_answers: evaluationData.map((q) => q.correct_answer),
+        study_topics: evaluationData.map((q) => q.study_topic),
       };
 
       const res = await fetch(`${API_BASE}/interview-ready/evaluate`, {
@@ -1282,6 +1666,18 @@ const InterviewReady = () => {
       collegeName: '',
       experienceYears: '',
       currentOrganization: '',
+      placementCampusType: '',
+      placementTargetMnc: false,
+      placementTargetProduct: false,
+      placementCompaniesNotes: '',
+      placementSpecificRole: false,
+      placementRoleChoice: '',
+      placementRoleOther: '',
+      placementCoreSkill: '',
+      placementJdProvided: false,
+      placementJdText: '',
+      placementHasTargetCompany: false,
+      placementTargetCompanyName: '',
     });
     setContactInfo({ email: '', phone: '' });
     setAnswers({});
@@ -1295,12 +1691,13 @@ const InterviewReady = () => {
     setResult(null);
     setEarlyBirdCouponCode('');
     setCouponCopied(false);
+    setEvaluationData(null);
   };
 
   const stepContent = (() => {
   // Score card must win over loading: after evaluate(), step becomes 6 while `loading` may still be true for one frame.
   if (loading && step !== 7 && step !== 8 && step !== 9 && !(step === 6 && result)) {
-    if (step === 4) {
+    if (step === 4 || step === 13) {
       return <PlanGenerationLoader />;
     }
     if (step === 5) {
@@ -1473,7 +1870,7 @@ const InterviewReady = () => {
                 <label className="text-sm font-bold text-[#333333] block mb-3">
                   Email Address <span className="text-red-400">*</span>
                 </label>
-                <input 
+                <input
                   type="email"
                   value={contactInfo.email}
                   onChange={(e) => {
@@ -1481,10 +1878,12 @@ const InterviewReady = () => {
                     setValidationErrors({...validationErrors, email: ''});
                   }}
                   placeholder="your.email@example.com"
-                  className={`w-full px-4 py-3 rounded-xl border bg-white border border-border outline-none transition-all text-foreground placeholder-[#AAAAAA] ${
+                  aria-invalid={validationErrors.email ? 'true' : undefined}
+                  data-mm-invalid={validationErrors.email ? 'true' : undefined}
+                  className={`w-full rounded-xl bg-white px-4 py-3 outline-none transition-all text-foreground placeholder-[#AAAAAA] ${
                     validationErrors.email 
-                      ? 'border-red-500/50 bg-red-500/10' 
-                      : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
+                      ? MM_FIELD_INVALID 
+                      : MM_FIELD_VALID
                   }`}
                   required
                 />
@@ -1500,7 +1899,7 @@ const InterviewReady = () => {
                 <label className="text-sm font-bold text-[#333333] block mb-3">
                   Phone Number <span className="text-red-400">*</span>
                 </label>
-                <input 
+                <input
                   type="tel"
                   value={contactInfo.phone}
                   onChange={(e) => {
@@ -1508,10 +1907,12 @@ const InterviewReady = () => {
                     setValidationErrors({...validationErrors, phone: ''});
                   }}
                   placeholder="+91 9876543210"
-                  className={`w-full px-4 py-3 rounded-xl border bg-white border border-border outline-none transition-all text-foreground placeholder-[#AAAAAA] ${
+                  aria-invalid={validationErrors.phone ? 'true' : undefined}
+                  data-mm-invalid={validationErrors.phone ? 'true' : undefined}
+                  className={`w-full rounded-xl bg-white px-4 py-3 outline-none transition-all text-foreground placeholder-[#AAAAAA] ${
                     validationErrors.phone 
-                      ? 'border-red-500/50 bg-red-500/10' 
-                      : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
+                      ? MM_FIELD_INVALID 
+                      : MM_FIELD_VALID
                   }`}
                   required
                 />
@@ -1712,10 +2113,10 @@ const InterviewReady = () => {
                       });
                       setValidationErrors({ ...validationErrors, userCategory: '' });
                     }}
-                    className={`p-5 rounded-2xl text-left transition-all border-2 group relative ${
+                    className={`p-5 rounded-2xl text-left border-2 group relative cursor-pointer transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out motion-reduce:transition-none ${
                       selected
                         ? 'border-[#FF9500] bg-[#FF9500]/15 shadow-lg shadow-[0_2px_12px_rgba(255,149,0,0.15)]'
-                        : 'border-border bg-white/[0.03] hover:border-border hover:bg-white/[0.06]'
+                        : 'border-border bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-[#FFB347] hover:bg-gradient-to-br hover:from-[#FFFBF7] hover:to-[#FFF4E0]/90 hover:shadow-[0_12px_32px_-12px_rgba(255,149,0,0.35)] hover:-translate-y-1 motion-reduce:hover:translate-y-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9500]'
                     }`}
                   >
                     {selected && (
@@ -1723,7 +2124,14 @@ const InterviewReady = () => {
                         <Check size={11} className="text-white" />
                       </div>
                     )}
-                    <div className="text-3xl mb-3">{option.emoji}</div>
+                    <div
+                      className={`mb-3 text-3xl transition-transform duration-200 ease-out motion-reduce:transition-none ${
+                        selected ? '' : 'group-hover:scale-110 group-hover:rotate-[-4deg] motion-reduce:group-hover:scale-100 motion-reduce:group-hover:rotate-0'
+                      }`}
+                      aria-hidden
+                    >
+                      {option.emoji}
+                    </div>
                     <h3 className="font-bold text-foreground text-sm mb-1">{option.label}</h3>
                     <p className={`text-xs font-medium mb-3 ${selected ? 'text-[#FF9500]' : 'text-muted-foreground'}`}>{option.badge}</p>
                     <div className="space-y-1.5">
@@ -1838,10 +2246,12 @@ const InterviewReady = () => {
                         );
                       }}
                       placeholder="e.g. 2.5"
-                      className={`w-full rounded-xl border border-border bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
+                      aria-invalid={validationErrors.experienceYears ? 'true' : undefined}
+                      data-mm-invalid={validationErrors.experienceYears ? 'true' : undefined}
+                      className={`w-full rounded-xl bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
                         validationErrors.experienceYears
-                          ? 'border-red-500/50 bg-red-500/10'
-                          : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
+                          ? MM_FIELD_INVALID
+                          : MM_FIELD_VALID
                       }`}
                     />
                     {validationErrors.experienceYears && (
@@ -1866,10 +2276,12 @@ const InterviewReady = () => {
                         );
                       }}
                       placeholder="Company or employer name"
-                      className={`w-full rounded-xl border border-border bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
+                      aria-invalid={validationErrors.currentOrganization ? 'true' : undefined}
+                      data-mm-invalid={validationErrors.currentOrganization ? 'true' : undefined}
+                      className={`w-full rounded-xl bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
                         validationErrors.currentOrganization
-                          ? 'border-red-500/50 bg-red-500/10'
-                          : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
+                          ? MM_FIELD_INVALID
+                          : MM_FIELD_VALID
                       }`}
                     />
                     {validationErrors.currentOrganization && (
@@ -1894,10 +2306,12 @@ const InterviewReady = () => {
                       setValidationErrors((prev) => (prev.collegeName ? { ...prev, collegeName: '' } : prev));
                     }}
                     placeholder="e.g. IIT Madras, VIT Vellore, state university…"
-                    className={`w-full rounded-xl border border-border bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
+                    aria-invalid={validationErrors.collegeName ? 'true' : undefined}
+                    data-mm-invalid={validationErrors.collegeName ? 'true' : undefined}
+                    className={`w-full rounded-xl bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
                       validationErrors.collegeName
-                        ? 'border-red-500/50 bg-red-500/10'
-                        : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
+                        ? MM_FIELD_INVALID
+                        : MM_FIELD_VALID
                     }`}
                   />
                   {validationErrors.collegeName && (
@@ -1912,14 +2326,19 @@ const InterviewReady = () => {
 
             <div className="mt-8 space-y-5 rounded-2xl border border-border bg-white/[0.03] p-5 md:p-6">
               <div className="flex items-center justify-between">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Email &amp; phone</p>
-                <span className="rounded-full bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-700">Optional</span>
+                <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Email &amp; WhatsApp</p>
+                <span className="rounded-full bg-[#FFF4E0] border border-[#FFB347]/50 px-2 py-0.5 text-[10px] font-bold text-[#B45309]">
+                  Required
+                </span>
               </div>
-              <p className="text-xs text-muted-foreground -mt-2">Add your email to receive your detailed score report. Skip if you prefer — your score still shows instantly.</p>
+              <p className="text-xs text-muted-foreground -mt-2">
+                We use these to send your detailed score report and assessment updates. Same number you use on WhatsApp is ideal.
+              </p>
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-bold text-[#333333]">
                   <Mail size={16} className="text-[#FF9500]" />
-                  Email address <span className="text-[10px] font-medium text-muted-foreground ml-1">(for score report)</span>
+                  Email address <span className="text-red-400">*</span>
+                  <span className="text-[10px] font-medium text-muted-foreground ml-1">(for score report)</span>
                 </label>
                 <input
                   type="email"
@@ -1930,11 +2349,13 @@ const InterviewReady = () => {
                     setProfile((p) => ({ ...p, email: e.target.value }));
                     setValidationErrors((prev) => (prev.email ? { ...prev, email: '' } : prev));
                   }}
-                  placeholder="you@example.com (optional)"
-                  className={`w-full rounded-xl border border-border bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
+                  placeholder="you@example.com"
+                  aria-invalid={validationErrors.email ? 'true' : undefined}
+                  data-mm-invalid={validationErrors.email ? 'true' : undefined}
+                  className={`w-full rounded-xl bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
                     validationErrors.email
-                      ? 'border-red-500/50 bg-red-500/10'
-                      : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
+                      ? MM_FIELD_INVALID
+                      : MM_FIELD_VALID
                   }`}
                 />
                 {validationErrors.email && (
@@ -1947,7 +2368,7 @@ const InterviewReady = () => {
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-bold text-[#333333]">
                   <Phone size={16} className="text-[#FF9500]" />
-                  Phone number <span className="text-[10px] font-medium text-muted-foreground ml-1">(optional)</span>
+                  WhatsApp number <span className="text-red-400">*</span>
                 </label>
                 <input
                   type="tel"
@@ -1958,11 +2379,13 @@ const InterviewReady = () => {
                     setProfile((p) => ({ ...p, contactNumber: e.target.value }));
                     setValidationErrors((prev) => (prev.phone ? { ...prev, phone: '' } : prev));
                   }}
-                  placeholder="+91 9876543210 (optional)"
-                  className={`w-full rounded-xl border border-border bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
+                  placeholder="Enter WhatsApp number"
+                  aria-invalid={validationErrors.phone ? 'true' : undefined}
+                  data-mm-invalid={validationErrors.phone ? 'true' : undefined}
+                  className={`w-full rounded-xl bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
                     validationErrors.phone
-                      ? 'border-red-500/50 bg-red-500/10'
-                      : 'border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30'
+                      ? MM_FIELD_INVALID
+                      : MM_FIELD_VALID
                   }`}
                 />
                 {validationErrors.phone && (
@@ -1974,7 +2397,7 @@ const InterviewReady = () => {
               </div>
               <p className="text-xs text-emerald-600 flex items-center gap-1.5">
                 <Check size={12} />
-                No spam, ever. Just your score report if you add email.
+                No spam — only your report and assessment-related messages.
               </p>
             </div>
 
@@ -1982,14 +2405,17 @@ const InterviewReady = () => {
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="rounded-xl border border-border px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-border hover:bg-white/5 hover:text-white"
+                className="rounded-xl border border-border bg-white px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-[#FFB347]/70 hover:bg-[#FFF8EE] hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9500]"
               >
                 ← Back
               </button>
               <button
                 type="button"
                 onClick={() => {
-                  if (!validateContext()) return;
+                  if (!validateContext()) {
+                    scrollFirstInvalidFieldIntoView();
+                    return;
+                  }
                   setStep(4);
                 }}
                 className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FF9500] to-[#FFB347] py-3 text-sm font-bold text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-all hover:from-[#FF9500] hover:to-[#FFB347] active:scale-[0.98]"
@@ -2009,6 +2435,9 @@ const InterviewReady = () => {
     const ASSESSMENT_STEPS = 6;
     const currentStepIndex = 3;
     const isSkillFocus = profile.assessmentMode === ASSESSMENT_FOCUS_SKILL;
+    const placementGoesStraightToPlan =
+      profile.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT &&
+      !needsInterviewPlacementContextStep(profile.userCategory);
 
     const roleLabel =
       DISPLAY_ROLE_BY_CATEGORY[profile.userCategory] ||
@@ -2035,73 +2464,74 @@ const InterviewReady = () => {
               </div>
             </div>
 
-            <div className="mb-6 space-y-3">
+            <div className="mb-6 space-y-4">
               <h2 className="text-2xl font-black tracking-tight text-foreground md:text-3xl">
                 {isSkillFocus ? 'Your skill focus' : 'Interview focus areas'}
               </h2>
-              <p className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-2">
                 {profile.assessmentMode && (
-                  <>
-                    <span className="font-semibold text-muted-foreground">
-                      {ASSESSMENT_MODE_LABEL[profile.assessmentMode]}
-                    </span>
-                    <span className="text-[#D4D0C8]" aria-hidden>
-                      ·
-                    </span>
-                  </>
+                  <span className="inline-flex items-center rounded-full border border-cyan-500/30 bg-cyan-500/[0.12] px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#0E7490] sm:text-xs">
+                    {ASSESSMENT_MODE_LABEL[profile.assessmentMode]}
+                  </span>
                 )}
-                <span>{roleLabel}</span>
-                <span className="text-[#D4D0C8]" aria-hidden>
-                  ·
+                <span className="inline-flex items-center rounded-full border border-border bg-[#FAFAFA] px-3 py-1 text-[11px] font-semibold text-foreground sm:text-xs">
+                  {roleLabel}
                 </span>
-                <span className="tabular-nums">
-                  {usageInfo.remaining_attempts}/{FREE_TIER_LIMIT} free
+                <span
+                  className="inline-flex items-center rounded-full border border-[#FFB347]/45 bg-[#FFF4E0] px-3 py-1 text-[11px] font-bold tabular-nums text-[#B45309] sm:text-xs"
+                  title="Free-tier attempts you can still use"
+                >
+                  {usageInfo.remaining_attempts} of {FREE_TIER_LIMIT} attempts left
                 </span>
-              </p>
-              <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
-                {isSkillFocus ? (
-                  <>
-                    One skill only — we&apos;ll keep every question on it.{' '}
-                    <span className="text-hint">({PLAN_PRIMARY_SKILL_MAX} characters max)</span>
-                  </>
-                ) : (
-                  <>
-                    Add subjects for context (e.g. DSA, OOP, DBMS). You&apos;ll get a{' '}
-                    <span className="font-medium text-[#333333]">broad interview mix</span>, not drills on one language.{' '}
-                    <span className="text-hint">({PLAN_PRIMARY_SKILL_MAX} characters max)</span>
-                  </>
-                )}
-              </p>
+              </div>
             </div>
 
-            <form onSubmit={handleGetReadinessPlan} className="space-y-6">
-              <InputField
-                label={isSkillFocus ? 'Skill to practice' : 'Major areas & skills (for context)'}
-                type="textarea"
-                name="primarySkill"
-                value={profile.primarySkill}
-                onChange={(e) => {
-                  const v = e.target.value;
-                  setProfile((prev) => ({ ...prev, primarySkill: v }));
-                  setValidationErrors((prev) => (prev.primarySkill ? { ...prev, primarySkill: '' } : prev));
-                }}
-                placeholder={
-                  isSkillFocus
-                    ? 'e.g. Java, or C#, or Python, or Machine Learning — one primary skill'
-                    : 'e.g. DSA, OOP, DBMS, system design — comma-separated areas'
-                }
-                error={validationErrors.primarySkill}
-                maxLength={PLAN_PRIMARY_SKILL_MAX}
-                showCharCount={true}
-                autoComplete="off"
-              />
+            <form onSubmit={handleStep4Submit} className="space-y-6">
+              <div className="space-y-3">
+                <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                  {isSkillFocus ? (
+                    <>
+                      Enter <span className="font-semibold text-foreground">one</span> skill or stack for{' '}
+                      <span className="font-semibold text-foreground">in-depth preparation</span>. Every question stays on that
+                      focus — not a mixed panel.{' '}
+                      <span className="text-hint">Max {PLAN_PRIMARY_SKILL_MAX} characters.</span>
+                    </>
+                  ) : (
+                    <>
+                      Add subjects for context (e.g. DSA, OOP, DBMS). You&apos;ll get a{' '}
+                      <span className="font-medium text-[#333333]">broad interview mix</span>, not drills on one language.{' '}
+                      <span className="text-hint">Max {PLAN_PRIMARY_SKILL_MAX} characters.</span>
+                    </>
+                  )}
+                </p>
+                <InputField
+                  label={isSkillFocus ? 'Skill or stack for in-depth prep' : 'Major areas & skills (for context)'}
+                  type="textarea"
+                  name="primarySkill"
+                  value={profile.primarySkill}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    setProfile((prev) => ({ ...prev, primarySkill: v }));
+                    setValidationErrors((prev) => (prev.primarySkill ? { ...prev, primarySkill: '' } : prev));
+                  }}
+                  placeholder={
+                    isSkillFocus
+                      ? 'e.g. Java — one focus for in-depth prep (not a list)'
+                      : 'e.g. DSA, OOP, DBMS, system design — comma-separated areas'
+                  }
+                  error={validationErrors.primarySkill}
+                  maxLength={PLAN_PRIMARY_SKILL_MAX}
+                  showCharCount={true}
+                  autoComplete="off"
+                />
+              </div>
 
               <div className="rounded-lg border border-[#E8E4DC] bg-[#FAFAFA] px-3 py-2.5">
                 <p className="text-xs leading-snug text-muted-foreground">
                   {isSkillFocus ? (
                     <>
-                      <span className="font-semibold text-muted-foreground">Tip:</span> Best with a single stack (e.g. Java or
-                      Python), not a long list.
+                      <span className="font-semibold text-muted-foreground">Tip:</span> One stack only (e.g. Java or Python).
+                      We go deep on it — skip comma-separated lists.
                     </>
                   ) : (
                     <>
@@ -2133,7 +2563,399 @@ const InterviewReady = () => {
                 <button
                   type="button"
                   onClick={() => setStep(3)}
-                  className="rounded-xl border border-border px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-border hover:bg-white/5 hover:text-white"
+                  className="rounded-xl border border-border bg-white px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-[#FFB347]/70 hover:bg-[#FFF8EE] hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9500]"
+                >
+                  ← Back
+                </button>
+                <button
+                  type="submit"
+                  disabled={loading || usageInfo.remaining_attempts <= 0}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FF9500] to-[#FFB347] py-3 text-sm font-bold text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-all hover:from-[#FF9500] hover:to-[#FFB347] active:scale-[0.98] disabled:cursor-not-allowed disabled:from-slate-600 disabled:to-slate-700 disabled:shadow-none"
+                >
+                  {loading ? (
+                    'Preparing your questions…'
+                  ) : isSkillFocus || placementGoesStraightToPlan ? (
+                    <>
+                      Generate questions &amp; continue
+                      <ChevronRight size={18} />
+                    </>
+                  ) : (
+                    <>
+                      Continue
+                      <ChevronRight size={18} />
+                    </>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ========== STEP 13: PLACEMENT CONTEXT (Interview readiness only — after skills, before plan API) ==========
+  if (step === 13) {
+    const ASSESSMENT_STEPS = 6;
+    const currentStepIndex = 4;
+    const isPro = profile.userCategory === 'professional';
+    const roleLabel =
+      DISPLAY_ROLE_BY_CATEGORY[profile.userCategory] ||
+      profile.userCategory.replace(/_/g, ' ');
+
+    return (
+      <div className="min-h-screen bg-[#FFFDF8] py-10 px-4 sm:px-6 lg:px-8 font-sans">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-border animate-in slide-in-from-bottom-4 duration-500">
+            <div className="mb-6">
+              <div
+                className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden"
+                role="progressbar"
+                aria-label="Assessment progress"
+                aria-valuenow={currentStepIndex}
+                aria-valuemin={1}
+                aria-valuemax={ASSESSMENT_STEPS}
+              >
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-400 transition-[width] duration-300"
+                  style={{ width: `${(currentStepIndex / ASSESSMENT_STEPS) * 100}%` }}
+                />
+              </div>
+            </div>
+
+            <div className="mb-6 space-y-2">
+              <h2 className="text-2xl font-black tracking-tight text-foreground md:text-3xl">
+                {isPro ? 'Target companies & context' : 'Quick vibe check'}
+              </h2>
+              <p className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                <span className="rounded-full border border-cyan-500/30 bg-cyan-500/[0.12] px-2.5 py-0.5 font-semibold text-[#0E7490]">
+                  {ASSESSMENT_MODE_LABEL[ASSESSMENT_FOCUS_PLACEMENT]}
+                </span>
+                <span className="rounded-full border border-border bg-[#FAFAFA] px-2.5 py-0.5 font-semibold text-foreground">
+                  {roleLabel}
+                </span>
+              </p>
+              <p className="max-w-2xl text-sm text-muted-foreground leading-relaxed">
+                {isPro
+                  ? 'Help us align questions with your seniority, JD, and any employer you’re targeting.'
+                  : 'One screen — ~30 seconds. We tune your question mix for campus vs off-campus and the kind of companies you’re chasing. No fluff.'}
+              </p>
+            </div>
+
+            <form
+              onSubmit={handleGetReadinessPlan}
+              className="space-y-6"
+            >
+              {!isPro ? (
+                <>
+                  <div className="relative overflow-hidden rounded-2xl border border-[#FF9500]/20 bg-gradient-to-br from-[#FFF8EE] via-white to-cyan-50/40 p-5 sm:p-6 shadow-sm">
+                    <div className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-[#FF9500]/10 blur-2xl" aria-hidden />
+                    <div className="pointer-events-none absolute -bottom-4 left-8 h-16 w-16 rounded-full bg-cyan-400/10 blur-xl" aria-hidden />
+                    <div className="relative space-y-5">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="inline-flex items-center gap-1 rounded-full bg-[#FF9500]/15 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-[#B45309]">
+                          <Sparkles size={12} className="text-[#FF9500]" aria-hidden />
+                          Placement season
+                        </span>
+                        <span className="text-xs text-muted-foreground">Campus drive or grinding off-campus?</span>
+                      </div>
+                      <div className="flex flex-wrap gap-2 sm:gap-3">
+                        {[
+                          { id: 'campus', label: 'Campus', hint: 'drives & PPOs' },
+                          { id: 'off_campus', label: 'Off-campus', hint: 'applications & referrals' },
+                        ].map((o) => (
+                          <label
+                            key={o.id}
+                            className={`flex min-w-[140px] flex-1 cursor-pointer flex-col rounded-2xl border px-4 py-3 text-sm font-bold transition-all sm:min-w-0 sm:max-w-[200px] ${
+                              profile.placementCampusType === o.id
+                                ? 'border-[#FF9500] bg-white shadow-md shadow-[#FF9500]/15 ring-2 ring-[#FF9500]/20'
+                                : 'border-border/80 bg-white/70 hover:border-[#FFB347]/50'
+                            }`}
+                          >
+                            <span className="flex items-center gap-2">
+                              <input
+                                type="radio"
+                                name="placementCampusType"
+                                className="accent-[#FF9500]"
+                                checked={profile.placementCampusType === o.id}
+                                onChange={() =>
+                                  setProfile((p) => ({ ...p, placementCampusType: o.id }))
+                                }
+                              />
+                              {o.label}
+                            </span>
+                            <span className="mt-1 pl-6 text-[11px] font-medium normal-case text-muted-foreground">
+                              {o.hint}
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                      {validationErrors.placementCampusType && (
+                        <p className="text-xs font-medium text-red-600">{validationErrors.placementCampusType}</p>
+                      )}
+
+                      <div className="border-t border-border/60 pt-4">
+                        <p className="mb-2 text-sm font-bold text-foreground">Who are you aiming for?</p>
+                        <p className="mb-3 text-xs text-muted-foreground">
+                          Tap what fits — MNCs, product, or both. Add names only if you want.
+                        </p>
+                        <div className="flex flex-wrap gap-3">
+                          <label
+                            className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
+                              profile.placementTargetMnc
+                                ? 'border-[#FF9500] bg-[#FFF4E0] text-[#B45309]'
+                                : 'border-border bg-white/90 hover:border-[#FFB347]/60'
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              className="accent-[#FF9500]"
+                              checked={profile.placementTargetMnc}
+                              onChange={(e) =>
+                                setProfile((p) => ({ ...p, placementTargetMnc: e.target.checked }))
+                              }
+                            />
+                            Service / IT MNC
+                          </label>
+                          <label
+                            className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
+                              profile.placementTargetProduct
+                                ? 'border-cyan-600/40 bg-cyan-50 text-cyan-900'
+                                : 'border-border bg-white/90 hover:border-cyan-300/60'
+                            }`}
+                          >
+                            <input
+                              type="checkbox"
+                              className="accent-cyan-600"
+                              checked={profile.placementTargetProduct}
+                              onChange={(e) =>
+                                setProfile((p) => ({ ...p, placementTargetProduct: e.target.checked }))
+                              }
+                            />
+                            Product company
+                          </label>
+                        </div>
+                        <label className="mt-3 block text-xs font-semibold text-muted-foreground">
+                          Names (optional)
+                        </label>
+                        <textarea
+                          value={profile.placementCompaniesNotes}
+                          onChange={(e) =>
+                            setProfile((p) => ({ ...p, placementCompaniesNotes: e.target.value }))
+                          }
+                          placeholder="TCS, Razorpay, whoever — comma-separated is fine"
+                          rows={2}
+                          className={`mt-1 w-full rounded-xl border border-border/80 bg-white/90 px-3 py-2.5 text-sm outline-none transition-all placeholder:text-muted-foreground ${
+                            validationErrors.placementCompanies ? MM_FIELD_INVALID : MM_FIELD_VALID
+                          }`}
+                          aria-invalid={validationErrors.placementCompanies ? 'true' : undefined}
+                        />
+                        {validationErrors.placementCompanies && (
+                          <p className="mt-1 text-xs font-medium text-red-600">
+                            {validationErrors.placementCompanies}
+                          </p>
+                        )}
+                      </div>
+
+                      <div className="border-t border-border/60 pt-4">
+                        <div className="mb-3 flex flex-wrap items-start gap-2">
+                          <span
+                            className="mt-0.5 inline-flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/20 to-fuchsia-500/20 text-base"
+                            aria-hidden
+                          >
+                            🎯
+                          </span>
+                          <div>
+                            <p className="text-sm font-bold text-foreground">Locked on a role?</p>
+                            <p className="text-xs text-muted-foreground">
+                              Optional flex — helps us go heavier on that stack in your plan.
+                            </p>
+                          </div>
+                        </div>
+                        <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-dashed border-border/90 bg-white/60 px-3 py-2.5 transition-colors hover:bg-white">
+                          <input
+                            type="checkbox"
+                            className="mt-0.5 accent-[#FF9500]"
+                            checked={profile.placementSpecificRole}
+                            onChange={(e) =>
+                              setProfile((p) => ({
+                                ...p,
+                                placementSpecificRole: e.target.checked,
+                                placementRoleChoice: e.target.checked ? p.placementRoleChoice : '',
+                                placementRoleOther: e.target.checked ? p.placementRoleOther : '',
+                              }))
+                            }
+                          />
+                          <span className="text-sm font-semibold leading-snug">
+                            Yeah — I&apos;m prepping for a specific title
+                          </span>
+                        </label>
+                        {profile.placementSpecificRole && (
+                          <div className="ml-0 mt-3 space-y-2 sm:ml-8">
+                            <select
+                              value={profile.placementRoleChoice}
+                              onChange={(e) =>
+                                setProfile((p) => ({ ...p, placementRoleChoice: e.target.value }))
+                              }
+                              className={`w-full max-w-md rounded-xl border bg-white px-3 py-2.5 text-sm font-medium outline-none ${
+                                validationErrors.placementRoleChoice ? MM_FIELD_INVALID : MM_FIELD_VALID
+                              }`}
+                            >
+                              <option value="">Pick a role…</option>
+                              {PLACEMENT_ROLE_OPTIONS.map((r) => (
+                                <option key={r} value={r}>
+                                  {r}
+                                </option>
+                              ))}
+                            </select>
+                            {validationErrors.placementRoleChoice && (
+                              <p className="text-xs text-red-600">{validationErrors.placementRoleChoice}</p>
+                            )}
+                            {profile.placementRoleChoice === 'Other' && (
+                              <input
+                                type="text"
+                                value={profile.placementRoleOther}
+                                onChange={(e) =>
+                                  setProfile((p) => ({ ...p, placementRoleOther: e.target.value }))
+                                }
+                                placeholder="Describe it your way (optional)"
+                                className={`w-full max-w-md rounded-xl border bg-white px-3 py-2.5 text-sm outline-none ${
+                                  validationErrors.placementRoleOther ? MM_FIELD_INVALID : MM_FIELD_VALID
+                                }`}
+                              />
+                            )}
+                            {validationErrors.placementRoleOther && (
+                              <p className="text-xs text-red-600">{validationErrors.placementRoleOther}</p>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="space-y-2">
+                    <label className="text-sm font-bold text-foreground">Core skill *</label>
+                    <input
+                      type="text"
+                      value={profile.placementCoreSkill}
+                      onChange={(e) =>
+                        setProfile((p) => ({ ...p, placementCoreSkill: e.target.value }))
+                      }
+                      placeholder="e.g. Java backend, React, AWS, Data engineering"
+                      className={`w-full rounded-xl bg-white px-4 py-3 text-sm outline-none ${
+                        validationErrors.placementCoreSkill ? MM_FIELD_INVALID : MM_FIELD_VALID
+                      }`}
+                    />
+                    {validationErrors.placementCoreSkill && (
+                      <p className="text-xs text-red-600">{validationErrors.placementCoreSkill}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2">
+                    <p className="text-sm font-bold text-foreground">Job description (JD) provided?</p>
+                    <div className="flex gap-4">
+                      <label className="flex cursor-pointer items-center gap-2 text-sm font-medium">
+                        <input
+                          type="radio"
+                          name="jd"
+                          className="accent-[#FF9500]"
+                          checked={!profile.placementJdProvided}
+                          onChange={() => setProfile((p) => ({ ...p, placementJdProvided: false, placementJdText: '' }))}
+                        />
+                        No
+                      </label>
+                      <label className="flex cursor-pointer items-center gap-2 text-sm font-medium">
+                        <input
+                          type="radio"
+                          name="jd"
+                          className="accent-[#FF9500]"
+                          checked={profile.placementJdProvided}
+                          onChange={() => setProfile((p) => ({ ...p, placementJdProvided: true }))}
+                        />
+                        Yes — paste below
+                      </label>
+                    </div>
+                    {profile.placementJdProvided && (
+                      <textarea
+                        value={profile.placementJdText}
+                        onChange={(e) =>
+                          setProfile((p) => ({ ...p, placementJdText: e.target.value }))
+                        }
+                        placeholder="Paste the JD text here…"
+                        rows={5}
+                        className={`w-full rounded-xl px-4 py-3 text-sm outline-none ${
+                          validationErrors.placementJdText ? MM_FIELD_INVALID : MM_FIELD_VALID
+                        }`}
+                      />
+                    )}
+                    {validationErrors.placementJdText && (
+                      <p className="text-xs text-red-600">{validationErrors.placementJdText}</p>
+                    )}
+                  </div>
+
+                  <div className="space-y-2 rounded-xl border border-border bg-[#FAFAFA] p-4">
+                    <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold">
+                      <input
+                        type="checkbox"
+                        className="accent-[#FF9500]"
+                        checked={profile.placementHasTargetCompany}
+                        onChange={(e) =>
+                          setProfile((p) => ({
+                            ...p,
+                            placementHasTargetCompany: e.target.checked,
+                            placementTargetCompanyName: e.target.checked ? p.placementTargetCompanyName : '',
+                          }))
+                        }
+                      />
+                      I have a target company in mind
+                    </label>
+                    {profile.placementHasTargetCompany && (
+                      <input
+                        type="text"
+                        value={profile.placementTargetCompanyName}
+                        onChange={(e) =>
+                          setProfile((p) => ({ ...p, placementTargetCompanyName: e.target.value }))
+                        }
+                        placeholder="Company name"
+                        className={`mt-2 w-full max-w-md rounded-xl px-4 py-3 text-sm outline-none ${
+                          validationErrors.placementTargetCompanyName ? MM_FIELD_INVALID : MM_FIELD_VALID
+                        }`}
+                      />
+                    )}
+                    {validationErrors.placementTargetCompanyName && (
+                      <p className="text-xs text-red-600">{validationErrors.placementTargetCompanyName}</p>
+                    )}
+                  </div>
+                </>
+              )}
+
+              {error && (
+                <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm font-medium text-red-800">
+                  <div className="flex items-start gap-3">
+                    <AlertCircle size={18} className="mt-0.5 flex-shrink-0 text-red-500" />
+                    <div className="min-w-0 flex-1 leading-relaxed">{error}</div>
+                  </div>
+                  <button
+                    type="button"
+                    disabled={loading || usageInfo.remaining_attempts <= 0}
+                    onClick={() => handleGetReadinessPlan({ preventDefault() {} })}
+                    className="mt-3 w-full rounded-lg border border-red-500/40 bg-red-500/10 py-2 text-xs font-bold text-red-800 transition-colors hover:bg-red-500/15 disabled:opacity-50 sm:w-auto sm:px-4"
+                  >
+                    Try again
+                  </button>
+                </div>
+              )}
+
+              <div className="flex gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setError(null);
+                    setStep(4);
+                  }}
+                  className="rounded-xl border border-border bg-white px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-[#FFB347]/70 hover:bg-[#FFF8EE] hover:text-foreground"
                 >
                   ← Back
                 </button>
@@ -2163,7 +2985,7 @@ const InterviewReady = () => {
   if (step === 5) {
     return (
       <ReadinessQuizPanel
-        questions={questions}
+        evaluationPlan={evaluationData}
         answers={answers}
         setAnswers={setAnswers}
         profile={profile}
@@ -2262,7 +3084,7 @@ const InterviewReady = () => {
                   <ScoreFactorRow
                     label="Overall readiness"
                     value={pct}
-                    hint="Headline score from this Yes/No run — your north-star number."
+                    hint="Headline score from this quiz — Yes/No, A–D, scenarios, and code-style items combined."
                     icon={Target}
                     variant="orange"
                     delay={0.08}
