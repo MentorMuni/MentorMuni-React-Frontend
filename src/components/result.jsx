@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import { ArrowRight, Check, Copy, Share2 } from 'lucide-react';
+import {
+  buildResultShareMessage,
+  SITE_SHARE_ASSESSMENT_URL,
+  BRAND_MEME_LINE,
+} from '../constants/brandCopy';
 
 /* ─── Helpers — light theme, WCAG-friendly contrast ───────────────── */
 const scoreColor = (s) => (s >= 75 ? '#16a34a' : s >= 50 ? '#d97706' : '#dc2626');
@@ -107,7 +112,7 @@ const ShareCard = React.forwardRef(({ score, role }, ref) => (
       fontFamily: 'sans-serif',
     }}
   >
-    <p style={{ color: '#7c3aed', fontSize: 12, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>
+    <p style={{ color: '#ea580c', fontSize: 12, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>
       MENTORMUNI · INTERVIEW READINESS
     </p>
     <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginBottom: 16 }}>
@@ -132,7 +137,8 @@ const ShareCard = React.forwardRef(({ score, role }, ref) => (
       </div>
     </div>
     <p style={{ color: '#64748b', fontSize: 11 }}>
-      Check your interview readiness at <strong style={{ color: '#7c3aed' }}>mentormuni.com</strong>
+      {BRAND_MEME_LINE} ·{' '}
+      <strong style={{ color: '#ea580c' }}>mentormuni.com</strong>
     </p>
   </div>
 ));
@@ -168,6 +174,23 @@ export default function ResultPage() {
     }
   }, [data, navigate, location.state]);
 
+  useEffect(() => {
+    if (!data) return;
+    const score = data.totalScore ?? 0;
+    const title = `Scored ${score}/100 — Interview Readiness | MentorMuni`;
+    document.title = title;
+    const desc = `${BRAND_MEME_LINE} Your score: ${score}/100. Get yours free in ~5 min — no signup.`;
+    const setMeta = (selector, content) => {
+      const el = document.querySelector(selector);
+      if (el) el.setAttribute('content', content);
+    };
+    setMeta('meta[name="description"]', desc);
+    setMeta('meta[property="og:title"]', title);
+    setMeta('meta[property="og:description"]', desc);
+    setMeta('meta[name="twitter:title"]', title);
+    setMeta('meta[name="twitter:description"]', desc);
+  }, [data]);
+
   if (!data) return null;
 
   const { totalScore = 0, breakdown = {}, role = 'Student', gaps = [] } = data;
@@ -198,18 +221,39 @@ export default function ResultPage() {
         .filter(Boolean)
         .slice(0, 3);
 
-  const shareText = `My Interview Readiness Score: ${totalScore}/100. Check yours free at mentormuni.com`;
+  const shareMessage = buildResultShareMessage(totalScore, role);
 
-  const handleShareWA = () => window.open(`https://wa.me/?text=${encodeURIComponent(shareText)}`, '_blank');
+  const handleShareWA = () =>
+    window.open(`https://wa.me/?text=${encodeURIComponent(shareMessage)}`, '_blank', 'noopener,noreferrer');
+
   const handleShareLI = () =>
     window.open(
-      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://mentormuni.com')}&summary=${encodeURIComponent(shareText)}`,
-      '_blank'
+      `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(SITE_SHARE_ASSESSMENT_URL)}`,
+      '_blank',
+      'noopener,noreferrer'
     );
-  const handleCopy = () => {
-    navigator.clipboard.writeText(`https://mentormuni.com/start-assessment`);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(shareMessage);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      setCopied(false);
+    }
+  };
+
+  const handleNativeShare = async () => {
+    try {
+      if (typeof navigator !== 'undefined' && navigator.share) {
+        await navigator.share({
+          title: `Interview readiness — ${totalScore}/100 | MentorMuni`,
+          text: shareMessage,
+        });
+      }
+    } catch (e) {
+      if (e?.name !== 'AbortError') handleCopy();
+    }
   };
 
   const handleDownload = async () => {
@@ -336,7 +380,7 @@ export default function ResultPage() {
         <div className="mm-card-elevated p-6">
           <h2 className="typo-h3 mb-2 text-foreground">Share your result</h2>
           <p className="typo-caption mb-5 text-muted-foreground">
-            Challenge your friends or show recruiters you took the test.
+            One-tap message includes your score + a free test link — ready for WhatsApp groups and LinkedIn.
           </p>
 
           <div
@@ -346,27 +390,36 @@ export default function ResultPage() {
             <ShareCard ref={shareRef} score={totalScore} role={role} />
           </div>
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="flex flex-wrap gap-3">
             <button
               type="button"
               onClick={handleShareWA}
-              className="mm-focus flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-green-200 bg-green-50/80 py-3 text-sm font-semibold text-green-800 transition-all hover:bg-green-100 active:scale-[0.98]"
+              className="mm-focus flex min-h-[44px] min-w-[10rem] flex-1 items-center justify-center gap-2 rounded-xl border border-green-200 bg-green-50/80 py-3 text-sm font-semibold text-green-800 transition-all hover:bg-green-100 active:scale-[0.98] sm:min-w-0"
             >
-              <Share2 size={14} /> WhatsApp
+              <Share2 size={14} aria-hidden /> WhatsApp
             </button>
+            {typeof navigator !== 'undefined' && typeof navigator.share === 'function' && (
+              <button
+                type="button"
+                onClick={handleNativeShare}
+                className="mm-focus flex min-h-[44px] min-w-[10rem] flex-1 items-center justify-center gap-2 rounded-xl border border-[#FF9500]/40 bg-[#FFF4E0]/90 py-3 text-sm font-semibold text-[#CC7000] transition-all hover:bg-[#FFE8C2] active:scale-[0.98] sm:min-w-0"
+              >
+                <Share2 size={14} aria-hidden /> Share…
+              </button>
+            )}
             <button
               type="button"
               onClick={handleShareLI}
-              className="mm-focus flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50/80 py-3 text-sm font-semibold text-blue-800 transition-all hover:bg-blue-100 active:scale-[0.98]"
+              className="mm-focus flex min-h-[44px] min-w-[10rem] flex-1 items-center justify-center gap-2 rounded-xl border border-blue-200 bg-blue-50/80 py-3 text-sm font-semibold text-blue-800 transition-all hover:bg-blue-100 active:scale-[0.98] sm:min-w-0"
             >
-              <Share2 size={14} /> LinkedIn
+              <Share2 size={14} aria-hidden /> LinkedIn
             </button>
             <button
               type="button"
               onClick={handleCopy}
-              className="mm-focus flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-border bg-zinc-50 py-3 text-sm font-semibold text-foreground transition-all hover:bg-zinc-100 active:scale-[0.98]"
+              className="mm-focus flex min-h-[44px] min-w-[10rem] flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-zinc-50 py-3 text-sm font-semibold text-foreground transition-all hover:bg-zinc-100 active:scale-[0.98] sm:min-w-0"
             >
-              <Copy size={14} /> {copied ? 'Copied!' : 'Copy link'}
+              <Copy size={14} aria-hidden /> {copied ? 'Copied!' : 'Copy message'}
             </button>
           </div>
           <button

@@ -32,23 +32,30 @@ export const HERO_PROOF_STAT = '~5 min · Free · No signup · Instant score';
 /**
  * Homepage hero — personalized by academic year or experience level.
  * Copy is product-accurate: same assessment; framing matches urgency.
+ * `subShort` = first-screen body; full `sub` shown after “Read more”.
  */
 export const HERO_YEAR_COPY = {
   y2: {
     headline: 'Build the right foundations—before placement pressure hits.',
     accent: 'Get a readiness baseline in ~5 minutes.',
+    subShort:
+      "Map DSA, System Design, HR, and projects to where you are now—so you're not guessing when OA season hits.",
     sub:
       'Campus drives feel far away until they are not. Map DSA, System Design, HR, and projects to where you are now—so when OA season starts, you are not guessing what to fix first.',
   },
   y3: {
     headline: 'Internship season rewards clarity—not endless grinding.',
     accent: 'Know your gaps before the OA and interview window.',
+    subShort:
+      'Benchmark tech + HR readiness, then prep the top gaps before your next online assessment.',
     sub:
       'Shortlists go to people who sound clear under pressure—not who solved the most random problems. Benchmark tech + HR readiness, then prep the top gaps before your next online assessment.',
   },
   y4: {
     headline: HERO_HEADLINE,
     accent: HERO_HEADLINE_ACCENT,
+    subShort:
+      'One readiness score across four areas shows what to fix first—then AI mocks and mentors when you want depth.',
     sub:
       'Placement season is noisy—CGPA, OA, HR, tech. One readiness score across four areas shows what to fix first, then AI mocks and mentors when you want depth.',
   },
@@ -56,10 +63,34 @@ export const HERO_YEAR_COPY = {
   yexp: {
     headline: 'Switching roles or levelling up? Measure before you commit months to the wrong prep.',
     accent: 'Interview readiness + skill readiness—in one structured baseline (~5 min).',
+    subShort:
+      'Benchmark DSA, System Design, HR, and projects—then close gaps with mocks and mentors aligned to your goal.',
     sub:
       'Panels care how you communicate trade-offs, not only years on a CV. Benchmark interview readiness alongside skill signals across DSA, System Design, HR, and projects—then close gaps with mocks and mentors aligned to where you actually want to land.',
   },
 };
+
+/** Canonical public URL for share links (WhatsApp, copy) — matches deployed base path */
+export const SITE_SHARE_BASE = 'https://mentormuni.com/MentorMuni-React-Frontend';
+export const SITE_SHARE_ASSESSMENT_URL = `${SITE_SHARE_BASE}/start-assessment`;
+
+/**
+ * Viral one-liner for messages (result page, OG emphasis). Keep under ~160 chars for previews.
+ */
+export const BRAND_MEME_LINE = "You can't fix what you don't measure.";
+
+/**
+ * Build WhatsApp / native / clipboard share text from assessment result.
+ */
+export function buildResultShareMessage(score, roleLabel = 'Student') {
+  const hook =
+    score >= 75
+      ? 'Feeling sharp on interview readiness.'
+      : score >= 50
+        ? 'Found my gaps before placement season.'
+        : 'Got my baseline — now I know what to fix first.';
+  return `${hook} Scored ${score}/100 on MentorMuni (${roleLabel}). ${BRAND_MEME_LINE} Free test (~5 min, no signup):\n${SITE_SHARE_ASSESSMENT_URL}`;
+}
 
 /** Eyebrow above the compact hero proof strip */
 export const HERO_PROOF_SECTION_EYEBROW = 'What the test covers';
@@ -184,4 +215,5 @@ export const ROUTE_TITLES = {
   '/career-health': 'Career Health Dashboard | MentorMuni',
   '/dashboard/health': 'Career Health Dashboard | MentorMuni',
   '/dashboard': 'Dashboard | MentorMuni',
+  '/result': 'Your Interview Readiness Score | MentorMuni',
 };

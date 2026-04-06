@@ -1,4 +1,4 @@
-import React, { useRef, useState, lazy, Suspense, createElement } from 'react';
+import React, { useRef, useState, useEffect, lazy, Suspense, createElement } from 'react';
 import { motion, useInView, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
@@ -35,7 +35,7 @@ const MentorMuniPosterCarousel = lazy(() =>
 );
 import {
   ArrowRight, Brain, Target,
-  BarChart3, Cpu, TrendingUp,
+  BarChart3, Cpu,
   GraduationCap, Building2, Users,
   Mail, Phone, Check, X,
   BookOpen, Layers, Sparkles, CalendarClock, Mic2,
@@ -102,11 +102,13 @@ const FEATURES = [
     highlight: 'Score + line-level tips',
   },
   {
-    Icon: TrendingUp,
-    tag: 'EDGE',
-    title: 'AI Tools Training',
-    desc: 'Speak confidently about Copilot, ChatGPT, and Cursor in interviews—fluency recruiters now expect.',
-    highlight: 'Workflow + talking points',
+    Icon: BookOpen,
+    tag: 'LEARN',
+    title: 'Free tutorials & AI-tool interview prep',
+    desc: 'Topic-wise study materials—Java, Python, SQL, Gen AI, DevOps, and more—plus how to talk about Copilot, ChatGPT, and Cursor credibly in hiring rounds.',
+    highlight: 'Free · Learning paths · Panel-ready angles',
+    link: '/free-tutorials',
+    linkLabel: 'Explore free tutorials',
   },
 ];
 
@@ -217,8 +219,13 @@ const earlyBenefitItem = {
 const HomePage = () => {
   const [earlyYear, setEarlyYear] = useState('y2');
   const [heroYear, setHeroYear] = useState('y4');
+  const [heroSubExpanded, setHeroSubExpanded] = useState(false);
   const reduceMotion = useReducedMotion();
   const heroCopy = HERO_YEAR_COPY[heroYear];
+
+  useEffect(() => {
+    setHeroSubExpanded(false);
+  }, [heroYear]);
 
   return (
     <div className="bg-background text-foreground overflow-x-hidden">
@@ -273,6 +280,28 @@ const HomePage = () => {
         @media (prefers-reduced-motion: reduce) {
           .mm-hero-eyebrow-pill-glow { animation: none !important; }
         }
+        /* Early bird — “Read free tutorial” attention (respects reduced motion below) */
+        @keyframes mm-read-tutorial-ring {
+          0%, 100% { box-shadow: 0 0 0 0 rgba(255, 149, 0, 0.42); }
+          55% { box-shadow: 0 0 0 10px rgba(255, 149, 0, 0); }
+        }
+        @keyframes mm-read-tutorial-icon {
+          0%, 100% { transform: rotate(0deg); }
+          25% { transform: rotate(-7deg); }
+          75% { transform: rotate(7deg); }
+        }
+        .mm-early-bird-read-tutorial {
+          animation: mm-read-tutorial-ring 2.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+        }
+        .mm-early-bird-read-tutorial .mm-read-tutorial-icon {
+          animation: mm-read-tutorial-icon 2.1s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .mm-early-bird-read-tutorial,
+          .mm-early-bird-read-tutorial .mm-read-tutorial-icon {
+            animation: none !important;
+          }
+        }
       `}</style>
 
       {/* ════════════════ HERO — year-personalized copy + flagship visual + early bird ════════════════ */}
@@ -314,10 +343,29 @@ const HomePage = () => {
               >
                 <div className="rounded-2xl border border-amber-200/80 bg-gradient-to-br from-[#fff4e6] via-[#fffbeb] to-[#fff4e6] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_12px_40px_-20px_rgba(234,88,12,0.18)] sm:p-6">
                   <div className="flex flex-col gap-4">
-                    <span className="inline-flex w-fit shrink-0 items-center gap-1.5 rounded-full bg-gradient-to-r from-[#FF9500] to-[#EA580C] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-white shadow-[0_2px_8px_rgba(234,88,12,0.35)]">
-                      <Sparkles className="h-3.5 w-3.5 text-amber-100" strokeWidth={2.5} aria-hidden />
-                      {HERO_EARLY_BIRD_RIBBON}
-                    </span>
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="inline-flex min-w-0 max-w-[min(100%,14rem)] shrink items-center gap-1.5 rounded-full bg-gradient-to-r from-[#FF9500] to-[#EA580C] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-white shadow-[0_2px_8px_rgba(234,88,12,0.35)] sm:max-w-none">
+                        <Sparkles className="h-3.5 w-3.5 shrink-0 text-amber-100" strokeWidth={2.5} aria-hidden />
+                        {HERO_EARLY_BIRD_RIBBON}
+                      </span>
+                      <motion.div
+                        className="shrink-0"
+                        animate={reduceMotion ? false : { y: [0, -2, 0] }}
+                        transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
+                      >
+                        <Link
+                          to="/free-tutorials"
+                          className="mm-early-bird-read-tutorial inline-flex items-center gap-1 rounded-full border border-[#FFB347]/70 bg-white/90 px-2 py-1 text-[10px] font-bold leading-tight text-[#B45309] shadow-sm backdrop-blur-[2px] transition-colors hover:border-[#FF9500] hover:bg-[#FFF8EE] hover:text-[#9A3412] sm:gap-1.5 sm:px-2.5 sm:py-1.5 sm:text-[11px]"
+                        >
+                          <BookOpen
+                            className="mm-read-tutorial-icon h-3.5 w-3.5 shrink-0 text-[#FF9500] sm:h-4 sm:w-4"
+                            strokeWidth={2.25}
+                            aria-hidden
+                          />
+                          Read free tutorial
+                        </Link>
+                      </motion.div>
+                    </div>
                     <div className="min-w-0 space-y-2 text-left">
                       <p className="text-[15px] font-bold leading-snug text-foreground sm:text-base">
                         {READINESS_TEST_COUPON_OFFER_HEADLINE}
@@ -382,7 +430,7 @@ const HomePage = () => {
                           ? undefined
                           : { scale: 1.03, transition: { type: 'spring', stiffness: 500, damping: 22 } }
                       }
-                      className={`mm-hero-eyebrow-pill mm-hero-eyebrow-pill-glow inline-flex shrink-0 items-center gap-1 rounded-full border border-orange-200/60 px-2 py-1 text-[9px] font-bold uppercase leading-snug tracking-[0.08em] text-foreground ring-1 ring-white/90 sm:px-2.5 sm:py-1.5 sm:text-[10px] sm:tracking-[0.1em] md:gap-1.5 md:px-3 md:text-[11px] md:tracking-[0.12em] ${idx === 1 ? 'mm-eyebrow-d1' : ''} ${idx === 2 ? 'mm-eyebrow-d2' : ''}`}
+                      className={`mm-hero-eyebrow-pill mm-hero-eyebrow-pill-glow inline-flex shrink-0 items-center gap-1 rounded-full border border-orange-200/60 px-2 py-1 text-[10px] font-bold uppercase leading-snug tracking-[0.08em] text-foreground ring-1 ring-white/90 sm:px-2.5 sm:py-1.5 sm:text-[11px] sm:tracking-[0.1em] md:gap-1.5 md:px-3 md:text-[12px] md:tracking-[0.12em] ${idx === 1 ? 'mm-eyebrow-d1' : ''} ${idx === 2 ? 'mm-eyebrow-d2' : ''}`}
                     >
                       {idx === 0 ? (
                         <GraduationCap className="h-2.5 w-2.5 shrink-0 text-[#EA580C] sm:h-3 sm:w-3 md:h-3.5 md:w-3.5" strokeWidth={2.2} aria-hidden />
@@ -444,15 +492,26 @@ const HomePage = () => {
                   </span>
                 </motion.h1>
 
-                <motion.p
+                <motion.div
                   key={`${heroYear}-sub`}
                   initial={reduceMotion ? false : { opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.38, delay: 0.04 }}
-                  className="typo-body-lg mx-auto mt-4 max-w-prose-marketing px-1 text-muted-foreground sm:mt-5 lg:mx-0 lg:max-w-[36rem] lg:px-0"
+                  className="mx-auto mt-4 max-w-prose-marketing px-1 sm:mt-5 lg:mx-0 lg:max-w-[36rem] lg:px-0"
                 >
-                  {heroCopy.sub}
-                </motion.p>
+                  <p className="typo-body-lg text-muted-foreground">
+                    {heroSubExpanded ? heroCopy.sub : heroCopy.subShort}
+                  </p>
+                  {heroCopy.sub !== heroCopy.subShort && (
+                    <button
+                      type="button"
+                      onClick={() => setHeroSubExpanded((e) => !e)}
+                      className="mm-focus mt-3 text-sm font-semibold text-[#CC7000] underline decoration-[#FFB347]/60 underline-offset-2 transition-colors hover:text-[#EA5800]"
+                    >
+                      {heroSubExpanded ? 'Show less' : 'Read more'}
+                    </button>
+                  )}
+                </motion.div>
               </div>
             </div>
           </div>
@@ -1027,7 +1086,7 @@ const HomePage = () => {
               What we give you—before you face the real panel
             </h2>
             <p className="text-muted-foreground text-sm mb-4 max-w-2xl leading-relaxed">
-              One flow: measure with the readiness check, practice with AI mocks, polish with ATS and AI-tool fluency, and go deeper with mentor-backed prep when you want a human in your corner.
+              One flow: measure with the readiness check, practice with AI mocks, polish with ATS, learn topic-by-topic with free tutorials and AI-tool talking points, then go deeper with mentor-backed prep when you want a human in your corner.
             </p>
             <Link
               to="/how-it-works"
@@ -1036,20 +1095,28 @@ const HomePage = () => {
               Full step-by-step walkthrough <ArrowRight size={14} />
             </Link>
           </FadeUp>
-          <div className="grid md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {FEATURES.map((f, i) => (
               <FadeUp key={f.title} delay={i * 0.07}>
                 <div className="group flex gap-4 bg-white border border-border shadow-[0_2px_12px_rgba(0,0,0,0.05)] rounded-2xl p-6 hover:border-[#FFB347] transition-all h-full">
                   <div className="w-10 h-10 bg-[#FFF4E0] border border-border rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#FFF8EE] transition-colors mt-0.5">
                     <f.Icon size={18} className="text-[#FF9500]" />
                   </div>
-                  <div className="min-w-0">
+                  <div className="min-w-0 flex flex-col">
                     <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                       <h3 className="text-base font-semibold text-foreground">{f.title}</h3>
                       <span className="rounded border border-border bg-[#FFF4E0] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#CC7000]">{f.tag}</span>
                     </div>
                     <p className="text-muted-foreground text-xs leading-relaxed mb-2">{f.desc}</p>
                     <span className="text-xs font-semibold text-[#1A8C55]">{f.highlight}</span>
+                    {f.link && (
+                      <Link
+                        to={f.link}
+                        className="mt-3 inline-flex w-fit items-center gap-1 text-xs font-semibold text-[#FF9500] transition-colors hover:text-[#E88600]"
+                      >
+                        {f.linkLabel} <ArrowRight size={12} strokeWidth={2.5} aria-hidden />
+                      </Link>
+                    )}
                   </div>
                 </div>
               </FadeUp>

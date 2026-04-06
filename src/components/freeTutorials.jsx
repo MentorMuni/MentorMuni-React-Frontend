@@ -1,7 +1,9 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowRight, BookOpen, Code, Check } from 'lucide-react';
 
 const FreeTutorials = () => {
+  const navigate = useNavigate();
   const tutorials = [
     {
       id: 'generative-ai',
@@ -92,8 +94,9 @@ const FreeTutorials = () => {
               <div className="w-12 h-1 bg-gradient-to-r from-[#FF9500] to-[#FFB347] mb-6 rounded-full"></div>
               <h3 className="text-2xl font-bold mb-3 text-foreground">{tutorial.title}</h3>
               <p className="text-muted-foreground text-sm mb-8 leading-relaxed">{tutorial.description}</p>
-              <button 
-                onClick={() => window.location.href = tutorial.route}
+              <button
+                type="button"
+                onClick={() => navigate(tutorial.route)}
                 className="text-[#FF9500] font-bold flex items-center gap-2 hover:gap-3 transition-all group-hover:text-[#E88600]"
               >
                 <Code size={18} />
@@ -134,7 +137,8 @@ const FreeTutorials = () => {
                 After completing these free tutorials, you'll be prepared to join our comprehensive Placement Tracks where you can specialize and get ready for interviews.
               </p>
               <button
-                onClick={() => window.location.href = '/learning-paths'}
+                type="button"
+                onClick={() => navigate('/learning-paths')}
                 className="bg-gradient-to-r from-[#FF9500] to-[#E88600] text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-[0_4px_14px_rgba(255,149,0,0.2)] transition-all flex items-center gap-2"
               >
                 Explore Placement Tracks
