@@ -21,6 +21,8 @@ export default defineConfig({
       output: {
         manualChunks: {
           vendor: ['react', 'react-dom', 'react-router-dom'],
+          /** Separate long-lived cache chunk (~animation lib) */
+          motion: ['framer-motion'],
           icons: ['lucide-react'],
         },
       },

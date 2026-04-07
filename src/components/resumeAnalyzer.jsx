@@ -2,18 +2,20 @@ import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import {
   UploadCloud, FileText, X, ChevronRight, CheckCircle,
-  AlertCircle, Zap, Target, TrendingUp, Shield,
+  AlertCircle, Zap, Target, TrendingUp, Shield, Globe2,
 } from 'lucide-react';
 import { RESUME_ATS_URL } from '../config';
 import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 
 /**
- * Backend: POST RESUME_ATS_URL — multipart/form-data
- *   - file: the resume (.pdf, .doc, .docx)
- *   - target_role: string (e.g. "Software Engineer")
+ * Backend: POST RESUME_ATS_URL — multipart/form-data (do not set Content-Type; browser sets boundary)
+ *   - file: PDF, .doc, or .docx
+ *   - target_role: string (same as role dropdown), e.g. "Software Engineer"
  *
- * Server extracts text, scores ATS / keywords / formatting / impact, returns JSON (snake_case ok).
- * See normalizeAtsResponse() for field mapping.
+ * Errors: 422 (bad file / empty role), 413 (file too large), 429, 500.
+ * Success: 200 JSON — score, ats, keywords, formatting, impact, summary,
+ *   matched_keywords, missing_keywords, strengths, fixes, portal_tips (Naukri/LinkedIn checklist).
+ * See normalizeAtsResponse() for aliases and backward compatibility.
  */
 
 const ATS_ALLOWED_EXTENSIONS = new Set(['pdf', 'doc', 'docx']);
@@ -69,6 +71,7 @@ function normalizeAtsResponse(raw) {
     missing: asStringArray(raw.missing ?? raw.missing_keywords ?? raw.keyword_gaps ?? raw.gaps),
     fixes: asStringArray(raw.fixes ?? raw.recommendations ?? raw.suggestions ?? raw.to_do),
     strengths: asStringArray(raw.strengths ?? raw.positives ?? raw.whats_working),
+    portal_tips: asStringArray(raw.portal_tips ?? raw.portalTips),
   };
 }
 
@@ -523,6 +526,29 @@ export default function ResumeAnalyzer() {
                     ))}
                   </div>
                 </div>
+
+                {/* Naukri / LinkedIn — separate from resume fixes */}
+                {result.portal_tips.length > 0 && (
+                  <div className="rounded-2xl border border-sky-500/25 bg-sky-500/[0.06] p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Globe2 size={14} className="text-sky-600" aria-hidden />
+                      <h3 className="text-sm font-black text-sky-950">Naukri &amp; LinkedIn</h3>
+                    </div>
+                    <p className="text-[11px] text-muted-foreground mb-3 leading-relaxed">
+                      Checklist for job portals — not the same as resume line edits above.
+                    </p>
+                    <ul className="flex flex-col gap-2.5">
+                      {result.portal_tips.map((tip, i) => (
+                        <li key={i} className="flex items-start gap-2.5 text-xs text-muted-foreground leading-relaxed">
+                          <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-sky-200/80 bg-white text-[10px] font-bold text-sky-700">
+                            {i + 1}
+                          </span>
+                          <span>{tip}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
               </>
             )}
           </div>
