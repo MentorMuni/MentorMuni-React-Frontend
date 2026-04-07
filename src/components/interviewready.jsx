@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useId } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import {
   AlertCircle, CheckCircle, ChevronRight, Lock, Mail, Phone, Check, Zap, ShieldCheck, Map, ArrowRight, Star, Clock,
   TrendingUp, Target, Sparkles, BarChart3, AlertTriangle, CheckCircle2, Lightbulb, Users, Headphones,
@@ -735,8 +735,21 @@ function appHashUrl(routePath) {
   return `${origin}${pathname}${search}#${p}`;
 }
 
+/** Short rotating lines — keeps the wait feeling alive without implying fake % progress */
+const PLAN_LOADER_ROTATING_TIPS = [
+  'We’re blending Yes/No, A–D, short scenarios, and code-style checks to match your level.',
+  'Panels reward clear trade-offs — we’re calibrating difficulty to your profile.',
+  'Good questions need a moment: the model is shaping a mix that fits you.',
+  'You’ll see a variety of formats — closer to a real screen than a single drill.',
+  'Take a breath — slow networks can push this toward a minute; hang tight.',
+  'Tip: on MCQs, eliminate wrong answers first — speed follows accuracy.',
+  'Almost always worth it: one more slow read beats a rushed lock-in.',
+];
+
 /** Full-screen loader while interview readiness plan POST runs — avoids a frozen UI with generic copy */
 function PlanGenerationLoader() {
+  const reduceMotion = useReducedMotion();
+  const [tipIdx, setTipIdx] = useState(0);
   const [allowPromoLinksNewTab, setAllowPromoLinksNewTab] = useState(
     () => typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches
   );
@@ -748,6 +761,14 @@ function PlanGenerationLoader() {
     return () => mq.removeEventListener('change', sync);
   }, []);
 
+  useEffect(() => {
+    const ms = reduceMotion ? 9000 : 5200;
+    const id = window.setInterval(() => {
+      setTipIdx((i) => (i + 1) % PLAN_LOADER_ROTATING_TIPS.length);
+    }, ms);
+    return () => clearInterval(id);
+  }, [reduceMotion]);
+
   const mentorsHref = appHashUrl('/mentors');
   const mocksHref = appHashUrl('/mock-interviews');
 
@@ -756,6 +777,13 @@ function PlanGenerationLoader() {
   const promoSecondaryClass =
     'inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-[#FAFAFA] px-5 py-3 text-sm font-semibold text-[#333333] transition-all sm:w-auto';
   const promoSpanExtra = 'pointer-events-none cursor-default select-none opacity-95';
+
+  const spinTransition = reduceMotion
+    ? { duration: 0 }
+    : { duration: 2.8, repeat: Infinity, ease: 'linear' };
+  const spinReverseTransition = reduceMotion
+    ? { duration: 0 }
+    : { duration: 4.2, repeat: Infinity, ease: 'linear' };
 
   return (
     <div
@@ -776,10 +804,30 @@ function PlanGenerationLoader() {
           transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
           className="text-center"
         >
-          <div className="relative mx-auto mb-8 flex h-20 w-20 items-center justify-center" aria-hidden>
-            <div className="absolute inset-0 rounded-full border-2 border-border bg-white/80" />
-            <div className="absolute inset-0 animate-spin rounded-full border-2 border-transparent border-t-[#FF9500] border-r-[#FF9500]/30" />
-            <Sparkles className="relative z-10 h-9 w-9 text-[#FF9500]" strokeWidth={2} />
+          <div className="relative mx-auto mb-8 flex h-28 w-28 items-center justify-center" aria-hidden>
+            <motion.div
+              className="absolute inset-0 rounded-full border border-[#FF9500]/25 bg-white/60"
+              animate={reduceMotion ? {} : { scale: [1, 1.06, 1], opacity: [0.55, 0.85, 0.55] }}
+              transition={reduceMotion ? {} : { duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
+            />
+            <motion.div
+              className="absolute inset-2 rounded-full border-2 border-border bg-white/90 shadow-sm"
+              style={{ rotate: 0 }}
+              animate={reduceMotion ? { rotate: 0 } : { rotate: 360 }}
+              transition={spinTransition}
+            />
+            <motion.div
+              className="absolute inset-2 rounded-full border-2 border-transparent border-t-[#FF9500] border-r-[#FF9500]/35"
+              animate={reduceMotion ? { rotate: 0 } : { rotate: -360 }}
+              transition={spinReverseTransition}
+            />
+            <motion.div
+              className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#FFF8EE] to-white shadow-inner"
+              animate={reduceMotion ? {} : { y: [0, -5, 0] }}
+              transition={reduceMotion ? {} : { duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
+            >
+              <Sparkles className="h-7 w-7 text-[#FF9500]" strokeWidth={2} />
+            </motion.div>
           </div>
 
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-hint">Please wait</p>
@@ -788,7 +836,65 @@ function PlanGenerationLoader() {
             We&apos;re building your quiz — Yes/No, A–D multiple choice, short scenarios, and code-style items — tailored to
             your profile. This can take up to a minute on a slow connection.
           </p>
-          <p className="mt-2 text-xs text-hint">Do not close this tab.</p>
+
+          <div className="mx-auto mt-6 max-w-md">
+            <div className="relative h-2 overflow-hidden rounded-full bg-[#E8E4DC]/80">
+              <motion.div
+                className="absolute inset-y-0 w-2/5 rounded-full bg-gradient-to-r from-[#FF9500] via-[#FFB04A] to-cyan-500 shadow-sm"
+                initial={false}
+                animate={reduceMotion ? { left: '30%' } : { left: ['-45%', '105%'] }}
+                transition={
+                  reduceMotion
+                    ? { duration: 0 }
+                    : { duration: 2.1, repeat: Infinity, ease: 'linear' }
+                }
+              />
+            </div>
+            <div className="mt-3 flex justify-center gap-1.5" aria-hidden>
+              {[0, 1, 2, 3, 4].map((i) => (
+                <motion.span
+                  key={i}
+                  className="h-2 w-2 rounded-full bg-[#FF9500]/35"
+                  animate={
+                    reduceMotion
+                      ? { opacity: 0.5 }
+                      : { opacity: [0.35, 1, 0.35], scale: [0.85, 1.1, 0.85] }
+                  }
+                  transition={
+                    reduceMotion
+                      ? {}
+                      : {
+                          duration: 1.2,
+                          repeat: Infinity,
+                          delay: i * 0.14,
+                          ease: 'easeInOut',
+                        }
+                  }
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="mx-auto mt-6 min-h-[4.5rem] max-w-md px-1">
+            <div className="mb-1 flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#FF9500]/90">
+              <Lightbulb className="h-3.5 w-3.5 shrink-0" aria-hidden />
+              While you wait
+            </div>
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.p
+                key={tipIdx}
+                initial={reduceMotion ? false : { opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                className="text-sm font-medium leading-relaxed text-[#333333]"
+              >
+                {PLAN_LOADER_ROTATING_TIPS[tipIdx]}
+              </motion.p>
+            </AnimatePresence>
+          </div>
+
+          <p className="mt-4 text-xs text-hint">Do not close this tab.</p>
         </motion.div>
 
         <motion.div
