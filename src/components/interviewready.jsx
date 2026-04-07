@@ -178,7 +178,14 @@ function formatPlanApiError(data) {
   if (typeof data.detail === 'string') return data.detail;
   if (Array.isArray(data.detail)) {
     return data.detail
-      .map((d) => (typeof d === 'string' ? d : d.msg || JSON.stringify(d)))
+      .map((d) => {
+        if (typeof d === 'string') return d;
+        const locTail = Array.isArray(d.loc)
+          ? d.loc.filter((x) => x !== 'body' && x !== 'query').join('.')
+          : '';
+        const msg = d.msg || JSON.stringify(d);
+        return locTail ? `${locTail}: ${msg}` : msg;
+      })
       .join(' ');
   }
   return data.error || data.message || 'Failed to generate questions';
@@ -278,7 +285,7 @@ const InputField = ({ label, type, name, value, onChange, placeholder, error, ma
           rows={3}
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={error ? errId : undefined}
-          className={`w-full rounded-xl bg-white px-4 py-3 outline-none transition-[border-color,box-shadow,background-color] duration-150 resize-none text-foreground placeholder:text-hint ${
+          className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal outline-none transition-[border-color,box-shadow,background-color] duration-150 resize-none text-foreground placeholder:font-normal placeholder:text-hint ${
             error ? MM_FIELD_INVALID : MM_FIELD_VALID
           }`}
         />
@@ -293,7 +300,7 @@ const InputField = ({ label, type, name, value, onChange, placeholder, error, ma
           maxLength={maxLength}
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={error ? errId : undefined}
-          className={`w-full rounded-xl bg-white px-4 py-3 outline-none transition-[border-color,box-shadow,background-color] duration-150 text-foreground placeholder:text-hint ${
+          className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal outline-none transition-[border-color,box-shadow,background-color] duration-150 text-foreground placeholder:font-normal placeholder:text-hint ${
             error ? MM_FIELD_INVALID : MM_FIELD_VALID
           }`}
         />
@@ -720,8 +727,36 @@ function HowItWorksFlow() {
   );
 }
 
+/** Full URL for a HashRouter path — use with target="_blank" so the assessment tab keeps running */
+function appHashUrl(routePath) {
+  if (typeof window === 'undefined') return `#${routePath}`;
+  const { origin, pathname, search } = window.location;
+  const p = routePath.startsWith('/') ? routePath : `/${routePath}`;
+  return `${origin}${pathname}${search}#${p}`;
+}
+
 /** Full-screen loader while interview readiness plan POST runs — avoids a frozen UI with generic copy */
 function PlanGenerationLoader() {
+  const [allowPromoLinksNewTab, setAllowPromoLinksNewTab] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(min-width: 768px)').matches
+  );
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px)');
+    const sync = () => setAllowPromoLinksNewTab(mq.matches);
+    mq.addEventListener('change', sync);
+    return () => mq.removeEventListener('change', sync);
+  }, []);
+
+  const mentorsHref = appHashUrl('/mentors');
+  const mocksHref = appHashUrl('/mock-interviews');
+
+  const promoPrimaryClass =
+    'inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-5 py-3 text-sm font-bold text-white shadow-md shadow-[#FF9500]/25 transition-all sm:w-auto';
+  const promoSecondaryClass =
+    'inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-[#FAFAFA] px-5 py-3 text-sm font-semibold text-[#333333] transition-all sm:w-auto';
+  const promoSpanExtra = 'pointer-events-none cursor-default select-none opacity-95';
+
   return (
     <div
       className="relative min-h-screen overflow-hidden bg-[#FFFDF8] font-sans"
@@ -773,20 +808,39 @@ function PlanGenerationLoader() {
             the real round.
           </p>
           <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
-            <Link
-              to="/mentors"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-5 py-3 text-sm font-bold text-white shadow-md shadow-[#FF9500]/25 transition-all hover:bg-[#E88600] sm:w-auto"
-            >
-              <Headphones className="h-4 w-4" aria-hidden />
-              Explore mentorship
-            </Link>
-            <Link
-              to="/mock-interviews"
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-[#FAFAFA] px-5 py-3 text-sm font-semibold text-[#333333] transition-all hover:border-[#FF9500]/40 hover:bg-[#FFF8EE] sm:w-auto"
-            >
-              AI mock interviews
-              <ArrowRight className="h-4 w-4" aria-hidden />
-            </Link>
+            {allowPromoLinksNewTab ? (
+              <>
+                <a
+                  href={mentorsHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${promoPrimaryClass} hover:bg-[#E88600]`}
+                >
+                  <Headphones className="h-4 w-4" aria-hidden />
+                  Explore mentorship
+                </a>
+                <a
+                  href={mocksHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={`${promoSecondaryClass} hover:border-[#FF9500]/40 hover:bg-[#FFF8EE]`}
+                >
+                  AI mock interviews
+                  <ArrowRight className="h-4 w-4" aria-hidden />
+                </a>
+              </>
+            ) : (
+              <>
+                <span className={`${promoPrimaryClass} ${promoSpanExtra}`} aria-disabled="true" tabIndex={-1}>
+                  <Headphones className="h-4 w-4" aria-hidden />
+                  Explore mentorship
+                </span>
+                <span className={`${promoSecondaryClass} ${promoSpanExtra}`} aria-disabled="true" tabIndex={-1}>
+                  AI mock interviews
+                  <ArrowRight className="h-4 w-4" aria-hidden />
+                </span>
+              </>
+            )}
           </div>
         </motion.div>
       </div>
@@ -1392,6 +1446,15 @@ const InterviewReady = () => {
       const next = { ...prev };
       delete next.userCategory;
       delete next.primarySkill;
+      [
+        'placementCoreSkill',
+        'placementJdText',
+        'placementTargetCompanyName',
+        'placementCampusType',
+        'placementCompanies',
+        'placementRoleChoice',
+        'placementRoleOther',
+      ].forEach((k) => delete next[k]);
       return { ...next, ...errors };
     });
     return Object.keys(errors).length === 0;
@@ -1407,10 +1470,10 @@ const InterviewReady = () => {
         errors.placementCoreSkill = 'Required';
       }
       if (profile.placementJdProvided && !profile.placementJdText?.trim()) {
-        errors.placementJdText = 'Paste the JD or turn off “JD provided”';
+        errors.placementJdText = 'Paste the job description or select No above';
       }
       if (profile.placementHasTargetCompany && !profile.placementTargetCompanyName?.trim()) {
-        errors.placementTargetCompanyName = 'Enter a company or uncheck target company';
+        errors.placementTargetCompanyName = 'Enter the company name or uncheck this option';
       }
     } else if (profile.userCategory !== PLACEMENT_CONTEXT_EARLY_COLLEGE) {
       if (!profile.placementCampusType) {
@@ -1523,17 +1586,20 @@ const InterviewReady = () => {
 
     if (!isSkillMode) {
       if (profile.userCategory === 'professional') {
-        interviewReadinessPayload.core_skill = (
+        const coreLine = (
           profile.placementCoreSkill?.trim() ||
           profile.primarySkill.trim()
         ).slice(0, PLAN_PRIMARY_SKILL_MAX);
+        interviewReadinessPayload.primary_skill = coreLine;
+        interviewReadinessPayload.core_skill = coreLine;
         interviewReadinessPayload.jd_provided = !!profile.placementJdProvided;
-        if (profile.placementJdProvided) {
-          interviewReadinessPayload.job_description = profile.placementJdText?.trim() || null;
-        }
-        if (profile.placementHasTargetCompany && profile.placementTargetCompanyName?.trim()) {
-          interviewReadinessPayload.target_company_name = profile.placementTargetCompanyName.trim();
-        }
+        interviewReadinessPayload.job_description = profile.placementJdProvided
+          ? profile.placementJdText?.trim() || null
+          : null;
+        interviewReadinessPayload.target_company_name =
+          profile.placementHasTargetCompany && profile.placementTargetCompanyName?.trim()
+            ? profile.placementTargetCompanyName.trim()
+            : null;
       } else if (profile.userCategory !== PLACEMENT_CONTEXT_EARLY_COLLEGE) {
         interviewReadinessPayload.campus_or_off_campus = profile.placementCampusType;
         interviewReadinessPayload.targets_service_mnc = !!profile.placementTargetMnc;
@@ -2264,7 +2330,7 @@ const InterviewReady = () => {
                       placeholder="e.g. 2.5"
                       aria-invalid={validationErrors.experienceYears ? 'true' : undefined}
                       data-mm-invalid={validationErrors.experienceYears ? 'true' : undefined}
-                      className={`w-full rounded-xl bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
+                      className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
                         validationErrors.experienceYears
                           ? MM_FIELD_INVALID
                           : MM_FIELD_VALID
@@ -2294,7 +2360,7 @@ const InterviewReady = () => {
                       placeholder="Company or employer name"
                       aria-invalid={validationErrors.currentOrganization ? 'true' : undefined}
                       data-mm-invalid={validationErrors.currentOrganization ? 'true' : undefined}
-                      className={`w-full rounded-xl bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
+                      className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
                         validationErrors.currentOrganization
                           ? MM_FIELD_INVALID
                           : MM_FIELD_VALID
@@ -2324,7 +2390,7 @@ const InterviewReady = () => {
                     placeholder="e.g. IIT Madras, VIT Vellore, state university…"
                     aria-invalid={validationErrors.collegeName ? 'true' : undefined}
                     data-mm-invalid={validationErrors.collegeName ? 'true' : undefined}
-                    className={`w-full rounded-xl bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
+                    className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
                       validationErrors.collegeName
                         ? MM_FIELD_INVALID
                         : MM_FIELD_VALID
@@ -2368,7 +2434,7 @@ const InterviewReady = () => {
                   placeholder="you@example.com"
                   aria-invalid={validationErrors.email ? 'true' : undefined}
                   data-mm-invalid={validationErrors.email ? 'true' : undefined}
-                  className={`w-full rounded-xl bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
+                  className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
                     validationErrors.email
                       ? MM_FIELD_INVALID
                       : MM_FIELD_VALID
@@ -2398,7 +2464,7 @@ const InterviewReady = () => {
                   placeholder="Enter WhatsApp number"
                   aria-invalid={validationErrors.phone ? 'true' : undefined}
                   data-mm-invalid={validationErrors.phone ? 'true' : undefined}
-                  className={`w-full rounded-xl bg-white px-4 py-3 text-foreground outline-none transition-all placeholder:text-muted-foreground ${
+                  className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
                     validationErrors.phone
                       ? MM_FIELD_INVALID
                       : MM_FIELD_VALID
@@ -2765,7 +2831,7 @@ const InterviewReady = () => {
                           }
                           placeholder="TCS, Razorpay, whoever — comma-separated is fine"
                           rows={2}
-                          className={`mt-1 w-full rounded-xl border border-border/80 bg-white/90 px-3 py-2.5 text-sm outline-none transition-all placeholder:text-muted-foreground ${
+                          className={`mt-1 w-full rounded-xl border border-border/80 bg-white/90 px-3 py-2.5 text-sm font-normal outline-none transition-all placeholder:font-normal placeholder:text-hint ${
                             validationErrors.placementCompanies ? MM_FIELD_INVALID : MM_FIELD_VALID
                           }`}
                           aria-invalid={validationErrors.placementCompanies ? 'true' : undefined}
@@ -2878,6 +2944,9 @@ const InterviewReady = () => {
 
                   <div className="space-y-2">
                     <p className="text-sm font-bold text-foreground">Job description (JD) provided?</p>
+                    <p className="text-xs text-muted-foreground">
+                      Optional. If you choose Yes, paste the JD — we only require it when Yes is selected.
+                    </p>
                     <div className="flex gap-4">
                       <label className="flex cursor-pointer items-center gap-2 text-sm font-medium">
                         <input
@@ -2885,7 +2954,10 @@ const InterviewReady = () => {
                           name="jd"
                           className="accent-[#FF9500]"
                           checked={!profile.placementJdProvided}
-                          onChange={() => setProfile((p) => ({ ...p, placementJdProvided: false, placementJdText: '' }))}
+                          onChange={() => {
+                            setProfile((p) => ({ ...p, placementJdProvided: false, placementJdText: '' }));
+                            setValidationErrors((prev) => ({ ...prev, placementJdText: '' }));
+                          }}
                         />
                         No
                       </label>
@@ -2895,26 +2967,38 @@ const InterviewReady = () => {
                           name="jd"
                           className="accent-[#FF9500]"
                           checked={profile.placementJdProvided}
-                          onChange={() => setProfile((p) => ({ ...p, placementJdProvided: true }))}
+                          onChange={() => {
+                            setProfile((p) => ({ ...p, placementJdProvided: true }));
+                            setValidationErrors((prev) => ({ ...prev, placementJdText: '' }));
+                          }}
                         />
                         Yes — paste below
                       </label>
                     </div>
                     {profile.placementJdProvided && (
-                      <textarea
-                        value={profile.placementJdText}
-                        onChange={(e) =>
-                          setProfile((p) => ({ ...p, placementJdText: e.target.value }))
-                        }
-                        placeholder="Paste the JD text here…"
-                        rows={5}
-                        className={`w-full rounded-xl px-4 py-3 text-sm outline-none ${
-                          validationErrors.placementJdText ? MM_FIELD_INVALID : MM_FIELD_VALID
-                        }`}
-                      />
-                    )}
-                    {validationErrors.placementJdText && (
-                      <p className="text-xs text-red-600">{validationErrors.placementJdText}</p>
+                      <>
+                        <label className="text-xs font-semibold text-foreground">
+                          Paste JD <span className="text-red-500">*</span>
+                        </label>
+                        <textarea
+                          value={profile.placementJdText}
+                          onChange={(e) => {
+                            setProfile((p) => ({ ...p, placementJdText: e.target.value }));
+                            setValidationErrors((prev) =>
+                              prev.placementJdText ? { ...prev, placementJdText: '' } : prev
+                            );
+                          }}
+                          placeholder="Paste the JD text here…"
+                          rows={5}
+                          className={`w-full rounded-xl border border-border bg-white px-4 py-3 text-sm font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
+                            validationErrors.placementJdText ? MM_FIELD_INVALID : MM_FIELD_VALID
+                          }`}
+                          aria-invalid={validationErrors.placementJdText ? 'true' : undefined}
+                        />
+                        {validationErrors.placementJdText && (
+                          <p className="text-xs font-medium text-red-600">{validationErrors.placementJdText}</p>
+                        )}
+                      </>
                     )}
                   </div>
 
@@ -2924,31 +3008,51 @@ const InterviewReady = () => {
                         type="checkbox"
                         className="accent-[#FF9500]"
                         checked={profile.placementHasTargetCompany}
-                        onChange={(e) =>
+                        onChange={(e) => {
+                          const checked = e.target.checked;
                           setProfile((p) => ({
                             ...p,
-                            placementHasTargetCompany: e.target.checked,
-                            placementTargetCompanyName: e.target.checked ? p.placementTargetCompanyName : '',
-                          }))
-                        }
+                            placementHasTargetCompany: checked,
+                            placementTargetCompanyName: checked ? p.placementTargetCompanyName : '',
+                          }));
+                          if (!checked) {
+                            setValidationErrors((prev) => ({ ...prev, placementTargetCompanyName: '' }));
+                          }
+                        }}
                       />
                       I have a target company in mind
                     </label>
+                    <p className="text-xs text-muted-foreground pl-7">
+                      Optional. Company name is required only when this box is checked.
+                    </p>
                     {profile.placementHasTargetCompany && (
-                      <input
-                        type="text"
-                        value={profile.placementTargetCompanyName}
-                        onChange={(e) =>
-                          setProfile((p) => ({ ...p, placementTargetCompanyName: e.target.value }))
-                        }
-                        placeholder="Company name"
-                        className={`mt-2 w-full max-w-md rounded-xl px-4 py-3 text-sm outline-none ${
-                          validationErrors.placementTargetCompanyName ? MM_FIELD_INVALID : MM_FIELD_VALID
-                        }`}
-                      />
-                    )}
-                    {validationErrors.placementTargetCompanyName && (
-                      <p className="text-xs text-red-600">{validationErrors.placementTargetCompanyName}</p>
+                      <div className="mt-2 space-y-1.5 pl-7">
+                        <label className="block text-xs font-semibold text-foreground">
+                          Company name <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          value={profile.placementTargetCompanyName}
+                          onChange={(e) => {
+                            setProfile((p) => ({ ...p, placementTargetCompanyName: e.target.value }));
+                            setValidationErrors((prev) =>
+                              prev.placementTargetCompanyName
+                                ? { ...prev, placementTargetCompanyName: '' }
+                                : prev
+                            );
+                          }}
+                          placeholder="e.g. Acme Corp"
+                          className={`w-full max-w-md rounded-xl border border-border bg-white px-4 py-3 text-sm font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
+                            validationErrors.placementTargetCompanyName ? MM_FIELD_INVALID : MM_FIELD_VALID
+                          }`}
+                          aria-invalid={validationErrors.placementTargetCompanyName ? 'true' : undefined}
+                        />
+                        {validationErrors.placementTargetCompanyName && (
+                          <p className="text-xs font-medium text-red-600">
+                            {validationErrors.placementTargetCompanyName}
+                          </p>
+                        )}
+                      </div>
                     )}
                   </div>
                 </>
