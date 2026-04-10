@@ -10,9 +10,9 @@ export const PRIMARY_CTA_LABEL = 'Check my readiness — free';
 export const PAIN_HOOK =
   "Most students don't discover their real interview gaps until after a rejection. We show you where you stand in minutes—then what to fix first.";
 
-/** Homepage hero — chips (split on ·). Audience · focus · Mentors + AI */
+/** Homepage hero — chips (split on ·). Keep concrete; avoid “platform” jargon */
 export const HERO_EYEBROW =
-  'Engineering students in India · interview preparation · Mentors + AI';
+  'Engineering students in India · interview readiness · Mentors';
 /** Early-bird coupon card ribbon (homepage hero) */
 export const HERO_EARLY_BIRD_RIBBON = 'Early bird';
 /** Small hero sticker (limited slots — keep short) */
@@ -31,7 +31,7 @@ export const HERO_TYPEWRITER_PHRASES = [
 ];
 /** Homepage hero — body copy under the typewriter (single paragraph; no read-more) */
 export const HERO_HOME_SUB =
-  'Built for execution, not endless lessons: a free readiness check shows where you stand vs. what panels test—then mocks, feedback, and discipline so you can perform when it counts.';
+  'A free readiness check shows where you stand vs. what panels test—then mocks, feedback, and reps so you can perform when it counts.';
 /** Highlighted journey lines (homepage hero) */
 export const HERO_JOURNEY_STEPS = 'Test → Break confidence → Show gap → Fix gap';
 export const HERO_JOURNEY_ARC =
@@ -44,7 +44,7 @@ export const HERO_PROBLEM =
   'Most students only see their real interview gaps after a rejection—not before they walk in.';
 export const HERO_SOLUTION_LABEL = 'How MentorMuni helps';
 export const HERO_SOLUTION =
-  'A free score, your gaps by topic, and what to fix first—then AI mocks and mentors when you want more.';
+  'A free score, your gaps by topic, and what to fix first—then mocks and mentors when you want more.';
 export const HERO_PROOF_STAT = '~5 min · Free · No signup · Instant score';
 
 /** Homepage — pain section below hero (eyebrow · headline · sub · three cards) */
@@ -98,7 +98,7 @@ export const COMPARISON_TABLE_ROWS = [
     cells: ['no', 'no', 'Rarely', 'yes'],
   },
   {
-    label: 'AI mock interview with scoring',
+    label: 'Mock interview with scoring',
     cells: ['no', 'no', 'no', 'yes'],
   },
   {
@@ -110,6 +110,10 @@ export const COMPARISON_TABLE_ROWS = [
     cells: ['yes', 'yes', 'no', 'yes'],
   },
 ];
+
+/** Homepage — “How it works” strip (feature cards under the story section) */
+export const HOW_IT_WORKS_HEADLINE =
+  'Measure first—then prep what hiring rounds actually test.';
 
 /** Homepage — dark “reality check” (who it’s for / not for) */
 export const REALITY_CHECK_EYEBROW = 'Be honest with yourself';
@@ -129,7 +133,7 @@ export const REALITY_CHECK_FOR_ITEMS = [
   "You've prepared but keep getting rejected — and don't know why",
   'You blank under pressure even when you know the answer',
   'You want to know exactly where you stand — not guess',
-  "You're willing to work hard for 60 days to change your outcome",
+  "You're willing to work hard for 6 weeks to change your outcome",
   'You want an offer at a company worth joining — not just any job',
 ];
 export const REALITY_CHECK_CTA = "I'm serious — Take the Reality Check";
@@ -148,7 +152,7 @@ export const PROGRAM_6WEEK_PHASES = [
   {
     title: 'Weeks 3-4: Answer structure training',
     body:
-      'Learn how to frame and deliver answers. Daily AI mock sessions with rubric scoring.',
+      'Learn how to frame and deliver answers. Daily mock sessions with rubric scoring.',
   },
   {
     title: 'Week 5: Full mock interview rounds',
@@ -167,15 +171,9 @@ export const PROGRAM_6WEEK_CARD_TITLE = '6-Week Interview Readiness Program';
 export const PROGRAM_6WEEK_PRICE_MAIN = '₹5,999';
 export const PROGRAM_6WEEK_PRICE_MAIN_SUFFIX = 'one-time';
 export const PROGRAM_6WEEK_PRICE_STRIKE = '₹9,999 — Early bird pricing';
-export const PROGRAM_6WEEK_FEATURES = [
-  'Interview Reality Check (free)',
-  'Personalised 6-week roadmap',
-  'Unlimited AI mock interviews with scoring',
-  'Weekly 1:1 mentor session (6 sessions)',
-  'Answer training modules (DSA, SD, HR, Projects)',
-  'Score re-test at end of program',
-  'WhatsApp accountability group',
-];
+/** Single line instead of a long checklist on the homepage */
+export const PROGRAM_6WEEK_SUMMARY =
+  'Includes your roadmap, scored mocks, weekly mentor sessions, answer modules, a final re-test, and a small accountability group—details when pricing goes live.';
 
 /**
  * Homepage hero — personalized by academic year or experience level.
@@ -269,35 +267,14 @@ export const MENTORSHIP_TRUST_BADGE = 'Mentorship cohorts · Waitlist open · Li
 /** Sticky mobile bar — second line under Join waitlist */
 export const WAITLIST_STICKY_TEASER = 'Cohort seats · limited';
 
-/** Homepage — “why start here” section (conversion) */
-export const CONVERSION_WHY_SECTION_HEADLINE = 'Why students start with the free test';
-export const CONVERSION_WHY_SECTION_SUB =
-  'No payment. No signup. A clear score—then you choose depth: AI mocks, mentors, or placement tracks when you are ready.';
-
-/** Three pillars — order matches icon column on homepage */
-export const CONVERSION_WHY_CARDS = [
-  {
-    title: 'A number that cuts through the noise',
-    body: 'One score with DSA, System Design, HR, and project signals—so you know what to fix first, not what to scroll next.',
-    kicker: 'Free · ~5 min · no signup',
-  },
-  {
-    title: 'Early-bird reward after you finish',
-    body: 'Complete the test and get a coupon for 1 free 1:1 mentor session + 1 AI mock—emailed to you.',
-    kicker: 'Coupon unlocks after the test',
-  },
-  {
-    title: 'Mentorship when you want depth',
-    body: 'Join the waitlist for cohort-based mentor prep matched to your readiness—not a one-size syllabus.',
-    kicker: 'Limited seats per batch',
-  },
-];
+/** Homepage — one short line between Expert Mentorship and final CTA (no second “Why” block) */
+export const HOMEPAGE_MENTORS_TO_CTA_BRIDGE = 'Ready to move forward?';
 
 /** Homepage — final CTA block (above footer) */
 export const FINAL_CTA_HEADLINE = 'Stop guessing what to study this week.';
 export const FINAL_CTA_HEADLINE_ACCENT = 'Take the free test—then choose how deep you go.';
 export const FINAL_CTA_BODY =
-  'Random prep hides your real gap. Get one readiness score, see where you stand in DSA, System Design, HR, and projects, and what to fix first—then unlock AI mocks and mentorship when you want more.';
+  'Get one readiness score and a clear “fix this first” list—then add mocks or mentors only if you need them.';
 
 /** Footer / nav: name of the free assessment product (not “mock interviews”) */
 export const PRODUCT_READINESS_SCORE = 'Interview readiness score';

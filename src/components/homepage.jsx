@@ -43,14 +43,13 @@ import {
   PROGRAM_6WEEK_PRICE_MAIN,
   PROGRAM_6WEEK_PRICE_MAIN_SUFFIX,
   PROGRAM_6WEEK_PRICE_STRIKE,
-  PROGRAM_6WEEK_FEATURES,
+  PROGRAM_6WEEK_SUMMARY,
   READINESS_TEST_COUPON_BADGE,
-  CONVERSION_WHY_SECTION_HEADLINE,
-  CONVERSION_WHY_SECTION_SUB,
-  CONVERSION_WHY_CARDS,
   FINAL_CTA_HEADLINE,
   FINAL_CTA_HEADLINE_ACCENT,
   FINAL_CTA_BODY,
+  HOW_IT_WORKS_HEADLINE,
+  HOMEPAGE_MENTORS_TO_CTA_BRIDGE,
 } from '../constants/brandCopy';
 import { AnimatedPrepMapPanel } from './homepage/prepMapPanel';
 import { HeroFlagshipVisual } from './homepage/HeroFlagshipVisual';
@@ -63,7 +62,7 @@ import {
   GraduationCap, Building2, Users,
   Mail, Phone, Check, X,
   BookOpen, Layers, Sparkles, CalendarClock, Mic2,
-  Gift, Gauge, Clock, TrendingUp, ArrowDown,
+  Gift, Clock, TrendingUp,
 } from 'lucide-react';
 
 /* ─── Scroll-reveal wrapper ─────────────────────────────────── */
@@ -125,7 +124,7 @@ const ComparisonTableCell = ({ value }) => {
   );
 };
 
-/* ─── Features data ─────────────────────────────────────────── */
+/* ─── How it works — feature cards (homepage) ───────────────────────────── */
 const FEATURES = [
   {
     Icon: Brain,
@@ -177,7 +176,7 @@ const STUDENT_SNIPPETS = [
     gradient: 'from-cyan-500 via-sky-400 to-teal-400',
     tag: 'Final Year · IT',
     insight: 'Feedback on how you sound',
-    text: 'The AI mock was blunt: my answers sounded memorised, not understood. I changed how I open and structure answers under pressure—not just the facts inside them.',
+    text: 'The mock was blunt: my answers sounded memorised, not understood. I changed how I open and structure answers under pressure—not just the facts inside them.',
     proofMetric: 'Panel-style feedback: how you sound, not memorised lines',
     Icon: Mic2,
   },
@@ -399,10 +398,18 @@ const HomePage = () => {
 
       {/* ════════════════ THE REAL PROBLEM — pain + three cards ════════════════ */}
       <section
-        className="border-t border-border bg-white py-14 md:py-16 px-5 sm:px-6 lg:px-8"
+        className="relative overflow-hidden border-t border-sky-200/50 bg-gradient-to-b from-sky-50/95 via-[#f8fafc] to-slate-100/50 py-14 md:py-16 px-5 sm:px-6 lg:px-8"
         aria-labelledby="real-problem-heading"
       >
-        <div className="mx-auto max-w-5xl">
+        <div
+          className="pointer-events-none absolute -left-24 top-1/4 h-72 w-72 rounded-full bg-sky-300/20 blur-[100px]"
+          aria-hidden
+        />
+        <div
+          className="pointer-events-none absolute -right-20 bottom-8 h-56 w-56 rounded-full bg-cyan-200/20 blur-[90px]"
+          aria-hidden
+        />
+        <div className="relative z-10 mx-auto max-w-5xl">
           <FadeUp>
             <header className="mb-12 text-center md:mb-14 md:text-left">
               <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-[#EA580C] sm:text-sm sm:tracking-[0.2em]">
@@ -424,7 +431,7 @@ const HomePage = () => {
               const CardIcon = [Clock, Users, TrendingUp][idx];
               return (
                 <FadeUp key={card.title} delay={idx * 0.06}>
-                  <div className="flex h-full flex-col rounded-2xl border border-border bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
+                  <div className="flex h-full flex-col rounded-2xl border border-sky-100/80 bg-white/95 p-6 shadow-[0_2px_16px_rgba(14,116,144,0.06)] backdrop-blur-[2px]">
                     <div
                       className="mb-4 flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-rose-50 ring-1 ring-rose-100/80"
                       aria-hidden
@@ -599,21 +606,14 @@ const HomePage = () => {
           </div>
 
           <FadeUp delay={0.14}>
-            <div className="relative mx-auto mt-14 flex max-w-lg justify-center pb-6 md:mt-16">
+            <div className="mx-auto mt-12 max-w-lg text-center md:mt-14">
               <button
                 type="button"
                 onClick={goToStartAssessment}
-                className="relative inline-flex w-full max-w-md items-center justify-center gap-2 rounded-full bg-[#FF7A30] px-8 py-4 text-center text-base font-bold text-white shadow-[0_8px_28px_rgba(255,122,48,0.35)] transition hover:bg-[#f06d28] active:scale-[0.99] sm:px-10"
+                className="text-base font-semibold text-[#FF7A30] underline decoration-[#FF7A30]/40 underline-offset-[6px] transition hover:text-[#f06d28]"
               >
-                {REALITY_CHECK_CTA}
-                <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
+                {REALITY_CHECK_CTA} →
               </button>
-              <span
-                className="pointer-events-none absolute -bottom-1 left-1/2 flex h-9 w-9 -translate-x-1/2 items-center justify-center rounded-full bg-[#0a0a0a] ring-2 ring-[#FF7A30]/90"
-                aria-hidden
-              >
-                <ArrowDown className="h-4 w-4 text-[#FF7A30]" strokeWidth={2.5} />
-              </span>
             </div>
           </FadeUp>
         </div>
@@ -692,18 +692,9 @@ const HomePage = () => {
                     </p>
                   </div>
                 </div>
-                <ul className="mt-6 space-y-3 border-t border-border pt-6 text-left">
-                  {PROGRAM_6WEEK_FEATURES.map((line) => (
-                    <li key={line} className="flex gap-2.5 text-sm leading-snug text-foreground">
-                      <Check
-                        className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600"
-                        strokeWidth={2.5}
-                        aria-hidden
-                      />
-                      <span>{line}</span>
-                    </li>
-                  ))}
-                </ul>
+                <p className="mt-6 border-t border-border pt-6 text-left text-sm leading-relaxed text-muted-foreground">
+                  {PROGRAM_6WEEK_SUMMARY}
+                </p>
               </div>
             </FadeUp>
           </div>
@@ -897,10 +888,9 @@ const HomePage = () => {
                 <button
                   type="button"
                   onClick={goToStartAssessment}
-                  className="group inline-flex items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-6 py-3.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-[#E88600]"
+                  className="text-sm font-semibold text-[#FF9500] underline decoration-[#FFB347]/60 underline-offset-4 transition hover:text-[#E88600]"
                 >
-                  Check prep on my topics — free
-                  <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
+                  Check prep on my topics — free →
                 </button>
               </motion.div>
             </div>
@@ -918,24 +908,24 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ WHY MENTORMUNI — origin story + urgency (leads the page narrative) ════════════════ */}
-      <section className="relative py-16 md:py-20 px-6 border-t border-border overflow-hidden bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE]">
+      <section className="relative border-t border-border overflow-hidden bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE] py-16 md:py-20 px-5 sm:px-6 lg:px-8">
         <div className="pointer-events-none absolute right-0 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-[rgba(255,149,0,0.1)] blur-[100px]" aria-hidden />
-        <div className="max-w-5xl mx-auto relative">
+        <div className="relative mx-auto w-full max-w-5xl">
           <div className="mb-10">
             <StoryLine
               delay={0}
-              className="text-xs font-bold text-[#CC7000] uppercase tracking-[0.2em] block mb-3"
+              className="mb-4 block text-xs font-bold uppercase tracking-[0.22em] text-[#EA580C] sm:text-sm"
               as="span"
             >
               Why MentorMuni
             </StoryLine>
             <StoryLine
               delay={0.07}
-              className="mb-6 max-w-3xl text-2xl font-bold leading-[1.15] tracking-tight text-foreground sm:text-3xl md:text-4xl"
+              className="mb-6 max-w-[38rem] text-xl font-semibold leading-snug tracking-tight text-foreground sm:text-2xl md:text-[1.65rem] md:leading-[1.35]"
               as="h2"
             >
               Too many students walk into placement{' '}
-              <span className="bg-gradient-to-r from-[#FF9500] to-[#FFB347] bg-clip-text text-transparent">
+              <span className="font-semibold text-[#c2410c]">
                 before they&apos;ve ever had a real mock.
               </span>
             </StoryLine>
@@ -1004,7 +994,7 @@ const HomePage = () => {
                     delay={0.5}
                     className="relative text-sm font-semibold leading-relaxed text-foreground md:text-base"
                   >
-                    Interview readiness check, AI mock interviews, and mentor-backed prep—all before the rounds that actually count.
+                    Interview readiness check, voice mocks, and mentor-backed prep—before the rounds that actually count.
                   </StoryLine>
                 </div>
               </div>
@@ -1054,7 +1044,7 @@ const HomePage = () => {
                 <ul className="space-y-2.5">
                   {[
                     'Free interview readiness check—a clear score and what to fix first',
-                    'AI mock interviews so your first “real” panel isn’t your first time under pressure',
+                    'Voice mocks so your first “real” panel isn’t your first time under pressure',
                     'Mentorship to close gaps and align prep to the companies you’re targeting',
                   ].map((p) => (
                     <li key={p} className="flex gap-2 text-sm text-muted-foreground">
@@ -1068,54 +1058,56 @@ const HomePage = () => {
           </FadeUp>
 
           <FadeUp delay={0.22}>
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 rounded-2xl border border-border bg-white p-5 md:p-6 shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
-              <p className="text-sm md:text-base text-muted-foreground font-medium max-w-xl">
-                Don’t use real interviews as practice. Start with the free check—then stack mocks and mentors until you’re ready for the panel.
-              </p>
+            <p className="max-w-2xl rounded-2xl border border-border bg-white p-5 text-sm leading-relaxed text-muted-foreground shadow-[0_2px_12px_rgba(0,0,0,0.05)] md:p-6 md:text-base">
+              Don’t use real interviews as practice.{' '}
               <button
                 type="button"
                 onClick={goToStartAssessment}
-                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-6 py-3 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-colors hover:bg-[#E88600]"
+                className="font-semibold text-[#FF9500] underline decoration-[#FFB347]/55 underline-offset-[5px] transition hover:text-[#E88600]"
               >
-                {PRIMARY_CTA_LABEL}
-                <ArrowRight size={16} />
+                Start with the free check
               </button>
-            </div>
+              —then add mocks and mentors until you’re ready for the panel.
+            </p>
           </FadeUp>
         </div>
       </section>
 
       {/* ════════════════ HOW IT WORKS — what we give (after the “why”) ════════════════ */}
-      <section className="py-14 px-6 border-t border-border">
-        <div className="max-w-5xl mx-auto">
-          <FadeUp>
+      <section className="border-t border-border bg-white py-14 md:py-16 px-5 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-5xl text-left">
+          <FadeUp className="w-full text-left">
             <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-primary">How it works</span>
             <h2 className="mb-2 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-              What we give you—before you face the real panel
+              {HOW_IT_WORKS_HEADLINE}
             </h2>
-            <p className="text-muted-foreground text-sm mb-4 max-w-2xl leading-relaxed">
-              One flow: measure with the readiness check, practice with AI mocks, polish with ATS, learn topic-by-topic with free tutorials and AI-tool talking points, then go deeper with mentor-backed prep when you want a human in your corner.
+            <p className="mb-4 max-w-3xl text-sm leading-relaxed text-muted-foreground md:text-base">
+              One flow: measure with the readiness check, practice with AI mocks, polish with ATS, learn topic-by-topic
+              with free tutorials and AI-tool talking points, then go deeper with mentor-backed prep when you want a
+              human in your corner.
             </p>
             <Link
               to="/how-it-works"
-              className="inline-flex items-center gap-1 text-sm font-semibold text-[#FF9500] hover:text-[#E88600] transition-colors mb-10"
+              className="mb-10 inline-flex items-center gap-1 text-sm font-semibold text-[#FF9500] transition-colors hover:text-[#E88600]"
             >
-              Full step-by-step walkthrough <ArrowRight size={14} />
+              Full step-by-step walkthrough <ArrowRight size={14} aria-hidden />
             </Link>
           </FadeUp>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {FEATURES.map((f, i) => (
-              <FadeUp key={f.title} delay={i * 0.07}>
-                <div className="group flex gap-4 bg-white border border-border shadow-[0_2px_12px_rgba(0,0,0,0.05)] rounded-2xl p-6 hover:border-[#FFB347] transition-all h-full">
-                  <div className="w-10 h-10 bg-[#FFF4E0] border border-border rounded-xl flex items-center justify-center flex-shrink-0 group-hover:bg-[#FFF8EE] transition-colors mt-0.5">
+              <FadeUp key={f.title} delay={i * 0.07} className="w-full text-left">
+                <div className="group flex h-full gap-4 rounded-2xl border border-border bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.05)] transition-all hover:border-[#FFB347]">
+                  <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-[#FFF4E0] group-hover:bg-[#FFF8EE]">
                     <f.Icon size={18} className="text-[#FF9500]" />
                   </div>
                   <div className="min-w-0 flex flex-col">
-                    <div className="flex items-center gap-2 mb-1.5 flex-wrap">
+                    <div className="mb-1.5 flex flex-wrap items-center gap-2">
                       <h3 className="text-base font-semibold text-foreground">{f.title}</h3>
-                      <span className="rounded border border-border bg-[#FFF4E0] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#CC7000]">{f.tag}</span>
+                      <span className="rounded border border-border bg-[#FFF4E0] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#CC7000]">
+                        {f.tag}
+                      </span>
                     </div>
-                    <p className="text-muted-foreground text-xs leading-relaxed mb-2">{f.desc}</p>
+                    <p className="mb-2 text-xs leading-relaxed text-muted-foreground">{f.desc}</p>
                     <span className="text-xs font-semibold text-[#1A8C55]">{f.highlight}</span>
                     {f.link && (
                       <Link
@@ -1130,27 +1122,27 @@ const HomePage = () => {
               </FadeUp>
             ))}
           </div>
-          <FadeUp delay={0.3}>
-            <div className="mt-6 text-center">
+          <FadeUp delay={0.28} className="w-full text-left">
+            <div className="mt-8">
               <button
                 type="button"
                 onClick={goToStartAssessment}
-                className="inline-flex items-center gap-2 bg-[#FF9500] hover:bg-[#E88600] text-white font-bold px-7 py-3.5 rounded-xl transition-colors text-sm shadow-[0_4px_14px_rgba(255,149,0,0.25)]"
+                className="inline-flex items-center gap-2 rounded-xl bg-[#FF9500] px-7 py-3.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-colors hover:bg-[#E88600]"
               >
-                {PRIMARY_CTA_LABEL} <ArrowRight size={15} />
+                {PRIMARY_CTA_LABEL} <ArrowRight size={15} aria-hidden />
               </button>
-              <p className="text-xs text-muted-foreground mt-2">No signup · 5 minutes · Instant score</p>
+              <p className="mt-2 text-xs text-muted-foreground">No signup · 5 minutes · Instant score</p>
             </div>
           </FadeUp>
         </div>
       </section>
 
       {/* ════════════════ STUDENT STORIES — animated cards ════════════════ */}
-      <section className="relative overflow-hidden border-t border-border bg-gradient-to-b from-[#FFFDF8] via-[#FFFCF7] to-[#FFF8EE] py-14 md:py-16 px-6">
+      <section className="relative overflow-hidden border-t border-border bg-gradient-to-b from-[#FFFDF8] via-[#FFFCF7] to-[#FFF8EE] py-14 md:py-16 px-5 sm:px-6 lg:px-8">
         <div className="pointer-events-none absolute -left-32 top-1/4 h-72 w-72 rounded-full bg-[rgba(255,149,0,0.15)] blur-[100px]" aria-hidden />
         <div className="pointer-events-none absolute -right-24 bottom-0 h-64 w-64 rounded-full bg-[rgba(8,145,178,0.1)] blur-[90px]" aria-hidden />
 
-        <div className="relative mx-auto max-w-6xl">
+        <div className="relative mx-auto w-full max-w-5xl">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -1250,70 +1242,111 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ════════════════ MENTORS — INDUSTRY EXPERTS ════════════════ */}
-      <section className="py-14 px-6 border-t border-border">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-start">
-            <FadeUp>
-              <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-[#CC7000]">Expert Mentorship</span>
+      {/* ════════════════ MENTORS — Expert Mentorship (two columns) ════════════════ */}
+      <section className="border-t border-border bg-neutral-50 py-14 md:py-20 px-5 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-5xl">
+          <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-20">
+            <FadeUp className="w-full text-left">
+              <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-[#CC7000] md:text-xs">
+                Expert Mentorship
+              </span>
               <h2 className="mb-3 text-2xl font-bold leading-tight tracking-tight text-foreground md:text-3xl">
-                Mentors with 12–15 years<br />
+                Mentors with 12–15 years
+                <br />
                 <span className="text-[#FF9500]">of industry experience.</span>
               </h2>
-              <p className="text-muted-foreground leading-relaxed mb-6 text-sm">
-                Our mentors are senior engineers and tech leads from India's leading IT companies with over a decade of industry experience. They have conducted hundreds of interviews — and bring that perspective directly to your preparation.
+              <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
+                Our mentors are senior engineers and tech leads from India&apos;s leading IT companies with over a decade
+                of industry experience. They have conducted hundreds of interviews — and bring that perspective directly
+                to your preparation.
               </p>
-              <div className="space-y-4 mb-7">
+              <div className="mb-7 space-y-4">
                 {[
-                  { Icon: Brain, title: 'They know what the interviewer is actually testing', desc: "After 12+ years, they've conducted hundreds of interviews. They'll tell you exactly what an answer needs — not what sounds good." },
-                  { Icon: Cpu, title: 'They teach AI tools in real workflows', desc: 'Our mentors use GitHub Copilot, ChatGPT, and Claude daily. They teach you not just how to use these tools but how to talk about them in interviews — a skill most freshers completely lack.' },
-                  { Icon: Target, title: 'Company-specific pattern knowledge', desc: 'TCS Digital vs TCS NQT. Cognizant GenC vs GenC Pro. Infosys SP vs DSP. Each track asks different things. Your mentor knows them all.' },
-                ].map(item => (
+                  {
+                    Icon: Brain,
+                    title: 'They know what the interviewer is actually testing',
+                    desc: "After 12+ years, they've conducted hundreds of interviews. They'll tell you exactly what an answer needs — not what sounds good.",
+                  },
+                  {
+                    Icon: Cpu,
+                    title: 'They teach AI tools in real workflows',
+                    desc: 'Our mentors use GitHub Copilot, ChatGPT, and Claude daily. They teach you not just how to use these tools but how to talk about them in interviews — a skill most freshers completely lack.',
+                  },
+                  {
+                    Icon: Target,
+                    title: 'Company-specific pattern knowledge',
+                    desc: 'TCS Digital vs TCS NQT. Cognizant GenC vs GenC Pro. Infosys SP vs DSP. Each track asks different things. Your mentor knows them all.',
+                  },
+                ].map((item) => (
                   <div key={item.title} className="flex gap-3 items-start">
-                    <div className="w-8 h-8 bg-[#FFF4E0] border border-border rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <item.Icon size={14} className="text-[#FF9500]" />
+                    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border bg-[#FFF4E0]">
+                      <item.Icon size={14} className="text-[#FF9500]" aria-hidden />
                     </div>
                     <div>
-                      <p className="font-bold text-foreground text-sm mb-0.5">{item.title}</p>
-                      <p className="text-hint text-xs leading-relaxed">{item.desc}</p>
+                      <p className="mb-0.5 text-sm font-bold text-foreground">{item.title}</p>
+                      <p className="text-xs leading-relaxed text-hint">{item.desc}</p>
                     </div>
                   </div>
                 ))}
               </div>
-              <Link to="/mentors" className="inline-flex items-center gap-1.5 bg-[#FF9500] hover:bg-[#E88600] text-white font-bold px-6 py-3 rounded-xl transition-colors text-sm shadow-[0_4px_14px_rgba(255,149,0,0.25)]">
-                Meet the mentors <ArrowRight size={15} />
+              <Link
+                to="/mentors"
+                className="inline-flex items-center gap-1.5 rounded-xl bg-[#FF9500] px-6 py-3 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-colors hover:bg-[#E88600]"
+              >
+                Meet the mentors <ArrowRight size={15} aria-hidden />
               </Link>
             </FadeUp>
 
-            <FadeUp delay={0.12}>
-              <p className="text-xs text-hint uppercase tracking-wider mb-4 font-medium">What you get with every mentor</p>
-
-              {/* Mentor strengths — student-facing */}
-              <div className="space-y-3 mb-5">
+            <FadeUp delay={0.12} className="w-full text-left">
+              <p className="mb-4 text-xs font-medium uppercase tracking-wider text-hint">What you get with every mentor</p>
+              <div className="mb-5 space-y-3">
                 {[
-                  { icon: '🏢', label: '10–15 years in the industry', desc: 'Senior engineers and tech leads, not freshers. They have been the interviewer, not just the interviewee.' },
-                  { icon: '🎯', label: 'Conducted 100+ interviews themselves', desc: 'They know exactly what interviewers are looking for — because they\'ve been on that side of the table.' },
-                  { icon: '🤖', label: 'Actively using AI tools in current role', desc: 'GitHub Copilot, ChatGPT, Cursor — daily. They teach you to use and talk about AI the way interviewers expect today.' },
-                  { icon: '📱', label: 'WhatsApp access throughout', desc: 'Not just during sessions. Reachable for quick doubts, mock Q&A, and morale support all week.' },
-                ].map(c => (
-                  <div key={c.label} className="flex gap-3 items-start bg-white border border-border shadow-[0_2px_12px_rgba(0,0,0,0.05)] rounded-xl p-3.5">
-                    <span className="text-lg mt-0.5">{c.icon}</span>
+                  {
+                    icon: '🏢',
+                    label: '10–15 years in the industry',
+                    desc: 'Senior engineers and tech leads, not freshers. They have been the interviewer, not just the interviewee.',
+                  },
+                  {
+                    icon: '🎯',
+                    label: 'Conducted 100+ interviews themselves',
+                    desc: "They know exactly what interviewers are looking for — because they've been on that side of the table.",
+                  },
+                  {
+                    icon: '🤖',
+                    label: 'Actively using AI tools in current role',
+                    desc: 'GitHub Copilot, ChatGPT, Cursor — daily. They teach you to use and talk about AI the way interviewers expect today.',
+                  },
+                  {
+                    icon: '📱',
+                    label: 'WhatsApp access throughout',
+                    desc: 'Not just during sessions. Reachable for quick doubts, mock Q&A, and morale support all week.',
+                  },
+                ].map((c) => (
+                  <div
+                    key={c.label}
+                    className="flex gap-3 rounded-xl border border-border bg-white p-3.5 shadow-[0_2px_12px_rgba(0,0,0,0.05)]"
+                  >
+                    <span className="mt-0.5 text-lg" aria-hidden>
+                      {c.icon}
+                    </span>
                     <div>
-                      <p className="text-sm font-bold text-foreground mb-0.5">{c.label}</p>
-                      <p className="text-xs text-hint leading-relaxed">{c.desc}</p>
+                      <p className="mb-0.5 text-sm font-bold text-foreground">{c.label}</p>
+                      <p className="text-xs leading-relaxed text-hint">{c.desc}</p>
                     </div>
                   </div>
                 ))}
               </div>
-
-              {/* Honest launch notice */}
-              <div className="bg-[#FFF4E0] border border-border rounded-xl p-4">
-                <p className="text-xs font-bold text-[#CC7000] mb-1">✦ Mentorship cohorts · Waitlist open</p>
-                <p className="text-xs text-muted-foreground leading-relaxed">
-                  We&apos;re onboarding mentors in batches. Join the waitlist—you&apos;ll be matched based on your readiness profile when your cohort opens.
+              <div className="rounded-xl border border-border bg-[#FFF4E0] p-4">
+                <p className="mb-1 text-xs font-bold text-[#CC7000]">✦ Mentorship cohorts · Waitlist open</p>
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  We&apos;re onboarding mentors in batches. Join the waitlist—you&apos;ll be matched based on your
+                  readiness profile when your cohort opens.
                 </p>
-                <Link to="/waitlist" className="inline-flex items-center gap-1 mt-2 text-xs font-semibold text-[#FF9500] hover:text-[#E88600] transition-colors">
-                  Join the waitlist → <ArrowRight size={11} />
+                <Link
+                  to="/waitlist"
+                  className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-[#FF9500] transition-colors hover:text-[#E88600]"
+                >
+                  Join the waitlist → <ArrowRight size={11} aria-hidden />
                 </Link>
               </div>
             </FadeUp>
@@ -1321,106 +1354,74 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ════════════════ WHY START — conversion clarity ════════════════ */}
-      <section className="border-t border-border bg-gradient-to-b from-[#FFFDF8] to-white py-14 px-6 md:py-16">
-        <div className="mx-auto max-w-5xl">
-          <FadeUp>
-            <p className="mb-2 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-[#CC7000] md:text-left">
-              Why MentorMuni
-            </p>
-            <h2 className="mb-3 text-center text-2xl font-bold tracking-tight text-foreground md:text-left md:text-3xl">
-              {CONVERSION_WHY_SECTION_HEADLINE}
-            </h2>
-            <p className="mx-auto mb-10 max-w-2xl text-center text-sm leading-relaxed text-muted-foreground md:mx-0 md:text-left">
-              {CONVERSION_WHY_SECTION_SUB}
-            </p>
-          </FadeUp>
-          <div className="grid gap-5 md:grid-cols-3">
-            {CONVERSION_WHY_CARDS.map((card, idx) => {
-              const CardIcon = [Gauge, Gift, Users][idx];
-              return (
-                <FadeUp key={card.title} delay={idx * 0.06}>
-                  <div className="group flex h-full flex-col rounded-2xl border border-border bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)] transition-all hover:border-[#FFB347]/50 hover:shadow-[0_12px_40px_-28px_rgba(255,149,0,0.2)]">
-                    <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-[#FFF4E0] ring-1 ring-border">
-                      <CardIcon className="h-5 w-5 text-[#FF9500]" strokeWidth={2} aria-hidden />
-                    </div>
-                    <p className="mb-1 text-[10px] font-bold uppercase tracking-wider text-[#1A8C55]">{card.kicker}</p>
-                    <h3 className="mb-2 text-lg font-bold text-foreground">{card.title}</h3>
-                    <p className="text-sm leading-relaxed text-muted-foreground">{card.body}</p>
-                  </div>
-                </FadeUp>
-              );
-            })}
-          </div>
-          <FadeUp delay={0.2}>
-            <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row sm:flex-wrap">
+      {/* ════════════════ Bridge — mentors → final CTA (one line, no duplicate headline) ════════════════ */}
+      <section className="border-t border-border bg-[#FAFAF9] py-8 md:py-10 px-5 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-3xl text-left">
+          <FadeUp className="w-full text-left">
+            <p className="text-sm leading-relaxed text-muted-foreground md:text-[15px]">
+              {HOMEPAGE_MENTORS_TO_CTA_BRIDGE}{' '}
               <button
                 type="button"
                 onClick={goToStartAssessment}
-                className="inline-flex w-full max-w-sm items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-8 py-4 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-[#E88600] active:scale-[0.98] sm:w-auto"
+                className="font-semibold text-[#FF9500] underline decoration-[#FFB347]/45 underline-offset-[5px] transition hover:text-[#E88600]"
               >
-                {PRIMARY_CTA_LABEL} <ArrowRight size={16} aria-hidden />
+                {PRIMARY_CTA_LABEL}
               </button>
+              <span className="text-muted-foreground/40" aria-hidden>
+                {' '}
+                ·{' '}
+              </span>
               <Link
                 to="/waitlist"
-                className="text-center text-sm font-semibold text-[#FF9500] underline decoration-[#FFB347]/50 underline-offset-4 transition hover:text-[#E88600]"
+                className="font-semibold text-[#FF9500] underline decoration-[#FFB347]/45 underline-offset-[5px] transition hover:text-[#E88600]"
               >
-                Want mentorship cohorts? Join the waitlist →
+                Mentorship waitlist
               </Link>
-            </div>
+            </p>
           </FadeUp>
         </div>
       </section>
 
       {/* ════════════════ FINAL CTA ════════════════ */}
-      <section className="py-16 px-6 border-t border-border">
-        <div className="max-w-2xl mx-auto text-center">
-          <FadeUp>
-            <span className="mb-4 block text-[10px] font-bold uppercase tracking-[0.2em] text-[#1A8C55]">Free · 5 Minutes · Instant Result</span>
-            <p className="mb-4 inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-2xl border border-orange-200/70 bg-gradient-to-r from-orange-50/95 to-amber-50/80 px-4 py-2.5 text-center text-sm font-semibold leading-snug text-foreground shadow-sm">
-              <Gift size={16} className="shrink-0 text-[#EA580C]" aria-hidden />
-              {READINESS_TEST_COUPON_BADGE}
-            </p>
-            <h2 className="mb-4 text-3xl font-bold leading-tight tracking-tight text-foreground md:text-4xl">
-              {FINAL_CTA_HEADLINE}
-              <br />
-              <span className="text-[#FF9500]">{FINAL_CTA_HEADLINE_ACCENT}</span>
+      <section className="border-t border-emerald-100/80 bg-gradient-to-b from-emerald-50/50 via-white to-white py-14 md:py-16 px-5 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-3xl text-left">
+          <FadeUp className="w-full text-left">
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#15803d] sm:text-sm">Free · 5 minutes · Instant result</p>
+            <div className="mb-6 flex w-full max-w-full flex-wrap items-start gap-3 rounded-2xl border border-orange-200/70 bg-gradient-to-r from-orange-50/95 to-amber-50/80 px-4 py-3 text-left text-sm font-semibold leading-snug text-foreground shadow-sm">
+              <Gift size={16} className="mt-0.5 shrink-0 text-[#EA580C]" aria-hidden />
+              <span className="min-w-0 flex-1">{READINESS_TEST_COUPON_BADGE}</span>
+            </div>
+            <h2 className="mb-4 text-left text-3xl font-bold leading-[1.15] tracking-tight text-foreground sm:text-4xl md:text-[2.5rem] md:leading-[1.1]">
+              <span className="block">{FINAL_CTA_HEADLINE}</span>
+              <span className="mt-2 block text-[#FF9500]">{FINAL_CTA_HEADLINE_ACCENT}</span>
             </h2>
-            <p className="text-muted-foreground mb-8 leading-relaxed text-sm max-w-lg mx-auto">
-              {FINAL_CTA_BODY}
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3 justify-center mb-4">
+            <p className="mb-8 w-full max-w-3xl text-left text-base leading-relaxed text-muted-foreground">{FINAL_CTA_BODY}</p>
+            <div className="mb-6 flex w-full flex-col items-start gap-4 sm:flex-row sm:gap-6">
               <button
                 type="button"
                 onClick={goToStartAssessment}
-                className="flex items-center justify-center gap-2 bg-[#FF9500] hover:bg-[#E88600] text-white font-bold px-8 py-4 rounded-xl shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all text-sm active:scale-[0.98]"
+                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-8 py-4 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-[#E88600] active:scale-[0.98]"
               >
-                {PRIMARY_CTA_LABEL} <ArrowRight size={16} />
+                {PRIMARY_CTA_LABEL} <ArrowRight size={16} aria-hidden />
               </button>
               <Link
                 to="/waitlist"
-                className="flex items-center justify-center gap-2 border border-[#FF9500] hover:bg-[#FFF4E0] text-[#FF9500] font-medium px-7 py-4 rounded-xl transition-all text-sm active:scale-[0.98]"
+                className="text-left text-sm font-semibold text-[#FF9500] underline decoration-[#FFB347]/50 underline-offset-4 transition hover:text-[#E88600] sm:pt-1"
               >
-                Join the mentorship waitlist
+                Mentorship waitlist
               </Link>
             </div>
-            <div className="flex flex-wrap justify-center gap-x-5 gap-y-1">
-              {['No signup needed', 'Free forever', '5 min test', 'Instant score + roadmap'].map(t => (
-                <span key={t} className="flex items-center gap-1 text-xs text-muted-foreground">
-                  <Check size={10} className="text-[#1A8C55]" /> {t}
-                </span>
-              ))}
-            </div>
+            <p className="text-left text-sm text-muted-foreground">No signup · ~5 min · instant score</p>
           </FadeUp>
         </div>
       </section>
 
       {/* ════════════════ FOR COLLEGES ════════════════ */}
-      <section className="py-14 px-6 border-t border-border">
-        <div className="max-w-3xl mx-auto">
-          <p className="text-xs text-hint uppercase tracking-wider font-medium text-center mb-5">Are you a placement officer?</p>
-          <FadeUp>
-            <div className="bg-white border border-border shadow-[0_2px_12px_rgba(0,0,0,0.05)] rounded-2xl p-8 flex flex-col md:flex-row gap-8 items-start">
+      <section className="border-t border-border bg-slate-100/80 py-14 md:py-16 px-5 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-3xl text-left">
+          <p className="mb-5 text-xs font-medium uppercase tracking-wider text-muted-foreground">Are you a placement officer?</p>
+          <FadeUp className="w-full text-left">
+            <div className="flex flex-col gap-8 rounded-2xl border border-border bg-white p-8 shadow-[0_2px_12px_rgba(0,0,0,0.05)] md:flex-row md:items-start">
               <div className="w-12 h-12 bg-[#E8F3FF] rounded-xl flex items-center justify-center flex-shrink-0">
                 <Building2 size={22} className="text-[#1A6FC4]" />
               </div>
@@ -1463,8 +1464,8 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ FOOTER ════════════════ */}
-      <footer className="border-t border-border bg-[#FFF8EE] py-14 px-6">
-        <div className="max-w-6xl mx-auto">
+      <footer className="border-t border-border bg-[#FFF8EE] py-14 px-5 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl w-full">
           <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-8 mb-10">
             <div className="md:col-span-2">
               <h3 className="font-bold text-foreground mb-2">Mentor<span className="text-[#FF9500]">Muni</span></h3>
