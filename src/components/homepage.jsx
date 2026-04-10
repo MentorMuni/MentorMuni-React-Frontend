@@ -9,11 +9,41 @@ import {
   CONTACT_PHONE_DISPLAY,
   CONTACT_PHONE_HREF,
   HERO_EYEBROW,
+  HERO_EARLY_BIRD_STICKER,
+  HERO_GENZ_STICKER,
   HERO_YEAR_COPY,
   HERO_HEADLINE_FIXED,
   HERO_TYPEWRITER_PHRASES,
   HERO_JOURNEY_STEPS,
   HERO_JOURNEY_ARC,
+  REAL_PROBLEM_EYEBROW,
+  REAL_PROBLEM_HEADLINE,
+  REAL_PROBLEM_SUB,
+  REAL_PROBLEM_CARDS,
+  COMPARISON_TABLE_EYEBROW,
+  COMPARISON_TABLE_HEADLINE,
+  COMPARISON_TABLE_SUB,
+  COMPARISON_TABLE_FEATURE_COL_LABEL,
+  COMPARISON_TABLE_BRANDS,
+  COMPARISON_TABLE_ROWS,
+  REALITY_CHECK_EYEBROW,
+  REALITY_CHECK_HEADLINE,
+  REALITY_CHECK_SUB,
+  REALITY_CHECK_NOT_TITLE,
+  REALITY_CHECK_FOR_TITLE,
+  REALITY_CHECK_NOT_ITEMS,
+  REALITY_CHECK_FOR_ITEMS,
+  REALITY_CHECK_CTA,
+  PROGRAM_6WEEK_EYEBROW,
+  PROGRAM_6WEEK_HEADLINE,
+  PROGRAM_6WEEK_SUB,
+  PROGRAM_6WEEK_PHASES,
+  PROGRAM_6WEEK_CARD_BADGE,
+  PROGRAM_6WEEK_CARD_TITLE,
+  PROGRAM_6WEEK_PRICE_MAIN,
+  PROGRAM_6WEEK_PRICE_MAIN_SUFFIX,
+  PROGRAM_6WEEK_PRICE_STRIKE,
+  PROGRAM_6WEEK_FEATURES,
   READINESS_TEST_COUPON_BADGE,
   CONVERSION_WHY_SECTION_HEADLINE,
   CONVERSION_WHY_SECTION_SUB,
@@ -33,7 +63,7 @@ import {
   GraduationCap, Building2, Users,
   Mail, Phone, Check, X,
   BookOpen, Layers, Sparkles, CalendarClock, Mic2,
-  Gift, Gauge,
+  Gift, Gauge, Clock, TrendingUp, ArrowDown,
 } from 'lucide-react';
 
 /* ─── Scroll-reveal wrapper ─────────────────────────────────── */
@@ -69,6 +99,29 @@ const StoryLine = ({ children, className = '', delay = 0, as: Comp = 'p' }) => {
     >
       {createElement(Comp, { className }, children)}
     </motion.div>
+  );
+};
+
+/** Comparison matrix cell: check / X / orange partial label */
+const ComparisonTableCell = ({ value }) => {
+  if (value === 'yes') {
+    return (
+      <span className="inline-flex w-full justify-center">
+        <Check className="h-5 w-5 text-emerald-600" strokeWidth={2.5} aria-hidden />
+        <span className="sr-only">Yes</span>
+      </span>
+    );
+  }
+  if (value === 'no') {
+    return (
+      <span className="inline-flex w-full justify-center">
+        <X className="h-5 w-5 text-red-500" strokeWidth={2.5} aria-hidden />
+        <span className="sr-only">No</span>
+      </span>
+    );
+  }
+  return (
+    <span className="block text-center text-xs font-semibold text-[#EA580C] sm:text-sm">{value}</span>
   );
 };
 
@@ -250,11 +303,23 @@ const HomePage = () => {
                 initial={reduceMotion ? false : { opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className="flex justify-center lg:justify-start"
+                className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 lg:justify-start"
               >
                 <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-orange-200/90 bg-orange-50/90 px-3 py-1.5 text-left text-[11px] font-medium leading-snug text-[#78350f] sm:text-xs">
                   <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.25)]" aria-hidden />
                   <span className="min-w-0">{HERO_EYEBROW}</span>
+                </span>
+                <span
+                  className="inline-flex rotate-[-2.5deg] items-center rounded-md border-2 border-[#EA580C] bg-gradient-to-br from-amber-50 to-orange-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#9A3412] shadow-[2px_3px_0_0_rgba(234,88,12,0.35)] sm:text-[11px]"
+                  title="Limited early-bird offer"
+                >
+                  {HERO_EARLY_BIRD_STICKER}
+                </span>
+                <span
+                  className="inline-flex rotate-[2deg] items-center rounded-md border-2 border-cyan-600/75 bg-gradient-to-br from-cyan-50 to-sky-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-cyan-950 shadow-[2px_3px_0_0_rgba(8,145,178,0.35)] sm:text-[11px]"
+                  title="Skills-first interview prep for students and early-career engineers"
+                >
+                  {HERO_GENZ_STICKER}
                 </span>
               </motion.div>
 
@@ -328,6 +393,319 @@ const HomePage = () => {
             <div className="flex w-full max-w-3xl justify-center">
               <HeroLoopVideo />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════ THE REAL PROBLEM — pain + three cards ════════════════ */}
+      <section
+        className="border-t border-border bg-white py-14 md:py-16 px-5 sm:px-6 lg:px-8"
+        aria-labelledby="real-problem-heading"
+      >
+        <div className="mx-auto max-w-5xl">
+          <FadeUp>
+            <header className="mb-12 text-center md:mb-14 md:text-left">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-[#EA580C] sm:text-sm sm:tracking-[0.2em]">
+                {REAL_PROBLEM_EYEBROW}
+              </p>
+              <h2
+                id="real-problem-heading"
+                className="mx-auto max-w-[40rem] text-balance text-3xl font-bold leading-[1.12] tracking-tight text-foreground sm:text-4xl md:mx-0 md:max-w-[44rem] md:text-5xl md:leading-[1.08]"
+              >
+                {REAL_PROBLEM_HEADLINE}
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg md:mx-0 md:mt-5">
+                {REAL_PROBLEM_SUB}
+              </p>
+            </header>
+          </FadeUp>
+          <div className="grid gap-5 sm:grid-cols-2 md:grid-cols-3 md:gap-6">
+            {REAL_PROBLEM_CARDS.map((card, idx) => {
+              const CardIcon = [Clock, Users, TrendingUp][idx];
+              return (
+                <FadeUp key={card.title} delay={idx * 0.06}>
+                  <div className="flex h-full flex-col rounded-2xl border border-border bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
+                    <div
+                      className="mb-4 flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-rose-50 ring-1 ring-rose-100/80"
+                      aria-hidden
+                    >
+                      <CardIcon className="h-5 w-5 text-rose-700/90" strokeWidth={2} />
+                    </div>
+                    <h3 className="mb-2 text-lg font-bold leading-snug text-foreground">{card.title}</h3>
+                    <p className="text-sm leading-relaxed text-muted-foreground">{card.body}</p>
+                  </div>
+                </FadeUp>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ════════════════ COMPARISON — MentorMuni vs alternatives ════════════════ */}
+      <section
+        className="border-t border-border bg-white py-14 md:py-16 px-5 sm:px-6 lg:px-8"
+        aria-labelledby="comparison-table-heading"
+      >
+        <div className="mx-auto max-w-5xl">
+          <FadeUp>
+            <header className="mb-8 text-center md:mb-10 md:text-left">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-[#EA580C] sm:text-sm sm:tracking-[0.2em]">
+                {COMPARISON_TABLE_EYEBROW}
+              </p>
+              <h2
+                id="comparison-table-heading"
+                className="mx-auto max-w-[40rem] text-balance text-3xl font-bold leading-[1.12] tracking-tight text-foreground sm:text-4xl md:mx-0 md:text-[2.5rem] md:leading-[1.08]"
+              >
+                {COMPARISON_TABLE_HEADLINE}
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg md:mx-0 md:mt-5">
+                {COMPARISON_TABLE_SUB}
+              </p>
+            </header>
+          </FadeUp>
+          <FadeUp delay={0.08}>
+            <div className="overflow-hidden rounded-xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
+              <div className="overflow-x-auto [-webkit-overflow-scrolling:touch]">
+                <table className="w-full min-w-[720px] border-collapse text-sm">
+                  <thead>
+                    <tr className="border-b border-border bg-neutral-50/90">
+                      <th
+                        scope="col"
+                        className="rounded-tl-xl px-4 py-4 text-left text-xs font-bold text-foreground sm:px-5 sm:text-sm"
+                      >
+                        {COMPARISON_TABLE_FEATURE_COL_LABEL}
+                      </th>
+                      {COMPARISON_TABLE_BRANDS.map((brand, i) => {
+                        const isMM = i === COMPARISON_TABLE_BRANDS.length - 1;
+                        return (
+                          <th
+                            key={brand}
+                            scope="col"
+                            className={`px-3 py-4 text-center text-xs font-bold sm:px-4 sm:text-sm ${
+                              isMM
+                                ? 'rounded-tr-xl bg-[#FFF4E6] text-[#EA580C]'
+                                : 'text-foreground'
+                            }`}
+                          >
+                            {brand}
+                          </th>
+                        );
+                      })}
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-neutral-200/90">
+                    {COMPARISON_TABLE_ROWS.map((row, ri) => {
+                      const isLast = ri === COMPARISON_TABLE_ROWS.length - 1;
+                      return (
+                        <tr key={row.label} className="bg-white">
+                          <th
+                            scope="row"
+                            className="px-4 py-3.5 text-left text-[13px] font-medium leading-snug text-foreground sm:px-5 sm:py-4 sm:text-sm"
+                          >
+                            {row.label}
+                          </th>
+                          {row.cells.map((cell, ci) => {
+                            const isMM = ci === COMPARISON_TABLE_BRANDS.length - 1;
+                            return (
+                              <td
+                                key={ci}
+                                className={`px-3 py-3.5 sm:px-4 sm:py-4 ${
+                                  isMM
+                                    ? `bg-[#FFF8EE] ${isLast ? 'rounded-br-xl' : ''}`
+                                    : ''
+                                }`}
+                              >
+                                <ComparisonTableCell value={cell} />
+                              </td>
+                            );
+                          })}
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </FadeUp>
+        </div>
+      </section>
+
+      {/* ════════════════ REALITY CHECK — dark qualification / fit ════════════════ */}
+      <section
+        className="border-t border-neutral-800 bg-[#121212] py-16 md:py-20 px-5 sm:px-6 lg:px-8"
+        aria-labelledby="reality-check-heading"
+      >
+        <div className="mx-auto max-w-5xl">
+          <FadeUp>
+            <header className="mb-12 text-center md:mb-14">
+              <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.2em] text-[#FF7A30] sm:text-xs sm:tracking-[0.22em]">
+                {REALITY_CHECK_EYEBROW}
+              </p>
+              <h2
+                id="reality-check-heading"
+                className="mx-auto max-w-[40rem] text-balance text-3xl font-bold leading-[1.12] tracking-tight text-white sm:text-4xl md:text-5xl md:leading-[1.08]"
+              >
+                {REALITY_CHECK_HEADLINE}
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-neutral-400 sm:text-lg">
+                {REALITY_CHECK_SUB}
+              </p>
+            </header>
+          </FadeUp>
+
+          <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
+            <FadeUp delay={0.06}>
+              <div>
+                <h3 className="mb-5 text-sm font-bold uppercase tracking-[0.14em] text-[#FF8A8A]">
+                  {REALITY_CHECK_NOT_TITLE}
+                </h3>
+                <ul className="space-y-4">
+                  {REALITY_CHECK_NOT_ITEMS.map((item) => (
+                    <li
+                      key={item}
+                      className="flex gap-3 text-[15px] leading-relaxed text-[#FFAEAE] sm:text-base"
+                    >
+                      <span
+                        className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#f87171] ring-2 ring-[#f87171]/30"
+                        aria-hidden
+                      />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </FadeUp>
+            <FadeUp delay={0.1}>
+              <div>
+                <h3 className="mb-5 text-sm font-bold uppercase tracking-[0.14em] text-[#4ADE80]">
+                  {REALITY_CHECK_FOR_TITLE}
+                </h3>
+                <ul className="space-y-4">
+                  {REALITY_CHECK_FOR_ITEMS.map((item) => (
+                    <li
+                      key={item}
+                      className="flex gap-3 text-[15px] leading-relaxed text-[#86efac] sm:text-base"
+                    >
+                      <span
+                        className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#4ADE80] ring-2 ring-[#4ADE80]/35"
+                        aria-hidden
+                      />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </FadeUp>
+          </div>
+
+          <FadeUp delay={0.14}>
+            <div className="relative mx-auto mt-14 flex max-w-lg justify-center pb-6 md:mt-16">
+              <button
+                type="button"
+                onClick={goToStartAssessment}
+                className="relative inline-flex w-full max-w-md items-center justify-center gap-2 rounded-full bg-[#FF7A30] px-8 py-4 text-center text-base font-bold text-white shadow-[0_8px_28px_rgba(255,122,48,0.35)] transition hover:bg-[#f06d28] active:scale-[0.99] sm:px-10"
+              >
+                {REALITY_CHECK_CTA}
+                <ArrowRight className="h-4 w-4 shrink-0" aria-hidden />
+              </button>
+              <span
+                className="pointer-events-none absolute -bottom-1 left-1/2 flex h-9 w-9 -translate-x-1/2 items-center justify-center rounded-full bg-[#0a0a0a] ring-2 ring-[#FF7A30]/90"
+                aria-hidden
+              >
+                <ArrowDown className="h-4 w-4 text-[#FF7A30]" strokeWidth={2.5} />
+              </span>
+            </div>
+          </FadeUp>
+        </div>
+      </section>
+
+      {/* ════════════════ 6-WEEK PROGRAM — timeline + pricing card ════════════════ */}
+      <section
+        className="border-t border-border bg-white py-14 md:py-16 px-5 sm:px-6 lg:px-8"
+        aria-labelledby="program-6week-heading"
+      >
+        <div className="mx-auto max-w-5xl">
+          <FadeUp>
+            <header className="mb-10 text-center md:mb-12 md:text-left">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#EA580C] sm:text-sm">
+                {PROGRAM_6WEEK_EYEBROW}
+              </p>
+              <h2
+                id="program-6week-heading"
+                className="mx-auto max-w-[40rem] text-balance text-3xl font-bold leading-[1.12] tracking-tight text-foreground sm:text-4xl md:mx-0 md:text-[2.5rem] md:leading-[1.08]"
+              >
+                {PROGRAM_6WEEK_HEADLINE}
+              </h2>
+              <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg md:mx-0">
+                {PROGRAM_6WEEK_SUB}
+              </p>
+            </header>
+          </FadeUp>
+
+          <div className="grid items-start gap-12 lg:grid-cols-[1fr_minmax(280px,380px)] lg:gap-14 xl:grid-cols-[1fr_400px]">
+            <FadeUp delay={0.06}>
+              <ol className="list-none space-y-0 pl-0">
+                {PROGRAM_6WEEK_PHASES.map((phase, idx) => {
+                  const isLast = idx === PROGRAM_6WEEK_PHASES.length - 1;
+                  return (
+                    <li key={phase.title} className="relative flex gap-4 pb-10 last:pb-0">
+                      <div className="flex flex-col items-center">
+                        <span
+                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FF9500] shadow-sm ring-4 ring-white"
+                          aria-hidden
+                        />
+                        {!isLast && (
+                          <span className="mt-1 w-px flex-1 min-h-[3rem] bg-neutral-200" aria-hidden />
+                        )}
+                      </div>
+                      <div className="min-w-0 pt-0.5">
+                        <p className="text-base font-bold text-foreground">{phase.title}</p>
+                        <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{phase.body}</p>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ol>
+            </FadeUp>
+
+            <FadeUp delay={0.1}>
+              <div className="relative rounded-2xl border-2 border-[#FFB347] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.06)] md:p-7">
+                <div className="absolute -top-3 left-1/2 -translate-x-1/2">
+                  <span className="inline-block rounded-full bg-[#FF9500] px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-sm">
+                    {PROGRAM_6WEEK_CARD_BADGE}
+                  </span>
+                </div>
+                <div className="mt-4 text-center">
+                  <h3 className="text-lg font-bold text-foreground md:text-xl">{PROGRAM_6WEEK_CARD_TITLE}</h3>
+                  <div className="mt-5 flex flex-col items-center gap-1">
+                    <p className="flex flex-wrap items-baseline justify-center gap-2">
+                      <span className="inline-block select-none blur-[12px]" aria-hidden>
+                        {PROGRAM_6WEEK_PRICE_MAIN}
+                      </span>
+                      <span className="text-sm font-medium text-muted-foreground">{PROGRAM_6WEEK_PRICE_MAIN_SUFFIX}</span>
+                    </p>
+                    <p className="text-sm text-muted-foreground select-none blur-[10px] line-through" aria-hidden>
+                      {PROGRAM_6WEEK_PRICE_STRIKE}
+                    </p>
+                    <p className="sr-only">
+                      Program pricing is shown blurred on this page; see checkout or contact for current price.
+                    </p>
+                  </div>
+                </div>
+                <ul className="mt-6 space-y-3 border-t border-border pt-6 text-left">
+                  {PROGRAM_6WEEK_FEATURES.map((line) => (
+                    <li key={line} className="flex gap-2.5 text-sm leading-snug text-foreground">
+                      <Check
+                        className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600"
+                        strokeWidth={2.5}
+                        aria-hidden
+                      />
+                      <span>{line}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </FadeUp>
           </div>
         </div>
       </section>

@@ -15,6 +15,10 @@ export const HERO_EYEBROW =
   'Engineering students in India · interview preparation · Mentors + AI';
 /** Early-bird coupon card ribbon (homepage hero) */
 export const HERO_EARLY_BIRD_RIBBON = 'Early bird';
+/** Small hero sticker (limited slots — keep short) */
+export const HERO_EARLY_BIRD_STICKER = 'Early bird · First 50';
+/** Second hero sticker — early-career / Gen Z audience (keep short; professional) */
+export const HERO_GENZ_STICKER = 'Gen Z · Clear gaps, real practice';
 export const HERO_HEADLINE = "You can't fix what you don't measure.";
 /** Orange payoff line — own line under the dark headline (readability + emphasis) */
 export const HERO_HEADLINE_ACCENT = 'Get your readiness score in ~5 minutes.';
@@ -42,6 +46,136 @@ export const HERO_SOLUTION_LABEL = 'How MentorMuni helps';
 export const HERO_SOLUTION =
   'A free score, your gaps by topic, and what to fix first—then AI mocks and mentors when you want more.';
 export const HERO_PROOF_STAT = '~5 min · Free · No signup · Instant score';
+
+/** Homepage — pain section below hero (eyebrow · headline · sub · three cards) */
+export const REAL_PROBLEM_EYEBROW = 'The real problem';
+export const REAL_PROBLEM_HEADLINE =
+  'You studied hard. You still blanked in the interview.';
+export const REAL_PROBLEM_SUB =
+  "Knowledge is not the problem. Performance under pressure is. Here's why students fail even after months of preparation.";
+export const REAL_PROBLEM_CARDS = [
+  {
+    title: 'They practice without a score',
+    body:
+      "Solving problems randomly with no feedback loop. You don't know if you're improving or just staying busy.",
+  },
+  {
+    title: 'They prepare, not perform',
+    body:
+      "Reading solutions is very different from articulating them live under an interviewer's pressure. Two completely different skills.",
+  },
+  {
+    title: 'No gap analysis',
+    body:
+      "Students spend 80% of time on topics they're already decent at. The weakest areas — the ones that cost offers — get ignored.",
+  },
+];
+
+/** Homepage — comparison table (vs LeetCode, YouTube, coaching) */
+export const COMPARISON_TABLE_EYEBROW = 'Why not just use…';
+export const COMPARISON_TABLE_HEADLINE = "We're not another prep tool.";
+export const COMPARISON_TABLE_SUB =
+  "Here's how MentorMuni compares to what you're already using — honestly.";
+export const COMPARISON_TABLE_FEATURE_COL_LABEL = 'What it gives you';
+export const COMPARISON_TABLE_BRANDS = [
+  'LeetCode',
+  'YouTube',
+  'Coaching institutes',
+  'MentorMuni',
+];
+/** Row label + four cells: `yes` | `no` | short orange label (e.g. Sometimes) */
+export const COMPARISON_TABLE_ROWS = [
+  {
+    label: 'Scored readiness check',
+    cells: ['no', 'no', 'Sometimes', 'yes'],
+  },
+  {
+    label: 'Personalised gap analysis',
+    cells: ['no', 'no', 'no', 'yes'],
+  },
+  {
+    label: 'Live answer performance training',
+    cells: ['no', 'no', 'Rarely', 'yes'],
+  },
+  {
+    label: 'AI mock interview with scoring',
+    cells: ['no', 'no', 'no', 'yes'],
+  },
+  {
+    label: 'Mentor accountability',
+    cells: ['no', 'no', 'Varies', 'yes'],
+  },
+  {
+    label: 'Free to start',
+    cells: ['yes', 'yes', 'no', 'yes'],
+  },
+];
+
+/** Homepage — dark “reality check” (who it’s for / not for) */
+export const REALITY_CHECK_EYEBROW = 'Be honest with yourself';
+export const REALITY_CHECK_HEADLINE = 'This is not for everyone.';
+export const REALITY_CHECK_SUB =
+  "We only want serious students. If you're looking for shortcuts, this isn't it.";
+export const REALITY_CHECK_NOT_TITLE = 'This is not for you if…';
+export const REALITY_CHECK_FOR_TITLE = 'This is for you if…';
+export const REALITY_CHECK_NOT_ITEMS = [
+  'You want someone to solve problems for you',
+  "You're not willing to do daily practice sessions",
+  'You think you already know everything and just need "luck"',
+  'You want a certificate, not an actual offer',
+  "You're looking for a 3-day crash course before your interview tomorrow",
+];
+export const REALITY_CHECK_FOR_ITEMS = [
+  "You've prepared but keep getting rejected — and don't know why",
+  'You blank under pressure even when you know the answer',
+  'You want to know exactly where you stand — not guess',
+  "You're willing to work hard for 60 days to change your outcome",
+  'You want an offer at a company worth joining — not just any job',
+];
+export const REALITY_CHECK_CTA = "I'm serious — Take the Reality Check";
+
+/** Homepage — 6-week interview readiness program (timeline + pricing card) */
+export const PROGRAM_6WEEK_EYEBROW = 'The 6-week program';
+export const PROGRAM_6WEEK_HEADLINE = 'From your score to your offer.';
+export const PROGRAM_6WEEK_SUB =
+  'A structured, mentor-guided program built around your reality check score. No generic content. Every day has a purpose.';
+export const PROGRAM_6WEEK_PHASES = [
+  {
+    title: 'Weeks 1-2: Gap audit + foundation fix',
+    body:
+      'Deep dive into your lowest-scoring area. Targeted drills, not random problems.',
+  },
+  {
+    title: 'Weeks 3-4: Answer structure training',
+    body:
+      'Learn how to frame and deliver answers. Daily AI mock sessions with rubric scoring.',
+  },
+  {
+    title: 'Week 5: Full mock interview rounds',
+    body:
+      'End-to-end interview simulations. Score tracked weekly. Mentor review every session.',
+  },
+  {
+    title: 'Week 6: Offer readiness sprint',
+    body:
+      'Final polish — company-specific prep, negotiation, offer conversion mindset.',
+  },
+];
+export const PROGRAM_6WEEK_CARD_BADGE = 'Most popular';
+export const PROGRAM_6WEEK_CARD_TITLE = '6-Week Interview Readiness Program';
+/** Display prices blurred in UI; keep for ops / future unblur */
+export const PROGRAM_6WEEK_PRICE_MAIN = '₹5,999';
+export const PROGRAM_6WEEK_PRICE_MAIN_SUFFIX = 'one-time';
+export const PROGRAM_6WEEK_PRICE_STRIKE = '₹9,999 — Early bird pricing';
+export const PROGRAM_6WEEK_FEATURES = [
+  'Interview Reality Check (free)',
+  'Personalised 6-week roadmap',
+  'Unlimited AI mock interviews with scoring',
+  'Weekly 1:1 mentor session (6 sessions)',
+  'Answer training modules (DSA, SD, HR, Projects)',
+  'Score re-test at end of program',
+  'WhatsApp accountability group',
+];
 
 /**
  * Homepage hero — personalized by academic year or experience level.
