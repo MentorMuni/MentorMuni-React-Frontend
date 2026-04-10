@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect, lazy, Suspense, createElement } from 'react';
-import { motion, useInView, AnimatePresence, useReducedMotion } from 'framer-motion';
+import React, { useRef, lazy, Suspense, createElement } from 'react';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import {
@@ -15,6 +15,10 @@ import {
   HERO_SOLUTION_LABEL,
   HERO_SOLUTION,
   HERO_YEAR_COPY,
+  HERO_HEADLINE_FIXED,
+  HERO_TYPEWRITER_PHRASES,
+  HERO_JOURNEY_STEPS,
+  HERO_JOURNEY_ARC,
   READINESS_TEST_COUPON_BADGE,
   READINESS_TEST_COUPON_OFFER_HEADLINE,
   READINESS_TEST_COUPON_OFFER_HOW,
@@ -29,6 +33,7 @@ import { AnimatedPrepMapPanel } from './homepage/prepMapPanel';
 import { HeroFlagshipVisual } from './homepage/HeroFlagshipVisual';
 import { HeroLoopVideo } from './homepage/HeroLoopVideo';
 import { HeroProofSpec } from './homepage/HeroProofSpec';
+import { HeroHeadlineTypewriter } from './homepage/HeroHeadlineTypewriter';
 
 const MentorMuniPosterCarousel = lazy(() =>
   import('./homepage/posterCarousel').then((m) => ({ default: m.MentorMuniPosterCarousel }))
@@ -163,19 +168,11 @@ const studentStoryCard = {
   },
 };
 
-/* ─── 2nd / 3rd year prep — tab data + benefit tiles ───────────────── */
-const EARLY_YEAR_TRACKS = {
-  y2: {
-    label: '1st–2nd year',
-    shortLine: 'Foundations · core subjects · first projects',
-    detail:
-      "See how interview-style thinking maps to what you're in class now.",
-  },
-  y3: {
-    label: '3rd year',
-    shortLine: 'Internships · sharper tech rounds',
-    detail: 'Benchmark DSA, stack, and HR on the timeline ahead of drives.',
-  },
+/* ─── Early-years section — single blurb (no year tabs) ───────────────── */
+const EARLY_SECTION_COPY = {
+  shortLine: 'Foundations through placement drives',
+  detail:
+    "See how interview-style thinking maps to what you're studying—and benchmark DSA, stack, and HR before drives.",
 };
 
 const EARLY_BENEFIT_TILES = [
@@ -217,15 +214,8 @@ const earlyBenefitItem = {
    MAIN COMPONENT
    ═══════════════════════════════════════════════════════════════ */
 const HomePage = () => {
-  const [earlyYear, setEarlyYear] = useState('y2');
-  const [heroYear, setHeroYear] = useState('y4');
-  const [heroSubExpanded, setHeroSubExpanded] = useState(false);
   const reduceMotion = useReducedMotion();
-  const heroCopy = HERO_YEAR_COPY[heroYear];
-
-  useEffect(() => {
-    setHeroSubExpanded(false);
-  }, [heroYear]);
+  const heroCopy = HERO_YEAR_COPY.y4;
 
   return (
     <div className="bg-background text-foreground overflow-x-hidden">
@@ -445,72 +435,44 @@ const HomePage = () => {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3 sm:gap-3.5">
-                <p className="text-center text-[10px] font-bold uppercase tracking-[0.22em] text-muted-foreground lg:text-left">
-                  I am in
-                </p>
-                <div
-                  className="flex flex-wrap justify-center gap-2 lg:justify-start"
-                  role="tablist"
-                  aria-label="Select your year of study or experience level"
-                >
-                  {[
-                    { id: 'y2', label: '1st–2nd year' },
-                    { id: 'y3', label: '3rd year' },
-                    { id: 'y4', label: '4th / grad' },
-                    { id: 'yexp', label: 'Experienced' },
-                  ].map((y) => (
-                    <button
-                      key={y.id}
-                      type="button"
-                      role="tab"
-                      aria-selected={heroYear === y.id}
-                      onClick={() => setHeroYear(y.id)}
-                      className={`rounded-full border px-4 py-2.5 text-xs font-bold transition-all duration-200 sm:text-sm ${
-                        heroYear === y.id
-                          ? 'border-[#FF9500] bg-[#FFF4E0] text-[#CC7000] shadow-[0_4px_24px_-10px_rgba(255,149,0,0.45)] ring-2 ring-[#FFB347]/35'
-                          : 'border-border bg-white/90 text-muted-foreground hover:border-[#FFB347]/60 hover:text-foreground active:scale-[0.98]'
-                      }`}
-                    >
-                      {y.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               <div className="w-full text-center lg:text-left">
                 <motion.h1
-                  key={heroYear}
+                  key="hero-headline"
                   initial={reduceMotion ? false : { opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  className="typo-display mx-auto max-w-[44rem] text-foreground lg:mx-0 lg:max-w-[34rem]"
+                  className="mx-auto max-w-[44rem] lg:mx-0 lg:max-w-[34rem]"
                 >
-                  <span className="block">{heroCopy.headline}</span>
-                  <span className="mt-2 block sm:mt-3 mm-hero-accent bg-gradient-to-r from-[#ea580c] via-[#FF9500] to-[#f59e0b] bg-clip-text text-transparent">
-                    {heroCopy.accent}
+                  <span className="typo-display block text-foreground">{HERO_HEADLINE_FIXED}</span>
+                  <span className="mt-2 block min-h-[min(22vh,9rem)] sm:mt-3 sm:min-h-[7.5rem] md:min-h-[6.5rem]">
+                    <HeroHeadlineTypewriter
+                      phrases={HERO_TYPEWRITER_PHRASES}
+                      reducedMotion={reduceMotion}
+                      className="typo-display block mm-hero-accent bg-gradient-to-r from-[#ea580c] via-[#FF9500] to-[#f59e0b] bg-clip-text text-transparent"
+                    />
                   </span>
                 </motion.h1>
 
                 <motion.div
-                  key={`${heroYear}-sub`}
+                  key="hero-sub"
                   initial={reduceMotion ? false : { opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.38, delay: 0.04 }}
                   className="mx-auto mt-4 max-w-prose-marketing px-1 sm:mt-5 lg:mx-0 lg:max-w-[36rem] lg:px-0"
                 >
-                  <p className="typo-body-lg text-muted-foreground">
-                    {heroSubExpanded ? heroCopy.sub : heroCopy.subShort}
-                  </p>
-                  {heroCopy.sub !== heroCopy.subShort && (
-                    <button
-                      type="button"
-                      onClick={() => setHeroSubExpanded((e) => !e)}
-                      className="mm-focus mt-3 text-sm font-semibold text-[#CC7000] underline decoration-[#FFB347]/60 underline-offset-2 transition-colors hover:text-[#EA5800]"
-                    >
-                      {heroSubExpanded ? 'Show less' : 'Read more'}
-                    </button>
-                  )}
+                  <p className="typo-body-lg text-muted-foreground">{heroCopy.subShort}</p>
+                  <div
+                    className="mt-5 space-y-3 rounded-2xl border border-orange-200/90 bg-gradient-to-br from-[#FFF8EE] via-white to-[#FFFCF7] px-4 py-4 shadow-[0_4px_24px_-12px_rgba(234,88,12,0.12)] sm:px-5 sm:py-5"
+                    role="region"
+                    aria-label="How MentorMuni works"
+                  >
+                    <p className="text-center text-[13px] font-bold leading-relaxed tracking-tight text-[#EA580C] sm:text-left sm:text-sm md:text-base">
+                      {HERO_JOURNEY_STEPS}
+                    </p>
+                    <p className="text-center text-[13px] font-semibold leading-relaxed text-foreground sm:text-left sm:text-sm md:text-base">
+                      {HERO_JOURNEY_ARC}
+                    </p>
+                  </div>
                 </motion.div>
               </div>
             </div>
@@ -792,47 +754,16 @@ const HomePage = () => {
                   </div>
                 </div>
 
-                <div
-                  className="mb-5 flex max-w-md rounded-2xl border border-border bg-[#FFF4E0]/50 p-1.5"
-                  role="tablist"
-                  aria-label="Choose year focus"
+                <motion.div
+                  initial={{ opacity: 0, y: 8 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                  className="mb-5 max-w-xl rounded-2xl border border-[#FFB347]/35 bg-gradient-to-br from-white via-[#FFFCF7] to-[#FFF4E0]/70 p-5 shadow-[0_8px_32px_rgba(255,149,0,0.08)]"
                 >
-                  {['y2', 'y3'].map((key) => (
-                    <button
-                      key={key}
-                      type="button"
-                      role="tab"
-                      aria-selected={earlyYear === key}
-                      onClick={() => setEarlyYear(key)}
-                      className={`relative flex-1 rounded-xl py-3 text-sm font-bold transition-colors ${
-                        earlyYear === key ? 'text-foreground' : 'text-hint hover:text-muted-foreground'
-                      }`}
-                    >
-                      {earlyYear === key && (
-                        <motion.div
-                          layoutId="earlyYearTab"
-                          className="absolute inset-0 rounded-xl bg-white shadow-[0_4px_24px_rgba(255,149,0,0.2)]"
-                          transition={{ type: 'spring', stiffness: 380, damping: 32 }}
-                        />
-                      )}
-                      <span className="relative z-10">{EARLY_YEAR_TRACKS[key].label}</span>
-                    </button>
-                  ))}
-                </div>
-
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={earlyYear}
-                    initial={{ opacity: 0, x: 28, filter: 'blur(6px)' }}
-                    animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
-                    exit={{ opacity: 0, x: -20, filter: 'blur(4px)' }}
-                    transition={{ duration: 0.32, ease: [0.22, 1, 0.36, 1] }}
-                    className="mb-5 max-w-xl rounded-2xl border border-[#FFB347]/35 bg-gradient-to-br from-white via-[#FFFCF7] to-[#FFF4E0]/70 p-5 shadow-[0_8px_32px_rgba(255,149,0,0.08)]"
-                  >
-                    <p className="text-sm font-bold text-foreground">{EARLY_YEAR_TRACKS[earlyYear].shortLine}</p>
-                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{EARLY_YEAR_TRACKS[earlyYear].detail}</p>
-                  </motion.div>
-                </AnimatePresence>
+                  <p className="text-sm font-bold text-foreground">{EARLY_SECTION_COPY.shortLine}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{EARLY_SECTION_COPY.detail}</p>
+                </motion.div>
 
                 <p className="mb-6 max-w-xl text-sm font-medium leading-relaxed text-muted-foreground">
                   See how your prep lines up with what companies actually ask in interviews—then{' '}
@@ -879,21 +810,6 @@ const HomePage = () => {
                   Check prep on my topics — free
                   <ArrowRight size={16} className="transition-transform group-hover:translate-x-0.5" />
                 </button>
-                <div className="mt-3 max-w-xl space-y-2 text-xs leading-relaxed text-muted-foreground sm:text-sm">
-                  <p className="font-medium text-foreground">When you begin, pick the option that fits you:</p>
-                  <p>
-                    <span className="font-semibold text-[#FF9500]">1st–2nd and 3rd year</span>
-                    {' — '}internships, core subjects, and building readiness before final year.
-                  </p>
-                  <p>
-                    <span className="font-semibold text-[#CC7000]">4th year / graduate</span>
-                    {' — '}when placements and full-time hiring are your main focus.
-                  </p>
-                  <p>
-                    <span className="font-semibold text-[#0891b2]">Experienced</span>
-                    {' — '}interview readiness for panels and moves, plus skill readiness to see where you stand before you invest months in the wrong stack.
-                  </p>
-                </div>
               </motion.div>
             </div>
 

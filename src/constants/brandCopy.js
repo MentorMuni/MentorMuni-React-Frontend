@@ -18,6 +18,20 @@ export const HERO_EARLY_BIRD_RIBBON = 'Early bird';
 export const HERO_HEADLINE = "You can't fix what you don't measure.";
 /** Orange payoff line — own line under the dark headline (readability + emphasis) */
 export const HERO_HEADLINE_ACCENT = 'Get your readiness score in ~5 minutes.';
+/** Homepage hero — fixed first line (always visible; not typewriter) */
+export const HERO_HEADLINE_FIXED = "We don't teach you more.";
+/** Homepage hero — typewriter rotates these lines under the fixed headline */
+export const HERO_TYPEWRITER_PHRASES = [
+  'We make sure you can perform in interviews.',
+  "Because knowing is useless if you can't answer.",
+];
+/** Homepage hero — body copy under the typewriter (single paragraph; no read-more) */
+export const HERO_HOME_SUB =
+  'A diagnostic engine that shows students the gap between where they are and where they need to be — Interview preparation score.';
+/** Highlighted journey lines (homepage hero) */
+export const HERO_JOURNEY_STEPS = 'Test → Break confidence → Show gap → Fix gap';
+export const HERO_JOURNEY_ARC =
+  "We've designed a system that takes you from confused → confident → interview-ready";
 /** Bridge below hero headline: rejection (hook) → score & gaps (value), reduces bounce */
 export const HERO_SUBHEADLINE =
   "Rejection shouldn't be how you discover your gaps. See where you stand in minutes—then what to fix first.";
@@ -54,10 +68,8 @@ export const HERO_YEAR_COPY = {
   y4: {
     headline: HERO_HEADLINE,
     accent: HERO_HEADLINE_ACCENT,
-    subShort:
-      'One readiness score across four areas shows what to fix first—then AI mocks and mentors when you want depth.',
-    sub:
-      'Placement season is noisy—CGPA, OA, HR, tech. One readiness score across four areas shows what to fix first, then AI mocks and mentors when you want depth.',
+    subShort: HERO_HOME_SUB,
+    sub: HERO_HOME_SUB,
   },
   /** Working professionals — interview + skill readiness (same rubric; framing matches career moves). */
   yexp: {
