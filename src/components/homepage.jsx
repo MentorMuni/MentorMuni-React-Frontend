@@ -1,4 +1,4 @@
-import React, { useRef, lazy, Suspense, createElement } from 'react';
+import React, { useRef, createElement } from 'react';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
@@ -9,19 +9,12 @@ import {
   CONTACT_PHONE_DISPLAY,
   CONTACT_PHONE_HREF,
   HERO_EYEBROW,
-  HERO_EARLY_BIRD_RIBBON,
-  HERO_PROBLEM_LABEL,
-  HERO_PROBLEM,
-  HERO_SOLUTION_LABEL,
-  HERO_SOLUTION,
   HERO_YEAR_COPY,
   HERO_HEADLINE_FIXED,
   HERO_TYPEWRITER_PHRASES,
   HERO_JOURNEY_STEPS,
   HERO_JOURNEY_ARC,
   READINESS_TEST_COUPON_BADGE,
-  READINESS_TEST_COUPON_OFFER_HEADLINE,
-  READINESS_TEST_COUPON_OFFER_HOW,
   CONVERSION_WHY_SECTION_HEADLINE,
   CONVERSION_WHY_SECTION_SUB,
   CONVERSION_WHY_CARDS,
@@ -32,12 +25,8 @@ import {
 import { AnimatedPrepMapPanel } from './homepage/prepMapPanel';
 import { HeroFlagshipVisual } from './homepage/HeroFlagshipVisual';
 import { HeroLoopVideo } from './homepage/HeroLoopVideo';
-import { HeroProofSpec } from './homepage/HeroProofSpec';
 import { HeroHeadlineTypewriter } from './homepage/HeroHeadlineTypewriter';
 
-const MentorMuniPosterCarousel = lazy(() =>
-  import('./homepage/posterCarousel').then((m) => ({ default: m.MentorMuniPosterCarousel }))
-);
 import {
   ArrowRight, Brain, Target,
   BarChart3, Cpu,
@@ -229,211 +218,45 @@ const HomePage = () => {
           background-size: 200% 200%;
           animation: mm-hero-accent 10s ease-in-out infinite;
         }
+        /* Smaller than .typo-h1 — responsive display for rotating hero line */
+        .mm-hero-typewriter-line {
+          font-size: 1.75rem;
+          font-weight: 700;
+          line-height: 1.15;
+          letter-spacing: -0.025em;
+        }
+        @media (min-width: 640px) {
+          .mm-hero-typewriter-line { font-size: 2.125rem; }
+        }
+        @media (min-width: 768px) {
+          .mm-hero-typewriter-line { font-size: 2.5rem; }
+        }
         @keyframes mm-hero-accent {
           0%, 100% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
         }
         @media (prefers-reduced-motion: reduce) {
           .mm-hero-accent { animation: none !important; background-position: 0% 50% !important; }
-          .mm-hero-orb { animation: none !important; }
-        }
-        @keyframes mm-orb-drift {
-          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
-          33% { transform: translate(3%, 2%) scale(1.05); opacity: 0.65; }
-          66% { transform: translate(-2%, -1%) scale(0.98); opacity: 0.55; }
-        }
-        .mm-hero-value-mesh {
-          background-image:
-            radial-gradient(ellipse 80% 60% at 10% 20%, rgba(255, 149, 0, 0.09), transparent 50%),
-            radial-gradient(ellipse 70% 50% at 90% 80%, rgba(6, 182, 212, 0.07), transparent 45%),
-            linear-gradient(180deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 251, 245, 0.96) 50%, rgba(248, 250, 252, 0.94) 100%);
-        }
-        /* Eyebrow pills: soft glow pulse (text stays sharp — no sliding gradient) */
-        .mm-hero-eyebrow-pill {
-          background-image: linear-gradient(135deg, #fff8f0 0%, #ffffff 45%, #f0fdfa 100%);
-        }
-        .mm-hero-eyebrow-pill-glow {
-          animation: mm-eyebrow-glow 5s ease-in-out infinite;
-        }
-        .mm-hero-eyebrow-pill-glow.mm-eyebrow-d1 { animation-delay: 0.35s; }
-        .mm-hero-eyebrow-pill-glow.mm-eyebrow-d2 { animation-delay: 0.7s; }
-        @keyframes mm-eyebrow-glow {
-          0%, 100% {
-            box-shadow: 0 2px 14px -6px rgba(255, 149, 0, 0.32), 0 0 0 0 rgba(255, 149, 0, 0);
-            border-color: rgba(253, 186, 116, 0.55);
-          }
-          50% {
-            box-shadow: 0 4px 22px -4px rgba(255, 149, 0, 0.42), 0 0 20px -8px rgba(251, 146, 60, 0.25);
-            border-color: rgba(251, 146, 60, 0.75);
-          }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .mm-hero-eyebrow-pill-glow { animation: none !important; }
-        }
-        /* Early bird — “Read free tutorial” attention (respects reduced motion below) */
-        @keyframes mm-read-tutorial-ring {
-          0%, 100% { box-shadow: 0 0 0 0 rgba(255, 149, 0, 0.42); }
-          55% { box-shadow: 0 0 0 10px rgba(255, 149, 0, 0); }
-        }
-        @keyframes mm-read-tutorial-icon {
-          0%, 100% { transform: rotate(0deg); }
-          25% { transform: rotate(-7deg); }
-          75% { transform: rotate(7deg); }
-        }
-        .mm-early-bird-read-tutorial {
-          animation: mm-read-tutorial-ring 2.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-        }
-        .mm-early-bird-read-tutorial .mm-read-tutorial-icon {
-          animation: mm-read-tutorial-icon 2.1s ease-in-out infinite;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .mm-early-bird-read-tutorial,
-          .mm-early-bird-read-tutorial .mm-read-tutorial-icon {
-            animation: none !important;
-          }
         }
       `}</style>
 
-      {/* ════════════════ HERO — year-personalized copy + flagship visual + early bird ════════════════ */}
-      <section className="relative flex min-h-[min(88vh,840px)] items-start border-b border-neutral-200/60 bg-gradient-to-b from-neutral-50 via-[#fffdf8] to-[#faf8f5] pt-8 pb-14 md:pt-10 md:pb-16 lg:pt-12 lg:pb-20">
-        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-          <div
-            className="mm-hero-orb absolute -right-32 top-0 h-[520px] w-[520px] rounded-full bg-[rgba(255,149,0,0.07)] blur-[120px]"
-            style={{ animation: 'mm-orb-drift 18s ease-in-out infinite' }}
-          />
-          <div
-            className="mm-hero-orb absolute -bottom-32 left-1/4 h-[380px] w-[380px] rounded-full bg-[rgba(251,146,60,0.06)] blur-[100px]"
-            style={{ animation: 'mm-orb-drift 22s ease-in-out infinite reverse' }}
-          />
-          <div
-            className="absolute inset-0 opacity-[0.35]"
-            style={{
-              backgroundImage: `radial-gradient(circle at 20% 30%, rgba(255,149,0,0.04) 0%, transparent 45%),
-                radial-gradient(circle at 80% 70%, rgba(6,182,212,0.05) 0%, transparent 40%)`,
-            }}
-          />
-          <div className="mm-grain absolute inset-0 z-[1]" aria-hidden />
-        </div>
-
-        <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-stretch gap-8 px-5 sm:px-6 lg:gap-10 lg:px-8">
-          {/*
-            Hero grid (lg+): left = Early bird + live scorecard preview; right = I am in + headline + sub.
-            Mobile: headline column first (value prop), then promo + scorecard.
-          */}
-          {/* First column is content-width (cards ~420–440px), not 50% — avoids a huge dead zone beside narrow cards */}
-          <div className="grid w-full grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)] lg:gap-x-6 lg:gap-y-0 xl:gap-x-8">
-            {/* Left column — Early bird, then scorecard (desktop); stacks below copy on mobile */}
-            <div className="order-2 flex w-full min-w-0 flex-col gap-6 sm:gap-7 lg:order-1 xl:gap-8">
+      {/* ════════════════ HERO — mock-style: copy left · reality-check card right · white field ════════════════ */}
+      <section className="relative border-b-0 bg-white pb-0 pt-10 md:pt-12 lg:pt-14">
+        <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-5 sm:px-6 lg:px-8">
+          <div className="grid w-full grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-x-12 lg:gap-y-0 xl:gap-x-16">
+            {/* Left — eyebrow + headline + sub + journey + primary CTA + proof chips */}
+            <div className="flex w-full min-w-0 flex-col gap-5 sm:gap-6">
               <motion.div
-                initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+                initial={reduceMotion ? false : { opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.45, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
-                className="w-full lg:max-w-none"
-                aria-label={`${HERO_EARLY_BIRD_RIBBON}: ${READINESS_TEST_COUPON_OFFER_HEADLINE}`}
+                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+                className="flex justify-center lg:justify-start"
               >
-                <div className="rounded-2xl border border-amber-200/80 bg-gradient-to-br from-[#fff4e6] via-[#fffbeb] to-[#fff4e6] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.9),0_12px_40px_-20px_rgba(234,88,12,0.18)] sm:p-6">
-                  <div className="flex flex-col gap-4">
-                    <div className="flex items-start justify-between gap-2">
-                      <span className="inline-flex min-w-0 max-w-[min(100%,14rem)] shrink items-center gap-1.5 rounded-full bg-gradient-to-r from-[#FF9500] to-[#EA580C] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-white shadow-[0_2px_8px_rgba(234,88,12,0.35)] sm:max-w-none">
-                        <Sparkles className="h-3.5 w-3.5 shrink-0 text-amber-100" strokeWidth={2.5} aria-hidden />
-                        {HERO_EARLY_BIRD_RIBBON}
-                      </span>
-                      <motion.div
-                        className="shrink-0"
-                        animate={reduceMotion ? false : { y: [0, -2, 0] }}
-                        transition={{ repeat: Infinity, duration: 2.2, ease: 'easeInOut' }}
-                      >
-                        <Link
-                          to="/free-tutorials"
-                          className="mm-early-bird-read-tutorial inline-flex items-center gap-1 rounded-full border border-[#FFB347]/70 bg-white/90 px-2 py-1 text-[10px] font-bold leading-tight text-[#B45309] shadow-sm backdrop-blur-[2px] transition-colors hover:border-[#FF9500] hover:bg-[#FFF8EE] hover:text-[#9A3412] sm:gap-1.5 sm:px-2.5 sm:py-1.5 sm:text-[11px]"
-                        >
-                          <BookOpen
-                            className="mm-read-tutorial-icon h-3.5 w-3.5 shrink-0 text-[#FF9500] sm:h-4 sm:w-4"
-                            strokeWidth={2.25}
-                            aria-hidden
-                          />
-                          Read free tutorial
-                        </Link>
-                      </motion.div>
-                    </div>
-                    <div className="min-w-0 space-y-2 text-left">
-                      <p className="text-[15px] font-bold leading-snug text-foreground sm:text-base">
-                        {READINESS_TEST_COUPON_OFFER_HEADLINE}
-                      </p>
-                      <p className="text-sm font-medium leading-relaxed text-muted-foreground">
-                        {READINESS_TEST_COUPON_OFFER_HOW}
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={goToStartAssessment}
-                      className="group relative inline-flex w-full min-h-[44px] items-center justify-center gap-2 overflow-hidden rounded-full bg-[#FF9500] px-4 py-3 text-sm font-bold text-white shadow-[0_4px_14px_-4px_rgba(234,88,12,0.55)] transition-all hover:bg-[#E88600] active:scale-[0.98] sm:min-h-[48px] sm:text-[15px]"
-                    >
-                      <span
-                        className="pointer-events-none absolute inset-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-                        style={{
-                          background:
-                            'linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.25) 50%, transparent 60%)',
-                          transform: 'translateX(-30%)',
-                        }}
-                        aria-hidden
-                      />
-                      <span className="relative text-center leading-tight">{PRIMARY_CTA_LABEL}</span>
-                      <ArrowRight size={18} className="relative shrink-0 opacity-95 transition-transform group-hover:translate-x-0.5" aria-hidden />
-                    </button>
-                  </div>
-                </div>
+                <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-orange-200/90 bg-orange-50/90 px-3 py-1.5 text-left text-[11px] font-medium leading-snug text-[#78350f] sm:text-xs">
+                  <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.25)]" aria-hidden />
+                  <span className="min-w-0">{HERO_EYEBROW}</span>
+                </span>
               </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.1 }}
-                className="w-full"
-              >
-                <HeroFlagshipVisual className="lg:mx-0" />
-              </motion.div>
-            </div>
-
-            {/* Right column — eyebrow pills, then year selector + headline */}
-            <div className="order-1 flex w-full min-w-0 flex-col gap-4 sm:gap-5 lg:order-2 lg:gap-6 lg:pt-1">
-              <div className="-mx-1 w-full lg:mx-0">
-                <div className="flex max-w-full flex-wrap items-center justify-center gap-1.5 sm:gap-2 lg:justify-start">
-                  {HERO_EYEBROW.split(' · ').map((part, idx) => (
-                    <motion.span
-                      key={`hero-eyebrow-${part}-${idx}`}
-                      initial={reduceMotion ? false : { opacity: 0, y: 10, scale: 0.94 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      transition={
-                        reduceMotion
-                          ? { duration: 0 }
-                          : {
-                              delay: 0.05 + idx * 0.14,
-                              type: 'spring',
-                              stiffness: 420,
-                              damping: 26,
-                              mass: 0.7,
-                            }
-                      }
-                      whileHover={
-                        reduceMotion
-                          ? undefined
-                          : { scale: 1.03, transition: { type: 'spring', stiffness: 500, damping: 22 } }
-                      }
-                      className={`mm-hero-eyebrow-pill mm-hero-eyebrow-pill-glow inline-flex shrink-0 items-center gap-1 rounded-full border border-orange-200/60 px-2 py-1 text-[10px] font-bold uppercase leading-snug tracking-[0.08em] text-foreground ring-1 ring-white/90 sm:px-2.5 sm:py-1.5 sm:text-[11px] sm:tracking-[0.1em] md:gap-1.5 md:px-3 md:text-[12px] md:tracking-[0.12em] ${idx === 1 ? 'mm-eyebrow-d1' : ''} ${idx === 2 ? 'mm-eyebrow-d2' : ''}`}
-                    >
-                      {idx === 0 ? (
-                        <GraduationCap className="h-2.5 w-2.5 shrink-0 text-[#EA580C] sm:h-3 sm:w-3 md:h-3.5 md:w-3.5" strokeWidth={2.2} aria-hidden />
-                      ) : idx === 1 ? (
-                        <Mic2 className="h-2.5 w-2.5 shrink-0 text-[#0891B2] sm:h-3 sm:w-3 md:h-3.5 md:w-3.5" strokeWidth={2.2} aria-hidden />
-                      ) : (
-                        <Sparkles className="h-2.5 w-2.5 shrink-0 text-[#EA580C] sm:h-3 sm:w-3 md:h-3.5 md:w-3.5" strokeWidth={2.2} aria-hidden />
-                      )}
-                      {part}
-                    </motion.span>
-                  ))}
-                </div>
-              </div>
 
               <div className="w-full text-center lg:text-left">
                 <motion.h1
@@ -441,14 +264,14 @@ const HomePage = () => {
                   initial={reduceMotion ? false : { opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  className="mx-auto max-w-[44rem] lg:mx-0 lg:max-w-[34rem]"
+                  className="mx-auto max-w-[44rem] lg:mx-0 lg:max-w-[36rem]"
                 >
-                  <span className="typo-display block text-foreground">{HERO_HEADLINE_FIXED}</span>
-                  <span className="mt-2 block min-h-[min(22vh,9rem)] sm:mt-3 sm:min-h-[7.5rem] md:min-h-[6.5rem]">
+                  <span className="typo-display block text-neutral-900">{HERO_HEADLINE_FIXED}</span>
+                  <span className="mt-2 block min-h-[min(20vh,8rem)] sm:mt-3 sm:min-h-[6.75rem] md:min-h-[5.75rem]">
                     <HeroHeadlineTypewriter
                       phrases={HERO_TYPEWRITER_PHRASES}
                       reducedMotion={reduceMotion}
-                      className="typo-display block mm-hero-accent bg-gradient-to-r from-[#ea580c] via-[#FF9500] to-[#f59e0b] bg-clip-text text-transparent"
+                      className="mm-hero-typewriter-line block mm-hero-accent bg-gradient-to-r from-[#ea580c] via-[#FF9500] to-[#f59e0b] bg-clip-text text-transparent"
                     />
                   </span>
                 </motion.h1>
@@ -458,168 +281,59 @@ const HomePage = () => {
                   initial={reduceMotion ? false : { opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.38, delay: 0.04 }}
-                  className="mx-auto mt-4 max-w-prose-marketing px-1 sm:mt-5 lg:mx-0 lg:max-w-[36rem] lg:px-0"
+                  className="mx-auto mt-4 max-w-prose-marketing px-0 sm:mt-5 lg:mx-0 lg:max-w-[38rem]"
                 >
-                  <p className="typo-body-lg text-muted-foreground">{heroCopy.subShort}</p>
+                  <p className="typo-body-lg text-neutral-600">{heroCopy.subShort}</p>
                   <div
-                    className="mt-5 space-y-3 rounded-2xl border border-orange-200/90 bg-gradient-to-br from-[#FFF8EE] via-white to-[#FFFCF7] px-4 py-4 shadow-[0_4px_24px_-12px_rgba(234,88,12,0.12)] sm:px-5 sm:py-5"
+                    className="mt-5 space-y-2 rounded-xl border border-orange-100/90 bg-orange-50/50 px-4 py-3.5 sm:px-5 sm:py-4"
                     role="region"
                     aria-label="How MentorMuni works"
                   >
-                    <p className="text-center text-[13px] font-bold leading-relaxed tracking-tight text-[#EA580C] sm:text-left sm:text-sm md:text-base">
+                    <p className="text-center text-[13px] font-bold leading-relaxed tracking-tight text-[#c2410c] sm:text-left sm:text-sm">
                       {HERO_JOURNEY_STEPS}
                     </p>
-                    <p className="text-center text-[13px] font-semibold leading-relaxed text-foreground sm:text-left sm:text-sm md:text-base">
+                    <p className="text-center text-[13px] font-semibold leading-relaxed text-neutral-800 sm:text-left sm:text-sm">
                       {HERO_JOURNEY_ARC}
                     </p>
+                  </div>
+
+                  <div className="mt-6 sm:mt-7">
+                    <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-neutral-600 sm:gap-x-6 lg:justify-start">
+                      <span className="inline-flex items-center gap-2">
+                        <Check className="h-4 w-4 shrink-0 text-emerald-600" strokeWidth={2.5} aria-hidden />
+                        Free · No signup
+                      </span>
+                      <span className="inline-flex items-center gap-2">
+                        <Check className="h-4 w-4 shrink-0 text-emerald-600" strokeWidth={2.5} aria-hidden />
+                        120+ students tested
+                      </span>
+                      <span className="inline-flex items-center gap-2">
+                        <Check className="h-4 w-4 shrink-0 text-emerald-600" strokeWidth={2.5} aria-hidden />
+                        ~5 min
+                      </span>
+                    </div>
                   </div>
                 </motion.div>
               </div>
             </div>
+
+            {/* Right — scorecard */}
+            <div className="flex w-full justify-center lg:justify-end lg:pt-1">
+              <HeroFlagshipVisual />
+            </div>
           </div>
 
-          {/* Proof strip + loop video — full width below the hero grid */}
-          <div className="flex w-full flex-col items-center gap-8 lg:gap-10">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.1 }}
-              className="w-full max-w-2xl"
-            >
-              <HeroProofSpec />
-            </motion.div>
-
+          {/* Loop video — full width below the hero grid */}
+          <div className="mt-8 flex w-full flex-col items-center gap-8 lg:mt-10 lg:gap-10">
             <div className="flex w-full max-w-3xl justify-center">
               <HeroLoopVideo />
             </div>
-          </div>
-
-          {/* ── Same row: “Why it matters / How MentorMuni helps” | poster carousel — equal columns, matched height ── */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.45, delay: 0.08 }}
-            className="grid w-full grid-cols-1 items-stretch gap-6 lg:grid-cols-2 lg:gap-8"
-          >
-            <div className="relative flex h-full min-h-[min(52vh,520px)] flex-col">
-              <div
-                className="pointer-events-none absolute -inset-px rounded-[1.35rem] bg-gradient-to-br from-[#FFB347]/55 via-[#FF9500]/25 to-cyan-400/30 opacity-90 blur-[1px]"
-                aria-hidden
-              />
-              <div className="relative flex h-full min-h-0 flex-col overflow-hidden rounded-[1.3rem] border border-white/70 shadow-[0_4px_24px_-8px_rgba(255,149,0,0.12),0_24px_60px_-28px_rgba(15,23,42,0.12)]">
-                <div
-                  className="pointer-events-none absolute -right-24 top-0 h-56 w-56 rounded-full bg-gradient-to-br from-orange-400/25 to-amber-300/10 blur-3xl"
-                  aria-hidden
-                />
-                <div
-                  className="pointer-events-none absolute -bottom-28 -left-16 h-52 w-52 rounded-full bg-cyan-400/15 blur-3xl"
-                  aria-hidden
-                />
-                <div
-                  className="pointer-events-none absolute inset-0 opacity-[0.4]"
-                  style={{
-                    backgroundImage: `linear-gradient(rgba(120,80,40,0.03) 1px, transparent 1px),
-                      linear-gradient(90deg, rgba(120,80,40,0.03) 1px, transparent 1px)`,
-                    backgroundSize: '24px 24px',
-                  }}
-                  aria-hidden
-                />
-                <div className="mm-hero-value-mesh relative flex min-h-0 flex-1 flex-col space-y-0 p-5 sm:p-7">
-                  <div className="relative rounded-2xl border border-orange-200/45 bg-gradient-to-br from-orange-50/90 via-white/60 to-transparent p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)] sm:p-5">
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-orange-200/60 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground shadow-sm">
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-amber-500 text-white shadow-sm">
-                        <span className="h-2 w-2 rounded-full bg-white" aria-hidden />
-                      </span>
-                      {HERO_PROBLEM_LABEL}
-                    </div>
-                    <p className="text-base leading-relaxed text-muted-foreground">{HERO_PROBLEM}</p>
-                  </div>
-
-                  <div className="relative shrink-0 py-4 sm:py-5">
-                    <div className="absolute left-0 right-0 top-1/2 h-px -translate-y-1/2 bg-gradient-to-r from-transparent via-orange-200/70 to-transparent" aria-hidden />
-                    <div className="relative mx-auto flex w-fit items-center justify-center gap-2 rounded-full border border-orange-100/90 bg-white/95 px-3 py-1 shadow-[0_2px_12px_-4px_rgba(0,0,0,0.06)]">
-                      <Sparkles className="h-3.5 w-3.5 text-[#FF9500]" strokeWidth={2} aria-hidden />
-                    </div>
-                  </div>
-
-                  <div className="relative rounded-2xl border border-cyan-200/40 bg-gradient-to-br from-cyan-50/80 via-white/70 to-[#FAFAF9] p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.85)] sm:p-5">
-                    <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-200/55 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-900 shadow-sm">
-                      <span className="flex h-5 w-5 items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 to-teal-600 text-white shadow-sm">
-                        <Check className="h-3 w-3" strokeWidth={3} aria-hidden />
-                      </span>
-                      {HERO_SOLUTION_LABEL}
-                    </div>
-                    <p className="text-base font-medium leading-relaxed text-foreground">{HERO_SOLUTION}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <motion.div
-              initial={{ opacity: 0, x: 12 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="flex h-full min-h-[min(52vh,520px)] flex-col"
-            >
-              <Suspense
-                fallback={
-                  <div
-                    className="flex h-full min-h-[min(52vh,520px)] w-full animate-pulse flex-col rounded-[1.25rem] bg-gradient-to-br from-[#FFF8EE] via-[#FFFDF8] to-white ring-1 ring-border"
-                    aria-hidden
-                  >
-                    <div className="m-4 h-8 w-1/3 rounded-lg bg-[#F0ECE0]" />
-                    <div className="mx-4 flex-1 rounded-xl bg-[#faf8f5]" />
-                  </div>
-                }
-              >
-                <MentorMuniPosterCarousel className="h-full w-full min-h-[min(52vh,520px)] shadow-[0_24px_80px_-48px_rgba(0,0,0,0.35)] ring-1 ring-black/[0.04]" />
-              </Suspense>
-            </motion.div>
-          </motion.div>
-
-          <div className="mx-auto w-full max-w-[36rem]">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.4, delay: 0.12 }}
-              className="flex flex-col gap-4 sm:flex-row sm:items-center sm:gap-6"
-            >
-              <button
-                type="button"
-                onClick={goToStartAssessment}
-                className="group inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-8 py-3.5 text-sm font-semibold text-white shadow-[0_8px_32px_-12px_rgba(234,88,12,0.55)] transition hover:bg-[#E88600] sm:w-auto sm:py-4 sm:text-base"
-              >
-                {PRIMARY_CTA_LABEL}
-                <ArrowRight size={18} className="transition-transform group-hover:translate-x-0.5" />
-              </button>
-              <Link
-                to="/how-it-works"
-                className="inline-flex items-center justify-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
-              >
-                How it works <ArrowRight size={14} />
-              </Link>
-            </motion.div>
-
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.2 }}
-              className="mt-6 text-sm text-muted-foreground"
-            >
-              <Link
-                to="/waitlist"
-                className="font-medium text-muted-foreground underline decoration-neutral-300 underline-offset-4 transition hover:text-[#CC7000] hover:decoration-[#FFB347]"
-              >
-                Mentorship waitlist
-              </Link>
-              <span className="text-hint"> — limited seats per batch.</span>
-            </motion.p>
           </div>
         </div>
       </section>
 
       {/* ════════════════ 2ND & 3RD YEAR — scannable flow + tab + animated map ════════════════ */}
-      <section className="relative overflow-hidden border-t border-border bg-[#FFF8EE] py-16 px-6">
+      <section className="relative overflow-hidden border-t-0 bg-gradient-to-b from-[#FFF8EE] via-[#FFF8EE] to-[#FFF8EE] px-6 pb-16 pt-0">
         <style>{`
           @keyframes mm-flow-arrow {
             0%, 100% { transform: translateX(0); opacity: 0.35; }
@@ -665,7 +379,7 @@ const HomePage = () => {
         <div className="pointer-events-none absolute bottom-0 left-1/4 h-64 w-64 rounded-full bg-[rgba(255,179,71,0.1)] blur-[90px]" />
         <div className="pointer-events-none absolute left-0 top-1/2 h-48 w-48 -translate-y-1/2 rounded-full bg-cyan-400/10 blur-[80px]" />
 
-        <div className="relative mx-auto max-w-5xl">
+        <div className="relative mx-auto max-w-5xl pt-12 md:pt-14">
           <div className="grid items-start gap-12 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
             <div>
               <motion.div

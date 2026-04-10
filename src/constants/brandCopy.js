@@ -27,7 +27,7 @@ export const HERO_TYPEWRITER_PHRASES = [
 ];
 /** Homepage hero — body copy under the typewriter (single paragraph; no read-more) */
 export const HERO_HOME_SUB =
-  'A diagnostic engine that shows students the gap between where they are and where they need to be — Interview preparation score.';
+  'Built for execution, not endless lessons: a free readiness check shows where you stand vs. what panels test—then mocks, feedback, and discipline so you can perform when it counts.';
 /** Highlighted journey lines (homepage hero) */
 export const HERO_JOURNEY_STEPS = 'Test → Break confidence → Show gap → Fix gap';
 export const HERO_JOURNEY_ARC =
@@ -103,21 +103,6 @@ export function buildResultShareMessage(score, roleLabel = 'Student') {
         : 'Got my baseline — now I know what to fix first.';
   return `${hook} Scored ${score}/100 on MentorMuni (${roleLabel}). ${BRAND_MEME_LINE} Free test (~5 min, no signup):\n${SITE_SHARE_ASSESSMENT_URL}`;
 }
-
-/** Eyebrow above the compact hero proof strip */
-export const HERO_PROOF_SECTION_EYEBROW = 'What the test covers';
-
-/** Four scored pillars — shown as compact chips (not repeated in body copy). */
-export const HERO_PROOF_PILLARS = ['DSA', 'System Design', 'HR', 'Projects'];
-
-/**
- * Tight secondary row: icon + one short line each (timer · gauge · gift).
- */
-export const HERO_PROOF_FACTS = [
-  { icon: 'timer', text: '~5 min · no account' },
-  { icon: 'gauge', text: '0–100 readiness score' },
-  { icon: 'gift', text: 'Free — mentor + AI mock coupon after' },
-];
 
 /** Mission / positioning — footer, meta, tool intros */
 export const MISSION_TAGLINE =
