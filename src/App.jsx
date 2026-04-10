@@ -69,7 +69,7 @@ function AnimatedMain({ children, className = "" }) {
       initial={isHome ? false : { opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-      className={`relative z-0 flex-grow ${className}`}
+      className={`relative z-0 w-full min-w-0 flex-grow ${className}`}
     >
       {children}
     </MotionMain>
@@ -148,7 +148,7 @@ function App() {
     <Router>
       <ScrollToTop />
       <RouteTitle />
-      <div className="flex min-h-screen flex-col bg-background text-muted-foreground font-sans antialiased">
+      <div className="flex min-h-screen w-full min-w-0 flex-col bg-background text-muted-foreground font-sans antialiased">
         <AnnouncementBar />
         <Navbar />
         <AnimatedMain>
