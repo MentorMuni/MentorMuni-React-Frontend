@@ -4,7 +4,10 @@
  */
 
 /** Primary action to the free readiness assessment — use everywhere for that flow */
-export const PRIMARY_CTA_LABEL = 'Check my readiness — free';
+export const PRIMARY_CTA_LABEL = 'Take Free Reality Check';
+
+/** Secondary — talk to team (homepage, final CTA row) */
+export const SECONDARY_CTA_BOOK_CALL = 'Book a call';
 
 /** Above-the-fold pain hook (problem in one breath) */
 export const PAIN_HOOK =
@@ -12,30 +15,30 @@ export const PAIN_HOOK =
 
 /** Homepage hero — chips (split on ·). Keep concrete; avoid “platform” jargon */
 export const HERO_EYEBROW =
-  'Engineering students in India · interview readiness · Mentors';
+  'Interview readiness system · Performance under pressure · Built for Indian engineering students';
 /** Early-bird coupon card ribbon (homepage hero) */
 export const HERO_EARLY_BIRD_RIBBON = 'Early bird';
 /** Small hero sticker (limited slots — keep short) */
 export const HERO_EARLY_BIRD_STICKER = 'Early bird · First 50';
 /** Second hero sticker — early-career / Gen Z audience (keep short; professional) */
-export const HERO_GENZ_STICKER = 'Gen Z · Clear gaps, real practice';
+export const HERO_GENZ_STICKER = 'Not a course — a system';
 export const HERO_HEADLINE = "You can't fix what you don't measure.";
 /** Orange payoff line — own line under the dark headline (readability + emphasis) */
 export const HERO_HEADLINE_ACCENT = 'Get your readiness score in ~5 minutes.';
 /** Homepage hero — fixed first line (always visible; not typewriter) */
-export const HERO_HEADLINE_FIXED = "We don't teach you more.";
+export const HERO_HEADLINE_FIXED = 'Check if You Are Actually Interview-Ready';
 /** Homepage hero — typewriter rotates these lines under the fixed headline */
 export const HERO_TYPEWRITER_PHRASES = [
-  'We make sure you can perform in interviews.',
-  "Because knowing is useless if you can't answer.",
+  "We don't teach. We make you perform.",
+  'Most students at your level fail interviews — not because they skipped topics.',
 ];
 /** Homepage hero — body copy under the typewriter (single paragraph; no read-more) */
 export const HERO_HOME_SUB =
-  'A free readiness check shows where you stand vs. what panels test—then mocks, feedback, and reps so you can perform when it counts.';
-/** Highlighted journey lines (homepage hero) */
-export const HERO_JOURNEY_STEPS = 'Test → Break confidence → Show gap → Fix gap';
+  'Most students think they are prepared. They fail when it matters. A free reality check shows where you stand vs what panels actually test — then you close gaps with reps, not hope.';
+/** Highlighted journey lines (homepage hero) — loop + positioning */
+export const HERO_JOURNEY_STEPS = 'Mock interview → 1:1 session → Improve → Repeat';
 export const HERO_JOURNEY_ARC =
-  "We've designed a system that takes you from confused → confident → interview-ready";
+  'Join MentorMuni — a structured way to prepare for interviews.';
 /** Bridge below hero headline: rejection (hook) → score & gaps (value), reduces bounce */
 export const HERO_SUBHEADLINE =
   "Rejection shouldn't be how you discover your gaps. See where you stand in minutes—then what to fix first.";
@@ -47,12 +50,19 @@ export const HERO_SOLUTION =
   'A free score, your gaps by topic, and what to fix first—then mocks and mentors when you want more.';
 export const HERO_PROOF_STAT = '~5 min · Free · No signup · Instant score';
 
+/** Homepage hero — trust bullets (numbers + proof) */
+export const HERO_PROOF_BULLETS = [
+  'Free · No signup · ~5 min',
+  'Typical focused lift: 40% → 75% readiness',
+  '500+ mock rounds logged on the platform',
+];
+
 /** Homepage — pain section below hero (eyebrow · headline · sub · three cards) */
-export const REAL_PROBLEM_EYEBROW = 'The real problem';
+export const REAL_PROBLEM_EYEBROW = 'The uncomfortable truth';
 export const REAL_PROBLEM_HEADLINE =
-  'You studied hard. You still blanked in the interview.';
+  'Most students at your level fail interviews — not because they did not study.';
 export const REAL_PROBLEM_SUB =
-  "Knowledge is not the problem. Performance under pressure is. Here's why students fail even after months of preparation.";
+  'Knowledge is not the problem. Performance under pressure is. Here is why busy prep still breaks in the real round.';
 export const REAL_PROBLEM_CARDS = [
   {
     title: 'They practice without a score',
@@ -73,9 +83,9 @@ export const REAL_PROBLEM_CARDS = [
 
 /** Homepage — comparison table (vs LeetCode, YouTube, coaching) */
 export const COMPARISON_TABLE_EYEBROW = 'Why not just use…';
-export const COMPARISON_TABLE_HEADLINE = "We're not another prep tool.";
+export const COMPARISON_TABLE_HEADLINE = 'An interview readiness system — not another content library.';
 export const COMPARISON_TABLE_SUB =
-  "Here's how MentorMuni compares to what you're already using — honestly.";
+  'We are not here to dump more tutorials. We measure you, then train you to perform when the panel is staring at you.';
 export const COMPARISON_TABLE_FEATURE_COL_LABEL = 'What it gives you';
 export const COMPARISON_TABLE_BRANDS = [
   'LeetCode',
@@ -113,13 +123,17 @@ export const COMPARISON_TABLE_ROWS = [
 
 /** Homepage — “How it works” strip (feature cards under the story section) */
 export const HOW_IT_WORKS_HEADLINE =
-  'Measure first—then prep what hiring rounds actually test.';
+  'One spine: measure → expose the gap → train performance.';
+
+/** One paragraph under HOW_IT_WORKS_HEADLINE on homepage */
+export const HOW_IT_WORKS_SUB =
+  'Everything else supports that path. Mocks, resume checks, and tutorials are secondary — the conversion engine is: Take the reality check, see your gap, then join the 60-day interview readiness system if you want structured reps.';
 
 /** Homepage — dark “reality check” (who it’s for / not for) */
-export const REALITY_CHECK_EYEBROW = 'Be honest with yourself';
+export const REALITY_CHECK_EYEBROW = 'Reality check';
 export const REALITY_CHECK_HEADLINE = 'This is not for everyone.';
 export const REALITY_CHECK_SUB =
-  "We only want serious students. If you're looking for shortcuts, this isn't it.";
+  'If you want comfort, watch another tutorial. If you want an offer, we will push you where it hurts — in a safe practice room first.';
 export const REALITY_CHECK_NOT_TITLE = 'This is not for you if…';
 export const REALITY_CHECK_FOR_TITLE = 'This is for you if…';
 export const REALITY_CHECK_NOT_ITEMS = [
@@ -133,40 +147,40 @@ export const REALITY_CHECK_FOR_ITEMS = [
   "You've prepared but keep getting rejected — and don't know why",
   'You blank under pressure even when you know the answer',
   'You want to know exactly where you stand — not guess',
-  "You're willing to work hard for 6 weeks to change your outcome",
+  "You're willing to work hard for 60 days to change your outcome",
   'You want an offer at a company worth joining — not just any job',
 ];
-export const REALITY_CHECK_CTA = "I'm serious — Take the Reality Check";
+export const REALITY_CHECK_CTA = 'Take Free Reality Check';
 
-/** Homepage — 6-week interview readiness program (timeline + pricing card) */
-export const PROGRAM_6WEEK_EYEBROW = 'The 6-week program';
-export const PROGRAM_6WEEK_HEADLINE = 'From your score to your offer.';
+/** Homepage — 60-day interview readiness program (timeline + pricing card) */
+export const PROGRAM_6WEEK_EYEBROW = 'The 60-day system';
+export const PROGRAM_6WEEK_HEADLINE = 'From your score to real interview performance.';
 export const PROGRAM_6WEEK_SUB =
-  'A structured, mentor-guided program built around your reality check score. No generic content. Every day has a purpose.';
+  'Structured, mentor-guided execution — not a “course” you half-watch. Built around your reality-check score. Every week has a job to do.';
 export const PROGRAM_6WEEK_PHASES = [
   {
-    title: 'Weeks 1-2: Gap audit + foundation fix',
+    title: 'Days 1–15: Gap audit + foundation fix',
     body:
       'Deep dive into your lowest-scoring area. Targeted drills, not random problems.',
   },
   {
-    title: 'Weeks 3-4: Answer structure training',
+    title: 'Days 16–30: Answer structure + daily reps',
     body:
-      'Learn how to frame and deliver answers. Daily mock sessions with rubric scoring.',
+      'Frame and deliver answers under time. Mock sessions with rubric scoring — not passive videos.',
   },
   {
-    title: 'Week 5: Full mock interview rounds',
+    title: 'Days 31–45: Full mock interview rounds',
     body:
-      'End-to-end interview simulations. Score tracked weekly. Mentor review every session.',
+      'End-to-end simulations. Scores tracked. Mentor review after every round.',
   },
   {
-    title: 'Week 6: Offer readiness sprint',
+    title: 'Days 46–60: Offer readiness sprint',
     body:
-      'Final polish — company-specific prep, negotiation, offer conversion mindset.',
+      'Company-specific prep, negotiation basics, and the mindset to close the loop.',
   },
 ];
-export const PROGRAM_6WEEK_CARD_BADGE = 'Most popular';
-export const PROGRAM_6WEEK_CARD_TITLE = '6-Week Interview Readiness Program';
+export const PROGRAM_6WEEK_CARD_BADGE = 'Structured program';
+export const PROGRAM_6WEEK_CARD_TITLE = '60-Day Interview Readiness Program';
 /** Display prices blurred in UI; keep for ops / future unblur */
 export const PROGRAM_6WEEK_PRICE_MAIN = '₹5,999';
 export const PROGRAM_6WEEK_PRICE_MAIN_SUFFIX = 'one-time';
@@ -200,7 +214,8 @@ export const HERO_YEAR_COPY = {
   y4: {
     headline: HERO_HEADLINE,
     accent: HERO_HEADLINE_ACCENT,
-    subShort: HERO_HOME_SUB,
+    subShort:
+      'Most students think they are prepared. They fail when it matters. See where you actually stand in minutes — before a rejection does it for you.',
     sub: HERO_HOME_SUB,
   },
   /** Working professionals — interview + skill readiness (same rubric; framing matches career moves). */
@@ -221,7 +236,7 @@ export const SITE_SHARE_ASSESSMENT_URL = `${SITE_SHARE_BASE}/start-assessment`;
 /**
  * Viral one-liner for messages (result page, OG emphasis). Keep under ~160 chars for previews.
  */
-export const BRAND_MEME_LINE = "You can't fix what you don't measure.";
+export const BRAND_MEME_LINE = "We don't teach. We make you perform.";
 
 /**
  * Build WhatsApp / native / clipboard share text from assessment result.
@@ -238,7 +253,7 @@ export function buildResultShareMessage(score, roleLabel = 'Student') {
 
 /** Mission / positioning — footer, meta, tool intros */
 export const MISSION_TAGLINE =
-  'Readiness scores, specific gaps, and mentor-backed practice—so you walk into interviews prepared, not guessing.';
+  'An interview readiness system — scores, gap clarity, and performance reps — so you walk in prepared, not guessing.';
 
 /** Completing the free Interview Readiness assessment — coupon reward (homepage + promos) */
 /** Promo bar — line 1: the offer (what) */
@@ -253,7 +268,7 @@ export const READINESS_TEST_COUPON_PROMO =
 /** Short line for badges / narrow layouts */
 export const READINESS_TEST_COUPON_BADGE =
   '1× 1:1 mentor + 1× AI mock · coupon after free test';
-/** Prep map card (narrow column) — short lines so nothing clips */
+/** Readiness report card (narrow column) — short lines so nothing clips */
 export const READINESS_TEST_COUPON_CARD_HEADLINE = 'Your real test unlocks a code';
 export const READINESS_TEST_COUPON_CARD_BODY =
   'Coupon: 1 free 1:1 + 1 AI mock after your test';
@@ -268,13 +283,13 @@ export const MENTORSHIP_TRUST_BADGE = 'Mentorship cohorts · Waitlist open · Li
 export const WAITLIST_STICKY_TEASER = 'Cohort seats · limited';
 
 /** Homepage — one short line between Expert Mentorship and final CTA (no second “Why” block) */
-export const HOMEPAGE_MENTORS_TO_CTA_BRIDGE = 'Ready to move forward?';
+export const HOMEPAGE_MENTORS_TO_CTA_BRIDGE = 'Your next step is one:';
 
 /** Homepage — final CTA block (above footer) */
-export const FINAL_CTA_HEADLINE = 'Stop guessing what to study this week.';
-export const FINAL_CTA_HEADLINE_ACCENT = 'Take the free test—then choose how deep you go.';
+export const FINAL_CTA_HEADLINE = 'Know the gap before the panel does.';
+export const FINAL_CTA_HEADLINE_ACCENT = 'Take the free reality check — then go deeper only if the gap is real.';
 export const FINAL_CTA_BODY =
-  'Get one readiness score and a clear “fix this first” list—then add mocks or mentors only if you need them.';
+  'One score, one honest gap list, then optional mocks and the 60-day system. No infinite tabs. No pretend progress.';
 
 /** Footer / nav: name of the free assessment product (not “mock interviews”) */
 export const PRODUCT_READINESS_SCORE = 'Interview readiness score';
@@ -285,7 +300,7 @@ export const CONTACT_PHONE_HREF = 'tel:+919146421302';
 
 /** Per-route SEO titles — update document.title dynamically */
 export const ROUTE_TITLES = {
-  '/': 'MentorMuni — Know Your Interview Readiness Score in 5 Minutes',
+  '/': 'MentorMuni — Are You Actually Interview-Ready? Free Reality Check',
   '/how-it-works': 'How MentorMuni Works — Step-by-Step Interview Prep | MentorMuni',
   '/mentors': 'Expert Industry Mentors — 12–15 Yrs Experience | MentorMuni',
   '/outcomes': 'Student Outcomes & Success Stories | MentorMuni',

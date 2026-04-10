@@ -16,7 +16,7 @@ const PREP_MAP_SAMPLE_AREAS = [
   { label: 'HR & communication', w: 48 },
 ];
 
-/** Illustrative drill tags — aligned with placement prep (DSA → stack → HR), not unrelated buzzwords */
+/** Illustrative drill tags — aligned with placement preparation (DSA → stack → HR), not unrelated buzzwords */
 const PREP_MAP_PREP_TOPIC_EXAMPLES = [
   'DSA patterns & complexity',
   'OS, DBMS & networking',
@@ -140,23 +140,13 @@ export function AnimatedPrepMapPanel() {
               </motion.span>
               <div>
                 <span className="block text-base font-bold tracking-tight text-foreground sm:text-lg">
-                  Your prep map
-                </span>
-                <span className="text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                  Readiness by area · sample view
+                  Your Readiness Report
                 </span>
               </div>
             </div>
             <div className="shrink-0 self-center">
               <LimitedRewardLabel className="text-[8px] px-2.5 py-1 sm:text-[9px] sm:px-3 sm:py-1.5 [&_svg]:h-2.5 [&_svg]:w-2.5 sm:[&_svg]:h-3 sm:[&_svg]:w-3" />
             </div>
-          </div>
-
-          <div className="mb-4 rounded-xl border border-orange-100/90 bg-orange-50/40 px-3 py-2.5 sm:px-4 sm:py-3">
-            <p className="text-[11px] leading-relaxed text-muted-foreground sm:text-xs">
-              <span className="font-semibold text-foreground">Sample only.</span> In the real test you pick topics — your report
-              reflects your answers. What follows is a fictional example so you can see the layout.
-            </p>
           </div>
 
           <div className="mb-4 flex flex-col items-center gap-5 rounded-2xl border border-neutral-200/90 bg-gradient-to-br from-white via-neutral-50/50 to-orange-50/15 p-4 shadow-[0_8px_30px_-18px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center sm:gap-8 sm:p-6">
@@ -188,7 +178,7 @@ export function AnimatedPrepMapPanel() {
           </div>
 
           <div className="mb-4 rounded-xl border border-violet-200/60 bg-gradient-to-br from-violet-50/40 via-white to-white px-3 py-3 sm:px-4 sm:py-3.5">
-            <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-violet-900/90">Example topics to prep</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.1em] text-violet-900/90">Example topics for preparation</p>
             <p className="mt-1 text-[11px] leading-snug text-muted-foreground">
               Sample labels only — in the real test you choose focus areas; questions stay tied to what you tag (technical depth
               and how you communicate).
@@ -216,7 +206,7 @@ export function AnimatedPrepMapPanel() {
             <button
               type="button"
               onClick={goToStartAssessment}
-              className="inline-flex w-full shrink-0 items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-4 py-2.5 text-sm font-bold text-white shadow-md transition-colors hover:bg-[#E88600] sm:w-auto sm:min-w-[10.5rem]"
+              className="inline-flex min-h-[44px] w-full shrink-0 touch-manipulation items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-4 py-2.5 text-sm font-bold text-white shadow-md transition-colors hover:bg-[#E88600] active:bg-[#D97706] sm:w-auto sm:min-w-[10.5rem]"
             >
               {READINESS_TEST_COUPON_CARD_CTA}
               <ArrowRight size={16} strokeWidth={2.5} className="shrink-0" aria-hidden />

@@ -4,10 +4,7 @@ import { Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import {
   PRIMARY_CTA_LABEL,
-  MISSION_TAGLINE,
-  PRODUCT_READINESS_SCORE,
-  CONTACT_PHONE_DISPLAY,
-  CONTACT_PHONE_HREF,
+  SECONDARY_CTA_BOOK_CALL,
   HERO_EYEBROW,
   HERO_EARLY_BIRD_STICKER,
   HERO_GENZ_STICKER,
@@ -16,6 +13,11 @@ import {
   HERO_TYPEWRITER_PHRASES,
   HERO_JOURNEY_STEPS,
   HERO_JOURNEY_ARC,
+  HERO_PROOF_BULLETS,
+  MISSION_TAGLINE,
+  PRODUCT_READINESS_SCORE,
+  CONTACT_PHONE_DISPLAY,
+  CONTACT_PHONE_HREF,
   REAL_PROBLEM_EYEBROW,
   REAL_PROBLEM_HEADLINE,
   REAL_PROBLEM_SUB,
@@ -49,20 +51,21 @@ import {
   FINAL_CTA_HEADLINE_ACCENT,
   FINAL_CTA_BODY,
   HOW_IT_WORKS_HEADLINE,
+  HOW_IT_WORKS_SUB,
   HOMEPAGE_MENTORS_TO_CTA_BRIDGE,
 } from '../constants/brandCopy';
 import { AnimatedPrepMapPanel } from './homepage/prepMapPanel';
 import { HeroFlagshipVisual } from './homepage/HeroFlagshipVisual';
-import { HeroLoopVideo } from './homepage/HeroLoopVideo';
 import { HeroHeadlineTypewriter } from './homepage/HeroHeadlineTypewriter';
+import { HeroLoopVideo } from './homepage/HeroLoopVideo';
 
 import {
   ArrowRight, Brain, Target,
   BarChart3, Cpu,
   GraduationCap, Building2, Users,
   Mail, Phone, Check, X,
-  BookOpen, Layers, Sparkles, CalendarClock, Mic2,
-  Gift, Clock, TrendingUp,
+  BookOpen, Sparkles, Mic2,
+  Gift, Clock, TrendingUp, AlertTriangle, Compass,
 } from 'lucide-react';
 
 /* ─── Scroll-reveal wrapper ─────────────────────────────────── */
@@ -128,33 +131,33 @@ const ComparisonTableCell = ({ value }) => {
 const FEATURES = [
   {
     Icon: Brain,
-    tag: 'START HERE',
-    title: 'Interview Readiness Score',
-    desc: 'One score out of 100 with category breakdowns—see what to fix first, not everything at once.',
-    highlight: 'Free · ~5 min · Instant',
+    tag: 'PRIMARY PATH',
+    title: 'Free reality check (readiness score)',
+    desc: 'One spine for everything else: measure first, see the gap, then decide how hard you want to push. This is the step most students skip — then they wonder why interviews feel random.',
+    highlight: 'Start here · ~5 min · No signup',
   },
   {
     Icon: Cpu,
-    tag: 'PRACTICE',
-    title: 'AI Mock Interviews',
-    desc: 'Real-time voice practice with feedback on clarity and depth—closer to the real panel than solo prep.',
-    highlight: 'Company-style patterns',
+    tag: 'PERFORMANCE',
+    title: 'AI mock interviews',
+    desc: 'Voice practice with scoring — secondary to the reality check, but where “I knew it” turns into “I said it well under pressure.”',
+    highlight: 'Reps that feel like a real panel',
   },
   {
     Icon: BarChart3,
-    tag: 'ATS',
-    title: 'Resume ATS Checker',
-    desc: 'See how screening software reads your resume before a human does—keywords, structure, fixes.',
-    highlight: 'Score + line-level tips',
+    tag: 'SCREENING',
+    title: 'Resume ATS checker',
+    desc: 'See how software reads you before a human does. Supporting tool — not a substitute for interview performance.',
+    highlight: 'Keywords + structure fixes',
   },
   {
     Icon: BookOpen,
-    tag: 'LEARN',
-    title: 'Free tutorials & AI-tool interview prep',
-    desc: 'Topic-wise study materials—Java, Python, SQL, Gen AI, DevOps, and more—plus how to talk about Copilot, ChatGPT, and Cursor credibly in hiring rounds.',
-    highlight: 'Free · Learning paths · Panel-ready angles',
+    tag: 'REFERENCE',
+    title: 'Tutorials & AI-tool angles',
+    desc: 'Topic refreshers when you need them. Not the main event — the main event is performing in the room.',
+    highlight: 'Free paths · Panel-ready framing',
     link: '/free-tutorials',
-    linkLabel: 'Explore free tutorials',
+    linkLabel: 'Browse tutorials',
   },
 ];
 
@@ -167,7 +170,7 @@ const STUDENT_SNIPPETS = [
     tag: '4th Year · CSE',
     insight: 'Named the real gap',
     text: 'Seniors kept saying “practice more,” but nobody said what to practice. The readiness breakdown pointed at System Design—not everything at once—so I could prep with a target instead of a guess.',
-    proofMetric: 'Outcome: top gap named in one flow — not “study everything”',
+    proofMetric: 'Proof: readiness 42% → 78% after 4 weeks focused on one gap',
     Icon: Target,
   },
   {
@@ -177,7 +180,7 @@ const STUDENT_SNIPPETS = [
     tag: 'Final Year · IT',
     insight: 'Feedback on how you sound',
     text: 'The mock was blunt: my answers sounded memorised, not understood. I changed how I open and structure answers under pressure—not just the facts inside them.',
-    proofMetric: 'Panel-style feedback: how you sound, not memorised lines',
+    proofMetric: 'Proof: 12+ full mock rounds before first real onsite',
     Icon: Mic2,
   },
   {
@@ -187,7 +190,7 @@ const STUDENT_SNIPPETS = [
     tag: '3rd Year · CSE',
     insight: 'Specific weak spot',
     text: 'The score split my DSA by pattern and showed strings were the weak link. Random LeetCode never made that obvious; I finally knew what to drill instead of grinding everything.',
-    proofMetric: 'DSA split by pattern — knew to drill strings, not random LC',
+    proofMetric: 'Proof: DSA bucket 38% → 71% in three weeks of targeted drills',
     Icon: BarChart3,
   },
 ];
@@ -209,33 +212,43 @@ const studentStoryCard = {
   },
 };
 
-/* ─── Early-years section — single blurb (no year tabs) ───────────────── */
+/* ─── Early-years section — consequence-led copy (no year tabs) ───────────────── */
 const EARLY_SECTION_COPY = {
-  shortLine: 'Foundations through placement drives',
+  shortLine: "Know What's Missing Before It Costs You an Interview",
   detail:
-    "See how interview-style thinking maps to what you're studying—and benchmark DSA, stack, and HR before drives.",
+    'See how your preparation compares to real interview expectations—and identify the exact gaps you need to fix.',
 };
 
 const EARLY_BENEFIT_TILES = [
   {
-    Icon: BookOpen,
-    title: 'Topic-fit',
-    sub: 'Readiness on your plate',
+    Icon: Target,
+    title: 'What companies actually ask',
+    sub: 'Understand how your preparation compares to real panels—not generic textbook lists.',
     gradient: 'from-[#FF9500] to-[#FFB347]',
   },
   {
-    Icon: Layers,
-    title: 'Fix order',
-    sub: 'Semesters still ahead',
+    Icon: BarChart3,
+    title: 'Your readiness score',
+    sub: 'A clear read on strengths, weak areas, and where you stand before drives.',
     gradient: 'from-[#0891b2] to-[#22d3ee]',
   },
   {
-    Icon: CalendarClock,
-    title: '~5 min · Free',
-    sub: 'No signup — revisit anytime',
+    Icon: AlertTriangle,
+    title: 'Gap identification',
+    sub: "Spot what's stopping you from performing when questions turn real—not when you're revising alone.",
+    gradient: 'from-[#c2410c] to-[#fb923c]',
+  },
+  {
+    Icon: Compass,
+    title: 'What to fix first',
+    sub: "High-impact topics and order—so you don't scatter effort across everything at once.",
     gradient: 'from-[#059669] to-[#34d399]',
   },
 ];
+
+const EARLY_SECTION_MICRO_INFO = '~5 min · Free · Revisit anytime';
+
+const EARLY_SECTION_CTA_HOOK = "Most students think they're ready. This shows the truth.";
 
 const earlyBenefitContainer = {
   hidden: {},
@@ -270,12 +283,14 @@ const HomePage = () => {
           background-size: 200% 200%;
           animation: mm-hero-accent 10s ease-in-out infinite;
         }
-        /* Smaller than .typo-h1 — responsive display for rotating hero line */
         .mm-hero-typewriter-line {
-          font-size: 1.75rem;
+          font-size: 1.5rem;
           font-weight: 700;
-          line-height: 1.15;
+          line-height: 1.2;
           letter-spacing: -0.025em;
+        }
+        @media (min-width: 400px) {
+          .mm-hero-typewriter-line { font-size: 1.75rem; line-height: 1.15; }
         }
         @media (min-width: 640px) {
           .mm-hero-typewriter-line { font-size: 2.125rem; }
@@ -292,11 +307,10 @@ const HomePage = () => {
         }
       `}</style>
 
-      {/* ════════════════ HERO — mock-style: copy left · reality-check card right · white field ════════════════ */}
+      {/* ════════════════ HERO — copy left · reality-check card right · white field ════════════════ */}
       <section className="relative border-b-0 bg-white pb-0 pt-10 md:pt-12 lg:pt-14">
         <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-5 sm:px-6 lg:px-8">
-          <div className="grid w-full grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-x-12 lg:gap-y-0 xl:gap-x-16">
-            {/* Left — eyebrow + headline + sub + journey + primary CTA + proof chips */}
+          <div className="grid w-full min-w-0 grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-x-12 lg:gap-y-0 xl:gap-x-16">
             <div className="flex w-full min-w-0 flex-col gap-5 sm:gap-6">
               <motion.div
                 initial={reduceMotion ? false : { opacity: 0, y: 8 }}
@@ -328,10 +342,10 @@ const HomePage = () => {
                   initial={reduceMotion ? false : { opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  className="mx-auto max-w-[44rem] lg:mx-0 lg:max-w-[36rem]"
+                  className="mx-auto max-w-[44rem] text-balance lg:mx-0 lg:max-w-[36rem]"
                 >
-                  <span className="typo-display block text-neutral-900">{HERO_HEADLINE_FIXED}</span>
-                  <span className="mt-2 block min-h-[min(20vh,8rem)] sm:mt-3 sm:min-h-[6.75rem] md:min-h-[5.75rem]">
+                  <span className="typo-display block break-words text-neutral-900">{HERO_HEADLINE_FIXED}</span>
+                  <span className="mt-2 block min-h-[4.75rem] sm:min-h-[6rem] sm:mt-3 md:min-h-[5.5rem]">
                     <HeroHeadlineTypewriter
                       phrases={HERO_TYPEWRITER_PHRASES}
                       reducedMotion={reduceMotion}
@@ -361,33 +375,41 @@ const HomePage = () => {
                     </p>
                   </div>
 
+                  <div className="mt-6 flex w-full flex-col gap-3 sm:mt-7 sm:flex-row sm:flex-wrap sm:items-center lg:justify-start">
+                    <button
+                      type="button"
+                      onClick={goToStartAssessment}
+                      className="inline-flex min-h-[44px] w-full touch-manipulation items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-7 py-3.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-colors hover:bg-[#E88600] active:bg-[#D97706] sm:w-auto"
+                    >
+                      {PRIMARY_CTA_LABEL} <ArrowRight size={16} aria-hidden />
+                    </button>
+                    <Link
+                      to="/contact"
+                      className="inline-flex min-h-[44px] w-full touch-manipulation items-center justify-center rounded-xl border border-border bg-white px-7 py-3.5 text-sm font-bold text-foreground shadow-sm transition-colors hover:border-[#FFB347] hover:bg-[#FFF8EE] active:bg-neutral-50 sm:w-auto"
+                    >
+                      {SECONDARY_CTA_BOOK_CALL}
+                    </Link>
+                  </div>
+
                   <div className="mt-6 sm:mt-7">
                     <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-sm text-neutral-600 sm:gap-x-6 lg:justify-start">
-                      <span className="inline-flex items-center gap-2">
-                        <Check className="h-4 w-4 shrink-0 text-emerald-600" strokeWidth={2.5} aria-hidden />
-                        Free · No signup
-                      </span>
-                      <span className="inline-flex items-center gap-2">
-                        <Check className="h-4 w-4 shrink-0 text-emerald-600" strokeWidth={2.5} aria-hidden />
-                        120+ students tested
-                      </span>
-                      <span className="inline-flex items-center gap-2">
-                        <Check className="h-4 w-4 shrink-0 text-emerald-600" strokeWidth={2.5} aria-hidden />
-                        ~5 min
-                      </span>
+                      {HERO_PROOF_BULLETS.map((line) => (
+                        <span key={line} className="inline-flex items-center gap-2">
+                          <Check className="h-4 w-4 shrink-0 text-emerald-600" strokeWidth={2.5} aria-hidden />
+                          {line}
+                        </span>
+                      ))}
                     </div>
                   </div>
                 </motion.div>
               </div>
             </div>
 
-            {/* Right — scorecard */}
-            <div className="flex w-full justify-center lg:justify-end lg:pt-1">
+            <div className="flex w-full min-w-0 justify-center lg:justify-end lg:pt-1">
               <HeroFlagshipVisual />
             </div>
           </div>
 
-          {/* Loop video — full width below the hero grid */}
           <div className="mt-8 flex w-full flex-col items-center gap-8 lg:mt-10 lg:gap-10">
             <div className="flex w-full max-w-3xl justify-center">
               <HeroLoopVideo />
@@ -472,7 +494,7 @@ const HomePage = () => {
           </FadeUp>
           <FadeUp delay={0.08}>
             <div className="overflow-hidden rounded-xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
-              <div className="overflow-x-auto [-webkit-overflow-scrolling:touch]">
+              <div className="overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch]">
                 <table className="w-full min-w-[720px] border-collapse text-sm">
                   <thead>
                     <tr className="border-b border-border bg-neutral-50/90">
@@ -532,6 +554,9 @@ const HomePage = () => {
                   </tbody>
                 </table>
               </div>
+              <p className="mt-2 text-center text-[11px] text-muted-foreground md:hidden" role="note">
+                Swipe sideways to see all columns
+              </p>
             </div>
           </FadeUp>
         </div>
@@ -610,7 +635,7 @@ const HomePage = () => {
               <button
                 type="button"
                 onClick={goToStartAssessment}
-                className="text-base font-semibold text-[#FF7A30] underline decoration-[#FF7A30]/40 underline-offset-[6px] transition hover:text-[#f06d28]"
+                className="inline-flex min-h-[44px] touch-manipulation items-center justify-center rounded-lg px-1 text-base font-semibold text-[#FF7A30] underline decoration-[#FF7A30]/40 underline-offset-[6px] transition hover:text-[#f06d28] active:text-[#ea580c]"
               >
                 {REALITY_CHECK_CTA} →
               </button>
@@ -619,7 +644,7 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ════════════════ 6-WEEK PROGRAM — timeline + pricing card ════════════════ */}
+      {/* ════════════════ 60-DAY PROGRAM — timeline + pricing card ════════════════ */}
       <section
         className="border-t border-border bg-white py-14 md:py-16 px-5 sm:px-6 lg:px-8"
         aria-labelledby="program-6week-heading"
@@ -701,8 +726,8 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ════════════════ 2ND & 3RD YEAR — scannable flow + tab + animated map ════════════════ */}
-      <section className="relative overflow-hidden border-t-0 bg-gradient-to-b from-[#FFF8EE] via-[#FFF8EE] to-[#FFF8EE] px-6 pb-16 pt-0">
+      {/* ════════════════ 2ND & 3RD YEAR — prep journey + early-years copy + readiness map ════════════════ */}
+      <section className="relative overflow-hidden border-t-0 bg-gradient-to-b from-[#FFF8EE] via-[#FFF8EE] to-[#FFF8EE] px-5 pb-16 pt-0 sm:px-6">
         <style>{`
           @keyframes mm-flow-arrow {
             0%, 100% { transform: translateX(0); opacity: 0.35; }
@@ -769,74 +794,6 @@ const HomePage = () => {
                   </span>
                 </h2>
 
-                <div className="mb-6 rounded-2xl border border-border bg-white/90 px-3 py-4 shadow-sm sm:px-5">
-                  <p className="mb-3 text-center text-[10px] font-medium uppercase tracking-[0.14em] text-hint">
-                    Your prep journey
-                  </p>
-                  {/* Track + walking mascot (md+); stacked steps on small screens */}
-                  <div className="relative mx-auto max-w-lg md:max-w-none">
-                    <div className="relative hidden min-h-[5.5rem] md:block">
-                      <div className="mm-journey-traveler absolute bottom-2 z-10 -translate-x-1/2">
-                        <div className="mm-walk-inner flex items-end gap-1.5">
-                          <span className="relative flex h-9 w-7 flex-col items-center justify-end" aria-hidden>
-                            <svg viewBox="0 0 32 40" className="h-9 w-7 text-[#3f3f46]" fill="currentColor">
-                              <circle cx="16" cy="8" r="5" />
-                              <path d="M16 13 L11 26 L14 26 L16 18 L18 26 L21 26 L16 13" />
-                              <path
-                                d="M11 26 L9 36 M21 26 L23 36"
-                                stroke="currentColor"
-                                strokeWidth="2.2"
-                                strokeLinecap="round"
-                                fill="none"
-                              />
-                              <ellipse cx="16" cy="36" rx="3" ry="1.5" opacity="0.15" />
-                            </svg>
-                          </span>
-                          <img
-                            src={`${import.meta.env.BASE_URL}mentormuni-logo.png`}
-                            alt=""
-                            className="h-9 w-9 shrink-0 rounded-full border-2 border-white object-contain shadow-md ring-1 ring-orange-200/80"
-                            width={36}
-                            height={36}
-                          />
-                        </div>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2 pt-1 md:pt-0">
-                      {[
-                        { step: '1', label: 'Learn the skill' },
-                        { step: '2', label: 'Readiness test & score' },
-                        { step: '3', label: '1:1 MentorMuni to close gaps' },
-                      ].map((s, i) => (
-                        <motion.div
-                          key={s.label}
-                          initial={{ opacity: 0, y: 10, scale: 0.94 }}
-                          whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                          viewport={{ once: true, amount: 0.8 }}
-                          transition={{ delay: i * 0.1, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                          className="flex flex-col items-center gap-1.5 text-center"
-                        >
-                          <span
-                            className="mm-step-badge flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-[#FF9500] to-[#FFB347] text-xs font-extrabold text-white ring-2 ring-white"
-                            style={{
-                              animation: 'mm-step-glow 4.5s ease-in-out infinite',
-                              animationDelay: `${i * 0.4}s`,
-                            }}
-                          >
-                            {s.step}
-                          </span>
-                          <span className="max-w-[8rem] text-[10px] font-bold uppercase leading-tight tracking-wide text-muted-foreground sm:max-w-[9rem]">
-                            {s.label}
-                          </span>
-                        </motion.div>
-                      ))}
-                    </div>
-                    <p className="mt-3 text-center text-[10px] text-muted-foreground md:hidden">
-                      Learn → readiness test & score → 1:1 MentorMuni
-                    </p>
-                  </div>
-                </div>
-
                 <motion.div
                   initial={{ opacity: 0, y: 8 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -844,17 +801,14 @@ const HomePage = () => {
                   transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                   className="mb-5 max-w-xl rounded-2xl border border-[#FFB347]/35 bg-gradient-to-br from-white via-[#FFFCF7] to-[#FFF4E0]/70 p-5 shadow-[0_8px_32px_rgba(255,149,0,0.08)]"
                 >
-                  <p className="text-sm font-bold text-foreground">{EARLY_SECTION_COPY.shortLine}</p>
+                  <p className="text-base font-bold leading-snug text-foreground sm:text-lg">
+                    {EARLY_SECTION_COPY.shortLine}
+                  </p>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{EARLY_SECTION_COPY.detail}</p>
                 </motion.div>
 
-                <p className="mb-6 max-w-xl text-sm font-medium leading-relaxed text-muted-foreground">
-                  See how your prep lines up with what companies actually ask in interviews—then{' '}
-                  <span className="font-semibold text-[#CC7000]">focus on the gaps</span> that matter most.
-                </p>
-
                 <motion.div
-                  className="mb-7 grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-3"
+                  className="mb-5 grid max-w-xl grid-cols-1 gap-3 sm:grid-cols-2"
                   variants={earlyBenefitContainer}
                   initial="hidden"
                   whileInView="visible"
@@ -885,17 +839,30 @@ const HomePage = () => {
                   ))}
                 </motion.div>
 
-                <button
-                  type="button"
-                  onClick={goToStartAssessment}
-                  className="text-sm font-semibold text-[#FF9500] underline decoration-[#FFB347]/60 underline-offset-4 transition hover:text-[#E88600]"
-                >
-                  Check prep on my topics — free →
-                </button>
+                <div className="mb-4 max-w-xl space-y-1.5 rounded-xl border border-neutral-200/80 bg-white/80 px-4 py-3.5 text-sm leading-relaxed text-muted-foreground">
+                  <p className="font-medium text-foreground">This is not a test of what you know.</p>
+                  <p>It&apos;s a check of how well you can perform.</p>
+                </div>
+
+                <p className="mb-5 max-w-xl text-center text-xs font-medium text-muted-foreground sm:text-left">
+                  {EARLY_SECTION_MICRO_INFO}
+                </p>
+
+                <div className="max-w-xl space-y-3">
+                  <p className="text-sm font-semibold leading-snug text-neutral-800">{EARLY_SECTION_CTA_HOOK}</p>
+                  <button
+                    type="button"
+                    onClick={goToStartAssessment}
+                    className="inline-flex min-h-[44px] w-full touch-manipulation items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-7 py-3.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-colors hover:bg-[#E88600] active:bg-[#D97706] sm:w-auto"
+                  >
+                    {PRIMARY_CTA_LABEL} <ArrowRight size={16} aria-hidden />
+                  </button>
+                </div>
               </motion.div>
             </div>
 
             <motion.div
+              className="min-w-0"
               initial={{ opacity: 0, scale: 0.96 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true, amount: 0.15 }}
@@ -1082,9 +1049,7 @@ const HomePage = () => {
               {HOW_IT_WORKS_HEADLINE}
             </h2>
             <p className="mb-4 max-w-3xl text-sm leading-relaxed text-muted-foreground md:text-base">
-              One flow: measure with the readiness check, practice with AI mocks, polish with ATS, learn topic-by-topic
-              with free tutorials and AI-tool talking points, then go deeper with mentor-backed prep when you want a
-              human in your corner.
+              {HOW_IT_WORKS_SUB}
             </p>
             <Link
               to="/how-it-works"
@@ -1127,7 +1092,7 @@ const HomePage = () => {
               <button
                 type="button"
                 onClick={goToStartAssessment}
-                className="inline-flex items-center gap-2 rounded-xl bg-[#FF9500] px-7 py-3.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-colors hover:bg-[#E88600]"
+                className="inline-flex min-h-[44px] touch-manipulation items-center gap-2 rounded-xl bg-[#FF9500] px-7 py-3.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-colors hover:bg-[#E88600] active:bg-[#D97706]"
               >
                 {PRIMARY_CTA_LABEL} <ArrowRight size={15} aria-hidden />
               </button>
@@ -1157,13 +1122,13 @@ const HomePage = () => {
               </span>
             </div>
             <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-              What changes{' '}
+              Numbers beat vibes —{' '}
               <span className="bg-gradient-to-r from-[#FF9500] to-[#E88600] bg-clip-text text-transparent">
-                after the assessment
+                what shifted after the check
               </span>
             </h2>
             <p className="mx-auto mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground md:mx-0">
-              Paraphrased from students who used the readiness check and mocks. Initials only; names withheld.
+              Paraphrased stories; initials only. Proof lines are typical patterns — not guarantees.
             </p>
           </motion.div>
 
@@ -1289,12 +1254,20 @@ const HomePage = () => {
                   </div>
                 ))}
               </div>
-              <Link
-                to="/mentors"
-                className="inline-flex items-center gap-1.5 rounded-xl bg-[#FF9500] px-6 py-3 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-colors hover:bg-[#E88600]"
-              >
-                Meet the mentors <ArrowRight size={15} aria-hidden />
-              </Link>
+              <div className="flex flex-wrap items-center gap-3">
+                <Link
+                  to="/contact"
+                  className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#FF9500] bg-white px-6 py-3 text-sm font-bold text-[#EA580C] shadow-sm transition-colors hover:bg-[#FFF8EE]"
+                >
+                  {SECONDARY_CTA_BOOK_CALL}
+                </Link>
+                <Link
+                  to="/mentors"
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground underline decoration-border underline-offset-4 transition hover:text-[#FF9500]"
+                >
+                  Meet the mentors <ArrowRight size={14} aria-hidden />
+                </Link>
+              </div>
             </FadeUp>
 
             <FadeUp delay={0.12} className="w-full text-left">
@@ -1372,11 +1345,17 @@ const HomePage = () => {
                 ·{' '}
               </span>
               <Link
-                to="/waitlist"
+                to="/contact"
                 className="font-semibold text-[#FF9500] underline decoration-[#FFB347]/45 underline-offset-[5px] transition hover:text-[#E88600]"
               >
-                Mentorship waitlist
+                {SECONDARY_CTA_BOOK_CALL}
               </Link>
+              <span className="block mt-2 text-xs text-muted-foreground/90">
+                Waitlist for cohorts:{' '}
+                <Link to="/waitlist" className="font-medium text-[#FF9500] underline underline-offset-2 hover:text-[#E88600]">
+                  join here
+                </Link>
+              </span>
             </p>
           </FadeUp>
         </div>
@@ -1396,21 +1375,27 @@ const HomePage = () => {
               <span className="mt-2 block text-[#FF9500]">{FINAL_CTA_HEADLINE_ACCENT}</span>
             </h2>
             <p className="mb-8 w-full max-w-3xl text-left text-base leading-relaxed text-muted-foreground">{FINAL_CTA_BODY}</p>
-            <div className="mb-6 flex w-full flex-col items-start gap-4 sm:flex-row sm:gap-6">
+            <div className="mb-6 flex w-full flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
               <button
                 type="button"
                 onClick={goToStartAssessment}
-                className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-8 py-4 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-[#E88600] active:scale-[0.98]"
+                className="inline-flex min-h-[48px] w-full touch-manipulation shrink-0 items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-8 py-4 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-[#E88600] active:scale-[0.98] sm:w-auto"
               >
                 {PRIMARY_CTA_LABEL} <ArrowRight size={16} aria-hidden />
               </button>
               <Link
-                to="/waitlist"
-                className="text-left text-sm font-semibold text-[#FF9500] underline decoration-[#FFB347]/50 underline-offset-4 transition hover:text-[#E88600] sm:pt-1"
+                to="/contact"
+                className="inline-flex min-h-[48px] w-full touch-manipulation shrink-0 items-center justify-center rounded-xl border-2 border-[#FF9500]/80 bg-white px-6 py-3.5 text-sm font-bold text-[#EA580C] transition hover:bg-[#FFF8EE] active:bg-orange-50/50 sm:w-auto"
               >
-                Mentorship waitlist
+                {SECONDARY_CTA_BOOK_CALL}
               </Link>
             </div>
+            <p className="mb-4 text-xs text-muted-foreground">
+              Prefer a cohort seat later?{' '}
+              <Link to="/waitlist" className="font-semibold text-[#FF9500] underline underline-offset-2 hover:text-[#E88600]">
+                Join the mentorship waitlist
+              </Link>
+            </p>
             <p className="text-left text-sm text-muted-foreground">No signup · ~5 min · instant score</p>
           </FadeUp>
         </div>
@@ -1421,7 +1406,7 @@ const HomePage = () => {
         <div className="mx-auto w-full max-w-3xl text-left">
           <p className="mb-5 text-xs font-medium uppercase tracking-wider text-muted-foreground">Are you a placement officer?</p>
           <FadeUp className="w-full text-left">
-            <div className="flex flex-col gap-8 rounded-2xl border border-border bg-white p-8 shadow-[0_2px_12px_rgba(0,0,0,0.05)] md:flex-row md:items-start">
+            <div className="flex flex-col gap-8 rounded-2xl border border-border bg-white p-5 shadow-[0_2px_12px_rgba(0,0,0,0.05)] sm:p-8 md:flex-row md:items-start">
               <div className="w-12 h-12 bg-[#E8F3FF] rounded-xl flex items-center justify-center flex-shrink-0">
                 <Building2 size={22} className="text-[#1A6FC4]" />
               </div>
@@ -1481,7 +1466,7 @@ const HomePage = () => {
                     <button
                       type="button"
                       onClick={goToStartAssessment}
-                      className="text-xs font-semibold text-[#FF9500] hover:text-[#E88600] transition-colors"
+                      className="-mx-1 min-h-[40px] touch-manipulation rounded-md px-1 py-2 text-left text-xs font-semibold text-[#FF9500] transition-colors hover:text-[#E88600] active:text-[#D97706]"
                     >
                       Take the test →
                     </button>

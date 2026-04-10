@@ -42,7 +42,7 @@ export function HeroFlagshipVisual({ className = '' }) {
 
   return (
     <motion.div
-      className={`relative mx-auto w-full max-w-[min(100%,440px)] ${className}`}
+      className={`relative mx-auto w-full min-w-0 max-w-[min(100%,440px)] ${className}`}
       initial={reduceMotion ? false : { opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.55, delay: 0.06, ease: [0.22, 1, 0.36, 1] }}
