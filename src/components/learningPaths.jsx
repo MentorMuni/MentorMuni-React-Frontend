@@ -116,12 +116,12 @@ const LearningPaths = () => {
               <p className="text-muted-foreground">1:1 guidance from industry professionals</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-black text-emerald-600 mb-2">100% Job-Ready</div>
-              <p className="text-muted-foreground">Curriculum aligned with current job market</p>
+              <div className="text-4xl font-black text-violet-600 mb-2">Structured Learning</div>
+              <p className="text-muted-foreground">Clear steps and milestones—so you always know what to learn next</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-black text-rose-500 mb-2">Flexible Learning</div>
-              <p className="text-muted-foreground">Learn at your own pace, anytime, anywhere</p>
+              <div className="text-4xl font-black text-[#FF9500] mb-2">Get Placement Ready</div>
+              <p className="text-muted-foreground">Mocks, gap fixes, and reps aligned with what companies actually test</p>
             </div>
           </div>
         </div>

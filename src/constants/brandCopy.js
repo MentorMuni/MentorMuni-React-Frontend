@@ -216,6 +216,8 @@ export const HERO_YEAR_COPY = {
     accent: HERO_HEADLINE_ACCENT,
     subShort:
       'Most students think they are prepared. They fail when it matters. See where you actually stand in minutes — before a rejection does it for you.',
+    /** Shown directly under `subShort` on the homepage hero */
+    socialProofLine: '120+ students check their readiness.',
     sub: HERO_HOME_SUB,
   },
   /** Working professionals — interview + skill readiness (same rubric; framing matches career moves). */

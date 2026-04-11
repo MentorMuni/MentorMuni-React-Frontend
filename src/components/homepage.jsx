@@ -1,5 +1,5 @@
-import React, { useRef, createElement } from 'react';
-import { motion, useInView, useReducedMotion } from 'framer-motion';
+import React, { useRef, createElement, useState, useEffect } from 'react';
+import { motion, useInView, useReducedMotion, animate } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import {
@@ -264,6 +264,64 @@ const earlyBenefitItem = {
   },
 };
 
+const SOCIAL_PROOF_COUNT = 120;
+
+/** Hero line under subShort — avatar stack + count-up; `fullLabel` for a11y */
+function HeroSocialProof({ fullLabel, reduceMotion }) {
+  const [count, setCount] = useState(reduceMotion ? SOCIAL_PROOF_COUNT : 0);
+
+  useEffect(() => {
+    if (reduceMotion) {
+      setCount(SOCIAL_PROOF_COUNT);
+      return;
+    }
+    const ctrl = animate(0, SOCIAL_PROOF_COUNT, {
+      duration: 1.15,
+      ease: [0.22, 1, 0.36, 1],
+      onUpdate: (v) => setCount(Math.round(v)),
+    });
+    return () => ctrl.stop();
+  }, [reduceMotion]);
+
+  const rings = [
+    { className: 'bg-gradient-to-br from-[#FF9500] to-[#EA580C]' },
+    { className: 'bg-gradient-to-br from-[#0891b2] to-[#0e7490]' },
+    { className: 'bg-gradient-to-br from-[#FB923C] to-[#FF9500]' },
+  ];
+
+  return (
+    <motion.div
+      className="mt-3 flex flex-col items-center gap-3.5 sm:flex-row sm:items-center sm:justify-start sm:gap-4"
+      initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.42, ease: [0.22, 1, 0.36, 1] }}
+      aria-label={fullLabel}
+    >
+      <div className="flex shrink-0 items-center pl-0.5" aria-hidden>
+        {rings.map((ring, i) => (
+          <motion.span
+            key={i}
+            initial={reduceMotion ? false : { opacity: 0, scale: 0.6, x: -16 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            transition={{
+              delay: reduceMotion ? 0 : 0.12 + i * 0.1,
+              duration: 0.45,
+              type: 'spring',
+              stiffness: 380,
+              damping: 24,
+            }}
+            className={`relative h-9 w-9 rounded-full border-[3px] border-white shadow-[0_2px_8px_rgba(15,23,42,0.12)] sm:h-10 sm:w-10 ${ring.className} ${i > 0 ? '-ml-3 sm:-ml-3.5' : ''}`}
+          />
+        ))}
+      </div>
+      <p className="max-w-[20rem] text-center text-[15px] font-semibold leading-snug text-neutral-800 sm:max-w-none sm:text-left sm:text-[15px]">
+        <span className="tabular-nums font-bold text-[#c2410c]">{count}</span>
+        <span className="font-semibold text-neutral-800">+ students check their readiness.</span>
+      </p>
+    </motion.div>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════════
    MAIN COMPONENT
    ═══════════════════════════════════════════════════════════════ */
@@ -362,6 +420,9 @@ const HomePage = () => {
                   className="mx-auto mt-4 max-w-prose-marketing px-0 sm:mt-5 lg:mx-0 lg:max-w-[38rem]"
                 >
                   <p className="typo-body-lg text-neutral-600">{heroCopy.subShort}</p>
+                  {heroCopy.socialProofLine && (
+                    <HeroSocialProof fullLabel={heroCopy.socialProofLine} reduceMotion={reduceMotion} />
+                  )}
                   <div
                     className="mt-5 space-y-2 rounded-xl border border-orange-100/90 bg-orange-50/50 px-4 py-3.5 sm:px-5 sm:py-4"
                     role="region"
