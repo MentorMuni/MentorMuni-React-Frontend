@@ -1496,14 +1496,14 @@ const HomePage = () => {
                 </li>
                 <li><Link to="/mock-interviews" className="hover:text-[#FF9500] transition-colors">Mock Interviews</Link></li>
                 <li><Link to="/resume-analyzer" className="hover:text-[#FF9500] transition-colors">Resume Analyzer</Link></li>
+                <li><Link to="/placement-tracks" className="hover:text-[#FF9500] transition-colors">Placement Tracks</Link></li>
+                <li><Link to="/free-tutorials" className="hover:text-[#FF9500] transition-colors">Free Tutorials</Link></li>
               </ul>
             </div>
             <div>
               <p className="text-xs font-semibold text-hint mb-3">Learn</p>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/free-tutorials" className="hover:text-[#FF9500] transition-colors">Free Tutorials</Link></li>
                 <li><Link to="/learning-paths" className="hover:text-[#FF9500] transition-colors">Learning Paths</Link></li>
-                <li><Link to="/placement-tracks" className="hover:text-[#FF9500] transition-colors">Placement Tracks</Link></li>
                 <li><Link to="/outcomes" className="hover:text-[#FF9500] transition-colors">Outcomes</Link></li>
                 <li><Link to="/leadership-board" className="hover:text-[#FF9500] transition-colors">Leadership Board</Link></li>
               </ul>
@@ -1513,7 +1513,6 @@ const HomePage = () => {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li><Link to="/contact" className="hover:text-[#FF9500] transition-colors">Contact</Link></li>
                 <li><Link to="/mentors" className="hover:text-[#FF9500] transition-colors">Mentorship</Link></li>
-                <li><Link to="/for-recruiters" className="hover:text-[#FF9500] transition-colors">For Recruiters</Link></li>
                 <li><Link to="/colleges" className="hover:text-[#FF9500] transition-colors">For Colleges</Link></li>
               </ul>
             </div>

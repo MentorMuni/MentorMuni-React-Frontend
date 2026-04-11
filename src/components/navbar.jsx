@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Menu, X, ChevronDown, BarChart2, Mic, FileSearch, Cpu } from 'lucide-react';
+import { Menu, X, ChevronDown, BarChart2, Mic, FileSearch, Cpu, GraduationCap, BookOpen } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import { PRIMARY_CTA_LABEL, READINESS_TEST_COUPON_BADGE } from '../constants/brandCopy';
@@ -38,6 +38,22 @@ const TOOLS = [
     title: 'AI Tools Knowledge Base',
     desc: 'Learn GitHub Copilot, ChatGPT & Cursor for interviews',
     href: '/ai-tools',
+  },
+  {
+    icon: GraduationCap,
+    color: 'text-[#FF9500]',
+    bg: 'bg-[#FFF4E0]',
+    title: 'Placement Tracks',
+    desc: 'Company-wise prep paths — TCS, Infosys, Wipro, and more',
+    href: '/placement-tracks',
+  },
+  {
+    icon: BookOpen,
+    color: 'text-[#FF9500]',
+    bg: 'bg-[#FFF4E0]',
+    title: 'Free Tutorials',
+    desc: 'Topic refreshers and panel-ready framing — start free',
+    href: '/free-tutorials',
   },
 ];
 
@@ -131,8 +147,8 @@ const Navbar = () => {
               </button>
 
               {toolsOpen && (
-                <div className="absolute top-full left-0 mt-2 w-[19rem] rounded-xl border border-border bg-white shadow-[0_8px_32px_rgba(0,0,0,0.10)] overflow-hidden z-50">
-                  <div className="p-2">
+                <div className="absolute top-full left-0 mt-2 w-[19.5rem] rounded-xl border border-border bg-white shadow-[0_8px_32px_rgba(0,0,0,0.10)] overflow-hidden z-50">
+                  <div className="max-h-[min(70vh,26rem)] overflow-y-auto overscroll-contain p-2">
                     {TOOLS.map((tool) => {
                       const Icon = tool.icon;
                       return (

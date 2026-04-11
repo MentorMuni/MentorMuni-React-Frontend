@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FileText, Brain, ClipboardCheck, TrendingUp, ArrowRight, Gift } from 'lucide-react';
+import { FileText, Brain, ClipboardCheck, TrendingUp, ArrowRight, Gift, GraduationCap, BookOpen } from 'lucide-react';
 import {
   READINESS_TEST_COUPON_BADGE,
   READINESS_TEST_COUPON_OFFER_HEADLINE,
@@ -50,6 +50,26 @@ const Tools = () => {
       color: 'emerald',
       href: '/learning-paths',
       highlights: ['1:1 sessions', 'Roadmap', 'Placement focus'],
+    },
+    {
+      id: 5,
+      title: 'Placement tracks',
+      description:
+        'Company-specific prep paths—what each tier tests, patterns to expect, and how to structure your practice before the drive.',
+      icon: GraduationCap,
+      color: 'orange',
+      href: '/placement-tracks',
+      highlights: ['TCS · Infosys · Wipro', 'Pattern maps', 'Drive-ready'],
+    },
+    {
+      id: 6,
+      title: 'Free tutorials',
+      description:
+        'Short topic refreshers and interview-style framing—so you can sharpen skills without committing to a full course first.',
+      icon: BookOpen,
+      color: 'cyan',
+      href: '/free-tutorials',
+      highlights: ['Free paths', 'Self-paced', 'Panel framing'],
     },
   ];
 
