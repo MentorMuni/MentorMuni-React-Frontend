@@ -35,7 +35,6 @@ import {
   REALITY_CHECK_FOR_TITLE,
   REALITY_CHECK_NOT_ITEMS,
   REALITY_CHECK_FOR_ITEMS,
-  REALITY_CHECK_CTA,
   PROGRAM_6WEEK_EYEBROW,
   PROGRAM_6WEEK_HEADLINE,
   PROGRAM_6WEEK_SUB,
@@ -328,6 +327,14 @@ function HeroSocialProof({ fullLabel, reduceMotion }) {
 const HomePage = () => {
   const reduceMotion = useReducedMotion();
   const heroCopy = HERO_YEAR_COPY.y4;
+
+  /** Same-page scroll to the conversion block — avoids `href="#…"` breaking HashRouter. */
+  const scrollToFinalCta = () => {
+    document.getElementById('final-cta')?.scrollIntoView({
+      behavior: reduceMotion ? 'auto' : 'smooth',
+      block: 'start',
+    });
+  };
 
   return (
     <div className="bg-background text-foreground overflow-x-hidden">
@@ -691,17 +698,6 @@ const HomePage = () => {
             </FadeUp>
           </div>
 
-          <FadeUp delay={0.14}>
-            <div className="mx-auto mt-12 max-w-lg text-center md:mt-14">
-              <button
-                type="button"
-                onClick={goToStartAssessment}
-                className="inline-flex min-h-[44px] touch-manipulation items-center justify-center rounded-lg px-1 text-base font-semibold text-[#FF7A30] underline decoration-[#FF7A30]/40 underline-offset-[6px] transition hover:text-[#f06d28] active:text-[#ea580c]"
-              >
-                {REALITY_CHECK_CTA} →
-              </button>
-            </div>
-          </FadeUp>
         </div>
       </section>
 
@@ -909,15 +905,19 @@ const HomePage = () => {
                   {EARLY_SECTION_MICRO_INFO}
                 </p>
 
-                <div className="max-w-xl space-y-3">
+                <div className="max-w-xl space-y-2">
                   <p className="text-sm font-semibold leading-snug text-neutral-800">{EARLY_SECTION_CTA_HOOK}</p>
-                  <button
-                    type="button"
-                    onClick={goToStartAssessment}
-                    className="inline-flex min-h-[44px] w-full touch-manipulation items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-7 py-3.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-colors hover:bg-[#E88600] active:bg-[#D97706] sm:w-auto"
-                  >
-                    {PRIMARY_CTA_LABEL} <ArrowRight size={16} aria-hidden />
-                  </button>
+                  <p className="text-sm text-muted-foreground">
+                    When you&apos;re ready:{' '}
+                    <button
+                      type="button"
+                      onClick={scrollToFinalCta}
+                      className="font-semibold text-[#FF9500] underline decoration-[#FFB347]/50 underline-offset-[4px] transition hover:text-[#E88600] bg-transparent border-0 p-0 cursor-pointer font-inherit"
+                    >
+                      Jump to the free check
+                    </button>{' '}
+                    (~5 min).
+                  </p>
                 </div>
               </motion.div>
             </div>
@@ -1090,8 +1090,8 @@ const HomePage = () => {
               Don’t use real interviews as practice.{' '}
               <button
                 type="button"
-                onClick={goToStartAssessment}
-                className="font-semibold text-[#FF9500] underline decoration-[#FFB347]/55 underline-offset-[5px] transition hover:text-[#E88600]"
+                onClick={scrollToFinalCta}
+                className="font-semibold text-[#FF9500] underline decoration-[#FFB347]/55 underline-offset-[5px] transition hover:text-[#E88600] bg-transparent border-0 p-0 cursor-pointer font-inherit"
               >
                 Start with the free check
               </button>
@@ -1149,16 +1149,17 @@ const HomePage = () => {
             ))}
           </div>
           <FadeUp delay={0.28} className="w-full text-left">
-            <div className="mt-8">
+            <p className="mt-8 text-sm text-muted-foreground">
+              Ready for a number on where you stand?{' '}
               <button
                 type="button"
-                onClick={goToStartAssessment}
-                className="inline-flex min-h-[44px] touch-manipulation items-center gap-2 rounded-xl bg-[#FF9500] px-7 py-3.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-colors hover:bg-[#E88600] active:bg-[#D97706]"
+                onClick={scrollToFinalCta}
+                className="font-semibold text-[#FF9500] underline decoration-[#FFB347]/45 underline-offset-[4px] transition hover:text-[#E88600] bg-transparent border-0 p-0 cursor-pointer font-inherit"
               >
-                {PRIMARY_CTA_LABEL} <ArrowRight size={15} aria-hidden />
-              </button>
-              <p className="mt-2 text-xs text-muted-foreground">No signup · 5 minutes · Instant score</p>
-            </div>
+                Get your free score
+              </button>{' '}
+              <span className="text-muted-foreground/90">— ~5 min, no signup.</span>
+            </p>
           </FadeUp>
         </div>
       </section>
@@ -1388,42 +1389,64 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* ════════════════ ABOUT US (teaser → full page) ════════════════ */}
+      <section id="about" className="border-t border-border bg-white py-14 md:py-16 px-5 sm:px-6 lg:px-8">
+        <div className="mx-auto w-full max-w-5xl">
+          <FadeUp className="w-full text-left">
+            <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-[#CC7000] md:text-xs">
+              About us
+            </span>
+            <h2 className="mb-3 text-2xl font-bold leading-tight tracking-tight text-foreground md:text-3xl">
+              Built for placement reality —{' '}
+              <span className="text-[#FF9500]">not generic “prep.”</span>
+            </h2>
+            <p className="mb-6 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-[15px]">
+              {MISSION_TAGLINE} We tie scoring, practice, and mentors together so you improve where panels actually probe —
+              DSA, projects, communication, and presenting under pressure.
+            </p>
+            <Link
+              to="/about"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#FF9500] transition-colors hover:text-[#E88600]"
+            >
+              Read our story <ArrowRight size={15} aria-hidden />
+            </Link>
+          </FadeUp>
+        </div>
+      </section>
+
       {/* ════════════════ Bridge — mentors → final CTA (one line, no duplicate headline) ════════════════ */}
       <section className="border-t border-border bg-[#FAFAF9] py-8 md:py-10 px-5 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-3xl text-left">
           <FadeUp className="w-full text-left">
             <p className="text-sm leading-relaxed text-muted-foreground md:text-[15px]">
               {HOMEPAGE_MENTORS_TO_CTA_BRIDGE}{' '}
-              <button
-                type="button"
-                onClick={goToStartAssessment}
-                className="font-semibold text-[#FF9500] underline decoration-[#FFB347]/45 underline-offset-[5px] transition hover:text-[#E88600]"
-              >
-                {PRIMARY_CTA_LABEL}
-              </button>
-              <span className="text-muted-foreground/40" aria-hidden>
-                {' '}
-                ·{' '}
-              </span>
               <Link
                 to="/contact"
                 className="font-semibold text-[#FF9500] underline decoration-[#FFB347]/45 underline-offset-[5px] transition hover:text-[#E88600]"
               >
                 {SECONDARY_CTA_BOOK_CALL}
               </Link>
-              <span className="block mt-2 text-xs text-muted-foreground/90">
-                Waitlist for cohorts:{' '}
-                <Link to="/waitlist" className="font-medium text-[#FF9500] underline underline-offset-2 hover:text-[#E88600]">
-                  join here
-                </Link>
+              <span className="text-muted-foreground/40" aria-hidden>
+                {' '}
+                ·{' '}
               </span>
+              <Link
+                to="/waitlist"
+                className="font-semibold text-[#FF9500] underline decoration-[#FFB347]/45 underline-offset-[5px] transition hover:text-[#E88600]"
+              >
+                Join the waitlist
+              </Link>
+              .
             </p>
           </FadeUp>
         </div>
       </section>
 
-      {/* ════════════════ FINAL CTA ════════════════ */}
-      <section className="border-t border-emerald-100/80 bg-gradient-to-b from-emerald-50/50 via-white to-white py-14 md:py-16 px-5 sm:px-6 lg:px-8">
+      {/* ════════════════ FINAL CTA (single primary conversion zone for free check — hero also) ════════════════ */}
+      <section
+        id="final-cta"
+        className="border-t border-emerald-100/80 bg-gradient-to-b from-emerald-50/50 via-white to-white scroll-mt-[5.5rem] py-14 md:py-16 px-5 sm:px-6 lg:px-8"
+      >
         <div className="mx-auto w-full max-w-3xl text-left">
           <FadeUp className="w-full text-left">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#15803d] sm:text-sm">Free · 5 minutes · Instant result</p>
@@ -1526,8 +1549,8 @@ const HomePage = () => {
                     <p className="text-xs text-muted-foreground leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
                     <button
                       type="button"
-                      onClick={goToStartAssessment}
-                      className="-mx-1 min-h-[40px] touch-manipulation rounded-md px-1 py-2 text-left text-xs font-semibold text-[#FF9500] transition-colors hover:text-[#E88600] active:text-[#D97706]"
+                      onClick={scrollToFinalCta}
+                      className="-mx-1 inline-flex min-h-[40px] items-center rounded-md px-1 py-2 text-left text-xs font-semibold text-[#FF9500] transition-colors hover:text-[#E88600] active:text-[#D97706] bg-transparent border-0 cursor-pointer font-inherit"
                     >
                       Take the test →
                     </button>
@@ -1547,13 +1570,12 @@ const HomePage = () => {
               <p className="text-xs font-semibold text-hint mb-3">Tools</p>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li>
-                  <button
-                    type="button"
-                    onClick={goToStartAssessment}
-                    className="hover:text-[#FF9500] transition-colors text-left bg-transparent border-0 p-0 cursor-pointer text-inherit font-inherit"
+                  <Link
+                    to="/interview-readiness-tools"
+                    className="hover:text-[#FF9500] transition-colors"
                   >
                     {PRODUCT_READINESS_SCORE}
-                  </button>
+                  </Link>
                 </li>
                 <li><Link to="/mock-interviews" className="hover:text-[#FF9500] transition-colors">Mock Interviews</Link></li>
                 <li><Link to="/resume-analyzer" className="hover:text-[#FF9500] transition-colors">Resume Analyzer</Link></li>
@@ -1572,6 +1594,7 @@ const HomePage = () => {
             <div>
               <p className="text-xs font-semibold text-hint mb-3">Company</p>
               <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><Link to="/about" className="hover:text-[#FF9500] transition-colors">About us</Link></li>
                 <li><Link to="/contact" className="hover:text-[#FF9500] transition-colors">Contact</Link></li>
                 <li><Link to="/mentors" className="hover:text-[#FF9500] transition-colors">Mentorship</Link></li>
                 <li><Link to="/colleges" className="hover:text-[#FF9500] transition-colors">For Colleges</Link></li>

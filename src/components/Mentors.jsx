@@ -105,40 +105,45 @@ function TimelineStep({ step, index, isLast }) {
   );
 }
 
-/* ─── Blurred mentor teaser card ───────────────────────────── */
-function MentorTeaserCard({ initials, avColor, name, role, badge, stat, lockMsg }) {
+/* ─── Mentor profile card — circular blurred portrait + pills ─ */
+function MentorProfileCard({ name, experience, companies, tag, gradient }) {
   return (
-    <div style={{ background: '#ffffff', border: '1px solid #f0ece0', borderRadius: 12, overflow: 'hidden', position: 'relative' }}>
-      {/* Blurred inner layer */}
-      <div style={{ padding: '24px 20px 20px', filter: 'blur(5px)', pointerEvents: 'none', userSelect: 'none' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 14 }}>
-          <div style={{ width: 48, height: 48, borderRadius: '50%', background: avColor, border: '1.5px solid rgba(255,255,255,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, fontSize: 15, color: '#1a1a1a', flexShrink: 0 }}>
-            {initials}
-          </div>
-          <div>
-            <p style={{ fontWeight: 600, fontSize: 15, color: '#1a1a1a', marginBottom: 2 }}>{name}</p>
-            <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{role}</p>
-          </div>
+    <article className="flex h-full flex-col rounded-2xl border border-[#EDE8DD] bg-white p-5 shadow-[0_2px_20px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#FFB347]/45 hover:shadow-[0_14px_40px_rgba(255,149,0,0.12)]">
+      <div className="flex gap-4">
+        <div
+          className="relative h-[5.25rem] w-[5.25rem] shrink-0 overflow-hidden rounded-full ring-[3px] ring-[#FFF4E0] shadow-[0_4px_14px_rgba(0,0,0,0.08)]"
+          aria-hidden
+        >
+          <div
+            className="absolute -inset-8 scale-125"
+            style={{ background: gradient, filter: 'blur(16px)' }}
+            aria-hidden
+          />
+          <div
+            className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-neutral-900/25"
+            aria-hidden
+          />
         </div>
-        <div style={{ background: 'rgba(255,255,255,0.06)', borderRadius: 6, padding: '5px 10px', display: 'inline-block', fontSize: 12, color: 'var(--text-secondary)', marginBottom: 10 }}>
-          {badge}
+        <div className="min-w-0 flex-1 pt-0.5">
+          <h3 className="text-[1.0625rem] font-bold leading-tight tracking-tight text-[#1a1a1a]">{name}</h3>
+          <p className="mt-1 text-sm font-semibold text-[#C2410C]">{experience} experience</p>
+          <p className="mt-2 text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
+            Previously at
+          </p>
         </div>
-        <p style={{ fontSize: 12, color: '#4ade80', fontWeight: 500 }}>{stat}</p>
       </div>
-
-      {/* Lock overlay */}
-      <div style={{
-        position: 'absolute', inset: 0,
-        backdropFilter: 'blur(2px)',
-        background: 'rgba(255, 253, 248, 0.92)',
-        display: 'flex', flexDirection: 'column',
-        alignItems: 'center', justifyContent: 'center',
-        gap: 10, padding: '0 20px', textAlign: 'center',
-      }}>
-        <span style={{ fontSize: 22 }}>🔒</span>
-        <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5, maxWidth: 160 }}>{lockMsg}</p>
+      <div className="mt-3 flex flex-wrap gap-2">
+        {companies.map((c) => (
+          <span
+            key={c}
+            className="inline-flex rounded-full border border-[#FF9500]/25 bg-[#FFF4E0]/90 px-2.5 py-1 text-[11px] font-semibold text-[#9A3412]"
+          >
+            {c}
+          </span>
+        ))}
       </div>
-    </div>
+      <p className="mt-4 border-t border-[#F0ECE0] pt-3 text-[13px] leading-relaxed text-muted-foreground">{tag}</p>
+    </article>
   );
 }
 
@@ -198,10 +203,29 @@ const TIMELINE_STEPS = [
   },
 ];
 
-const TEASER_CARDS = [
-  { initials: 'RS', avColor: 'rgba(99,102,241,0.4)', name: 'Mentor A', role: 'Software Engineer', badge: 'Service sector · DSA · Java', stat: '12+ yrs industry exp', lockMsg: 'Take the assessment to unlock your match' },
-  { initials: 'PK', avColor: 'rgba(8,145,178,0.4)', name: 'Mentor B', role: 'Frontend Developer', badge: 'Product company · React · JS', stat: '10+ yrs industry exp', lockMsg: 'Score 60–80 unlocks this mentor match' },
-  { initials: 'AM', avColor: 'rgba(21,128,61,0.4)', name: 'Mentor C', role: 'Backend Engineer', badge: 'Service sector · .NET · SQL', stat: '15+ yrs industry exp', lockMsg: 'Score 80+ unlocks senior mentor match' },
+/** Representative profiles — soft gradients behind blur (no harsh rainbow strips) */
+const MENTOR_PROFILES = [
+  {
+    name: 'Mohit J',
+    experience: '14 years',
+    companies: ['Nagarro', 'Persistent'],
+    tag: 'Enterprise delivery and engineering leadership — deep MNC services experience.',
+    gradient: 'linear-gradient(145deg, #94a3b8 0%, #64748b 40%, #475569 100%)',
+  },
+  {
+    name: 'Ananya K',
+    experience: '12 years',
+    companies: ['Infosys', 'Razorpay'],
+    tag: 'Scaled systems at a large IT major, then product engineering at a fintech.',
+    gradient: 'linear-gradient(150deg, #5eead4 0%, #2dd4bf 45%, #0d9488 100%)',
+  },
+  {
+    name: 'Rohan S',
+    experience: '15 years',
+    companies: ['Accenture', 'Swiggy'],
+    tag: 'Consulting and delivery backgrounds, then high-pace consumer product teams.',
+    gradient: 'linear-gradient(145deg, #fdba74 0%, #fb923c 42%, #ea580c 100%)',
+  },
 ];
 
 const FEATURE_CARDS = [
@@ -275,34 +299,51 @@ export default function Mentors() {
         </div>
       </section>
 
-      {/* ══════════════ SECTION 2 — HOW MATCHING WORKS ══════════════ */}
-      <section ref={timelineRef} style={{ ...REVEAL_STYLE, maxWidth: 700, margin: '0 auto', padding: '0 24px 80px' }}>
+      {/* ══════════════ SECTION 2 — MENTOR PROFILES (blurred photos) ══════════════ */}
+      <section
+        ref={teaserRef}
+        className="border-y border-[#EDE8DD]/90 bg-gradient-to-b from-[#FFFBF5] via-white to-[#FFFBF5] px-5 py-14 sm:px-6 md:py-16"
+        style={REVEAL_STYLE}
+      >
+        <div className="mx-auto max-w-5xl">
+          <p className="text-center text-[11px] font-bold uppercase tracking-[0.2em] text-[#CC7000]">
+            Know your mentors
+          </p>
+          <h2 className="mt-2 text-center text-2xl font-bold tracking-tight text-[#1a1a1a] md:text-[1.65rem] md:leading-snug">
+            <span className="bg-gradient-to-r from-[#FF9500] to-[#D97706] bg-clip-text text-transparent">
+              They&apos;ve sat on interview panels.
+            </span>
+            <br className="hidden sm:block" />
+            <span className="text-[#1a1a1a]"> Now they&apos;re coaching you through yours.</span>
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-center text-sm leading-relaxed text-muted-foreground md:text-[15px]">
+            These are the people in your corner: they spot what interviewers actually test, tighten your stories and tech depth,
+            run you through realistic pressure — and push you until you walk into the room ready to convert that effort into
+            offers.
+          </p>
+
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
+            {MENTOR_PROFILES.map((m) => (
+              <MentorProfileCard key={m.name} {...m} />
+            ))}
+          </div>
+
+          <p className="mx-auto mt-8 max-w-md text-center text-xs leading-relaxed text-muted-foreground">
+            <span className="font-semibold text-[#9A3412]">MentorMuni batches starting soon.</span>{' '}
+            From first gap analysis to mock panels and offer prep — your mentor&apos;s job is to get you placement-ready, not
+            just &ldquo;more studied.&rdquo;
+          </p>
+        </div>
+      </section>
+
+      {/* ══════════════ SECTION 3 — HOW MATCHING WORKS ══════════════ */}
+      <section ref={timelineRef} style={{ ...REVEAL_STYLE, maxWidth: 700, margin: '0 auto', padding: '48px 24px 80px' }}>
         <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888888', textAlign: 'center', marginBottom: 40 }}>
           How mentor matching works
         </p>
         {TIMELINE_STEPS.map((step, i) => (
           <TimelineStep key={step.tag} step={step} index={i} isLast={i === TIMELINE_STEPS.length - 1} />
         ))}
-      </section>
-
-      {/* ══════════════ SECTION 3 — BLURRED MENTOR TEASER ══════════════ */}
-      <section ref={teaserRef} style={{ ...REVEAL_STYLE, padding: '0 24px 80px' }}>
-        <div style={{ maxWidth: 900, margin: '0 auto' }}>
-          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888888', textAlign: 'center', marginBottom: 28 }}>
-            Mentors joining in cohorts — waitlist open
-          </p>
-
-          {/* 3-col grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 16, marginBottom: 20 }}>
-            {TEASER_CARDS.map(card => (
-              <MentorTeaserCard key={card.initials} {...card} />
-            ))}
-          </div>
-
-          <p style={{ fontSize: 12, color: '#777777', textAlign: 'center', maxWidth: 480, margin: '0 auto' }}>
-            Mentors are matched after your assessment — so you always get the right fit, not whoever's available.
-          </p>
-        </div>
       </section>
 
       {/* ══════════════ SECTION 4 — WHATSAPP NOTIFY ══════════════ */}

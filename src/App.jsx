@@ -39,6 +39,7 @@ const PlacementTracks = lazy(() => import("./components/placementTracks"));
 const FreeTutorials = lazy(() => import("./components/freeTutorials"));
 const ResumeAnalyzer = lazy(() => import("./components/resumeAnalyzer"));
 const ContactPage = lazy(() => import("./components/contactPage"));
+const AboutUs = lazy(() => import("./components/aboutUs"));
 const DesignSystemDemo = lazy(() => import("./components/DesignSystemDemo"));
 const CareerHealthDashboard = lazy(() => import("./components/CareerHealthDashboard"));
 const AIToolsKnowledgeBase = lazy(() => import("./components/AIToolsKnowledgeBase"));
@@ -179,6 +180,7 @@ function App() {
               <Route path="/result" element={<ResultPage />} />
               <Route path="/for-recruiters" element={<ForRecruiters />} />
               <Route path="/colleges" element={<Colleges />} />
+              <Route path="/about" element={<AboutUs />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/dashboard" element={<MentorDashboard />} />
               <Route path="/java-tutorial" element={<JavaTutorial />} />

@@ -17,6 +17,7 @@ import LimitedRewardLabel from './LimitedRewardLabel';
 import AIAnalysisLoader from './AIAnalysisLoader';
 import { useFreeUsageTracker } from './FreeUsageCounter';
 import UpgradePromptModal from './UpgradePromptModal';
+import PrepLoungePanel from './interviewready/PrepLoungePanel';
 const FREE_TIER_LIMIT = 3;
 
 /** Interview readiness (breadth) — POST /interview-ready/interview-readiness/plan */
@@ -1307,6 +1308,13 @@ const InterviewReady = () => {
     remaining_attempts: FREE_TIER_LIMIT
   });
 
+  /** Prep lounge (step 14) — gamified micro-details while plan API runs */
+  const [prepLounge, setPrepLounge] = useState({ vibe: null, battleTag: '', flex: null });
+  const [planLoading, setPlanLoading] = useState(false);
+  const planAbortRef = useRef(null);
+  /** When user leaves prep lounge (back), ignore AbortError from fetch — don't show a fake timeout message */
+  const skipPlanErrorRef = useRef(false);
+
   // Authentication states
   const [authMode, setAuthMode] = useState(null); // 'signup' or 'signin'
   const [authData, setAuthData] = useState({
@@ -1349,6 +1357,14 @@ const InterviewReady = () => {
       setStep(4);
     }
   }, [step, profile.assessmentMode, profile.userCategory]);
+
+  /** Step 3 is for working professionals only — students go straight to skills (step 4) */
+  useEffect(() => {
+    if (step !== 3) return;
+    if (profile.userCategory && profile.userCategory !== 'professional') {
+      setStep(4);
+    }
+  }, [step, profile.userCategory]);
 
   const checkBackendHealth = async () => {
     try {
@@ -1488,27 +1504,34 @@ const InterviewReady = () => {
     }
   };
 
-  const validateContext = () => {
+  /** Step 3 only (working professionals): experience + org. Students skip step 3; college + contact collected in prep lounge. */
+  const validateProfessionalCalibration = () => {
     const errors = {};
-    if (profile.userCategory === 'professional') {
-      const raw = String(profile.experienceYears ?? '').trim();
-      if (!raw) {
-        errors.experienceYears = 'Required';
-      } else {
-        const n = parseFloat(raw, 10);
-        if (Number.isNaN(n) || n < 0 || n > 50) {
-          errors.experienceYears = 'Use a number from 0 to 50';
-        }
-      }
-      if (!profile.currentOrganization?.trim()) {
-        errors.currentOrganization = 'Required';
-      }
-    } else if (profile.userCategory && profile.userCategory !== 'professional') {
-      if (!profile.collegeName?.trim()) {
-        errors.collegeName = 'Required';
+    const raw = String(profile.experienceYears ?? '').trim();
+    if (!raw) {
+      errors.experienceYears = 'Required';
+    } else {
+      const n = parseFloat(raw, 10);
+      if (Number.isNaN(n) || n < 0 || n > 50) {
+        errors.experienceYears = 'Use a number from 0 to 50';
       }
     }
+    if (!profile.currentOrganization?.trim()) {
+      errors.currentOrganization = 'Required';
+    }
 
+    setValidationErrors((prev) => {
+      const next = { ...prev };
+      delete next.experienceYears;
+      delete next.currentOrganization;
+      return { ...next, ...errors };
+    });
+    return Object.keys(errors).length === 0;
+  };
+
+  /** Prep lounge + before test: email, phone, college (students). */
+  const validatePersonalContactForTest = () => {
+    const errors = {};
     const emailStr = String(profile.email ?? '').trim();
     if (!emailStr) {
       errors.email = 'Required';
@@ -1523,11 +1546,15 @@ const InterviewReady = () => {
       errors.phone = 'Enter a valid number (10+ digits)';
     }
 
+    if (profile.userCategory !== 'professional') {
+      if (!profile.collegeName?.trim()) {
+        errors.collegeName = 'Required';
+      }
+    }
+
     setValidationErrors((prev) => {
       const next = { ...prev };
       delete next.collegeName;
-      delete next.experienceYears;
-      delete next.currentOrganization;
       delete next.email;
       delete next.phone;
       return { ...next, ...errors };
@@ -1639,8 +1666,8 @@ const InterviewReady = () => {
   };
 
   const handleGetReadinessPlan = async (e) => {
-    e.preventDefault();
-    
+    if (e && typeof e.preventDefault === 'function') e.preventDefault();
+
     if (!validateForm()) {
       scrollFirstInvalidFieldIntoView();
       return;
@@ -1652,8 +1679,14 @@ const InterviewReady = () => {
       return;
     }
 
-    setLoading(true);
+    planAbortRef.current?.abort();
+    const controller = new AbortController();
+    planAbortRef.current = controller;
+
+    setEvaluationData(null);
     setError(null);
+    setStep(14);
+    setPlanLoading(true);
 
     const primarySkill = profile.primarySkill.trim().slice(0, PLAN_PRIMARY_SKILL_MAX);
     const expParsed =
@@ -1726,7 +1759,6 @@ const InterviewReady = () => {
 
     void postAdminLeadCapture(API_BASE, buildAdminLeadsPayload(profile, primarySkill, expParsed, isSkillMode));
 
-    const controller = new AbortController();
     const timeoutId = window.setTimeout(() => controller.abort(), PLAN_FETCH_TIMEOUT_MS);
 
     try {
@@ -1741,6 +1773,8 @@ const InterviewReady = () => {
 
       if (!res.ok) {
         if (res.status === 429) {
+          setPlanLoading(false);
+          setEvaluationData(null);
           setStep(7);
           return;
         }
@@ -1749,19 +1783,25 @@ const InterviewReady = () => {
           console.warn(`[${planPath}] error`, res.status, data);
         }
         setError(explainPlanHttpError(res.status, msg));
+        setPlanLoading(false);
         return;
       }
 
       if (!data.evaluation_plan || !data.evaluation_plan.length) {
         setError('No questions returned from server. Please try again.');
+        setPlanLoading(false);
         return;
       }
 
       setEvaluationData(data.evaluation_plan);
-      setStep(5);
     } catch (err) {
       console.error('Plan request:', err);
       if (err.name === 'AbortError') {
+        if (skipPlanErrorRef.current) {
+          skipPlanErrorRef.current = false;
+          setPlanLoading(false);
+          return;
+        }
         setError(
           `No response after ${PLAN_FETCH_TIMEOUT_MS / 1000}s. Generating questions can be slow — try again, or check your network.`
         );
@@ -1770,7 +1810,10 @@ const InterviewReady = () => {
       }
     } finally {
       window.clearTimeout(timeoutId);
-      setLoading(false);
+      if (planAbortRef.current === controller) {
+        planAbortRef.current = null;
+      }
+      setPlanLoading(false);
     }
   };
 
@@ -1880,14 +1923,52 @@ const InterviewReady = () => {
     setEarlyBirdCouponCode('');
     setCouponCopied(false);
     setEvaluationData(null);
+    setPrepLounge({ vibe: null, battleTag: '', flex: null });
+    setPlanLoading(false);
+    planAbortRef.current?.abort();
+    planAbortRef.current = null;
+  };
+
+  const handlePrepLoungeStartTest = () => {
+    if (!evaluationData || !Array.isArray(evaluationData) || evaluationData.length === 0) return;
+    if (!validatePersonalContactForTest()) {
+      scrollFirstInvalidFieldIntoView();
+      return;
+    }
+    setContactInfo({
+      email: String(profile.email ?? '').trim(),
+      phone: String(profile.contactNumber ?? '').trim(),
+    });
+    setStep(5);
+    setError(null);
+    void postAdminLeadCapture(
+      API_BASE,
+      buildAdminLeadsPayload(
+        profile,
+        profile.primarySkill.trim().slice(0, PLAN_PRIMARY_SKILL_MAX),
+        profile.userCategory === 'professional'
+          ? Math.min(50, Math.max(0, parseFloat(String(profile.experienceYears).trim(), 10) || 0))
+          : 0,
+        profile.assessmentMode === ASSESSMENT_FOCUS_SKILL
+      )
+    );
+  };
+
+  const handlePrepLoungeBack = () => {
+    skipPlanErrorRef.current = true;
+    planAbortRef.current?.abort();
+    planAbortRef.current = null;
+    setPlanLoading(false);
+    setEvaluationData(null);
+    setError(null);
+    const toPlacementContext =
+      profile.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT && needsInterviewPlacementContextStep(profile.userCategory);
+    setStep(toPlacementContext ? 13 : 4);
   };
 
   const stepContent = (() => {
   // Score card must win over loading: after evaluate(), step becomes 6 while `loading` may still be true for one frame.
   if (loading && step !== 7 && step !== 8 && step !== 9 && !(step === 6 && result)) {
-    if (step === 4 || step === 13) {
-      return <PlanGenerationLoader />;
-    }
     if (step === 5) {
       return <EvaluatingAnswersLoader />;
     }
@@ -2350,7 +2431,7 @@ const InterviewReady = () => {
               <button
                 type="button"
                 disabled={!profile.userCategory}
-                onClick={() => setStep(3)}
+                onClick={() => setStep(profile.userCategory === 'professional' ? 3 : 4)}
                 className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all ${
                   profile.userCategory
                     ? 'bg-gradient-to-r from-[#FF9500] to-[#FFB347] text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.3)] hover:from-[#FF9500] hover:to-[#FFB347] active:scale-[0.98]'
@@ -2368,11 +2449,10 @@ const InterviewReady = () => {
     );
   }
 
-  // ========== STEP 3: CONTEXT (COLLEGE VS PROFESSIONAL) ==========
+  // ========== STEP 3: PROFESSIONALS ONLY — exp + org (students skip; contact in prep lounge) ==========
   if (step === 3) {
     const ASSESSMENT_STEPS = 6;
     const currentStepIndex = 2;
-    const isPro = profile.userCategory === 'professional';
     const roleLabel =
       DISPLAY_ROLE_BY_CATEGORY[profile.userCategory] ||
       profile.userCategory.replace(/_/g, ' ');
@@ -2404,189 +2484,78 @@ const InterviewReady = () => {
             </div>
 
             <h2 className="text-3xl md:text-4xl font-black text-foreground mb-2 tracking-tight">
-              {isPro ? 'Your experience & organization' : 'Your college or university'}
+              Your experience &amp; organization
             </h2>
             <p className="text-muted-foreground text-base mb-8 leading-relaxed max-w-2xl">
-              {isPro
-                ? 'We use this to calibrate question difficulty and seniority—same as how real interviews adapt to your level.'
-                : 'Helps us tailor examples and expectations to your academic context (campus drives, coursework, projects).'}
+              We use this to calibrate question difficulty. You&apos;ll confirm email and WhatsApp in the prep lounge while
+              we generate your questions.
             </p>
 
             <div className="space-y-6">
-              {isPro ? (
-                <>
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-sm font-bold text-[#333333]">
-                      <Briefcase size={16} className="text-[#FF9500]" />
-                      Years of experience <span className="text-red-400">*</span>
-                    </label>
-                    <input
-                      type="number"
-                      min={0}
-                      max={50}
-                      step={0.5}
-                      inputMode="decimal"
-                      value={profile.experienceYears}
-                      onChange={(e) => {
-                        setProfile((p) => ({ ...p, experienceYears: e.target.value }));
-                        setValidationErrors((prev) =>
-                          prev.experienceYears ? { ...prev, experienceYears: '' } : prev
-                        );
-                      }}
-                      placeholder="e.g. 2.5"
-                      aria-invalid={validationErrors.experienceYears ? 'true' : undefined}
-                      data-mm-invalid={validationErrors.experienceYears ? 'true' : undefined}
-                      className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
-                        validationErrors.experienceYears
-                          ? MM_FIELD_INVALID
-                          : MM_FIELD_VALID
-                      }`}
-                    />
-                    {validationErrors.experienceYears && (
-                      <div className="flex items-center gap-2 text-xs font-medium text-red-400">
-                        <AlertCircle size={14} />
-                        {validationErrors.experienceYears}
-                      </div>
-                    )}
-                  </div>
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-sm font-bold text-[#333333]">
-                      <Building2 size={16} className="text-[#FF9500]" />
-                      Current organization <span className="text-red-400">*</span>
-                    </label>
-                    <input
-                      type="text"
-                      value={profile.currentOrganization}
-                      onChange={(e) => {
-                        setProfile((p) => ({ ...p, currentOrganization: e.target.value }));
-                        setValidationErrors((prev) =>
-                          prev.currentOrganization ? { ...prev, currentOrganization: '' } : prev
-                        );
-                      }}
-                      placeholder="Company or employer name"
-                      aria-invalid={validationErrors.currentOrganization ? 'true' : undefined}
-                      data-mm-invalid={validationErrors.currentOrganization ? 'true' : undefined}
-                      className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
-                        validationErrors.currentOrganization
-                          ? MM_FIELD_INVALID
-                          : MM_FIELD_VALID
-                      }`}
-                    />
-                    {validationErrors.currentOrganization && (
-                      <div className="flex items-center gap-2 text-xs font-medium text-red-400">
-                        <AlertCircle size={14} />
-                        {validationErrors.currentOrganization}
-                      </div>
-                    )}
-                  </div>
-                </>
-              ) : (
-                <div className="space-y-2">
-                  <label className="flex items-center gap-2 text-sm font-bold text-[#333333]">
-                    <Building2 size={16} className="text-[#FF9500]" />
-                    College / university name <span className="text-red-400">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={profile.collegeName}
-                    onChange={(e) => {
-                      setProfile((p) => ({ ...p, collegeName: e.target.value }));
-                      setValidationErrors((prev) => (prev.collegeName ? { ...prev, collegeName: '' } : prev));
-                    }}
-                    placeholder="e.g. IIT Madras, VIT Vellore, state university…"
-                    aria-invalid={validationErrors.collegeName ? 'true' : undefined}
-                    data-mm-invalid={validationErrors.collegeName ? 'true' : undefined}
-                    className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
-                      validationErrors.collegeName
-                        ? MM_FIELD_INVALID
-                        : MM_FIELD_VALID
-                    }`}
-                  />
-                  {validationErrors.collegeName && (
-                    <div className="flex items-center gap-2 text-xs font-medium text-red-400">
-                      <AlertCircle size={14} />
-                      {validationErrors.collegeName}
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            <div className="mt-8 space-y-5 rounded-2xl border border-border bg-white/[0.03] p-5 md:p-6">
-              <div className="flex items-center justify-between">
-                <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">Email &amp; WhatsApp</p>
-                <span className="rounded-full bg-[#FFF4E0] border border-[#FFB347]/50 px-2 py-0.5 text-[10px] font-bold text-[#B45309]">
-                  Required
-                </span>
-              </div>
-              <p className="text-xs text-muted-foreground -mt-2">
-                We use these to send your detailed score report and assessment updates. Same number you use on WhatsApp is ideal.
-              </p>
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-bold text-[#333333]">
-                  <Mail size={16} className="text-[#FF9500]" />
-                  Email address <span className="text-red-400">*</span>
-                  <span className="text-[10px] font-medium text-muted-foreground ml-1">(for score report)</span>
+                  <Briefcase size={16} className="text-[#FF9500]" />
+                  Years of experience <span className="text-red-400">*</span>
                 </label>
                 <input
-                  type="email"
-                  inputMode="email"
-                  autoComplete="email"
-                  value={profile.email}
+                  type="number"
+                  min={0}
+                  max={50}
+                  step={0.5}
+                  inputMode="decimal"
+                  value={profile.experienceYears}
                   onChange={(e) => {
-                    setProfile((p) => ({ ...p, email: e.target.value }));
-                    setValidationErrors((prev) => (prev.email ? { ...prev, email: '' } : prev));
+                    setProfile((p) => ({ ...p, experienceYears: e.target.value }));
+                    setValidationErrors((prev) =>
+                      prev.experienceYears ? { ...prev, experienceYears: '' } : prev
+                    );
                   }}
-                  placeholder="you@example.com"
-                  aria-invalid={validationErrors.email ? 'true' : undefined}
-                  data-mm-invalid={validationErrors.email ? 'true' : undefined}
+                  placeholder="e.g. 2.5"
+                  aria-invalid={validationErrors.experienceYears ? 'true' : undefined}
+                  data-mm-invalid={validationErrors.experienceYears ? 'true' : undefined}
                   className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
-                    validationErrors.email
+                    validationErrors.experienceYears
                       ? MM_FIELD_INVALID
                       : MM_FIELD_VALID
                   }`}
                 />
-                {validationErrors.email && (
+                {validationErrors.experienceYears && (
                   <div className="flex items-center gap-2 text-xs font-medium text-red-400">
                     <AlertCircle size={14} />
-                    {validationErrors.email}
+                    {validationErrors.experienceYears}
                   </div>
                 )}
               </div>
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-sm font-bold text-[#333333]">
-                  <Phone size={16} className="text-[#FF9500]" />
-                  WhatsApp number <span className="text-red-400">*</span>
+                  <Building2 size={16} className="text-[#FF9500]" />
+                  Current organization <span className="text-red-400">*</span>
                 </label>
                 <input
-                  type="tel"
-                  inputMode="tel"
-                  autoComplete="tel"
-                  value={profile.contactNumber}
+                  type="text"
+                  value={profile.currentOrganization}
                   onChange={(e) => {
-                    setProfile((p) => ({ ...p, contactNumber: e.target.value }));
-                    setValidationErrors((prev) => (prev.phone ? { ...prev, phone: '' } : prev));
+                    setProfile((p) => ({ ...p, currentOrganization: e.target.value }));
+                    setValidationErrors((prev) =>
+                      prev.currentOrganization ? { ...prev, currentOrganization: '' } : prev
+                    );
                   }}
-                  placeholder="Enter WhatsApp number"
-                  aria-invalid={validationErrors.phone ? 'true' : undefined}
-                  data-mm-invalid={validationErrors.phone ? 'true' : undefined}
+                  placeholder="Company or employer name"
+                  aria-invalid={validationErrors.currentOrganization ? 'true' : undefined}
+                  data-mm-invalid={validationErrors.currentOrganization ? 'true' : undefined}
                   className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
-                    validationErrors.phone
+                    validationErrors.currentOrganization
                       ? MM_FIELD_INVALID
                       : MM_FIELD_VALID
                   }`}
                 />
-                {validationErrors.phone && (
+                {validationErrors.currentOrganization && (
                   <div className="flex items-center gap-2 text-xs font-medium text-red-400">
                     <AlertCircle size={14} />
-                    {validationErrors.phone}
+                    {validationErrors.currentOrganization}
                   </div>
                 )}
               </div>
-              <p className="text-xs text-emerald-600 flex items-center gap-1.5">
-                <Check size={12} />
-                No spam — only your report and assessment-related messages.
-              </p>
             </div>
 
             <div className="mt-8 flex gap-3">
@@ -2600,7 +2569,7 @@ const InterviewReady = () => {
               <button
                 type="button"
                 onClick={() => {
-                  if (!validateContext()) {
+                  if (!validateProfessionalCalibration()) {
                     scrollFirstInvalidFieldIntoView();
                     return;
                   }
@@ -2754,7 +2723,7 @@ const InterviewReady = () => {
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
-                  onClick={() => setStep(3)}
+                  onClick={() => setStep(profile.userCategory === 'professional' ? 3 : 2)}
                   className="rounded-xl border border-border bg-white px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-[#FFB347]/70 hover:bg-[#FFF8EE] hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9500]"
                 >
                   ← Back
@@ -3211,6 +3180,26 @@ const InterviewReady = () => {
           </div>
         </div>
       </div>
+    );
+  }
+
+  // ========== STEP 14: PREP LOUNGE (plan API + gamified wait) ==========
+  if (step === 14) {
+    return (
+      <PrepLoungePanel
+        planLoading={planLoading}
+        evaluationPlan={evaluationData}
+        error={error}
+        prepLounge={prepLounge}
+        setPrepLounge={setPrepLounge}
+        profile={profile}
+        setProfile={setProfile}
+        validationErrors={validationErrors}
+        setValidationErrors={setValidationErrors}
+        onStartTest={handlePrepLoungeStartTest}
+        onRetry={() => handleGetReadinessPlan({ preventDefault: () => {} })}
+        onBackEdit={handlePrepLoungeBack}
+      />
     );
   }
 

@@ -284,8 +284,8 @@ export const MENTORSHIP_TRUST_BADGE = 'Mentorship cohorts · Waitlist open · Li
 /** Sticky mobile bar — second line under Join waitlist */
 export const WAITLIST_STICKY_TEASER = 'Cohort seats · limited';
 
-/** Homepage — one short line between Expert Mentorship and final CTA (no second “Why” block) */
-export const HOMEPAGE_MENTORS_TO_CTA_BRIDGE = 'Your next step is one:';
+/** Homepage — bridge between Expert Mentorship and final CTA (mentorship-only; free score: hero + #final-cta) */
+export const HOMEPAGE_MENTORS_TO_CTA_BRIDGE = 'Questions on mentorship or cohort seats?';
 
 /** Homepage — final CTA block (above footer) */
 export const FINAL_CTA_HEADLINE = 'Know the gap before the panel does.';
@@ -336,6 +336,7 @@ export const ROUTE_TITLES = {
   '/leadership-board': 'Interview Readiness Leaderboard | MentorMuni',
   '/colleges': 'MentorMuni for Colleges — Batch Readiness Dashboard',
   '/for-recruiters': 'For Recruiters — Pre-Screened Interview-Ready Talent | MentorMuni',
+  '/about': 'About MentorMuni — Interview Readiness for Engineers',
   '/contact': 'Contact MentorMuni — We\'re Here to Help',
   '/career-health': 'Career Health Dashboard | MentorMuni',
   '/dashboard/health': 'Career Health Dashboard | MentorMuni',

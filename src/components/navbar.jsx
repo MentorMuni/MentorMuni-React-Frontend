@@ -189,6 +189,9 @@ const Navbar = () => {
             <Link to="/colleges" className={navLinkClass(isActive('/colleges', true))}>
               For colleges
             </Link>
+            <Link to="/about" className={navLinkClass(isActive('/about', true))}>
+              About us
+            </Link>
             <Link
               to="/contact"
               className={navLinkClass(isActive('/contact', true))}
@@ -313,6 +316,17 @@ const Navbar = () => {
                 }`}
               >
                 For colleges
+              </Link>
+              <Link
+                to="/about"
+                onClick={handleNavClick}
+                className={`px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
+                  isActive('/about', true)
+                    ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
+                    : 'text-muted-foreground hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+                }`}
+              >
+                About us
               </Link>
               <Link
                 to="/contact"
