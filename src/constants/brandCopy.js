@@ -57,12 +57,24 @@ export const HERO_PROOF_BULLETS = [
   '500+ mock rounds logged on the platform',
 ];
 
+/** Homepage hero — quick clarity about what we offer */
+export const HERO_PLATFORM_HIGHLIGHTS = [
+  'Interview preparation platform',
+  'For 3rd & 4th year students',
+  'Mock interview preparation',
+  'Technical + HR interview practice',
+  '1:1 mentorship',
+  'Interview readiness check',
+  'Skill readiness check',
+  'Mentor + AI driven platform',
+];
+
 /** Homepage — pain section below hero (eyebrow · headline · sub · three cards) */
 export const REAL_PROBLEM_EYEBROW = 'The uncomfortable truth';
 export const REAL_PROBLEM_HEADLINE =
   'Most students at your level fail interviews — not because they did not study.';
 export const REAL_PROBLEM_SUB =
-  'Knowledge is not the problem. Performance under pressure is. Here is why busy prep still breaks in the real round.';
+  'Knowledge is not the problem. Performance under pressure is. Here is why busy preparation still breaks in the real round.';
 export const REAL_PROBLEM_CARDS = [
   {
     title: 'They practice without a score',
@@ -176,7 +188,7 @@ export const PROGRAM_6WEEK_PHASES = [
   {
     title: 'Days 46–60: Offer readiness sprint',
     body:
-      'Company-specific prep, negotiation basics, and the mindset to close the loop.',
+      'Company-specific preparation, negotiation basics, and the mindset to close the loop.',
   },
 ];
 export const PROGRAM_6WEEK_CARD_BADGE = 'Structured program';
@@ -207,22 +219,22 @@ export const HERO_YEAR_COPY = {
     headline: 'Internship season rewards clarity—not endless grinding.',
     accent: 'Know your gaps before the OA and interview window.',
     subShort:
-      'Benchmark tech + HR readiness, then prep the top gaps before your next online assessment.',
+      'Benchmark tech + HR readiness, then focus preparation on the top gaps before your next online assessment.',
     sub:
-      'Shortlists go to people who sound clear under pressure—not who solved the most random problems. Benchmark tech + HR readiness, then prep the top gaps before your next online assessment.',
+      'Shortlists go to people who sound clear under pressure—not who solved the most random problems. Benchmark tech + HR readiness, then focus preparation on the top gaps before your next online assessment.',
   },
   y4: {
     headline: HERO_HEADLINE,
     accent: HERO_HEADLINE_ACCENT,
     subShort:
       'Most students think they are prepared. They fail when it matters. See where you actually stand in minutes — before a rejection does it for you.',
-    /** Shown directly under `subShort` on the homepage hero */
-    socialProofLine: '120+ students check their readiness.',
+    /** Shown directly under `subShort` on the homepage hero (HeroSocialProof + aria-label) */
+    socialProofLine: '100+ students checked their readiness. When will you?',
     sub: HERO_HOME_SUB,
   },
   /** Working professionals — interview + skill readiness (same rubric; framing matches career moves). */
   yexp: {
-    headline: 'Switching roles or levelling up? Measure before you commit months to the wrong prep.',
+    headline: 'Switching roles or levelling up? Measure before you commit months to the wrong preparation.',
     accent: 'Interview readiness + skill readiness—in one structured baseline (~5 min).',
     subShort:
       'Benchmark DSA, System Design, HR, and projects—then close gaps with mocks and mentors aligned to your goal.',
@@ -256,6 +268,30 @@ export function buildResultShareMessage(score, roleLabel = 'Student') {
 /** Mission / positioning — footer, meta, tool intros */
 export const MISSION_TAGLINE =
   'An interview readiness system — scores, gap clarity, and performance reps — so you walk in prepared, not guessing.';
+
+/** About page — section title + lead under the mission line */
+export const ABOUT_SYSTEM_SECTION_TITLE = 'What interview readiness means here';
+export const ABOUT_SYSTEM_SECTION_LEAD =
+  'Most preparation stops at content. We connect measurement to practice: you see where you stand, get clarity on what to fix first, then rehearse until your answers hold up under pressure — not just on paper or in passive tutorials.';
+
+/** About page — three loops (aligned with MISSION_TAGLINE) */
+export const ABOUT_SYSTEM_LOOPS = [
+  {
+    title: 'Scores',
+    body:
+      'A baseline you can trust — not guesswork. Know how interview-ready you are before companies decide for you, and track whether you are actually improving.',
+  },
+  {
+    title: 'Gap clarity',
+    body:
+      'Topic- and behaviour-level visibility: where you leak points, what panels actually test, and what to prioritise — instead of a vague “study more DSA” list.',
+  },
+  {
+    title: 'Performance reps',
+    body:
+      'Mocks, AI-led practice, and mentor feedback so you train how you will perform — live, under scrutiny — not how you scroll feeds or read solutions.',
+  },
+];
 
 /** Completing the free Interview Readiness assessment — coupon reward (homepage + promos) */
 /** Promo bar — line 1: the offer (what) */

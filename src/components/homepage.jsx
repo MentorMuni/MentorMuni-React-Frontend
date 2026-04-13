@@ -14,6 +14,7 @@ import {
   HERO_JOURNEY_STEPS,
   HERO_JOURNEY_ARC,
   HERO_PROOF_BULLETS,
+  HERO_PLATFORM_HIGHLIGHTS,
   MISSION_TAGLINE,
   PRODUCT_READINESS_SCORE,
   CONTACT_PHONE_DISPLAY,
@@ -65,7 +66,269 @@ import {
   Mail, Phone, Check, X,
   BookOpen, Sparkles, Mic2,
   Gift, Clock, TrendingUp, AlertTriangle, Compass,
+  Handshake,
 } from 'lucide-react';
+
+/** Icons aligned with HERO_PLATFORM_HIGHLIGHTS order (homepage value grid) */
+const HERO_PLATFORM_HIGHLIGHT_ICONS = [
+  GraduationCap,
+  Users,
+  Mic2,
+  Cpu,
+  Handshake,
+  Target,
+  BarChart3,
+  Sparkles,
+];
+
+const heroValueSpring = { type: 'spring', stiffness: 420, damping: 28, mass: 0.85 };
+
+/** Per-tile accent — full Tailwind classes so each card reads clearly at a glance */
+const HERO_PLATFORM_TILE_THEMES = [
+  {
+    card: 'border-amber-400/50 bg-gradient-to-br from-amber-500/25 via-amber-950/55 to-[#060a12]',
+    icon: 'from-amber-400/55 via-orange-500/35 to-amber-600/25 ring-amber-300/40 shadow-[0_0_20px_rgba(251,191,36,0.2)]',
+    glow: 'bg-amber-400/25',
+    text: 'text-amber-50',
+    line: 'from-amber-300 via-orange-400 to-amber-500',
+  },
+  {
+    card: 'border-sky-400/50 bg-gradient-to-br from-sky-500/25 via-slate-900/70 to-[#060a12]',
+    icon: 'from-sky-400/50 via-cyan-500/35 to-blue-600/30 ring-sky-300/40 shadow-[0_0_20px_rgba(56,189,248,0.2)]',
+    glow: 'bg-sky-400/25',
+    text: 'text-sky-50',
+    line: 'from-sky-300 via-cyan-400 to-sky-500',
+  },
+  {
+    card: 'border-rose-400/45 bg-gradient-to-br from-rose-500/22 via-rose-950/50 to-[#060a12]',
+    icon: 'from-rose-400/50 via-rose-500/35 to-pink-700/25 ring-rose-300/35 shadow-[0_0_20px_rgba(251,113,133,0.18)]',
+    glow: 'bg-rose-400/22',
+    text: 'text-rose-50',
+    line: 'from-rose-300 via-pink-400 to-rose-500',
+  },
+  {
+    card: 'border-violet-400/50 bg-gradient-to-br from-violet-500/25 via-violet-950/55 to-[#060a12]',
+    icon: 'from-violet-400/50 via-purple-500/35 to-fuchsia-700/25 ring-violet-300/40 shadow-[0_0_20px_rgba(167,139,250,0.2)]',
+    glow: 'bg-violet-400/22',
+    text: 'text-violet-50',
+    line: 'from-violet-300 via-fuchsia-400 to-violet-500',
+  },
+  {
+    card: 'border-emerald-400/50 bg-gradient-to-br from-emerald-500/25 via-emerald-950/50 to-[#060a12]',
+    icon: 'from-emerald-400/50 via-teal-500/35 to-emerald-700/25 ring-emerald-300/40 shadow-[0_0_20px_rgba(52,211,153,0.2)]',
+    glow: 'bg-emerald-400/22',
+    text: 'text-emerald-50',
+    line: 'from-emerald-300 via-teal-400 to-emerald-500',
+  },
+  {
+    card: 'border-blue-400/50 bg-gradient-to-br from-blue-500/25 via-blue-950/55 to-[#060a12]',
+    icon: 'from-blue-400/50 via-indigo-500/35 to-blue-700/30 ring-blue-300/40 shadow-[0_0_20px_rgba(96,165,250,0.2)]',
+    glow: 'bg-blue-400/22',
+    text: 'text-blue-50',
+    line: 'from-blue-300 via-indigo-400 to-blue-500',
+  },
+  {
+    card: 'border-teal-400/50 bg-gradient-to-br from-teal-500/25 via-teal-950/50 to-[#060a12]',
+    icon: 'from-teal-400/50 via-cyan-600/30 to-teal-700/25 ring-teal-300/40 shadow-[0_0_20px_rgba(45,212,191,0.2)]',
+    glow: 'bg-teal-400/22',
+    text: 'text-teal-50',
+    line: 'from-teal-300 via-cyan-400 to-teal-500',
+  },
+  {
+    card: 'border-fuchsia-400/50 bg-gradient-to-br from-fuchsia-500/25 via-purple-950/55 to-[#060a12]',
+    icon: 'from-fuchsia-400/50 via-purple-500/35 to-pink-600/25 ring-fuchsia-300/40 shadow-[0_0_22px_rgba(232,121,249,0.22)]',
+    glow: 'bg-fuchsia-400/22',
+    text: 'text-fuchsia-50',
+    line: 'from-fuchsia-300 via-purple-400 to-fuchsia-500',
+  },
+];
+
+/** Premium animated “platform stack” strip — mesh, gradient border, spring cards */
+function HeroValueStack({ reduceMotion }) {
+  const cardSpringHover = reduceMotion ? {} : { y: -6, scale: 1.02, transition: heroValueSpring };
+  const cardTap = reduceMotion ? {} : { scale: 0.99 };
+
+  return (
+    <>
+      <style>{`
+        @keyframes mm-value-border-flow {
+          0% { background-position: 0% 50%; }
+          100% { background-position: 200% 50%; }
+        }
+        .mm-value-border-anim {
+          background: linear-gradient(
+            110deg,
+            rgba(255,149,0,0.95),
+            rgba(34,211,238,0.85),
+            rgba(168,85,247,0.75),
+            rgba(255,149,0,0.95)
+          );
+          background-size: 220% 220%;
+          animation: mm-value-border-flow 9s ease infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .mm-value-border-anim { animation: none; background-position: 40% 50%; }
+        }
+        @keyframes mm-value-mesh-shift {
+          0%, 100% { opacity: 0.35; transform: scale(1) translate(0, 0); }
+          50% { opacity: 0.5; transform: scale(1.03) translate(-1%, 1%); }
+        }
+        .mm-value-mesh {
+          background-image:
+            radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px),
+            radial-gradient(at 80% 20%, rgba(255,149,0,0.12), transparent 50%),
+            radial-gradient(at 20% 80%, rgba(34,211,238,0.1), transparent 45%);
+          background-size: 20px 20px, 100% 100%, 100% 100%;
+          animation: mm-value-mesh-shift 14s ease-in-out infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .mm-value-mesh { animation: none; opacity: 0.25; }
+        }
+        @keyframes mm-value-blob-1 {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.45; }
+          50% { transform: translate(18px, -14px) scale(1.08); opacity: 0.65; }
+        }
+        @keyframes mm-value-blob-2 {
+          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
+          50% { transform: translate(-16px, 12px) scale(1.06); opacity: 0.58; }
+        }
+        .mm-value-blob-1 { animation: mm-value-blob-1 11s ease-in-out infinite; }
+        .mm-value-blob-2 { animation: mm-value-blob-2 13s ease-in-out infinite 1.5s; }
+        @media (prefers-reduced-motion: reduce) {
+          .mm-value-blob-1, .mm-value-blob-2 { animation: none; }
+        }
+      `}</style>
+
+      <motion.section
+        initial={reduceMotion ? false : { opacity: 0, y: 28 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, amount: 0.15 }}
+        transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
+        className="relative mt-8 w-full sm:mt-10"
+        aria-label="What MentorMuni offers"
+      >
+        <div className="relative mx-auto max-w-5xl rounded-[28px] p-[1px] shadow-[0_32px_100px_rgba(0,0,0,0.45)] mm-value-border-anim">
+          <div className="relative overflow-hidden rounded-[27px] border border-white/[0.06] bg-[#05080f]">
+            <div className="pointer-events-none absolute inset-0 mm-value-mesh" aria-hidden />
+            <div
+              className="pointer-events-none absolute -left-20 top-0 h-72 w-72 rounded-full bg-orange-500/20 blur-[100px] mm-value-blob-1"
+              aria-hidden
+            />
+            <div
+              className="pointer-events-none absolute -right-16 bottom-0 h-64 w-64 rounded-full bg-cyan-500/15 blur-[90px] mm-value-blob-2"
+              aria-hidden
+            />
+            <div
+              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent"
+              aria-hidden
+            />
+
+            <div className="relative z-10 px-4 py-8 sm:px-7 sm:py-10 lg:px-10">
+              <motion.div
+                initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.55, ease: [0.2, 0.8, 0.2, 1] }}
+                className="mb-8 flex flex-col items-center gap-3 text-center"
+              >
+                <motion.span
+                  animate={
+                    reduceMotion
+                      ? undefined
+                      : { rotate: [0, 8, -6, 0], scale: [1, 1.05, 1] }
+                  }
+                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-cyan-100/95 backdrop-blur-md sm:text-[11px]"
+                >
+                  <Sparkles className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
+                  Platform stack
+                </motion.span>
+                <h2 className="max-w-2xl text-balance bg-gradient-to-b from-white via-white to-slate-400 bg-clip-text text-xl font-bold tracking-tight text-transparent sm:text-2xl md:text-3xl">
+                  What MentorMuni gives you
+                </h2>
+                <p className="max-w-lg text-[13px] leading-relaxed text-slate-400 sm:text-sm md:text-base">
+                  Everything in one place — from practice to performance, so you walk into interviews ready.
+                </p>
+              </motion.div>
+
+              <motion.ul
+                initial={reduceMotion ? 'visible' : 'hidden'}
+                whileInView="visible"
+                viewport={{ once: true, amount: 0.12 }}
+                variants={{
+                  hidden: {},
+                  visible: {
+                    transition: {
+                      staggerChildren: reduceMotion ? 0 : 0.065,
+                      delayChildren: reduceMotion ? 0 : 0.12,
+                    },
+                  },
+                }}
+                className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+              >
+                {HERO_PLATFORM_HIGHLIGHTS.map((item, idx) => {
+                  const Icon = HERO_PLATFORM_HIGHLIGHT_ICONS[idx] ?? Sparkles;
+                  const theme = HERO_PLATFORM_TILE_THEMES[idx % HERO_PLATFORM_TILE_THEMES.length];
+                  return (
+                    <motion.li
+                      key={item}
+                      custom={idx}
+                      variants={{
+                        hidden: {
+                          opacity: 0,
+                          y: 32,
+                          filter: reduceMotion ? 'none' : 'blur(12px)',
+                        },
+                        visible: (i) => ({
+                          opacity: 1,
+                          y: 0,
+                          filter: 'blur(0px)',
+                          transition: {
+                            delay: reduceMotion ? 0 : i * 0.04,
+                            duration: 0.65,
+                            ease: [0.16, 1, 0.3, 1],
+                          },
+                        }),
+                      }}
+                      className="list-none"
+                    >
+                      <motion.div
+                        whileHover={reduceMotion ? undefined : cardSpringHover}
+                        whileTap={reduceMotion ? undefined : cardTap}
+                        className={`group relative h-full min-h-[5.75rem] overflow-hidden rounded-2xl border bg-gradient-to-br p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] sm:min-h-0 ${theme.card}`}
+                      >
+                        <div
+                          className={`pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full blur-2xl transition-opacity duration-500 group-hover:opacity-100 ${theme.glow} opacity-80`}
+                          aria-hidden
+                        />
+                        <div className="relative flex items-start gap-3.5">
+                          <span
+                            className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 transition-transform duration-300 group-hover:scale-110 ${theme.icon}`}
+                          >
+                            <Icon className="h-[18px] w-[18px] text-white drop-shadow-sm transition-transform duration-300 group-hover:rotate-[-8deg]" strokeWidth={2} aria-hidden />
+                          </span>
+                          <p
+                            className={`min-w-0 flex-1 pt-0.5 text-left text-[12px] font-semibold leading-snug sm:text-[13px] ${theme.text}`}
+                          >
+                            {item}
+                          </p>
+                        </div>
+                        <div
+                          className={`pointer-events-none absolute bottom-0 left-4 right-4 h-[2px] origin-left scale-x-0 bg-gradient-to-r opacity-0 transition-all duration-500 ease-out group-hover:scale-x-100 group-hover:opacity-100 ${theme.line}`}
+                          aria-hidden
+                        />
+                      </motion.div>
+                    </motion.li>
+                  );
+                })}
+              </motion.ul>
+            </div>
+          </div>
+        </div>
+      </motion.section>
+    </>
+  );
+}
 
 /* ─── Scroll-reveal wrapper ─────────────────────────────────── */
 const FadeUp = ({ children, delay = 0, className = '' }) => {
@@ -168,7 +431,7 @@ const STUDENT_SNIPPETS = [
     gradient: 'from-[#FF9500] via-[#FFB347] to-[#FFD580]',
     tag: '4th Year · CSE',
     insight: 'Named the real gap',
-    text: 'Seniors kept saying “practice more,” but nobody said what to practice. The readiness breakdown pointed at System Design—not everything at once—so I could prep with a target instead of a guess.',
+    text: 'Seniors kept saying “practice more,” but nobody said what to practice. The readiness breakdown pointed at System Design—not everything at once—so I could prepare with a target instead of a guess.',
     proofMetric: 'Proof: readiness 42% → 78% after 4 weeks focused on one gap',
     Icon: Target,
   },
@@ -263,7 +526,7 @@ const earlyBenefitItem = {
   },
 };
 
-const SOCIAL_PROOF_COUNT = 120;
+const SOCIAL_PROOF_COUNT = 100;
 
 /** Hero line under subShort — avatar stack + count-up; `fullLabel` for a11y */
 function HeroSocialProof({ fullLabel, reduceMotion }) {
@@ -313,9 +576,11 @@ function HeroSocialProof({ fullLabel, reduceMotion }) {
           />
         ))}
       </div>
-      <p className="max-w-[20rem] text-center text-[15px] font-semibold leading-snug text-neutral-800 sm:max-w-none sm:text-left sm:text-[15px]">
+      <p className="max-w-[22rem] text-center text-[15px] font-semibold leading-snug text-neutral-800 sm:max-w-none sm:text-left sm:text-[15px]">
         <span className="tabular-nums font-bold text-[#c2410c]">{count}</span>
-        <span className="font-semibold text-neutral-800">+ students check their readiness.</span>
+        <span className="font-semibold text-neutral-800">
+          + students checked their readiness… <span className="text-[#9a3412]">When will you?</span>
+        </span>
       </p>
     </motion.div>
   );
@@ -395,7 +660,7 @@ const HomePage = () => {
                 </span>
                 <span
                   className="inline-flex rotate-[2deg] items-center rounded-md border-2 border-cyan-600/75 bg-gradient-to-br from-cyan-50 to-sky-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-cyan-950 shadow-[2px_3px_0_0_rgba(8,145,178,0.35)] sm:text-[11px]"
-                  title="Skills-first interview prep for students and early-career engineers"
+                  title="Skills-first interview preparation for students and early-career engineers"
                 >
                   {HERO_GENZ_STICKER}
                 </span>
@@ -483,6 +748,8 @@ const HomePage = () => {
               <HeroLoopVideo />
             </div>
           </div>
+
+          <HeroValueStack reduceMotion={reduceMotion} />
         </div>
       </section>
 
@@ -976,7 +1243,7 @@ const HomePage = () => {
                     delay={0.18}
                     className="relative text-sm leading-relaxed text-muted-foreground md:text-base"
                   >
-                    We started MentorMuni after seeing the same pattern: final-year students showing up for interviews with almost no structured prep.
+                    We started MentorMuni after seeing the same pattern: final-year students showing up for interviews with almost no structured preparation.
                   </StoryLine>
                   <StoryLine
                     delay={0.28}
@@ -1022,7 +1289,7 @@ const HomePage = () => {
                     delay={0.5}
                     className="relative text-sm font-semibold leading-relaxed text-foreground md:text-base"
                   >
-                    Interview readiness check, voice mocks, and mentor-backed prep—before the rounds that actually count.
+                    Interview readiness check, voice mocks, and mentor-backed preparation—before the rounds that actually count.
                   </StoryLine>
                 </div>
               </div>
@@ -1034,7 +1301,7 @@ const HomePage = () => {
               { icon: '🎤', title: 'First “real” round was never mocked', line: 'Many students never ran a serious mock interview before facing a panel.', tint: 'from-red-500/10 to-transparent border-red-500/20' },
               { icon: '📉', title: 'Fewer interviews, same crowd', line: 'Open roles are harder to land—walking in under-prepared costs more than before.', tint: 'from-amber-500/10 to-transparent border-amber-500/25' },
               { icon: '📊', title: 'Rejection without a map', line: 'Without a readiness score, you don’t know what to fix first—only that it “went badly.”', tint: 'from-[#FF9500]/12 to-transparent border-[#FFB347]/30' },
-              { icon: '✅', title: '100% prep before Day 1', line: 'Measure gaps, practice out loud, then close them with mentorship—before real interviews.', tint: 'from-emerald-500/10 to-transparent border-emerald-500/25' },
+              { icon: '✅', title: '100% preparation before Day 1', line: 'Measure gaps, practice out loud, then close them with mentorship—before real interviews.', tint: 'from-emerald-500/10 to-transparent border-emerald-500/25' },
             ].map((item, i) => (
               <FadeUp key={item.title} delay={i * 0.06}>
                 <motion.div
@@ -1073,7 +1340,7 @@ const HomePage = () => {
                   {[
                     'Free interview readiness check—a clear score and what to fix first',
                     'Voice mocks so your first “real” panel isn’t your first time under pressure',
-                    'Mentorship to close gaps and align prep to the companies you’re targeting',
+                    'Mentorship to close gaps and align preparation to the companies you’re targeting',
                   ].map((p) => (
                     <li key={p} className="flex gap-2 text-sm text-muted-foreground">
                       <Check size={14} className="text-emerald-600 shrink-0 mt-0.5" />
@@ -1398,7 +1665,7 @@ const HomePage = () => {
             </span>
             <h2 className="mb-3 text-2xl font-bold leading-tight tracking-tight text-foreground md:text-3xl">
               Built for placement reality —{' '}
-              <span className="text-[#FF9500]">not generic “prep.”</span>
+              <span className="text-[#FF9500]">not generic “preparation.”</span>
             </h2>
             <p className="mb-6 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-[15px]">
               {MISSION_TAGLINE} We tie scoring, practice, and mentors together so you improve where panels actually probe —

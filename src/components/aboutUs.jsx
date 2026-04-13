@@ -1,15 +1,20 @@
 import React, { useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
-import { Target, Users, Sparkles, ArrowRight, Mail } from 'lucide-react';
+import { Target, Users, Sparkles, ArrowRight, Mail, BarChart3, Layers, Repeat2 } from 'lucide-react';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import {
   MISSION_TAGLINE,
+  ABOUT_SYSTEM_SECTION_TITLE,
+  ABOUT_SYSTEM_SECTION_LEAD,
+  ABOUT_SYSTEM_LOOPS,
   PRIMARY_CTA_LABEL,
   SECONDARY_CTA_BOOK_CALL,
   CONTACT_PHONE_DISPLAY,
   CONTACT_PHONE_HREF,
 } from '../constants/brandCopy';
+
+const ABOUT_LOOP_ICONS = [BarChart3, Layers, Repeat2];
 
 const easeOut = [0.22, 1, 0.36, 1];
 
@@ -97,6 +102,52 @@ const AboutUs = () => {
           >
             {MISSION_TAGLINE}
           </motion.p>
+        </div>
+      </section>
+
+      <section
+        className="border-t border-border bg-white px-5 py-14 sm:px-6 md:py-16"
+        aria-labelledby="about-system-heading"
+      >
+        <div className="mx-auto max-w-5xl">
+          <FadeUp className="text-left">
+            <h2
+              id="about-system-heading"
+              className="text-xl font-bold tracking-tight text-foreground md:text-2xl"
+            >
+              {ABOUT_SYSTEM_SECTION_TITLE}
+            </h2>
+            <figure className="mt-6 rounded-2xl border border-[#FF9500]/25 bg-gradient-to-br from-[#FFF8EE] to-white p-5 shadow-[0_4px_24px_rgba(255,149,0,0.08)] md:p-6">
+              <blockquote className="text-base font-semibold leading-relaxed text-foreground md:text-lg">
+                <span className="text-[#CC7000]">“</span>
+                {MISSION_TAGLINE}
+                <span className="text-[#CC7000]">”</span>
+              </blockquote>
+              <figcaption className="mt-3 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                Our positioning — one system, three loops
+              </figcaption>
+            </figure>
+            <p className="mt-6 max-w-3xl text-sm leading-relaxed text-muted-foreground md:text-[15px]">
+              {ABOUT_SYSTEM_SECTION_LEAD}
+            </p>
+          </FadeUp>
+
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
+            {ABOUT_SYSTEM_LOOPS.map((loop, i) => {
+              const Icon = ABOUT_LOOP_ICONS[i] ?? Sparkles;
+              return (
+                <FadeUp key={loop.title} delay={i * 0.07}>
+                  <article className="flex h-full flex-col rounded-2xl border border-border bg-[#FAFAFA]/90 p-5 shadow-sm transition hover:border-[#FF9500]/35 hover:shadow-[0_8px_28px_rgba(255,149,0,0.1)] md:p-6">
+                    <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-[#FFF4E0] text-[#CC7000]">
+                      <Icon size={20} strokeWidth={2} aria-hidden />
+                    </div>
+                    <h3 className="mb-2 text-base font-bold text-foreground md:text-lg">{loop.title}</h3>
+                    <p className="text-sm leading-relaxed text-muted-foreground">{loop.body}</p>
+                  </article>
+                </FadeUp>
+              );
+            })}
+          </div>
         </div>
       </section>
 
