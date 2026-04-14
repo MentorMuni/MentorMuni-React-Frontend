@@ -1,20 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
-import {
-  Mail,
-  Phone,
-  MapPin,
-  Send,
-  RotateCcw,
-  Loader2,
-  MessageSquare,
-  Check,
-  UserRound,
-  GraduationCap,
-  Clock,
-  Shield,
-} from 'lucide-react';
+import { Send, RotateCcw, Loader2, UserRound, GraduationCap, Sparkles } from 'lucide-react';
 import { INQUIRIES_URL } from '../config';
 import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_HREF, MISSION_TAGLINE } from '../constants/brandCopy';
 
@@ -28,9 +15,9 @@ const FadeUp = ({ children, delay = 0, className = '' }) => {
     <motion.div
       ref={ref}
       className={className}
-      initial={reduceMotion ? false : { opacity: 0, y: 22 }}
-      animate={inView ? { opacity: 1, y: 0 } : reduceMotion ? {} : { opacity: 0, y: 22 }}
-      transition={{ duration: reduceMotion ? 0 : 0.55, delay: reduceMotion ? 0 : delay, ease: easeOut }}
+      initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+      animate={inView ? { opacity: 1, y: 0 } : reduceMotion ? {} : { opacity: 0, y: 16 }}
+      transition={{ duration: reduceMotion ? 0 : 0.45, delay: reduceMotion ? 0 : delay, ease: easeOut }}
     >
       {children}
     </motion.div>
@@ -38,7 +25,7 @@ const FadeUp = ({ children, delay = 0, className = '' }) => {
 };
 
 const inputBase =
-  'w-full rounded-xl border bg-white px-4 py-3 text-[0.9375rem] text-foreground shadow-sm transition-[box-shadow,border-color] duration-200 outline-none placeholder:text-muted-foreground';
+  'w-full rounded-xl border border-border bg-white px-3.5 py-2.5 text-[15px] text-foreground shadow-sm transition-[box-shadow,border-color] outline-none placeholder:text-muted-foreground focus:border-[#FFB347] focus:ring-2 focus:ring-[#FF9500]/20';
 
 const AUDIENCES = [
   { id: 'students', param: null, label: 'Students & learners', short: 'Learners', Icon: UserRound },
@@ -66,7 +53,6 @@ const ContactPage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const topic = searchParams.get('topic');
   const audience = audienceFromTopic(topic);
-  const reduceMotion = useReducedMotion();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -160,15 +146,15 @@ const ContactPage = () => {
       if (response.ok && data?.success !== false) {
         setSubmitStatus({
           type: 'success',
-          message: 'Thank you! A MentorMuni counselor will reach out shortly.',
+          message: 'Thank you. Our team will respond shortly.',
         });
         handleReset();
       } else {
         const msg =
           data?.message ||
           (response.status === 404
-            ? 'Contact endpoint not configured on server. Please email us at hello@mentormuni.com'
-            : 'Failed to send message. Please try again or email us at hello@mentormuni.com');
+            ? 'Contact endpoint not configured on server. Please email hello@mentormuni.com'
+            : 'Unable to send. Please try again or email hello@mentormuni.com');
         setSubmitStatus({ type: 'error', message: msg });
       }
     } catch (err) {
@@ -177,8 +163,8 @@ const ContactPage = () => {
       setSubmitStatus({
         type: 'error',
         message: isCorsOrNetwork
-          ? 'Cannot reach server (check CORS and network). Please email us at hello@mentormuni.com'
-          : 'Failed to send message. Please try again or email us at hello@mentormuni.com',
+          ? 'Cannot reach server. Please email hello@mentormuni.com'
+          : 'Unable to send. Please try again or email hello@mentormuni.com',
       });
     } finally {
       setIsSubmitting(false);
@@ -193,12 +179,12 @@ const ContactPage = () => {
   const fieldClass = (name) =>
     `${inputBase} ${
       errors[name]
-        ? 'border-rose-400/90 ring-2 ring-rose-100 focus:border-rose-500'
-        : 'border-border focus:border-[#FFB347] focus:ring-2 focus:ring-[#FF9500]/25'
+        ? 'border-rose-400/90 ring-2 ring-rose-100 focus:border-rose-500 focus:ring-rose-200/50'
+        : ''
     }`;
 
   const linkClass =
-    'font-semibold text-[#1A6FC4] underline decoration-[#1A6FC4]/35 underline-offset-2 transition hover:text-[#155a9e]';
+    'font-semibold text-[#c2410c] underline decoration-[#FFB347]/55 underline-offset-[3px] transition hover:text-[#E88600]';
 
   const selectAudience = (id) => {
     if (id !== audience) {
@@ -233,41 +219,41 @@ const ContactPage = () => {
     students: {
       title: 'Send a message',
       description:
-        'Share your background, goals, and timeline. We route every enquiry to the right counselor.',
+        'Share your background, goals, and timeline. We route enquiries to the appropriate counselor.',
       submit: 'Submit enquiry',
       placeholders: {
-        name: 'Your full name',
-        email: 'you@email.com',
+        name: 'Full name',
+        email: 'Work or personal email',
         phone: '+91 …',
-        message: 'How can we help? Target companies, skills, and urgency help us respond faster.',
+        message: 'How can we help? Include goals, timeline, and urgency if relevant.',
       },
     },
     colleges: {
       title: 'Partnership enquiry',
       description:
-        'Include institution name, your role, approximate batch size, placement season, and any programs you want (e.g. leadership board, readiness sprint).',
+        'Include institution name, your role, approximate batch size, placement season, and programs of interest.',
       submit: 'Submit partnership enquiry',
       placeholders: {
-        name: 'Your name and title (e.g. TPO)',
-        email: 'official.institution@domain.edu',
-        phone: 'Direct line or department number',
+        name: 'Name and title',
+        email: 'Official institutional email',
+        phone: 'Direct or department line',
         message:
-          'College name, cohort size, key dates, and what you want to pilot—we will reply with a short call plan.',
+          'College name, cohort size, key dates, and what you would like to pilot.',
       },
     },
   };
 
   const hero = {
     students: {
-      eyebrow: 'Contact · Students & learners',
-      title: 'Tell us what you are working toward',
+      eyebrow: 'Contact',
+      title: 'Get in touch',
       subtitle: MISSION_TAGLINE,
     },
     colleges: {
-      eyebrow: 'Contact · Colleges & TPOs',
-      title: 'Partnership and campus programs',
+      eyebrow: 'Contact',
+      title: 'Campus & partnership enquiries',
       subtitle:
-        'We work with placement teams on cohort readiness, leadership board and competition formats, and optional bulk mentorship. Share your context and we will respond with a concise next step—usually a short discovery call.',
+        'We work with placement teams on cohort readiness, leadership board and competition formats, and optional bulk mentorship. We typically respond with a short discovery call.',
     },
   }[audience];
 
@@ -278,210 +264,173 @@ const ContactPage = () => {
       q: 'How soon will I hear back?',
       a: (
         <>
-          We aim to reply within 24 hours on business days (IST). For urgent questions, call{' '}
+          We aim to reply within 24 hours on business days (IST). For urgent matters, call{' '}
           <a href={CONTACT_PHONE_HREF} className={linkClass}>
             {CONTACT_PHONE_DISPLAY}
           </a>{' '}
-          Mon–Fri, 9am–6pm IST—or leave a note in the form and we will route it to the right person.
+          Mon–Fri, 9am–6pm IST.
         </>
       ),
     },
     {
-      q: 'Can I try MentorMuni before paying for mentorship?',
+      q: 'Can I try MentorMuni before paid mentorship?',
       a: (
         <>
-          Yes. Start with the free Interview Readiness Score (~5 minutes) to see your gaps by topic, then use tools like the Resume ATS checker and AI mock interviews on the free tier. When you are ready for paid mentorship or cohort support, reach out through this form—we will walk you through the next steps.
+          Yes. Start with the free Interview Readiness Score, then use resume and mock tools on the free tier. For paid mentorship or cohort support, use this form and we will outline next steps.
         </>
       ),
     },
     {
-      q: 'Do you guarantee a job or offer refunds if I am not placed?',
+      q: 'Do you guarantee placement or offer refunds?',
       a: (
         <>
-          We do not guarantee placement and we do not offer refunds on that basis—no programme can honestly promise an offer. What we promise is to stay with you: mentorship and placement support continue until you get placed, as part of the paid programme. What is included and how fees work are shared when you speak with our team—use the form above to get started.
+          We do not guarantee placement. Paid programme scope and fees are explained when you speak with our team—use the form to begin.
         </>
       ),
     },
     {
       q: 'What makes MentorMuni different from YouTube and LeetCode?',
-      a: 'YouTube cannot surface your specific interview gaps. LeetCode alone does not prepare you for HR rounds, salary conversations, or referrals. MentorMuni combines a real readiness score, AI practice, and mentors who have cleared the kinds of interviews you are targeting—so you fix what matters first, not everything at once.',
+      a: 'We combine a readiness score, AI practice, and mentors who understand the interviews you are targeting—so you prioritise what matters.',
     },
     {
       q: 'Do you work with employers or campuses?',
       a: (
         <>
-          We partner with hiring teams and colleges. Recruiters should start on{' '}
+          Recruiters:{' '}
           <Link to="/for-recruiters" className={linkClass}>
             For Recruiters
           </Link>
-          . Colleges &amp; TPOs:{' '}
+          . Colleges:{' '}
           <Link to="/colleges" className={linkClass}>
             For Colleges
           </Link>
-          . This contact form is for students, learners, and campus enquiries.
+          .
         </>
       ),
     },
   ];
 
   const whyReachOutTitle = {
-    students: 'Why learners contact us',
+    students: 'Common reasons to contact us',
     colleges: 'What we discuss with institutions',
   }[audience];
 
-  const formAccentClass = {
-    students: 'border-l-[#FF9500]',
-    colleges: 'border-l-[#1A6FC4]',
-  }[audience];
-
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#FAFAF8] text-muted-foreground">
-      <div
-        className="pointer-events-none absolute inset-0 overflow-hidden"
-        aria-hidden
-      >
-        <div className="absolute -left-32 top-20 h-72 w-72 rounded-full bg-neutral-300/20 blur-3xl" />
-        <div className="absolute -right-24 top-40 h-80 w-80 rounded-full bg-[#1A6FC4]/8 blur-3xl" />
-        <div className="absolute bottom-0 left-1/2 h-96 w-[120%] -translate-x-1/2 rounded-[100%] bg-gradient-to-t from-[#FFFDF8] to-transparent blur-2xl" />
-      </div>
+    <div className="min-h-screen bg-background text-muted-foreground">
+      <div className="relative overflow-hidden border-b border-border bg-gradient-to-b from-[#f8fbff] via-white to-[#fff8ee]">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_55%_at_75%_-15%,rgba(255,149,0,0.14),transparent)]" aria-hidden />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_12%_45%,rgba(34,211,238,0.09),transparent)]" aria-hidden />
+        <div className="relative mx-auto max-w-5xl px-5 py-10 sm:px-6 sm:py-12 lg:px-8">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-200/80 bg-cyan-50/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-cyan-900">
+                <Sparkles className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
+                AI-assisted routing
+              </div>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#EA580C]">{hero.eyebrow}</p>
+              <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
+                {hero.title}
+              </h1>
+              <p className="mt-3 text-base leading-relaxed sm:text-[17px]">{hero.subtitle}</p>
+              {audience === 'students' && (
+                <p className="mt-4 text-sm text-muted-foreground">
+                  <Link to="/start-assessment" className={linkClass}>
+                    Free readiness assessment
+                  </Link>
+                </p>
+              )}
+              {audience === 'colleges' && (
+                <p className="mt-4 text-sm text-muted-foreground">
+                  <Link to="/colleges" className={linkClass}>
+                    Program overview
+                  </Link>
+                  <span className="mx-2 text-border">·</span>
+                  <Link to="/leadership-board" className={linkClass}>
+                    Leadership board
+                  </Link>
+                </p>
+              )}
+            </div>
 
-      <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-12 sm:px-6 sm:pt-16 md:pb-28">
-        <div className="mx-auto mb-10 max-w-3xl">
-          <p className="mb-2 text-center text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">
-            I am reaching out as
-          </p>
-          <div className="flex flex-col gap-2 rounded-2xl border border-neutral-200/90 bg-white p-1.5 shadow-sm sm:flex-row sm:rounded-xl">
-            {AUDIENCES.map(({ id, label, short, Icon }) => {
-              const active = audience === id;
-              return (
-                <button
-                  key={id}
-                  type="button"
-                  onClick={() => selectAudience(id)}
-                  aria-pressed={active}
-                  className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-3 py-3 text-sm font-semibold transition-all sm:px-4 ${
-                    active
-                      ? 'bg-foreground text-white shadow-md'
-                      : 'text-muted-foreground hover:bg-neutral-50 hover:text-foreground'
-                  }`}
-                >
-                  <Icon className="h-4 w-4 shrink-0 opacity-90" strokeWidth={2} aria-hidden />
-                  <span className="hidden sm:inline">{label}</span>
-                  <span className="sm:hidden">{short}</span>
-                </button>
-              );
-            })}
-          </div>
-          <div className="mt-3 flex flex-wrap items-center justify-center gap-x-5 gap-y-1 text-xs text-hint">
-            <span className="inline-flex items-center gap-1.5">
-              <Clock className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />
-              Response within 24h · business days (IST)
-            </span>
-            <span className="inline-flex items-center gap-1.5">
-              <Shield className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />
-              Enquiries routed to the right team
-            </span>
+            <div className="w-full max-w-md shrink-0 lg:max-w-sm">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">I am contacting as</p>
+              <div
+                className="inline-flex w-full rounded-xl border border-border bg-white/90 p-1 shadow-sm backdrop-blur-sm"
+                role="tablist"
+                aria-label="Contact audience"
+              >
+                {AUDIENCES.map(({ id, label, short, Icon }) => {
+                  const active = audience === id;
+                  return (
+                    <button
+                      key={id}
+                      type="button"
+                      role="tab"
+                      aria-selected={active}
+                      onClick={() => selectAudience(id)}
+                      className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all ${
+                        active
+                          ? 'bg-[#FF9500] text-white shadow-[0_4px_14px_rgba(255,149,0,0.35)]'
+                          : 'text-muted-foreground hover:bg-[#FFF8EE]'
+                      }`}
+                    >
+                      <Icon className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.75} aria-hidden />
+                      <span className="hidden sm:inline">{label}</span>
+                      <span className="sm:hidden">{short}</span>
+                    </button>
+                  );
+                })}
+              </div>
+              <p className="mt-2 text-xs text-hint">Response within one business day (IST), typically sooner.</p>
+            </div>
           </div>
         </div>
+      </div>
 
-        <motion.header
-          className="mx-auto mb-12 max-w-3xl text-center md:mb-14"
-          initial={reduceMotion ? false : { opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: reduceMotion ? 0 : 0.5, ease: easeOut }}
-        >
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-muted-foreground">{hero.eyebrow}</p>
-          <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-5xl md:text-6xl leading-[1.08]">
-            {hero.title}
-          </h1>
-          <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
-            {hero.subtitle}
-          </p>
-          {audience === 'students' && (
-            <p className="mt-4 text-sm text-hint">
-              Prefer to explore first?{' '}
-              <Link to="/start-assessment" className={linkClass}>
-                Take the free readiness assessment
-              </Link>
-            </p>
-          )}
-          {audience === 'colleges' && (
-            <p className="mt-4 text-sm text-hint">
-              <Link to="/colleges" className={linkClass}>
-                College program overview
-              </Link>
-              <span className="mx-2 text-neutral-300">·</span>
-              <Link to="/leadership-board" className={linkClass}>
-                Leadership board
-              </Link>
-            </p>
-          )}
-        </motion.header>
-
-        <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.12fr)] lg:gap-10 lg:items-start">
-          <div className="space-y-6">
+      <div className="mx-auto max-w-5xl px-5 py-12 sm:px-6 lg:px-8 lg:py-16">
+        <div className="grid gap-10 lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)] lg:gap-14 xl:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
+          <div className="space-y-10">
             <FadeUp>
-              <div className="rounded-2xl border border-neutral-200/90 bg-white p-6 shadow-sm">
-                <div className="mb-5 flex items-center gap-2">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-neutral-100 text-muted-foreground">
-                    <MessageSquare className="h-4 w-4" strokeWidth={2} aria-hidden />
-                  </div>
-                  <h2 className="text-lg font-semibold text-foreground">Direct channels</h2>
-                </div>
-                <ul className="space-y-5">
-                  <li className="flex gap-4">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-muted-foreground">
-                      <Mail className="h-[18px] w-[18px]" strokeWidth={2} />
-                    </div>
-                    <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Email</p>
-                      <a
-                        href="mailto:hello@mentormuni.com"
-                        className="mt-0.5 block text-[0.9375rem] font-semibold text-foreground transition hover:text-[#1A6FC4]"
-                      >
-                        hello@mentormuni.com
-                      </a>
-                      <p className="mt-0.5 text-sm text-hint">We respond within 24 hours on business days</p>
-                    </div>
+              <div className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
+                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#EA580C]">Direct contact</h2>
+                <ul className="mt-5 space-y-6 border-t border-border pt-6">
+                  <li>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Email</p>
+                    <a
+                      href="mailto:hello@mentormuni.com"
+                      className="mt-1 block text-[15px] font-semibold text-foreground transition hover:text-[#FF9500]"
+                    >
+                      hello@mentormuni.com
+                    </a>
                   </li>
-                  <li className="flex gap-4">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-muted-foreground">
-                      <Phone className="h-[18px] w-[18px]" strokeWidth={2} />
-                    </div>
-                    <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Phone</p>
-                      <a
-                        href={CONTACT_PHONE_HREF}
-                        className="mt-0.5 block text-[0.9375rem] font-semibold text-foreground transition hover:text-[#1A6FC4]"
-                      >
-                        {CONTACT_PHONE_DISPLAY}
-                      </a>
-                      <p className="mt-0.5 text-sm text-hint">Mon–Fri · 9am–6pm IST</p>
-                    </div>
+                  <li>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Phone</p>
+                    <a
+                      href={CONTACT_PHONE_HREF}
+                      className="mt-1 block text-[15px] font-semibold text-foreground transition hover:text-[#FF9500]"
+                    >
+                      {CONTACT_PHONE_DISPLAY}
+                    </a>
+                    <p className="mt-1 text-xs text-hint">Mon–Fri · 9am–6pm IST</p>
                   </li>
-                  <li className="flex gap-4">
-                    <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-neutral-100 text-muted-foreground">
-                      <MapPin className="h-[18px] w-[18px]" strokeWidth={2} />
-                    </div>
-                    <div>
-                      <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">Registered office</p>
-                      <p className="mt-0.5 text-[0.9375rem] font-semibold text-foreground">Bangalore, India</p>
-                      <p className="mt-0.5 text-sm text-hint">Serving learners and partners globally</p>
-                    </div>
+                  <li>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Office</p>
+                    <p className="mt-1 text-[15px] font-semibold text-foreground">Bangalore, India</p>
                   </li>
                 </ul>
               </div>
             </FadeUp>
 
-            <FadeUp delay={0.08}>
-              <div className="rounded-2xl border border-neutral-200/90 bg-white p-6 shadow-sm">
-                <h3 className="mb-4 text-base font-semibold text-foreground">{whyReachOutTitle}</h3>
-                <ul className="space-y-3">
-                  {whyReachOutLines[audience].map((line) => (
-                    <li key={line} className="flex gap-3 text-sm leading-snug text-muted-foreground">
-                      <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
-                        <Check className="h-3 w-3" strokeWidth={3} aria-hidden />
-                      </span>
+            <FadeUp delay={0.06}>
+              <div className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
+                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#EA580C]">{whyReachOutTitle}</h2>
+                <ul className="mt-5 space-y-3 border-t border-border pt-6 text-sm leading-relaxed">
+                  {whyReachOutLines[audience].map((line, i) => (
+                    <li key={line} className="flex gap-2.5">
+                      <span
+                        className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${i % 2 === 0 ? 'bg-[#FF9500]' : 'bg-cyan-500'}`}
+                        aria-hidden
+                      />
                       <span>{line}</span>
                     </li>
                   ))}
@@ -490,19 +439,16 @@ const ContactPage = () => {
             </FadeUp>
           </div>
 
-          <FadeUp delay={0.05}>
-            <motion.div
-              key={audience}
-              className={`rounded-2xl border border-neutral-200/90 border-l-4 ${formAccentClass} bg-white p-6 shadow-sm sm:p-8`}
-              initial={reduceMotion ? false : { opacity: 0.96 }}
-              transition={{ duration: 0.35 }}
-            >
-              <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-[1.35rem]">{fc.title}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{fc.description}</p>
+          <FadeUp delay={0.04}>
+            <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-[0_8px_32px_rgba(15,23,42,0.06)]">
+              <div className="border-b border-border bg-gradient-to-br from-[#FFF8EE] via-white to-cyan-50/40 px-6 py-4 sm:px-8">
+                <h2 className="text-lg font-bold tracking-tight text-foreground">{fc.title}</h2>
+                <p className="mt-1 text-sm leading-relaxed">{fc.description}</p>
+              </div>
 
-              <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+              <form onSubmit={handleSubmit} className="space-y-5 px-6 py-6 sm:px-8 sm:py-8">
                 <div>
-                  <label htmlFor="contact-name" className="mb-1.5 block text-sm font-medium text-foreground">
+                  <label htmlFor="contact-name" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Full name
                   </label>
                   <input
@@ -519,8 +465,8 @@ const ContactPage = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="contact-email" className="mb-1.5 block text-sm font-medium text-foreground">
-                    {audience === 'colleges' ? 'Official or institutional email' : 'Email'}
+                  <label htmlFor="contact-email" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                    Email
                   </label>
                   <input
                     id="contact-email"
@@ -536,7 +482,7 @@ const ContactPage = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="contact-phone" className="mb-1.5 block text-sm font-medium text-foreground">
+                  <label htmlFor="contact-phone" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Phone
                   </label>
                   <input
@@ -553,7 +499,7 @@ const ContactPage = () => {
                 </div>
 
                 <div>
-                  <label htmlFor="contact-message" className="mb-1.5 block text-sm font-medium text-foreground">
+                  <label htmlFor="contact-message" className="mb-1.5 block text-xs font-semibold uppercase tracking-wide text-muted-foreground">
                     Message
                   </label>
                   <textarea
@@ -563,103 +509,67 @@ const ContactPage = () => {
                     onChange={handleChange}
                     placeholder={fc.placeholders.message}
                     rows={5}
-                    className={`${fieldClass('message')} min-h-[8.5rem] resize-y`}
+                    className={`${fieldClass('message')} min-h-[140px] resize-y`}
                   />
                   {errors.message && <p className="mt-1.5 text-sm font-medium text-rose-600">{errors.message}</p>}
                 </div>
 
                 {submitStatus.message && (
-                  <motion.div
+                  <div
                     role="status"
-                    initial={reduceMotion ? false : { opacity: 0, y: 6 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className={`flex gap-3 rounded-xl border px-4 py-3 text-sm font-medium ${
+                    className={`rounded-xl border px-4 py-3 text-sm ${
                       submitStatus.type === 'success'
                         ? 'border-emerald-200 bg-emerald-50 text-emerald-900'
                         : 'border-rose-200 bg-rose-50 text-rose-900'
                     }`}
                   >
-                    {submitStatus.type === 'success' ? (
-                      <Check className="mt-0.5 h-5 w-5 shrink-0 text-emerald-600" aria-hidden />
-                    ) : (
-                      <span className="mt-0.5 shrink-0 font-bold text-rose-600" aria-hidden>
-                        !
-                      </span>
-                    )}
-                    <span>{submitStatus.message}</span>
-                  </motion.div>
+                    {submitStatus.message}
+                  </div>
                 )}
 
-                <div className="flex flex-col gap-3 border-t border-neutral-100 pt-6 sm:flex-row">
-                  <motion.button
+                <div className="flex flex-col gap-3 border-t border-border pt-6 sm:flex-row sm:items-center">
+                  <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-foreground px-6 py-3 text-[0.9375rem] font-semibold text-white shadow-sm transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-55"
-                    whileHover={reduceMotion || isSubmitting ? undefined : { scale: 1.005 }}
-                    whileTap={reduceMotion || isSubmitting ? undefined : { scale: 0.995 }}
+                    className="inline-flex flex-1 min-h-[44px] items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-5 py-2.5 text-sm font-bold text-white shadow-[var(--shadow-button)] transition hover:bg-[#E88600] disabled:cursor-not-allowed disabled:opacity-50"
                   >
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="h-5 w-5 animate-spin" aria-hidden />
-                        Sending enquiry…
+                        <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
+                        Sending…
                       </>
                     ) : (
                       <>
-                        <Send className="h-4 w-4" aria-hidden />
+                        <Send className="h-4 w-4" strokeWidth={2} aria-hidden />
                         {fc.submit}
                       </>
                     )}
-                  </motion.button>
+                  </button>
                   <button
                     type="button"
                     onClick={handleReset}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-neutral-200 bg-white px-6 py-3 text-[0.9375rem] font-semibold text-muted-foreground transition hover:border-neutral-300 hover:bg-neutral-50"
+                    className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-border bg-white px-5 py-2.5 text-sm font-semibold text-foreground transition hover:border-[#FFB347] hover:bg-[#FFF8EE]"
                   >
-                    <RotateCcw className="h-4 w-4" aria-hidden />
-                    Clear form
+                    <RotateCcw className="h-4 w-4" strokeWidth={2} aria-hidden />
+                    Clear
                   </button>
                 </div>
               </form>
-            </motion.div>
+            </div>
           </FadeUp>
         </div>
 
-        {/* FAQ */}
-        <FadeUp className="mt-16 md:mt-20">
-          <div className="rounded-2xl border border-neutral-200/90 bg-white px-6 py-10 sm:px-10 sm:py-12">
-            <h2 className="mb-2 text-center text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-              Frequently asked questions
-            </h2>
-            <p className="mx-auto mb-10 max-w-xl text-center text-sm text-hint">
-              Quick answers for students and partners. For anything specific, use the form above.
-            </p>
-            <motion.ul
-              className="grid gap-4 md:grid-cols-2 md:gap-5"
-              initial="hidden"
-              whileInView="show"
-              viewport={{ once: true, amount: 0.15 }}
-              variants={{
-                hidden: {},
-                show: {
-                  transition: { staggerChildren: reduceMotion ? 0 : 0.06 },
-                },
-              }}
-            >
-              {faqItems.map((item) => (
-                <motion.li
-                  key={item.q}
-                  variants={{
-                    hidden: { opacity: 0, y: 12 },
-                    show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: easeOut } },
-                  }}
-                  className="rounded-xl border border-neutral-200/80 bg-[#FAFAF8] p-5"
-                >
-                  <h3 className="mb-2 text-sm font-semibold text-foreground">{item.q}</h3>
-                  <div className="text-sm leading-relaxed text-muted-foreground">{item.a}</div>
-                </motion.li>
-              ))}
-            </motion.ul>
-          </div>
+        <FadeUp className="mt-16 rounded-2xl border border-border bg-[#FFFDF8] px-6 py-10 lg:mt-20 lg:px-10 lg:py-12">
+          <h2 className="text-lg font-bold tracking-tight text-foreground">Frequently asked questions</h2>
+          <p className="mt-1 text-sm text-muted-foreground">For anything specific, use the form above.</p>
+          <ul className="mt-8 divide-y divide-border border-t border-border">
+            {faqItems.map((item) => (
+              <li key={item.q} className="py-6 first:pt-6">
+                <h3 className="text-sm font-semibold text-foreground">{item.q}</h3>
+                <div className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.a}</div>
+              </li>
+            ))}
+          </ul>
         </FadeUp>
       </div>
     </div>
