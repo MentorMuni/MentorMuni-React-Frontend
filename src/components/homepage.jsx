@@ -9,7 +9,8 @@ import {
   HERO_EARLY_BIRD_STICKER,
   HERO_GENZ_STICKER,
   HERO_YEAR_COPY,
-  HERO_HEADLINE_FIXED,
+  HERO_HEADLINE_LINE1,
+  HERO_HEADLINE_LINE2,
   HERO_TYPEWRITER_PHRASES,
   HERO_JOURNEY_STEPS,
   HERO_JOURNEY_ARC,
@@ -143,6 +144,43 @@ const HERO_PLATFORM_TILE_THEMES = [
   },
 ];
 
+const HERO_PLATFORM_HIGHLIGHT_DETAILS = [
+  'End-to-end prep system, not disconnected tools.',
+  'Built for campus hiring timelines and pressure.',
+  'Practice responses in realistic interview conditions.',
+  'Train both technical depth and communication clarity.',
+  'Guidance from experienced mentors who have hired.',
+  'Measure where you stand before real rounds.',
+  'Identify exactly which skills need improvement first.',
+  'AI + mentors together for faster performance gains.',
+];
+
+const HERO_PROBLEM_TICKER = [
+  'Scattered preparation',
+  'No interview baseline',
+  'Generic practice plans',
+  'Weak answer delivery',
+  'Last-minute panic prep',
+  'No clear improvement loop',
+  'No clarity on role-fit',
+  'Inconsistent mock feedback',
+];
+
+const HERO_FLOW_STEPS = [
+  {
+    title: 'Take the free score',
+    body: 'Get your interview-readiness baseline in about 5 minutes.',
+  },
+  {
+    title: 'See exact gaps',
+    body: 'Know what to fix first instead of random preparation.',
+  },
+  {
+    title: 'Practice to perform',
+    body: 'Use mocks and mentor feedback to improve answer delivery.',
+  },
+];
+
 /** Premium animated “platform stack” strip — mesh, gradient border, spring cards */
 function HeroValueStack({ reduceMotion }) {
   const cardSpringHover = reduceMotion ? {} : { y: -6, scale: 1.02, transition: heroValueSpring };
@@ -192,10 +230,17 @@ function HeroValueStack({ reduceMotion }) {
           0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
           50% { transform: translate(-16px, 12px) scale(1.06); opacity: 0.58; }
         }
+        @keyframes mm-value-sheen {
+          0% { transform: translateX(-120%); opacity: 0; }
+          20% { opacity: 0.3; }
+          80% { opacity: 0.3; }
+          100% { transform: translateX(120%); opacity: 0; }
+        }
         .mm-value-blob-1 { animation: mm-value-blob-1 11s ease-in-out infinite; }
         .mm-value-blob-2 { animation: mm-value-blob-2 13s ease-in-out infinite 1.5s; }
+        .mm-value-sheen { animation: mm-value-sheen 3.8s ease-in-out infinite; }
         @media (prefers-reduced-motion: reduce) {
-          .mm-value-blob-1, .mm-value-blob-2 { animation: none; }
+          .mm-value-blob-1, .mm-value-blob-2, .mm-value-sheen { animation: none; }
         }
       `}</style>
 
@@ -243,12 +288,20 @@ function HeroValueStack({ reduceMotion }) {
                   <Sparkles className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
                   Platform stack
                 </motion.span>
-                <h2 className="max-w-2xl text-balance bg-gradient-to-b from-white via-white to-slate-400 bg-clip-text text-xl font-bold tracking-tight text-transparent sm:text-2xl md:text-3xl">
-                  What MentorMuni gives you
+                <h2 className="max-w-3xl text-balance bg-gradient-to-b from-white via-white to-slate-400 bg-clip-text text-xl font-bold tracking-tight text-transparent sm:text-2xl md:text-3xl">
+                  Everything in one place, from practice to performance.
                 </h2>
-                <p className="max-w-lg text-[13px] leading-relaxed text-slate-400 sm:text-sm md:text-base">
-                  Everything in one place — from practice to performance, so you walk into interviews ready.
+                <p className="max-w-xl text-[13px] leading-relaxed text-slate-400 sm:text-sm md:text-base">
+                  Built so students walk into interviews with clarity, confidence, and repeatable performance.
                 </p>
+                <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
+                  <span className="rounded-full border border-white/15 bg-white/[0.05] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-200">
+                    8 integrated modules
+                  </span>
+                  <span className="rounded-full border border-white/15 bg-white/[0.05] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-200">
+                    1 clear interview workflow
+                  </span>
+                </div>
               </motion.div>
 
               <motion.ul
@@ -295,8 +348,11 @@ function HeroValueStack({ reduceMotion }) {
                       <motion.div
                         whileHover={reduceMotion ? undefined : cardSpringHover}
                         whileTap={reduceMotion ? undefined : cardTap}
-                        className={`group relative h-full min-h-[5.75rem] overflow-hidden rounded-2xl border bg-gradient-to-br p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] sm:min-h-0 ${theme.card}`}
+                        className={`group relative h-full min-h-[8.25rem] overflow-hidden rounded-2xl border bg-gradient-to-br p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] sm:min-h-0 ${theme.card}`}
                       >
+                        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+                          <div className="mm-value-sheen absolute inset-y-0 w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
+                        </div>
                         <div
                           className={`pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full blur-2xl transition-opacity duration-500 group-hover:opacity-100 ${theme.glow} opacity-80`}
                           aria-hidden
@@ -307,11 +363,12 @@ function HeroValueStack({ reduceMotion }) {
                           >
                             <Icon className="h-[18px] w-[18px] text-white drop-shadow-sm transition-transform duration-300 group-hover:rotate-[-8deg]" strokeWidth={2} aria-hidden />
                           </span>
-                          <p
-                            className={`min-w-0 flex-1 pt-0.5 text-left text-[12px] font-semibold leading-snug sm:text-[13px] ${theme.text}`}
-                          >
-                            {item}
-                          </p>
+                          <div className="min-w-0 flex-1 pt-0.5 text-left">
+                            <p className={`text-[12px] font-semibold leading-snug sm:text-[13px] ${theme.text}`}>{item}</p>
+                            <p className="mt-1 text-[11px] leading-relaxed text-slate-300/95">
+                              {HERO_PLATFORM_HIGHLIGHT_DETAILS[idx]}
+                            </p>
+                          </div>
                         </div>
                         <div
                           className={`pointer-events-none absolute bottom-0 left-4 right-4 h-[2px] origin-left scale-x-0 bg-gradient-to-r opacity-0 transition-all duration-500 ease-out group-hover:scale-x-100 group-hover:opacity-100 ${theme.line}`}
@@ -586,6 +643,33 @@ function HeroSocialProof({ fullLabel, reduceMotion }) {
   );
 }
 
+function HeroProblemTicker({ reduceMotion }) {
+  const tickerItems = [...HERO_PROBLEM_TICKER, ...HERO_PROBLEM_TICKER];
+  return (
+    <section className="relative mt-7 w-full overflow-hidden rounded-2xl border border-[#FFD9A8]/80 bg-white/90 shadow-[0_6px_22px_rgba(255,149,0,0.08)]">
+      <div
+        className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-white to-transparent"
+        aria-hidden
+      />
+      <div
+        className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-white to-transparent"
+        aria-hidden
+      />
+      <div className={`flex items-center gap-3 px-3 py-2.5 ${reduceMotion ? '' : 'mm-problem-track'}`}>
+        {tickerItems.map((item, idx) => (
+          <span
+            key={`${item}-${idx}`}
+            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-slate-200/90 bg-slate-50 px-3 py-1 text-[11px] font-semibold text-slate-700"
+          >
+            <span className="h-1.5 w-1.5 rounded-full bg-[#FF9500]" aria-hidden />
+            {item}
+          </span>
+        ))}
+      </div>
+    </section>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════════
    MAIN COMPONENT
    ═══════════════════════════════════════════════════════════════ */
@@ -613,6 +697,14 @@ const HomePage = () => {
           background-size: 200% 200%;
           animation: mm-hero-accent 10s ease-in-out infinite;
         }
+        @keyframes mm-problem-track {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
+        }
+        .mm-problem-track {
+          width: max-content;
+          animation: mm-problem-track 22s linear infinite;
+        }
         .mm-hero-typewriter-line {
           font-size: 1.5rem;
           font-weight: 700;
@@ -634,11 +726,14 @@ const HomePage = () => {
         }
         @media (prefers-reduced-motion: reduce) {
           .mm-hero-accent { animation: none !important; background-position: 0% 50% !important; }
+          .mm-problem-track { animation: none !important; }
         }
       `}</style>
 
       {/* ════════════════ HERO — copy left · reality-check card right · white field ════════════════ */}
-      <section className="relative border-b-0 bg-white pb-0 pt-10 md:pt-12 lg:pt-14">
+      <section className="relative overflow-hidden border-b-0 bg-gradient-to-b from-slate-50/90 via-white to-[#fff8f0] pb-0 pt-10 md:pt-12 lg:pt-14">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_70%_-10%,rgba(255,149,0,0.12),transparent)]" aria-hidden />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_10%_50%,rgba(14,165,233,0.06),transparent)]" aria-hidden />
         <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-5 sm:px-6 lg:px-8">
           <div className="grid w-full min-w-0 grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-x-12 lg:gap-y-0 xl:gap-x-16">
             <div className="flex w-full min-w-0 flex-col gap-5 sm:gap-6">
@@ -652,18 +747,20 @@ const HomePage = () => {
                   <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.25)]" aria-hidden />
                   <span className="min-w-0">{HERO_EYEBROW}</span>
                 </span>
-                <span
-                  className="inline-flex rotate-[-2.5deg] items-center rounded-md border-2 border-[#EA580C] bg-gradient-to-br from-amber-50 to-orange-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#9A3412] shadow-[2px_3px_0_0_rgba(234,88,12,0.35)] sm:text-[11px]"
-                  title="Limited early-bird offer"
-                >
-                  {HERO_EARLY_BIRD_STICKER}
-                </span>
-                <span
-                  className="inline-flex rotate-[2deg] items-center rounded-md border-2 border-cyan-600/75 bg-gradient-to-br from-cyan-50 to-sky-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-cyan-950 shadow-[2px_3px_0_0_rgba(8,145,178,0.35)] sm:text-[11px]"
-                  title="Skills-first interview preparation for students and early-career engineers"
-                >
-                  {HERO_GENZ_STICKER}
-                </span>
+                <div className="inline-flex items-center gap-2 whitespace-nowrap">
+                  <span
+                    className="inline-flex rotate-[-2.5deg] items-center rounded-md border-2 border-[#EA580C] bg-gradient-to-br from-amber-50 to-orange-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#9A3412] shadow-[2px_3px_0_0_rgba(234,88,12,0.35)] sm:text-[11px]"
+                    title="Limited early-bird offer"
+                  >
+                    {HERO_EARLY_BIRD_STICKER}
+                  </span>
+                  <span
+                    className="inline-flex rotate-[2deg] items-center rounded-md border-2 border-cyan-600/75 bg-gradient-to-br from-cyan-50 to-sky-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-cyan-950 shadow-[2px_3px_0_0_rgba(8,145,178,0.35)] sm:text-[11px]"
+                    title="Skills-first interview preparation for students and early-career engineers"
+                  >
+                    {HERO_GENZ_STICKER}
+                  </span>
+                </div>
               </motion.div>
 
               <div className="w-full text-center lg:text-left">
@@ -672,9 +769,14 @@ const HomePage = () => {
                   initial={reduceMotion ? false : { opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  className="mx-auto max-w-[44rem] text-balance lg:mx-0 lg:max-w-[36rem]"
+                  className="mx-auto max-w-[44rem] lg:mx-0 lg:max-w-[38rem]"
                 >
-                  <span className="typo-display block break-words text-neutral-900">{HERO_HEADLINE_FIXED}</span>
+                  <span className="typo-display block text-neutral-900 leading-[1.06] tracking-tight">
+                    {HERO_HEADLINE_LINE1}
+                  </span>
+                  <span className="typo-display mt-1 block text-neutral-900 leading-[1.06] tracking-tight">
+                    {HERO_HEADLINE_LINE2}
+                  </span>
                   <span className="mt-2 block min-h-[4.75rem] sm:min-h-[6rem] sm:mt-3 md:min-h-[5.5rem]">
                     <HeroHeadlineTypewriter
                       phrases={HERO_TYPEWRITER_PHRASES}
@@ -750,6 +852,33 @@ const HomePage = () => {
           </div>
 
           <HeroValueStack reduceMotion={reduceMotion} />
+          <HeroProblemTicker reduceMotion={reduceMotion} />
+        </div>
+      </section>
+
+      <section className="border-t border-slate-100 bg-white px-5 py-12 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-6xl">
+          <FadeUp>
+            <div className="mb-7 text-center md:text-left">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#EA580C]">How it works</p>
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+                Clear workflow. No random prep.
+              </h2>
+            </div>
+          </FadeUp>
+          <div className="grid gap-4 md:grid-cols-3">
+            {HERO_FLOW_STEPS.map((step, idx) => (
+              <FadeUp key={step.title} delay={idx * 0.07}>
+                <div className="h-full rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_4px_18px_rgba(15,23,42,0.05)]">
+                  <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#FFF4E0] text-sm font-bold text-[#EA580C]">
+                    {idx + 1}
+                  </div>
+                  <h3 className="text-base font-bold text-slate-900">{step.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{step.body}</p>
+                </div>
+              </FadeUp>
+            ))}
+          </div>
         </div>
       </section>
 

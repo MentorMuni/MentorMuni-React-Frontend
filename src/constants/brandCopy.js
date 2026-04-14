@@ -15,7 +15,7 @@ export const PAIN_HOOK =
 
 /** Homepage hero — chips (split on ·). Keep concrete; avoid “platform” jargon */
 export const HERO_EYEBROW =
-  'Interview readiness system · Performance under pressure · Built for Indian engineering students';
+  'Interview readiness system · Built for engineering students';
 /** Early-bird coupon card ribbon (homepage hero) */
 export const HERO_EARLY_BIRD_RIBBON = 'Early bird';
 /** Small hero sticker (limited slots — keep short) */
@@ -25,12 +25,15 @@ export const HERO_GENZ_STICKER = 'Not a course — a system';
 export const HERO_HEADLINE = "You can't fix what you don't measure.";
 /** Orange payoff line — own line under the dark headline (readability + emphasis) */
 export const HERO_HEADLINE_ACCENT = 'Get your readiness score in ~5 minutes.';
-/** Homepage hero — fixed first line (always visible; not typewriter) */
-export const HERO_HEADLINE_FIXED = 'Check if You Are Actually Interview-Ready';
+/** Homepage hero — two-line headline (render as two blocks; avoids awkward 3-line wrap) */
+export const HERO_HEADLINE_LINE1 = 'Check if You Are Actually';
+export const HERO_HEADLINE_LINE2 = 'Interview-Ready? 🤔';
+/** @deprecated Use HERO_HEADLINE_LINE1 + LINE2 */
+export const HERO_HEADLINE_FIXED = `${HERO_HEADLINE_LINE1}\n${HERO_HEADLINE_LINE2}`;
 /** Homepage hero — typewriter rotates these lines under the fixed headline */
 export const HERO_TYPEWRITER_PHRASES = [
   "We don't teach. We make you perform.",
-  'Most students at your level fail interviews — not because they skipped topics.',
+  'You won’t crack interviews without practicing them.',
 ];
 /** Homepage hero — body copy under the typewriter (single paragraph; no read-more) */
 export const HERO_HOME_SUB =
@@ -226,8 +229,7 @@ export const HERO_YEAR_COPY = {
   y4: {
     headline: HERO_HEADLINE,
     accent: HERO_HEADLINE_ACCENT,
-    subShort:
-      'Most students think they are prepared. They fail when it matters. See where you actually stand in minutes — before a rejection does it for you.',
+    subShort: '',
     /** Shown directly under `subShort` on the homepage hero (HeroSocialProof + aria-label) */
     socialProofLine: '100+ students checked their readiness. When will you?',
     sub: HERO_HOME_SUB,

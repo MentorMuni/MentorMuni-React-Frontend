@@ -1,6 +1,4 @@
-import { useState, useEffect } from 'react';
-
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+import { useEffect, useMemo, useState } from 'react';
 
 /**
  * Rotating typewriter headline — types each phrase, pauses, deletes, next phrase.
@@ -10,45 +8,36 @@ const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
  * @param {string} [props.className]
  */
 export function HeroHeadlineTypewriter({ phrases, reducedMotion = false, className = '' }) {
-  const [displayed, setDisplayed] = useState('');
+  const safePhrases = useMemo(() => (Array.isArray(phrases) ? phrases.filter(Boolean) : []), [phrases]);
+  const [phraseIndex, setPhraseIndex] = useState(0);
+  const [charIndex, setCharIndex] = useState(0);
   const [showCursor, setShowCursor] = useState(true);
 
   useEffect(() => {
-    if (!phrases?.length) return;
+    if (!safePhrases.length) return;
     if (reducedMotion) {
-      setDisplayed(phrases[0]);
+      setPhraseIndex(0);
+      setCharIndex(safePhrases[0].length);
       return;
     }
 
-    let cancelled = false;
-    const TYPE_MS = 36;
-    const DELETE_MS = 16;
-    const PAUSE_TYPED_MS = 2400;
-    const PAUSE_EMPTY_MS = 380;
+    const current = safePhrases[phraseIndex] ?? '';
+    const isDoneTyping = charIndex >= current.length;
 
-    (async () => {
-      while (!cancelled) {
-        for (const target of phrases) {
-          for (let i = 1; i <= target.length && !cancelled; i++) {
-            setDisplayed(target.slice(0, i));
-            await sleep(TYPE_MS);
-          }
-          if (cancelled) return;
-          await sleep(PAUSE_TYPED_MS);
-          for (let i = target.length - 1; i >= 0 && !cancelled; i--) {
-            setDisplayed(target.slice(0, i));
-            await sleep(DELETE_MS);
-          }
-          if (cancelled) return;
-          await sleep(PAUSE_EMPTY_MS);
+    const timeout = window.setTimeout(
+      () => {
+        if (isDoneTyping) {
+          setPhraseIndex((prev) => (prev + 1) % safePhrases.length);
+          setCharIndex(0);
+          return;
         }
-      }
-    })();
+        setCharIndex((prev) => prev + 1);
+      },
+      isDoneTyping ? 1700 : 38
+    );
 
-    return () => {
-      cancelled = true;
-    };
-  }, [phrases, reducedMotion]);
+    return () => window.clearTimeout(timeout);
+  }, [charIndex, phraseIndex, safePhrases, reducedMotion]);
 
   useEffect(() => {
     if (reducedMotion) return undefined;
@@ -56,9 +45,12 @@ export function HeroHeadlineTypewriter({ phrases, reducedMotion = false, classNa
     return () => clearInterval(id);
   }, [reducedMotion]);
 
+  const currentPhrase = safePhrases[phraseIndex] ?? '';
+  const displayed = reducedMotion ? currentPhrase : currentPhrase.slice(0, charIndex);
+
   return (
-    <span className={className}>
-      {displayed}
+    <span className={`${className} inline-flex items-end`}>
+      <span>{displayed}</span>
       <span
         className={`ml-0.5 inline-block h-[0.92em] w-[2px] translate-y-[0.08em] bg-[#FF9500] align-[-0.12em] ${
           showCursor ? 'opacity-100' : 'opacity-30'
