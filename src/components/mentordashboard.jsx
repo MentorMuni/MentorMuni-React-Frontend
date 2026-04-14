@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 
 const MentorDashboard = () => {
+  const logoSrc = `${import.meta.env.BASE_URL}mentormuni-logo.png`;
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -90,7 +91,7 @@ const MentorDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <a href="/" className="flex-shrink-0">
-              <img src="/MentorMuni-React-Frontend/mentormuni-logo.png" alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
+              <img src={logoSrc} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
             </a>
             <nav className="hidden md:flex gap-6 text-sm font-medium text-muted-foreground">
               <a href="/index.html" className="hover:text-[#FF9500] transition-colors">Home</a>
@@ -194,7 +195,7 @@ const MentorDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
             <div className="col-span-2 md:col-span-1">
-              <img src="/MentorMuni-React-Frontend/mentormuni-logo.png" alt="MentorMuni" className="h-12 w-12 rounded-full object-contain mx-auto mb-6" />
+              <img src={logoSrc} alt="MentorMuni" className="h-12 w-12 rounded-full object-contain mx-auto mb-6" />
               <p className="text-sm text-muted-foreground leading-relaxed">Guiding your journey to knowledge through elite mentorship.</p>
             </div>
             <div>

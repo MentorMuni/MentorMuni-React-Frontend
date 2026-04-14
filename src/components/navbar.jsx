@@ -58,6 +58,7 @@ const TOOLS = [
 ];
 
 const Navbar = () => {
+  const logoSrc = `${import.meta.env.BASE_URL}mentormuni-logo.png`;
   const [isOpen, setIsOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
   const toolsRef = useRef(null);
@@ -112,7 +113,7 @@ const Navbar = () => {
         <div className="flex h-[4.25rem] items-center gap-3 lg:h-[4.5rem] lg:gap-4">
           <Link to="/" onClick={handleHomeClick} className="group flex shrink-0 items-center gap-2.5 sm:gap-3">
             <img
-              src="/MentorMuni-React-Frontend/mentormuni-logo.png"
+              src={logoSrc}
               alt="MentorMuni Logo"
               className="h-11 w-11 shrink-0 rounded-full object-contain ring-2 ring-border transition-all group-hover:ring-[#FFB347]/50 sm:h-12 sm:w-12"
             />

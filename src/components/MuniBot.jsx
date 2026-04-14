@@ -4,7 +4,7 @@ import { X, Send, Sparkles } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getMuniBotReply } from '../utils/munibotEngine';
 
-const LOGO_SRC = '/MentorMuni-React-Frontend/mentormuni-logo.png';
+const LOGO_SRC = `${import.meta.env.BASE_URL}mentormuni-logo.png`;
 
 const GREETING =
   "Hi — I'm **MuniBot**, your MentorMuni assistant. Ask me about our **programme**, **interview readiness**, **AI & LLM topics**, **prompting**, or **where to learn** online.";
