@@ -11,6 +11,7 @@ import {
   HERO_YEAR_COPY,
   HERO_HEADLINE_LINE1,
   HERO_HEADLINE_LINE2,
+  HERO_PLAYFUL_CLAUSE,
   HERO_TYPEWRITER_PHRASES,
   HERO_JOURNEY_STEPS,
   HERO_JOURNEY_ARC,
@@ -670,6 +671,95 @@ function HeroProblemTicker({ reduceMotion }) {
   );
 }
 
+/** Quip below hero score card — shimmer + sparkles (respects reduced motion). */
+function HeroPlayfulClause({ text, reduceMotion }) {
+  return (
+    <motion.div
+      className="relative w-full max-w-[min(100%,440px)]"
+      initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.42, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div className="flex justify-center lg:justify-end">
+        <div
+          className={`inline-flex max-w-full items-start gap-2 rounded-xl px-3.5 py-2.5 text-left ${
+            reduceMotion
+              ? 'border border-orange-100/90 bg-orange-50/50'
+              : 'border border-orange-200/70 bg-gradient-to-br from-orange-50/95 via-white to-cyan-50/40 shadow-[0_6px_24px_-10px_rgba(234,88,12,0.35),0_0_0_1px_rgba(255,149,0,0.08)]'
+          }`}
+        >
+        <motion.span
+          className="mt-0.5 shrink-0 text-[#FF9500] drop-shadow-[0_0_10px_rgba(255,149,0,0.45)]"
+          aria-hidden
+          animate={
+            reduceMotion
+              ? undefined
+              : {
+                  scale: [1, 1.12, 1],
+                  rotate: [0, -6, 6, 0],
+                }
+          }
+          transition={
+            reduceMotion
+              ? undefined
+              : { duration: 2.4, repeat: Infinity, repeatDelay: 0.8, ease: 'easeInOut' }
+          }
+        >
+          <Sparkles className="h-4 w-4" strokeWidth={2.25} />
+        </motion.span>
+        <p
+          className={`text-[13px] italic leading-snug ${
+            reduceMotion ? 'text-neutral-600' : 'mm-hero-playful-shimmer'
+          }`}
+        >
+          {text}
+        </p>
+        </div>
+      </div>
+      {!reduceMotion && (
+        <style>{`
+          @keyframes mm-hero-playful-shimmer {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+          }
+          @keyframes mm-hero-playful-glow {
+            0%, 100% { filter: drop-shadow(0 0 0px rgba(234, 88, 12, 0)); }
+            50% { filter: drop-shadow(0 0 6px rgba(234, 88, 12, 0.35)); }
+          }
+          .mm-hero-playful-shimmer {
+            background: linear-gradient(
+              105deg,
+              #525252 0%,
+              #525252 28%,
+              #ea580c 42%,
+              #f97316 48%,
+              #0891b2 54%,
+              #525252 62%,
+              #525252 100%
+            );
+            background-size: 240% 100%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            animation:
+              mm-hero-playful-shimmer 3.2s ease-in-out infinite,
+              mm-hero-playful-glow 3.2s ease-in-out infinite;
+          }
+          @media (prefers-reduced-motion: reduce) {
+            .mm-hero-playful-shimmer {
+              animation: none;
+              background: none;
+              color: #525252;
+              -webkit-background-clip: unset;
+              background-clip: unset;
+            }
+          }
+        `}</style>
+      )}
+    </motion.div>
+  );
+}
+
 /* ═══════════════════════════════════════════════════════════════
    MAIN COMPONENT
    ═══════════════════════════════════════════════════════════════ */
@@ -840,8 +930,9 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="flex w-full min-w-0 justify-center lg:justify-end lg:pt-1">
+            <div className="flex w-full min-w-0 flex-col items-center justify-center gap-3 lg:items-end lg:pt-1">
               <HeroFlagshipVisual />
+              <HeroPlayfulClause text={HERO_PLAYFUL_CLAUSE} reduceMotion={reduceMotion} />
             </div>
           </div>
 

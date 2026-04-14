@@ -27,7 +27,9 @@ export const HERO_HEADLINE = "You can't fix what you don't measure.";
 export const HERO_HEADLINE_ACCENT = 'Get your readiness score in ~5 minutes.';
 /** Homepage hero — two-line headline (render as two blocks; avoids awkward 3-line wrap) */
 export const HERO_HEADLINE_LINE1 = 'Check if You Are Actually';
-export const HERO_HEADLINE_LINE2 = 'Interview-Ready? 🤔';
+export const HERO_HEADLINE_LINE2 = 'Interview-Ready?';
+/** Light quip under the eyebrow — playful, not the main headline */
+export const HERO_PLAYFUL_CLAUSE = 'From reels to reality — different kind of screen time.';
 /** @deprecated Use HERO_HEADLINE_LINE1 + LINE2 */
 export const HERO_HEADLINE_FIXED = `${HERO_HEADLINE_LINE1}\n${HERO_HEADLINE_LINE2}`;
 /** Homepage hero — typewriter rotates these lines under the fixed headline */
@@ -292,6 +294,83 @@ export const ABOUT_SYSTEM_LOOPS = [
     title: 'Performance reps',
     body:
       'Mocks, AI-led practice, and mentor feedback so you train how you will perform — live, under scrutiny — not how you scroll feeds or read solutions.',
+  },
+];
+
+/** About page — flagship hero & story (aboutUs.jsx) */
+export const ABOUT_PAGE_EYEBROW = 'The heart of MentorMuni';
+export const ABOUT_PAGE_HERO_LINE1 = 'We build the moment between';
+export const ABOUT_PAGE_HERO_ACCENT = 'practice and the panel.';
+export const ABOUT_PAGE_HERO_LEAD =
+  'Everything you read here is how we think: measurement first, honesty second, reps third. If that aligns with how you want to prepare, you already know us.';
+export const ABOUT_PULL_QUOTE =
+  'You cannot fix what you do not measure — and you cannot rehearse what you cannot name.';
+
+export const ABOUT_BELIEFS = [
+  {
+    title: 'Measure first',
+    body: 'A number you trust beats a feeling that you are “almost ready.” The score is the start of the work — not the trophy.',
+  },
+  {
+    title: 'Name the gap',
+    body: 'Panels punish vague weaknesses. We turn “I am bad at DSA” into specific behaviours and topics to fix first.',
+  },
+  {
+    title: 'Rehearse like it counts',
+    body: 'Mocks, AI sessions, and mentor feedback stack so you train performance — not just consumption.',
+  },
+];
+
+export const ABOUT_STORY_TITLE = 'Why MentorMuni exists';
+export const ABOUT_STORY_PARAGRAPHS = [
+  'Campus hiring does not wait for you to “feel” ready. It tests how you sound under pressure, how you structure answers, and whether you can show depth — often before you get a second chance.',
+  'Most students only discover their real gaps after a rejection. We built MentorMuni so the first signal is a score and a plan — not a “better luck next time” email.',
+  'Students get a free baseline and a path. Colleges get cohort visibility. Partners get a serious readiness system — not another slide deck about courses.',
+];
+
+export const ABOUT_AUDIENCES_SECTION_TITLE = 'Who we build for';
+export const ABOUT_AUDIENCES = [
+  {
+    title: 'Students & early-career engineers',
+    body:
+      'Final-year and pre-placement learners who want clarity before chaos — a score, a gap list, and reps that feel like the real round.',
+    href: '/start-assessment',
+    cta: 'Take the free check',
+  },
+  {
+    title: 'Colleges & placement teams',
+    body:
+      'Batch-level readiness visibility, structured programmes, and partnerships that align with your placement calendar — not vanity metrics.',
+    href: '/colleges',
+    cta: 'Explore for colleges',
+  },
+  {
+    title: 'Anyone comparing offers to effort',
+    body:
+      'If you are tired of infinite tabs and still getting surprised in interviews, we are built for you — AI practice, mentors, and one spine: measure → fix → perform.',
+    href: '/contact',
+    cta: 'Talk to us',
+  },
+];
+
+export const ABOUT_PILLARS_HEADLINE = 'What we stand for';
+export const ABOUT_PILLARS_SUB =
+  'A small team, one spine, zero theatre. We would rather you hate your score early than your panel later.';
+export const ABOUT_PILLARS = [
+  {
+    title: 'Why we exist',
+    body:
+      'Campus hiring rewards clarity under pressure — not just tutorials. MentorMuni exists to give engineering students an honest baseline, a plan, and reps before the real panel.',
+  },
+  {
+    title: 'Who we serve',
+    body:
+      'Final-year and early-career engineers preparing for tech placements, plus colleges that want batch-level readiness visibility — not vanity metrics.',
+  },
+  {
+    title: 'How we work',
+    body:
+      'Readiness scoring, AI mock practice, and mentor-backed guidance stay connected: measure → fix → rehearse. No disconnected “courses only” path.',
   },
 ];
 
