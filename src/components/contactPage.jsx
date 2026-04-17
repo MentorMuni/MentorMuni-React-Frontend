@@ -6,6 +6,12 @@ import { INQUIRIES_URL } from '../config';
 import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_HREF, MISSION_TAGLINE } from '../constants/brandCopy';
 
 const easeOut = [0.22, 1, 0.36, 1];
+const WORD_LIMIT = 50;
+const wordCount = (value) => String(value || '').trim().split(/\s+/).filter(Boolean).length;
+const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
+const isValidName = (value) => /^[A-Za-z][A-Za-z\s.'-]{1,}$/.test(String(value || '').trim());
+const normalizeName = (value) => value.replace(/[^A-Za-z\s.'-]/g, '');
+const normalizePhone = (value) => value.replace(/\D/g, '').slice(0, 10);
 
 const FadeUp = ({ children, delay = 0, className = '' }) => {
   const ref = useRef(null);
@@ -94,19 +100,22 @@ const ContactPage = () => {
   const validate = () => {
     const newErrors = {};
     if (!formData.name.trim()) newErrors.name = 'Name is required';
+    else if (!isValidName(formData.name)) newErrors.name = 'Enter a valid full name';
+    else if (wordCount(formData.name) > WORD_LIMIT) newErrors.name = `Maximum ${WORD_LIMIT} words allowed`;
     if (!formData.email.trim()) newErrors.email = 'Email is required';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Invalid email';
+    else if (!isValidEmail(formData.email)) newErrors.email = 'Invalid email';
     if (!formData.phone.trim()) newErrors.phone = 'Phone is required';
-    if (formData.phone.replace(/[^\d]/g, '').length < 10)
-      newErrors.phone = 'Phone must be at least 10 digits';
+    else if (formData.phone.length !== 10) newErrors.phone = 'Phone must be exactly 10 digits';
     if (!formData.message.trim()) newErrors.message = 'Message is required';
+    else if (wordCount(formData.message) > WORD_LIMIT) newErrors.message = `Maximum ${WORD_LIMIT} words allowed`;
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    const nextValue = name === 'phone' ? normalizePhone(value) : name === 'name' ? normalizeName(value) : value;
+    setFormData((prev) => ({ ...prev, [name]: nextValue }));
     if (errors[name]) {
       setErrors((prev) => ({ ...prev, [name]: '' }));
     }

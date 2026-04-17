@@ -25,6 +25,8 @@ const INTERVIEW_PLAN_PATH = '/interview-ready/interview-readiness/plan';
 
 /** Skill preparation (depth) — POST /interview-ready/skill-readiness/plan */
 const SKILL_READINESS_PLAN_PATH = '/interview-ready/skill-readiness/plan';
+/** Aptitude preparation (depth) — POST /interview-ready/aptitude-readiness/plan */
+const APTITUDE_READINESS_PLAN_PATH = '/interview-ready/aptitude-readiness/plan';
 
 /**
  * POST /interview-ready/interview-readiness/plan — PlanRequest.user_type
@@ -168,11 +170,49 @@ function postAdminLeadCapture(apiBase, body) {
 /** Assessment mode: skill → POST /interview-ready/skill-readiness/plan · placement → POST /interview-ready/interview-readiness/plan */
 const ASSESSMENT_FOCUS_SKILL = 'skill';
 const ASSESSMENT_FOCUS_PLACEMENT = 'placement';
+const ASSESSMENT_FOCUS_APTITUDE = 'aptitude';
+const DEFAULT_QUESTION_COUNT = 15;
+const APTITUDE_QUESTION_COUNT = 15;
+const PLAN_QUESTION_COUNT = 15;
+const APTITUDE_SKILLS = ['quantitative', 'logical reasoning', 'verbal reasoning'];
+const TEXT_WORD_LIMIT = 50;
+const countWords = (value) => String(value || '').trim().split(/\s+/).filter(Boolean).length;
 
 const ASSESSMENT_MODE_LABEL = {
   [ASSESSMENT_FOCUS_SKILL]: 'Skill preparation score',
   [ASSESSMENT_FOCUS_PLACEMENT]: 'Interview readiness score',
+  [ASSESSMENT_FOCUS_APTITUDE]: 'Aptitude preparation score',
 };
+
+function interviewPlanValidationError(plan) {
+  if (!Array.isArray(plan)) return 'Plan must be an array';
+  if (plan.length !== PLAN_QUESTION_COUNT) return `Expected exactly ${PLAN_QUESTION_COUNT} questions`;
+  const requiredKeys = ['question', 'question_type', 'study_topic', 'explanation'];
+  const expectedByIndex = [
+    ...Array(4).fill('yes_no'),
+    ...Array(7).fill('multiple_choice'),
+    ...Array(2).fill('scenario'),
+    ...Array(2).fill('code_mcq'),
+  ];
+  const seenTopics = new Set();
+  for (let i = 0; i < plan.length; i += 1) {
+    const item = plan[i];
+    if (!item || typeof item !== 'object') return `Question ${i + 1} is invalid`;
+    for (const key of requiredKeys) {
+      if (!String(item[key] ?? '').trim()) return `Question ${i + 1} missing "${key}"`;
+    }
+    const normalizedType = normalizePlanQuestionType(item.question_type);
+    if (normalizedType !== expectedByIndex[i]) return `Question ${i + 1} must be "${expectedByIndex[i]}"`;
+    const topic = String(item.study_topic).trim().toLowerCase();
+    if (seenTopics.has(topic)) return `Duplicate study_topic found at question ${i + 1}`;
+    seenTopics.add(topic);
+    if (normalizedType !== 'yes_no') {
+      const opts = getPlanMcqOptions(item);
+      if (!opts || opts.length !== 4) return `Question ${i + 1} must include exactly 4 options`;
+    }
+  }
+  return null;
+}
 
 function formatPlanApiError(data) {
   if (!data) return 'Failed to generate questions';
@@ -534,6 +574,18 @@ const ASSESSMENT_MODE_OPTIONS = [
       'Students or working professionals — same readiness lens',
     ],
   },
+  {
+    mode: ASSESSMENT_FOCUS_APTITUDE,
+    emoji: '🧠',
+    title: ASSESSMENT_MODE_LABEL[ASSESSMENT_FOCUS_APTITUDE],
+    badge: 'Engineering aptitude',
+    compactHint: 'Quantitative, logical, and verbal reasoning.',
+    details: [
+      `Fixed ${APTITUDE_QUESTION_COUNT}-question mixed aptitude set`,
+      'No skill-stack prompt; personal info and then start',
+      'Best for campus aptitude prep and screening rounds',
+    ],
+  },
 ];
 
 /**
@@ -543,8 +595,8 @@ const ASSESSMENT_MODE_OPTIONS = [
 function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
   const isHero = variant === 'hero';
 
-  return (
-    <div className={`grid grid-cols-1 ${isHero ? 'sm:grid-cols-2 gap-4 md:gap-5' : 'sm:grid-cols-2 gap-4'} mb-2`}>
+    return (
+    <div className={`grid grid-cols-1 ${isHero ? 'md:grid-cols-3 gap-4 md:gap-5' : 'md:grid-cols-3 gap-4'} mb-2`}>
       {ASSESSMENT_MODE_OPTIONS.map((option) => {
         const selected = selectedMode === option.mode;
         return (
@@ -1385,7 +1437,7 @@ const InterviewReady = () => {
 
   const validatePhone = (phone) => {
     const cleanNumber = phone.replace(/[^\d]/g, '');
-    return cleanNumber.length >= 10;
+    return cleanNumber.length === 10;
   };
 
   const validateContactInfo = () => {
@@ -1400,7 +1452,7 @@ const InterviewReady = () => {
     if (!contactInfo.phone.trim()) {
       errors.phone = 'Required';
     } else if (!validatePhone(contactInfo.phone)) {
-      errors.phone = 'Enter a valid number (10+ digits)';
+      errors.phone = 'Enter a valid 10-digit number';
     }
     
     setValidationErrors(errors);
@@ -1510,14 +1562,18 @@ const InterviewReady = () => {
     const raw = String(profile.experienceYears ?? '').trim();
     if (!raw) {
       errors.experienceYears = 'Required';
+    } else if (!/^\d+$/.test(raw)) {
+      errors.experienceYears = 'Use a whole number from 0 to 15';
     } else {
-      const n = parseFloat(raw, 10);
-      if (Number.isNaN(n) || n < 0 || n > 50) {
-        errors.experienceYears = 'Use a number from 0 to 50';
+      const n = Number.parseInt(raw, 10);
+      if (Number.isNaN(n) || n < 0 || n > 15) {
+        errors.experienceYears = 'Use a whole number from 0 to 15';
       }
     }
     if (!profile.currentOrganization?.trim()) {
       errors.currentOrganization = 'Required';
+    } else if (countWords(profile.currentOrganization) > TEXT_WORD_LIMIT) {
+      errors.currentOrganization = `Maximum ${TEXT_WORD_LIMIT} words allowed`;
     }
 
     setValidationErrors((prev) => {
@@ -1543,12 +1599,14 @@ const InterviewReady = () => {
     if (!phoneStr) {
       errors.phone = 'Required';
     } else if (!validatePhone(phoneStr)) {
-      errors.phone = 'Enter a valid number (10+ digits)';
+      errors.phone = 'Enter a valid 10-digit number';
     }
 
     if (profile.userCategory !== 'professional') {
       if (!profile.collegeName?.trim()) {
         errors.collegeName = 'Required';
+      } else if (countWords(profile.collegeName) > TEXT_WORD_LIMIT) {
+        errors.collegeName = `Maximum ${TEXT_WORD_LIMIT} words allowed`;
       }
     }
 
@@ -1569,10 +1627,13 @@ const InterviewReady = () => {
       errors.userCategory = 'Required';
     }
 
-    if (!profile.primarySkill.trim()) {
-      errors.primarySkill = 'Required';
-    } else if (profile.primarySkill.trim().length > PLAN_PRIMARY_SKILL_MAX) {
-      errors.primarySkill = `Max ${PLAN_PRIMARY_SKILL_MAX} characters`;
+    const isAptitudeMode = profile.assessmentMode === ASSESSMENT_FOCUS_APTITUDE;
+    if (!isAptitudeMode) {
+      if (!profile.primarySkill.trim()) {
+        errors.primarySkill = 'Required';
+      } else if (profile.primarySkill.trim().length > PLAN_PRIMARY_SKILL_MAX) {
+        errors.primarySkill = `Max ${PLAN_PRIMARY_SKILL_MAX} characters`;
+      }
     }
 
     setValidationErrors((prev) => {
@@ -1674,7 +1735,8 @@ const InterviewReady = () => {
     }
 
     const isSkillMode = profile.assessmentMode === ASSESSMENT_FOCUS_SKILL;
-    if (!isSkillMode && !validatePlacementContext()) {
+    const isAptitudeMode = profile.assessmentMode === ASSESSMENT_FOCUS_APTITUDE;
+    if (!isSkillMode && !isAptitudeMode && !validatePlacementContext()) {
       scrollFirstInvalidFieldIntoView();
       return;
     }
@@ -1691,21 +1753,34 @@ const InterviewReady = () => {
     const primarySkill = profile.primarySkill.trim().slice(0, PLAN_PRIMARY_SKILL_MAX);
     const expParsed =
       profile.userCategory === 'professional'
-        ? Math.min(50, Math.max(0, parseFloat(String(profile.experienceYears).trim(), 10) || 0))
+        ? Math.min(15, Math.max(0, Number.parseInt(String(profile.experienceYears).trim(), 10) || 0))
         : 0;
 
-    const planPath = isSkillMode ? SKILL_READINESS_PLAN_PATH : INTERVIEW_PLAN_PATH;
+    const planPath = isAptitudeMode
+      ? APTITUDE_READINESS_PLAN_PATH
+      : isSkillMode
+        ? SKILL_READINESS_PLAN_PATH
+        : INTERVIEW_PLAN_PATH;
 
     /** Skill readiness: dedicated payload — no email/phone; target_role / target_company_type omitted (empty). */
     const skillReadinessPayload = {
       user_type: SKILL_API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'college_student_year_1',
       primary_skill: primarySkill,
+      question_count: DEFAULT_QUESTION_COUNT,
       experience_years: expParsed,
+    };
+    const aptitudeSkillReadinessPayload = {
+      user_type: SKILL_API_USER_TYPE_BY_CATEGORY['4th_year'],
+      primary_skill: APTITUDE_SKILLS.join(', '),
+      skills: APTITUDE_SKILLS,
+      question_count: APTITUDE_QUESTION_COUNT,
+      experience_years: 0,
     };
 
     const interviewReadinessPayload = {
       user_type: API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'student',
       experience_years: expParsed,
+      question_count: DEFAULT_QUESTION_COUNT,
       target_role: profile.targetRole?.trim() || undefined,
       email: profile.email?.trim() || undefined,
       phone: profile.contactNumber?.trim() || undefined,
@@ -1719,7 +1794,11 @@ const InterviewReady = () => {
     if (profile.userCategory && profile.userCategory !== 'professional' && profile.collegeName?.trim()) {
       interviewReadinessPayload.college_name = profile.collegeName.trim();
     }
-    if (profile.assessmentMode === ASSESSMENT_FOCUS_SKILL || profile.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT) {
+    if (
+      profile.assessmentMode === ASSESSMENT_FOCUS_SKILL ||
+      profile.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT ||
+      profile.assessmentMode === ASSESSMENT_FOCUS_APTITUDE
+    ) {
       interviewReadinessPayload.assessment_focus = profile.assessmentMode;
     }
 
@@ -1755,9 +1834,14 @@ const InterviewReady = () => {
       }
     }
 
-    const payload = isSkillMode ? skillReadinessPayload : interviewReadinessPayload;
+    const payload = isAptitudeMode
+      ? aptitudeSkillReadinessPayload
+      : isSkillMode
+        ? skillReadinessPayload
+        : interviewReadinessPayload;
 
-    void postAdminLeadCapture(API_BASE, buildAdminLeadsPayload(profile, primarySkill, expParsed, isSkillMode));
+    const leadSkill = isAptitudeMode ? APTITUDE_SKILLS.join(', ') : primarySkill;
+    void postAdminLeadCapture(API_BASE, buildAdminLeadsPayload(profile, leadSkill, expParsed, isSkillMode || isAptitudeMode));
 
     const timeoutId = window.setTimeout(() => controller.abort(), PLAN_FETCH_TIMEOUT_MS);
 
@@ -1787,13 +1871,30 @@ const InterviewReady = () => {
         return;
       }
 
-      if (!data.evaluation_plan || !data.evaluation_plan.length) {
+      const apiPlan = Array.isArray(data?.evaluation_plan)
+        ? data.evaluation_plan
+        : Array.isArray(data?.questions)
+          ? data.questions
+          : Array.isArray(data?.plan)
+            ? data.plan
+            : [];
+
+      if (!apiPlan.length) {
         setError('No questions returned from server. Please try again.');
         setPlanLoading(false);
         return;
       }
 
-      setEvaluationData(data.evaluation_plan);
+      const finalPlan = isAptitudeMode ? apiPlan.slice(0, APTITUDE_QUESTION_COUNT) : apiPlan;
+      if (profile.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT) {
+        const interviewPlanErr = interviewPlanValidationError(finalPlan);
+        if (interviewPlanErr) {
+          setError(`Interview readiness plan validation failed: ${interviewPlanErr}. Please regenerate.`);
+          setPlanLoading(false);
+          return;
+        }
+      }
+      setEvaluationData(finalPlan);
     } catch (err) {
       console.error('Plan request:', err);
       if (err.name === 'AbortError') {
@@ -1941,15 +2042,19 @@ const InterviewReady = () => {
     });
     setStep(5);
     setError(null);
+    const leadPrimarySkill =
+      profile.assessmentMode === ASSESSMENT_FOCUS_APTITUDE
+        ? 'Aptitude'
+        : String(profile.primarySkill ?? '').trim() || 'General';
     void postAdminLeadCapture(
       API_BASE,
       buildAdminLeadsPayload(
         profile,
-        profile.primarySkill.trim().slice(0, PLAN_PRIMARY_SKILL_MAX),
+        leadPrimarySkill.slice(0, PLAN_PRIMARY_SKILL_MAX),
         profile.userCategory === 'professional'
-          ? Math.min(50, Math.max(0, parseFloat(String(profile.experienceYears).trim(), 10) || 0))
+          ? Math.min(15, Math.max(0, Number.parseInt(String(profile.experienceYears).trim(), 10) || 0))
           : 0,
-        profile.assessmentMode === ASSESSMENT_FOCUS_SKILL
+        profile.assessmentMode === ASSESSMENT_FOCUS_SKILL || profile.assessmentMode === ASSESSMENT_FOCUS_APTITUDE
       )
     );
   };
@@ -2001,8 +2106,13 @@ const InterviewReady = () => {
               variant="hero"
               selectedMode={profile.assessmentMode}
               onPick={(mode) => {
-                setProfile((p) => ({ ...p, assessmentMode: mode }));
-                setStep(2);
+                const isAptitude = mode === ASSESSMENT_FOCUS_APTITUDE;
+                setProfile((p) => ({
+                  ...p,
+                  assessmentMode: mode,
+                  userCategory: isAptitude ? '4th_year' : p.userCategory,
+                }));
+                setStep(isAptitude ? 4 : 2);
               }}
             />
             <button
@@ -2091,8 +2201,13 @@ const InterviewReady = () => {
               variant="hero"
               selectedMode={profile.assessmentMode}
               onPick={(mode) => {
-                setProfile((p) => ({ ...p, assessmentMode: mode }));
-                setStep(2);
+                const isAptitude = mode === ASSESSMENT_FOCUS_APTITUDE;
+                setProfile((p) => ({
+                  ...p,
+                  assessmentMode: mode,
+                  userCategory: isAptitude ? '4th_year' : p.userCategory,
+                }));
+                setStep(isAptitude ? 4 : 2);
               }}
             />
           </div>
@@ -2172,7 +2287,7 @@ const InterviewReady = () => {
                   type="tel"
                   value={contactInfo.phone}
                   onChange={(e) => {
-                    setContactInfo({...contactInfo, phone: e.target.value});
+                    setContactInfo({...contactInfo, phone: e.target.value.replace(/\D/g, '').slice(0, 10)});
                     setValidationErrors({...validationErrors, phone: ''});
                   }}
                   placeholder="+91 9876543210"
@@ -2498,19 +2613,20 @@ const InterviewReady = () => {
                   Years of experience <span className="text-red-400">*</span>
                 </label>
                 <input
-                  type="number"
-                  min={0}
-                  max={50}
-                  step={0.5}
-                  inputMode="decimal"
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
                   value={profile.experienceYears}
                   onChange={(e) => {
-                    setProfile((p) => ({ ...p, experienceYears: e.target.value }));
+                    const digitsOnly = e.target.value.replace(/\D/g, '');
+                    const normalized =
+                      digitsOnly === '' ? '' : String(Math.min(15, Number.parseInt(digitsOnly, 10) || 0));
+                    setProfile((p) => ({ ...p, experienceYears: normalized }));
                     setValidationErrors((prev) =>
                       prev.experienceYears ? { ...prev, experienceYears: '' } : prev
                     );
                   }}
-                  placeholder="e.g. 2.5"
+                  placeholder="e.g. 2"
                   aria-invalid={validationErrors.experienceYears ? 'true' : undefined}
                   data-mm-invalid={validationErrors.experienceYears ? 'true' : undefined}
                   className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
@@ -2535,7 +2651,9 @@ const InterviewReady = () => {
                   type="text"
                   value={profile.currentOrganization}
                   onChange={(e) => {
-                    setProfile((p) => ({ ...p, currentOrganization: e.target.value }));
+                    const next = e.target.value;
+                    const normalized = countWords(next) > TEXT_WORD_LIMIT ? profile.currentOrganization : next;
+                    setProfile((p) => ({ ...p, currentOrganization: normalized }));
                     setValidationErrors((prev) =>
                       prev.currentOrganization ? { ...prev, currentOrganization: '' } : prev
                     );
@@ -2592,6 +2710,7 @@ const InterviewReady = () => {
     const ASSESSMENT_STEPS = 6;
     const currentStepIndex = 3;
     const isSkillFocus = profile.assessmentMode === ASSESSMENT_FOCUS_SKILL;
+    const isAptitudeFocus = profile.assessmentMode === ASSESSMENT_FOCUS_APTITUDE;
     const placementGoesStraightToPlan =
       profile.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT &&
       !needsInterviewPlacementContextStep(profile.userCategory);
@@ -2623,7 +2742,7 @@ const InterviewReady = () => {
 
             <div className="mb-6 space-y-4">
               <h2 className="text-2xl font-black tracking-tight text-foreground md:text-3xl">
-                {isSkillFocus ? 'Your skill focus' : 'Interview focus areas'}
+                {isAptitudeFocus ? 'Aptitude round focus' : isSkillFocus ? 'Your skill focus' : 'Interview focus areas'}
               </h2>
               <div className="flex flex-wrap items-center gap-2">
                 {profile.assessmentMode && (
@@ -2646,7 +2765,12 @@ const InterviewReady = () => {
             <form onSubmit={handleStep4Submit} className="space-y-6">
               <div className="space-y-3">
                 <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
-                  {isSkillFocus ? (
+                  {isAptitudeFocus ? (
+                    <>
+                      We will generate a fixed <span className="font-semibold text-foreground">{APTITUDE_QUESTION_COUNT}-question</span>{' '}
+                      aptitude set across quantitative, logical, and verbal reasoning. No skill input needed here.
+                    </>
+                  ) : isSkillFocus ? (
                     <>
                       Enter <span className="font-semibold text-foreground">one</span> skill or stack for{' '}
                       <span className="font-semibold text-foreground">in-depth preparation</span>. Every question stays on that
@@ -2661,35 +2785,42 @@ const InterviewReady = () => {
                     </>
                   )}
                 </p>
-                <InputField
-                  label={
-                    isSkillFocus
-                      ? 'Core skill / stack for in-depth prep'
-                      : 'Core skill & major areas (for context)'
-                  }
-                  type="textarea"
-                  name="primarySkill"
-                  value={profile.primarySkill}
-                  onChange={(e) => {
-                    const v = e.target.value;
-                    setProfile((prev) => ({ ...prev, primarySkill: v }));
-                    setValidationErrors((prev) => (prev.primarySkill ? { ...prev, primarySkill: '' } : prev));
-                  }}
-                  placeholder={
-                    isSkillFocus
-                      ? 'e.g. Java — one focus for in-depth prep (not a list)'
-                      : 'e.g. DSA, OOP, DBMS, system design — comma-separated areas'
-                  }
-                  error={validationErrors.primarySkill}
-                  maxLength={PLAN_PRIMARY_SKILL_MAX}
-                  showCharCount={true}
-                  autoComplete="off"
-                />
+                {!isAptitudeFocus && (
+                  <InputField
+                    label={
+                      isSkillFocus
+                        ? 'Core skill / stack for in-depth prep'
+                        : 'Core skill & major areas (for context)'
+                    }
+                    type="textarea"
+                    name="primarySkill"
+                    value={profile.primarySkill}
+                    onChange={(e) => {
+                      const v = e.target.value;
+                      setProfile((prev) => ({ ...prev, primarySkill: v }));
+                      setValidationErrors((prev) => (prev.primarySkill ? { ...prev, primarySkill: '' } : prev));
+                    }}
+                    placeholder={
+                      isSkillFocus
+                        ? 'e.g. Java — one focus for in-depth prep (not a list)'
+                        : 'e.g. DSA, OOP, DBMS, system design — comma-separated areas'
+                    }
+                    error={validationErrors.primarySkill}
+                    maxLength={PLAN_PRIMARY_SKILL_MAX}
+                    showCharCount={true}
+                    autoComplete="off"
+                  />
+                )}
               </div>
 
               <div className="rounded-lg border border-[#E8E4DC] bg-[#FAFAFA] px-3 py-2.5">
                 <p className="text-xs leading-snug text-muted-foreground">
-                  {isSkillFocus ? (
+                  {isAptitudeFocus ? (
+                    <>
+                      <span className="font-semibold text-muted-foreground">Aptitude mode:</span> Questions are auto-generated for
+                      quantitative, logical, and verbal reasoning.
+                    </>
+                  ) : isSkillFocus ? (
                     <>
                       <span className="font-semibold text-muted-foreground">Tip:</span> One stack only (e.g. Java or Python).
                       We go deep on it — skip comma-separated lists.

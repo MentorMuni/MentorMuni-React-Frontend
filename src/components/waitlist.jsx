@@ -47,6 +47,12 @@ const ROLES = ['Software Engineer', 'Frontend Developer', 'Backend Developer', '
 const STORAGE_KEY = 'mm_waitlist_count';
 const JOINED_KEY  = 'mm_waitlist_joined';
 const BASE_COUNT  = 50;
+const WORD_LIMIT = 50;
+
+const wordCount = (value) => String(value || '').trim().split(/\s+/).filter(Boolean).length;
+const isValidEmail = (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(value || '').trim());
+const isValidName = (value) => /^[A-Za-z][A-Za-z\s.'-]{1,}$/.test(String(value || '').trim());
+const normalizeName = (value) => value.replace(/[^A-Za-z\s.'-]/g, '');
 
 const getCount = () => {
   const stored = localStorage.getItem(STORAGE_KEY);
@@ -56,7 +62,7 @@ const getCount = () => {
 export default function WaitlistPage() {
   const [count, setCount]     = useState(getCount);
   const [form, setForm]       = useState({
-    name: '', phone: '', college: '', year: '', role: '', whatsapp: true,
+    name: '', email: '', phone: '', college: '', year: '', role: '', whatsapp: true,
   });
   const [errors, setErrors]   = useState({});
   const [submitted, setSubmitted] = useState(
@@ -72,12 +78,17 @@ export default function WaitlistPage() {
 
   const validate = () => {
     const e = {};
-    if (!form.name.trim())    e.name    = 'Name is required';
+    if (!form.name.trim()) e.name = 'Name is required';
+    else if (!isValidName(form.name)) e.name = 'Enter a valid full name';
+    else if (wordCount(form.name) > WORD_LIMIT) e.name = `Maximum ${WORD_LIMIT} words allowed`;
+    if (!form.email.trim()) e.email = 'Email is required';
+    else if (!isValidEmail(form.email)) e.email = 'Enter a valid email';
     if (!form.college.trim()) e.college = 'College is required';
+    else if (wordCount(form.college) > WORD_LIMIT) e.college = `Maximum ${WORD_LIMIT} words allowed`;
     const digits = form.phone.replace(/\D/g, '');
-    if (digits.length < 10)   e.phone   = 'Enter a valid 10-digit WhatsApp number';
-    if (!form.year)            e.year    = 'Please select your year';
-    if (!form.role)            e.role    = 'Please select a target role';
+    if (digits.length !== 10) e.phone = 'Enter a valid 10-digit WhatsApp number';
+    if (!form.year) e.year = 'Please select your year';
+    if (!form.role) e.role = 'Please select a target role';
     setErrors(e);
     return Object.keys(e).length === 0;
   };
@@ -100,7 +111,7 @@ export default function WaitlistPage() {
       source: 'waitlist_page',
       submitted_at: new Date().toISOString(),
       name: form.name.trim(),
-      email: null,
+      email: form.email.trim(),
       phone: form.phone.trim(),
       college: form.college.trim(),
       year: form.year,
@@ -248,10 +259,19 @@ export default function WaitlistPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground block mb-1.5">Full name <span className="text-red-400">*</span></label>
-                    <input type="text" value={form.name} onChange={e => set('name', e.target.value)}
+                    <input type="text" value={form.name} onChange={e => set('name', normalizeName(e.target.value))}
                       placeholder="Priya Sharma" className={inputCls('name')} />
                     {errors.name && <p className="text-red-400 text-xs mt-1">{errors.name}</p>}
                   </div>
+                  <div>
+                    <label className="text-xs font-semibold text-muted-foreground block mb-1.5">Email <span className="text-red-400">*</span></label>
+                    <input type="email" value={form.email} onChange={e => set('email', e.target.value)}
+                      placeholder="you@example.com" className={inputCls('email')} />
+                    {errors.email && <p className="text-red-400 text-xs mt-1">{errors.email}</p>}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="text-xs font-semibold text-muted-foreground block mb-1.5">WhatsApp number <span className="text-red-400">*</span></label>
                     <div className="relative">
@@ -261,13 +281,12 @@ export default function WaitlistPage() {
                     </div>
                     {errors.phone && <p className="text-red-400 text-xs mt-1">{errors.phone}</p>}
                   </div>
-                </div>
-
-                <div>
+                  <div>
                   <label className="text-xs font-semibold text-muted-foreground block mb-1.5">College name <span className="text-red-400">*</span></label>
                   <input type="text" value={form.college} onChange={e => set('college', e.target.value)}
                     placeholder="e.g. VIT Vellore, NIT Trichy, SRM Chennai" className={inputCls('college')} />
                   {errors.college && <p className="text-red-400 text-xs mt-1">{errors.college}</p>}
+                </div>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
