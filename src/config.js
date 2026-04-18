@@ -40,7 +40,10 @@ export const API_BASE = import.meta.env.VITE_API_URL ?? PRODUCTION_API_URL;
 export const INQUIRIES_PATH = import.meta.env.VITE_INQUIRIES_PATH ?? '/api/inquiries';
 export const INQUIRIES_URL = `${API_BASE}${INQUIRIES_PATH}`;
 
-/** Full URL for POST resume ATS analysis (multipart: file + target_role). Override with VITE_RESUME_ATS_URL. */
+/**
+ * POST /api/resume/ats — multipart/form-data only: file + target_role (no JSON body).
+ * Rate limit / max size enforced on server. Override URL with VITE_RESUME_ATS_URL.
+ */
 export const RESUME_ATS_URL =
   import.meta.env.VITE_RESUME_ATS_URL ?? `${API_BASE}/api/resume/ats`;
 

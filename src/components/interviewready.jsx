@@ -175,6 +175,8 @@ const DEFAULT_QUESTION_COUNT = 15;
 const APTITUDE_QUESTION_COUNT = 15;
 const PLAN_QUESTION_COUNT = 15;
 const APTITUDE_SKILLS = ['quantitative', 'logical reasoning', 'verbal reasoning'];
+/** OpenAPI AptitudeReadinessPlanRequest.primary_skill default — do not send skill-readiness-only fields (skills, question_count). */
+const APTITUDE_PRIMARY_SKILL_API = 'Quantitative, Logical and Verbal Reasoning';
 const TEXT_WORD_LIMIT = 50;
 const countWords = (value) => String(value || '').trim().split(/\s+/).filter(Boolean).length;
 
@@ -1770,11 +1772,13 @@ const InterviewReady = () => {
       experience_years: expParsed,
     };
     const aptitudeSkillReadinessPayload = {
-      user_type: SKILL_API_USER_TYPE_BY_CATEGORY['4th_year'],
-      primary_skill: APTITUDE_SKILLS.join(', '),
-      skills: APTITUDE_SKILLS,
-      question_count: APTITUDE_QUESTION_COUNT,
-      experience_years: 0,
+      user_type: SKILL_API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'college_student_year_4',
+      primary_skill: APTITUDE_PRIMARY_SKILL_API,
+      experience_years: expParsed,
+      target_role: profile.targetRole?.trim() || undefined,
+      target_company_type: 'both',
+      email: profile.email?.trim() || undefined,
+      phone: profile.contactNumber?.trim() || undefined,
     };
 
     const interviewReadinessPayload = {

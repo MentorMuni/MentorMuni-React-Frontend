@@ -8,14 +8,15 @@ import { RESUME_ATS_URL } from '../config';
 import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 
 /**
- * Backend: POST RESUME_ATS_URL — multipart/form-data (do not set Content-Type; browser sets boundary)
- *   - file: PDF, .doc, or .docx
- *   - target_role: string (same as role dropdown), e.g. "Software Engineer"
+ * POST {API_BASE}/api/resume/ats — multipart/form-data only (no JSON body).
+ * Do not set Content-Type; the browser sets the multipart boundary.
  *
- * Errors: 422 (bad file / empty role), 413 (file too large), 429, 500.
- * Success: 200 JSON — score, ats, keywords, formatting, impact, summary,
- *   matched_keywords, missing_keywords, strengths, fixes, portal_tips (Naukri/LinkedIn checklist).
- * See normalizeAtsResponse() for aliases and backward compatibility.
+ * Form fields (required):
+ *   - file: .pdf, .doc, or .docx (max 5MB client-side)
+ *   - target_role: role label for keyword matching, e.g. "Software Engineer"
+ *
+ * Server: rate limit ~30 req/min per IP (see backend). Response: JSON ResumeAtsResponse.
+ * See normalizeAtsResponse().
  */
 
 const ATS_ALLOWED_EXTENSIONS = new Set(['pdf', 'doc', 'docx']);
@@ -40,14 +41,20 @@ function asStringArray(v) {
   return [];
 }
 
-/** Maps API JSON (camelCase or snake_case) to UI result shape */
+function asOptionalString(v) {
+  if (v == null) return null;
+  const s = String(v).trim();
+  return s || null;
+}
+
+/** Maps API JSON (ResumeAtsResponse + aliases) to UI result shape */
 function normalizeAtsResponse(raw) {
   if (!raw || typeof raw !== 'object') {
     throw new Error('Invalid response from server');
   }
 
-  const overall = raw.overall_score ?? raw.score ?? raw.total_score ?? raw.ats_score;
-  const ats = raw.ats ?? raw.ats_compatibility ?? raw.ats_score;
+  const overall = raw.overall_score ?? raw.score ?? raw.total_score;
+  const ats = raw.ats ?? raw.ats_compatibility;
   const keywords = raw.keywords ?? raw.keyword_match ?? raw.keyword_score;
   const formatting = raw.formatting ?? raw.formatting_score;
   const impact = raw.impact ?? raw.impact_score;
@@ -62,16 +69,26 @@ function normalizeAtsResponse(raw) {
 
   return {
     score,
-    ats: clampPct(ats ?? score - 8, 50),
-    keywords: clampPct(keywords ?? score - 5, 45),
-    formatting: clampPct(formatting ?? score + 5, 60),
-    impact: clampPct(impact ?? score - 10, 45),
+    ats: clampPct(Number.isFinite(Number(ats)) ? Number(ats) : score - 8, 50),
+    keywords: clampPct(Number.isFinite(Number(keywords)) ? Number(keywords) : score - 5, 45),
+    formatting: clampPct(Number.isFinite(Number(formatting)) ? Number(formatting) : score + 5, 60),
+    impact: clampPct(Number.isFinite(Number(impact)) ? Number(impact) : score - 10, 45),
     summary,
-    matched: asStringArray(raw.matched ?? raw.matched_keywords ?? raw.keywords_found),
-    missing: asStringArray(raw.missing ?? raw.missing_keywords ?? raw.keyword_gaps ?? raw.gaps),
+    matched: asStringArray(raw.matched_keywords ?? raw.matched ?? raw.keywords_found),
+    missing: asStringArray(raw.missing_keywords ?? raw.missing),
     fixes: asStringArray(raw.fixes ?? raw.recommendations ?? raw.suggestions ?? raw.to_do),
     strengths: asStringArray(raw.strengths ?? raw.positives ?? raw.whats_working),
     portal_tips: asStringArray(raw.portal_tips ?? raw.portalTips),
+    candidate_type: asOptionalString(raw.candidate_type),
+    inferred_role: asOptionalString(raw.inferred_role),
+    top_resume_killers: asStringArray(raw.top_resume_killers),
+    keyword_gaps_llm: asStringArray(raw.keyword_gaps),
+    rewrite_examples: asStringArray(raw.rewrite_examples),
+    section_rewrites: raw.section_rewrites && typeof raw.section_rewrites === 'object' ? raw.section_rewrites : null,
+    positioning_improvement: asStringArray(raw.positioning_improvement),
+    score_breakdown: raw.score_breakdown && typeof raw.score_breakdown === 'object' ? raw.score_breakdown : null,
+    ats_score_estimate: raw.ats_score_estimate && typeof raw.ats_score_estimate === 'object' ? raw.ats_score_estimate : null,
+    priority_action_plan: asStringArray(raw.priority_action_plan),
   };
 }
 
@@ -303,7 +320,9 @@ export default function ResumeAnalyzer() {
             <div className="rounded-2xl border border-border bg-white shadow-sm overflow-hidden">
               <div className="px-5 pt-5 pb-4 border-b border-border">
                 <h2 className="text-sm font-black text-foreground">Upload Resume</h2>
-                <p className="text-xs text-muted-foreground mt-0.5">PDF, DOC, or DOCX only · Max 5MB</p>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  PDF, DOC, or DOCX only · Max 5MB · Sent as multipart (file + target role)
+                </p>
               </div>
               <div className="p-5">
                 {!file ? (
@@ -472,6 +491,9 @@ export default function ResumeAnalyzer() {
                     <BarMetric label="Formatting Score"    value={result.formatting} color="linear-gradient(90deg,#4ade80,#22d3ee)" />
                     <BarMetric label="Impact & Metrics"    value={result.impact}     color="linear-gradient(90deg,#f59e0b,#ef4444)" />
                   </div>
+                  <p className="mt-3 text-[10px] leading-relaxed text-hint">
+                    The 0–100 bars above are server heuristics. Any “x/10” or narrative blocks below come from optional LLM enrichment when enabled — they are separate from those numbers.
+                  </p>
                 </div>
 
                 {/* Fix suggestions */}
@@ -547,6 +569,139 @@ export default function ResumeAnalyzer() {
                         </li>
                       ))}
                     </ul>
+                  </div>
+                )}
+
+                {/* Optional LLM / enrichment (when backend returns them) — distinct from 0–100 heuristic bars above */}
+                {(result.candidate_type || result.inferred_role) && (
+                  <div className="rounded-2xl border border-border bg-[#FAFAFA] p-4 text-xs text-muted-foreground">
+                    <p className="font-bold text-foreground mb-1">Profile hints</p>
+                    {result.candidate_type && <p>Candidate type: {result.candidate_type}</p>}
+                    {result.inferred_role && <p>Inferred role: {result.inferred_role}</p>}
+                  </div>
+                )}
+
+                {result.score_breakdown && (
+                  <div className="rounded-2xl border border-border bg-white p-4 shadow-sm">
+                    <p className="text-xs font-black text-foreground mb-2">Score breakdown (LLM narrative)</p>
+                    <ul className="space-y-1 text-xs text-muted-foreground">
+                      {Object.entries(result.score_breakdown).map(([k, v]) => (
+                        <li key={k}>
+                          <span className="font-semibold text-foreground capitalize">{k.replace(/_/g, ' ')}:</span>{' '}
+                          {String(v)}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {result.ats_score_estimate && (
+                  <div className="rounded-2xl border border-[#FF9500]/25 bg-[#FFF8EE] p-4">
+                    <p className="text-xs font-black text-foreground mb-1">ATS estimate (LLM)</p>
+                    {result.ats_score_estimate.score != null && (
+                      <p className="text-sm font-bold text-[#B45309]">{String(result.ats_score_estimate.score)}</p>
+                    )}
+                    {result.ats_score_estimate.label && (
+                      <p className="text-xs text-muted-foreground">{result.ats_score_estimate.label}</p>
+                    )}
+                    {result.ats_score_estimate.reason && (
+                      <p className="text-xs text-muted-foreground mt-2 leading-relaxed">{result.ats_score_estimate.reason}</p>
+                    )}
+                  </div>
+                )}
+
+                {result.priority_action_plan.length > 0 && (
+                  <div className="rounded-2xl border border-violet-200 bg-violet-50/80 p-5">
+                    <h3 className="text-sm font-black text-violet-950 mb-2">Priority action plan</h3>
+                    <ol className="list-decimal list-inside space-y-1.5 text-xs text-muted-foreground">
+                      {result.priority_action_plan.map((line, i) => (
+                        <li key={i}>{line}</li>
+                      ))}
+                    </ol>
+                  </div>
+                )}
+
+                {result.top_resume_killers.length > 0 && (
+                  <div className="rounded-2xl border border-red-200 bg-red-50/60 p-5">
+                    <h3 className="text-sm font-black text-red-900 mb-2">Top resume risks</h3>
+                    <ul className="space-y-1.5 text-xs text-muted-foreground">
+                      {result.top_resume_killers.map((line, i) => (
+                        <li key={i} className="flex gap-2">
+                          <span className="text-red-500">•</span>
+                          <span>{line}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {result.keyword_gaps_llm.length > 0 && (
+                  <div className="rounded-2xl border border-border bg-white p-4">
+                    <p className="text-xs font-semibold text-foreground mb-2">Additional keyword gaps (LLM)</p>
+                    <div className="flex flex-wrap gap-2">
+                      {result.keyword_gaps_llm.map((k) => (
+                        <span
+                          key={k}
+                          className="text-xs font-medium px-2 py-1 rounded-lg bg-amber-50 border border-amber-200 text-amber-900"
+                        >
+                          {k}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {result.rewrite_examples.length > 0 && (
+                  <div className="rounded-2xl border border-border bg-white p-4">
+                    <h3 className="text-sm font-black text-foreground mb-2">Rewrite examples</h3>
+                    <ul className="space-y-2 text-xs text-muted-foreground">
+                      {result.rewrite_examples.map((line, i) => (
+                        <li key={i} className="leading-relaxed border-l-2 border-[#FF9500]/40 pl-3">
+                          {line}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {result.positioning_improvement.length > 0 && (
+                  <div className="rounded-2xl border border-border bg-white p-4">
+                    <h3 className="text-sm font-black text-foreground mb-2">Positioning</h3>
+                    <ul className="space-y-1 text-xs text-muted-foreground">
+                      {result.positioning_improvement.map((line, i) => (
+                        <li key={i}>{line}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {result.section_rewrites &&
+                  ['headline', 'summary', 'skills', 'project_or_experience'].some((key) => {
+                    const v = result.section_rewrites[key];
+                    return v != null && v !== '' && (!Array.isArray(v) || v.length > 0);
+                  }) && (
+                  <div className="rounded-2xl border border-border bg-white p-4 shadow-sm">
+                    <h3 className="text-sm font-black text-foreground mb-3">Section rewrites</h3>
+                    <div className="space-y-3 text-xs">
+                      {['headline', 'summary', 'skills', 'project_or_experience'].map((key) => {
+                        const val = result.section_rewrites[key];
+                        if (val == null || val === '' || (Array.isArray(val) && val.length === 0)) return null;
+                        return (
+                          <div key={key}>
+                            <p className="font-semibold text-foreground capitalize mb-1">{key.replace(/_/g, ' ')}</p>
+                            {Array.isArray(val) ? (
+                              <ul className="list-disc list-inside text-muted-foreground space-y-1">
+                                {val.map((item, idx) => (
+                                  <li key={idx}>{String(item)}</li>
+                                ))}
+                              </ul>
+                            ) : (
+                              <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">{String(val)}</p>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
                   </div>
                 )}
               </>
