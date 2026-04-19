@@ -199,7 +199,6 @@ function interviewPlanValidationError(plan) {
   if (!Array.isArray(plan)) return 'Plan must be an array';
   if (plan.length === 0) return 'Plan has no questions';
   const requiredKeys = ['question', 'question_type', 'study_topic', 'explanation'];
-  const seenTopics = new Set();
   for (let i = 0; i < plan.length; i += 1) {
     const item = plan[i];
     if (!item || typeof item !== 'object') return `Question ${i + 1} is invalid`;
@@ -210,9 +209,6 @@ function interviewPlanValidationError(plan) {
     if (!normalizedType || !INTERVIEW_PLAN_ITEM_TYPES.includes(normalizedType)) {
       return `Question ${i + 1} must use a supported question_type (yes_no, multiple_choice, scenario, code_mcq)`;
     }
-    const topic = String(item.study_topic).trim().toLowerCase();
-    if (seenTopics.has(topic)) return `Duplicate study_topic found at question ${i + 1}`;
-    seenTopics.add(topic);
     if (normalizedType !== 'yes_no') {
       const opts = getPlanMcqOptions(item);
       if (!opts || opts.length !== 4) return `Question ${i + 1} must include exactly 4 options`;
