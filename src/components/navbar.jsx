@@ -260,14 +260,14 @@ const Navbar = () => {
                 onClick={() => setMoreOpen((v) => !v)}
                 aria-expanded={moreOpen}
                 aria-haspopup="true"
-                aria-label="Company and help links"
-                className={`inline-flex h-10 items-center gap-0.5 rounded-lg px-2 text-[0.8125rem] font-semibold transition-all lg:gap-1 lg:px-2.5 xl:px-3 xl:text-[0.875rem] ${
+                aria-label="Colleges, about, and contact"
+                className={`inline-flex h-10 max-w-full items-center gap-0.5 whitespace-nowrap rounded-lg px-2 text-[0.8125rem] font-semibold transition-all lg:gap-1 lg:px-2.5 xl:px-3 xl:text-[0.875rem] ${
                   moreOpen || moreMenuActive
                     ? 'text-[#FF9500] bg-[#FFF4E0] ring-1 ring-[#FFB347]/35'
                     : 'text-[#333333] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
                 }`}
               >
-                More
+                About/Contact
                 <ChevronDown size={16} strokeWidth={2.25} className={`shrink-0 transition-transform duration-200 ${moreOpen ? 'rotate-180' : ''}`} />
               </button>
               {moreOpen && (

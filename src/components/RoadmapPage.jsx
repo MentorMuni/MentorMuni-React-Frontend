@@ -650,8 +650,8 @@ export default function RoadmapPage() {
                   From Fresher to Placement-Ready
                 </h1>
                 <p className="mx-auto mt-5 max-w-2xl text-base font-normal leading-relaxed text-muted-foreground sm:text-lg lg:mx-0">
-                  A mentor-crafted 4-year blueprint used by 1000+ MentorMuni students to crack campus placements at top IT
-                  companies.
+                  A mentor-designed 4-year roadmap — what to build each year so you&apos;re ready for campus placements at top IT
+                  companies, with clear milestones and focus areas.
                 </p>
                 <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:justify-center lg:justify-start">
                   <Link
