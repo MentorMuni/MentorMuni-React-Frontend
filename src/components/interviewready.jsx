@@ -25,7 +25,13 @@ const INTERVIEW_PLAN_PATH = '/interview-ready/interview-readiness/plan';
 
 /** Skill preparation (depth) — POST /interview-ready/skill-readiness/plan */
 const SKILL_READINESS_PLAN_PATH = '/interview-ready/skill-readiness/plan';
-/** Aptitude preparation (depth) — POST /interview-ready/aptitude-readiness/plan */
+/**
+ * Aptitude preparation — POST /interview-ready/aptitude-readiness/plan
+ * Body: AptitudeReadinessPlanRequest (see API /docs). Required: user_type. Optional: experience_years,
+ * primary_skill (default below), target_role (empty on server → Software Engineer), target_company_type
+ * (service_mnc | product_company | both), email, phone. No skill validation. Response: evaluation_plan
+ * with 15× AptitudeReadinessMultipleChoiceItem (quant 1–5, logical 6–10, verbal 11–15). Score via POST /interview-ready/evaluate.
+ */
 const APTITUDE_READINESS_PLAN_PATH = '/interview-ready/aptitude-readiness/plan';
 
 /**
@@ -173,10 +179,13 @@ const ASSESSMENT_FOCUS_PLACEMENT = 'placement';
 const ASSESSMENT_FOCUS_APTITUDE = 'aptitude';
 const DEFAULT_QUESTION_COUNT = 15;
 const APTITUDE_QUESTION_COUNT = 15;
-const PLAN_QUESTION_COUNT = 15;
+/** Interview-readiness API may return a variable-length plan (e.g. 12–15 items); validate shape, not a fixed count. */
+const INTERVIEW_PLAN_ITEM_TYPES = ['yes_no', 'multiple_choice', 'scenario', 'code_mcq'];
 const APTITUDE_SKILLS = ['quantitative', 'logical reasoning', 'verbal reasoning'];
-/** OpenAPI AptitudeReadinessPlanRequest.primary_skill default — do not send skill-readiness-only fields (skills, question_count). */
+/** AptitudeReadinessPlanRequest.primary_skill default — do not send skill-readiness-only fields (skills, question_count). */
 const APTITUDE_PRIMARY_SKILL_API = 'Quantitative, Logical and Verbal Reasoning';
+/** Server default when target_role is omitted; we send explicitly to match API examples. */
+const APTITUDE_DEFAULT_TARGET_ROLE = 'Software Engineer';
 const TEXT_WORD_LIMIT = 50;
 const countWords = (value) => String(value || '').trim().split(/\s+/).filter(Boolean).length;
 
@@ -188,14 +197,8 @@ const ASSESSMENT_MODE_LABEL = {
 
 function interviewPlanValidationError(plan) {
   if (!Array.isArray(plan)) return 'Plan must be an array';
-  if (plan.length !== PLAN_QUESTION_COUNT) return `Expected exactly ${PLAN_QUESTION_COUNT} questions`;
+  if (plan.length === 0) return 'Plan has no questions';
   const requiredKeys = ['question', 'question_type', 'study_topic', 'explanation'];
-  const expectedByIndex = [
-    ...Array(4).fill('yes_no'),
-    ...Array(7).fill('multiple_choice'),
-    ...Array(2).fill('scenario'),
-    ...Array(2).fill('code_mcq'),
-  ];
   const seenTopics = new Set();
   for (let i = 0; i < plan.length; i += 1) {
     const item = plan[i];
@@ -204,7 +207,9 @@ function interviewPlanValidationError(plan) {
       if (!String(item[key] ?? '').trim()) return `Question ${i + 1} missing "${key}"`;
     }
     const normalizedType = normalizePlanQuestionType(item.question_type);
-    if (normalizedType !== expectedByIndex[i]) return `Question ${i + 1} must be "${expectedByIndex[i]}"`;
+    if (!normalizedType || !INTERVIEW_PLAN_ITEM_TYPES.includes(normalizedType)) {
+      return `Question ${i + 1} must use a supported question_type (yes_no, multiple_choice, scenario, code_mcq)`;
+    }
     const topic = String(item.study_topic).trim().toLowerCase();
     if (seenTopics.has(topic)) return `Duplicate study_topic found at question ${i + 1}`;
     seenTopics.add(topic);
@@ -257,7 +262,11 @@ function explainPlanHttpError(status, apiMessage) {
     return base || 'Too many requests. Please wait and try again.';
   }
 
-  if (status === 500 || status === 502 || status === 503 || status === 504) {
+  if (status === 504) {
+    return base || 'Generating questions timed out on the server. Please try again in a minute.';
+  }
+
+  if (status === 500 || status === 502 || status === 503) {
     if (/failed to generate plan/i.test(base)) {
       return "We couldn't generate your questions right now. Please try again in a minute. If this keeps happening, the assessment service may need maintenance.";
     }
@@ -1053,13 +1062,25 @@ function getPlanMcqOptions(item) {
   return null;
 }
 
+/** True if API returned stub / demo text (common when generation fails upstream). */
+function planItemLooksLikePlaceholder(item) {
+  const q = String(item?.question ?? '').toLowerCase();
+  if (q.includes('placeholder')) return true;
+  const opts = getPlanMcqOptions(item);
+  if (opts?.some((o) => String(o).toLowerCase().includes('placeholder'))) return true;
+  return false;
+}
+
 /**
  * Plan items from skill / interview-readiness APIs include `question_type`.
  * Legacy plans that omit it → render all as Yes/No (do not infer MCQ from options alone).
+ * Aptitude plans always use MCQs — if `question_type` is missing but four options exist, treat as MCQ.
  */
-function inferPlanQuestionKind(item) {
+function inferPlanQuestionKind(item, opts = {}) {
+  const { inferMcqFromOptions = false } = opts;
   const normalized = normalizePlanQuestionType(item?.question_type);
   if (normalized) return normalized;
+  if (inferMcqFromOptions && getPlanMcqOptions(item)) return 'multiple_choice';
   return 'yes_no';
 }
 
@@ -1083,12 +1104,19 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
   const [scrolled, setScrolled] = useState(false);
   const listRef = useRef(null);
   const isSkillQuiz = profile.assessmentMode === ASSESSMENT_FOCUS_SKILL;
-  const quizTitle = isSkillQuiz ? 'Skill preparation quiz' : 'Interview readiness quiz';
+  const isAptitudeQuiz = profile.assessmentMode === ASSESSMENT_FOCUS_APTITUDE;
+  const quizTitle = isSkillQuiz
+    ? 'Skill preparation quiz'
+    : isAptitudeQuiz
+      ? 'Aptitude preparation quiz'
+      : 'Interview readiness quiz';
   const items = Array.isArray(evaluationPlan) ? evaluationPlan : [];
   const answered = Object.keys(answers).length;
   const total = items.length || 1;
   const pct = Math.min(100, Math.round((answered / total) * 100));
-  const skillSnippet = (profile.primarySkill || '').split(',')[0].trim() || 'your input';
+  const skillSnippet = isAptitudeQuiz
+    ? APTITUDE_PRIMARY_SKILL_API
+    : (profile.primarySkill || '').split(',')[0].trim() || 'your input';
   const roleLabel =
     DISPLAY_ROLE_BY_CATEGORY[profile.userCategory] ||
     (profile.userCategory ? String(profile.userCategory).replace(/_/g, ' ') : '') ||
@@ -1116,16 +1144,25 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
                 <div className="flex flex-wrap items-center gap-2">
                   <h2 className="text-lg font-bold leading-tight text-foreground sm:text-xl">{quizTitle}</h2>
                   <span className="shrink-0 rounded-full border border-[#E8D9C8] bg-[#FFF8EE] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#8B6914] sm:text-[11px]">
-                    Mixed · {items.length} questions
+                    {isAptitudeQuiz
+                      ? `MCQ · ${items.length} question${items.length === 1 ? '' : 's'}`
+                      : `Mixed · ${items.length} questions`}
                   </span>
                 </div>
                 <p className="mt-1.5 line-clamp-2 text-xs leading-snug text-muted-foreground sm:text-sm">
-                  {isSkillQuiz
-                    ? 'Yes/No claims plus A–D items — scoped to your skill focus.'
-                    : 'Yes/No, multiple choice, scenarios, and code-style items — broad engineering-style readiness.'}
+                  {isAptitudeQuiz ? (
+                    <>
+                      Placement-style multiple-choice items across quantitative, logical, and verbal reasoning — choose A–D for
+                      each.
+                    </>
+                  ) : isSkillQuiz ? (
+                    'Yes/No claims plus A–D items — scoped to your skill focus.'
+                  ) : (
+                    'Yes/No, multiple choice, scenarios, and code-style items — broad engineering-style readiness.'
+                  )}
                 </p>
                 <p className="mt-1 truncate text-xs text-hint">
-                  {isSkillQuiz ? 'Skill: ' : 'Context: '}
+                  {isSkillQuiz ? 'Skill: ' : isAptitudeQuiz ? 'Focus: ' : 'Context: '}
                   <span className="font-medium text-muted-foreground">{skillSnippet}</span>
                   {roleLabel ? (
                     <>
@@ -1179,7 +1216,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
           >
             {items.map((item, i) => {
               const qText = typeof item?.question === 'string' ? item.question : String(item?.question ?? '');
-              const kind = inferPlanQuestionKind(item);
+              const kind = inferPlanQuestionKind(item, { inferMcqFromOptions: isAptitudeQuiz });
               const isYesNo = kind === 'yes_no';
               const needsMcq = !isYesNo;
               const opts = needsMcq ? getPlanMcqOptions(item) : null;
@@ -1771,11 +1808,12 @@ const InterviewReady = () => {
       question_count: DEFAULT_QUESTION_COUNT,
       experience_years: expParsed,
     };
+    /** AptitudeReadinessPlanRequest — rate limit 20/min; 422/429/500/504 per API. */
     const aptitudeSkillReadinessPayload = {
       user_type: SKILL_API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'college_student_year_4',
       primary_skill: APTITUDE_PRIMARY_SKILL_API,
       experience_years: expParsed,
-      target_role: profile.targetRole?.trim() || undefined,
+      target_role: profile.targetRole?.trim() || APTITUDE_DEFAULT_TARGET_ROLE,
       target_company_type: 'both',
       email: profile.email?.trim() || undefined,
       phone: profile.contactNumber?.trim() || undefined,
@@ -1890,6 +1928,22 @@ const InterviewReady = () => {
       }
 
       const finalPlan = isAptitudeMode ? apiPlan.slice(0, APTITUDE_QUESTION_COUNT) : apiPlan;
+      if (isAptitudeMode) {
+        if (finalPlan.length < APTITUDE_QUESTION_COUNT) {
+          setError(
+            `Expected ${APTITUDE_QUESTION_COUNT} aptitude questions, but the server returned ${finalPlan.length}. Try again in a moment. If this repeats, the API is likely returning an incomplete or stub plan — check backend logs and LLM configuration.`
+          );
+          setEvaluationData(null);
+          return;
+        }
+        if (finalPlan.some((item) => planItemLooksLikePlaceholder(item))) {
+          setError(
+            'The server returned placeholder questions instead of a real aptitude set. Try again, or contact support if this continues.'
+          );
+          setEvaluationData(null);
+          return;
+        }
+      }
       if (profile.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT) {
         const interviewPlanErr = interviewPlanValidationError(finalPlan);
         if (interviewPlanErr) {
@@ -3371,9 +3425,11 @@ const InterviewReady = () => {
     const modeLabel =
       result.assessmentMode === ASSESSMENT_FOCUS_SKILL
         ? 'Skill preparation'
-        : result.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT
-          ? 'Interview readiness'
-          : '—';
+        : result.assessmentMode === ASSESSMENT_FOCUS_APTITUDE
+          ? 'Aptitude preparation'
+          : result.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT
+            ? 'Interview readiness'
+            : '—';
     const roleShort = (result.userCategory ? String(result.userCategory) : '').replace(/_/g, ' ');
     const areaShort = result.techStack || '—';
     const nextSteps = nextStepsForScoreBand(pct);
