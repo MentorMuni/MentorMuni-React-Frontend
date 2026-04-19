@@ -45,6 +45,7 @@ const CareerHealthDashboard = lazy(() => import("./components/CareerHealthDashbo
 const AIToolsKnowledgeBase = lazy(() => import("./components/AIToolsKnowledgeBase"));
 const InterviewReadinessToolsPage = lazy(() => import("./components/InterviewReadinessToolsPage"));
 const LeadershipBoard = lazy(() => import("./components/leadershipBoard"));
+const RoadmapPage = lazy(() => import("./components/RoadmapPage"));
 
 function PageFallback() {
   return (
@@ -157,6 +158,7 @@ function App() {
             <Routes>
               <Route path="/" element={<HomePage />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
+              <Route path="/roadmap" element={<RoadmapPage />} />
               <Route path="/leadership-board" element={<LeadershipBoard />} />
               {/* Specific /tools/* routes must be listed before /tools so they match first */}
               <Route path="/tools/interview-readiness" element={<InterviewReadinessToolsPage />} />

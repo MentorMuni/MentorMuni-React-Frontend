@@ -17,6 +17,7 @@ const HIDE_STICKY_PATHS = new Set([
   "/design-system",
   "/career-health",
   "/dashboard/health",
+  "/roadmap",
 ]);
 
 const STORAGE_KEY = "mm-sticky-cta-dismissed-session";

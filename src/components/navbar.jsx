@@ -1,10 +1,30 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Menu, X, ChevronDown, BarChart2, Mic, FileSearch, Cpu, GraduationCap, BookOpen } from 'lucide-react';
+import {
+  Menu,
+  X,
+  ChevronDown,
+  BarChart2,
+  Mic,
+  FileSearch,
+  Cpu,
+  GraduationCap,
+  BookOpen,
+  Building2,
+  Info,
+  Mail,
+} from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import { PRIMARY_CTA_LABEL, READINESS_TEST_COUPON_BADGE } from '../constants/brandCopy';
 import LimitedRewardLabel from './LimitedRewardLabel';
+
+/** Secondary links — desktop dropdown to avoid a crowded top bar */
+const MORE_LINKS = [
+  { label: 'For colleges', path: '/colleges', exact: true, Icon: Building2 },
+  { label: 'About us', path: '/about', exact: true, Icon: Info },
+  { label: 'Contact us', path: '/contact', exact: true, Icon: Mail },
+];
 
 const TOOLS = [
   {
@@ -61,7 +81,9 @@ const Navbar = () => {
   const logoSrc = `${import.meta.env.BASE_URL}mentormuni-logo.png`;
   const [isOpen, setIsOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
+  const [moreOpen, setMoreOpen] = useState(false);
   const toolsRef = useRef(null);
+  const moreRef = useRef(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -69,13 +91,22 @@ const Navbar = () => {
       if (toolsRef.current && !toolsRef.current.contains(e.target)) {
         setToolsOpen(false);
       }
+      if (moreRef.current && !moreRef.current.contains(e.target)) {
+        setMoreOpen(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    setToolsOpen(false);
+    setMoreOpen(false);
+  }, [location.pathname]);
+
   const navItems = [
     { label: 'How It Works', path: '/how-it-works', exact: false },
+    { label: 'How to Prepare', path: '/roadmap', exact: true, variant: 'roadmap' },
     { label: 'Mentors', path: '/mentors', exact: false },
     { label: 'Outcomes', path: '/outcomes', exact: false },
   ];
@@ -100,12 +131,42 @@ const Navbar = () => {
     setIsOpen(false);
   };
 
-  const navLinkClass = (active) =>
-    `inline-flex h-10 items-center whitespace-nowrap rounded-lg px-2.5 text-[0.8125rem] font-semibold leading-none transition-all xl:px-3 xl:text-[0.875rem] ${
+  const defaultNavDesktopClass = (active) =>
+    `inline-flex h-10 max-w-full items-center whitespace-nowrap rounded-lg px-2 text-[0.8125rem] font-semibold leading-none transition-all lg:px-2.5 xl:px-3 xl:text-[0.875rem] ${
       active
         ? 'text-[#FF9500] bg-[#FFF4E0] ring-1 ring-[#FFB347]/35'
         : 'text-[#333333] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
     }`;
+
+  const moreMenuActive = MORE_LINKS.some((l) => isActive(l.path, l.exact));
+
+  const navLinkClass = (item) => {
+    const active = isActive(item.path, item.exact);
+    if (item.variant === 'roadmap') {
+      return `inline-flex h-10 max-w-full items-center whitespace-nowrap rounded-lg px-2 text-[0.8125rem] leading-none transition-all lg:px-2.5 xl:px-3 xl:text-[0.875rem] ${
+        active
+          ? 'font-bold text-[#1D9E75] underline decoration-2 decoration-[#1D9E75] underline-offset-[5px]'
+          : 'font-semibold text-[#333333] hover:text-[#1D9E75] hover:underline hover:decoration-[#1D9E75]/70 hover:underline-offset-[5px]'
+      }`;
+    }
+    return defaultNavDesktopClass(active);
+  };
+
+  const navLinkClassMobile = (item) => {
+    const active = isActive(item.path, item.exact);
+    if (item.variant === 'roadmap') {
+      return `px-4 py-3.5 text-lg rounded-xl transition-all ${
+        active
+          ? 'font-bold text-[#1D9E75] underline decoration-2 decoration-[#1D9E75] underline-offset-[6px] bg-emerald-50/90 border border-[#1D9E75]/25'
+          : 'font-semibold text-muted-foreground hover:text-[#1D9E75] hover:bg-emerald-50/50'
+      }`;
+    }
+    return `px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
+      active
+        ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
+        : 'text-muted-foreground hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+    }`;
+  };
 
   return (
     <header className="sticky top-0 z-[100] border-b border-border bg-white/95 shadow-[0_1px_0_rgba(0,0,0,0.04)] backdrop-blur-md">
@@ -117,27 +178,33 @@ const Navbar = () => {
               alt="MentorMuni Logo"
               className="h-11 w-11 shrink-0 rounded-full object-contain ring-2 ring-border transition-all group-hover:ring-[#FFB347]/50 sm:h-12 sm:w-12"
             />
-            <span className="hidden text-xl font-extrabold tracking-tight text-foreground sm:inline sm:text-[1.4rem]">
+            <span className="hidden text-xl font-extrabold tracking-tight text-foreground xl:inline xl:text-[1.4rem]">
               Mentor<span className="text-[#FF9500]">Muni</span>
             </span>
           </Link>
 
-          <nav className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 lg:flex xl:gap-1">
-            {navItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className={navLinkClass(isActive(item.path, item.exact))}
-              >
-                {item.label}
-              </Link>
-            ))}
+          <nav className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 lg:flex lg:gap-1 xl:gap-1.5">
+            {navItems.map((item) => {
+              const linkActive = isActive(item.path, item.exact);
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  className={navLinkClass(item)}
+                  aria-current={linkActive ? 'page' : undefined}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
 
-            <div ref={toolsRef} className="relative">
+            <div ref={toolsRef} className="relative shrink-0">
               <button
                 type="button"
                 onClick={() => setToolsOpen(v => !v)}
-                className={`inline-flex h-10 items-center gap-1 rounded-lg px-2.5 text-[0.8125rem] font-semibold transition-all xl:px-3 xl:text-[0.875rem] ${
+                aria-expanded={toolsOpen}
+                aria-haspopup="true"
+                className={`inline-flex h-10 items-center gap-0.5 rounded-lg px-2 text-[0.8125rem] font-semibold transition-all lg:gap-1 lg:px-2.5 xl:px-3 xl:text-[0.875rem] ${
                   toolsOpen
                     ? 'text-[#FF9500] bg-[#FFF4E0] ring-1 ring-[#FFB347]/35'
                     : 'text-[#333333] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
@@ -187,18 +254,45 @@ const Navbar = () => {
               )}
             </div>
 
-            <Link to="/colleges" className={navLinkClass(isActive('/colleges', true))}>
-              For colleges
-            </Link>
-            <Link to="/about" className={navLinkClass(isActive('/about', true))}>
-              About us
-            </Link>
-            <Link
-              to="/contact"
-              className={navLinkClass(isActive('/contact', true))}
-            >
-              Contact us
-            </Link>
+            <div ref={moreRef} className="relative shrink-0">
+              <button
+                type="button"
+                onClick={() => setMoreOpen((v) => !v)}
+                aria-expanded={moreOpen}
+                aria-haspopup="true"
+                aria-label="Company and help links"
+                className={`inline-flex h-10 items-center gap-0.5 rounded-lg px-2 text-[0.8125rem] font-semibold transition-all lg:gap-1 lg:px-2.5 xl:px-3 xl:text-[0.875rem] ${
+                  moreOpen || moreMenuActive
+                    ? 'text-[#FF9500] bg-[#FFF4E0] ring-1 ring-[#FFB347]/35'
+                    : 'text-[#333333] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+                }`}
+              >
+                More
+                <ChevronDown size={16} strokeWidth={2.25} className={`shrink-0 transition-transform duration-200 ${moreOpen ? 'rotate-180' : ''}`} />
+              </button>
+              {moreOpen && (
+                <div className="absolute right-0 top-full z-50 mt-2 w-[min(calc(100vw-2rem),15.5rem)] rounded-xl border border-border bg-white py-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.10)]">
+                  {MORE_LINKS.map(({ label, path, exact, Icon }) => {
+                    const active = isActive(path, exact);
+                    return (
+                      <Link
+                        key={path}
+                        to={path}
+                        onClick={() => setMoreOpen(false)}
+                        className={`flex items-center gap-3 px-3 py-2.5 text-[0.9375rem] font-semibold transition-colors ${
+                          active ? 'bg-[#FFF4E0] text-[#FF9500]' : 'text-foreground hover:bg-[#FFF8EE]'
+                        }`}
+                      >
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#FFF4E0]">
+                          <Icon size={16} className="text-[#CC7000]" strokeWidth={2} />
+                        </span>
+                        {label}
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           </nav>
 
           <div className="hidden shrink-0 items-center gap-2 lg:flex">
@@ -256,20 +350,20 @@ const Navbar = () => {
             className="lg:hidden border-t border-border bg-[#FFF8EE]"
           >
             <nav className="flex max-h-[calc(100vh-5.5rem)] flex-col space-y-2 overflow-y-auto p-4">
-              {navItems.map((item) => (
-                <Link
-                  key={item.path}
-                  to={item.path}
-                  onClick={handleNavClick}
-                  className={`px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
-                    isActive(item.path, item.exact)
-                      ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
-                      : 'text-muted-foreground hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
-                  }`}
-                >
-                  {item.label}
-                </Link>
-              ))}
+              {navItems.map((item) => {
+                const linkActive = isActive(item.path, item.exact);
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path}
+                    onClick={handleNavClick}
+                    className={navLinkClassMobile(item)}
+                    aria-current={linkActive ? 'page' : undefined}
+                  >
+                    {item.label}
+                  </Link>
+                );
+              })}
 
               <div className="border-t border-border my-2 pt-2">
                 <p className="px-4 py-1 text-xs font-bold text-hint uppercase tracking-widest">Tools</p>
@@ -307,39 +401,29 @@ const Navbar = () => {
                 </div>
               </div>
 
-              <Link
-                to="/colleges"
-                onClick={handleNavClick}
-                className={`px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
-                  isActive('/colleges', true)
-                    ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
-                    : 'text-muted-foreground hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
-                }`}
-              >
-                For colleges
-              </Link>
-              <Link
-                to="/about"
-                onClick={handleNavClick}
-                className={`px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
-                  isActive('/about', true)
-                    ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
-                    : 'text-muted-foreground hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
-                }`}
-              >
-                About us
-              </Link>
-              <Link
-                to="/contact"
-                onClick={handleNavClick}
-                className={`px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
-                  isActive('/contact', true)
-                    ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
-                    : 'text-muted-foreground hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
-                }`}
-              >
-                Contact us
-              </Link>
+              <div className="border-t border-border my-2 pt-2">
+                <p className="px-4 py-1 text-xs font-bold text-hint uppercase tracking-widest">Company</p>
+                {MORE_LINKS.map(({ label, path, exact, Icon }) => {
+                  const active = isActive(path, exact);
+                  return (
+                    <Link
+                      key={path}
+                      to={path}
+                      onClick={handleNavClick}
+                      className={`flex items-center gap-3 px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
+                        active
+                          ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
+                          : 'text-muted-foreground hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+                      }`}
+                    >
+                      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${active ? 'bg-white/80' : 'bg-[#FFF4E0]'}`}>
+                        <Icon size={18} className="text-[#CC7000]" strokeWidth={2} />
+                      </span>
+                      {label}
+                    </Link>
+                  );
+                })}
+              </div>
 
               <div className="border-t border-border my-2"></div>
 

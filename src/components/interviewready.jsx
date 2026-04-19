@@ -3,7 +3,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import {
   AlertCircle, CheckCircle, ChevronRight, Lock, Mail, Phone, Check, Zap, ShieldCheck, Map, ArrowRight, Star, Clock,
   TrendingUp, Target, Sparkles, BarChart3, AlertTriangle, CheckCircle2, Lightbulb, Users, Headphones,
-  Share2, Linkedin, Trophy, Building2, Briefcase, Gift, Copy,
+  Share2, Linkedin, Trophy, Building2, Briefcase, Gift, Copy, Download,
 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { API_BASE } from '../config';
@@ -1033,6 +1033,18 @@ function EvaluatingAnswersLoader() {
 
 const MCQ_LETTERS = ['A', 'B', 'C', 'D'];
 
+/**
+ * Options from the API often include "A) …" while the UI already shows an A–D badge — strip the duplicate prefix.
+ */
+function mcqOptionLabelForDisplay(raw, letter) {
+  const s = String(raw ?? '').trim();
+  if (!s) return s;
+  const esc = letter.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const re = new RegExp(`^${esc}\\s*[\\).:．]\\s*`, 'i');
+  const out = s.replace(re, '').trim();
+  return out.length ? out : s;
+}
+
 /** Normalize API question_type to internal kind */
 function normalizePlanQuestionType(raw) {
   const t = String(raw || '').toLowerCase().replace(/-/g, '_');
@@ -1041,6 +1053,74 @@ function normalizePlanQuestionType(raw) {
   if (t === 'scenario') return 'scenario';
   if (t === 'code_mcq') return 'code_mcq';
   return '';
+}
+
+function readinessAnswerIsCorrect(userAnswer, correctAnswer, questionType) {
+  const kind = normalizePlanQuestionType(questionType);
+  const u = String(userAnswer ?? '').trim();
+  const c = String(correctAnswer ?? '').trim();
+  if (!u || !c) return false;
+  if (kind === 'yes_no') {
+    return u.toLowerCase() === c.toLowerCase();
+  }
+  const uM = u.toUpperCase().match(/^[A-D]/);
+  const cM = c.toUpperCase().match(/^[A-D]/);
+  if (uM && cM) return uM[0] === cM[0];
+  return u.toLowerCase() === c.toLowerCase();
+}
+
+function downloadJsonFile(filename, data) {
+  try {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.rel = 'noopener';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  } catch (e) {
+    console.error('downloadJsonFile', e);
+  }
+}
+
+function buildReadinessAttemptExport({ profile, evaluationData, answers, evaluatePayload, evaluateResponse }) {
+  const plan = Array.isArray(evaluationData) ? evaluationData : [];
+  const questions = plan.map((q, i) => {
+    const opts = getPlanMcqOptions(q);
+    return {
+      index: i + 1,
+      question_type: q.question_type,
+      section: q.section,
+      question: q.question,
+      options: opts ?? null,
+      correct_answer: q.correct_answer,
+      study_topic: q.study_topic,
+      explanation: q.explanation,
+      difficulty: q.difficulty,
+      asked_in: q.asked_in,
+      why_students_fail: q.why_students_fail,
+      user_answer: String(answers[i] ?? ''),
+      is_correct: readinessAnswerIsCorrect(answers[i], q.correct_answer, q.question_type),
+      raw_plan_item: q,
+    };
+  });
+  return {
+    exported_at: new Date().toISOString(),
+    source: 'MentorMuni interview readiness UI',
+    assessment: {
+      assessment_mode: profile?.assessmentMode ?? null,
+      user_category: profile?.userCategory ?? null,
+      primary_skill: profile?.primarySkill ?? null,
+      email: profile?.email?.trim() || null,
+      phone: profile?.contactNumber?.trim() || null,
+    },
+    evaluate_request: evaluatePayload,
+    evaluate_response: evaluateResponse,
+    questions,
+  };
 }
 
 function getPlanMcqOptions(item) {
@@ -1267,6 +1347,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
                       {opts.map((label, j) => {
                         const letter = MCQ_LETTERS[j];
                         const picked = answers[i] === letter;
+                        const displayLabel = mcqOptionLabelForDisplay(label, letter);
                         return (
                           <button
                             key={letter}
@@ -1285,7 +1366,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
                             >
                               {letter}
                             </span>
-                            <span className="min-w-0 flex-1 leading-snug text-foreground">{label}</span>
+                            <span className="min-w-0 flex-1 leading-snug text-foreground">{displayLabel}</span>
                           </button>
                         );
                       })}
@@ -2013,6 +2094,14 @@ const InterviewReady = () => {
         (typeof data.readinessLabel === 'string' && data.readinessLabel) ||
         'Your result';
 
+      const attemptExport = buildReadinessAttemptExport({
+        profile,
+        evaluationData,
+        answers,
+        evaluatePayload: payload,
+        evaluateResponse: data,
+      });
+
       const evalResult = {
         readiness_percentage: readinessPct,
         readiness_label: readinessLabel,
@@ -2024,6 +2113,7 @@ const InterviewReady = () => {
         gaps: data.gaps || [],
         learning_recommendations: data.learning_recommendations || data.learningRecommendations || [],
         evaluatedAt: Date.now(),
+        attemptExport,
       };
 
       setEarlyBirdCouponCode(pickRandomEarlyBirdCoupon());
@@ -3521,6 +3611,103 @@ const InterviewReady = () => {
               </div>
             </div>
           </motion.div>
+
+          {result.attemptExport && (
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="rounded-2xl border border-border bg-white p-6 shadow-sm sm:p-7"
+            >
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <h3 className="text-base font-bold text-foreground sm:text-lg">Test questions &amp; your answers</h3>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    Every stem, option, topic, correct key, and what you chose — plus the evaluate request/response JSON.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() =>
+                    downloadJsonFile(
+                      `mentormuni-readiness-${String(result.assessmentMode || 'attempt')}-${new Date(result.evaluatedAt).toISOString().slice(0, 10)}.json`,
+                      result.attemptExport
+                    )
+                  }
+                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-border bg-[#FAFAFA] px-4 py-2.5 text-sm font-bold text-foreground transition hover:bg-[#FFF8EE]"
+                >
+                  <Download size={16} aria-hidden />
+                  Download JSON
+                </button>
+              </div>
+
+              <details className="group mt-5">
+                <summary className="cursor-pointer list-none text-sm font-semibold text-[#CC7000] [&::-webkit-details-marker]:hidden">
+                  <span className="inline-flex items-center gap-1">
+                    Question-by-question breakdown
+                    <ChevronRight className="h-4 w-4 shrink-0 transition-transform group-open:rotate-90" aria-hidden />
+                  </span>
+                </summary>
+                <ol className="mt-4 space-y-4 border-t border-border pt-4">
+                  {result.attemptExport.questions.map((row) => (
+                    <li key={row.index} className="rounded-xl border border-[#E8E4DC] bg-[#FFFCF9] p-4 text-sm">
+                      <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-muted-foreground">
+                        <span className="tabular-nums text-foreground">Q{row.index}</span>
+                        <span className="rounded-full bg-white px-2 py-0.5 text-[10px] uppercase tracking-wide text-foreground ring-1 ring-border">
+                          {String(row.question_type ?? '').replace(/_/g, ' ')}
+                        </span>
+                        {row.section ? (
+                          <span className="rounded-full bg-cyan-50 px-2 py-0.5 text-[10px] font-semibold text-cyan-900 ring-1 ring-cyan-200">
+                            {row.section}
+                          </span>
+                        ) : null}
+                        <span className={row.is_correct ? 'text-emerald-600' : 'text-amber-800'}>
+                          {row.is_correct ? 'Correct' : 'Review'}
+                        </span>
+                      </div>
+                      <p className="mt-2 font-medium leading-snug text-foreground">{row.question}</p>
+                      {Array.isArray(row.options) && row.options.length > 0 ? (
+                        <ul className="mt-2 space-y-1 text-xs leading-relaxed text-muted-foreground">
+                          {row.options.map((opt, oi) => (
+                            <li key={`${row.index}-${oi}`}>
+                              <span className="font-mono font-bold text-foreground">{MCQ_LETTERS[oi]}</span>{' '}
+                              {mcqOptionLabelForDisplay(opt, MCQ_LETTERS[oi])}
+                            </li>
+                          ))}
+                        </ul>
+                      ) : null}
+                      <dl className="mt-3 grid gap-2 text-xs sm:grid-cols-2">
+                        <div>
+                          <dt className="font-semibold text-hint">Topic</dt>
+                          <dd className="text-foreground">{row.study_topic}</dd>
+                        </div>
+                        <div>
+                          <dt className="font-semibold text-hint">Your answer</dt>
+                          <dd className="font-mono text-foreground">{row.user_answer ? row.user_answer : '—'}</dd>
+                        </div>
+                        <div className="sm:col-span-2">
+                          <dt className="font-semibold text-hint">Correct answer</dt>
+                          <dd className="font-mono text-foreground">{String(row.correct_answer ?? '')}</dd>
+                        </div>
+                      </dl>
+                    </li>
+                  ))}
+                </ol>
+              </details>
+
+              <details className="group mt-4">
+                <summary className="cursor-pointer list-none text-sm font-semibold text-muted-foreground [&::-webkit-details-marker]:hidden">
+                  <span className="inline-flex items-center gap-1">
+                    Full export JSON
+                    <ChevronRight className="h-4 w-4 shrink-0 transition-transform group-open:rotate-90" aria-hidden />
+                  </span>
+                </summary>
+                <pre className="mt-3 max-h-[min(50vh,420px)] overflow-auto rounded-xl border border-border bg-[#1a1a1a] p-4 text-left text-[11px] leading-relaxed text-emerald-100/95">
+                  {JSON.stringify(result.attemptExport, null, 2)}
+                </pre>
+              </details>
+            </motion.div>
+          )}
 
           {earlyBirdCouponCode && (
             <motion.div

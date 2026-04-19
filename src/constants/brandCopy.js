@@ -421,6 +421,7 @@ export const CONTACT_PHONE_HREF = 'tel:+919146421302';
 export const ROUTE_TITLES = {
   '/': 'MentorMuni — Are You Actually Interview-Ready? Free Reality Check',
   '/how-it-works': 'How MentorMuni Works — Step-by-Step Interview Prep | MentorMuni',
+  '/roadmap': 'How to Prepare — 4-Year Placement Roadmap | MentorMuni',
   '/mentors': 'Expert Industry Mentors — 12–15 Yrs Experience | MentorMuni',
   '/outcomes': 'Student Outcomes & Success Stories | MentorMuni',
   '/pricing': 'Plans & Pricing | MentorMuni',
