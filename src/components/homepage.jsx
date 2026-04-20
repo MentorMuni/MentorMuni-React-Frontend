@@ -167,6 +167,11 @@ const HERO_PROBLEM_TICKER = [
   'Inconsistent mock feedback',
 ];
 
+function homepagePosterAsset(filename) {
+  const base = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '/');
+  return `${base}MentorMuni-React-Frontend/images/poster-carousel/${filename}`;
+}
+
 const HERO_FLOW_STEPS = [
   {
     title: 'Take the free score',
@@ -671,6 +676,93 @@ function HeroProblemTicker({ reduceMotion }) {
   );
 }
 
+function VisualPrepJourney({ reduceMotion }) {
+  const cards = [
+    {
+      title: 'Readiness score',
+      line: 'See score, strengths, and weakness topics in one report',
+      image: 'hr-technical.jpg',
+      tone: 'from-orange-500/35 via-orange-900/30 to-black/40',
+    },
+    {
+      title: 'Practice pressure',
+      line: 'Mock rounds with real interview vibe',
+      image: 'mock-interview.jpg',
+      tone: 'from-cyan-500/30 via-slate-900/35 to-black/45',
+    },
+    {
+      title: 'Weekly plan',
+      line: 'Small, consistent steps beat panic prep',
+      image: 'planner.jpg',
+      tone: 'from-emerald-500/30 via-emerald-950/35 to-black/40',
+    },
+    {
+      title: 'Mentor loop',
+      line: 'Feedback -> iterate -> improve',
+      image: 'mentorship.jpg',
+      tone: 'from-violet-500/30 via-violet-950/35 to-black/45',
+    },
+  ];
+
+  return (
+    <section className="border-t border-slate-100 bg-gradient-to-b from-white to-[#FFF8EE]/60 px-5 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl">
+        <FadeUp>
+          <div className="mb-6 text-center">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#EA580C]">Your interview prep path</p>
+            <h2 className="mt-2 text-2xl font-black tracking-tight text-foreground sm:text-3xl">
+              See exactly how you go from confusion to interview-ready.
+            </h2>
+          </div>
+        </FadeUp>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {cards.map((card, idx) => (
+            <FadeUp key={card.title} delay={idx * 0.06}>
+              <motion.article
+                whileHover={reduceMotion ? undefined : { y: -4, scale: 1.01 }}
+                transition={{ type: 'spring', stiffness: 340, damping: 24 }}
+                className="group overflow-hidden rounded-2xl border border-white/70 bg-white shadow-[0_10px_30px_-20px_rgba(0,0,0,0.25)] ring-1 ring-black/[0.04]"
+              >
+                <div className="relative h-44 overflow-hidden">
+                  <img
+                    src={homepagePosterAsset(card.image)}
+                    alt={card.title}
+                    className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.05]"
+                    loading="lazy"
+                  />
+                  <div className={`absolute inset-0 bg-gradient-to-t ${card.tone}`} aria-hidden />
+                  {idx === 0 && (
+                    <div className="pointer-events-none absolute right-2 top-9 z-10 space-y-1.5">
+                      <div className="rounded-lg bg-white/92 px-2 py-1 text-[10px] font-bold text-[#7C2D12] shadow-sm">
+                        Score: 74%
+                      </div>
+                      <div className="rounded-lg bg-emerald-50/95 px-2 py-1 text-[10px] font-semibold text-emerald-800 shadow-sm">
+                        Strengths
+                      </div>
+                      <div className="rounded-lg bg-amber-50/95 px-2 py-1 text-[10px] font-semibold text-amber-800 shadow-sm">
+                        Weaknesses
+                      </div>
+                    </div>
+                  )}
+                  <p className="absolute left-3 top-3 rounded-full bg-white/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-[#7C2D12]">
+                    Step {idx + 1}
+                  </p>
+                  <p className="absolute bottom-3 left-3 right-3 text-lg font-black leading-tight text-white [text-shadow:0_2px_16px_rgba(0,0,0,0.45)]">
+                    {card.title}
+                  </p>
+                </div>
+                <div className="px-4 py-3">
+                  <p className="text-sm font-medium text-muted-foreground">{card.line}</p>
+                </div>
+              </motion.article>
+            </FadeUp>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /** Quip below hero score card — shimmer + sparkles (respects reduced motion). */
 function HeroPlayfulClause({ text, reduceMotion }) {
   return (
@@ -946,6 +1038,8 @@ const HomePage = () => {
           <HeroProblemTicker reduceMotion={reduceMotion} />
         </div>
       </section>
+
+      <VisualPrepJourney reduceMotion={reduceMotion} />
 
       <section className="border-t border-slate-100 bg-white px-5 py-12 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl">
