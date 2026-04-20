@@ -21,6 +21,8 @@ import {
   Zap,
   RefreshCw,
   Shield,
+  WandSparkles,
+  UserRound,
 } from 'lucide-react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 
@@ -85,10 +87,15 @@ function PlacementEngagement({ isSkillMode }) {
         ))}
       </div>
 
-      {/* Pictorial strip — reels → readiness */}
-      <div className="overflow-hidden rounded-3xl border border-orange-200/70 bg-[#0c0a09] shadow-xl ring-1 ring-black/5">
+      {/* Pictorial strip — reels → readiness (student highlight) */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.45 }}
+        className="overflow-hidden rounded-3xl border border-orange-200/70 bg-[#0c0a09] shadow-xl ring-1 ring-black/5"
+      >
         <div className="grid md:grid-cols-[1.15fr_1fr]">
-          <div className="relative min-h-[200px]">
+          <div className="relative min-h-[220px]">
             <img
               src={posterAsset('readiness.jpg')}
               alt="From endless scrolling to focused interview readiness"
@@ -98,26 +105,44 @@ function PlacementEngagement({ isSkillMode }) {
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/35 to-black/20" aria-hidden />
             <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%23ffffff\' fill-opacity=\'0.06\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-40" aria-hidden />
             <div className="relative flex h-full flex-col justify-end p-5 sm:p-6">
-              <p className="text-[10px] font-bold uppercase tracking-[0.28em] text-orange-200/95">1st–4th year · grads</p>
+              <div className="inline-flex w-fit items-center gap-1.5 rounded-full border border-orange-200/50 bg-black/35 px-2.5 py-1">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-orange-200/95">1st–4th year · grads</p>
+              </div>
               <p className="mt-2 font-black leading-[1.15] text-white [text-shadow:0_2px_24px_rgba(0,0,0,0.5)] text-2xl sm:text-3xl">
                 From reels to readiness
               </p>
-              <p className="mt-2 max-w-md text-sm leading-relaxed text-white/85">
+              <p className="mt-2 max-w-md text-sm leading-relaxed text-white/90">
                 Replace passive scrolling with one intentional story about your project or internship — that’s what panels
                 remember.
+              </p>
+              <p className="mt-3 w-fit rounded-lg bg-white/10 px-2.5 py-1 text-[11px] font-semibold text-orange-100 ring-1 ring-white/15 backdrop-blur-sm">
+                Punchline: from reels to readiness.
               </p>
             </div>
           </div>
           <div className="flex flex-col justify-center gap-4 bg-gradient-to-br from-[#1a1512] to-[#2d2419] p-5 sm:p-6">
-            <div className="relative h-28 overflow-hidden rounded-2xl border border-white/10 sm:h-32">
-              <img
-                src={posterAsset('mock-interview.jpg')}
-                alt=""
-                className="h-full w-full object-cover opacity-90"
-                loading="lazy"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" aria-hidden />
-              <p className="absolute bottom-2 left-3 right-3 text-xs font-bold text-white drop-shadow">Practice like it’s real</p>
+            <div className="grid grid-cols-2 gap-2">
+              <div className="relative h-28 overflow-hidden rounded-2xl border border-white/10 sm:h-32">
+                <img
+                  src={posterAsset('mock-interview.jpg')}
+                  alt=""
+                  className="h-full w-full object-cover opacity-90"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" aria-hidden />
+                <p className="absolute bottom-2 left-2 right-2 text-[11px] font-bold text-white drop-shadow">Practice like it’s real</p>
+              </div>
+              <div className="relative h-28 overflow-hidden rounded-2xl border border-white/10 sm:h-32">
+                <img
+                  src={posterAsset('mentorship.jpg')}
+                  alt=""
+                  className="h-full w-full object-cover opacity-90"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" aria-hidden />
+                <p className="absolute bottom-2 left-2 right-2 text-[11px] font-bold text-white drop-shadow">Mentor feedback</p>
+              </div>
             </div>
             <div>
               <p className="text-xs font-bold uppercase tracking-wider text-orange-200/80">Tips to clear</p>
@@ -132,7 +157,7 @@ function PlacementEngagement({ isSkillMode }) {
             </div>
           </div>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }
@@ -605,6 +630,175 @@ function ReadyGateModal({ open, onClose, onConfirm, isProfessional }) {
   );
 }
 
+function PersonalDetailsModal({
+  open,
+  onClose,
+  onSave,
+  isPro,
+  profile,
+  setProfile,
+  validationErrors,
+  setValidationErrors,
+}) {
+  const onKeyDown = useCallback(
+    (e) => {
+      if (e.key === 'Escape') onClose();
+    },
+    [onClose]
+  );
+
+  useEffect(() => {
+    if (!open) return undefined;
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [open, onKeyDown]);
+
+  if (!open) return null;
+  return (
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-[95] flex items-end justify-center p-4 sm:items-center"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+      >
+        <div
+          className="absolute inset-0 bg-black/45 backdrop-blur-[2px]"
+          role="presentation"
+          onClick={onClose}
+        />
+        <motion.div
+          initial={{ opacity: 0, y: 20, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 10, scale: 0.98 }}
+          transition={{ type: 'spring', stiffness: 420, damping: 34 }}
+          className="relative z-10 w-full max-w-xl rounded-3xl border border-[#FFD9A8]/90 bg-white p-5 shadow-2xl sm:p-6"
+        >
+          <button
+            type="button"
+            onClick={onClose}
+            className="absolute right-3 top-3 rounded-full p-1.5 text-muted-foreground transition hover:bg-black/5 hover:text-foreground"
+            aria-label="Close details form"
+          >
+            <X className="h-5 w-5" />
+          </button>
+          <div className="mb-4 flex items-start gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF4E6] text-[#EA580C] ring-1 ring-orange-200">
+              <UserRound className="h-5 w-5" />
+            </span>
+            <div>
+              <h2 className="text-base font-black text-foreground sm:text-lg">Your details</h2>
+              <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+                Required before test start. Fill once and continue.
+              </p>
+            </div>
+          </div>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-xs font-bold text-foreground" htmlFor="prep-lounge-email">
+                <Mail className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
+                Email <span className="text-red-400">*</span>
+              </label>
+              <input
+                id="prep-lounge-email"
+                type="email"
+                autoComplete="email"
+                autoFocus
+                value={profile.email ?? ''}
+                onChange={(e) => {
+                  setProfile((p) => ({ ...p, email: e.target.value }));
+                  setValidationErrors?.((prev) => (prev.email ? { ...prev, email: '' } : prev));
+                }}
+                data-mm-invalid={validationErrors.email ? 'true' : undefined}
+                className={`w-full rounded-xl bg-white px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-hint ${
+                  validationErrors.email ? MM_FIELD_INVALID : MM_FIELD_VALID
+                }`}
+                placeholder="you@example.com"
+              />
+              {validationErrors.email && (
+                <div className="flex items-center gap-1.5 text-xs font-medium text-red-600">
+                  <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                  {validationErrors.email}
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="flex items-center gap-2 text-xs font-bold text-foreground" htmlFor="prep-lounge-phone">
+                <Phone className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
+                WhatsApp / phone <span className="text-red-400">*</span>
+              </label>
+              <input
+                id="prep-lounge-phone"
+                type="tel"
+                inputMode="numeric"
+                autoComplete="tel"
+                value={profile.contactNumber ?? ''}
+                onChange={(e) => {
+                  const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
+                  setProfile((p) => ({ ...p, contactNumber: digits }));
+                  setValidationErrors?.((prev) => (prev.phone ? { ...prev, phone: '' } : prev));
+                }}
+                data-mm-invalid={validationErrors.phone ? 'true' : undefined}
+                className={`w-full rounded-xl bg-white px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-hint ${
+                  validationErrors.phone ? MM_FIELD_INVALID : MM_FIELD_VALID
+                }`}
+                placeholder="10-digit number"
+              />
+              {validationErrors.phone && (
+                <div className="flex items-center gap-1.5 text-xs font-medium text-red-600">
+                  <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                  {validationErrors.phone}
+                </div>
+              )}
+            </div>
+
+            {!isPro && (
+              <div className="space-y-2">
+                <label className="flex items-center gap-2 text-xs font-bold text-foreground" htmlFor="prep-lounge-college">
+                  <Building2 className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
+                  College / university <span className="text-red-400">*</span>
+                </label>
+                <input
+                  id="prep-lounge-college"
+                  type="text"
+                  value={profile.collegeName ?? ''}
+                  onChange={(e) => {
+                    setProfile((p) => ({ ...p, collegeName: e.target.value }));
+                    setValidationErrors?.((prev) => (prev.collegeName ? { ...prev, collegeName: '' } : prev));
+                  }}
+                  data-mm-invalid={validationErrors.collegeName ? 'true' : undefined}
+                  className={`w-full rounded-xl bg-white px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-hint ${
+                    validationErrors.collegeName ? MM_FIELD_INVALID : MM_FIELD_VALID
+                  }`}
+                  placeholder="e.g. IIT Madras"
+                />
+                {validationErrors.collegeName && (
+                  <div className="flex items-center gap-1.5 text-xs font-medium text-red-600">
+                    <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                    {validationErrors.collegeName}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <div className="mt-5 flex justify-end">
+            <button
+              type="button"
+              onClick={onSave}
+              className="rounded-xl bg-gradient-to-r from-[#FF9500] to-[#EA580C] px-5 py-2.5 text-sm font-bold text-white shadow-md transition hover:brightness-105"
+            >
+              Save & continue
+            </button>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
 export default function PrepLoungePanel({
   planLoading,
   evaluationPlan,
@@ -624,10 +818,38 @@ export default function PrepLoungePanel({
   const isSkillMode = mode === ASSESSMENT_FOCUS_SKILL;
 
   const [showReadyModal, setShowReadyModal] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(true);
+  const [tipIdx, setTipIdx] = useState(0);
+  const waitingTips = useMemo(
+    () => [
+      'Tap one HR prompt and answer out loud in 45 seconds.',
+      'Use STAR for one story while questions are generating.',
+      'Keep answers concrete: metric, action, outcome.',
+      'Short pause before response makes delivery sound confident.',
+    ],
+    []
+  );
 
   useEffect(() => {
-    if (ready) setShowReadyModal(true);
+    if (ready) {
+      setShowDetailsModal(false);
+      setShowReadyModal(true);
+    }
   }, [ready]);
+
+  useEffect(() => {
+    if (!planLoading) return undefined;
+    const id = window.setInterval(() => {
+      setTipIdx((i) => (i + 1) % waitingTips.length);
+    }, 2500);
+    return () => window.clearInterval(id);
+  }, [planLoading, waitingTips.length]);
+
+  useEffect(() => {
+    if (Object.keys(validationErrors || {}).length > 0) {
+      setShowDetailsModal(true);
+    }
+  }, [validationErrors]);
 
   const handleStartClick = () => {
     if (typeof onStartTest === 'function') onStartTest();
@@ -638,11 +860,60 @@ export default function PrepLoungePanel({
     handleStartClick();
   };
 
+  const validateDetailsModal = () => {
+    const nextErrors = {};
+    const email = String(profile?.email ?? '').trim();
+    const phone = String(profile?.contactNumber ?? '').trim();
+    const college = String(profile?.collegeName ?? '').trim();
+
+    if (!email) nextErrors.email = 'Email is required';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) nextErrors.email = 'Enter a valid email address';
+
+    if (!phone) nextErrors.phone = 'Phone number is required';
+    else if (!/^\d{10}$/.test(phone)) nextErrors.phone = 'Enter a valid 10-digit phone number';
+
+    if (!isPro && !college) nextErrors.collegeName = 'College / university is required';
+
+    setValidationErrors?.(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
+  const handleDetailsSave = () => {
+    if (!validateDetailsModal()) return;
+    setShowDetailsModal(false);
+  };
+
+  const hasRequiredDetails = isPro
+    ? Boolean(profile?.email?.trim() && profile?.contactNumber?.trim())
+    : Boolean(profile?.email?.trim() && profile?.contactNumber?.trim() && profile?.collegeName?.trim());
+
   const engagement = useMemo(() => {
     if (mode === ASSESSMENT_FOCUS_APTITUDE) return <AptitudeEngagement />;
     if (isPro) return <ProfessionalEngagement />;
     return <PlacementEngagement isSkillMode={isSkillMode} />;
   }, [mode, isPro, isSkillMode]);
+
+  const activePersona = mode === ASSESSMENT_FOCUS_APTITUDE ? 'aptitude' : isPro ? 'professional' : 'student';
+  const personaTabs = [
+    {
+      id: 'student',
+      label: 'Student',
+      sub: 'HR + placement focus',
+      tone: 'from-orange-500 to-amber-500',
+    },
+    {
+      id: 'aptitude',
+      label: 'Aptitude',
+      sub: 'Speed + elimination',
+      tone: 'from-cyan-500 to-sky-500',
+    },
+    {
+      id: 'professional',
+      label: 'Professional',
+      sub: 'AI + role strategy',
+      tone: 'from-violet-500 to-fuchsia-500',
+    },
+  ];
 
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-[#FFFDF8] font-sans">
@@ -670,6 +941,47 @@ export default function PrepLoungePanel({
           )}
         </div>
 
+        <div className="mb-6 overflow-hidden rounded-2xl border border-border bg-white/90 p-2 shadow-sm">
+          <div className="grid gap-2 sm:grid-cols-3">
+            {personaTabs.map((tab) => {
+              const active = tab.id === activePersona;
+              return (
+                <motion.div
+                  key={tab.id}
+                  initial={false}
+                  animate={
+                    active && planLoading
+                      ? { scale: [1, 1.015, 1], y: [0, -1, 0] }
+                      : { scale: 1, y: 0 }
+                  }
+                  transition={{
+                    duration: active && planLoading ? 1.15 : 0.25,
+                    ease: 'easeOut',
+                    repeat: active && planLoading ? Infinity : 0,
+                    repeatDelay: 1.8,
+                  }}
+                  className={`relative rounded-xl border px-3 py-2.5 transition ${
+                    active
+                      ? 'border-transparent bg-white shadow-md ring-2 ring-offset-0 ring-black/5'
+                      : 'border-border bg-[#FAFAFA]'
+                  }`}
+                >
+                  {active && (
+                    <span
+                      className={`pointer-events-none absolute inset-0 rounded-xl bg-gradient-to-r ${tab.tone} opacity-10`}
+                      aria-hidden
+                    />
+                  )}
+                  <p className={`relative text-xs font-black uppercase tracking-wider ${active ? 'text-foreground' : 'text-muted-foreground'}`}>
+                    {tab.label}
+                  </p>
+                  <p className="relative mt-0.5 text-[11px] text-muted-foreground">{tab.sub}</p>
+                </motion.div>
+              );
+            })}
+          </div>
+        </div>
+
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_400px] lg:items-start xl:grid-cols-[minmax(0,1.15fr)_420px]">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
@@ -677,6 +989,23 @@ export default function PrepLoungePanel({
             transition={{ duration: 0.45 }}
             className="order-2 rounded-3xl border border-[#E6E0D6] bg-white/95 p-5 shadow-[0_20px_60px_-40px_rgba(0,0,0,0.2)] ring-1 ring-black/[0.04] backdrop-blur-sm sm:p-7 lg:order-1"
           >
+            {planLoading && (
+              <div className="mb-5 overflow-hidden rounded-xl border border-orange-200/60 bg-gradient-to-r from-orange-50/80 via-white to-amber-50/70 px-3 py-2.5">
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={tipIdx}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.28 }}
+                    className="flex items-center gap-2 text-xs font-semibold text-[#9A3412]"
+                  >
+                    <WandSparkles className="h-3.5 w-3.5 shrink-0" />
+                    {waitingTips[tipIdx]}
+                  </motion.p>
+                </AnimatePresence>
+              </div>
+            )}
             {engagement}
           </motion.div>
 
@@ -696,97 +1025,32 @@ export default function PrepLoungePanel({
 
             {profile && setProfile && (
               <div className="rounded-3xl border border-[#FFD9A8]/90 bg-gradient-to-b from-white to-[#FFFBF7] p-5 shadow-md sm:p-6">
-                <h2 className="text-sm font-black text-foreground">Your details</h2>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                  Required before you start. We use this to reach you and calibrate your assessment.
-                </p>
-                <div className="mt-4 space-y-4">
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-xs font-bold text-foreground" htmlFor="prep-lounge-email">
-                      <Mail className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
-                      Email <span className="text-red-400">*</span>
-                    </label>
-                    <input
-                      id="prep-lounge-email"
-                      type="email"
-                      autoComplete="email"
-                      value={profile.email ?? ''}
-                      onChange={(e) => {
-                        setProfile((p) => ({ ...p, email: e.target.value }));
-                        setValidationErrors?.((prev) => (prev.email ? { ...prev, email: '' } : prev));
-                      }}
-                      data-mm-invalid={validationErrors.email ? 'true' : undefined}
-                      className={`w-full rounded-xl bg-white px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-hint ${
-                        validationErrors.email ? MM_FIELD_INVALID : MM_FIELD_VALID
-                      }`}
-                      placeholder="you@example.com"
-                    />
-                    {validationErrors.email && (
-                      <div className="flex items-center gap-1.5 text-xs font-medium text-red-600">
-                        <AlertCircle className="h-3.5 w-3.5 shrink-0" />
-                        {validationErrors.email}
-                      </div>
-                    )}
+                <div className="flex items-start justify-between gap-3">
+                  <div>
+                    <h2 className="text-sm font-black text-foreground">Personal details</h2>
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                      Fill once in popup and continue while questions are being prepared.
+                    </p>
                   </div>
-                  <div className="space-y-2">
-                    <label className="flex items-center gap-2 text-xs font-bold text-foreground" htmlFor="prep-lounge-phone">
-                      <Phone className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
-                      WhatsApp / phone <span className="text-red-400">*</span>
-                    </label>
-                    <input
-                      id="prep-lounge-phone"
-                      type="tel"
-                      inputMode="numeric"
-                      autoComplete="tel"
-                      value={profile.contactNumber ?? ''}
-                      onChange={(e) => {
-                        const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
-                        setProfile((p) => ({ ...p, contactNumber: digits }));
-                        setValidationErrors?.((prev) => (prev.phone ? { ...prev, phone: '' } : prev));
-                      }}
-                      data-mm-invalid={validationErrors.phone ? 'true' : undefined}
-                      className={`w-full rounded-xl bg-white px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-hint ${
-                        validationErrors.phone ? MM_FIELD_INVALID : MM_FIELD_VALID
-                      }`}
-                      placeholder="10-digit number"
-                    />
-                    {validationErrors.phone && (
-                      <div className="flex items-center gap-1.5 text-xs font-medium text-red-600">
-                        <AlertCircle className="h-3.5 w-3.5 shrink-0" />
-                        {validationErrors.phone}
-                      </div>
-                    )}
-                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowDetailsModal(true)}
+                    className="rounded-lg border border-[#FFD9A8] bg-white px-3 py-2 text-xs font-bold text-[#B45309] transition hover:bg-[#FFF8EE]"
+                  >
+                    Open form
+                  </button>
+                </div>
+                <div className="mt-4 grid gap-2 text-xs">
+                  <p className="rounded-lg bg-white px-3 py-2 text-muted-foreground">
+                    Email: <span className="font-semibold text-foreground">{profile.email?.trim() || 'Missing'}</span>
+                  </p>
+                  <p className="rounded-lg bg-white px-3 py-2 text-muted-foreground">
+                    Phone: <span className="font-semibold text-foreground">{profile.contactNumber?.trim() || 'Missing'}</span>
+                  </p>
                   {!isPro && (
-                    <div className="space-y-2">
-                      <label
-                        className="flex items-center gap-2 text-xs font-bold text-foreground"
-                        htmlFor="prep-lounge-college"
-                      >
-                        <Building2 className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
-                        College / university <span className="text-red-400">*</span>
-                      </label>
-                      <input
-                        id="prep-lounge-college"
-                        type="text"
-                        value={profile.collegeName ?? ''}
-                        onChange={(e) => {
-                          setProfile((p) => ({ ...p, collegeName: e.target.value }));
-                          setValidationErrors?.((prev) => (prev.collegeName ? { ...prev, collegeName: '' } : prev));
-                        }}
-                        data-mm-invalid={validationErrors.collegeName ? 'true' : undefined}
-                        className={`w-full rounded-xl bg-white px-4 py-3 text-sm text-foreground outline-none transition-all placeholder:text-hint ${
-                          validationErrors.collegeName ? MM_FIELD_INVALID : MM_FIELD_VALID
-                        }`}
-                        placeholder="e.g. IIT Madras"
-                      />
-                      {validationErrors.collegeName && (
-                        <div className="flex items-center gap-1.5 text-xs font-medium text-red-600">
-                          <AlertCircle className="h-3.5 w-3.5 shrink-0" />
-                          {validationErrors.collegeName}
-                        </div>
-                      )}
-                    </div>
+                    <p className="rounded-lg bg-white px-3 py-2 text-muted-foreground">
+                      College: <span className="font-semibold text-foreground">{profile.collegeName?.trim() || 'Missing'}</span>
+                    </p>
                   )}
                 </div>
               </div>
@@ -796,7 +1060,13 @@ export default function PrepLoungePanel({
               {ready ? (
                 <button
                   type="button"
-                  onClick={() => setShowReadyModal(true)}
+                  onClick={() => {
+                    if (!hasRequiredDetails) {
+                      setShowDetailsModal(true);
+                      return;
+                    }
+                    setShowReadyModal(true);
+                  }}
                   className="w-full rounded-2xl bg-gradient-to-r from-[#FF9500] to-[#EA580C] py-3.5 text-sm font-bold text-white shadow-lg shadow-orange-500/25 transition hover:brightness-105 active:scale-[0.99]"
                 >
                   Appear for test
@@ -838,6 +1108,16 @@ export default function PrepLoungePanel({
         onClose={() => setShowReadyModal(false)}
         onConfirm={handleModalConfirm}
         isProfessional={isPro}
+      />
+      <PersonalDetailsModal
+        open={showDetailsModal}
+        onClose={() => setShowDetailsModal(false)}
+        onSave={handleDetailsSave}
+        isPro={isPro}
+        profile={profile}
+        setProfile={setProfile}
+        validationErrors={validationErrors}
+        setValidationErrors={setValidationErrors}
       />
     </div>
   );
