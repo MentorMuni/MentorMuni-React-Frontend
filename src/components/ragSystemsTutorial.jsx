@@ -102,7 +102,7 @@ const RAGSystemsTutorial = () => {
     return (
       <div className="bg-[#1e1e1e] rounded-lg border border-border my-4">
         <div className="flex justify-between items-center px-4 py-2 border-b border-border">
-          <span className="text-xs text-muted-foreground">{language}</span>
+          <span className="text-xs text-slate-400">{language}</span>
           <button
             onClick={copyToClipboard}
             className="flex items-center gap-2 px-3 py-1 bg-[#FF9500] hover:bg-[#FF9500]/80 rounded text-white text-xs transition-all"
@@ -242,13 +242,13 @@ const RAGSystemsTutorial = () => {
             <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Why RAG is Essential</h3>
               <div className="space-y-4">
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-red-400/30">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-red-400/30 text-slate-200">
                   <strong className="text-red-400 flex items-center gap-1"><AlertCircle size={16} className="flex-shrink-0" /> Pure LLM Problems</strong>
-                  <p className="text-muted-foreground text-sm mt-2">• Hallucinations (making up facts) • Outdated knowledge • No domain-specific info • Can't access your private data • Can't cite sources</p>
+                  <p className="text-slate-300 text-sm mt-2">• Hallucinations (making up facts) • Outdated knowledge • No domain-specific info • Can't access your private data • Can't cite sources</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30 text-slate-200">
                   <strong className="text-green-400">✅ RAG Solutions</strong>
-                  <p className="text-muted-foreground text-sm mt-2">• Grounded in real data • Always current • Handles proprietary information • Accesses private documents • Provides citations</p>
+                  <p className="text-slate-300 text-sm mt-2">• Grounded in real data • Always current • Handles proprietary information • Accesses private documents • Provides citations</p>
                 </div>
               </div>
             </div>
@@ -337,21 +337,21 @@ const RAGSystemsTutorial = () => {
             <div className="bg-white border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Key Components Explained</h3>
               <div className="space-y-4">
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                   <strong className="text-[#FF9500]">Embedding Model</strong>
-                  <p className="text-muted-foreground text-sm mt-2">Converts text (documents, queries) into numerical vectors. Examples: text-embedding-ada-002, Sentence-BERT, multilingual-e5-large. Higher quality embeddings = better retrieval.</p>
+                  <p className="text-slate-300 text-sm mt-2">Converts text (documents, queries) into numerical vectors. Examples: text-embedding-ada-002, Sentence-BERT, multilingual-e5-large. Higher quality embeddings = better retrieval.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                   <strong className="text-[#FF9500]">Vector Database</strong>
-                  <p className="text-muted-foreground text-sm mt-2">Stores embeddings and enable fast similarity search. Examples: FAISS, Pinecone, Weaviate. Optimized for billions of vectors with millisecond retrieval.</p>
+                  <p className="text-slate-300 text-sm mt-2">Stores embeddings and enable fast similarity search. Examples: FAISS, Pinecone, Weaviate. Optimized for billions of vectors with millisecond retrieval.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                   <strong className="text-[#FF9500]">Similarity Search</strong>
-                  <p className="text-muted-foreground text-sm mt-2">Finds vectors closest to query embedding using cosine similarity or L2 distance. retrieves most relevant documents for context injection.</p>
+                  <p className="text-slate-300 text-sm mt-2">Finds vectors closest to query embedding using cosine similarity or L2 distance. retrieves most relevant documents for context injection.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                   <strong className="text-[#FF9500]">Context Window</strong>
-                  <p className="text-muted-foreground text-sm mt-2">The LLM's maximum input length. Retrieved documents must fit (typically 4K-100K tokens). Careful chunking and selection ensures quality context.</p>
+                  <p className="text-slate-300 text-sm mt-2">The LLM's maximum input length. Retrieved documents must fit (typically 4K-100K tokens). Careful chunking and selection ensures quality context.</p>
                 </div>
               </div>
             </div>
@@ -376,7 +376,7 @@ const RAGSystemsTutorial = () => {
 
             <div className="bg-white border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Complete RAG Architecture Diagram (Text Description)</h3>
-              <div className="bg-[#1e1e1e] p-6 rounded-lg border border-border text-sm text-muted-foreground space-y-3">
+              <div className="bg-[#1e1e1e] p-6 rounded-lg border border-border text-sm text-slate-200 space-y-3">
                 <div className="font-bold text-cyan-400">OFFLINE PHASE (Data Preparation):</div>
                 <div>📄 Documents → 🔄 Chunking → 🧮 Embeddings → 📦 Vector DB</div>
                 
@@ -443,11 +443,11 @@ const RAGSystemsTutorial = () => {
 
             <div className="bg-white border border-border rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-4">Choosing the Right Vector Database</h3>
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
-                <p className="text-muted-foreground text-sm mb-3"><strong>For Prototyping:</strong> Chroma or FAISS (free, simple)</p>
-                <p className="text-muted-foreground text-sm mb-3"><strong>For Production (small):</strong> Pinecone or self-hosted Weaviate</p>
-                <p className="text-muted-foreground text-sm mb-3"><strong>For Production (large):</strong> Pinecone, Weaviate, or Elasticsearch with vectors</p>
-                <p className="text-muted-foreground text-sm"><strong>For Hybrid Search:</strong> Weaviate, Elasticsearch, Milvus</p>
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
+                <p className="text-slate-300 text-sm mb-3"><strong className="text-white">For Prototyping:</strong> Chroma or FAISS (free, simple)</p>
+                <p className="text-slate-300 text-sm mb-3"><strong className="text-white">For Production (small):</strong> Pinecone or self-hosted Weaviate</p>
+                <p className="text-slate-300 text-sm mb-3"><strong className="text-white">For Production (large):</strong> Pinecone, Weaviate, or Elasticsearch with vectors</p>
+                <p className="text-slate-300 text-sm"><strong className="text-white">For Hybrid Search:</strong> Weaviate, Elasticsearch, Milvus</p>
               </div>
             </div>
           </section>
@@ -573,21 +573,21 @@ print(response)`}
             <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Key Metrics to Measure</h3>
               <div className="space-y-4">
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                   <strong className="text-cyan-400">Retrieval Accuracy (Recall@K)</strong>
-                  <p className="text-muted-foreground text-sm mt-2">What % of relevant documents were retrieved in top-K results? Goal: {'>'} 80% recall@5</p>
+                  <p className="text-slate-300 text-sm mt-2">What % of relevant documents were retrieved in top-K results? Goal: {'>'} 80% recall@5</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                   <strong className="text-cyan-400">Precision</strong>
-                  <p className="text-muted-foreground text-sm mt-2">What % of retrieved documents are actually relevant? Goal: {'>'} 70% precision</p>
+                  <p className="text-slate-300 text-sm mt-2">What % of retrieved documents are actually relevant? Goal: {'>'} 70% precision</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                   <strong className="text-cyan-400">Hallucination Rate</strong>
-                  <p className="text-muted-foreground text-sm mt-2">How often does LLM generate false info not in retrieved docs? Goal: {'<'} 10% hallucination</p>
+                  <p className="text-slate-300 text-sm mt-2">How often does LLM generate false info not in retrieved docs? Goal: {'<'} 10% hallucination</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                   <strong className="text-cyan-400">Answer Relevance</strong>
-                  <p className="text-muted-foreground text-sm mt-2">How relevant is generated answer to query? Use LLM-based evaluation or human scores</p>
+                  <p className="text-slate-300 text-sm mt-2">How relevant is generated answer to query? Use LLM-based evaluation or human scores</p>
                 </div>
               </div>
             </div>
@@ -803,19 +803,19 @@ print(response)`}
               <p className="text-muted-foreground mb-6">Build a chatbot that answers questions about any PDF documents you upload.</p>
 
               <div className="space-y-4">
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                   <strong className="text-cyan-400">📋 Requirements:</strong>
-                  <p className="text-muted-foreground text-sm mt-2">• Accept PDF uploads • Extract and chunk text • Create embeddings • Store in vector DB • Enable conversational queries • Show source citations</p>
+                  <p className="text-slate-300 text-sm mt-2">• Accept PDF uploads • Extract and chunk text • Create embeddings • Store in vector DB • Enable conversational queries • Show source citations</p>
                 </div>
 
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                   <strong className="text-cyan-400">🛠️ Tech Stack:</strong>
-                  <p className="text-muted-foreground text-sm mt-2">• Python + LangChain • OpenAI API • Chroma vector DB • Streamlit UI • PyPDF2 for extraction</p>
+                  <p className="text-slate-300 text-sm mt-2">• Python + LangChain • OpenAI API • Chroma vector DB • Streamlit UI • PyPDF2 for extraction</p>
                 </div>
 
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                   <strong className="text-cyan-400">Challenge Goals:</strong>
-                  <p className="text-muted-foreground text-sm mt-2">1. Support multi-document queries • 2. Add conversation memory • 3. Implement metadata filtering • 4. Add response evaluation • 5. Deploy on Hugging Face Spaces</p>
+                  <p className="text-slate-300 text-sm mt-2">1. Support multi-document queries • 2. Add conversation memory • 3. Implement metadata filtering • 4. Add response evaluation • 5. Deploy on Hugging Face Spaces</p>
                 </div>
               </div>
             </div>

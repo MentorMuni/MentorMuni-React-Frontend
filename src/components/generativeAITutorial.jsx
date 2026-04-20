@@ -55,7 +55,7 @@ const GenerativeAITutorial = () => {
     return (
       <div className="bg-[#1e1e1e] rounded-lg border border-border my-4">
         <div className="flex justify-between items-center px-4 py-2 border-b border-border">
-          <span className="text-xs text-muted-foreground">Prompt Example</span>
+          <span className="text-xs text-slate-400">Prompt Example</span>
           <button
             onClick={copyToClipboard}
             className="flex items-center gap-2 px-3 py-1 bg-[#FF9500] hover:bg-[#FF9500]/80 rounded text-white text-xs transition-all"
@@ -281,7 +281,7 @@ const GenerativeAITutorial = () => {
               />
               <p className="text-muted-foreground mt-4 mb-4">Now you prompt: "The cat"</p>
               <p className="text-muted-foreground mb-4">The model thinks: "After 'The cat', the word 'sat' appeared 100%, the word 'ran' 0%, the word 'flew' 0%"</p>
-              <p className="text-muted-foreground p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30">
+              <p className="text-slate-200 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30">
                 <strong>Output:</strong> "The cat sat..." (continues predicting word by word)
               </p>
             </div>
@@ -502,7 +502,7 @@ Keep it under 200 words.`}
                 id="example-js-closure"
               />
               <p className="text-muted-foreground mt-4 mb-2 font-semibold">What the AI might respond:</p>
-              <div className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
+              <div className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
                 <p className="mb-2">
                   <strong>Simple Definition:</strong> A closure is a function that remembers values from the scope where it was created, even after that scope is gone.
                 </p>

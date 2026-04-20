@@ -62,7 +62,7 @@ const PythonTutorial = () => {
     return (
       <div className="bg-[#1e1e1e] rounded-lg border border-border my-4">
         <div className="flex justify-between items-center px-4 py-2 border-b border-border">
-          <span className="text-xs text-muted-foreground">Python</span>
+          <span className="text-xs text-slate-400">Python</span>
           <button
             onClick={copyToClipboard}
             className="flex items-center gap-2 px-3 py-1 bg-[#FF9500] hover:bg-[#FF9500]/80 rounded text-white text-xs transition-all"
@@ -279,7 +279,7 @@ sudo apt-get install python3 python3-pip`}
               id="linux-install"
             />
 
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30 flex items-center gap-2">
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30 flex items-center gap-2">
               <Check size={16} className="text-green-400 flex-shrink-0" /> Python is now installed on your computer!  
             </p>
           </div>
@@ -294,7 +294,7 @@ sudo apt-get install python3 python3-pip`}
               id="verify-python"
             />
 
-            <p className="text-muted-foreground mt-4">You should see something like: <code className="bg-[#1e1e1e] px-2 py-1 rounded">Python 3.12.0</code></p>
+            <p className="text-muted-foreground mt-4">You should see something like: <code className="bg-[#1e1e1e] px-2 py-1 rounded text-slate-200">Python 3.12.0</code></p>
           </div>
         </section>
 
@@ -305,7 +305,7 @@ sudo apt-get install python3 python3-pip`}
           <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">The print() Function</h3>
             <p className="text-muted-foreground mb-4">
-              The simplest way to use Python is to print text to the screen using the <code className="bg-[#1e1e1e] px-2 py-1 rounded">print()</code> function.
+              The simplest way to use Python is to print text to the screen using the <code className="bg-[#1e1e1e] px-2 py-1 rounded text-slate-200">print()</code> function.
             </p>
 
             <CodeBlock
@@ -313,7 +313,7 @@ sudo apt-get install python3 python3-pip`}
               id="hello-world"
             />
 
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30">
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30">
               <strong>Output:</strong> <code>Hello, World!</code>
             </p>
           </div>
@@ -322,7 +322,7 @@ sudo apt-get install python3 python3-pip`}
             <h3 className="text-2xl font-bold mb-4">How to Run Python Code</h3>
 
             <h4 className="text-lg font-bold mb-4 text-cyan-400">Step 1: Create a file</h4>
-            <p className="text-muted-foreground mb-4">Create a new file named <code className="bg-[#1e1e1e] px-2 py-1 rounded">hello.py</code> (the .py extension means it's a Python file)</p>
+            <p className="text-muted-foreground mb-4">Create a new file named <code className="bg-[#1e1e1e] px-2 py-1 rounded text-slate-200">hello.py</code> (the .py extension means it's a Python file)</p>
 
             <h4 className="text-lg font-bold mb-4 text-cyan-400">Step 2: Write the code</h4>
             <CodeBlock
@@ -337,7 +337,7 @@ sudo apt-get install python3 python3-pip`}
               id="run-python"
             />
 
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
               You should see: <code>Hello, World!</code>
             </p>
           </div>
@@ -354,7 +354,7 @@ print(True)`}
               id="print-examples"
             />
 
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
               <strong>Output:</strong><br/>
               Python is awesome!<br/>
               I'm learning to code<br/>
@@ -388,7 +388,7 @@ print(is_student)`}
               id="variables-intro"
             />
 
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
               <strong>Output:</strong><br/>
               Alice<br/>
               25<br/>
@@ -401,28 +401,28 @@ print(is_student)`}
             <h3 className="text-2xl font-bold mb-4">Data Types</h3>
 
             <div className="space-y-4">
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                 <strong className="text-[#FF9500]">int (Integer)</strong> - Whole numbers
                 <CodeBlock code={`age = 25
 year = 2026
 count = -5`} id="int-type" />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                 <strong className="text-[#FF9500]">float (Decimal)</strong> - Numbers with decimals
                 <CodeBlock code={`height = 5.6
 price = 19.99
 temperature = -3.5`} id="float-type" />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                 <strong className="text-[#FF9500]">str (String)</strong> - Text
                 <CodeBlock code={`name = "Alice"
 city = "New York"
 message = "Hello, World!"`} id="str-type" />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                 <strong className="text-[#FF9500]">bool (Boolean)</strong> - True or False
                 <CodeBlock code={`is_student = True
 is_active = False`} id="bool-type" />
@@ -432,7 +432,7 @@ is_active = False`} id="bool-type" />
 
           <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Checking Data Types</h3>
-            <p className="text-muted-foreground mb-4">Use the <code className="bg-[#1e1e1e] px-2 py-1 rounded">type()</code> function:</p>
+            <p className="text-muted-foreground mb-4">Use the <code className="bg-[#1e1e1e] px-2 py-1 rounded text-slate-200">type()</code> function:</p>
 
             <CodeBlock
               code={`print(type(25))       # &lt;class 'int'&gt;
@@ -446,11 +446,11 @@ print(type(True))     # &lt;class 'bool'&gt;`}
           <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Variable Naming Rules</h3>
             <ul className="text-muted-foreground space-y-2 ml-4">
-              <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Start with a letter or underscore: <code className="bg-[#1e1e1e] px-1">name</code>, <code className="bg-[#1e1e1e] px-1">_age</code></li>
-              <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Use lowercase with underscores: <code className="bg-[#1e1e1e] px-1">student_name</code>, <code className="bg-[#1e1e1e] px-1">is_active</code></li>
-              <li><span className="flex items-center gap-1"><AlertCircle size={16} className="text-red-400" /></span> Don't use spaces or special characters: <code className="bg-[#1e1e1e] px-1">my age</code> ❌, <code className="bg-[#1e1e1e] px-1">age@</code> ❌</li>
-              <li><span className="flex items-center gap-1"><AlertCircle size={16} className="text-red-400" /></span> Don't start with numbers: <code className="bg-[#1e1e1e] px-1">2name</code> ❌</li>
-              <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Use descriptive names: <code className="bg-[#1e1e1e] px-1">student_name</code> ✓ instead of <code className="bg-[#1e1e1e] px-1">x</code> ❌</li>
+              <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Start with a letter or underscore: <code className="bg-[#1e1e1e] px-1 text-slate-200">name</code>, <code className="bg-[#1e1e1e] px-1 text-slate-200">_age</code></li>
+              <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Use lowercase with underscores: <code className="bg-[#1e1e1e] px-1 text-slate-200">student_name</code>, <code className="bg-[#1e1e1e] px-1 text-slate-200">is_active</code></li>
+              <li><span className="flex items-center gap-1"><AlertCircle size={16} className="text-red-400" /></span> Don't use spaces or special characters: <code className="bg-[#1e1e1e] px-1 text-slate-200">my age</code> ❌, <code className="bg-[#1e1e1e] px-1 text-slate-200">age@</code> ❌</li>
+              <li><span className="flex items-center gap-1"><AlertCircle size={16} className="text-red-400" /></span> Don't start with numbers: <code className="bg-[#1e1e1e] px-1 text-slate-200">2name</code> ❌</li>
+              <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> Use descriptive names: <code className="bg-[#1e1e1e] px-1 text-slate-200">student_name</code> ✓ instead of <code className="bg-[#1e1e1e] px-1 text-slate-200">x</code> ❌</li>
             </ul>
           </div>
         </section>
@@ -462,7 +462,7 @@ print(type(True))     # &lt;class 'bool'&gt;`}
           <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Getting Input from Users</h3>
             <p className="text-muted-foreground mb-4">
-              Use the <code className="bg-[#1e1e1e] px-2 py-1 rounded">input()</code> function to ask users to type something:
+              Use the <code className="bg-[#1e1e1e] px-2 py-1 rounded text-slate-200">input()</code> function to ask users to type something:
             </p>
 
             <CodeBlock
@@ -471,7 +471,7 @@ print("Hello, " + name)`}
               id="input-example"
             />
 
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
               <strong>Output:</strong><br/>
               What is your name? <strong>Alice</strong><br/>
               Hello, Alice
@@ -481,7 +481,7 @@ print("Hello, " + name)`}
           <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">Converting Input to Numbers</h3>
             <p className="text-muted-foreground mb-4">
-              By default, <code className="bg-[#1e1e1e] px-2 py-1 rounded">input()</code> gives you text (string). To do math, convert it to a number:
+              By default, <code className="bg-[#1e1e1e] px-2 py-1 rounded text-slate-200">input()</code> gives you text (string). To do math, convert it to a number:
             </p>
 
             <CodeBlock
@@ -493,8 +493,8 @@ print("Total with tax: " + str(price * 1.1))`}
               id="input-conversion"
             />
 
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-yellow-400/30">
-              ⚠️ Remember: <code className="bg-[#1e1e1e] px-1">int()</code> converts to integer, <code className="bg-[#1e1e1e] px-1">float()</code> converts to decimal
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-yellow-400/30">
+              ⚠️ Remember: <code className="bg-[#1e1e1e] px-1 text-slate-200">int()</code> converts to integer, <code className="bg-[#1e1e1e] px-1 text-slate-200">float()</code> converts to decimal
             </p>
           </div>
         </section>
@@ -572,7 +572,7 @@ if age >= 18:
               id="if-statement"
             />
 
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
               Note: Python uses indentation (spaces) to show what code belongs to the if block.
             </p>
           </div>
@@ -971,7 +971,7 @@ except ZeroDivisionError:
             <h3 className="text-2xl font-bold mb-4">Common Beginner Mistakes</h3>
 
             <div className="space-y-3">
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                 <strong className="text-red-400 flex items-center gap-1"><AlertCircle size={16} className="flex-shrink-0" /> Mistake:</strong> Forgetting to convert input
                 <CodeBlock
                   code={`age = input("Age: ")
@@ -980,7 +980,7 @@ print(age + 1)  # Error! Can't add string + number`}
                 />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                 <strong className="text-red-400 flex items-center gap-1"><AlertCircle size={16} className="flex-shrink-0" /> Mistake:</strong> Indentation errors
                 <CodeBlock
                   code={`for i in range(5):
@@ -989,7 +989,7 @@ print(i)  # Error! Wrong indentation`}
                 />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                 <strong className="text-red-400 flex items-center gap-1"><AlertCircle size={16} className="flex-shrink-0" /> Mistake:</strong> Using undefined variables
                 <CodeBlock
                   code={`print(name)  # Error! If 'name' was never defined`}
@@ -1145,7 +1145,7 @@ print("Thanks for playing!")`}
                 5. How do you convert a string to a number?
               </summary>
               <p className="text-muted-foreground text-sm">
-                Use <code className="bg-[#1e1e1e] px-2 py-1 rounded">int()</code> for whole numbers or <code className="bg-[#1e1e1e] px-2 py-1 rounded">float()</code> for decimals. Example: <code className="bg-[#1e1e1e] px-2 py-1 rounded">age = int("25")</code>
+                Use <code className="bg-[#1e1e1e] px-2 py-1 rounded text-slate-200">int()</code> for whole numbers or <code className="bg-[#1e1e1e] px-2 py-1 rounded text-slate-200">float()</code> for decimals. Example: <code className="bg-[#1e1e1e] px-2 py-1 rounded text-slate-200">age = int("25")</code>
               </p>
             </details>
           </div>

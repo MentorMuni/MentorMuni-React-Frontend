@@ -62,7 +62,7 @@ const JavaTutorial = () => {
     return (
       <div className="bg-[#1e1e1e] rounded-lg border border-border my-4">
         <div className="flex justify-between items-center px-4 py-2 border-b border-border">
-          <span className="text-xs text-muted-foreground">Java</span>
+          <span className="text-xs text-slate-400">Java</span>
           <button
             onClick={copyToClipboard}
             className="flex items-center gap-2 px-3 py-1 bg-[#FF9500] hover:bg-[#FF9500]/80 rounded text-white text-xs transition-all"
@@ -289,7 +289,7 @@ sudo apt-get install openjdk-21-jdk`}
               code={`java -version`}
               id="verify-java"
             />
-            <p className="text-muted-foreground mt-4">Should show something like: <code className="bg-[#1e1e1e] px-2 py-1 rounded">openjdk version "21.0.1"</code></p>
+            <p className="text-muted-foreground mt-4">Should show something like: <code className="bg-[#1e1e1e] px-2 py-1 rounded text-slate-200">openjdk version "21.0.1"</code></p>
           </div>
 
           <div className="bg-white border border-border rounded-xl p-8">
@@ -359,7 +359,7 @@ sudo apt-get install openjdk-21-jdk`}
           <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">How to Run the Program</h3>
             
-            <p className="text-muted-foreground mb-4"><strong>Step 1: Save the file as</strong> <code className="bg-[#1e1e1e] px-2 py-1 rounded">HelloWorld.java</code></p>
+            <p className="text-muted-foreground mb-4"><strong>Step 1: Save the file as</strong> <code className="bg-[#1e1e1e] px-2 py-1 rounded text-slate-200">HelloWorld.java</code></p>
             
             <p className="text-muted-foreground mb-4"><strong>Step 2: Open Terminal/Command Prompt and navigate to the folder</strong></p>
             
@@ -369,7 +369,7 @@ sudo apt-get install openjdk-21-jdk`}
               id="compile-hello"
             />
 
-            <p className="text-muted-foreground my-4">This creates a file called <code className="bg-[#1e1e1e] px-2 py-1 rounded">HelloWorld.class</code></p>
+            <p className="text-muted-foreground my-4">This creates a file called <code className="bg-[#1e1e1e] px-2 py-1 rounded text-slate-200">HelloWorld.class</code></p>
 
             <p className="text-muted-foreground mb-4"><strong>Step 4: Run the program</strong></p>
             <CodeBlock
@@ -377,7 +377,7 @@ sudo apt-get install openjdk-21-jdk`}
               id="run-hello"
             />
 
-            <p className="text-muted-foreground mt-6 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30">
+            <p className="text-slate-200 mt-6 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30">
               <strong>Output:</strong> <code>Hello, World!</code>
             </p>
           </div>
@@ -393,7 +393,7 @@ sudo apt-get install openjdk-21-jdk`}
 
             <h4 className="text-xl font-bold mb-4 mt-6">Basic Data Types</h4>
             <div className="space-y-4">
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                 <strong className="text-[#FF9500]">int</strong> - Whole numbers (no decimals)
                 <CodeBlock
                   code={`int age = 25;
@@ -402,7 +402,7 @@ int year = 2026;`}
                 />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                 <strong className="text-[#FF9500]">double</strong> - Decimal numbers (precise)
                 <CodeBlock
                   code={`double price = 99.99;
@@ -411,7 +411,7 @@ double height = 5.8;`}
                 />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                 <strong className="text-[#FF9500]">String</strong> - Text (always in quotes)
                 <CodeBlock
                   code={`String name = "Alice";
@@ -420,7 +420,7 @@ String city = "New York";`}
                 />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                 <strong className="text-[#FF9500]">boolean</strong> - True or False only
                 <CodeBlock
                   code={`boolean isStudent = true;
@@ -429,7 +429,7 @@ boolean isGraduate = false;`}
                 />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                 <strong className="text-[#FF9500]">char</strong> - Single character
                 <CodeBlock
                   code={`char grade = 'A';
@@ -458,7 +458,7 @@ char firstLetter = 'J';`}
 }`}
               id="student-info"
             />
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30">
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30">
               <strong>Output:</strong><br/>
               Student Name: John Doe<br/>
               Age: 19<br/>
@@ -591,7 +591,7 @@ public class UserInput {
               id="user-input"
             />
 
-            <div className="mt-6 p-4 bg-[#1E293B] rounded-lg border border-yellow-400/30">
+            <div className="mt-6 p-4 bg-[#1E293B] rounded-lg border border-yellow-400/30 text-slate-200">
               <strong className="text-yellow-400">⚠️ Important:</strong> Always import Scanner at the top!
               <CodeBlock
                 code={`import java.util.Scanner;`}
@@ -710,7 +710,7 @@ Number: 5
               id="for-loop"
             />
 
-            <p className="text-muted-foreground mt-6 bg-[#1E293B] p-4 rounded-lg border border-border">
+            <p className="text-slate-200 mt-6 bg-[#1E293B] p-4 rounded-lg border border-border">
               <strong>How it works:</strong><br/>
               <code>i = 1</code> - Start at 1<br/>
               <code>i &lt;= 5</code> - Continue while i is 5 or less<br/>
@@ -1266,7 +1266,7 @@ public class StudentGradeSystem {
               </summary>
               <p className="text-muted-foreground text-sm">
                 <strong>System.out.println()</strong> prints text to the console/screen and adds a new line after it.<br/>
-                <code className="bg-[#1e1e1e] px-2 py-1 rounded">System.out.print()</code> prints without adding a new line.
+                <code className="bg-[#1e1e1e] px-2 py-1 rounded text-slate-200">System.out.print()</code> prints without adding a new line.
               </p>
             </details>
 

@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useRef, useId } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import {
-  AlertCircle, CheckCircle, ChevronRight, Lock, Mail, Phone, Check, Zap, ShieldCheck, Map, ArrowRight, Star, Clock,
+  AlertCircle, CheckCircle, ChevronRight, Lock, Mail, Phone, Check, Zap, ArrowRight, Star,
   TrendingUp, Target, Sparkles, BarChart3, AlertTriangle, CheckCircle2, Lightbulb, Users, Headphones,
-  Share2, Linkedin, Trophy, Building2, Briefcase, Gift, Copy, Download,
+  Share2, Linkedin, Trophy, Building2, Briefcase, Gift, Copy, Printer,
 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { API_BASE } from '../config';
@@ -90,6 +90,19 @@ const PLACEMENT_ROLE_OPTIONS = [
 /** PlanRequest.primary_skill maxLength in OpenAPI schema */
 const PLAN_PRIMARY_SKILL_MAX = 100;
 
+/**
+ * Normalize skill line for API: trim, lowercase, max length. Single-letter languages (C, R, …):
+ * append a zero-width space so minLength 2 passes. Prefer API minLength 1 to drop the shim.
+ */
+function primarySkillForApiRequest(trimmed) {
+  const s = String(trimmed ?? '')
+    .trim()
+    .toLowerCase()
+    .slice(0, PLAN_PRIMARY_SKILL_MAX);
+  if (s.length === 1) return `${s}\u200b`;
+  return s;
+}
+
 /** Admin CRM — POST /admin/leads (best-effort when user generates questions) */
 const ADMIN_LEADS_PATH = '/admin/leads';
 
@@ -112,7 +125,11 @@ function buildAdminLeadsPayload(profile, primarySkill, experienceYears, isSkillM
     phone,
     user_type: API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'student',
     user_category: profile.userCategory || null,
-    primary_skill: effectiveSkillLine,
+    primary_skill: primarySkillForApiRequest(
+      String(effectiveSkillLine ?? '')
+        .trim()
+        .slice(0, PLAN_PRIMARY_SKILL_MAX)
+    ),
     college_name: !isPro && profile.collegeName?.trim() ? profile.collegeName.trim() : null,
     company_name: isPro && profile.currentOrganization?.trim() ? profile.currentOrganization.trim() : null,
     current_organization: isPro && profile.currentOrganization?.trim() ? profile.currentOrganization.trim() : null,
@@ -128,7 +145,11 @@ function buildAdminLeadsPayload(profile, primarySkill, experienceYears, isSkillM
 
   if (!isSkillMode) {
     if (isPro) {
-      payload.core_skill = effectiveSkillLine || null;
+      payload.core_skill = effectiveSkillLine
+        ? primarySkillForApiRequest(
+            String(effectiveSkillLine).trim().slice(0, PLAN_PRIMARY_SKILL_MAX)
+          )
+        : null;
       payload.jd_provided = !!profile.placementJdProvided;
       payload.job_description = profile.placementJdProvided ? profile.placementJdText?.trim() || null : null;
       payload.target_company_name =
@@ -183,7 +204,7 @@ const APTITUDE_QUESTION_COUNT = 15;
 const INTERVIEW_PLAN_ITEM_TYPES = ['yes_no', 'multiple_choice', 'scenario', 'code_mcq'];
 const APTITUDE_SKILLS = ['quantitative', 'logical reasoning', 'verbal reasoning'];
 /** AptitudeReadinessPlanRequest.primary_skill default — do not send skill-readiness-only fields (skills, question_count). */
-const APTITUDE_PRIMARY_SKILL_API = 'Quantitative, Logical and Verbal Reasoning';
+const APTITUDE_PRIMARY_SKILL_API = 'quantitative, logical and verbal reasoning';
 /** Server default when target_role is omitted; we send explicitly to match API examples. */
 const APTITUDE_DEFAULT_TARGET_ROLE = 'Software Engineer';
 const TEXT_WORD_LIMIT = 50;
@@ -556,6 +577,76 @@ function buildWhatsAppChallengeMessage(pct, readinessLabel, modeLabel) {
   );
 }
 
+/** Poster art under `public/MentorMuni-React-Frontend/images/poster-carousel/` */
+function posterCarouselAssetPath(filename) {
+  const base = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '/');
+  return `${base}MentorMuni-React-Frontend/images/poster-carousel/${filename}`;
+}
+
+const HOW_IT_WORKS_STEPS = [
+  {
+    image: 'readiness.jpg',
+    imageAlt: 'Readiness score and category breakdown',
+    title: '~5 min score',
+    desc: 'Mixed question types (Yes/No, MCQ, scenarios, code) and a readiness readout.',
+  },
+  {
+    image: 'mock-interview.jpg',
+    imageAlt: 'Practice-style interview check-in',
+    title: 'No friction',
+    desc: 'Start immediately — save a report later if you want.',
+  },
+  {
+    image: 'planner.jpg',
+    imageAlt: 'Structured prep and next steps',
+    title: 'Your gaps',
+    desc: 'See weak topics and what to study next for your stack.',
+  },
+];
+
+/** Image-led cards — below landing tiles */
+function HowItWorksVisual() {
+  return (
+    <div className="mx-auto w-full max-w-5xl">
+      <ul className="grid gap-7 sm:grid-cols-3 sm:gap-5 lg:gap-7">
+        {HOW_IT_WORKS_STEPS.map(({ image, imageAlt, title, desc }, i) => (
+          <motion.li
+            key={title}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-24px' }}
+            transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            className="group flex h-full"
+          >
+            <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-[#E6E0D6] bg-white shadow-[0_16px_48px_-28px_rgba(45,35,20,0.28)] ring-1 ring-black/[0.04] transition-shadow duration-300 group-hover:shadow-[0_22px_56px_-24px_rgba(234,88,12,0.22)]">
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#f0ebe3]">
+                <img
+                  src={posterCarouselAssetPath(image)}
+                  alt={imageAlt}
+                  className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-[1.04]"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-80"
+                  aria-hidden
+                />
+                <div className="absolute left-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-sm font-bold tabular-nums text-[#c2410c] shadow-md ring-1 ring-black/5">
+                  {i + 1}
+                </div>
+              </div>
+              <div className="flex flex-1 flex-col gap-2 px-4 pb-5 pt-4 sm:px-5">
+                <h3 className="text-[15px] font-semibold leading-snug text-foreground">{title}</h3>
+                <p className="text-xs leading-relaxed text-muted-foreground sm:text-[13px]">{desc}</p>
+              </div>
+            </div>
+          </motion.li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 const ASSESSMENT_MODE_OPTIONS = [
   {
     mode: ASSESSMENT_FOCUS_SKILL,
@@ -683,106 +774,6 @@ function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
           </motion.button>
         );
       })}
-    </div>
-  );
-}
-
-const HOW_IT_WORKS_STEPS = [
-  {
-    Icon: Zap,
-    title: '~5 min score',
-      desc: 'Mixed question types (Yes/No, MCQ, scenarios, code) and a readiness readout.',
-  },
-  {
-    Icon: ShieldCheck,
-    title: 'No friction',
-    desc: 'Start immediately — save a report later if you want.',
-  },
-  {
-    Icon: Map,
-    title: 'Your gaps',
-    desc: 'See weak topics and what to study next for your stack.',
-  },
-];
-
-/** Timeline + horizontal flow — avoids three heavy “card” boxes */
-function HowItWorksFlow() {
-  return (
-    <div className="mx-auto w-full max-w-4xl">
-      {/* Mobile: vertical timeline */}
-      <div className="relative md:hidden">
-        <div
-          className="absolute left-[21px] top-2 bottom-2 w-[2px] rounded-full bg-gradient-to-b from-[#FF9500]/35 via-[#E8E4DC] to-[#E8E4DC]"
-          aria-hidden
-        />
-        <ul className="relative space-y-10 pl-0">
-          {HOW_IT_WORKS_STEPS.map(({ Icon, title, desc }, i) => (
-            <motion.li
-              key={title}
-              initial={{ opacity: 0, x: -12 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: '-30px' }}
-              transition={{ delay: i * 0.08, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="relative flex gap-4"
-            >
-              <motion.div
-                className="relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border-2 border-white bg-[#FFFDF8] shadow-md ring-2 ring-[#FF9500]/15"
-                whileHover={{ scale: 1.08 }}
-                transition={{ type: 'spring', stiffness: 420, damping: 24 }}
-              >
-                <Icon size={19} className="text-[#FF9500]" strokeWidth={2} />
-              </motion.div>
-              <div className="min-w-0 pt-0.5">
-                <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{desc}</p>
-              </div>
-            </motion.li>
-          ))}
-        </ul>
-      </div>
-
-      {/* Desktop: horizontal flow with connectors */}
-      <div className="hidden md:flex md:items-start md:justify-center md:gap-0">
-        {HOW_IT_WORKS_STEPS.map(({ Icon, title, desc }, i) => (
-          <React.Fragment key={title}>
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-40px' }}
-              transition={{ delay: i * 0.1, duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-              className="flex max-w-[220px] flex-1 flex-col items-center px-2 text-center lg:max-w-[240px] lg:px-3"
-            >
-              <motion.div
-                className="relative mb-4"
-                whileHover={{ y: -4 }}
-                transition={{ type: 'spring', stiffness: 380, damping: 22 }}
-              >
-                <div className="absolute inset-0 rounded-full bg-[#FF9500]/12 blur-lg" aria-hidden />
-                <div className="relative flex h-[52px] w-[52px] items-center justify-center rounded-full border border-[#E8E4DC] bg-white shadow-sm">
-                  <Icon size={22} className="text-[#FF9500]" strokeWidth={2} />
-                </div>
-              </motion.div>
-              <h3 className="text-sm font-semibold text-foreground">{title}</h3>
-              <p className="mt-2 text-xs leading-relaxed text-muted-foreground">{desc}</p>
-            </motion.div>
-            {i < HOW_IT_WORKS_STEPS.length - 1 && (
-              <div className="flex shrink-0 items-center self-center px-1 pt-7 lg:px-2">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: 0.15 + i * 0.1, duration: 0.35 }}
-                  className="flex items-center text-[#C9C4BB]"
-                >
-                  <span className="hidden h-px w-4 rounded-full bg-gradient-to-r from-transparent to-[#E0DCCF] lg:block" />
-                  <ArrowRight className="h-4 w-4 shrink-0 lg:h-5 lg:w-5" strokeWidth={2} />
-                  <span className="hidden h-px w-4 rounded-full bg-gradient-to-l from-transparent to-[#E0DCCF] lg:block" />
-                </motion.div>
-              </div>
-            )}
-          </React.Fragment>
-        ))}
-      </div>
     </div>
   );
 }
@@ -1045,6 +1036,126 @@ function mcqOptionLabelForDisplay(raw, letter) {
   return out.length ? out : s;
 }
 
+function escapeHtmlForPdf(text) {
+  if (text == null || text === '') return '';
+  return String(text)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+}
+
+function pdfAssessmentModeLabel(mode) {
+  if (mode === ASSESSMENT_FOCUS_SKILL) return 'Skill preparation';
+  if (mode === ASSESSMENT_FOCUS_APTITUDE) return 'Aptitude preparation';
+  if (mode === ASSESSMENT_FOCUS_PLACEMENT) return 'Interview readiness';
+  return '—';
+}
+
+/**
+ * Opens a print-friendly report (use the print dialog → Save as PDF). No extra npm deps.
+ */
+function printReadinessReportPdf(result) {
+  const questions = result?.attemptExport?.questions;
+  if (!Array.isArray(questions) || questions.length === 0) return;
+
+  const pct = result.readiness_percentage;
+  const pctStr = typeof pct === 'number' && !Number.isNaN(pct) ? `${pct}` : escapeHtmlForPdf(String(pct ?? '—'));
+  const dateStr = result.evaluatedAt
+    ? new Date(result.evaluatedAt).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' })
+    : new Date().toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' });
+  const mode = pdfAssessmentModeLabel(result.assessmentMode);
+  const role = String(result.userCategory ?? '')
+    .replace(/_/g, ' ')
+    .trim() || '—';
+  const focus = result.techStack || '—';
+
+  const scoreBlock = `
+    <header class="hdr">
+      <h1>MentorMuni — Readiness report</h1>
+      <p class="meta">${escapeHtmlForPdf(dateStr)} · ${escapeHtmlForPdf(mode)} · ${escapeHtmlForPdf(role)} · Focus: ${escapeHtmlForPdf(focus)}</p>
+      <p class="scoreline"><strong>${escapeHtmlForPdf(String(result.readiness_label ?? ''))}</strong> <span class="pct">${pctStr}%</span></p>
+      <p class="summary">${escapeHtmlForPdf(result.summary ?? '')}</p>
+    </header>
+  `;
+
+  const qBlocks = questions
+    .map((row) => {
+      const type = String(row.question_type ?? '').replace(/_/g, ' ');
+      const sectionTag = row.section
+        ? `<span class="tag">${escapeHtmlForPdf(row.section)}</span>`
+        : '';
+      const opts =
+        Array.isArray(row.options) && row.options.length > 0
+          ? `<ul class="opts">${row.options
+              .map((opt, oi) => {
+                const L = MCQ_LETTERS[oi] ?? String.fromCharCode(65 + oi);
+                return `<li><strong>${L}.</strong> ${escapeHtmlForPdf(mcqOptionLabelForDisplay(opt, L))}</li>`;
+              })
+              .join('')}</ul>`
+          : '';
+      const status = row.is_correct ? '<span class="ok">Correct</span>' : '<span class="rv">Review</span>';
+      return `
+      <section class="q">
+        <div class="qh"><strong>Q${row.index}</strong> <span class="typ">${escapeHtmlForPdf(type)}</span> ${sectionTag} ${status}</div>
+        <p class="stem">${escapeHtmlForPdf(row.question)}</p>
+        ${opts}
+        <dl class="dl">
+          <div><dt>Topic</dt><dd>${escapeHtmlForPdf(row.study_topic ?? '')}</dd></div>
+          <div><dt>Your answer</dt><dd>${escapeHtmlForPdf(row.user_answer != null && row.user_answer !== '' ? String(row.user_answer) : '—')}</dd></div>
+          <div><dt>Correct answer</dt><dd>${escapeHtmlForPdf(String(row.correct_answer ?? ''))}</dd></div>
+        </dl>
+      </section>`;
+    })
+    .join('');
+
+  const styles = `
+    * { box-sizing: border-box; }
+    body { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; font-size: 11pt; line-height: 1.45; color: #1c1917; margin: 18px auto; max-width: 720px; padding: 0 8px; }
+    h1 { font-size: 17pt; margin: 0 0 6px; font-weight: 800; }
+    .meta { font-size: 9pt; color: #57534e; margin: 0 0 10px; }
+    .scoreline { font-size: 12pt; margin: 0 0 8px; }
+    .pct { font-weight: 800; color: #c2410c; margin-left: 6px; }
+    .summary { font-size: 10pt; color: #44403c; margin: 0 0 22px; }
+    .q { page-break-inside: avoid; margin-bottom: 14pt; padding: 12pt 14pt; border: 1px solid #e7e5e4; border-radius: 10px; background: #fffdfb; }
+    .qh { font-size: 9pt; color: #57534e; margin-bottom: 8px; }
+    .qh strong { color: #0c0a09; font-size: 10pt; }
+    .typ { text-transform: capitalize; }
+    .tag { display: inline-block; background: #ecfeff; color: #0e7490; padding: 2px 8px; border-radius: 999px; font-size: 8pt; margin-left: 4px; vertical-align: middle; }
+    .ok { float: right; font-weight: 700; color: #15803d; font-size: 9pt; }
+    .rv { float: right; font-weight: 700; color: #a16207; font-size: 9pt; }
+    .stem { font-weight: 600; margin: 0 0 8px; }
+    .opts { margin: 6px 0 0; padding-left: 18px; font-size: 10pt; color: #44403c; }
+    .opts li { margin: 3px 0; }
+    .dl { display: grid; gap: 6px; font-size: 10pt; margin-top: 10px; border-top: 1px solid #f5f5f4; padding-top: 8px; }
+    .dl dt { font-weight: 700; color: #78716c; font-size: 9pt; }
+    .dl dd { margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 9.5pt; }
+    @media print {
+      body { margin: 10mm; max-width: none; }
+      .q { break-inside: avoid; }
+    }
+  `;
+
+  const html = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"/><title>Readiness report — MentorMuni</title><style>${styles}</style></head><body>${scoreBlock}${qBlocks}</body></html>`;
+
+  const w = window.open('', '_blank');
+  if (!w) {
+    window.alert('Allow pop-ups for this site, then try Save as PDF again.');
+    return;
+  }
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+  w.focus();
+  window.setTimeout(() => {
+    try {
+      w.print();
+    } catch (e) {
+      console.error(e);
+    }
+  }, 200);
+}
+
 /** Normalize API question_type to internal kind */
 function normalizePlanQuestionType(raw) {
   const t = String(raw || '').toLowerCase().replace(/-/g, '_');
@@ -1067,23 +1178,6 @@ function readinessAnswerIsCorrect(userAnswer, correctAnswer, questionType) {
   const cM = c.toUpperCase().match(/^[A-D]/);
   if (uM && cM) return uM[0] === cM[0];
   return u.toLowerCase() === c.toLowerCase();
-}
-
-function downloadJsonFile(filename, data) {
-  try {
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json;charset=utf-8' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    a.rel = 'noopener';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  } catch (e) {
-    console.error('downloadJsonFile', e);
-  }
 }
 
 function buildReadinessAttemptExport({ profile, evaluationData, answers, evaluatePayload, evaluateResponse }) {
@@ -1113,7 +1207,9 @@ function buildReadinessAttemptExport({ profile, evaluationData, answers, evaluat
     assessment: {
       assessment_mode: profile?.assessmentMode ?? null,
       user_category: profile?.userCategory ?? null,
-      primary_skill: profile?.primarySkill ?? null,
+      primary_skill: profile?.primarySkill?.trim()
+        ? primarySkillForApiRequest(profile.primarySkill)
+        : null,
       email: profile?.email?.trim() || null,
       phone: profile?.contactNumber?.trim() || null,
     },
@@ -1517,6 +1613,15 @@ const InterviewReady = () => {
     }
   }, [step, profile.assessmentMode, fromToolsEntry]);
 
+  /** Each in-flow page transition should start from top. */
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const rafId = window.requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    });
+    return () => window.cancelAnimationFrame(rafId);
+  }, [step]);
+
   /** 1st–3rd year users never see step 13 — bounce back if state is inconsistent */
   useEffect(() => {
     if (step !== 13) return;
@@ -1866,7 +1971,9 @@ const InterviewReady = () => {
     setStep(14);
     setPlanLoading(true);
 
-    const primarySkill = profile.primarySkill.trim().slice(0, PLAN_PRIMARY_SKILL_MAX);
+    const primarySkill = primarySkillForApiRequest(
+      profile.primarySkill.trim().slice(0, PLAN_PRIMARY_SKILL_MAX)
+    );
     const expParsed =
       profile.userCategory === 'professional'
         ? Math.min(15, Math.max(0, Number.parseInt(String(profile.experienceYears).trim(), 10) || 0))
@@ -1923,10 +2030,12 @@ const InterviewReady = () => {
 
     if (!isSkillMode) {
       if (profile.userCategory === 'professional') {
-        const coreLine = (
-          profile.placementCoreSkill?.trim() ||
-          profile.primarySkill.trim()
-        ).slice(0, PLAN_PRIMARY_SKILL_MAX);
+        const coreLine = primarySkillForApiRequest(
+          (
+            profile.placementCoreSkill?.trim() ||
+            profile.primarySkill.trim()
+          ).slice(0, PLAN_PRIMARY_SKILL_MAX)
+        );
         interviewReadinessPayload.primary_skill = coreLine;
         interviewReadinessPayload.core_skill = coreLine;
         interviewReadinessPayload.jd_provided = !!profile.placementJdProvided;
@@ -1959,7 +2068,7 @@ const InterviewReady = () => {
         ? skillReadinessPayload
         : interviewReadinessPayload;
 
-    const leadSkill = isAptitudeMode ? APTITUDE_SKILLS.join(', ') : primarySkill;
+    const leadSkill = isAptitudeMode ? APTITUDE_SKILLS.join(', ').toLowerCase() : primarySkill;
     void postAdminLeadCapture(API_BASE, buildAdminLeadsPayload(profile, leadSkill, expParsed, isSkillMode || isAptitudeMode));
 
     const timeoutId = window.setTimeout(() => controller.abort(), PLAN_FETCH_TIMEOUT_MS);
@@ -2108,7 +2217,10 @@ const InterviewReady = () => {
         summary: `${readinessLabel} — ${readinessPct}% readiness score`,
         userCategory: profile.userCategory,
         assessmentMode: profile.assessmentMode,
-        techStack: profile.primarySkill,
+        techStack: String(profile.primarySkill ?? '')
+          .trim()
+          .toLowerCase()
+          .slice(0, PLAN_PRIMARY_SKILL_MAX),
         strengths: data.strengths || [],
         gaps: data.gaps || [],
         learning_recommendations: data.learning_recommendations || data.learningRecommendations || [],
@@ -2282,9 +2394,9 @@ const InterviewReady = () => {
           <div className="absolute bottom-0 left-1/2 h-48 w-[min(100%,480px)] -translate-x-1/2 rounded-full bg-amber-200/20 blur-3xl" />
         </div>
 
-        <div className="relative z-10 mx-auto flex min-h-screen max-w-3xl flex-col px-4 pb-12 pt-8 sm:px-6 sm:pt-10 lg:max-w-5xl lg:px-8">
+        <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-3xl flex-col px-4 pb-10 pt-4 sm:px-6 sm:pt-5 lg:max-w-5xl lg:px-8">
           {/* Credibility — compact */}
-          <div className="mb-5 flex justify-center sm:mb-6">
+          <div className="mb-3 flex justify-center sm:mb-4">
             <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-border bg-white/90 px-3 py-1.5 shadow-sm backdrop-blur sm:px-4">
               <Star size={14} className="shrink-0 text-amber-400" />
               <span className="text-center text-[11px] font-medium text-muted-foreground sm:text-xs">
@@ -2293,54 +2405,21 @@ const InterviewReady = () => {
             </div>
           </div>
 
-          {/* Headline — short */}
-          <div className="mx-auto mb-6 max-w-xl text-center lg:mb-8">
-            <h1 className="text-4xl font-black tracking-tight text-foreground sm:text-5xl md:text-6xl leading-[1.08]">
+          {/* Headline — compact so test tiles stay in view without scrolling */}
+          <div className="mx-auto mb-4 max-w-xl text-center sm:mb-5">
+            <h1 className="text-3xl font-black leading-[1.1] tracking-tight text-foreground sm:text-4xl md:text-5xl">
               Interview{' '}
-              <span className="bg-gradient-to-r from-[#FF9500] to-amber-500 bg-clip-text text-transparent">Readiness</span>
-              <br />
+              <span className="bg-gradient-to-r from-[#FF9500] to-amber-500 bg-clip-text text-transparent">Readiness</span>{' '}
               <span className="text-foreground">Check</span>
             </h1>
-            <p className="mt-3 text-base text-muted-foreground sm:text-lg">
-              Two ways to start — pick one.{' '}
-              <span className="whitespace-nowrap font-semibold text-muted-foreground">~5 min.</span>{' '}
-              <span className="whitespace-nowrap">Free.</span> No signup.
+            <p className="mt-2 text-sm text-muted-foreground sm:text-base">
+              Pick a test — <span className="whitespace-nowrap font-semibold">~5 min</span> · free · no signup. Yes/No,
+              MCQ, scenarios &amp; code — then your score and gaps.
             </p>
-            {/* Trust row — single line */}
-            <div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-xs font-medium text-hint">
-              {[
-                { Icon: Clock, text: '~5 min' },
-                { Icon: Sparkles, text: 'Instant score' },
-                { Icon: ShieldCheck, text: 'No account' },
-              ].map(({ Icon, text }) => (
-                <span key={text} className="inline-flex items-center gap-1.5">
-                  <Icon size={13} className="text-[#FF9500]" />
-                  {text}
-                </span>
-              ))}
-            </div>
           </div>
 
-          {/* How it works — above path choice (timeline / flow, not card grid) */}
-          <div className="mx-auto mb-8 w-full max-w-3xl sm:mb-10">
-            <div className="mb-6 flex flex-wrap items-center justify-center gap-2 text-center sm:mb-8">
-              <Zap size={18} className="shrink-0 text-[#FF9500]" />
-              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
-                How it works &amp; what you get
-              </h2>
-            </div>
-            <HowItWorksFlow />
-          </div>
-
-          {/* Primary action — path cards */}
+          {/* Primary action — three test tiles first */}
           <div className="mx-auto w-full max-w-3xl flex-1">
-            <div className="mb-6 text-center sm:mb-7">
-              <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">Choose your path</h2>
-              <p className="mx-auto mt-2 max-w-md text-sm leading-relaxed text-muted-foreground">
-                Select one option below to continue.
-              </p>
-              <div className="mx-auto mt-5 h-px w-16 bg-[#E0DCCF]" aria-hidden />
-            </div>
             <AssessmentModeGrid
               variant="hero"
               selectedMode={profile.assessmentMode}
@@ -2357,7 +2436,7 @@ const InterviewReady = () => {
           </div>
 
           {/* Reward — below CTAs */}
-          <div className="mx-auto mt-10 w-full max-w-2xl">
+          <div className="mx-auto mt-6 w-full max-w-2xl sm:mt-8">
             <div className="flex items-start gap-3 rounded-2xl border border-orange-200/60 bg-gradient-to-r from-[#FFF8EE] to-white px-4 py-3 shadow-sm">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FF9500] to-amber-600 text-white shadow-md">
                 <Gift size={18} strokeWidth={2} />
@@ -2369,6 +2448,26 @@ const InterviewReady = () => {
                 <p className="text-sm leading-snug text-muted-foreground">{READINESS_TEST_COUPON_BADGE}</p>
               </div>
             </div>
+          </div>
+
+          {/* How it works — pictorial strip below tiles & reward */}
+          <div className="relative mx-auto mt-12 w-full max-w-5xl px-0 sm:mt-16">
+            <div
+              className="pointer-events-none absolute inset-x-[-12px] -top-6 bottom-8 -z-10 rounded-[2rem] bg-gradient-to-b from-[#FFF4E6]/90 via-[#FFFDF8]/60 to-transparent sm:inset-x-[-24px]"
+              aria-hidden
+            />
+            <div className="mb-8 text-center sm:mb-10">
+              <div className="mb-3 flex flex-wrap items-center justify-center gap-2">
+                <Zap size={20} className="shrink-0 text-[#FF9500]" aria-hidden />
+                <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
+                  How it works &amp; what you get
+                </h2>
+              </div>
+              <p className="mx-auto max-w-lg text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
+                A quick check, then a clear read on gaps — with visuals from how we structure prep end to end.
+              </p>
+            </div>
+            <HowItWorksVisual />
           </div>
         </div>
       </div>
@@ -3623,21 +3722,17 @@ const InterviewReady = () => {
                 <div>
                   <h3 className="text-base font-bold text-foreground sm:text-lg">Test questions &amp; your answers</h3>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Every stem, option, topic, correct key, and what you chose — plus the evaluate request/response JSON.
+                    Every stem, options, topic, correct answer, and what you chose. Save a clean copy as PDF from the print
+                    dialog.
                   </p>
                 </div>
                 <button
                   type="button"
-                  onClick={() =>
-                    downloadJsonFile(
-                      `mentormuni-readiness-${String(result.assessmentMode || 'attempt')}-${new Date(result.evaluatedAt).toISOString().slice(0, 10)}.json`,
-                      result.attemptExport
-                    )
-                  }
+                  onClick={() => printReadinessReportPdf(result)}
                   className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-border bg-[#FAFAFA] px-4 py-2.5 text-sm font-bold text-foreground transition hover:bg-[#FFF8EE]"
                 >
-                  <Download size={16} aria-hidden />
-                  Download JSON
+                  <Printer size={16} aria-hidden />
+                  Save as PDF
                 </button>
               </div>
 
@@ -3693,18 +3788,6 @@ const InterviewReady = () => {
                     </li>
                   ))}
                 </ol>
-              </details>
-
-              <details className="group mt-4">
-                <summary className="cursor-pointer list-none text-sm font-semibold text-muted-foreground [&::-webkit-details-marker]:hidden">
-                  <span className="inline-flex items-center gap-1">
-                    Full export JSON
-                    <ChevronRight className="h-4 w-4 shrink-0 transition-transform group-open:rotate-90" aria-hidden />
-                  </span>
-                </summary>
-                <pre className="mt-3 max-h-[min(50vh,420px)] overflow-auto rounded-xl border border-border bg-[#1a1a1a] p-4 text-left text-[11px] leading-relaxed text-emerald-100/95">
-                  {JSON.stringify(result.attemptExport, null, 2)}
-                </pre>
               </details>
             </motion.div>
           )}

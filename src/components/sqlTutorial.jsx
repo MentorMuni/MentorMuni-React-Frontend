@@ -62,7 +62,7 @@ const SqlTutorial = () => {
     return (
       <div className="bg-[#1e1e1e] rounded-lg border border-border my-4">
         <div className="flex justify-between items-center px-4 py-2 border-b border-border">
-          <span className="text-xs text-muted-foreground">SQL</span>
+          <span className="text-xs text-slate-400">SQL</span>
           <button
             onClick={copyToClipboard}
             className="flex items-center gap-2 px-3 py-1 bg-[#FF9500] hover:bg-[#FF9500]/80 rounded text-white text-xs transition-all"
@@ -200,9 +200,9 @@ const SqlTutorial = () => {
               It's software that helps you create, organize, and manage your data. Think of it as the librarian of your digital filing cabinet—it helps you store, find, and organize information.
             </p>
 
-            <div className="bg-[#1E293B] p-4 rounded-lg border border-border mt-4">
-              <p className="text-muted-foreground text-sm"><strong>Popular DBMS Examples:</strong></p>
-              <ul className="text-muted-foreground text-sm mt-2 space-y-1 ml-4">
+            <div className="bg-[#1E293B] p-4 rounded-lg border border-border mt-4 text-slate-200">
+              <p className="text-sm"><strong className="text-white">Popular DBMS Examples:</strong></p>
+              <ul className="text-sm mt-2 space-y-1 ml-4">
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> MySQL - Free, widely used</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> PostgreSQL - Powerful, free, open-source</li>
                 <li className="flex items-center gap-2"><Check size={16} className="text-green-400 flex-shrink-0" /> SQL Server - Made by Microsoft</li>
@@ -269,22 +269,22 @@ const SqlTutorial = () => {
             <p className="text-muted-foreground mb-6">Here's what you'll learn in this tutorial:</p>
 
             <div className="space-y-4">
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                 <strong className="text-[#FF9500]">SELECT</strong> - Retrieve data from database
                 <CodeBlock code={`SELECT name, email FROM students;`} id="select-intro" />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                 <strong className="text-[#FF9500]">INSERT</strong> - Add new data
                 <CodeBlock code={`INSERT INTO students (name, email) VALUES ('John', 'john@email.com');`} id="insert-intro" />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                 <strong className="text-[#FF9500]">UPDATE</strong> - Modify existing data
                 <CodeBlock code={`UPDATE students SET email = 'newemail@gmail.com' WHERE name = 'John';`} id="update-intro" />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                 <strong className="text-[#FF9500]">DELETE</strong> - Remove data
                 <CodeBlock code={`DELETE FROM students WHERE name = 'John';`} id="delete-intro" />
               </div>
@@ -302,8 +302,8 @@ const SqlTutorial = () => {
               <strong>Most common type.</strong> Data is organized in tables (like Excel spreadsheets) connected by relationships.
             </p>
 
-            <div className="bg-[#1E293B] p-4 rounded-lg border border-cyan-400/30 mb-4">
-              <p className="text-muted-foreground text-sm"><strong>Examples:</strong> MySQL, PostgreSQL, SQL Server, Oracle, MariaDB</p>
+            <div className="bg-[#1E293B] p-4 rounded-lg border border-cyan-400/30 mb-4 text-slate-200">
+              <p className="text-sm"><strong className="text-white">Examples:</strong> MySQL, PostgreSQL, SQL Server, Oracle, MariaDB</p>
             </div>
 
             <h4 className="text-lg font-bold mb-3">Example: Simple Student Table</h4>
@@ -311,9 +311,9 @@ const SqlTutorial = () => {
               <table className="w-full text-sm text-muted-foreground">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="text-left p-2 bg-[#1e1e1e]">StudentID</th>
-                    <th className="text-left p-2 bg-[#1e1e1e]">Name</th>
-                    <th className="text-left p-2 bg-[#1e1e1e]">Email</th>
+                    <th className="text-left p-2 bg-[#1e1e1e] text-slate-200">StudentID</th>
+                    <th className="text-left p-2 bg-[#1e1e1e] text-slate-200">Name</th>
+                    <th className="text-left p-2 bg-[#1e1e1e] text-slate-200">Email</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -338,8 +338,8 @@ const SqlTutorial = () => {
               <strong>Newer approach.</strong> Data doesn't need to be in tables. Good for complex, unstructured data like images, videos, or documents.
             </p>
 
-            <div className="bg-[#1E293B] p-4 rounded-lg border border-cyan-400/30">
-              <p className="text-muted-foreground text-sm"><strong>Examples:</strong> MongoDB, CouchDB, Redis, Firebase</p>
+            <div className="bg-[#1E293B] p-4 rounded-lg border border-cyan-400/30 text-slate-200">
+              <p className="text-sm"><strong className="text-white">Examples:</strong> MongoDB, CouchDB, Redis, Firebase</p>
             </div>
 
             <p className="text-muted-foreground mt-4"><strong>For beginners:</strong> Focus on relational databases first. They're more common and easier to understand.</p>
@@ -360,9 +360,9 @@ const SqlTutorial = () => {
               <table className="w-full text-sm text-muted-foreground">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="text-left p-3 bg-[#1e1e1e]">ID (Column)</th>
-                    <th className="text-left p-3 bg-[#1e1e1e]">Name</th>
-                    <th className="text-left p-3 bg-[#1e1e1e]">Age</th>
+                    <th className="text-left p-3 bg-[#1e1e1e] text-slate-200">ID (Column)</th>
+                    <th className="text-left p-3 bg-[#1e1e1e] text-slate-200">Name</th>
+                    <th className="text-left p-3 bg-[#1e1e1e] text-slate-200">Age</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -419,24 +419,24 @@ const SqlTutorial = () => {
             <p className="text-muted-foreground mb-4">Rules to ensure data quality:</p>
 
             <div className="space-y-4">
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                 <strong className="text-cyan-400">NOT NULL</strong> - Value must be provided
-                <p className="text-muted-foreground text-sm mt-2">Every student must have a name</p>
+                <p className="text-slate-300 text-sm mt-2">Every student must have a name</p>
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                 <strong className="text-cyan-400">UNIQUE</strong> - No duplicate values
-                <p className="text-muted-foreground text-sm mt-2">Each email must be unique, no two students same email</p>
+                <p className="text-slate-300 text-sm mt-2">Each email must be unique, no two students same email</p>
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                 <strong className="text-cyan-400">DEFAULT</strong> - Automatically set if not provided
-                <p className="text-muted-foreground text-sm mt-2">If no creation date given, use today's date</p>
+                <p className="text-slate-300 text-sm mt-2">If no creation date given, use today's date</p>
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                 <strong className="text-cyan-400">CHECK</strong> - Value must meet a condition
-                <p className="text-muted-foreground text-sm mt-2">Age must be between 5 and 100</p>
+                <p className="text-slate-300 text-sm mt-2">Age must be between 5 and 100</p>
               </div>
             </div>
           </div>
@@ -457,7 +457,7 @@ const SqlTutorial = () => {
               id="create-db" 
             />
 
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30">
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30">
               📌 <strong>Naming tip:</strong> Use descriptive names with underscores. Good: <code className="bg-[#FFFDF8] px-2 py-1">school_db</code>, Bad: <code className="bg-[#FFFDF8] px-2 py-1">db1</code>
             </p>
           </div>
@@ -473,7 +473,7 @@ const SqlTutorial = () => {
               id="use-db" 
             />
 
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-yellow-400/30">
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-yellow-400/30">
               ⚠️ <strong>Important:</strong> Always run <code className="bg-[#FFFDF8] px-2 py-1">USE database_name;</code> before creating tables!
             </p>
           </div>
@@ -506,31 +506,31 @@ const SqlTutorial = () => {
             <h3 className="text-2xl font-bold mb-4">Common Data Types</h3>
 
             <div className="space-y-4">
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                 <strong className="text-[#FF9500]">INT</strong> - Whole numbers
                 <CodeBlock code={`Age INT,
 Quantity INT`} id="int-type" />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                 <strong className="text-[#FF9500]">VARCHAR(size)</strong> - Text of variable length
                 <CodeBlock code={`Name VARCHAR(100),
 Email VARCHAR(100)`} id="varchar-type" />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                 <strong className="text-[#FF9500]">DATE</strong> - Date values
                 <CodeBlock code={`BirthDate DATE,
 JoinDate DATE`} id="date-type" />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                 <strong className="text-[#FF9500]">FLOAT / DECIMAL</strong> - Decimal numbers
                 <CodeBlock code={`GPA FLOAT,
 Price DECIMAL(10, 2)`} id="float-type" />
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200">
                 <strong className="text-[#FF9500]">BOOLEAN</strong> - True or False
                 <CodeBlock code={`IsActive BOOLEAN,
 IsGraduated BOOLEAN`} id="boolean-type" />
@@ -556,7 +556,7 @@ CREATE TABLE students (
               id="complete-table-example" 
             />
 
-            <p className="text-muted-foreground mt-6 p-4 bg-[#1E293B] rounded-lg border border-border">
+            <p className="text-slate-200 mt-6 p-4 bg-[#1E293B] rounded-lg border border-border">
               <strong>Explanation:</strong><br/>
               • <code className="bg-[#FFFDF8] px-1">AUTO_INCREMENT</code> - ID increases automatically<br/>
               • <code className="bg-[#FFFDF8] px-1">NOT NULL</code> - Must have a value<br/>
@@ -583,7 +583,7 @@ VALUES ('Alice Johnson', 'alice@email.com', 20, 3.8);`}
               id="insert-single" 
             />
 
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
               Note: We don't specify StudentID because it's AUTO_INCREMENT. Also, JoinDate and IsActive use defaults.
             </p>
           </div>
@@ -660,7 +660,7 @@ VALUES
               id="select-where" 
             />
 
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
               <strong>More WHERE examples:</strong><br/>
               • <code className="bg-[#FFFDF8] px-1">WHERE Age = 20</code> - Exact match<br/>
               • <code className="bg-[#FFFDF8] px-1">WHERE Age &gt;= 20</code> - Greater than or equal<br/>
@@ -735,7 +735,7 @@ WHERE Name = 'Alice';`}
               id="update-example" 
             />
 
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-yellow-400/30">
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-yellow-400/30">
               ⚠️ <strong>CRITICAL:</strong> Always use WHERE to specify which rows to update! Without WHERE, you update ALL rows!
             </p>
           </div>
@@ -765,7 +765,7 @@ WHERE Name = 'Alice';`}
               id="delete-example" 
             />
 
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-red-400/30">
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-red-400/30">
               🚨 <strong>DANGEROUS:</strong> DELETE without WHERE removes ALL rows! This is the #1 mistake beginners make!
             </p>
           </div>
@@ -899,7 +899,7 @@ INNER JOIN courses ON enrollments.CourseID = courses.CourseID;`}
               id="inner-join-example" 
             />
 
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
               Only students who actually enrolled appear in results. Students with no enrollments don't show up.
             </p>
           </div>
@@ -918,7 +918,7 @@ LEFT JOIN courses ON enrollments.CourseID = courses.CourseID;`}
               id="left-join-example" 
             />
 
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
               All students appear, even if they haven't enrolled in any course (course shows as NULL).
             </p>
           </div>
@@ -960,7 +960,7 @@ LEFT JOIN courses ON enrollments.CourseID = courses.CourseID;`}
               id="create-index" 
             />
 
-            <p className="text-muted-foreground mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
+            <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
               Now searches on Email are very fast!
             </p>
           </div>
@@ -1331,7 +1331,7 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
                 4. How do you check for NULL values?
               </summary>
               <p className="text-muted-foreground text-sm">
-                Use <code className="bg-[#1e1e1e] px-2 py-1 rounded">IS NULL</code> or <code className="bg-[#1e1e1e] px-2 py-1 rounded">IS NOT NULL</code>. Never use = NULL.
+                Use <code className="bg-[#1e1e1e] px-2 py-1 rounded text-slate-200">IS NULL</code> or <code className="bg-[#1e1e1e] px-2 py-1 rounded text-slate-200">IS NOT NULL</code>. Never use = NULL.
               </p>
             </details>
 

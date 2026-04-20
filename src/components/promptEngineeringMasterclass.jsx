@@ -92,7 +92,7 @@ const PromptEngineeringMasterclass = () => {
     return (
       <div className="bg-[#1e1e1e] rounded-lg border border-border my-4">
         <div className="flex justify-between items-center px-4 py-2 border-b border-border">
-          <span className="text-xs text-muted-foreground">{language}</span>
+          <span className="text-xs text-slate-400">{language}</span>
           <button
             onClick={copyToClipboard}
             className="flex items-center gap-2 px-3 py-1 bg-[#FF9500] hover:bg-[#FF9500]/80 rounded text-white text-xs transition-all"
@@ -232,19 +232,19 @@ const PromptEngineeringMasterclass = () => {
             <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">Why Prompt Engineering Matters</h3>
               <div className="space-y-4">
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30 text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-green-400">Quality Control</strong>
                   <p className="text-muted-foreground text-sm mt-2">Better prompts = better outputs. Small changes in wording can significantly impact results.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30 text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-green-400">Cost Efficiency</strong>
                   <p className="text-muted-foreground text-sm mt-2">Well-engineered prompts reduce the need for API calls and iterations, saving money.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30 text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-green-400">Speed</strong>
                   <p className="text-muted-foreground text-sm mt-2">Getting the right answer on the first try is faster than iterating multiple times.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30 text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-green-400">Reliability</strong>
                   <p className="text-muted-foreground text-sm mt-2">Professional prompt engineering ensures consistent, predictable results for production systems.</p>
                 </div>
@@ -288,19 +288,19 @@ const PromptEngineeringMasterclass = () => {
                 LLMs are deep learning models built on Transformer architecture. They process language by predicting the probability of the next token (word fragment) based on all preceding tokens.
               </p>
               <div className="space-y-4">
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-[#FF9500]">Token</strong>
                   <p className="text-muted-foreground text-sm mt-2">Small units of text (roughly 1 token ≈ 4 characters). "Hello world" = ~3 tokens.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-[#FF9500]">Embedding</strong>
                   <p className="text-muted-foreground text-sm mt-2">Each token is converted to a vector (list of numbers) representing its meaning in context.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-[#FF9500]">Attention Mechanism</strong>
                   <p className="text-muted-foreground text-sm mt-2">The model weighs the importance of different tokens when predicting the next one. "The cat sat on the mat" - 'mat' depends more on 'cat' and 'sat' than 'the'.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-[#FF9500]">Probability Distribution</strong>
                   <p className="text-muted-foreground text-sm mt-2">The model outputs probabilities for thousands of possible next tokens. Temperature controls randomness (0 = deterministic, 1 = creative).</p>
                 </div>
@@ -421,27 +421,27 @@ Input: "Banana"\nOutput: ?`}
               <h3 className="text-2xl font-bold mb-4">The CRISPR Framework</h3>
               <p className="text-muted-foreground mb-4">A proven structure for effective prompts:</p>
               <div className="space-y-4">
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40 text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-[#FF9500]">C - Context</strong>
                   <p className="text-muted-foreground text-sm mt-2">Provide background information. "You are a marketing expert with 10 years of experience..."</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40 text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-[#FF9500]">R - Role</strong>
                   <p className="text-muted-foreground text-sm mt-2">Specify what role the model should take. "Act as a technical writer..."</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40 text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-[#FF9500]">I - Input</strong>
                   <p className="text-muted-foreground text-sm mt-2">Provide the material to work with. "Here is the product: [details]"</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40 text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-[#FF9500]">S - Steps</strong>
                   <p className="text-muted-foreground text-sm mt-2">Break down what you want. "First analyze, then create, finally summarize"</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40 text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-[#FF9500]">P - Process</strong>
                   <p className="text-muted-foreground text-sm mt-2">Specify output format. "Return as JSON, bullet points, or essay format"</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-[#FFB347]/40 text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-[#FF9500]">R - Review</strong>
                   <p className="text-muted-foreground text-sm mt-2">Ask for quality checks. "Check for accuracy and tone before responding"</p>
                 </div>
@@ -555,22 +555,22 @@ Focus on business value and implementability.`}
             </div>
 
             <div className="space-y-4">
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                 <strong className="text-cyan-400">Software Engineer Role</strong>
                 <p className="text-muted-foreground text-sm mt-2">"You are a senior software engineer with 15 years of backend development experience..." - Gets technical, architecture-focused responses</p>
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                 <strong className="text-cyan-400">Teacher Role</strong>
                 <p className="text-muted-foreground text-sm mt-2">"You are an experienced high school teacher..." - Gets simplified, educational responses with examples</p>
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                 <strong className="text-cyan-400">Project Manager Role</strong>
                 <p className="text-muted-foreground text-sm mt-2">"You are a project manager at a Fortune 500 company..." - Gets business-focused, stakeholder-aware responses</p>
               </div>
 
-              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border">
+              <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border text-slate-200 [&_p]:!text-slate-300">
                 <strong className="text-cyan-400">Creative Writer Role</strong>
                 <p className="text-muted-foreground text-sm mt-2">"You are a bestselling fiction author..." - Gets creative, narrative-driven responses</p>
               </div>
@@ -584,23 +584,23 @@ Focus on business value and implementability.`}
             <div className="bg-white border border-border rounded-xl p-8 mb-8">
               <h3 className="text-2xl font-bold mb-4">How to Evaluate Prompt Quality</h3>
               <div className="space-y-4">
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30 text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-green-400 flex items-center gap-1"><Check size={16} /> Accuracy</strong>
                   <p className="text-muted-foreground text-sm mt-2">Is the output factually correct? Verify against known sources.</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30 text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-green-400 flex items-center gap-1"><Check size={16} /> Relevance</strong>
                   <p className="text-muted-foreground text-sm mt-2">Does it address your specific need? No unnecessary info?</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30 text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-green-400 flex items-center gap-1"><Check size={16} /> Completeness</strong>
                   <p className="text-muted-foreground text-sm mt-2">Are all aspects of your request covered?</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30 text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-green-400 flex items-center gap-1"><Check size={16} /> Consistency</strong>
                   <p className="text-muted-foreground text-sm mt-2">Does it produce similar quality repeatedly?</p>
                 </div>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-green-400/30 text-slate-200 [&_p]:!text-slate-300">
                   <strong className="text-green-400 flex items-center gap-1"><Check size={16} /> Tone</strong>
                   <p className="text-muted-foreground text-sm mt-2">Does it match the intended audience and context?</p>
                 </div>
@@ -765,7 +765,7 @@ Please provide:
                 <p className="text-muted-foreground mb-4">
                   <strong>Goal:</strong> Create a prompt that generates personalized LinkedIn content consistently
                 </p>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border mb-4">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border mb-4 text-slate-200 [&_p]:!text-slate-300">
                   <p className="text-muted-foreground text-sm">
                     Create a prompt that generates LinkedIn posts about your niche (e.g., AI, marketing, design). The prompt should ensure consistent tone, mention industry insights, include engagement-driving elements, and be original each time.
                   </p>
@@ -784,7 +784,7 @@ Please provide:
                 <p className="text-muted-foreground mb-4">
                   <strong>Goal:</strong> Create a prompt that turns complex topics into step-by-step tutorials
                 </p>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border mb-4">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border mb-4 text-slate-200 [&_p]:!text-slate-300">
                   <p className="text-muted-foreground text-sm">
                     Create a prompt that transforms a complex concept (e.g., "Docker containers") into a beginner-friendly tutorial with steps, examples, and a practice exercise.
                   </p>
@@ -803,7 +803,7 @@ Please provide:
                 <p className="text-muted-foreground mb-4">
                   <strong>Goal:</strong> Create a prompt that generates helpful, consistent customer support responses
                 </p>
-                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border mb-4">
+                <div className="bg-[#1e1e1e] p-4 rounded-lg border border-border mb-4 text-slate-200 [&_p]:!text-slate-300">
                   <p className="text-muted-foreground text-sm">
                     Create a prompt that takes a customer question and generates a support response that's helpful, on-brand, offers solutions, and includes follow-up options.
                   </p>
