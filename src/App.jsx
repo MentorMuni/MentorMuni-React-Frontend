@@ -7,6 +7,7 @@ import { goToStartAssessment } from "./utils/startAssessmentNavigation";
 import Navbar from "./components/navbar";
 import HomePage from "./components/homepage";
 import MuniBot from "./components/MuniBot";
+import WelcomeLaunchOverlay from "./components/WelcomeLaunchOverlay";
 import StickyConversionBar from "./components/StickyConversionBar";
 import "./index.css";
 
@@ -210,6 +211,7 @@ function App() {
           </Suspense>
         </AnimatedMain>
         <StickyConversionBar />
+        <WelcomeLaunchOverlay />
         <MuniBot />
       </div>
     </Router>

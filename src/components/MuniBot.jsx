@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Send, Sparkles } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { getMuniBotReply } from '../utils/munibotEngine';
 
 const LOGO_SRC = `${import.meta.env.BASE_URL}mentormuni-logo.png`;
@@ -104,6 +104,7 @@ function MessageBubble({ text, isBot, isMarkdown }) {
 }
 
 export default function MuniBot() {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([{ text: GREETING, isBot: true, isMarkdown: true }]);
   const [input, setInput] = useState('');
@@ -141,6 +142,16 @@ export default function MuniBot() {
 
   const handleQuickQuestion = (q) => {
     sendMessage(q);
+  };
+
+  const goToReadiness = () => {
+    navigate('/start-assessment');
+    setIsOpen(false);
+  };
+
+  const goToContact = () => {
+    navigate('/contact');
+    setIsOpen(false);
   };
 
   return (
@@ -243,21 +254,21 @@ export default function MuniBot() {
             </div>
 
             <div className="flex gap-2 border-t border-border bg-white/90 px-3 py-2">
-              <Link
-                to="/start-assessment"
-                onClick={() => setIsOpen(false)}
+              <button
+                type="button"
+                onClick={goToReadiness}
                 className="flex flex-1 items-center justify-center gap-1 rounded-xl bg-[#FF9500] py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#E88600]"
               >
                 <Sparkles className="h-3.5 w-3.5" />
                 Readiness
-              </Link>
-              <Link
-                to="/contact"
-                onClick={() => setIsOpen(false)}
+              </button>
+              <button
+                type="button"
+                onClick={goToContact}
                 className="flex flex-1 items-center justify-center gap-1 rounded-xl border border-border bg-[#FFFDF8] py-2.5 text-xs font-bold text-muted-foreground transition hover:border-[#FFB347]"
               >
                 Contact
-              </Link>
+              </button>
             </div>
 
             <div className="flex gap-2 bg-white px-3 pb-3 pt-0">

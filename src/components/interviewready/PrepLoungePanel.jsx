@@ -533,7 +533,7 @@ function ReadyGateModal({ open, onClose, onConfirm, isProfessional }) {
     <AnimatePresence>
       {open && (
         <motion.div
-          className="fixed inset-0 z-[100] flex items-end justify-center p-4 sm:items-center"
+          className="fixed inset-0 z-[140] flex items-end justify-center px-4 pb-4 pt-[calc(env(safe-area-inset-top)+5.5rem)] sm:items-center sm:pt-6"
           role="dialog"
           aria-modal="true"
           aria-labelledby="prep-ready-title"
@@ -554,7 +554,7 @@ function ReadyGateModal({ open, onClose, onConfirm, isProfessional }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={reduceMotion ? undefined : { opacity: 0, y: 16, scale: 0.98 }}
             transition={{ type: 'spring', stiffness: 420, damping: 34 }}
-            className="relative z-10 w-full max-w-lg overflow-hidden rounded-[1.75rem] border border-orange-200/90 bg-white shadow-[0_24px_80px_-20px_rgba(0,0,0,0.35)]"
+            className="relative z-10 w-full max-w-lg overflow-hidden rounded-[1.75rem] border border-orange-200/90 bg-white shadow-[0_24px_80px_-20px_rgba(0,0,0,0.35)] max-h-[calc(100vh-6.5rem)] sm:max-h-[min(84vh,720px)]"
           >
             <button
               type="button"
