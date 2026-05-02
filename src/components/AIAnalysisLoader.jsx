@@ -53,7 +53,7 @@ export default function AIAnalysisLoader({ onComplete, duration = 4000 }) {
   }, [currentStep, stepDuration, totalSteps, onComplete]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-6 bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE]">
+    <div className="min-h-screen mm-site-theme flex items-center justify-center px-6">
       {/* Animated background blobs */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-1/4 -left-32 w-96 h-96 bg-[#FF9500]/10 rounded-full blur-3xl animate-pulse" />

@@ -96,7 +96,7 @@ const CareerDiagnosticJourney = () => {
   };
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-b from-white via-[#FFF8EE]/20 to-white">
+    <section className="py-20 px-6 bg-gradient-to-b from-white via-secondary/20 to-white">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-20">
@@ -274,7 +274,7 @@ const CareerDiagnosticJourney = () => {
             <p className="text-lg text-indigo-100 mb-2 max-w-2xl mx-auto">
               Start your AI-powered career diagnostic journey today.
             </p>
-            <p className="text-sm text-[#CC7000] mb-8 max-w-2xl mx-auto">
+            <p className="text-sm text-white/90 mb-8 max-w-2xl mx-auto">
               Get 3 free analyses. No credit card required. Takes just 15 minutes to complete.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -293,7 +293,7 @@ const CareerDiagnosticJourney = () => {
                 <ArrowRight className="w-5 h-5" />
               </a>
             </div>
-            <p className="text-xs text-[#CC7000] mt-6">
+            <p className="text-xs text-white/80 mt-6">
               ✓ 1,350+ students already diagnosed • ✓ 85% improvement rate • ✓ Mentor-backed recommendations
             </p>
           </div>

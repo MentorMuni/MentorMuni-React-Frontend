@@ -48,8 +48,8 @@ export default function WelcomeLaunchOverlay() {
     {
       label: 'Mock Interviews',
       style:
-        'border-[#FED7AA] bg-gradient-to-r from-[#FFF3E8] to-[#FFE8D2] text-[#9A3412] shadow-[0_8px_24px_-12px_rgba(234,88,12,0.55)]',
-      dot: 'bg-[#F97316]',
+        'border-[#7dd3fc] bg-gradient-to-r from-[#e0f0fa] to-[#bae6fd] text-[#0e5e85] shadow-[0_8px_24px_-12px_rgba(26,143,196,0.55)]',
+      dot: 'bg-[#1A8FC4]',
     },
     {
       label: 'AI-driven Interview Prep (HR + Technical)',
@@ -72,7 +72,7 @@ export default function WelcomeLaunchOverlay() {
   ];
 
   const testTracks = [
-    { label: 'HR + Tech', style: 'border-[#FFE3B5] bg-[#FFF7ED] text-[#C2410C]' },
+    { label: 'HR + Tech', style: 'border-[#bae6fd] bg-[#FFF7ED] text-[#C2410C]' },
     { label: 'Aptitude', style: 'border-[#C7D2FE] bg-[#EEF2FF] text-[#3730A3]' },
     { label: 'ATS Resume', style: 'border-[#BBF7D0] bg-[#ECFDF3] text-[#166534]' },
   ];
@@ -127,10 +127,10 @@ export default function WelcomeLaunchOverlay() {
                   <img
                     src={`${import.meta.env.BASE_URL}mentormuni-logo.png`}
                     alt="MentorMuni logo"
-                    className="h-8 w-8 rounded-full border border-[#FFE3B5] object-cover sm:h-9 sm:w-9"
+                    className="h-8 w-8 rounded-full border border-[#bae6fd] object-cover sm:h-9 sm:w-9"
                   />
                   <div>
-                    <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#B45309]">MentorMuni</p>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#0e5e85]">MentorMuni</p>
                     <p className="text-xs text-muted-foreground">Placement Readiness Platform</p>
                   </div>
                 </div>
@@ -140,7 +140,7 @@ export default function WelcomeLaunchOverlay() {
                   <br />
                   With AI + Mentor.
                 </h2>
-                <p className="mt-2 text-sm font-semibold text-[#B45309] sm:mt-3 sm:text-base">
+                <p className="mt-2 text-sm font-semibold text-[#0e5e85] sm:mt-3 sm:text-base">
                   5-min reality check to clear action plan.
                 </p>
 
@@ -175,7 +175,7 @@ export default function WelcomeLaunchOverlay() {
                   <Link
                     to="/start-assessment"
                     onClick={closeOverlay}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FF9500] to-[#EA580C] px-4 py-2.5 text-sm font-bold text-white"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1A8FC4] to-[#15799F] px-4 py-2.5 text-sm font-bold text-white"
                   >
                     <Sparkles className="h-4 w-4" />
                     Take Free Reality Check
@@ -201,19 +201,19 @@ export default function WelcomeLaunchOverlay() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-transparent" aria-hidden />
                 <motion.div
-                  className="absolute left-3 top-3 z-20 rounded-xl border border-orange-200/60 bg-black/45 px-3 py-2 text-white backdrop-blur-sm sm:left-4 sm:top-4"
+                  className="absolute left-3 top-3 z-20 rounded-xl border border-sky-200/60 bg-black/45 px-3 py-2 text-white backdrop-blur-sm sm:left-4 sm:top-4"
                   animate={{ y: [0, -3, 0] }}
                   transition={{ duration: 2.3, repeat: Infinity, ease: 'easeInOut' }}
                 >
-                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-orange-200">Live prep stack</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.18em] text-sky-200">Live prep stack</p>
                   <p className="mt-1 text-xs font-semibold">Mock + HR + Technical + Mentor</p>
                 </motion.div>
                 <div className="absolute left-3 right-3 top-16 rounded-xl border border-white/25 bg-black/45 p-3 backdrop-blur-sm sm:left-4 sm:right-4 sm:top-20">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-orange-200">For you if you want</p>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-sky-200">For you if you want</p>
                   <p className="mt-1 text-xs font-semibold text-white sm:text-sm">Placement confidence + real interview practice.</p>
                 </div>
-                <div className="absolute left-3 right-3 top-36 z-20 rounded-xl border border-[#FCDDB3] bg-gradient-to-br from-[#FFF8EE] to-white p-2.5 shadow-[0_12px_28px_-14px_rgba(249,115,22,0.55)] sm:left-4 sm:right-4 sm:p-3">
-                  <p className="mb-2 text-[10px] font-black uppercase tracking-[0.18em] text-[#9A3412]">Assessment tracks</p>
+                <div className="absolute left-3 right-3 top-36 z-20 rounded-xl border border-[#FCDDB3] bg-gradient-to-br from-[#eef6fb] to-white p-2.5 shadow-[0_12px_28px_-14px_rgba(26,143,196,0.55)] sm:left-4 sm:right-4 sm:p-3">
+                  <p className="mb-2 text-[10px] font-black uppercase tracking-[0.18em] text-[#0e5e85]">Assessment tracks</p>
                   <div className="grid grid-cols-3 gap-1.5 text-center">
                     {testTracks.map((item) => (
                       <div key={item.label} className={`rounded-lg border px-1.5 py-1.5 shadow-sm ${item.style}`}>

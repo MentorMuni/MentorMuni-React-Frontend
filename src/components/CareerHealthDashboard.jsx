@@ -110,7 +110,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
   const overallColor = getScoreColor(overallScore);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-6">
+    <div className="min-h-screen mm-site-theme py-12 px-6">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-12">

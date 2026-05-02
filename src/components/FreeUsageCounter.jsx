@@ -63,9 +63,9 @@ export default function FreeUsageCounter({ toolName, onLimitReached, compact = f
   if (compact) {
     // Compact badge version for headers
     return (
-      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FF9500]/20 border border-[#FF9500]/35 text-sm font-medium">
-        <Zap size={14} className="text-[#FF9500]" />
-        <span className="text-slate-300">
+      <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-warning-bg border border-cta/35 text-sm font-medium text-foreground">
+        <Zap size={14} className="text-cta" />
+        <span>
           {attemptsRemaining} / {MAX_ATTEMPTS} free
         </span>
         {isLimitReached && (
@@ -81,25 +81,25 @@ export default function FreeUsageCounter({ toolName, onLimitReached, compact = f
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Zap size={16} className={isLimitReached ? 'text-red-400' : 'text-[#FF9500]'} />
-          <p className="text-sm font-semibold text-slate-300">
+          <Zap size={16} className={isLimitReached ? 'text-red-600' : 'text-cta'} />
+          <p className="text-sm font-semibold text-foreground">
             Free Attempts
           </p>
         </div>
         <p className={`text-sm font-bold ${
-          isLimitReached ? 'text-red-400' : 'text-[#CC7000]'
+          isLimitReached ? 'text-red-600' : 'text-cta'
         }`}>
           {attemptsRemaining} / {MAX_ATTEMPTS}
         </p>
       </div>
 
       {/* Progress bar */}
-      <div className="relative h-2 bg-slate-700/50 rounded-full overflow-hidden backdrop-blur-sm border border-slate-600/30">
+      <div className="relative h-2 rounded-full overflow-hidden border border-border bg-secondary">
         <div
           className={`h-full rounded-full transition-all duration-300 ease-out ${
             isLimitReached
               ? 'bg-gradient-to-r from-red-500 to-red-600'
-              : 'bg-gradient-to-r from-[#FF9500] to-cyan-500'
+              : 'bg-gradient-to-r from-cta to-cyan-500'
           }`}
           style={{ width: `${usagePercentage}%` }}
         />
@@ -112,8 +112,8 @@ export default function FreeUsageCounter({ toolName, onLimitReached, compact = f
             key={index}
             className={`flex-1 h-2 rounded-sm transition-all ${
               index < attemptsUsed
-                ? 'bg-[#FF9500]'
-                : 'bg-slate-700/40 border border-slate-600/30'
+                ? 'bg-cta'
+                : 'bg-muted border border-border'
             }`}
           />
         ))}
@@ -122,8 +122,8 @@ export default function FreeUsageCounter({ toolName, onLimitReached, compact = f
       {/* Status message */}
       {isLimitReached && (
         <div className="flex items-start gap-2 mt-4 p-3 bg-red-500/10 border border-red-500/30 rounded-lg">
-          <AlertCircle size={16} className="text-red-400 flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-red-300">
+          <AlertCircle size={16} className="text-red-600 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-red-800">
             Free limit reached. Upgrade to continue analyzing.
           </p>
         </div>
@@ -132,8 +132,8 @@ export default function FreeUsageCounter({ toolName, onLimitReached, compact = f
       {/* Remaining attempts message */}
       {!isLimitReached && attemptsRemaining <= 1 && (
         <div className="flex items-start gap-2 mt-4 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg">
-          <AlertCircle size={16} className="text-amber-400 flex-shrink-0 mt-0.5" />
-          <p className="text-xs text-amber-300">
+          <AlertCircle size={16} className="text-amber-700 flex-shrink-0 mt-0.5" />
+          <p className="text-xs text-amber-900">
             {attemptsRemaining} attempt left before upgrade
           </p>
         </div>

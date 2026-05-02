@@ -72,31 +72,13 @@ const AboutUs = () => {
   const reduceMotion = useReducedMotion();
 
   return (
-    <div className="min-h-screen bg-background text-muted-foreground">
+    <div className="min-h-screen mm-site-theme overflow-x-hidden text-muted-foreground">
       {/* —— Hero —— */}
       <section
-        className="relative overflow-hidden border-b border-border"
+        className="mm-marketing-hero-backdrop border-b border-border"
         aria-labelledby="about-hero-heading"
       >
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#f8fbff] via-white to-[#fff8ee]" aria-hidden />
-        <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_90%_60%_at_70%_-20%,rgba(255,149,0,0.16),transparent)]"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_5%_55%,rgba(34,211,238,0.1),transparent)]"
-          aria-hidden
-        />
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.4]"
-          style={{
-            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(180,120,60,0.06) 1px, transparent 0)`,
-            backgroundSize: '32px 32px',
-          }}
-          aria-hidden
-        />
-
-        <div className="relative mx-auto max-w-6xl px-5 pb-16 pt-14 sm:px-6 sm:pb-20 sm:pt-16 lg:px-8 lg:pb-24 lg:pt-20">
+        <div className="relative z-10 mx-auto max-w-6xl px-5 pb-16 pt-14 sm:px-6 sm:pb-20 sm:pt-16 lg:px-8 lg:pb-24 lg:pt-20">
           <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between lg:gap-12">
             <div className="min-w-0 flex-1">
               <motion.div
@@ -172,14 +154,14 @@ const AboutUs = () => {
               >
                 <Link
                   to="/how-it-works"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-[#FFB347] hover:bg-[#FFF8EE]"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-[#FFB347] hover:bg-secondary"
                 >
                   How it works
                   <ChevronRight className="h-4 w-4 opacity-70" aria-hidden />
                 </Link>
                 <Link
                   to="/mentors"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-[#FFB347] hover:bg-[#FFF8EE]"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-[#FFB347] hover:bg-secondary"
                 >
                   Mentors
                   <ChevronRight className="h-4 w-4 opacity-70" aria-hidden />
@@ -200,7 +182,7 @@ const AboutUs = () => {
               transition={{ duration: 0.55, delay: reduceMotion ? 0 : 0.12, ease: easeOut }}
             >
               <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-[0_12px_40px_-12px_rgba(15,23,42,0.12)]">
-                <div className="border-b border-border bg-gradient-to-br from-[#FFF8EE] via-white to-cyan-50/50 px-5 py-4">
+                <div className="border-b border-border bg-gradient-to-br from-secondary via-white to-cyan-50/50 px-5 py-4">
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#EA580C]">At a glance</p>
                 </div>
                 <ul className="divide-y divide-border px-5 py-2">
@@ -215,7 +197,7 @@ const AboutUs = () => {
                     </li>
                   ))}
                 </ul>
-                <div className="flex items-start gap-2 border-t border-border bg-[#FFFDF8] px-5 py-4">
+                <div className="flex items-start gap-2 border-t border-border bg-background px-5 py-4">
                   <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#FF9500]" aria-hidden />
                   <p className="text-xs leading-relaxed text-muted-foreground">
                     This page is our handshake: who we are, how we think, and how to work with us.
@@ -263,11 +245,11 @@ const AboutUs = () => {
       </section>
 
       {/* —— Pull quote + story —— */}
-      <section className="border-t border-border bg-gradient-to-b from-[#FFFDF8] to-white px-5 py-16 sm:px-6 lg:py-20">
+      <section className="border-t border-border bg-gradient-to-b from-background to-white px-5 py-16 sm:px-6 lg:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[1fr_minmax(0,1.15fr)] lg:gap-14 lg:items-start">
             <FadeUp>
-              <figure className="relative overflow-hidden rounded-2xl border border-[#FF9500]/25 bg-gradient-to-br from-[#FFF8EE] via-white to-cyan-50/30 p-8 shadow-[0_16px_48px_-16px_rgba(234,88,12,0.2)] md:p-10">
+              <figure className="relative overflow-hidden rounded-2xl border border-[#FF9500]/25 bg-gradient-to-br from-secondary via-white to-cyan-50/30 p-8 shadow-[0_16px_48px_-16px_rgba(234,88,12,0.2)] md:p-10">
                 <Quote className="mb-4 h-8 w-8 text-[#FF9500]/80" aria-hidden />
                 <blockquote className="text-xl font-semibold leading-snug text-foreground md:text-2xl md:leading-tight">
                   {ABOUT_PULL_QUOTE}
@@ -357,7 +339,7 @@ const AboutUs = () => {
 
       {/* —— Pillars —— */}
       <section
-        className="border-t border-border bg-[#FFFDF8] px-5 py-14 sm:px-6 lg:py-16"
+        className="border-t border-border bg-background px-5 py-14 sm:px-6 lg:py-16"
         aria-labelledby="about-pillars-heading"
       >
         <div className="mx-auto max-w-6xl">

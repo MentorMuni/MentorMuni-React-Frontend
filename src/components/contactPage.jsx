@@ -325,11 +325,9 @@ const ContactPage = () => {
   }[audience];
 
   return (
-    <div className="min-h-screen bg-background text-muted-foreground">
-      <div className="relative overflow-hidden border-b border-border bg-gradient-to-b from-[#f8fbff] via-white to-[#fff8ee]">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_85%_55%_at_75%_-15%,rgba(255,149,0,0.14),transparent)]" aria-hidden />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_55%_45%_at_12%_45%,rgba(34,211,238,0.09),transparent)]" aria-hidden />
-        <div className="relative mx-auto max-w-5xl px-5 py-10 sm:px-6 sm:py-12 lg:px-8">
+    <div className="min-h-screen mm-site-theme overflow-x-hidden text-muted-foreground">
+      <section className="mm-marketing-hero-backdrop border-b border-border">
+        <div className="relative z-10 mx-auto max-w-5xl px-5 py-10 sm:px-6 sm:py-12 lg:px-8">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-200/80 bg-cyan-50/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-cyan-900">
@@ -380,7 +378,7 @@ const ContactPage = () => {
                       className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-3 py-2.5 text-sm font-semibold transition-all ${
                         active
                           ? 'bg-[#FF9500] text-white shadow-[0_4px_14px_rgba(255,149,0,0.35)]'
-                          : 'text-muted-foreground hover:bg-[#FFF8EE]'
+                          : 'text-muted-foreground hover:bg-secondary'
                       }`}
                     >
                       <Icon className="h-4 w-4 shrink-0 opacity-90" strokeWidth={1.75} aria-hidden />
@@ -394,7 +392,7 @@ const ContactPage = () => {
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
       <div className="mx-auto max-w-5xl px-5 py-12 sm:px-6 lg:px-8 lg:py-16">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)] lg:gap-14 xl:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
@@ -450,7 +448,7 @@ const ContactPage = () => {
 
           <FadeUp delay={0.04}>
             <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-[0_8px_32px_rgba(15,23,42,0.06)]">
-              <div className="border-b border-border bg-gradient-to-br from-[#FFF8EE] via-white to-cyan-50/40 px-6 py-4 sm:px-8">
+              <div className="border-b border-border bg-gradient-to-br from-secondary via-white to-cyan-50/40 px-6 py-4 sm:px-8">
                 <h2 className="text-lg font-bold tracking-tight text-foreground">{fc.title}</h2>
                 <p className="mt-1 text-sm leading-relaxed">{fc.description}</p>
               </div>
@@ -557,7 +555,7 @@ const ContactPage = () => {
                   <button
                     type="button"
                     onClick={handleReset}
-                    className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-border bg-white px-5 py-2.5 text-sm font-semibold text-foreground transition hover:border-[#FFB347] hover:bg-[#FFF8EE]"
+                    className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-border bg-white px-5 py-2.5 text-sm font-semibold text-foreground transition hover:border-[#FFB347] hover:bg-secondary"
                   >
                     <RotateCcw className="h-4 w-4" strokeWidth={2} aria-hidden />
                     Clear
@@ -568,7 +566,7 @@ const ContactPage = () => {
           </FadeUp>
         </div>
 
-        <FadeUp className="mt-16 rounded-2xl border border-border bg-[#FFFDF8] px-6 py-10 lg:mt-20 lg:px-10 lg:py-12">
+        <FadeUp className="mt-16 rounded-2xl border border-border bg-background px-6 py-10 lg:mt-20 lg:px-10 lg:py-12">
           <h2 className="text-lg font-bold tracking-tight text-foreground">Frequently asked questions</h2>
           <p className="mt-1 text-sm text-muted-foreground">For anything specific, use the form above.</p>
           <ul className="mt-8 divide-y divide-border border-t border-border">

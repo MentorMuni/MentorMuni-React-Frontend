@@ -61,14 +61,9 @@ const checklist = [
 
 const Colleges = () => {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-[#FFFDF8] text-muted-foreground">
-      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-        <div className="absolute -left-24 top-16 h-72 w-72 rounded-full bg-[#1A6FC4]/10 blur-3xl" />
-        <div className="absolute -right-20 top-40 h-80 w-80 rounded-full bg-[#FF9500]/12 blur-3xl" />
-        <div className="absolute bottom-0 left-1/2 h-72 w-[110%] -translate-x-1/2 rounded-[100%] bg-gradient-to-t from-[#E8F3FF]/40 to-transparent blur-2xl" />
-      </div>
-
-      <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-14 sm:px-6 sm:pt-16 md:pb-28">
+    <div className="min-h-screen mm-site-theme overflow-x-hidden text-muted-foreground">
+      <section className="mm-marketing-hero-backdrop border-b border-border">
+        <div className="relative z-10 mx-auto max-w-6xl px-5 pb-14 pt-14 sm:px-6 sm:pt-16 sm:pb-16">
         <motion.header
           className="mx-auto max-w-3xl text-center"
           initial={{ opacity: 0, y: 16 }}
@@ -105,16 +100,19 @@ const Colleges = () => {
             </Link>
             <Link
               to="/leadership-board"
-              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-white px-6 py-3.5 text-sm font-bold text-muted-foreground transition hover:border-[#FFB347] hover:bg-[#FFF8EE]"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-border bg-white px-6 py-3.5 text-sm font-bold text-muted-foreground transition hover:border-[#FFB347] hover:bg-secondary"
             >
               See the leadership board
               <Trophy className="h-4 w-4 text-[#FF9500]" />
             </Link>
           </div>
         </motion.header>
+        </div>
+      </section>
 
+      <div className="mx-auto max-w-6xl px-5 pb-20 pt-10 sm:px-6 md:pb-28">
         <motion.section
-          className="relative mx-auto mt-12 max-w-5xl"
+          className="relative mx-auto mt-2 max-w-5xl"
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.25 }}
@@ -122,7 +120,7 @@ const Colleges = () => {
         >
           <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#FF9500]/20 blur-2xl" aria-hidden />
           <div className="pointer-events-none absolute -bottom-6 -left-6 h-28 w-28 rounded-full bg-[#1A6FC4]/15 blur-2xl" aria-hidden />
-          <div className="relative overflow-hidden rounded-3xl border-2 border-[#FFB347]/80 bg-gradient-to-br from-[#FFF4E0] via-white to-[#E8F3FF]/50 p-6 shadow-[0_12px_40px_-12px_rgba(255,149,0,0.35),0_4px_24px_-8px_rgba(26,111,196,0.12)] sm:p-8 md:p-10">
+          <div className="relative overflow-hidden rounded-3xl border-2 border-[#FFB347]/80 bg-gradient-to-br from-warning-bg via-white to-sky-50/50 p-6 shadow-[0_12px_40px_-12px_rgba(255,149,0,0.35),0_4px_24px_-8px_rgba(26,111,196,0.12)] sm:p-8 md:p-10">
             <div
               className="absolute inset-0 opacity-[0.07]"
               style={{
@@ -333,7 +331,7 @@ const Colleges = () => {
         </section>
 
         <section className="mx-auto mt-16 grid max-w-5xl gap-8 md:grid-cols-2 md:items-center">
-          <div className="rounded-2xl border border-border bg-gradient-to-br from-white to-[#FFF8EE] p-6 sm:p-8">
+          <div className="rounded-2xl border border-border bg-gradient-to-br from-white to-secondary p-6 sm:p-8">
             <Mic2 className="mb-3 h-8 w-8 text-[#FF9500]" />
             <h2 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">What Phase 1 focuses on</h2>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">

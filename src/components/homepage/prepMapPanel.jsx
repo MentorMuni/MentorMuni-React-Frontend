@@ -96,12 +96,12 @@ export function AnimatedPrepMapPanel() {
   return (
     <div ref={ref} className="relative">
       <div
-        className="pointer-events-none absolute -inset-[3px] rounded-[1.45rem] bg-gradient-to-br from-[#FF9500]/45 via-fuchsia-400/15 to-cyan-400/35 opacity-70 blur-[2px]"
+        className="pointer-events-none absolute -inset-[3px] rounded-[1.45rem] bg-gradient-to-br from-[#1A8FC4]/45 via-fuchsia-400/15 to-cyan-400/35 opacity-70 blur-[2px]"
         aria-hidden
       />
       <motion.div
         aria-hidden
-        className="absolute -inset-1 rounded-[1.35rem] bg-gradient-to-br from-[#FF9500]/35 via-fuchsia-500/15 to-cyan-500/20 opacity-50 blur-md"
+        className="absolute -inset-1 rounded-[1.35rem] bg-gradient-to-br from-[#1A8FC4]/35 via-fuchsia-500/15 to-cyan-500/20 opacity-50 blur-md"
         animate={
           inView
             ? { rotate: [0, 2, -1.5, 0], opacity: [0.4, 0.55, 0.45] }
@@ -109,9 +109,9 @@ export function AnimatedPrepMapPanel() {
         }
         transition={{ duration: 10, repeat: Infinity, ease: 'easeInOut' }}
       />
-      <div className="relative overflow-hidden rounded-3xl border border-white/90 bg-gradient-to-br from-[#FFFCF7] via-white to-[#F4FAFC] shadow-[0_12px_48px_-16px_rgba(255,149,0,0.18),0_4px_16px_-6px_rgba(15,23,42,0.06)] ring-1 ring-orange-100/40">
+      <div className="relative overflow-hidden rounded-3xl border border-white/90 bg-gradient-to-br from-[#f0f7ff] via-white to-[#F4FAFC] shadow-[0_12px_48px_-16px_rgba(26,143,196,0.18),0_4px_16px_-6px_rgba(15,23,42,0.06)] ring-1 ring-sky-100/40">
         <div
-          className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-gradient-to-br from-orange-300/25 to-transparent blur-3xl"
+          className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full bg-gradient-to-br from-sky-300/25 to-transparent blur-3xl"
           aria-hidden
         />
         <div
@@ -132,7 +132,7 @@ export function AnimatedPrepMapPanel() {
           <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
             <div className="flex min-w-0 items-center gap-3">
               <motion.span
-                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FF9500] to-[#EA580C] text-white shadow-[0_8px_24px_-6px_rgba(234,88,12,0.55)] ring-2 ring-white/50"
+                className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#1A8FC4] to-[#15799F] text-white shadow-[0_8px_24px_-6px_rgba(26,143,196,0.55)] ring-2 ring-white/50"
                 animate={inView ? { scale: [1, 1.04, 1] } : {}}
                 transition={{ duration: 2.8, repeat: Infinity, repeatDelay: 2 }}
               >
@@ -149,13 +149,13 @@ export function AnimatedPrepMapPanel() {
             </div>
           </div>
 
-          <div className="mb-4 flex flex-col items-center gap-5 rounded-2xl border border-neutral-200/90 bg-gradient-to-br from-white via-neutral-50/50 to-orange-50/15 p-4 shadow-[0_8px_30px_-18px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center sm:gap-8 sm:p-6">
+          <div className="mb-4 flex flex-col items-center gap-5 rounded-2xl border border-neutral-200/90 bg-gradient-to-br from-white via-neutral-50/50 to-sky-50/15 p-4 shadow-[0_8px_30px_-18px_rgba(0,0,0,0.06)] sm:flex-row sm:items-center sm:gap-8 sm:p-6">
             <div className="flex shrink-0 justify-center">
               <PrepMapReadinessScoreRing pct={PREP_MAP_ILLUSTRATIVE_SCORE} inView={inView} />
             </div>
             <div className="min-w-0 flex-1 text-center sm:text-left">
               <div className="mb-2 inline-flex items-center justify-center gap-1.5 rounded-full border border-neutral-200/90 bg-white px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:justify-start">
-                <Target size={12} className="text-[#FF9500]" strokeWidth={2.5} aria-hidden />
+                <Target size={12} className="text-[#1A8FC4]" strokeWidth={2.5} aria-hidden />
                 Interview readiness score
               </div>
               <p className="text-[11px] font-semibold text-muted-foreground">Example only — not your result</p>
@@ -195,12 +195,12 @@ export function AnimatedPrepMapPanel() {
             </div>
           </div>
 
-          <div className="mb-0 flex flex-col gap-3 rounded-xl border border-orange-200/90 bg-gradient-to-r from-amber-50 via-orange-50/80 to-amber-50/40 p-3 shadow-sm sm:flex-row sm:items-center sm:gap-4 sm:p-4">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FF9500] to-[#EA580C] text-white shadow-md">
+          <div className="mb-0 flex flex-col gap-3 rounded-xl border border-sky-200/90 bg-gradient-to-r from-sky-50 via-sky-50/80 to-sky-100/40 p-3 shadow-sm sm:flex-row sm:items-center sm:gap-4 sm:p-4">
+            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#1A8FC4] to-[#15799F] text-white shadow-md">
               <Gift className="h-5 w-5" strokeWidth={2} aria-hidden />
             </span>
             <div className="min-w-0 flex-1">
-              <p className="text-xs font-bold uppercase tracking-wide text-[#9A3412]">{READINESS_TEST_COUPON_CARD_HEADLINE}</p>
+              <p className="text-xs font-bold uppercase tracking-wide text-[#0e5e85]">{READINESS_TEST_COUPON_CARD_HEADLINE}</p>
               <p className="mt-1 text-sm leading-snug text-muted-foreground">{READINESS_TEST_COUPON_CARD_BODY}</p>
             </div>
             <button

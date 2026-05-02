@@ -52,11 +52,11 @@ function PageFallback() {
   return (
     <div className="min-h-[60vh] bg-background px-4 py-12">
       <div className="mx-auto max-w-2xl space-y-4">
-        <div className="h-9 w-2/3 max-w-md animate-pulse rounded-xl bg-[#F0ECE0]" />
-        <div className="h-4 w-full animate-pulse rounded-lg bg-[#F5F0E8]/90" />
-        <div className="h-4 w-5/6 animate-pulse rounded-lg bg-[#F5F0E8]/90" />
-        <div className="h-4 w-4/6 animate-pulse rounded-lg bg-[#F5F0E8]/80" />
-        <div className="mt-10 h-52 animate-pulse rounded-2xl bg-gradient-to-br from-[#FFF4E0]/90 via-[#FFFDF8] to-[#F0ECE0]/80" />
+        <div className="h-9 w-2/3 max-w-md animate-pulse rounded-xl bg-shell-1" />
+        <div className="h-4 w-full animate-pulse rounded-lg bg-shell-2" />
+        <div className="h-4 w-5/6 animate-pulse rounded-lg bg-shell-2" />
+        <div className="h-4 w-4/6 animate-pulse rounded-lg bg-shell-3" />
+        <div className="mt-10 h-52 animate-pulse rounded-2xl bg-gradient-to-br from-shell-warm via-shell-cream to-shell-neutral" />
       </div>
     </div>
   );
@@ -104,7 +104,7 @@ function AnnouncementBar() {
     <div
       role="banner"
       aria-label="Early bird promotional offer"
-      className="relative flex items-center justify-center gap-2 bg-gradient-to-r from-[#E88600] via-[#FF9500] to-[#FFB347] px-10 py-2 text-center text-[11px] font-semibold text-white sm:text-xs"
+      className="relative flex items-center justify-center gap-2 bg-gradient-to-r from-[#15799F] via-[#1A8FC4] to-[#2AAA8A] px-10 py-2 text-center text-[11px] font-semibold text-white sm:text-xs"
     >
       <span aria-hidden className="shrink-0 text-sm">🎁</span>
       <span>
@@ -151,7 +151,7 @@ function App() {
     <Router>
       <ScrollToTop />
       <RouteTitle />
-      <div className="flex min-h-screen w-full min-w-0 flex-col bg-background text-muted-foreground font-sans antialiased">
+      <div className="mm-site-theme flex min-h-screen w-full min-w-0 flex-col text-foreground">
         <AnnouncementBar />
         <Navbar />
         <AnimatedMain>

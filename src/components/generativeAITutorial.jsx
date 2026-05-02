@@ -71,7 +71,7 @@ const GenerativeAITutorial = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-foreground font-sans antialiased">
+    <div className="min-h-screen mm-site-theme">
       {/* Meta Tags for SEO */}
       <head>
         <title>Generative AI for Beginners - Learn GPT, LLMs & Prompt Engineering</title>
@@ -80,7 +80,7 @@ const GenerativeAITutorial = () => {
       </head>
 
       {/* HEADER */}
-      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-border px-5">
+      <header className="mm-sticky-header px-5">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between py-4">
           <Link to="/" className="transition-transform hover:scale-[1.02]">
             <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
@@ -811,7 +811,7 @@ and brief answers for each (50-75 words).`}
                   <p className="text-muted-foreground text-sm mb-3">
                     <strong>Your Question:</strong> What precautions would you take to ensure the AI-generated responses are safe to send to customers?
                   </p>
-                  <p className="text-muted-foreground text-sm p-3 bg-[#FFFDF8] rounded border border-border">
+                  <p className="text-muted-foreground text-sm p-3 bg-background rounded border border-border">
                     <strong>Suggested Answer:</strong> Verify accuracy (AI hallucinations), check for brand compliance, test with sensitive topics, have humans review before sending, Set clear guardrails in prompts, monitor for bias, keep backups of original guidelines, and implement a review process.
                   </p>
                 </div>
@@ -824,7 +824,7 @@ and brief answers for each (50-75 words).`}
                   <p className="text-muted-foreground text-sm mb-3">
                     <strong>Your Question:</strong> How would you evaluate which model is best for your use case?
                   </p>
-                  <p className="text-muted-foreground text-sm p-3 bg-[#FFFDF8] rounded border border-border">
+                  <p className="text-muted-foreground text-sm p-3 bg-background rounded border border-border">
                     <strong>Suggested Answer:</strong> Consider cost per API call, model accuracy for your task, privacy/data retention policies, speed requirements, customization options, support availability, and integration difficulty. Test each with your specific use case before deciding.
                   </p>
                 </div>

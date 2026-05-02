@@ -93,7 +93,7 @@ const TransitionRoadmapTimeline = ({ roadmap }) => {
 
               {/* Phase Details */}
               {isExpanded && (
-                <div className="mt-2 ml-4 bg-[#FFFDF8] border border-border rounded-xl p-6 space-y-4">
+                <div className="mt-2 ml-4 bg-background border border-border rounded-xl p-6 space-y-4">
                   {/* Focus Areas */}
                   <div>
                     <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-2">
@@ -168,7 +168,7 @@ const TransitionRoadmapTimeline = ({ roadmap }) => {
       </div>
 
       {/* Timeline Visualization */}
-      <div className="mt-8 bg-[#FFFDF8] border border-border rounded-xl p-6">
+      <div className="mt-8 bg-background border border-border rounded-xl p-6">
         <p className="text-xs uppercase tracking-wider text-muted-foreground font-semibold mb-3">
           Timeline Breakdown
         </p>

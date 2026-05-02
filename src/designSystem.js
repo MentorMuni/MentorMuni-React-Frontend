@@ -1,11 +1,11 @@
-// Minimal design tokens — product UI (warm light + orange accent)
+// Minimal design tokens — product UI (cool light + orange CTA, aligned with mentorMuniTheme)
 const designSystem = {
   colors: {
     primary: '#FF9500',
     primaryDark: '#E88600',
     secondary: '#FFB347',
     accent: '#FF9500',
-    bg: '#FFFDF8',
+    bg: '#f8fbff',
     surface: '#FFFFFF',
     text: '#1A1A1A',
   },

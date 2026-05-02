@@ -41,7 +41,7 @@ const RecommendedCoursesSection = ({ courses }) => {
         {courses.map((course, index) => (
           <div
             key={course.id}
-            className="bg-[#FFFDF8] border border-border rounded-xl p-6 hover:border-[#FF9500]/50 transition-all hover:shadow-lg"
+            className="bg-background border border-border rounded-xl p-6 hover:border-[#FF9500]/50 transition-all hover:shadow-lg"
           >
             {/* Header with Provider and Type */}
             <div className="flex items-start justify-between mb-3">

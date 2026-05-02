@@ -63,10 +63,10 @@ export function HeroFlagshipVisual({ className = '' }) {
         .mm-hero-card-border {
           background: linear-gradient(
             125deg,
-            rgba(255, 149, 0, 0.95),
-            rgba(251, 191, 36, 0.65),
+            rgba(26, 143, 196, 0.95),
+            rgba(42, 170, 138, 0.65),
             rgba(34, 211, 238, 0.55),
-            rgba(255, 149, 0, 0.9)
+            rgba(26, 143, 196, 0.9)
           );
           background-size: 200% 200%;
           animation: mm-border-flow 8s ease infinite;
@@ -80,42 +80,42 @@ export function HeroFlagshipVisual({ className = '' }) {
 
       {/* soft glow behind card */}
       <div
-        className="mm-hero-card-glow pointer-events-none absolute -inset-3 rounded-[28px] bg-gradient-to-br from-orange-400/25 via-amber-300/15 to-cyan-400/20 blur-2xl"
+        className="mm-hero-card-glow pointer-events-none absolute -inset-3 rounded-[28px] bg-gradient-to-br from-sky-400/25 via-cyan-300/15 to-teal-400/20 blur-2xl"
         style={{ animation: reduceMotion ? 'none' : 'mm-card-shimmer 6s ease-in-out infinite' }}
         aria-hidden
       />
 
-      <div className="relative rounded-[22px] p-[1.5px] shadow-[0_20px_50px_-12px_rgba(15,23,42,0.15),0_8px_24px_-8px_rgba(234,88,12,0.12)] mm-hero-card-border">
+      <div className="relative rounded-[22px] p-[1.5px] shadow-[0_20px_50px_-12px_rgba(15,23,42,0.15),0_8px_24px_-8px_rgba(26,143,196,0.12)] mm-hero-card-border">
         <div
           className="relative overflow-hidden rounded-[20.5px] border border-white/80 bg-white/95 p-4 backdrop-blur-sm sm:p-5"
           role="img"
           aria-label="Sample interview readiness score preview"
         >
-          <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-orange-200/30 blur-3xl" aria-hidden />
+          <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-sky-200/30 blur-3xl" aria-hidden />
           <div className="pointer-events-none absolute -bottom-12 -left-10 h-32 w-32 rounded-full bg-cyan-200/25 blur-3xl" aria-hidden />
 
           <div className="relative mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-neutral-100/90 pb-3">
             <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
               Your reality check
             </span>
-            <span className="rounded-full bg-gradient-to-r from-orange-50 to-amber-50 px-3 py-1 text-[10px] font-semibold text-[#c2410c] ring-1 ring-orange-200/90 shadow-sm">
+            <span className="rounded-full bg-gradient-to-r from-sky-50 to-cyan-50 px-3 py-1 text-[10px] font-semibold text-[#15799F] ring-1 ring-sky-200/90 shadow-sm">
               Interview Readiness
             </span>
           </div>
 
           <div className="relative flex flex-col items-center gap-5 sm:flex-row sm:items-start sm:gap-5">
             <div className="relative shrink-0" style={{ width: RING_SIZE, height: RING_SIZE }}>
-              <div className="absolute inset-0 rounded-full bg-orange-400/15 blur-xl" aria-hidden />
+              <div className="absolute inset-0 rounded-full bg-sky-400/15 blur-xl" aria-hidden />
               <svg
                 width={RING_SIZE}
                 height={RING_SIZE}
-                className="relative rotate-[-90deg] drop-shadow-[0_2px_8px_rgba(234,88,12,0.2)]"
+                className="relative rotate-[-90deg] drop-shadow-[0_2px_8px_rgba(26,143,196,0.2)]"
                 aria-hidden
               >
                 <defs>
                   <linearGradient id="mm-ring-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#f97316" />
-                    <stop offset="100%" stopColor="#fbbf24" />
+                    <stop offset="0%" stopColor="#1A8FC4" />
+                    <stop offset="100%" stopColor="#2AAA8A" />
                   </linearGradient>
                 </defs>
                 <circle cx={RING_SIZE / 2} cy={RING_SIZE / 2} r={R} fill="none" stroke="#e5e5e5" strokeWidth={STROKE} />
@@ -170,16 +170,16 @@ export function HeroFlagshipVisual({ className = '' }) {
             </div>
           </div>
 
-          <div className="relative mt-4 overflow-hidden rounded-xl border border-orange-200/80 bg-gradient-to-br from-orange-50/95 to-amber-50/80 px-3 py-3 text-sm leading-relaxed text-[#78350f] shadow-inner">
+          <div className="relative mt-4 overflow-hidden rounded-xl border border-sky-200/80 bg-gradient-to-br from-sky-50/95 to-cyan-50/80 px-3 py-3 text-sm leading-relaxed text-[#0c4a6e] shadow-inner">
             <span className="font-bold text-neutral-900">System Design is your biggest gap.</span>{' '}
             Most students with this profile improve +20 pts in 3 weeks with focused practice.
           </div>
 
           <div className="relative mt-5 space-y-2 text-center">
             <p className="text-base font-semibold leading-snug tracking-tight text-neutral-900 sm:text-lg">
-              <span className="bg-gradient-to-r from-[#ea580c] to-[#f97316] bg-clip-text text-transparent">MentorMuni</span>
+              <span className="bg-gradient-to-r from-[#15799F] to-[#1A8FC4] bg-clip-text text-transparent">MentorMuni</span>
               <span className="text-neutral-400"> — </span>
-              show up <span className="text-[#c2410c]">prepared & confident</span>.
+              show up <span className="text-[#15799F]">prepared & confident</span>.
             </p>
             <p className="text-sm leading-snug text-neutral-600 sm:text-[15px]">
               Real panels. Honest feedback. No last‑minute cram.

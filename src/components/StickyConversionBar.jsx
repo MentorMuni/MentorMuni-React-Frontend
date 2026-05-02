@@ -71,7 +71,7 @@ export default function StickyConversionBar() {
         </button>
         <Link
           to="/waitlist"
-          className="mm-focus flex min-h-[48px] min-w-0 flex-1 flex-col items-center justify-center rounded-xl border-2 border-[#FF9500] bg-[#FFFDF8] px-2 py-1.5 text-center text-[11px] font-bold leading-tight text-[#CC7000] transition-colors hover:bg-[#FFF4E0] active:scale-[0.98]"
+          className="mm-focus flex min-h-[48px] min-w-0 flex-1 flex-col items-center justify-center rounded-xl border-2 border-[#1A8FC4] bg-background px-2 py-1.5 text-center text-[11px] font-bold leading-tight text-[#15799F] transition-colors hover:bg-accent-soft active:scale-[0.98]"
         >
           <span>Join waitlist</span>
           <span className="text-[9px] font-semibold text-muted-foreground">{WAITLIST_STICKY_TEASER}</span>
@@ -87,7 +87,7 @@ export default function StickyConversionBar() {
               /* ignore */
             }
           }}
-          className="mm-focus flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-white text-muted-foreground transition hover:bg-[#FFF8EE]"
+          className="mm-focus flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-border bg-white text-muted-foreground transition hover:bg-secondary"
         >
           <X size={18} />
         </button>

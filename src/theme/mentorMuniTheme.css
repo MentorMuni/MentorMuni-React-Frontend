@@ -1,0 +1,269 @@
+/**
+ * ═══════════════════════════════════════════════════════════════════════════
+ * MentorMuni — GLOBAL THEME (single file to edit for sitewide colors)
+ *
+ * This file is imported from index.css → applies to the entire website.
+ * Change values under `:root` only; Tailwind maps them in `src/index.css` @theme.
+ * Do not duplicate hex/RGB in JSX — use classes like `bg-background`, `text-cta`,
+ * `border-border`, `from-cta`, `to-cta-mid`, etc.
+ * ═══════════════════════════════════════════════════════════════════════════
+ */
+:root {
+  /* Surfaces */
+  --bg-primary: #f8fbff;
+  --bg-secondary: #eef6fb;
+  --bg-card: #ffffff;
+  --bg-soft-peach: #e0f0fa;
+  /* Subtle warm tint for cards (was cream; ties to CTA family when needed) */
+  --bg-tint-subtle: #fffcf7;
+
+  /* Typography ink */
+  --text-primary: #18181b;
+  --text-secondary: #52525b;
+  --text-muted: #71717a;
+  --text-hint: #a1a1aa;
+  --text-body: #3f3f46;
+  --text-heading: #18181b;
+  /* Nav / dense UI */
+  --nav-ink: #333333;
+  --text-icon-muted: #999999;
+
+  /* Brand — blue / teal / orange (logo-aligned) */
+  --accent: #1a8fc4;
+  --accent-hover: #15799f;
+  --accent-soft: #e0f0fa;
+  --accent-secondary: #2aaa8a;
+  --accent-faint: rgba(26, 143, 196, 0.06);
+
+  /* CTA orange scale — one place to retune marketing buttons & accents */
+  --accent-cta: #ff9500;
+  --accent-cta-hover: #e88600;
+  --accent-cta-mid: #ffb347;
+  --accent-cta-deep: #ea580c;
+  --accent-cta-faint: rgba(255, 149, 0, 0.15);
+  --accent-cta-glow-soft: rgba(255, 149, 0, 0.12);
+  --accent-cta-glow-hero: rgba(255, 149, 0, 0.1);
+  --accent-cta-shadow: rgba(255, 149, 0, 0.25);
+
+  /* Links & status accents (navbar / promo) */
+  --success-link: #1d9e75;
+  --live-indicator: #1a8c55;
+
+  /* Promo / announcement gradient */
+  --promo-gradient-from: #15799f;
+  --promo-gradient-via: #1a8fc4;
+  --promo-gradient-to: #2aaa8a;
+
+  /* Borders & focus */
+  --border: #d8e8f0;
+  --border-hover: #2aaa8a;
+  --focus-ring: #1a8fc4;
+
+  /* Semantic */
+  --success: #1a8c55;
+  --success-bg: #e8f8f0;
+  --info: #1a8fc4;
+  --info-bg: #e0f0fa;
+  --warning-bg: #fff4e0;
+  --warning-text: #cc7000;
+  --warning-ink-deep: #9a3412;
+  --warning-ink-strong: #7c2d12;
+
+  /* Decorative glows (hero orbs — editable with theme) */
+  --glow-orange-orb: rgba(255, 149, 0, 0.14);
+  --glow-cta-radial: rgba(234, 88, 12, 0.25);
+  --glow-story-orange: rgba(234, 88, 12, 0.2);
+  --glow-story-amber: rgba(245, 158, 11, 0.2);
+  --glow-story-cyan: rgba(8, 145, 178, 0.18);
+  --glow-rail-sky: rgba(14, 165, 233, 0.2);
+  --pattern-dot-warm: rgba(180, 120, 60, 0.07);
+  /* Marketing hero grid — cool blue (matches homepage mesh) */
+  --pattern-dot-cool: rgba(26, 143, 196, 0.055);
+
+  /* Large marketing pages — ambient orbs (homepage / tools / mocks / assessment) */
+  --ambient-glow-cta: rgba(255, 149, 0, 0.12);
+  --ambient-glow-mid: rgba(255, 179, 71, 0.1);
+
+  /* Shadows & overlays */
+  --overlay-warm: rgba(26, 143, 196, 0.08);
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.05);
+  --shadow-nav: 0 1px 20px rgba(0, 0, 0, 0.06);
+  /* CTA / primary action button glow (orange) */
+  --shadow-button-value: 0 4px 14px rgba(255, 149, 0, 0.25);
+  --shadow-button-strong-value: 0 4px 14px rgba(255, 149, 0, 0.3);
+  --shadow-cta-card-value: 0 2px 12px rgba(255, 149, 0, 0.15);
+  /* Card lift on CTA selection (assessment mode picker) */
+  --shadow-cta-hover-lift: 0 24px 48px -12px rgba(255, 149, 0, 0.35);
+  --shadow-button: var(--shadow-button-value);
+
+  /* Route shell / suspense placeholder — cool blue, aligned with homepage surfaces */
+  --shell-skeleton-1: #dbe8f2;
+  --shell-skeleton-2: rgba(238, 246, 251, 0.95);
+  --shell-skeleton-3: rgba(224, 240, 250, 0.88);
+  --shell-card-warm: rgba(224, 240, 250, 0.92);
+  --shell-card-cream: #f8fbff;
+  --shell-card-neutral: rgba(238, 246, 251, 0.9);
+
+  /* UI chrome derived from surfaces (change bg-primary → header updates) */
+  --sticky-header-bg: color-mix(in srgb, var(--bg-primary) 92%, transparent);
+
+  /* Legacy warm neutrals → align to border / cool grays (assessment UI) */
+  --surface-track: #dbe8f2;
+  --surface-muted: #fafafa;
+  --border-soft-warm: var(--border);
+  /* Inverse / dark chips, third-party brand buttons */
+  --inverse-surface: #141414;
+  --semantic-cyan-ink: #0e7490;
+  --brand-whatsapp: #25d366;
+  --brand-whatsapp-hover: #20bd5a;
+  --brand-linkedin: #0a66c2;
+  --brand-linkedin-hover: #095195;
+
+  /* Aliases used by legacy helpers */
+  --main-bg: var(--bg-primary);
+  --primary: var(--accent);
+  --secondary: var(--accent-secondary);
+  --secondary-bg: var(--bg-secondary);
+  --card-bg: var(--bg-card);
+  --border-color: var(--border);
+}
+
+/**
+ * Site marketing shell — same surface, type color, font stack, and smoothing as the homepage root
+ * (`bg-background text-foreground` + Plus Jakarta). Use on route wrappers: `min-h-screen mm-site-theme`.
+ */
+.mm-site-theme {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1;
+  letter-spacing: -0.011em;
+}
+
+/**
+ * Legacy modifier — kept for compatibility. Same solid surface as homepage (`--bg-primary`).
+ * (Vertical gradients made inner pages look different from home; one canvas sitewide.)
+ */
+.mm-site-theme.mm-site-theme--gradient {
+  background-color: var(--bg-primary);
+  background-image: none;
+}
+
+/**
+ * Marketing hero strip — same layered wash + cool radials as homepage hero
+ * (`homepage.jsx` first section). Use on `relative` sections; keep content in a child with `relative z-10`.
+ */
+.mm-marketing-hero-backdrop {
+  position: relative;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+  background-image:
+    radial-gradient(ellipse 80% 50% at 70% -10%, rgba(26, 143, 196, 0.12), transparent),
+    radial-gradient(ellipse 60% 40% at 10% 50%, rgba(14, 165, 233, 0.06), transparent),
+    linear-gradient(to bottom, rgb(248 250 252 / 0.9), white 45%, #fff8f0);
+}
+
+/**
+ * Sticky page chrome (site nav + in-page tutorial/course headers) — frosted bar on brand background.
+ */
+.mm-sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  border-bottom: 1px solid var(--border);
+  background-color: var(--sticky-header-bg);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+}
+
+/** Headline gradient — orange CTA wordmark; edit --warning-text / --accent-cta above */
+.mm-gradient-text-cta {
+  background: linear-gradient(90deg, var(--warning-text), var(--accent-cta));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* Utility helpers — use with global tokens */
+.bg-soft {
+  background-color: var(--bg-secondary);
+}
+.text-primary {
+  color: var(--accent);
+}
+.text-accent {
+  color: var(--accent);
+}
+.text-on-dark {
+  color: var(--text-primary);
+}
+.text-on-dark-sub {
+  color: var(--text-body);
+}
+.text-muted {
+  color: var(--text-muted);
+}
+
+.section-dark {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+.section-main {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+}
+.section-soft {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.card-dark {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  border-radius: 16px;
+}
+.card-elevated {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  border-radius: 16px;
+}
+
+.btn-primary {
+  background-color: var(--accent-cta);
+  color: #ffffff;
+  box-shadow: var(--shadow-button);
+}
+.btn-primary:hover {
+  background-color: var(--accent-cta-hover);
+  filter: none;
+}
+.btn-secondary {
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  background: transparent;
+}
+.btn-secondary:hover {
+  background: var(--accent-soft);
+}
+
+.mm-text-ink {
+  color: var(--text-heading);
+}
+.mm-text-body {
+  color: var(--text-body);
+}
+.mm-text-secondary {
+  color: var(--text-secondary);
+}
+.mm-text-hint {
+  color: var(--text-hint);
+}

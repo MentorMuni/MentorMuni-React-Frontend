@@ -2,6 +2,17 @@ import React from 'react';
 import { ArrowRight, Code, BarChart3, Zap, Database, Smartphone, Shield, Briefcase } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
+const ICON_TONE_CLASS = {
+  indigo: 'text-indigo-600',
+  cyan: 'text-cyan-600',
+  purple: 'text-purple-600',
+  amber: 'text-amber-600',
+  rose: 'text-rose-600',
+  fuchsia: 'text-fuchsia-600',
+  teal: 'text-teal-600',
+  lime: 'text-lime-600',
+};
+
 const CareerSwitchPaths = () => {
   const careerPaths = [
     {
@@ -96,14 +107,14 @@ const CareerSwitchPaths = () => {
   ];
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-b from-transparent via-slate-900/30 to-transparent border-y border-slate-800/50">
+    <section className="border-y border-border bg-gradient-to-b from-accent-soft/35 via-background to-secondary/40 py-20 px-6">
       <div className="max-w-7xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
+          <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">
             Career Switch Paths
           </h2>
-          <p className="text-lg text-slate-300 max-w-2xl mx-auto mb-8">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
             Explore the most popular tech career transitions and start your journey with MentorMuni.
           </p>
 
@@ -114,11 +125,11 @@ const CareerSwitchPaths = () => {
               {transitions.map((transition, index) => (
                 <div
                   key={index}
-                  className="px-4 py-2 rounded-full bg-gradient-to-r from-[#FF9500]/10 to-cyan-500/10 border border-[#FF9500]/25 text-sm text-slate-300 hover:border-[#FF9500]/45 transition-colors"
+                  className="px-4 py-2 rounded-full bg-gradient-to-r from-cta/10 to-cyan-500/10 border border-cta/25 text-sm text-foreground hover:border-cta/45 transition-colors"
                 >
-                  <span className="font-semibold text-[#CC7000]">{transition.from}</span>
+                  <span className="font-semibold text-cta">{transition.from}</span>
                   <span className="mx-2 text-muted-foreground">→</span>
-                  <span className="font-semibold text-cyan-300">{transition.to}</span>
+                  <span className="font-semibold text-cyan-700">{transition.to}</span>
                 </div>
               ))}
             </div>
@@ -129,33 +140,34 @@ const CareerSwitchPaths = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {careerPaths.map((path, index) => {
             const IconComponent = path.icon;
+            const iconClass = ICON_TONE_CLASS[path.color] ?? 'text-primary';
             return (
               <div
                 key={index}
-                className={`group relative h-full bg-gradient-to-br ${path.bgGradient} border ${path.borderColor} rounded-2xl p-6 backdrop-blur-sm hover:border-${path.color}-500/60 transition-all duration-300 hover:shadow-lg hover:shadow-${path.color}-500/20 overflow-hidden`}
+                className={`group relative h-full overflow-hidden rounded-2xl border bg-card p-6 shadow-[var(--shadow-card)] backdrop-blur-sm transition-all duration-300 hover:shadow-lg ${path.borderColor}`}
               >
-                {/* Background glow effect */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${path.bgGradient} opacity-0 group-hover:opacity-50 transition-opacity duration-300 -z-10 blur-xl`} />
+                {/* Soft tint wash */}
+                <div className={`pointer-events-none absolute inset-0 bg-gradient-to-br ${path.bgGradient} opacity-40 transition-opacity group-hover:opacity-60`} aria-hidden />
 
                 {/* Icon */}
-                <div className={`mb-6 inline-flex p-3 rounded-lg bg-gradient-to-br ${path.bgGradient} border border-${path.color}-500/20 group-hover:scale-110 transition-transform`}>
-                  <IconComponent className={`w-6 h-6 text-${path.color}-400`} />
+                <div className={`relative z-10 mb-6 inline-flex rounded-lg border border-border/80 bg-secondary/90 p-3 group-hover:scale-110 transition-transform`}>
+                  <IconComponent className={`w-6 h-6 ${iconClass}`} />
                 </div>
 
                 {/* Content */}
                 <div className="relative z-10 flex flex-col h-full">
-                  <h3 className="text-xl font-bold text-white mb-3 leading-tight">
+                  <h3 className="text-xl font-bold text-foreground mb-3 leading-tight">
                     {path.title}
                   </h3>
 
-                  <p className="text-slate-300 text-sm mb-6 flex-grow leading-relaxed">
+                  <p className="text-muted-foreground text-sm mb-6 flex-grow leading-relaxed">
                     {path.description}
                   </p>
 
                   {/* CTA Button */}
                   <Link
                     to={path.route}
-                    className={`mt-auto inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-lg font-semibold text-white bg-gradient-to-r ${path.gradient} hover:shadow-lg hover:shadow-${path.color}-500/30 transition-all active:scale-95 group-hover:gap-3`}
+                    className={`mt-auto inline-flex items-center justify-center gap-2 w-full py-3 px-4 rounded-lg font-semibold text-white bg-gradient-to-r ${path.gradient} hover:shadow-lg transition-all active:scale-95 group-hover:gap-3`}
                   >
                     View Roadmap
                     <ArrowRight size={18} className="group-hover:translate-x-0.5 transition-transform" />
@@ -167,16 +179,16 @@ const CareerSwitchPaths = () => {
         </div>
 
         {/* Bottom CTA */}
-        <div className="mt-16 text-center p-8 bg-gradient-to-r from-[#FF9500]/20 to-cyan-600/20 border border-[#FF9500]/35 rounded-2xl">
-          <h3 className="text-2xl font-bold text-white mb-3">
+        <div className="mt-16 text-center p-8 rounded-2xl border border-cta/30 bg-gradient-to-r from-cta/12 to-cyan-600/15 shadow-[var(--shadow-card)]">
+          <h3 className="text-2xl font-bold text-foreground mb-3">
             Not sure which path is right for you?
           </h3>
-          <p className="text-slate-300 mb-6 max-w-2xl mx-auto">
+          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
             Take our free interview readiness assessment to understand your current skills and get personalized career recommendations.
           </p>
           <Link
             to="/start-assessment"
-            className="inline-flex items-center gap-2 px-8 py-3 rounded-lg bg-gradient-to-r from-[#FF9500] to-cyan-600 text-white font-bold hover:shadow-lg hover:shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all active:scale-95 hover:gap-3"
+            className="inline-flex items-center gap-2 px-8 py-3 rounded-lg bg-gradient-to-r from-cta to-cyan-600 text-white font-bold hover:shadow-lg hover:shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all active:scale-95 hover:gap-3"
           >
             Start Free Assessment
             <ArrowRight size={20} />

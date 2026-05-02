@@ -6,19 +6,19 @@ const POSTER_CAROUSEL_SLIDES = [
   {
     title: 'Interview readiness',
     Icon: BarChart3,
-    accentOrb: 'from-[#ea580c]/20 to-amber-400/15',
-    visualBg: 'from-orange-50/95 via-amber-50/90 to-[#fffbeb]',
+    accentOrb: 'from-[#1A8FC4]/20 to-sky-400/15',
+    visualBg: 'from-sky-50/95 via-sky-100/90 to-[#f0f9ff]',
     visualKicker: 'Readiness',
     visualLine: 'Score · categories · what to fix first',
     problem: 'You don’t know which skills to fix first — “study everything” hides your real gaps.',
     solution:
-      'Interview Readiness Score: one number out of 100 with category breakdowns so you prep with a target, not a guess.',
+      'Interview Readiness Score: one number out of 100 with category breakdowns so you prepare with a target, not a guess.',
   },
   {
     title: '1:1 mentorship',
     Icon: Users,
-    accentOrb: 'from-amber-400/20 to-yellow-400/12',
-    visualBg: 'from-amber-50/95 via-orange-50/85 to-[#fff7ed]',
+    accentOrb: 'from-teal-400/20 to-cyan-400/12',
+    visualBg: 'from-sky-100/95 via-sky-50/85 to-[#f0f9ff]',
     visualKicker: 'Mentorship',
     visualLine: 'Human guidance · your timeline · your goals',
     problem: 'Generic advice from seniors doesn’t map to your timeline, branch, or goals.',
@@ -45,7 +45,7 @@ const POSTER_CAROUSEL_SLIDES = [
     visualLine: 'Weekly rhythm · aligned to drives & coursework',
     problem: 'Random LeetCode nights and last-minute cramming don’t compound into interview readiness.',
     solution:
-      'A structured week-by-week plan so your prep matches drives and coursework — not chaos.',
+      'A structured week-by-week plan so your preparation matches drives and coursework — not chaos.',
   },
   {
     title: 'HR & technical interviews',
@@ -62,7 +62,7 @@ const POSTER_CAROUSEL_SLIDES = [
 
 function PosterSlideVisual({ slide, fillParent = false }) {
   const Icon = slide.Icon;
-  const visualBg = slide.visualBg ?? 'from-[#fffdfb] via-orange-50/70 to-amber-50/80';
+  const visualBg = slide.visualBg ?? 'from-background via-sky-50/70 to-sky-100/80';
 
   return (
     <div
@@ -75,7 +75,7 @@ function PosterSlideVisual({ slide, fillParent = false }) {
         aria-hidden
       />
       <div
-        className="pointer-events-none absolute -bottom-16 -left-12 h-32 w-32 rounded-full bg-orange-400/20 blur-2xl opacity-60"
+        className="pointer-events-none absolute -bottom-16 -left-12 h-32 w-32 rounded-full bg-sky-400/20 blur-2xl opacity-60"
         aria-hidden
       />
       <div
@@ -89,10 +89,10 @@ function PosterSlideVisual({ slide, fillParent = false }) {
       />
       <div className="relative flex h-full min-h-[96px] flex-col items-center justify-center gap-1.5 px-4 py-4 sm:min-h-[104px] sm:gap-2 sm:px-5 sm:py-5">
         <div className="flex flex-col items-center">
-          <div className="rounded-xl border border-orange-200/70 bg-white/90 p-2.5 shadow-[0_8px_24px_-12px_rgba(234,88,12,0.18)] ring-1 ring-orange-100/80 sm:p-3">
-            <Icon className="h-7 w-7 text-[#ea580c] sm:h-8 sm:w-8" strokeWidth={1.15} aria-hidden />
+          <div className="rounded-xl border border-sky-200/70 bg-white/90 p-2.5 shadow-[0_8px_24px_-12px_rgba(26,143,196,0.18)] ring-1 ring-sky-100/80 sm:p-3">
+            <Icon className="h-7 w-7 text-[#1A8FC4] sm:h-8 sm:w-8" strokeWidth={1.15} aria-hidden />
           </div>
-          <p className="mt-2 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#9A3412]/90 sm:text-[10px]">{slide.visualKicker}</p>
+          <p className="mt-2 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#0e5e85]/90 sm:text-[10px]">{slide.visualKicker}</p>
           <p className="mt-0.5 max-w-[280px] text-center text-[11px] font-medium leading-snug text-muted-foreground sm:text-xs">
             {slide.visualLine}
           </p>
@@ -123,11 +123,11 @@ export function MentorMuniPosterCarousel({ className = '' }) {
       className={`relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-[0_8px_32px_rgba(0,0,0,0.06)] ${className}`}
       role="region"
       aria-roledescription="carousel"
-      aria-label="How MentorMuni addresses common prep problems"
+      aria-label="How MentorMuni addresses common preparation gaps"
     >
       <div className="flex min-h-0 flex-1 flex-col">
         <div
-          className="relative h-[112px] w-full shrink-0 cursor-pointer overflow-hidden rounded-t-xl bg-gradient-to-b from-[#fffdfb] to-[#fff4e6] sm:h-[124px]"
+          className="relative h-[112px] w-full shrink-0 cursor-pointer overflow-hidden rounded-t-xl bg-gradient-to-b from-background to-accent-soft sm:h-[124px]"
           onClick={next}
           title="Tap for next slide"
         >
@@ -163,8 +163,8 @@ export function MentorMuniPosterCarousel({ className = '' }) {
                   <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-muted-foreground">Problem</p>
                   <p className="mt-1.5 text-[13px] leading-relaxed text-muted-foreground sm:text-sm">{slide.problem}</p>
                 </div>
-                <div className="rounded-xl border border-[#FF9500]/25 bg-gradient-to-br from-[#FFFDFB] to-[#FFF4E0]/50 px-3.5 py-3 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
-                  <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#B45309]">MentorMuni solution</p>
+                <div className="rounded-xl border border-[#1A8FC4]/25 bg-gradient-to-br from-background to-accent-soft/50 px-3.5 py-3 shadow-[0_1px_0_rgba(0,0,0,0.04)]">
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-[#0e5e85]">MentorMuni solution</p>
                   <p className="mt-1.5 text-[13px] font-medium leading-relaxed text-foreground sm:text-sm">{slide.solution}</p>
                 </div>
               </motion.div>
@@ -173,7 +173,7 @@ export function MentorMuniPosterCarousel({ className = '' }) {
         </div>
       </div>
 
-      <div className="flex items-center justify-center gap-2 border-t border-border bg-[#FFFDF8] px-4 py-3">
+      <div className="flex items-center justify-center gap-2 border-t border-border bg-background px-4 py-3">
         <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
           {POSTER_CAROUSEL_SLIDES.map((s, i) => (
             <button
@@ -186,7 +186,7 @@ export function MentorMuniPosterCarousel({ className = '' }) {
               aria-label={`${s.title}, slide ${i + 1} of ${n}`}
               aria-current={i === index || undefined}
               className={`h-2 rounded-full transition-all duration-300 ${
-                i === index ? 'w-7 bg-[#FF9500]' : 'w-2 bg-[#E8E4DC] hover:bg-[#CCC8BE]'
+                i === index ? 'w-7 bg-[#1A8FC4]' : 'w-2 bg-[#E8E4DC] hover:bg-[#CCC8BE]'
               }`}
             />
           ))}

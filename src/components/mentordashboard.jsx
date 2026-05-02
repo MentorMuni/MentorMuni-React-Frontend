@@ -44,7 +44,7 @@ const MentorDashboard = () => {
   // Show authentication prompt if not authenticated
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE] flex items-center justify-center">
+      <div className="min-h-screen mm-site-theme flex items-center justify-center">
         <div className="text-foreground text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#FF9500] mx-auto mb-4"></div>
           <p>Loading...</p>
@@ -55,7 +55,7 @@ const MentorDashboard = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE] text-foreground flex items-center justify-center px-4">
+      <div className="min-h-screen mm-site-theme text-foreground flex items-center justify-center px-4">
         <div className="max-w-md w-full bg-white border border-border rounded-2xl p-8 text-center shadow-sm">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-[#FF9500]/15 border border-[#FF9500]/35 mb-6">
             <AlertCircle size={32} className="text-[#FF9500]" />
@@ -84,10 +84,10 @@ const MentorDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE] flex flex-col font-sans text-foreground">
+    <div className="min-h-screen mm-site-theme flex flex-col text-foreground">
       
       {/* HEADER / NAV */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-slate-200">
+      <header className="mm-sticky-header">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <a href="/" className="flex-shrink-0">

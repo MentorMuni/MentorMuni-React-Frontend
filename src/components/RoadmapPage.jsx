@@ -639,7 +639,7 @@ export default function RoadmapPage() {
     : { duration: 0.38, ease: [0.22, 1, 0.36, 1] };
 
   return (
-    <div className="min-w-0 bg-[#FFFDF8] font-sans text-foreground">
+    <div className="min-h-screen min-w-0 mm-site-theme">
       {/* Hero */}
       <section className="border-b border-border px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-6xl">

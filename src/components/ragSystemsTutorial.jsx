@@ -118,7 +118,7 @@ const RAGSystemsTutorial = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-foreground font-sans antialiased">
+    <div className="min-h-screen mm-site-theme">
       {/* Meta Tags for SEO */}
       <head>
         <title>RAG Systems Tutorial - Retrieval-Augmented Generation Explained | Complete Guide</title>
@@ -143,7 +143,7 @@ const RAGSystemsTutorial = () => {
       </script>
 
       {/* HEADER */}
-      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-border px-5">
+      <header className="mm-sticky-header px-5">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between py-4">
           <Link to="/" className="transition-transform hover:scale-[1.02]">
             <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />

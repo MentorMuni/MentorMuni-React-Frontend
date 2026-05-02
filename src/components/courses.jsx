@@ -52,9 +52,9 @@ const CoursesPage = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-muted-foreground font-sans antialiased">
+    <div className="min-h-screen mm-site-theme text-muted-foreground">
       {/* --- HEADER --- */}
-      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-border px-5 py-2">
+      <header className="mm-sticky-header px-5 py-2">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between py-2">
           <a href="/">
             <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain transition-transform hover:scale-105" />
@@ -100,7 +100,7 @@ const CoursesPage = () => {
         </div>
 
         {isNavOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-[#FFFDF8] border-b border-border p-5 flex flex-col gap-4 shadow-2xl">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-background border-b border-border p-5 flex flex-col gap-4 shadow-2xl">
             {['Home', 'Interview Readiness', 'Outcomes', 'Contact'].map((item) => (
               <a key={item} href="#" className="font-bold text-muted-foreground hover:text-[#FF9500]">{item}</a>
             ))}
@@ -179,7 +179,7 @@ const CoursesPage = () => {
       </main>
 
       {/* --- FOOTER --- */}
-      <footer className="bg-[#FFF8EE] border-t border-border pt-16 pb-8 px-6">
+      <footer className="bg-secondary border-t border-border pt-16 pb-8 px-6">
         <div className="max-w-[1200px] mx-auto grid md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1">
             <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 rounded-full object-contain mb-6" />

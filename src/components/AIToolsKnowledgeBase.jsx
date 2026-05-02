@@ -168,24 +168,17 @@ export default function AIToolsKnowledgeBase() {
   );
 
   return (
-    <div className="bg-[#FFFDF8] text-foreground min-h-screen">
+    <div className="mm-site-theme min-h-screen">
 
       {/* ── Hero ── */}
-      <section className="relative overflow-hidden border-b border-border">
-        <div className="pointer-events-none absolute inset-0">
-          <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[rgba(255,149,0,0.12)] rounded-full blur-[130px]" />
-          <div className="absolute bottom-0 left-0 w-[400px] h-[300px] bg-[rgba(255,179,71,0.1)] rounded-full blur-[100px]" />
-        </div>
-        <div className="relative max-w-5xl mx-auto px-6 pt-16 pb-12">
+      <section className="mm-marketing-hero-backdrop border-b border-border">
+        <div className="relative z-10 mx-auto max-w-5xl px-6 pb-12 pt-20">
           <div className="flex items-center gap-2 mb-5">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
             <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">Free Resource</span>
           </div>
           <h1 className="text-4xl md:text-5xl font-black leading-tight mb-4 tracking-tight">
-            AI Tools{' '}
-            <span style={{ background: 'linear-gradient(90deg,#CC7000,#FF9500)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-              Knowledge Base
-            </span>
+            AI Tools <span className="mm-gradient-text-cta">Knowledge Base</span>
           </h1>
           <p className="text-lg text-muted-foreground max-w-2xl leading-relaxed mb-8">
             Everything an engineering student needs to know about LLMs and AI tools — from first principles to the tools interviewers now expect you to know.
@@ -196,7 +189,7 @@ export default function AIToolsKnowledgeBase() {
               { icon: Zap,          color: 'text-amber-400',  label: 'Coding tools for placement' },
               { icon: CheckCircle,  color: 'text-green-400',  label: 'Free & paid clearly marked' },
             ].map(({ icon: Icon, color, label }) => (
-              <div key={label} className="flex items-center gap-2 bg-[#FFF8EE] border border-border rounded-lg px-4 py-2">
+              <div key={label} className="flex items-center gap-2 bg-secondary border border-border rounded-lg px-4 py-2">
                 <Icon size={14} className={color} />
                 <span className="text-sm font-semibold text-muted-foreground">{label}</span>
               </div>
@@ -253,7 +246,7 @@ export default function AIToolsKnowledgeBase() {
           <p className="text-muted-foreground text-sm mb-8 max-w-xl">There are 1,000+ LLMs publicly available. Here are the 8 you actually need to know.</p>
           <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-4">
             {LLMS.map((llm) => (
-              <div key={llm.name} className="flex flex-col gap-3 p-4 rounded-xl border border-border bg-[#FFF8EE]/80 hover:border-[#FF9500]/30 transition-colors">
+              <div key={llm.name} className="flex flex-col gap-3 p-4 rounded-xl border border-border bg-secondary/80 hover:border-[#FF9500]/30 transition-colors">
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <div className="flex items-center gap-2 mb-0.5">
@@ -317,7 +310,7 @@ export default function AIToolsKnowledgeBase() {
                 <Link
                   key={tool.title}
                   to={tool.href}
-                  className={`group flex flex-col gap-4 p-5 rounded-2xl border ${tool.border} ${tool.hover} bg-[#FFF8EE]/60 transition-all`}
+                  className={`group flex flex-col gap-4 p-5 rounded-2xl border ${tool.border} ${tool.hover} bg-secondary/60 transition-all`}
                 >
                   <div className="flex items-start justify-between gap-2">
                     <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${tool.bg}`}>
@@ -376,7 +369,7 @@ export default function AIToolsKnowledgeBase() {
                 href={tool.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group flex flex-col gap-2.5 p-4 rounded-xl border border-border bg-[#FFF8EE]/50 hover:border-[#FF9500]/35 hover:bg-[#E88600]/5 transition-all"
+                className="group flex flex-col gap-2.5 p-4 rounded-xl border border-border bg-secondary/50 hover:border-[#FF9500]/35 hover:bg-[#E88600]/5 transition-all"
               >
                 <div className="flex items-start justify-between gap-2">
                   <span className="text-sm font-bold text-foreground group-hover:text-[#CC7000] transition-colors leading-tight">{tool.name}</span>
@@ -482,7 +475,7 @@ export default function AIToolsKnowledgeBase() {
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link
               to="/start-assessment"
-              className="inline-flex items-center justify-center gap-2 bg-[#FF9500] hover:bg-[#E88600] text-white font-bold px-7 py-3.5 rounded-xl shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-cta px-7 py-3.5 font-bold text-white shadow-lg shadow-button transition-all hover:bg-cta-hover"
             >
               {PRIMARY_CTA_LABEL}
               <ChevronRight size={16} />

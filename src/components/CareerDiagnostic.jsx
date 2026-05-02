@@ -57,14 +57,14 @@ export default function CareerDiagnostic() {
             done
               ? 'bg-[#FF9500] text-white'
               : active
-                ? 'bg-[#FF9500]/30 text-[#CC7000]'
-                : 'bg-slate-700/80 text-muted-foreground'
+                ? 'bg-cta/25 text-warning-text'
+                : 'bg-secondary text-muted-foreground'
           }`}
         >
           {done ? '✓' : index + 1}
         </div>
         <div className="min-w-0">
-          <div className="font-semibold text-white">{s.title}</div>
+          <div className="font-semibold text-foreground">{s.title}</div>
           <div className="text-sm text-muted-foreground">
             {done ? 'Complete' : active ? <ActivityBubble message={s.activity} /> : 'Pending'}
           </div>
@@ -74,7 +74,7 @@ export default function CareerDiagnostic() {
   }
 
   return (
-    <section className="py-16 md:py-20 px-6 section-dark border-y border-slate-800/60">
+    <section className="section-dark border-y border-border px-6 py-16 md:py-20">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-black text-on-dark">
@@ -100,7 +100,7 @@ export default function CareerDiagnostic() {
                 <button
                   type="button"
                   onClick={startJourney}
-                  className="px-4 py-2 border border-slate-600 text-slate-300 hover:border-slate-500 hover:text-white rounded-lg text-sm font-medium transition-all"
+                  className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-all hover:border-primary/35 hover:text-foreground"
                 >
                   Run demo
                 </button>
@@ -113,7 +113,7 @@ export default function CareerDiagnostic() {
                     setCurrent(null);
                     setLog([]);
                   }}
-                  className="px-4 py-2 border border-slate-600 text-slate-300 hover:border-slate-500 hover:text-white rounded-lg text-sm font-medium transition-all"
+                  className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-muted-foreground transition-all hover:border-primary/35 hover:text-foreground"
                 >
                   Reset
                 </button>
@@ -125,7 +125,7 @@ export default function CareerDiagnostic() {
           </div>
 
           <div className="card-dark rounded-xl p-6">
-            <div className="font-semibold text-white mb-3">Live activity</div>
+            <div className="mb-3 font-semibold text-foreground">Live activity</div>
             <div className="min-h-[120px] text-sm text-muted-foreground">
               {status === 'idle' && (
                 <p>Start the diagnostic to see AI activity and progress.</p>

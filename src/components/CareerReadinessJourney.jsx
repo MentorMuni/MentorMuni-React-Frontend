@@ -44,28 +44,28 @@ const CareerReadinessJourney = () => {
       icon: "bg-[#FF9500]/20 text-[#FF9500]",
       line: "from-[#FF9500]/30",
       card: "border-[#FF9500]/25 hover:border-[#FF9500]/50 hover:shadow-[0_2px_12px_rgba(255,149,0,0.15)]",
-      cta: "text-[#FF9500]"
+      cta: "text-cta"
     },
     cyan: {
       badge: "bg-gradient-to-br from-cyan-600 to-cyan-700",
-      icon: "bg-cyan-500/20 text-cyan-400",
+      icon: "bg-cyan-500/15 text-cyan-700",
       line: "via-cyan-500/30",
       card: "border-cyan-500/20 hover:border-cyan-500/50 hover:shadow-cyan-500/10",
-      cta: "text-cyan-400"
+      cta: "text-cyan-700"
     },
     purple: {
       badge: "bg-gradient-to-br from-purple-600 to-purple-700",
-      icon: "bg-purple-500/20 text-purple-400",
+      icon: "bg-purple-500/15 text-purple-700",
       line: "via-purple-500/30",
       card: "border-purple-500/20 hover:border-purple-500/50 hover:shadow-purple-500/10",
-      cta: "text-purple-400"
+      cta: "text-purple-700"
     },
     emerald: {
       badge: "bg-gradient-to-br from-emerald-600 to-emerald-700",
-      icon: "bg-emerald-500/20 text-emerald-400",
+      icon: "bg-emerald-500/15 text-emerald-700",
       line: "to-emerald-500/30",
       card: "border-emerald-500/20 hover:border-emerald-500/50 hover:shadow-emerald-500/10",
-      cta: "text-emerald-400"
+      cta: "text-emerald-700"
     }
   };
 
@@ -96,7 +96,7 @@ const CareerReadinessJourney = () => {
               <div key={index} className="relative">
                 {/* Step Badge */}
                   <div className="flex justify-center mb-6">
-                    <div className={`w-16 h-16 rounded-full flex items-center justify-center font-black text-on-dark text-xl shadow-lg relative z-10`} style={{ background: `linear-gradient(135deg, var(--primary), var(--secondary))` }}>
+                    <div className={`relative z-10 flex h-16 w-16 items-center justify-center rounded-full text-xl font-black text-white shadow-lg`} style={{ background: `linear-gradient(135deg, var(--primary), var(--secondary))` }}>
                       {step.number}
                     </div>
                   </div>

@@ -33,6 +33,41 @@
   --color-primary-dark: var(--accent-hover);
   --color-primary-foreground: #ffffff;
 
+  /* Extra brand tokens — use in JSX: bg-accent-soft, text-ink, text-brand-teal, bg-cta, etc. */
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-faint: var(--accent-faint);
+  --color-ink: var(--nav-ink);
+  --color-brand-teal: var(--accent-secondary);
+  --color-success-strong: var(--success-link);
+  --color-live: var(--live-indicator);
+  --color-cta: var(--accent-cta);
+  --color-cta-hover: var(--accent-cta-hover);
+  --color-cta-mid: var(--accent-cta-mid);
+  --color-cta-deep: var(--accent-cta-deep);
+  --color-promo-from: var(--promo-gradient-from);
+  --color-promo-via: var(--promo-gradient-via);
+  --color-promo-to: var(--promo-gradient-to);
+  --color-shell-1: var(--shell-skeleton-1);
+  --color-shell-2: var(--shell-skeleton-2);
+  --color-shell-3: var(--shell-skeleton-3);
+  --color-shell-warm: var(--shell-card-warm);
+  --color-shell-cream: var(--shell-card-cream);
+  --color-shell-neutral: var(--shell-card-neutral);
+  --color-warning-bg: var(--warning-bg);
+  --color-warning-text: var(--warning-text);
+  --color-warning-ink-deep: var(--warning-ink-deep);
+  --color-warning-ink-strong: var(--warning-ink-strong);
+  --color-tint-subtle: var(--bg-tint-subtle);
+  --color-icon-muted: var(--text-icon-muted);
+  --color-surface-track: var(--surface-track);
+  --color-surface-muted: var(--surface-muted);
+  --color-inverse-surface: var(--inverse-surface);
+  --color-semantic-cyan-ink: var(--semantic-cyan-ink);
+  --color-brand-whatsapp: var(--brand-whatsapp);
+  --color-brand-whatsapp-hover: var(--brand-whatsapp-hover);
+  --color-brand-linkedin: var(--brand-linkedin);
+  --color-brand-linkedin-hover: var(--brand-linkedin-hover);
+
   --color-secondary: var(--bg-secondary);
   --color-card: var(--bg-card);
   --color-surface: var(--bg-card);
@@ -44,7 +79,9 @@
   --shadow-soft: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
   --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.05);
   --shadow-nav: 0 1px 20px rgba(0, 0, 0, 0.06);
-  --shadow-button: 0 4px 14px rgba(255, 149, 0, 0.25);
+  --shadow-button: var(--shadow-button-value);
+  --shadow-button-strong: var(--shadow-button-strong-value);
+  --shadow-cta-card: var(--shadow-cta-card-value);
 
   --radius-lg: 1rem;
   --radius-xl: 1.25rem;

@@ -29,7 +29,7 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 const MM_FIELD_INVALID =
   'border-2 border-red-500 bg-red-50 ring-2 ring-red-500/25 focus:border-red-600 focus:ring-2 focus:ring-red-500/35';
 const MM_FIELD_VALID =
-  'border border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30';
+  'border border-border hover:border-border focus:border-cta focus:ring-2 focus:ring-cta/30';
 
 const ASSESSMENT_FOCUS_APTITUDE = 'aptitude';
 const ASSESSMENT_FOCUS_SKILL = 'skill';
@@ -78,7 +78,7 @@ function PlacementEngagement({ isSkillMode }) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05, duration: 0.35 }}
-            className="group relative overflow-hidden rounded-2xl border border-[#E8E4DC] bg-gradient-to-br from-white to-[#FFFBF5] p-4 shadow-sm ring-1 ring-black/[0.03] transition hover:shadow-md"
+            className="group relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-white to-tint-subtle p-4 shadow-sm ring-1 ring-black/[0.03] transition hover:shadow-md"
           >
             <Quote className="absolute -right-1 -top-1 h-16 w-16 text-orange-100/90" aria-hidden />
             <p className="relative text-[13px] font-bold text-foreground">{item.q}</p>
@@ -256,7 +256,7 @@ function AptitudeEngagement() {
                 <p className="mt-2 text-xs font-medium text-foreground">Often <strong>12 minutes</strong> — think rates per machine, not “divide by 12” blindly.</p>
               )}
             </div>
-            <div className="rounded-xl border border-border bg-[#FAFAFA] p-3">
+            <div className="rounded-xl border border-border bg-surface-muted p-3">
               <p className="text-sm font-semibold text-foreground">What’s 15% of 240?</p>
               <button
                 type="button"
@@ -452,7 +452,7 @@ function PreparingTopBanner() {
     >
       <div className="relative overflow-hidden">
         <div
-          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#FFF4E6] via-white to-[#FFF8EE]"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-r from-warning-bg via-white to-secondary"
           aria-hidden
         />
         <div
@@ -465,7 +465,7 @@ function PreparingTopBanner() {
         <div className="relative mx-auto max-w-6xl px-4 py-3.5 sm:px-6">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between lg:gap-6">
             <div className="flex min-w-0 items-start gap-3">
-              <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FF9500] to-[#EA580C] text-white shadow-lg shadow-orange-500/30">
+              <span className="relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-cta to-cta-deep text-white shadow-lg shadow-button-strong">
                 <Sparkles className="h-5 w-5" aria-hidden />
                 <span className="absolute -right-0.5 -top-0.5 flex h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-white" />
               </span>
@@ -610,14 +610,14 @@ function ReadyGateModal({ open, onClose, onConfirm, isProfessional }) {
                 <button
                   type="button"
                   onClick={onClose}
-                  className="rounded-xl border-2 border-border bg-white px-5 py-3.5 text-sm font-bold text-muted-foreground transition hover:bg-[#FAFAFA]"
+                  className="rounded-xl border-2 border-border bg-white px-5 py-3.5 text-sm font-bold text-muted-foreground transition hover:bg-surface-muted"
                 >
                   Not yet
                 </button>
                 <button
                   type="button"
                   onClick={onConfirm}
-                  className="rounded-xl bg-gradient-to-r from-[#FF9500] to-[#EA580C] px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-orange-500/30 transition hover:brightness-[1.05] active:scale-[0.99]"
+                  className="rounded-xl bg-gradient-to-r from-cta to-cta-deep px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-button-strong transition hover:brightness-[1.05] active:scale-[0.99]"
                 >
                   I’m ready — start the test
                 </button>
@@ -672,7 +672,7 @@ function PersonalDetailsModal({
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 10, scale: 0.98 }}
           transition={{ type: 'spring', stiffness: 420, damping: 34 }}
-          className="relative z-10 w-full max-w-xl rounded-3xl border border-[#FFD9A8]/90 bg-white p-5 shadow-2xl sm:p-6"
+          className="relative z-10 w-full max-w-xl rounded-3xl border border-warning-bg/80 bg-white p-5 shadow-2xl sm:p-6"
         >
           <button
             type="button"
@@ -683,7 +683,7 @@ function PersonalDetailsModal({
             <X className="h-5 w-5" />
           </button>
           <div className="mb-4 flex items-start gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#FFF4E6] text-[#EA580C] ring-1 ring-orange-200">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-warning-bg text-[#EA580C] ring-1 ring-orange-200">
               <UserRound className="h-5 w-5" />
             </span>
             <div>
@@ -697,7 +697,7 @@ function PersonalDetailsModal({
           <div className="space-y-4">
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-xs font-bold text-foreground" htmlFor="prep-lounge-email">
-                <Mail className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
+                <Mail className="h-3.5 w-3.5 text-cta" aria-hidden />
                 Email <span className="text-red-400">*</span>
               </label>
               <input
@@ -726,7 +726,7 @@ function PersonalDetailsModal({
 
             <div className="space-y-2">
               <label className="flex items-center gap-2 text-xs font-bold text-foreground" htmlFor="prep-lounge-phone">
-                <Phone className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
+                <Phone className="h-3.5 w-3.5 text-cta" aria-hidden />
                 WhatsApp / phone <span className="text-red-400">*</span>
               </label>
               <input
@@ -757,7 +757,7 @@ function PersonalDetailsModal({
             {!isPro && (
               <div className="space-y-2">
                 <label className="flex items-center gap-2 text-xs font-bold text-foreground" htmlFor="prep-lounge-college">
-                  <Building2 className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
+                  <Building2 className="h-3.5 w-3.5 text-cta" aria-hidden />
                   College / university <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -788,7 +788,7 @@ function PersonalDetailsModal({
             <button
               type="button"
               onClick={onSave}
-              className="rounded-xl bg-gradient-to-r from-[#FF9500] to-[#EA580C] px-5 py-2.5 text-sm font-bold text-white shadow-md transition hover:brightness-105"
+              className="rounded-xl bg-gradient-to-r from-cta to-cta-deep px-5 py-2.5 text-sm font-bold text-white shadow-md transition hover:brightness-105"
             >
               Save & continue
             </button>
@@ -916,9 +916,9 @@ export default function PrepLoungePanel({
   ];
 
   return (
-    <div className="relative min-h-screen overflow-x-hidden bg-[#FFFDF8] font-sans">
+    <div className="relative min-h-screen overflow-x-hidden mm-site-theme">
       <div
-        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,rgba(255,149,0,0.12),transparent)]"
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,var(--ambient-glow-cta),transparent)]"
         aria-hidden
       />
 
@@ -933,7 +933,7 @@ export default function PrepLoungePanel({
           {planLoading && (
             <div className="hidden h-1.5 w-28 overflow-hidden rounded-full bg-orange-100 sm:block" aria-hidden>
               <motion.div
-                className="h-full w-1/2 rounded-full bg-gradient-to-r from-[#FF9500] to-amber-400"
+                className="h-full w-1/2 rounded-full bg-gradient-to-r from-cta to-amber-400"
                 animate={{ x: ['-100%', '200%'] }}
                 transition={{ duration: 1.2, repeat: Infinity, ease: 'linear' }}
               />
@@ -963,7 +963,7 @@ export default function PrepLoungePanel({
                   className={`relative rounded-xl border px-3 py-2.5 transition ${
                     active
                       ? 'border-transparent bg-white shadow-md ring-2 ring-offset-0 ring-black/5'
-                      : 'border-border bg-[#FAFAFA]'
+                      : 'border-border bg-surface-muted'
                   }`}
                 >
                   {active && (
@@ -1024,7 +1024,7 @@ export default function PrepLoungePanel({
             </div>
 
             {profile && setProfile && (
-              <div className="rounded-3xl border border-[#FFD9A8]/90 bg-gradient-to-b from-white to-[#FFFBF7] p-5 shadow-md sm:p-6">
+              <div className="rounded-3xl border border-warning-bg/80 bg-gradient-to-b from-white to-tint-subtle p-5 shadow-md sm:p-6">
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h2 className="text-sm font-black text-foreground">Personal details</h2>
@@ -1035,7 +1035,7 @@ export default function PrepLoungePanel({
                   <button
                     type="button"
                     onClick={() => setShowDetailsModal(true)}
-                    className="rounded-lg border border-[#FFD9A8] bg-white px-3 py-2 text-xs font-bold text-[#B45309] transition hover:bg-[#FFF8EE]"
+                    className="rounded-lg border border-warning-bg bg-white px-3 py-2 text-xs font-bold text-warning-ink-strong transition hover:bg-secondary"
                   >
                     Open form
                   </button>
@@ -1067,7 +1067,7 @@ export default function PrepLoungePanel({
                     }
                     setShowReadyModal(true);
                   }}
-                  className="w-full rounded-2xl bg-gradient-to-r from-[#FF9500] to-[#EA580C] py-3.5 text-sm font-bold text-white shadow-lg shadow-orange-500/25 transition hover:brightness-105 active:scale-[0.99]"
+                  className="w-full rounded-2xl bg-gradient-to-r from-cta to-cta-deep py-3.5 text-sm font-bold text-white shadow-lg shadow-button transition hover:brightness-105 active:scale-[0.99]"
                 >
                   Appear for test
                 </button>
@@ -1075,15 +1075,15 @@ export default function PrepLoungePanel({
                 <button
                   type="button"
                   onClick={onRetry}
-                  className="w-full rounded-2xl border-2 border-[#FF9500] bg-[#FFF8EE] py-3.5 text-sm font-bold text-[#B45309]"
+                  className="w-full rounded-2xl border-2 border-cta bg-secondary py-3.5 text-sm font-bold text-warning-ink-strong"
                 >
                   Try generating again
                 </button>
               ) : (
                 <div className="space-y-3 text-center">
                   <div className="relative mx-auto h-10 w-10">
-                    <div className="absolute inset-0 rounded-full border-2 border-[#FF9500]/20" />
-                    <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-[#FF9500] animate-spin" />
+                    <div className="absolute inset-0 rounded-full border-2 border-cta/20" />
+                    <div className="absolute inset-0 rounded-full border-2 border-transparent border-t-cta animate-spin" />
                   </div>
                   <p className="text-sm font-bold text-foreground">Generating your questions…</p>
                   <p className="text-xs leading-relaxed text-muted-foreground">

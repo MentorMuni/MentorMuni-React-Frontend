@@ -41,14 +41,14 @@ const CareerJourney = () => {
   ];
 
   return (
-    <section className="py-16 md:py-24 px-6 bg-gradient-to-b from-transparent via-slate-900/20 to-transparent">
+    <section className="border-y border-border bg-gradient-to-b from-accent-soft/30 via-background to-secondary/35 py-16 md:py-24 px-6">
       <div className="max-w-6xl mx-auto">
         {/* Section Header */}
         <div className="text-center mb-14">
-          <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
+          <h2 className="text-3xl md:text-4xl font-black text-foreground mb-4">
             How MentorMuni Works
           </h2>
-          <p className="text-lg text-slate-300 max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Three simple steps to understand where you stand and what's holding you back from your dream tech job
           </p>
         </div>
@@ -56,7 +56,7 @@ const CareerJourney = () => {
         {/* Steps Container */}
         <div className="grid md:grid-cols-3 gap-8 relative">
           {/* Connection Line (Desktop) */}
-          <div className="hidden md:block absolute top-20 left-0 right-0 h-1 bg-gradient-to-r from-[#FF9500]/20 via-cyan-500/20 to-purple-500/20"></div>
+          <div className="hidden md:block absolute top-20 left-0 right-0 h-1 bg-gradient-to-r from-cta/25 via-cyan-500/25 to-purple-500/25"></div>
 
           {/* Steps */}
           {steps.map((step, index) => {
@@ -65,7 +65,7 @@ const CareerJourney = () => {
             return (
               <div key={index} className="relative">
                 {/* Step Card */}
-                <div className="bg-gradient-to-br from-slate-800/50 to-slate-800/20 border border-slate-700/50 rounded-2xl p-8 hover:border-slate-600 transition-all h-full flex flex-col">
+                <div className="flex h-full flex-col rounded-2xl border border-border bg-card p-8 shadow-[var(--shadow-card)] transition-all hover:border-cta/30">
                   {/* Step Number Badge */}
                   {step.color === "indigo" && (
                     <div className={`w-16 h-16 bg-gradient-to-br ${step.bgGradient} rounded-full flex items-center justify-center mb-6 flex-shrink-0 relative z-10 shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.2)]`}>
@@ -86,24 +86,24 @@ const CareerJourney = () => {
                   {/* Step Icon */}
                   <div className="mb-4 flex-shrink-0">
                     {step.color === "indigo" && (
-                      <div className="w-12 h-12 rounded-xl bg-[#FF9500]/20 flex items-center justify-center">
-                        <Icon className="w-6 h-6 text-[#FF9500]" />
+                      <div className="w-12 h-12 rounded-xl bg-cta/15 flex items-center justify-center">
+                        <Icon className="w-6 h-6 text-cta" />
                       </div>
                     )}
                     {step.color === "cyan" && (
-                      <div className="w-12 h-12 rounded-xl bg-cyan-500/20 flex items-center justify-center">
-                        <Icon className="w-6 h-6 text-cyan-400" />
+                      <div className="w-12 h-12 rounded-xl bg-cyan-500/15 flex items-center justify-center">
+                        <Icon className="w-6 h-6 text-cyan-700" />
                       </div>
                     )}
                     {step.color === "purple" && (
-                      <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
-                        <Icon className="w-6 h-6 text-purple-400" />
+                      <div className="w-12 h-12 rounded-xl bg-purple-500/15 flex items-center justify-center">
+                        <Icon className="w-6 h-6 text-purple-700" />
                       </div>
                     )}
                   </div>
 
                   {/* Content */}
-                  <h3 className="text-xl font-bold text-white mb-3 flex-grow">
+                  <h3 className="text-xl font-bold text-foreground mb-3 flex-grow">
                     {step.title}
                   </h3>
                   <p className="text-muted-foreground text-sm leading-relaxed mb-6">
@@ -111,27 +111,27 @@ const CareerJourney = () => {
                   </p>
 
                   {/* CTA Link */}
-                  {step.color === "indigo" && (
-                    <Link 
-                      to={step.href} 
-                      className="inline-flex items-center gap-2 text-[#FF9500] font-semibold text-sm group hover:gap-3 transition-all"
-                    >
+                    {step.color === "indigo" && (
+                      <Link 
+                        to={step.href} 
+                        className="inline-flex items-center gap-2 text-cta font-semibold text-sm group hover:gap-3 transition-all"
+                      >
                       Start now <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   )}
-                  {step.color === "cyan" && (
-                    <Link 
-                      to={step.href} 
-                      className="inline-flex items-center gap-2 text-cyan-400 font-semibold text-sm group hover:gap-3 transition-all"
-                    >
+                    {step.color === "cyan" && (
+                      <Link 
+                        to={step.href} 
+                        className="inline-flex items-center gap-2 text-cyan-700 font-semibold text-sm group hover:gap-3 transition-all"
+                      >
                       Start now <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   )}
-                  {step.color === "purple" && (
-                    <Link 
-                      to={step.href} 
-                      className="inline-flex items-center gap-2 text-purple-400 font-semibold text-sm group hover:gap-3 transition-all"
-                    >
+                    {step.color === "purple" && (
+                      <Link 
+                        to={step.href} 
+                        className="inline-flex items-center gap-2 text-purple-700 font-semibold text-sm group hover:gap-3 transition-all"
+                      >
                       Start now <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </Link>
                   )}
@@ -146,7 +146,7 @@ const CareerJourney = () => {
           <p className="text-muted-foreground mb-6">All tools are completely free with your first 3 attempts on each.</p>
           <Link 
             to="/start-assessment" 
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#FF9500] hover:to-[#CC7000] text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] group"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-cta to-[#E88600] hover:from-cta hover:to-[#CC7000] text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-[1.02] group"
           >
             <span>{PRIMARY_CTA_LABEL}</span>
             <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />

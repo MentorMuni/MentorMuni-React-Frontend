@@ -25,9 +25,9 @@ const PHASES = [
       'About five minutes · no signup · no payment',
     ],
     Icon: ClipboardCheck,
-    accent: 'from-[#FF9500] to-[#FFB347]',
-    borderAccent: 'border-[#FF9500]/45',
-    iconBg: 'bg-[#FF9500]/15 text-[#CC7000]',
+    accent: 'from-sky-400 to-primary',
+    borderAccent: 'border-primary/40',
+    iconBg: 'bg-accent-soft text-primary',
   },
   {
     step: '02',
@@ -40,9 +40,9 @@ const PHASES = [
       'Focus on your gaps, not a generic syllabus',
     ],
     Icon: Users,
-    accent: 'from-[#FFB347] to-[#FF9500]',
-    borderAccent: 'border-[#FFB347]/40',
-    iconBg: 'bg-[#FFF4E0] text-[#CC7000]',
+    accent: 'from-cyan-400 to-teal-400',
+    borderAccent: 'border-brand-teal/35',
+    iconBg: 'bg-accent-soft text-brand-teal',
   },
   {
     step: '03',
@@ -55,13 +55,13 @@ const PHASES = [
       'Stronger resume and “tell me about your project” stories',
     ],
     Icon: Mic2,
-    accent: 'from-[#FFD580] to-[#FFB347]',
-    borderAccent: 'border-[#FFB347]/40',
-    iconBg: 'bg-[#FFF4E0] text-[#CC7000]',
+    accent: 'from-primary to-cyan-500',
+    borderAccent: 'border-primary/35',
+    iconBg: 'bg-accent-soft text-primary',
   },
   {
     step: '04',
-    title: 'Move from prep to offers',
+    title: 'Move from preparation to offers',
     summary:
       'Support continues as you apply: how you present yourself, follow up, and evaluate options—so decisions are intentional, not rushed.',
     outcomes: [
@@ -83,24 +83,24 @@ const STORY_FLOW_RAIL = [
     Icon: ClipboardCheck,
     title: 'Readiness check',
     line: 'Baseline score & gaps—before a real round.',
-    ring: 'from-[#FF9500] to-[#EA580C]',
-    glow: 'rgba(234,88,12,0.2)',
+    ring: 'from-primary to-brand-teal',
+    glow: 'var(--overlay-warm)',
   },
   {
     step: '02',
     Icon: Mic2,
     title: 'AI mock interviews',
     line: 'Practice aloud under pressure—not alone in your room.',
-    ring: 'from-[#f59e0b] to-[#fbbf24]',
-    glow: 'rgba(245,158,11,0.2)',
+    ring: 'from-sky-500 to-cyan-500',
+    glow: 'var(--glow-rail-sky)',
   },
   {
     step: '03',
     Icon: Users,
-    title: 'Mentor-backed prep',
+    title: 'Mentor-backed preparation',
     line: 'Human guidance aligned to your role & timeline.',
-    ring: 'from-[#0891b2] to-[#14b8a6]',
-    glow: 'rgba(8,145,178,0.18)',
+    ring: 'from-cyan-600 to-teal-500',
+    glow: 'var(--glow-story-cyan)',
   },
 ];
 
@@ -125,7 +125,7 @@ function PhaseCard({ phase, index }) {
   return (
     <FadeUp delay={index * 0.06}>
       <article
-        className={`relative h-full overflow-hidden rounded-2xl border border-border bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.05)] transition-colors hover:border-[#FFB347] ${phase.borderAccent} border-t-2`}
+        className={`relative h-full overflow-hidden rounded-2xl border border-border bg-white p-6 shadow-card transition-colors hover:border-primary/35 ${phase.borderAccent} border-t-2`}
       >
         <div
           className={`pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br ${phase.accent} opacity-[0.07] blur-2xl`}
@@ -146,7 +146,7 @@ function PhaseCard({ phase, index }) {
         <ul className="relative mt-4 space-y-2.5 border-t border-border pt-4">
           {phase.outcomes.map((line) => (
             <li key={line} className="flex gap-2.5 text-sm text-muted-foreground">
-              <Check size={16} className="mt-0.5 shrink-0 text-[#FF9500]" strokeWidth={2.5} />
+              <Check size={16} className="mt-0.5 shrink-0 text-primary" strokeWidth={2.5} />
               <span className="leading-snug">{line}</span>
             </li>
           ))}
@@ -184,32 +184,32 @@ function HowItWorksStoryHero({ reduceMotion }) {
   return (
     <section
       ref={heroRef}
-      className="relative overflow-hidden border-b border-border px-5 pb-20 pt-24 sm:px-6 md:pb-24 md:pt-28"
+      className="relative overflow-hidden border-b border-border bg-gradient-to-b from-background via-background to-secondary/50 px-5 pb-20 pt-24 sm:px-6 md:pb-24 md:pt-28"
     >
       <div
-        className="pointer-events-none absolute inset-0 opacity-[0.35]"
+        className="pointer-events-none absolute inset-0 opacity-[0.45]"
         style={{
-          backgroundImage: `radial-gradient(circle at 1px 1px, rgba(180,120,60,0.07) 1px, transparent 0)`,
+          backgroundImage: `radial-gradient(circle at 1px 1px, var(--pattern-dot-cool) 1px, transparent 0)`,
           backgroundSize: '28px 28px',
         }}
         aria-hidden
       />
       <motion.div
         aria-hidden
-        className="pointer-events-none absolute -left-20 top-20 h-[340px] w-[340px] rounded-full bg-[#FF9500]/[0.14] blur-[100px]"
+        className="pointer-events-none absolute -left-24 top-1/4 h-80 w-80 rounded-full bg-[rgba(26,143,196,0.12)] blur-[120px]"
         animate={reduceMotion ? undefined : { x: [0, 20, 0], y: [0, 12, 0] }}
         transition={{ duration: 18, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
         aria-hidden
-        className="pointer-events-none absolute -right-24 bottom-0 h-[280px] w-[280px] rounded-full bg-cyan-400/[0.11] blur-[90px]"
+        className="pointer-events-none absolute -right-20 bottom-1/4 h-72 w-72 rounded-full bg-teal-400/10 blur-[100px]"
         animate={reduceMotion ? undefined : { x: [0, -16, 0] }}
         transition={{ duration: 22, repeat: Infinity, ease: 'easeInOut' }}
       />
       <motion.div
         aria-hidden
-        className="pointer-events-none absolute left-1/2 top-0 h-[480px] w-[min(900px,100vw)] -translate-x-1/2 bg-gradient-to-b from-[#FF9500]/[0.10] to-transparent blur-[100px]"
-        animate={reduceMotion ? undefined : { scale: [1, 1.04, 1], opacity: [0.9, 1, 0.9] }}
+        className="pointer-events-none absolute left-1/2 top-0 h-[min(520px,70vh)] w-[min(900px,100vw)] -translate-x-1/2 bg-gradient-to-b from-[rgba(26,143,196,0.08)] to-transparent blur-[100px]"
+        animate={reduceMotion ? undefined : { scale: [1, 1.04, 1], opacity: [0.85, 1, 0.85] }}
         transition={{ duration: 14, repeat: Infinity, ease: 'easeInOut' }}
       />
 
@@ -221,7 +221,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
       >
         <motion.div variants={item} className="mb-6 flex flex-col items-center text-center sm:mb-8">
           <motion.div
-            className="inline-flex items-center gap-2 rounded-full border border-[#FF9500]/35 bg-white/80 px-4 py-2 shadow-[0_8px_30px_-12px_rgba(234,88,12,0.25)] backdrop-blur-sm"
+            className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-white/85 px-4 py-2 shadow-[0_8px_30px_-12px_rgba(26,143,196,0.12)] backdrop-blur-sm"
             whileHover={reduceMotion ? undefined : { scale: 1.02, y: -1 }}
             transition={{ type: 'spring', stiffness: 400, damping: 24 }}
           >
@@ -230,10 +230,10 @@ function HowItWorksStoryHero({ reduceMotion }) {
               animate={reduceMotion ? undefined : { rotate: [0, 12, -8, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <Sparkles size={15} className="text-[#FF9500]" />
+              <Sparkles size={15} className="text-primary" />
             </motion.span>
-            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#9A3412] sm:text-xs">
-              Our story · your prep
+            <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-primary sm:text-xs">
+              Our story · your preparation
             </span>
           </motion.div>
         </motion.div>
@@ -243,7 +243,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
           className="mx-auto max-w-4xl text-center text-2xl font-extrabold leading-snug sm:text-4xl md:text-5xl tracking-tight text-foreground sm:text-4xl md:text-[2.5rem] md:leading-snug"
         >
           Don&apos;t let your{' '}
-          <span className="bg-gradient-to-r from-[#FF9500] via-[#FFB347] to-[#ea580c] bg-clip-text text-transparent">
+          <span className="bg-gradient-to-r from-primary via-sky-500 to-brand-teal bg-clip-text text-transparent">
             first real panel
           </span>{' '}
           be your first mock
@@ -274,29 +274,29 @@ function HowItWorksStoryHero({ reduceMotion }) {
             </motion.article>
 
             <motion.article
-              className="relative overflow-hidden rounded-[1.35rem] border border-[#FFB347]/45 bg-gradient-to-br from-[#FFFCF7] via-white to-cyan-50/20 p-6 shadow-[0_24px_60px_-28px_rgba(234,88,12,0.2)] md:p-7"
+              className="relative overflow-hidden rounded-[1.35rem] border border-primary/25 bg-gradient-to-br from-background via-white to-accent-soft/50 p-6 shadow-[0_24px_60px_-28px_rgba(26,143,196,0.14)] md:p-7"
               whileHover={reduceMotion ? undefined : { y: -3 }}
               transition={{ type: 'spring', stiffness: 380, damping: 28 }}
             >
               <div
-                className="pointer-events-none absolute -left-12 bottom-0 h-36 w-36 rounded-full bg-[#FF9500]/[0.12] blur-3xl"
+                className="pointer-events-none absolute -left-12 bottom-0 h-36 w-36 rounded-full bg-primary/10 blur-3xl"
                 aria-hidden
               />
-              <span className="relative inline-flex rounded-md bg-[#FF9500]/15 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#9A3412]">
+              <span className="relative inline-flex rounded-md bg-accent-soft px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-primary">
                 What we built
               </span>
               <h2 className="relative mt-4 text-xl font-black leading-[1.25] tracking-tight text-foreground md:text-2xl md:leading-[1.2]">
-                One flow—readiness check, AI mocks, mentor prep—before the rounds that actually count.
+                One flow—readiness check, AI mocks, mentor-led preparation—before the rounds that actually count.
               </h2>
               <p className="relative mt-4 text-[15px] leading-[1.7] text-muted-foreground md:text-base">
                 You get a measured baseline, out-loud AI mocks, and mentor support when you want it—so you aren&apos;t
-                improvising when the panel is real. Next: four phases from first check to structured prep—not guesswork.
+                improvising when the panel is real. Next: four phases from first check to structured preparation—not guesswork.
               </p>
               <div className="relative mt-5 flex flex-wrap gap-2">
                 {['Free check first', 'Mocks that feel real', 'Mentors when you want depth'].map((label) => (
                   <span
                     key={label}
-                    className="rounded-lg border border-orange-200/70 bg-white/90 px-3 py-1.5 text-[11px] font-bold text-[#7c2d12] shadow-sm"
+                    className="rounded-lg border border-border bg-secondary/80 px-3 py-1.5 text-[11px] font-bold text-foreground shadow-sm"
                   >
                     {label}
                   </span>
@@ -310,9 +310,9 @@ function HowItWorksStoryHero({ reduceMotion }) {
               <p className="mb-4 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-hint lg:text-left">
                 The thread we follow
               </p>
-              <div className="relative rounded-2xl border border-border bg-white/90 p-5 shadow-[0_12px_40px_-20px_rgba(0,0,0,0.08)] backdrop-blur-sm md:p-6">
+              <div className="relative rounded-2xl border border-border bg-white/90 p-5 shadow-card backdrop-blur-sm md:p-6">
                 <motion.div
-                  className="absolute left-[1.35rem] top-14 bottom-14 w-px bg-gradient-to-b from-[#FF9500]/50 via-amber-200/90 to-cyan-400/40 md:left-[1.5rem]"
+                  className="absolute left-[1.35rem] top-14 bottom-14 w-px bg-gradient-to-b from-primary/60 via-sky-300/70 to-brand-teal/45 md:left-[1.5rem]"
                   aria-hidden
                   initial={{ scaleY: reduceMotion ? 1 : 0 }}
                   animate={{ scaleY: 1 }}
@@ -353,7 +353,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
                           <Icon className="relative shrink-0 drop-shadow-sm" size={20} strokeWidth={2} />
                         </motion.div>
                         <div className="min-w-0 pt-0.5">
-                          <p className="text-[10px] font-bold uppercase tracking-wider text-[#999999]">Step {row.step}</p>
+                          <p className="text-[10px] font-bold uppercase tracking-wider text-icon-muted">Step {row.step}</p>
                           <p className="mt-0.5 font-bold text-foreground">{row.title}</p>
                           <p className="mt-1 text-sm leading-snug text-muted-foreground">{row.line}</p>
                         </div>
@@ -373,7 +373,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
 export default function HowItWorks() {
   const reduceMotion = useReducedMotion();
   return (
-    <div className="min-h-screen bg-[#FFFDF8] font-sans text-foreground">
+    <div className="min-h-screen mm-site-theme overflow-x-hidden">
       <HowItWorksStoryHero reduceMotion={reduceMotion} />
 
       {/* Phases grid */}
@@ -399,14 +399,14 @@ export default function HowItWorks() {
       <section className="border-t border-border px-6 py-16 md:py-20">
         <div className="mx-auto max-w-3xl">
           <FadeUp>
-            <blockquote className="rounded-2xl border border-border bg-white p-8 md:p-10">
-              <p className="text-[11px] font-bold uppercase tracking-widest text-[#FF9500]/90">Student feedback</p>
+            <blockquote className="rounded-2xl border border-border bg-card p-8 md:p-10">
+              <p className="text-[11px] font-bold uppercase tracking-widest text-primary/90">Student feedback</p>
               <p className="mt-4 text-base leading-relaxed text-muted-foreground md:text-lg">
                 After the skill gap analysis I finally knew what to focus on. The mock interview feedback was specific—
                 not generic advice—and changed how I structure answers under pressure.
               </p>
               <footer className="mt-6 flex flex-wrap items-center gap-3 border-t border-border pt-6">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#FF9500]/30 text-sm font-bold text-[#CC7000]">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-soft text-sm font-bold text-primary">
                   V
                 </div>
                 <div>
@@ -419,7 +419,7 @@ export default function HowItWorks() {
       </section>
 
       {/* CTA */}
-      <section className="border-t border-border bg-gradient-to-b from-[#FFF8EE] to-[#FFFDF8] px-6 py-16 md:py-20">
+      <section className="border-t border-border bg-background px-6 py-16 md:py-20">
         <FadeUp>
           <div className="mx-auto max-w-lg text-center">
             <h2 className="text-2xl font-bold text-foreground">Start with the free readiness check</h2>
@@ -431,14 +431,14 @@ export default function HowItWorks() {
               <button
                 type="button"
                 onClick={goToStartAssessment}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-all hover:bg-[#E88600] sm:w-auto"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-cta px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-all hover:bg-cta-hover sm:w-auto"
               >
                 {PRIMARY_CTA_LABEL}
                 <ArrowRight size={16} />
               </button>
               <Link
                 to="/waitlist"
-                className="inline-flex w-full items-center justify-center rounded-xl border border-[#FF9500] px-7 py-3.5 text-sm font-semibold text-[#FF9500] transition-colors hover:bg-[#FFF4E0] sm:w-auto"
+                className="inline-flex w-full items-center justify-center rounded-xl border border-cta px-7 py-3.5 text-sm font-semibold text-cta transition-colors hover:bg-warning-bg sm:w-auto"
               >
                 Join mentorship waitlist
               </Link>

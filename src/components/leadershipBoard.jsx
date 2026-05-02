@@ -137,27 +137,19 @@ export default function LeadershipBoard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE] text-foreground pt-[4.75rem] pb-16">
-      {/* ambient */}
-      <div className="pointer-events-none fixed inset-0 overflow-hidden">
-        <div className="absolute -left-32 top-20 h-[420px] w-[420px] rounded-full bg-[#FF9500]/8 blur-[100px]" />
-        <div className="absolute right-0 top-40 h-[380px] w-[380px] rounded-full bg-fuchsia-400/8 blur-[90px]" />
-        <div className="absolute bottom-0 left-1/3 h-[300px] w-[300px] rounded-full bg-cyan-400/6 blur-[80px]" />
-      </div>
-
-      <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6">
-        {/* hero */}
-        <div className="pt-8 sm:pt-12 text-center">
+    <div className="min-h-screen mm-site-theme overflow-x-hidden pb-16 text-foreground pt-[4.75rem]">
+      <section className="mm-marketing-hero-backdrop border-b border-border">
+        <div className="relative z-10 mx-auto max-w-4xl px-4 pb-12 pt-8 text-center sm:px-6 sm:pt-12 sm:pb-14">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.45 }}
-            className="inline-flex items-center gap-2 rounded-full border border-[#FFB347]/30 bg-[#FFF4E0] px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-[#CC7000]"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-warning-bg/90 px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-warning-text"
           >
-            <Flame className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
+            <Flame className="h-3.5 w-3.5 text-cta" aria-hidden />
             Open leaderboard · Be early
           </motion.div>
-          <h1 className="mt-5 font-black tracking-tight text-[2rem] leading-[1.1] sm:text-5xl text-foreground">
+          <h1 className="mt-5 text-[2rem] font-black leading-[1.1] tracking-tight text-foreground sm:text-5xl">
             Leadership Board
           </h1>
           <p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
@@ -167,21 +159,23 @@ export default function LeadershipBoard() {
           <button
             type="button"
             onClick={goToStartAssessment}
-            className="mx-auto mt-5 flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#FF9500] to-orange-600 px-6 py-3 text-sm font-bold text-white shadow-lg shadow-orange-500/25 transition hover:from-[#E88600] hover:to-orange-700"
+            className="mx-auto mt-5 flex items-center justify-center gap-2 rounded-2xl bg-cta px-6 py-3 text-sm font-bold text-white shadow-button transition hover:bg-cta-hover"
           >
             {PRIMARY_CTA_LABEL}
           </button>
         </div>
+      </section>
 
+      <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6">
         {/* mode toggle */}
         <div className="mt-8 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-center sm:gap-4">
-          <div className="flex rounded-2xl border border-border bg-white p-1 shadow-sm">
+          <div className="flex rounded-2xl border border-border bg-card p-1 shadow-sm">
             <button
               type="button"
               onClick={() => setMode('general')}
               className={`flex flex-1 items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-bold transition-all sm:flex-initial sm:px-6 ${
                 mode === 'general'
-                  ? 'bg-gradient-to-r from-[#FF9500] to-[#E88600] text-white shadow-lg shadow-orange-500/25'
+                  ? 'bg-cta text-white shadow-lg shadow-button'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -292,7 +286,7 @@ export default function LeadershipBoard() {
           <button
             type="button"
             onClick={() => handleShare('copy')}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-3 py-1.5 text-xs font-semibold text-foreground transition hover:bg-[#FFF4E0]"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground transition hover:bg-accent-soft"
           >
             {copied ? <Check className="h-3.5 w-3.5 text-emerald-600" /> : <Link2 className="h-3.5 w-3.5" aria-hidden />}
             {copied ? 'Copied' : 'Copy link'}
@@ -303,7 +297,7 @@ export default function LeadershipBoard() {
         <div className="mt-10 rounded-3xl border border-border bg-white p-1 shadow-sm">
           <div className="flex flex-col gap-1 border-b border-border px-4 py-3 sm:flex-row sm:items-center sm:justify-between sm:px-5">
             <div className="flex flex-wrap items-center gap-2 text-sm font-bold text-foreground">
-              <Trophy className="h-5 w-5 shrink-0 text-[#FF9500]" aria-hidden />
+              <Trophy className="h-5 w-5 shrink-0 text-cta" aria-hidden />
               <span>
                 {mode === 'college' ? 'College leaderboard' : 'National leaderboard'}
                 {effectiveAudience !== 'all' && (
@@ -316,7 +310,7 @@ export default function LeadershipBoard() {
               </span>
             </div>
             {filtered.length > 0 && (
-              <span className="rounded-full bg-[#FFF4E0] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-[#CC7000]">
+              <span className="rounded-full bg-warning-bg px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-warning-text">
                 Page {safePage} / {totalPages}
               </span>
             )}
@@ -364,7 +358,7 @@ export default function LeadershipBoard() {
           )}
 
           {(mode === 'general' || (collegeQuery.trim() && filtered.length > 0)) && filtered.length > 0 && (
-              <ul className="divide-y divide-[#F0ECE0]">
+              <ul className="divide-y divide-border">
                 {pageSlice.map((row, i) => {
                   const globalRank = (safePage - 1) * PAGE_SIZE + i + 1;
                   const badge = rankBadgeMeta(globalRank);
@@ -375,7 +369,7 @@ export default function LeadershipBoard() {
                       className="flex flex-col gap-3 px-4 py-4 sm:flex-row sm:items-center sm:gap-4 sm:px-5"
                     >
                       <div className="flex items-center gap-3 sm:w-28 sm:shrink-0">
-                        <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FF9500] to-[#E88600] font-black tabular-nums text-lg text-white shadow-sm">
+                        <span className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-cta to-cta-hover font-black tabular-nums text-lg text-white shadow-sm">
                           {globalRank}
                         </span>
                         {badge && (
@@ -403,7 +397,7 @@ export default function LeadershipBoard() {
                         <p className="hidden text-sm text-muted-foreground sm:block sm:max-w-[140px] sm:truncate">{row.college}</p>
                       )}
                       <div className="flex flex-wrap items-center gap-3 sm:justify-end">
-                        <span className="inline-flex items-center gap-1 rounded-lg border border-[#FF9500]/30 bg-[#FF9500]/10 px-2 py-1 text-xs font-bold tabular-nums text-[#CC7000]">
+                        <span className="inline-flex items-center gap-1 rounded-lg border border-cta/30 bg-cta/10 px-2 py-1 text-xs font-bold tabular-nums text-warning-text">
                           {row.readinessScore} / 100
                         </span>
                         <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-600">
@@ -437,7 +431,7 @@ export default function LeadershipBoard() {
                     onClick={() => setPage(n)}
                     className={`h-9 min-w-[2.25rem] rounded-xl text-xs font-bold transition ${
                       n === safePage
-                        ? 'bg-gradient-to-r from-[#FF9500] to-[#E88600] text-white shadow-lg shadow-orange-500/20'
+                        ? 'bg-gradient-to-r from-cta to-cta-hover text-white shadow-lg shadow-button'
                         : 'border border-border bg-white text-muted-foreground hover:text-foreground'
                     }`}
                   >
@@ -465,7 +459,7 @@ export default function LeadershipBoard() {
         <div className="mt-10 text-center">
           <Link
             to="/"
-            className="text-sm font-semibold text-[#FF9500] underline decoration-[#FF9500]/40 underline-offset-4 hover:text-[#E88600]"
+            className="text-sm font-semibold text-cta underline decoration-cta/40 underline-offset-4 hover:text-cta-hover"
           >
             ← Back to home
           </Link>

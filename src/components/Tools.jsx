@@ -101,41 +101,44 @@ const Tools = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground pt-20 pb-20">
-      <div className="pointer-events-none fixed inset-x-0 top-0 h-[min(55vh,420px)] bg-gradient-to-b from-[#FF9500]/[0.09] to-transparent -z-10" aria-hidden />
-      <div className="max-w-6xl mx-auto px-6">
-        <motion.div
-          initial={{ opacity: 0, y: 18 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-          className="text-center mb-14 max-w-3xl mx-auto"
-        >
-          <p className="text-xs font-semibold uppercase tracking-widest text-[#CC7000] mb-3">
-            Free tools · Same mission as the rest of MentorMuni
-          </p>
-          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold text-foreground mb-4 tracking-tight leading-tight">
-            Know your gaps before the shortlist does
-          </h1>
-          <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
-            Measure first, then fix what filters you out—without guessing where to start.
-          </p>
-        </motion.div>
+    <div className="min-h-screen mm-site-theme overflow-x-hidden pb-20">
+      <section className="mm-marketing-hero-backdrop border-b border-border">
+        <div className="relative z-10 mx-auto max-w-6xl px-6 pb-12 pt-20">
+          <motion.div
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+            className="mx-auto mb-10 max-w-3xl text-center"
+          >
+            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-warning-text">
+              Free tools · Same mission as the rest of MentorMuni
+            </p>
+            <h1 className="mb-4 text-3xl font-extrabold leading-tight tracking-tight text-foreground md:text-4xl lg:text-5xl">
+              Know your gaps before the shortlist does
+            </h1>
+            <p className="text-base leading-relaxed text-muted-foreground md:text-lg">
+              Measure first, then fix what filters you out—without guessing where to start.
+            </p>
+          </motion.div>
 
-        <div className="mb-10 max-w-3xl mx-auto rounded-2xl border border-orange-200/70 bg-gradient-to-r from-amber-50/95 to-[#FFF8EE] px-4 py-4 sm:px-6 sm:py-5">
-          <div className="flex items-start gap-3">
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FF9500] to-amber-600 text-white shadow-sm">
-              <Gift size={20} strokeWidth={2} />
-            </span>
-            <div>
-              <div className="mb-1.5 w-fit">
-                <LimitedRewardLabel />
+          <div className="mx-auto mb-2 max-w-3xl rounded-2xl border border-border bg-gradient-to-r from-accent-soft/90 to-secondary/90 px-4 py-4 shadow-[var(--shadow-card)] sm:px-6 sm:py-5">
+            <div className="flex items-start gap-3">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cta to-cta-mid text-white shadow-sm">
+                <Gift size={20} strokeWidth={2} />
+              </span>
+              <div>
+                <div className="mb-1.5 w-fit">
+                  <LimitedRewardLabel />
+                </div>
+                <p className="text-sm font-bold leading-tight text-foreground">{READINESS_TEST_COUPON_OFFER_HEADLINE}</p>
+                <p className="mt-1 text-xs font-medium leading-snug text-muted-foreground">{READINESS_TEST_COUPON_OFFER_HOW}</p>
               </div>
-              <p className="text-sm font-bold leading-tight text-foreground">{READINESS_TEST_COUPON_OFFER_HEADLINE}</p>
-              <p className="mt-1 text-xs font-medium leading-snug text-muted-foreground">{READINESS_TEST_COUPON_OFFER_HOW}</p>
             </div>
           </div>
         </div>
+      </section>
 
+      <div className="mx-auto max-w-6xl px-6 pt-12">
         <div className="grid md:grid-cols-2 gap-6">
           {tools.map((tool, idx) => {
             const Icon = tool.icon;
@@ -151,14 +154,14 @@ const Tools = () => {
               >
               <Link
                 to={tool.href}
-                className={`group block h-full rounded-2xl border bg-white p-7 shadow-card transition-all ${c.border} ${c.hover} hover:shadow-lg hover:-translate-y-0.5`}
+                className={`group block h-full rounded-2xl border bg-card p-7 shadow-card transition-all ${c.border} ${c.hover} hover:shadow-lg hover:-translate-y-0.5`}
               >
                 <div
                   className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl border ${c.bg} ${c.border}`}
                 >
                   <Icon className={`h-6 w-6 ${c.text}`} strokeWidth={2} />
                 </div>
-                <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-[#CC7000] transition-colors">
+                <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-warning-text transition-colors">
                   {tool.title}
                 </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed mb-5">{tool.description}</p>
@@ -166,7 +169,7 @@ const Tools = () => {
                   {tool.highlights.map((highlight) => (
                     <span
                       key={highlight}
-                      className="text-xs px-2.5 py-1 rounded-full bg-[#FFF8EE] border border-border text-muted-foreground font-medium"
+                      className="text-xs px-2.5 py-1 rounded-full bg-secondary border border-border text-muted-foreground font-medium"
                     >
                       {highlight}
                     </span>
@@ -187,16 +190,16 @@ const Tools = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.4 }}
-          className="mt-14 rounded-2xl border border-border bg-[#FFF8EE] px-6 py-8 text-center"
+          className="mt-14 rounded-2xl border border-border bg-secondary px-6 py-8 text-center"
         >
           <p className="text-sm text-muted-foreground mb-5 max-w-xl mx-auto">
             Start with the <span className="font-semibold text-foreground">readiness score</span> to see where you stand in minutes —{' '}
-            <span className="font-semibold text-[#9A3412]">{READINESS_TEST_COUPON_BADGE}</span>.
+            <span className="font-semibold text-warning-ink-deep">{READINESS_TEST_COUPON_BADGE}</span>.
             Other tools stay free to try with fair usage limits.
           </p>
           <Link
             to="/start-assessment"
-            className="inline-flex items-center gap-2 rounded-xl bg-[#FF9500] px-8 py-3.5 font-bold text-white shadow-button transition-all hover:bg-[#E88600]"
+            className="inline-flex items-center gap-2 rounded-xl bg-cta px-8 py-3.5 font-bold text-white shadow-button transition-all hover:bg-cta-hover"
           >
             Check my readiness — free
             <ArrowRight className="h-5 w-5" />

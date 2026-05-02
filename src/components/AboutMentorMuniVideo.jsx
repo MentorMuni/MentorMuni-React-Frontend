@@ -51,7 +51,7 @@ export default function AboutMentorMuniVideo() {
   const handleVideoPause = () => setPlaying(false);
 
   return (
-    <section className="py-16 md:py-24 px-6 bg-gradient-to-b from-[#FFF8EE] to-[#FFFDF8]">
+    <section className="py-16 md:py-24 px-6 bg-gradient-to-b from-secondary to-background">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">

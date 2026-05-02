@@ -85,68 +85,68 @@ const HERO_PLATFORM_HIGHLIGHT_ICONS = [
 
 const heroValueSpring = { type: 'spring', stiffness: 420, damping: 28, mass: 0.85 };
 
-/** Per-tile accent — full Tailwind classes so each card reads clearly at a glance */
+/** Per-tile accent — bright light cards with vivid color pops */
 const HERO_PLATFORM_TILE_THEMES = [
   {
-    card: 'border-amber-400/50 bg-gradient-to-br from-amber-500/25 via-amber-950/55 to-[#060a12]',
-    icon: 'from-amber-400/55 via-orange-500/35 to-amber-600/25 ring-amber-300/40 shadow-[0_0_20px_rgba(251,191,36,0.2)]',
-    glow: 'bg-amber-400/25',
-    text: 'text-amber-50',
-    line: 'from-amber-300 via-orange-400 to-amber-500',
+    card: 'border-amber-200/80 bg-gradient-to-br from-amber-50 via-white to-orange-50/60 shadow-[0_4px_24px_-8px_rgba(251,191,36,0.25)]',
+    icon: 'from-amber-400 to-orange-500 shadow-[0_6px_20px_-4px_rgba(251,191,36,0.5)]',
+    glow: 'bg-amber-400/15',
+    text: 'text-amber-900',
+    line: 'from-amber-400 via-orange-400 to-amber-500',
   },
   {
-    card: 'border-sky-400/50 bg-gradient-to-br from-sky-500/25 via-slate-900/70 to-[#060a12]',
-    icon: 'from-sky-400/50 via-cyan-500/35 to-blue-600/30 ring-sky-300/40 shadow-[0_0_20px_rgba(56,189,248,0.2)]',
-    glow: 'bg-sky-400/25',
-    text: 'text-sky-50',
-    line: 'from-sky-300 via-cyan-400 to-sky-500',
+    card: 'border-sky-200/80 bg-gradient-to-br from-sky-50 via-white to-cyan-50/60 shadow-[0_4px_24px_-8px_rgba(56,189,248,0.25)]',
+    icon: 'from-sky-400 to-blue-500 shadow-[0_6px_20px_-4px_rgba(56,189,248,0.5)]',
+    glow: 'bg-sky-400/15',
+    text: 'text-sky-900',
+    line: 'from-sky-400 via-cyan-400 to-sky-500',
   },
   {
-    card: 'border-rose-400/45 bg-gradient-to-br from-rose-500/22 via-rose-950/50 to-[#060a12]',
-    icon: 'from-rose-400/50 via-rose-500/35 to-pink-700/25 ring-rose-300/35 shadow-[0_0_20px_rgba(251,113,133,0.18)]',
-    glow: 'bg-rose-400/22',
-    text: 'text-rose-50',
-    line: 'from-rose-300 via-pink-400 to-rose-500',
+    card: 'border-rose-200/80 bg-gradient-to-br from-rose-50 via-white to-pink-50/60 shadow-[0_4px_24px_-8px_rgba(251,113,133,0.25)]',
+    icon: 'from-rose-400 to-pink-500 shadow-[0_6px_20px_-4px_rgba(251,113,133,0.5)]',
+    glow: 'bg-rose-400/15',
+    text: 'text-rose-900',
+    line: 'from-rose-400 via-pink-400 to-rose-500',
   },
   {
-    card: 'border-violet-400/50 bg-gradient-to-br from-violet-500/25 via-violet-950/55 to-[#060a12]',
-    icon: 'from-violet-400/50 via-purple-500/35 to-fuchsia-700/25 ring-violet-300/40 shadow-[0_0_20px_rgba(167,139,250,0.2)]',
-    glow: 'bg-violet-400/22',
-    text: 'text-violet-50',
-    line: 'from-violet-300 via-fuchsia-400 to-violet-500',
+    card: 'border-violet-200/80 bg-gradient-to-br from-violet-50 via-white to-purple-50/60 shadow-[0_4px_24px_-8px_rgba(167,139,250,0.25)]',
+    icon: 'from-violet-400 to-purple-500 shadow-[0_6px_20px_-4px_rgba(167,139,250,0.5)]',
+    glow: 'bg-violet-400/15',
+    text: 'text-violet-900',
+    line: 'from-violet-400 via-purple-400 to-violet-500',
   },
   {
-    card: 'border-emerald-400/50 bg-gradient-to-br from-emerald-500/25 via-emerald-950/50 to-[#060a12]',
-    icon: 'from-emerald-400/50 via-teal-500/35 to-emerald-700/25 ring-emerald-300/40 shadow-[0_0_20px_rgba(52,211,153,0.2)]',
-    glow: 'bg-emerald-400/22',
-    text: 'text-emerald-50',
-    line: 'from-emerald-300 via-teal-400 to-emerald-500',
+    card: 'border-emerald-200/80 bg-gradient-to-br from-emerald-50 via-white to-teal-50/60 shadow-[0_4px_24px_-8px_rgba(52,211,153,0.25)]',
+    icon: 'from-emerald-400 to-teal-500 shadow-[0_6px_20px_-4px_rgba(52,211,153,0.5)]',
+    glow: 'bg-emerald-400/15',
+    text: 'text-emerald-900',
+    line: 'from-emerald-400 via-teal-400 to-emerald-500',
   },
   {
-    card: 'border-blue-400/50 bg-gradient-to-br from-blue-500/25 via-blue-950/55 to-[#060a12]',
-    icon: 'from-blue-400/50 via-indigo-500/35 to-blue-700/30 ring-blue-300/40 shadow-[0_0_20px_rgba(96,165,250,0.2)]',
-    glow: 'bg-blue-400/22',
-    text: 'text-blue-50',
-    line: 'from-blue-300 via-indigo-400 to-blue-500',
+    card: 'border-blue-200/80 bg-gradient-to-br from-blue-50 via-white to-indigo-50/60 shadow-[0_4px_24px_-8px_rgba(96,165,250,0.25)]',
+    icon: 'from-blue-400 to-indigo-500 shadow-[0_6px_20px_-4px_rgba(96,165,250,0.5)]',
+    glow: 'bg-blue-400/15',
+    text: 'text-blue-900',
+    line: 'from-blue-400 via-indigo-400 to-blue-500',
   },
   {
-    card: 'border-teal-400/50 bg-gradient-to-br from-teal-500/25 via-teal-950/50 to-[#060a12]',
-    icon: 'from-teal-400/50 via-cyan-600/30 to-teal-700/25 ring-teal-300/40 shadow-[0_0_20px_rgba(45,212,191,0.2)]',
-    glow: 'bg-teal-400/22',
-    text: 'text-teal-50',
-    line: 'from-teal-300 via-cyan-400 to-teal-500',
+    card: 'border-teal-200/80 bg-gradient-to-br from-teal-50 via-white to-cyan-50/60 shadow-[0_4px_24px_-8px_rgba(45,212,191,0.25)]',
+    icon: 'from-teal-400 to-cyan-500 shadow-[0_6px_20px_-4px_rgba(45,212,191,0.5)]',
+    glow: 'bg-teal-400/15',
+    text: 'text-teal-900',
+    line: 'from-teal-400 via-cyan-400 to-teal-500',
   },
   {
-    card: 'border-fuchsia-400/50 bg-gradient-to-br from-fuchsia-500/25 via-purple-950/55 to-[#060a12]',
-    icon: 'from-fuchsia-400/50 via-purple-500/35 to-pink-600/25 ring-fuchsia-300/40 shadow-[0_0_22px_rgba(232,121,249,0.22)]',
-    glow: 'bg-fuchsia-400/22',
-    text: 'text-fuchsia-50',
-    line: 'from-fuchsia-300 via-purple-400 to-fuchsia-500',
+    card: 'border-fuchsia-200/80 bg-gradient-to-br from-fuchsia-50 via-white to-pink-50/60 shadow-[0_4px_24px_-8px_rgba(232,121,249,0.25)]',
+    icon: 'from-fuchsia-400 to-purple-500 shadow-[0_6px_20px_-4px_rgba(232,121,249,0.5)]',
+    glow: 'bg-fuchsia-400/15',
+    text: 'text-fuchsia-900',
+    line: 'from-fuchsia-400 via-purple-400 to-fuchsia-500',
   },
 ];
 
 const HERO_PLATFORM_HIGHLIGHT_DETAILS = [
-  'End-to-end prep system, not disconnected tools.',
+  'End-to-end preparation system, not disconnected tools.',
   'Built for campus hiring timelines and pressure.',
   'Practice responses in realistic interview conditions.',
   'Train both technical depth and communication clarity.',
@@ -161,7 +161,7 @@ const HERO_PROBLEM_TICKER = [
   'No interview baseline',
   'Generic practice plans',
   'Weak answer delivery',
-  'Last-minute panic prep',
+  'Last-minute panic preparation',
   'No clear improvement loop',
   'No clarity on role-fit',
   'Inconsistent mock feedback',
@@ -194,62 +194,6 @@ function HeroValueStack({ reduceMotion }) {
 
   return (
     <>
-      <style>{`
-        @keyframes mm-value-border-flow {
-          0% { background-position: 0% 50%; }
-          100% { background-position: 200% 50%; }
-        }
-        .mm-value-border-anim {
-          background: linear-gradient(
-            110deg,
-            rgba(255,149,0,0.95),
-            rgba(34,211,238,0.85),
-            rgba(168,85,247,0.75),
-            rgba(255,149,0,0.95)
-          );
-          background-size: 220% 220%;
-          animation: mm-value-border-flow 9s ease infinite;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .mm-value-border-anim { animation: none; background-position: 40% 50%; }
-        }
-        @keyframes mm-value-mesh-shift {
-          0%, 100% { opacity: 0.35; transform: scale(1) translate(0, 0); }
-          50% { opacity: 0.5; transform: scale(1.03) translate(-1%, 1%); }
-        }
-        .mm-value-mesh {
-          background-image:
-            radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px),
-            radial-gradient(at 80% 20%, rgba(255,149,0,0.12), transparent 50%),
-            radial-gradient(at 20% 80%, rgba(34,211,238,0.1), transparent 45%);
-          background-size: 20px 20px, 100% 100%, 100% 100%;
-          animation: mm-value-mesh-shift 14s ease-in-out infinite;
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .mm-value-mesh { animation: none; opacity: 0.25; }
-        }
-        @keyframes mm-value-blob-1 {
-          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.45; }
-          50% { transform: translate(18px, -14px) scale(1.08); opacity: 0.65; }
-        }
-        @keyframes mm-value-blob-2 {
-          0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.4; }
-          50% { transform: translate(-16px, 12px) scale(1.06); opacity: 0.58; }
-        }
-        @keyframes mm-value-sheen {
-          0% { transform: translateX(-120%); opacity: 0; }
-          20% { opacity: 0.3; }
-          80% { opacity: 0.3; }
-          100% { transform: translateX(120%); opacity: 0; }
-        }
-        .mm-value-blob-1 { animation: mm-value-blob-1 11s ease-in-out infinite; }
-        .mm-value-blob-2 { animation: mm-value-blob-2 13s ease-in-out infinite 1.5s; }
-        .mm-value-sheen { animation: mm-value-sheen 3.8s ease-in-out infinite; }
-        @media (prefers-reduced-motion: reduce) {
-          .mm-value-blob-1, .mm-value-blob-2, .mm-value-sheen { animation: none; }
-        }
-      `}</style>
-
       <motion.section
         initial={reduceMotion ? false : { opacity: 0, y: 28 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -258,134 +202,119 @@ function HeroValueStack({ reduceMotion }) {
         className="relative mt-8 w-full sm:mt-10"
         aria-label="What MentorMuni offers"
       >
-        <div className="relative mx-auto max-w-5xl rounded-[28px] p-[1px] shadow-[0_32px_100px_rgba(0,0,0,0.45)] mm-value-border-anim">
-          <div className="relative overflow-hidden rounded-[27px] border border-white/[0.06] bg-[#05080f]">
-            <div className="pointer-events-none absolute inset-0 mm-value-mesh" aria-hidden />
-            <div
-              className="pointer-events-none absolute -left-20 top-0 h-72 w-72 rounded-full bg-orange-500/20 blur-[100px] mm-value-blob-1"
-              aria-hidden
-            />
-            <div
-              className="pointer-events-none absolute -right-16 bottom-0 h-64 w-64 rounded-full bg-cyan-500/15 blur-[90px] mm-value-blob-2"
-              aria-hidden
-            />
-            <div
-              className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-white/25 to-transparent"
-              aria-hidden
-            />
+        <div className="relative mx-auto max-w-5xl">
+          <div
+            className="pointer-events-none absolute -left-24 top-1/4 h-80 w-80 rounded-full bg-sky-400/10 blur-[120px]"
+            aria-hidden
+          />
+          <div
+            className="pointer-events-none absolute -right-20 bottom-1/4 h-72 w-72 rounded-full bg-teal-400/10 blur-[100px]"
+            aria-hidden
+          />
 
-            <div className="relative z-10 px-4 py-8 sm:px-7 sm:py-10 lg:px-10">
-              <motion.div
-                initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.55, ease: [0.2, 0.8, 0.2, 1] }}
-                className="mb-8 flex flex-col items-center gap-3 text-center"
-              >
-                <motion.span
-                  animate={
-                    reduceMotion
-                      ? undefined
-                      : { rotate: [0, 8, -6, 0], scale: [1, 1.05, 1] }
-                  }
-                  transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-                  className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.07] px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.22em] text-cyan-100/95 backdrop-blur-md sm:text-[11px]"
-                >
-                  <Sparkles className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
-                  Platform stack
-                </motion.span>
-                <h2 className="max-w-3xl text-balance bg-gradient-to-b from-white via-white to-slate-400 bg-clip-text text-xl font-bold tracking-tight text-transparent sm:text-2xl md:text-3xl">
-                  Everything in one place, from practice to performance.
-                </h2>
-                <p className="max-w-xl text-[13px] leading-relaxed text-slate-400 sm:text-sm md:text-base">
-                  Built so students walk into interviews with clarity, confidence, and repeatable performance.
-                </p>
-                <div className="mt-2 flex flex-wrap items-center justify-center gap-2">
-                  <span className="rounded-full border border-white/15 bg-white/[0.05] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-200">
-                    8 integrated modules
-                  </span>
-                  <span className="rounded-full border border-white/15 bg-white/[0.05] px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-200">
-                    1 clear interview workflow
-                  </span>
-                </div>
-              </motion.div>
+          <div className="relative px-4 py-8 sm:px-7 sm:py-10 lg:px-10">
+            <motion.div
+              initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.55, ease: [0.2, 0.8, 0.2, 1] }}
+              className="mb-10 flex flex-col items-center gap-4 text-center"
+            >
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#1A8FC4]/20 bg-[#1A8FC4]/[0.08] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.22em] text-[#1A8FC4] sm:text-[11px]">
+                <Sparkles className="h-3.5 w-3.5" aria-hidden />
+                Platform stack
+              </span>
+              <h2 className="max-w-3xl text-balance text-2xl font-extrabold tracking-tight text-foreground sm:text-3xl md:text-4xl">
+                Everything in one place, from{' '}
+                <span className="bg-gradient-to-r from-[#1A8FC4] to-[#2AAA8A] bg-clip-text text-transparent">
+                  practice to performance.
+                </span>
+              </h2>
+              <p className="max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+                Built so students walk into interviews with clarity, confidence, and repeatable performance.
+              </p>
+              <div className="mt-1 flex flex-wrap items-center justify-center gap-2">
+                <span className="rounded-full border border-[#1A8FC4]/25 bg-[#1A8FC4]/[0.06] px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#15799F]">
+                  8 integrated modules
+                </span>
+                <span className="rounded-full border border-[#2AAA8A]/25 bg-[#2AAA8A]/[0.06] px-3.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#2AAA8A]">
+                  1 clear interview workflow
+                </span>
+              </div>
+            </motion.div>
 
-              <motion.ul
-                initial={reduceMotion ? 'visible' : 'hidden'}
-                whileInView="visible"
-                viewport={{ once: true, amount: 0.12 }}
-                variants={{
-                  hidden: {},
-                  visible: {
-                    transition: {
-                      staggerChildren: reduceMotion ? 0 : 0.065,
-                      delayChildren: reduceMotion ? 0 : 0.12,
-                    },
+            <motion.ul
+              initial={reduceMotion ? 'visible' : 'hidden'}
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.12 }}
+              variants={{
+                hidden: {},
+                visible: {
+                  transition: {
+                    staggerChildren: reduceMotion ? 0 : 0.065,
+                    delayChildren: reduceMotion ? 0 : 0.12,
                   },
-                }}
-                className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4"
-              >
-                {HERO_PLATFORM_HIGHLIGHTS.map((item, idx) => {
-                  const Icon = HERO_PLATFORM_HIGHLIGHT_ICONS[idx] ?? Sparkles;
-                  const theme = HERO_PLATFORM_TILE_THEMES[idx % HERO_PLATFORM_TILE_THEMES.length];
-                  return (
-                    <motion.li
-                      key={item}
-                      custom={idx}
-                      variants={{
-                        hidden: {
-                          opacity: 0,
-                          y: 32,
-                          filter: reduceMotion ? 'none' : 'blur(12px)',
+                },
+              }}
+              className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+            >
+              {HERO_PLATFORM_HIGHLIGHTS.map((item, idx) => {
+                const Icon = HERO_PLATFORM_HIGHLIGHT_ICONS[idx] ?? Sparkles;
+                const theme = HERO_PLATFORM_TILE_THEMES[idx % HERO_PLATFORM_TILE_THEMES.length];
+                return (
+                  <motion.li
+                    key={item}
+                    custom={idx}
+                    variants={{
+                      hidden: {
+                        opacity: 0,
+                        y: 32,
+                        filter: reduceMotion ? 'none' : 'blur(8px)',
+                      },
+                      visible: (i) => ({
+                        opacity: 1,
+                        y: 0,
+                        filter: 'blur(0px)',
+                        transition: {
+                          delay: reduceMotion ? 0 : i * 0.04,
+                          duration: 0.65,
+                          ease: [0.16, 1, 0.3, 1],
                         },
-                        visible: (i) => ({
-                          opacity: 1,
-                          y: 0,
-                          filter: 'blur(0px)',
-                          transition: {
-                            delay: reduceMotion ? 0 : i * 0.04,
-                            duration: 0.65,
-                            ease: [0.16, 1, 0.3, 1],
-                          },
-                        }),
-                      }}
-                      className="list-none"
+                      }),
+                    }}
+                    className="list-none"
+                  >
+                    <motion.div
+                      whileHover={reduceMotion ? undefined : cardSpringHover}
+                      whileTap={reduceMotion ? undefined : cardTap}
+                      className={`group relative flex h-full min-h-[9rem] flex-col overflow-hidden rounded-2xl border p-5 transition-shadow duration-300 hover:shadow-xl sm:min-h-0 ${theme.card}`}
                     >
-                      <motion.div
-                        whileHover={reduceMotion ? undefined : cardSpringHover}
-                        whileTap={reduceMotion ? undefined : cardTap}
-                        className={`group relative h-full min-h-[8.25rem] overflow-hidden rounded-2xl border bg-gradient-to-br p-4 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] sm:min-h-0 ${theme.card}`}
-                      >
-                        <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-                          <div className="mm-value-sheen absolute inset-y-0 w-24 bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-                        </div>
-                        <div
-                          className={`pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full blur-2xl transition-opacity duration-500 group-hover:opacity-100 ${theme.glow} opacity-80`}
-                          aria-hidden
-                        />
-                        <div className="relative flex items-start gap-3.5">
-                          <span
-                            className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br ring-1 transition-transform duration-300 group-hover:scale-110 ${theme.icon}`}
-                          >
-                            <Icon className="h-[18px] w-[18px] text-white drop-shadow-sm transition-transform duration-300 group-hover:rotate-[-8deg]" strokeWidth={2} aria-hidden />
-                          </span>
-                          <div className="min-w-0 flex-1 pt-0.5 text-left">
-                            <p className={`text-[12px] font-semibold leading-snug sm:text-[13px] ${theme.text}`}>{item}</p>
-                            <p className="mt-1 text-[11px] leading-relaxed text-slate-300/95">
-                              {HERO_PLATFORM_HIGHLIGHT_DETAILS[idx]}
-                            </p>
-                          </div>
-                        </div>
-                        <div
-                          className={`pointer-events-none absolute bottom-0 left-4 right-4 h-[2px] origin-left scale-x-0 bg-gradient-to-r opacity-0 transition-all duration-500 ease-out group-hover:scale-x-100 group-hover:opacity-100 ${theme.line}`}
-                          aria-hidden
-                        />
-                      </motion.div>
-                    </motion.li>
-                  );
-                })}
-              </motion.ul>
-            </div>
+                      <div
+                        className={`pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full blur-2xl transition-opacity duration-500 group-hover:opacity-100 ${theme.glow} opacity-60`}
+                        aria-hidden
+                      />
+                      <div className="relative mb-3">
+                        <span
+                          className={`flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br transition-transform duration-300 group-hover:scale-110 group-hover:rotate-[-4deg] ${theme.icon}`}
+                        >
+                          <Icon className="h-5 w-5 text-white drop-shadow-sm" strokeWidth={2} aria-hidden />
+                        </span>
+                      </div>
+                      <div className="relative min-w-0 flex-1 text-left">
+                        <p className={`text-[13px] font-bold leading-snug sm:text-sm ${theme.text}`}>{item}</p>
+                        <p className="mt-1.5 text-[12px] leading-relaxed text-muted-foreground">
+                          {HERO_PLATFORM_HIGHLIGHT_DETAILS[idx]}
+                        </p>
+                      </div>
+                      <div
+                        className={`pointer-events-none absolute bottom-0 left-5 right-5 h-[2px] origin-left scale-x-0 bg-gradient-to-r opacity-0 transition-all duration-500 ease-out group-hover:scale-x-100 group-hover:opacity-100 ${theme.line}`}
+                        aria-hidden
+                      />
+                    </motion.div>
+                  </motion.li>
+                );
+              })}
+            </motion.ul>
           </div>
         </div>
       </motion.section>
@@ -448,7 +377,7 @@ const ComparisonTableCell = ({ value }) => {
     );
   }
   return (
-    <span className="block text-center text-xs font-semibold text-[#EA580C] sm:text-sm">{value}</span>
+    <span className="block text-center text-xs font-semibold text-[#1A8FC4] sm:text-sm">{value}</span>
   );
 };
 
@@ -490,8 +419,8 @@ const FEATURES = [
 const STUDENT_SNIPPETS = [
   {
     avatar: 'V',
-    bg: '#FF9500',
-    gradient: 'from-[#FF9500] via-[#FFB347] to-[#FFD580]',
+    bg: '#1A8FC4',
+    gradient: 'from-[#1A8FC4] via-[#2AAA8A] to-[#7DD3C0]',
     tag: '4th Year · CSE',
     insight: 'Named the real gap',
     text: 'Seniors kept saying “practice more,” but nobody said what to practice. The readiness breakdown pointed at System Design—not everything at once—so I could prepare with a target instead of a guess.',
@@ -549,7 +478,7 @@ const EARLY_BENEFIT_TILES = [
     Icon: Target,
     title: 'What companies actually ask',
     sub: 'Understand how your preparation compares to real panels—not generic textbook lists.',
-    gradient: 'from-[#FF9500] to-[#FFB347]',
+    gradient: 'from-[#1A8FC4] to-[#2AAA8A]',
   },
   {
     Icon: BarChart3,
@@ -609,9 +538,9 @@ function HeroSocialProof({ fullLabel, reduceMotion }) {
   }, [reduceMotion]);
 
   const rings = [
-    { className: 'bg-gradient-to-br from-[#FF9500] to-[#EA580C]' },
+    { className: 'bg-gradient-to-br from-[#1A8FC4] to-[#2AAA8A]' },
     { className: 'bg-gradient-to-br from-[#0891b2] to-[#0e7490]' },
-    { className: 'bg-gradient-to-br from-[#FB923C] to-[#FF9500]' },
+    { className: 'bg-gradient-to-br from-[#2AAA8A] to-[#1A8FC4]' },
   ];
 
   return (
@@ -640,7 +569,7 @@ function HeroSocialProof({ fullLabel, reduceMotion }) {
         ))}
       </div>
       <p className="max-w-[22rem] text-center text-[15px] font-semibold leading-snug text-neutral-800 sm:max-w-none sm:text-left sm:text-[15px]">
-        <span className="tabular-nums font-bold text-[#c2410c]">{count}</span>
+        <span className="tabular-nums font-bold text-[#15799F]">{count}</span>
         <span className="font-semibold text-neutral-800">
           + students checked their readiness… <span className="text-[#9a3412]">When will you?</span>
         </span>
@@ -652,7 +581,7 @@ function HeroSocialProof({ fullLabel, reduceMotion }) {
 function HeroProblemTicker({ reduceMotion }) {
   const tickerItems = [...HERO_PROBLEM_TICKER, ...HERO_PROBLEM_TICKER];
   return (
-    <section className="relative mt-7 w-full overflow-hidden rounded-2xl border border-[#FFD9A8]/80 bg-white/90 shadow-[0_6px_22px_rgba(255,149,0,0.08)]">
+    <section className="relative mt-7 w-full overflow-hidden rounded-2xl border border-[#FFD9A8]/80 bg-white/90 shadow-[0_6px_22px_rgba(26,143,196,0.08)]">
       <div
         className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-white to-transparent"
         aria-hidden
@@ -667,7 +596,7 @@ function HeroProblemTicker({ reduceMotion }) {
             key={`${item}-${idx}`}
             className="inline-flex shrink-0 items-center gap-2 rounded-full border border-slate-200/90 bg-slate-50 px-3 py-1 text-[11px] font-semibold text-slate-700"
           >
-            <span className="h-1.5 w-1.5 rounded-full bg-[#FF9500]" aria-hidden />
+            <span className="h-1.5 w-1.5 rounded-full bg-[#1A8FC4]" aria-hidden />
             {item}
           </span>
         ))}
@@ -682,7 +611,7 @@ function VisualPrepJourney({ reduceMotion }) {
       title: 'Readiness score',
       line: 'See score, strengths, and weakness topics in one report',
       image: 'hr-technical.jpg',
-      tone: 'from-orange-500/35 via-orange-900/30 to-black/40',
+      tone: 'from-sky-500/35 via-sky-900/30 to-black/40',
     },
     {
       title: 'Practice pressure',
@@ -692,7 +621,7 @@ function VisualPrepJourney({ reduceMotion }) {
     },
     {
       title: 'Weekly plan',
-      line: 'Small, consistent steps beat panic prep',
+      line: 'Small, consistent steps beat panic preparation',
       image: 'planner.jpg',
       tone: 'from-emerald-500/30 via-emerald-950/35 to-black/40',
     },
@@ -705,11 +634,11 @@ function VisualPrepJourney({ reduceMotion }) {
   ];
 
   return (
-    <section className="border-t border-slate-100 bg-gradient-to-b from-white to-[#FFF8EE]/60 px-5 py-10 sm:px-6 lg:px-8">
+    <section className="border-t border-slate-100 bg-gradient-to-b from-white to-secondary/60 px-5 py-10 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <FadeUp>
           <div className="mb-6 text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#EA580C]">Your interview prep path</p>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#1A8FC4]">Your interview preparation path</p>
             <h2 className="mt-2 text-2xl font-black tracking-tight text-foreground sm:text-3xl">
               See exactly how you go from confusion to interview-ready.
             </h2>
@@ -739,7 +668,7 @@ function VisualPrepJourney({ reduceMotion }) {
                       <div className="rounded-lg bg-emerald-50/95 px-2 py-1 text-[10px] font-semibold text-emerald-800 shadow-sm">
                         Strengths
                       </div>
-                      <div className="rounded-lg bg-amber-50/95 px-2 py-1 text-[10px] font-semibold text-amber-800 shadow-sm">
+                      <div className="rounded-lg bg-sky-100/95 px-2 py-1 text-[10px] font-semibold text-sky-800 shadow-sm">
                         Weaknesses
                       </div>
                     </div>
@@ -776,12 +705,12 @@ function HeroPlayfulClause({ text, reduceMotion }) {
         <div
           className={`inline-flex max-w-full items-start gap-2 rounded-xl px-3.5 py-2.5 text-left ${
             reduceMotion
-              ? 'border border-orange-100/90 bg-orange-50/50'
-              : 'border border-orange-200/70 bg-gradient-to-br from-orange-50/95 via-white to-cyan-50/40 shadow-[0_6px_24px_-10px_rgba(234,88,12,0.35),0_0_0_1px_rgba(255,149,0,0.08)]'
+              ? 'border border-sky-100/90 bg-sky-50/50'
+              : 'border border-sky-200/70 bg-gradient-to-br from-sky-50/95 via-white to-cyan-50/40 shadow-[0_6px_24px_-10px_rgba(26,143,196,0.35),0_0_0_1px_rgba(26,143,196,0.08)]'
           }`}
         >
         <motion.span
-          className="mt-0.5 shrink-0 text-[#FF9500] drop-shadow-[0_0_10px_rgba(255,149,0,0.45)]"
+          className="mt-0.5 shrink-0 text-[#1A8FC4] drop-shadow-[0_0_10px_rgba(26,143,196,0.45)]"
           aria-hidden
           animate={
             reduceMotion
@@ -868,10 +797,10 @@ const HomePage = () => {
   };
 
   return (
-    <div className="bg-background text-foreground overflow-x-hidden">
+    <div className="mm-site-theme overflow-x-hidden">
       <style>{`
         :focus-visible {
-          outline: 2px solid #FF9500;
+          outline: 2px solid #1A8FC4;
           outline-offset: 3px;
           border-radius: 6px;
         }
@@ -914,7 +843,7 @@ const HomePage = () => {
 
       {/* ════════════════ HERO — copy left · reality-check card right · white field ════════════════ */}
       <section className="relative overflow-hidden border-b-0 bg-gradient-to-b from-slate-50/90 via-white to-[#fff8f0] pb-0 pt-10 md:pt-12 lg:pt-14">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_70%_-10%,rgba(255,149,0,0.12),transparent)]" aria-hidden />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_70%_-10%,rgba(26,143,196,0.12),transparent)]" aria-hidden />
         <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_10%_50%,rgba(14,165,233,0.06),transparent)]" aria-hidden />
         <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-5 sm:px-6 lg:px-8">
           <div className="grid w-full min-w-0 grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-x-12 lg:gap-y-0 xl:gap-x-16">
@@ -925,13 +854,13 @@ const HomePage = () => {
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                 className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 lg:justify-start"
               >
-                <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-orange-200/90 bg-orange-50/90 px-3 py-1.5 text-left text-[11px] font-medium leading-snug text-[#78350f] sm:text-xs">
+                <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-sky-200/90 bg-sky-50/90 px-3 py-1.5 text-left text-[11px] font-medium leading-snug text-[#0c4a6e] sm:text-xs">
                   <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.25)]" aria-hidden />
                   <span className="min-w-0">{HERO_EYEBROW}</span>
                 </span>
                 <div className="inline-flex items-center gap-2 whitespace-nowrap">
                   <span
-                    className="inline-flex rotate-[-2.5deg] items-center rounded-md border-2 border-[#EA580C] bg-gradient-to-br from-amber-50 to-orange-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#9A3412] shadow-[2px_3px_0_0_rgba(234,88,12,0.35)] sm:text-[11px]"
+                    className="inline-flex rotate-[-2.5deg] items-center rounded-md border-2 border-[#1A8FC4] bg-gradient-to-br from-sky-100 to-sky-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#0e5e85] shadow-[2px_3px_0_0_rgba(26,143,196,0.35)] sm:text-[11px]"
                     title="Limited early-bird offer"
                   >
                     {HERO_EARLY_BIRD_STICKER}
@@ -963,7 +892,7 @@ const HomePage = () => {
                     <HeroHeadlineTypewriter
                       phrases={HERO_TYPEWRITER_PHRASES}
                       reducedMotion={reduceMotion}
-                      className="mm-hero-typewriter-line block mm-hero-accent bg-gradient-to-r from-[#ea580c] via-[#FF9500] to-[#f59e0b] bg-clip-text text-transparent"
+                      className="mm-hero-typewriter-line block mm-hero-accent bg-gradient-to-r from-[#15799F] via-[#1A8FC4] to-[#2AAA8A] bg-clip-text text-transparent"
                     />
                   </span>
                 </motion.h1>
@@ -980,11 +909,11 @@ const HomePage = () => {
                     <HeroSocialProof fullLabel={heroCopy.socialProofLine} reduceMotion={reduceMotion} />
                   )}
                   <div
-                    className="mt-5 space-y-2 rounded-xl border border-orange-100/90 bg-orange-50/50 px-4 py-3.5 sm:px-5 sm:py-4"
+                    className="mt-5 space-y-2 rounded-xl border border-sky-100/90 bg-sky-50/50 px-4 py-3.5 sm:px-5 sm:py-4"
                     role="region"
                     aria-label="How MentorMuni works"
                   >
-                    <p className="text-center text-[13px] font-bold leading-relaxed tracking-tight text-[#c2410c] sm:text-left sm:text-sm">
+                    <p className="text-center text-[13px] font-bold leading-relaxed tracking-tight text-[#15799F] sm:text-left sm:text-sm">
                       {HERO_JOURNEY_STEPS}
                     </p>
                     <p className="text-center text-[13px] font-semibold leading-relaxed text-neutral-800 sm:text-left sm:text-sm">
@@ -1002,7 +931,7 @@ const HomePage = () => {
                     </button>
                     <Link
                       to="/contact"
-                      className="inline-flex min-h-[44px] w-full touch-manipulation items-center justify-center rounded-xl border border-border bg-white px-7 py-3.5 text-sm font-bold text-foreground shadow-sm transition-colors hover:border-[#FFB347] hover:bg-[#FFF8EE] active:bg-neutral-50 sm:w-auto"
+                      className="inline-flex min-h-[44px] w-full touch-manipulation items-center justify-center rounded-xl border border-border bg-white px-7 py-3.5 text-sm font-bold text-foreground shadow-sm transition-colors hover:border-[#2AAA8A] hover:bg-secondary active:bg-neutral-50 sm:w-auto"
                     >
                       {SECONDARY_CTA_BOOK_CALL}
                     </Link>
@@ -1045,9 +974,9 @@ const HomePage = () => {
         <div className="mx-auto max-w-6xl">
           <FadeUp>
             <div className="mb-7 text-center md:text-left">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#EA580C]">How it works</p>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#1A8FC4]">How it works</p>
               <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-                Clear workflow. No random prep.
+                Clear workflow. No random preparation.
               </h2>
             </div>
           </FadeUp>
@@ -1055,7 +984,7 @@ const HomePage = () => {
             {HERO_FLOW_STEPS.map((step, idx) => (
               <FadeUp key={step.title} delay={idx * 0.07}>
                 <div className="h-full rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_4px_18px_rgba(15,23,42,0.05)]">
-                  <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#FFF4E0] text-sm font-bold text-[#EA580C]">
+                  <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#e0f0fa] text-sm font-bold text-[#1A8FC4]">
                     {idx + 1}
                   </div>
                   <h3 className="text-base font-bold text-slate-900">{step.title}</h3>
@@ -1083,7 +1012,7 @@ const HomePage = () => {
         <div className="relative z-10 mx-auto max-w-5xl">
           <FadeUp>
             <header className="mb-12 text-center md:mb-14 md:text-left">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-[#EA580C] sm:text-sm sm:tracking-[0.2em]">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-[#1A8FC4] sm:text-sm sm:tracking-[0.2em]">
                 {REAL_PROBLEM_EYEBROW}
               </p>
               <h2
@@ -1127,7 +1056,7 @@ const HomePage = () => {
         <div className="mx-auto max-w-5xl">
           <FadeUp>
             <header className="mb-8 text-center md:mb-10 md:text-left">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-[#EA580C] sm:text-sm sm:tracking-[0.2em]">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-[#1A8FC4] sm:text-sm sm:tracking-[0.2em]">
                 {COMPARISON_TABLE_EYEBROW}
               </p>
               <h2
@@ -1161,7 +1090,7 @@ const HomePage = () => {
                             scope="col"
                             className={`px-3 py-4 text-center text-xs font-bold sm:px-4 sm:text-sm ${
                               isMM
-                                ? 'rounded-tr-xl bg-[#FFF4E6] text-[#EA580C]'
+                                ? 'rounded-tr-xl bg-[#FFF4E6] text-[#1A8FC4]'
                                 : 'text-foreground'
                             }`}
                           >
@@ -1189,7 +1118,7 @@ const HomePage = () => {
                                 key={ci}
                                 className={`px-3 py-3.5 sm:px-4 sm:py-4 ${
                                   isMM
-                                    ? `bg-[#FFF8EE] ${isLast ? 'rounded-br-xl' : ''}`
+                                    ? `bg-secondary ${isLast ? 'rounded-br-xl' : ''}`
                                     : ''
                                 }`}
                               >
@@ -1290,7 +1219,7 @@ const HomePage = () => {
         <div className="mx-auto max-w-5xl">
           <FadeUp>
             <header className="mb-10 text-center md:mb-12 md:text-left">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#EA580C] sm:text-sm">
+              <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#1A8FC4] sm:text-sm">
                 {PROGRAM_6WEEK_EYEBROW}
               </p>
               <h2
@@ -1314,7 +1243,7 @@ const HomePage = () => {
                     <li key={phase.title} className="relative flex gap-4 pb-10 last:pb-0">
                       <div className="flex flex-col items-center">
                         <span
-                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FF9500] shadow-sm ring-4 ring-white"
+                          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#1A8FC4] shadow-sm ring-4 ring-white"
                           aria-hidden
                         />
                         {!isLast && (
@@ -1332,9 +1261,9 @@ const HomePage = () => {
             </FadeUp>
 
             <FadeUp delay={0.1}>
-              <div className="relative rounded-2xl border-2 border-[#FFB347] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.06)] md:p-7">
+              <div className="relative rounded-2xl border-2 border-[#2AAA8A] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.06)] md:p-7">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="inline-block rounded-full bg-[#FF9500] px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-sm">
+                  <span className="inline-block rounded-full bg-[#1A8FC4] px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-sm">
                     {PROGRAM_6WEEK_CARD_BADGE}
                   </span>
                 </div>
@@ -1364,14 +1293,14 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ════════════════ 2ND & 3RD YEAR — prep journey + early-years copy + readiness map ════════════════ */}
-      <section className="relative overflow-hidden border-t-0 bg-gradient-to-b from-[#FFF8EE] via-[#FFF8EE] to-[#FFF8EE] px-5 pb-16 pt-0 sm:px-6">
+      {/* ════════════════ 2ND & 3RD YEAR — preparation journey + early-years copy + readiness map ════════════════ */}
+      <section className="relative overflow-hidden border-t-0 bg-secondary px-5 pb-16 pt-0 sm:px-6">
         <style>{`
           @keyframes mm-flow-arrow {
             0%, 100% { transform: translateX(0); opacity: 0.35; }
             50% { transform: translateX(5px); opacity: 1; }
           }
-          @keyframes mm-prep-journey {
+          @keyframes mm-preparation-journey {
             0%, 8% { left: 16.66%; }
             18%, 32% { left: 50%; }
             42%, 58% { left: 83.33%; }
@@ -1391,7 +1320,7 @@ const HomePage = () => {
           }
           .mm-journey-traveler {
             left: 16.66%;
-            animation: mm-prep-journey 8s cubic-bezier(0.45, 0.02, 0.55, 0.98) infinite;
+            animation: mm-preparation-journey 8s cubic-bezier(0.45, 0.02, 0.55, 0.98) infinite;
           }
           .mm-walk-inner {
             animation: mm-walk-bob 0.42s ease-in-out infinite, mm-logo-float 3s ease-in-out infinite;
@@ -1407,7 +1336,7 @@ const HomePage = () => {
             .mm-step-badge { animation: none !important; }
           }
         `}</style>
-        <div className="pointer-events-none absolute -top-24 right-0 h-80 w-80 rounded-full bg-[rgba(255,149,0,0.12)] blur-[100px]" />
+        <div className="pointer-events-none absolute -top-24 right-0 h-80 w-80 rounded-full bg-[rgba(26,143,196,0.12)] blur-[100px]" />
         <div className="pointer-events-none absolute bottom-0 left-1/4 h-64 w-64 rounded-full bg-[rgba(255,179,71,0.1)] blur-[90px]" />
         <div className="pointer-events-none absolute left-0 top-1/2 h-48 w-48 -translate-y-1/2 rounded-full bg-cyan-400/10 blur-[80px]" />
 
@@ -1427,7 +1356,7 @@ const HomePage = () => {
                 </div>
                 <h2 className="mb-4 text-2xl font-bold leading-tight tracking-tight text-foreground md:text-3xl">
                   Prep for what you&apos;re studying —{' '}
-                  <span className="mm-hero-accent bg-gradient-to-r from-[#FF9500] via-[#f97316] to-[#FFB347] bg-clip-text text-transparent">
+                  <span className="mm-hero-accent bg-gradient-to-r from-[#1A8FC4] via-[#2AAA8A] to-[#7DD3C0] bg-clip-text text-transparent">
                     not someday, from now.
                   </span>
                 </h2>
@@ -1437,7 +1366,7 @@ const HomePage = () => {
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, amount: 0.2 }}
                   transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                  className="mb-5 max-w-xl rounded-2xl border border-[#FFB347]/35 bg-gradient-to-br from-white via-[#FFFCF7] to-[#FFF4E0]/70 p-5 shadow-[0_8px_32px_rgba(255,149,0,0.08)]"
+                  className="mb-5 max-w-xl rounded-2xl border border-[#2AAA8A]/35 bg-gradient-to-br from-white via-[#f0f7ff] to-[#e0f0fa]/70 p-5 shadow-[0_8px_32px_rgba(26,143,196,0.08)]"
                 >
                   <p className="text-base font-bold leading-snug text-foreground sm:text-lg">
                     {EARLY_SECTION_COPY.shortLine}
@@ -1493,7 +1422,7 @@ const HomePage = () => {
                     <button
                       type="button"
                       onClick={scrollToFinalCta}
-                      className="font-semibold text-[#FF9500] underline decoration-[#FFB347]/50 underline-offset-[4px] transition hover:text-[#E88600] bg-transparent border-0 p-0 cursor-pointer font-inherit"
+                      className="font-semibold text-[#1A8FC4] underline decoration-[#2AAA8A]/50 underline-offset-[4px] transition hover:text-[#15799F] bg-transparent border-0 p-0 cursor-pointer font-inherit"
                     >
                       Jump to the free check
                     </button>{' '}
@@ -1517,13 +1446,13 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ WHY MENTORMUNI — origin story + urgency (leads the page narrative) ════════════════ */}
-      <section className="relative border-t border-border overflow-hidden bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE] py-16 md:py-20 px-5 sm:px-6 lg:px-8">
-        <div className="pointer-events-none absolute right-0 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-[rgba(255,149,0,0.1)] blur-[100px]" aria-hidden />
+      <section className="relative border-t border-border overflow-hidden bg-gradient-to-b from-background to-secondary py-16 md:py-20 px-5 sm:px-6 lg:px-8">
+        <div className="pointer-events-none absolute right-0 top-1/2 h-72 w-72 -translate-y-1/2 rounded-full bg-[rgba(26,143,196,0.1)] blur-[100px]" aria-hidden />
         <div className="relative mx-auto w-full max-w-5xl">
           <div className="mb-10">
             <StoryLine
               delay={0}
-              className="mb-4 block text-xs font-bold uppercase tracking-[0.22em] text-[#EA580C] sm:text-sm"
+              className="mb-4 block text-xs font-bold uppercase tracking-[0.22em] text-[#1A8FC4] sm:text-sm"
               as="span"
             >
               Why MentorMuni
@@ -1534,15 +1463,15 @@ const HomePage = () => {
               as="h2"
             >
               Too many students walk into placement{' '}
-              <span className="font-semibold text-[#c2410c]">
+              <span className="font-semibold text-[#15799F]">
                 before they&apos;ve ever had a real mock.
               </span>
             </StoryLine>
 
             <div className="grid gap-5 md:grid-cols-2 md:gap-6">
-              <div className="relative overflow-hidden rounded-2xl border border-orange-200/70 bg-gradient-to-br from-white to-orange-50/30 p-5 shadow-[0_4px_28px_-14px_rgba(234,88,12,0.18)] md:p-6">
+              <div className="relative overflow-hidden rounded-2xl border border-sky-200/70 bg-gradient-to-br from-white to-sky-50/30 p-5 shadow-[0_4px_28px_-14px_rgba(26,143,196,0.18)] md:p-6">
                 <div
-                  className="pointer-events-none absolute inset-y-4 left-0 w-1 rounded-full bg-gradient-to-b from-[#FF9500] to-amber-400/50"
+                  className="pointer-events-none absolute inset-y-4 left-0 w-1 rounded-full bg-gradient-to-b from-[#1A8FC4] to-sky-400/50"
                   aria-hidden
                 />
                 <StoryLine
@@ -1613,8 +1542,8 @@ const HomePage = () => {
           <div className="grid sm:grid-cols-2 gap-4 mb-10">
             {[
               { icon: '🎤', title: 'First “real” round was never mocked', line: 'Many students never ran a serious mock interview before facing a panel.', tint: 'from-red-500/10 to-transparent border-red-500/20' },
-              { icon: '📉', title: 'Fewer interviews, same crowd', line: 'Open roles are harder to land—walking in under-prepared costs more than before.', tint: 'from-amber-500/10 to-transparent border-amber-500/25' },
-              { icon: '📊', title: 'Rejection without a map', line: 'Without a readiness score, you don’t know what to fix first—only that it “went badly.”', tint: 'from-[#FF9500]/12 to-transparent border-[#FFB347]/30' },
+              { icon: '📉', title: 'Fewer interviews, same crowd', line: 'Open roles are harder to land—walking in under-prepared costs more than before.', tint: 'from-amber-500/10 to-transparent border-sky-500/25' },
+              { icon: '📊', title: 'Rejection without a map', line: 'Without a readiness score, you don’t know what to fix first—only that it “went badly.”', tint: 'from-[#1A8FC4]/12 to-transparent border-[#2AAA8A]/30' },
               { icon: '✅', title: '100% preparation before Day 1', line: 'Measure gaps, practice out loud, then close them with mentorship—before real interviews.', tint: 'from-emerald-500/10 to-transparent border-emerald-500/25' },
             ].map((item, i) => (
               <FadeUp key={item.title} delay={i * 0.06}>
@@ -1672,7 +1601,7 @@ const HomePage = () => {
               <button
                 type="button"
                 onClick={scrollToFinalCta}
-                className="font-semibold text-[#FF9500] underline decoration-[#FFB347]/55 underline-offset-[5px] transition hover:text-[#E88600] bg-transparent border-0 p-0 cursor-pointer font-inherit"
+                className="font-semibold text-[#1A8FC4] underline decoration-[#2AAA8A]/55 underline-offset-[5px] transition hover:text-[#15799F] bg-transparent border-0 p-0 cursor-pointer font-inherit"
               >
                 Start with the free check
               </button>
@@ -1695,7 +1624,7 @@ const HomePage = () => {
             </p>
             <Link
               to="/how-it-works"
-              className="mb-10 inline-flex items-center gap-1 text-sm font-semibold text-[#FF9500] transition-colors hover:text-[#E88600]"
+              className="mb-10 inline-flex items-center gap-1 text-sm font-semibold text-[#1A8FC4] transition-colors hover:text-[#15799F]"
             >
               Full step-by-step walkthrough <ArrowRight size={14} aria-hidden />
             </Link>
@@ -1703,14 +1632,14 @@ const HomePage = () => {
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {FEATURES.map((f, i) => (
               <FadeUp key={f.title} delay={i * 0.07} className="w-full text-left">
-                <div className="group flex h-full gap-4 rounded-2xl border border-border bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.05)] transition-all hover:border-[#FFB347]">
-                  <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-[#FFF4E0] group-hover:bg-[#FFF8EE]">
-                    <f.Icon size={18} className="text-[#FF9500]" />
+                <div className="group flex h-full gap-4 rounded-2xl border border-border bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.05)] transition-all hover:border-[#2AAA8A]">
+                  <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-accent-soft group-hover:bg-secondary">
+                    <f.Icon size={18} className="text-[#1A8FC4]" />
                   </div>
                   <div className="min-w-0 flex flex-col">
                     <div className="mb-1.5 flex flex-wrap items-center gap-2">
                       <h3 className="text-base font-semibold text-foreground">{f.title}</h3>
-                      <span className="rounded border border-border bg-[#FFF4E0] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#CC7000]">
+                      <span className="rounded border border-border bg-[#e0f0fa] px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#15799F]">
                         {f.tag}
                       </span>
                     </div>
@@ -1719,7 +1648,7 @@ const HomePage = () => {
                     {f.link && (
                       <Link
                         to={f.link}
-                        className="mt-3 inline-flex w-fit items-center gap-1 text-xs font-semibold text-[#FF9500] transition-colors hover:text-[#E88600]"
+                        className="mt-3 inline-flex w-fit items-center gap-1 text-xs font-semibold text-[#1A8FC4] transition-colors hover:text-[#15799F]"
                       >
                         {f.linkLabel} <ArrowRight size={12} strokeWidth={2.5} aria-hidden />
                       </Link>
@@ -1735,7 +1664,7 @@ const HomePage = () => {
               <button
                 type="button"
                 onClick={scrollToFinalCta}
-                className="font-semibold text-[#FF9500] underline decoration-[#FFB347]/45 underline-offset-[4px] transition hover:text-[#E88600] bg-transparent border-0 p-0 cursor-pointer font-inherit"
+                className="font-semibold text-[#1A8FC4] underline decoration-[#2AAA8A]/45 underline-offset-[4px] transition hover:text-[#15799F] bg-transparent border-0 p-0 cursor-pointer font-inherit"
               >
                 Get your free score
               </button>{' '}
@@ -1746,8 +1675,8 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ STUDENT STORIES — animated cards ════════════════ */}
-      <section className="relative overflow-hidden border-t border-border bg-gradient-to-b from-[#FFFDF8] via-[#FFFCF7] to-[#FFF8EE] py-14 md:py-16 px-5 sm:px-6 lg:px-8">
-        <div className="pointer-events-none absolute -left-32 top-1/4 h-72 w-72 rounded-full bg-[rgba(255,149,0,0.15)] blur-[100px]" aria-hidden />
+      <section className="relative overflow-hidden border-t border-border bg-gradient-to-b from-background via-sky-50/80 to-secondary py-14 md:py-16 px-5 sm:px-6 lg:px-8">
+        <div className="pointer-events-none absolute -left-32 top-1/4 h-72 w-72 rounded-full bg-[rgba(26,143,196,0.15)] blur-[100px]" aria-hidden />
         <div className="pointer-events-none absolute -right-24 bottom-0 h-64 w-64 rounded-full bg-[rgba(8,145,178,0.1)] blur-[90px]" aria-hidden />
 
         <div className="relative mx-auto w-full max-w-5xl">
@@ -1758,15 +1687,15 @@ const HomePage = () => {
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="mb-10 text-center md:text-left"
           >
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#FFB347]/35 bg-white/80 px-3 py-1.5 shadow-sm backdrop-blur-sm md:mb-4">
-              <Sparkles size={14} className="text-[#FF9500]" aria-hidden />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#CC7000]">
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#2AAA8A]/35 bg-white/80 px-3 py-1.5 shadow-sm backdrop-blur-sm md:mb-4">
+              <Sparkles size={14} className="text-[#1A8FC4]" aria-hidden />
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#15799F]">
                 Real voices
               </span>
             </div>
             <h2 className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
               Numbers beat vibes —{' '}
-              <span className="bg-gradient-to-r from-[#FF9500] to-[#E88600] bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#1A8FC4] to-[#15799F] bg-clip-text text-transparent">
                 what shifted after the check
               </span>
             </h2>
@@ -1798,8 +1727,8 @@ const HomePage = () => {
                     className={`pointer-events-none absolute -inset-0.5 rounded-3xl bg-gradient-to-br ${t.gradient} opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-70`}
                     aria-hidden
                   />
-                  <div className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-border bg-white/90 p-5 shadow-[0_4px_24px_rgba(0,0,0,0.06)] backdrop-blur-md transition-all duration-300 group-hover:border-[#FFB347]/45 group-hover:shadow-[0_16px_48px_rgba(255,149,0,0.14)] md:p-6">
-                    <div className="absolute right-4 top-4 text-[4rem] font-serif font-bold leading-none text-[#FF9500]/[0.07] transition-transform duration-500 group-hover:scale-110 group-hover:text-[#FF9500]/10">
+                  <div className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-border bg-white/90 p-5 shadow-[0_4px_24px_rgba(0,0,0,0.06)] backdrop-blur-md transition-all duration-300 group-hover:border-[#2AAA8A]/45 group-hover:shadow-[0_16px_48px_rgba(26,143,196,0.14)] md:p-6">
+                    <div className="absolute right-4 top-4 text-[4rem] font-serif font-bold leading-none text-[#1A8FC4]/[0.07] transition-transform duration-500 group-hover:scale-110 group-hover:text-[#1A8FC4]/10">
                       &ldquo;
                     </div>
 
@@ -1828,7 +1757,7 @@ const HomePage = () => {
                       </div>
                     </div>
 
-                    <p className="relative mb-3 inline-flex w-fit rounded-full bg-[#FFF4E0] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#CC7000] ring-1 ring-[#FFB347]/30">
+                    <p className="relative mb-3 inline-flex w-fit rounded-full bg-[#e0f0fa] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#15799F] ring-1 ring-[#2AAA8A]/30">
                       {t.insight}
                     </p>
                     <p className="relative text-base leading-relaxed text-muted-foreground">{t.text}</p>
@@ -1839,7 +1768,7 @@ const HomePage = () => {
                     )}
 
                     <div
-                      className="pointer-events-none absolute bottom-0 left-0 right-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-[#FF9500] to-[#FFB347] transition-transform duration-300 ease-out group-hover:scale-x-100"
+                      className="pointer-events-none absolute bottom-0 left-0 right-0 h-1 origin-left scale-x-0 bg-gradient-to-r from-[#1A8FC4] to-[#2AAA8A] transition-transform duration-300 ease-out group-hover:scale-x-100"
                       aria-hidden
                     />
                   </div>
@@ -1855,13 +1784,13 @@ const HomePage = () => {
         <div className="mx-auto w-full max-w-5xl">
           <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-20">
             <FadeUp className="w-full text-left">
-              <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-[#CC7000] md:text-xs">
+              <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-[#15799F] md:text-xs">
                 Expert Mentorship
               </span>
               <h2 className="mb-3 text-2xl font-bold leading-tight tracking-tight text-foreground md:text-3xl">
                 Mentors with 12–15 years
                 <br />
-                <span className="text-[#FF9500]">of industry experience.</span>
+                <span className="text-[#1A8FC4]">of industry experience.</span>
               </h2>
               <p className="mb-6 text-sm leading-relaxed text-muted-foreground">
                 Our mentors are senior engineers and tech leads from India&apos;s leading IT companies with over a decade
@@ -1887,8 +1816,8 @@ const HomePage = () => {
                   },
                 ].map((item) => (
                   <div key={item.title} className="flex gap-3 items-start">
-                    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border bg-[#FFF4E0]">
-                      <item.Icon size={14} className="text-[#FF9500]" aria-hidden />
+                    <div className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-border bg-[#e0f0fa]">
+                      <item.Icon size={14} className="text-[#1A8FC4]" aria-hidden />
                     </div>
                     <div>
                       <p className="mb-0.5 text-sm font-bold text-foreground">{item.title}</p>
@@ -1900,13 +1829,13 @@ const HomePage = () => {
               <div className="flex flex-wrap items-center gap-3">
                 <Link
                   to="/contact"
-                  className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#FF9500] bg-white px-6 py-3 text-sm font-bold text-[#EA580C] shadow-sm transition-colors hover:bg-[#FFF8EE]"
+                  className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#1A8FC4] bg-white px-6 py-3 text-sm font-bold text-[#1A8FC4] shadow-sm transition-colors hover:bg-secondary"
                 >
                   {SECONDARY_CTA_BOOK_CALL}
                 </Link>
                 <Link
                   to="/mentors"
-                  className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground underline decoration-border underline-offset-4 transition hover:text-[#FF9500]"
+                  className="inline-flex items-center gap-1 text-sm font-semibold text-muted-foreground underline decoration-border underline-offset-4 transition hover:text-[#1A8FC4]"
                 >
                   Meet the mentors <ArrowRight size={14} aria-hidden />
                 </Link>
@@ -1952,15 +1881,15 @@ const HomePage = () => {
                   </div>
                 ))}
               </div>
-              <div className="rounded-xl border border-border bg-[#FFF4E0] p-4">
-                <p className="mb-1 text-xs font-bold text-[#CC7000]">✦ Mentorship cohorts · Waitlist open</p>
+              <div className="rounded-xl border border-border bg-[#e0f0fa] p-4">
+                <p className="mb-1 text-xs font-bold text-[#15799F]">✦ Mentorship cohorts · Waitlist open</p>
                 <p className="text-xs leading-relaxed text-muted-foreground">
                   We&apos;re onboarding mentors in batches. Join the waitlist—you&apos;ll be matched based on your
                   readiness profile when your cohort opens.
                 </p>
                 <Link
                   to="/waitlist"
-                  className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-[#FF9500] transition-colors hover:text-[#E88600]"
+                  className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-[#1A8FC4] transition-colors hover:text-[#15799F]"
                 >
                   Join the waitlist → <ArrowRight size={11} aria-hidden />
                 </Link>
@@ -1974,12 +1903,12 @@ const HomePage = () => {
       <section id="about" className="border-t border-border bg-white py-14 md:py-16 px-5 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-5xl">
           <FadeUp className="w-full text-left">
-            <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-[#CC7000] md:text-xs">
+            <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-[#15799F] md:text-xs">
               About us
             </span>
             <h2 className="mb-3 text-2xl font-bold leading-tight tracking-tight text-foreground md:text-3xl">
               Built for placement reality —{' '}
-              <span className="text-[#FF9500]">not generic “preparation.”</span>
+              <span className="text-[#1A8FC4]">not generic “preparation.”</span>
             </h2>
             <p className="mb-6 max-w-2xl text-sm leading-relaxed text-muted-foreground md:text-[15px]">
               {MISSION_TAGLINE} We tie scoring, practice, and mentors together so you improve where panels actually probe —
@@ -1987,7 +1916,7 @@ const HomePage = () => {
             </p>
             <Link
               to="/about"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#FF9500] transition-colors hover:text-[#E88600]"
+              className="inline-flex items-center gap-1.5 text-sm font-semibold text-[#1A8FC4] transition-colors hover:text-[#15799F]"
             >
               Read our story <ArrowRight size={15} aria-hidden />
             </Link>
@@ -2003,7 +1932,7 @@ const HomePage = () => {
               {HOMEPAGE_MENTORS_TO_CTA_BRIDGE}{' '}
               <Link
                 to="/contact"
-                className="font-semibold text-[#FF9500] underline decoration-[#FFB347]/45 underline-offset-[5px] transition hover:text-[#E88600]"
+                className="font-semibold text-[#1A8FC4] underline decoration-[#2AAA8A]/45 underline-offset-[5px] transition hover:text-[#15799F]"
               >
                 {SECONDARY_CTA_BOOK_CALL}
               </Link>
@@ -2013,7 +1942,7 @@ const HomePage = () => {
               </span>
               <Link
                 to="/waitlist"
-                className="font-semibold text-[#FF9500] underline decoration-[#FFB347]/45 underline-offset-[5px] transition hover:text-[#E88600]"
+                className="font-semibold text-[#1A8FC4] underline decoration-[#2AAA8A]/45 underline-offset-[5px] transition hover:text-[#15799F]"
               >
                 Join the waitlist
               </Link>
@@ -2031,13 +1960,13 @@ const HomePage = () => {
         <div className="mx-auto w-full max-w-3xl text-left">
           <FadeUp className="w-full text-left">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#15803d] sm:text-sm">Free · 5 minutes · Instant result</p>
-            <div className="mb-6 flex w-full max-w-full flex-wrap items-start gap-3 rounded-2xl border border-orange-200/70 bg-gradient-to-r from-orange-50/95 to-amber-50/80 px-4 py-3 text-left text-sm font-semibold leading-snug text-foreground shadow-sm">
-              <Gift size={16} className="mt-0.5 shrink-0 text-[#EA580C]" aria-hidden />
+            <div className="mb-6 flex w-full max-w-full flex-wrap items-start gap-3 rounded-2xl border border-sky-200/70 bg-gradient-to-r from-sky-50/95 to-sky-100/80 px-4 py-3 text-left text-sm font-semibold leading-snug text-foreground shadow-sm">
+              <Gift size={16} className="mt-0.5 shrink-0 text-[#1A8FC4]" aria-hidden />
               <span className="min-w-0 flex-1">{READINESS_TEST_COUPON_BADGE}</span>
             </div>
             <h2 className="mb-4 text-left text-3xl font-bold leading-[1.15] tracking-tight text-foreground sm:text-4xl md:text-[2.5rem] md:leading-[1.1]">
               <span className="block">{FINAL_CTA_HEADLINE}</span>
-              <span className="mt-2 block text-[#FF9500]">{FINAL_CTA_HEADLINE_ACCENT}</span>
+              <span className="mt-2 block text-[#1A8FC4]">{FINAL_CTA_HEADLINE_ACCENT}</span>
             </h2>
             <p className="mb-8 w-full max-w-3xl text-left text-base leading-relaxed text-muted-foreground">{FINAL_CTA_BODY}</p>
             <div className="mb-6 flex w-full flex-col items-start gap-4 sm:flex-row sm:items-center sm:gap-6">
@@ -2050,14 +1979,14 @@ const HomePage = () => {
               </button>
               <Link
                 to="/contact"
-                className="inline-flex min-h-[48px] w-full touch-manipulation shrink-0 items-center justify-center rounded-xl border-2 border-[#FF9500]/80 bg-white px-6 py-3.5 text-sm font-bold text-[#EA580C] transition hover:bg-[#FFF8EE] active:bg-orange-50/50 sm:w-auto"
+                className="inline-flex min-h-[48px] w-full touch-manipulation shrink-0 items-center justify-center rounded-xl border-2 border-[#1A8FC4]/80 bg-white px-6 py-3.5 text-sm font-bold text-[#1A8FC4] transition hover:bg-secondary active:bg-sky-50/50 sm:w-auto"
               >
                 {SECONDARY_CTA_BOOK_CALL}
               </Link>
             </div>
             <p className="mb-4 text-xs text-muted-foreground">
               Prefer a cohort seat later?{' '}
-              <Link to="/waitlist" className="font-semibold text-[#FF9500] underline underline-offset-2 hover:text-[#E88600]">
+              <Link to="/waitlist" className="font-semibold text-[#1A8FC4] underline underline-offset-2 hover:text-[#15799F]">
                 Join the mentorship waitlist
               </Link>
             </p>
@@ -2114,24 +2043,24 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ FOOTER ════════════════ */}
-      <footer className="border-t border-border bg-[#FFF8EE] py-14 px-5 sm:px-6 lg:px-8">
+      <footer className="border-t border-border bg-secondary py-14 px-5 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-6xl w-full">
           <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-8 mb-10">
             <div className="md:col-span-2">
-              <h3 className="font-bold text-foreground mb-2">Mentor<span className="text-[#FF9500]">Muni</span></h3>
+              <h3 className="font-bold text-foreground mb-2">Mentor<span className="text-[#1A8FC4]">Muni</span></h3>
               <p className="text-muted-foreground text-sm leading-relaxed mb-4 max-w-xs">
                 {MISSION_TAGLINE}
               </p>
-              <div className="mb-4 max-w-sm rounded-xl border border-orange-200/60 bg-white/90 px-3 py-3 shadow-sm">
+              <div className="mb-4 max-w-sm rounded-xl border border-sky-200/60 bg-white/90 px-3 py-3 shadow-sm">
                 <div className="flex gap-2.5">
-                  <Gift className="h-4 w-4 shrink-0 text-[#CC7000] mt-0.5" aria-hidden />
+                  <Gift className="h-4 w-4 shrink-0 text-[#15799F] mt-0.5" aria-hidden />
                   <div>
                     <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Limited offer</p>
                     <p className="text-xs text-muted-foreground leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
                     <button
                       type="button"
                       onClick={scrollToFinalCta}
-                      className="-mx-1 inline-flex min-h-[40px] items-center rounded-md px-1 py-2 text-left text-xs font-semibold text-[#FF9500] transition-colors hover:text-[#E88600] active:text-[#D97706] bg-transparent border-0 cursor-pointer font-inherit"
+                      className="-mx-1 inline-flex min-h-[40px] items-center rounded-md px-1 py-2 text-left text-xs font-semibold text-[#1A8FC4] transition-colors hover:text-[#15799F] active:text-[#0d5f7f] bg-transparent border-0 cursor-pointer font-inherit"
                     >
                       Take the test →
                     </button>
@@ -2139,10 +2068,10 @@ const HomePage = () => {
                 </div>
               </div>
               <div className="space-y-1.5 text-sm text-muted-foreground">
-                <a href="mailto:hello@mentormuni.com" className="flex items-center gap-2 hover:text-[#FF9500] transition-colors">
+                <a href="mailto:hello@mentormuni.com" className="flex items-center gap-2 hover:text-[#1A8FC4] transition-colors">
                   <Mail size={13} /> hello@mentormuni.com
                 </a>
-                <a href={CONTACT_PHONE_HREF} className="flex items-center gap-2 hover:text-[#FF9500] transition-colors">
+                <a href={CONTACT_PHONE_HREF} className="flex items-center gap-2 hover:text-[#1A8FC4] transition-colors">
                   <Phone size={13} /> {CONTACT_PHONE_DISPLAY}
                 </a>
               </div>
@@ -2153,41 +2082,41 @@ const HomePage = () => {
                 <li>
                   <Link
                     to="/interview-readiness-tools"
-                    className="hover:text-[#FF9500] transition-colors"
+                    className="hover:text-[#1A8FC4] transition-colors"
                   >
                     {PRODUCT_READINESS_SCORE}
                   </Link>
                 </li>
-                <li><Link to="/mock-interviews" className="hover:text-[#FF9500] transition-colors">Mock Interviews</Link></li>
-                <li><Link to="/resume-analyzer" className="hover:text-[#FF9500] transition-colors">Resume Analyzer</Link></li>
-                <li><Link to="/placement-tracks" className="hover:text-[#FF9500] transition-colors">Placement Tracks</Link></li>
-                <li><Link to="/free-tutorials" className="hover:text-[#FF9500] transition-colors">Free Tutorials</Link></li>
+                <li><Link to="/mock-interviews" className="hover:text-[#1A8FC4] transition-colors">Mock Interviews</Link></li>
+                <li><Link to="/resume-analyzer" className="hover:text-[#1A8FC4] transition-colors">Resume Analyzer</Link></li>
+                <li><Link to="/placement-tracks" className="hover:text-[#1A8FC4] transition-colors">Placement Tracks</Link></li>
+                <li><Link to="/free-tutorials" className="hover:text-[#1A8FC4] transition-colors">Free Tutorials</Link></li>
               </ul>
             </div>
             <div>
               <p className="text-xs font-semibold text-hint mb-3">Learn</p>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/learning-paths" className="hover:text-[#FF9500] transition-colors">Learning Paths</Link></li>
-                <li><Link to="/outcomes" className="hover:text-[#FF9500] transition-colors">Outcomes</Link></li>
-                <li><Link to="/leadership-board" className="hover:text-[#FF9500] transition-colors">Leadership Board</Link></li>
+                <li><Link to="/learning-paths" className="hover:text-[#1A8FC4] transition-colors">Learning Paths</Link></li>
+                <li><Link to="/outcomes" className="hover:text-[#1A8FC4] transition-colors">Outcomes</Link></li>
+                <li><Link to="/leadership-board" className="hover:text-[#1A8FC4] transition-colors">Leadership Board</Link></li>
               </ul>
             </div>
             <div>
               <p className="text-xs font-semibold text-hint mb-3">Company</p>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/about" className="hover:text-[#FF9500] transition-colors">About us</Link></li>
-                <li><Link to="/contact" className="hover:text-[#FF9500] transition-colors">Contact</Link></li>
-                <li><Link to="/mentors" className="hover:text-[#FF9500] transition-colors">Mentorship</Link></li>
-                <li><Link to="/colleges" className="hover:text-[#FF9500] transition-colors">For Colleges</Link></li>
+                <li><Link to="/about" className="hover:text-[#1A8FC4] transition-colors">About us</Link></li>
+                <li><Link to="/contact" className="hover:text-[#1A8FC4] transition-colors">Contact</Link></li>
+                <li><Link to="/mentors" className="hover:text-[#1A8FC4] transition-colors">Mentorship</Link></li>
+                <li><Link to="/colleges" className="hover:text-[#1A8FC4] transition-colors">For Colleges</Link></li>
               </ul>
             </div>
           </div>
           <div className="border-t border-border pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-muted-foreground">
             <p>© {new Date().getFullYear()} MentorMuni. All rights reserved.</p>
             <div className="flex gap-5">
-              <Link to="/contact" className="hover:text-[#FF9500] transition-colors">Terms</Link>
-              <Link to="/contact" className="hover:text-[#FF9500] transition-colors">Privacy</Link>
-              <Link to="/contact" className="hover:text-[#FF9500] transition-colors">Cookies</Link>
+              <Link to="/contact" className="hover:text-[#1A8FC4] transition-colors">Terms</Link>
+              <Link to="/contact" className="hover:text-[#1A8FC4] transition-colors">Privacy</Link>
+              <Link to="/contact" className="hover:text-[#1A8FC4] transition-colors">Cookies</Link>
             </div>
           </div>
         </div>

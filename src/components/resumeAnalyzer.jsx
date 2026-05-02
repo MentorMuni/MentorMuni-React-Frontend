@@ -268,7 +268,7 @@ export default function ResumeAnalyzer() {
   const canAnalyze = file && role && !analyzing;
 
   return (
-    <div className="bg-[#FFFDF8] text-foreground min-h-screen">
+    <div className="mm-site-theme min-h-screen">
 
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-border">
@@ -299,7 +299,7 @@ export default function ResumeAnalyzer() {
                 { icon: Target,     color: 'text-[#FF9500]', label: 'Keyword Match' },
                 { icon: TrendingUp, color: 'text-amber-400',  label: 'Fix Suggestions' },
               ].map(({ icon: Icon, color, label }) => (
-                <div key={label} className="flex items-center gap-1.5 bg-[#FFF8EE] border border-border rounded-lg px-3 py-1.5">
+                <div key={label} className="flex items-center gap-1.5 bg-secondary border border-border rounded-lg px-3 py-1.5">
                   <Icon size={13} className={color} />
                   <span className="text-xs font-semibold text-muted-foreground">{label}</span>
                 </div>
@@ -443,7 +443,7 @@ export default function ResumeAnalyzer() {
           <div className="flex flex-col gap-5">
             {!result && !analyzing && (
               <div className="rounded-2xl border border-border bg-white p-8 flex flex-col items-center justify-center gap-4 text-center min-h-[320px] shadow-sm">
-                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#FFF8EE] border border-border">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary border border-border">
                   <Target size={22} className="text-muted-foreground" />
                 </div>
                 <div>
@@ -596,7 +596,7 @@ export default function ResumeAnalyzer() {
                 )}
 
                 {result.ats_score_estimate && (
-                  <div className="rounded-2xl border border-[#FF9500]/25 bg-[#FFF8EE] p-4">
+                  <div className="rounded-2xl border border-[#FF9500]/25 bg-secondary p-4">
                     <p className="text-xs font-black text-foreground mb-1">ATS estimate (LLM)</p>
                     {result.ats_score_estimate.score != null && (
                       <p className="text-sm font-bold text-[#B45309]">{String(result.ats_score_estimate.score)}</p>

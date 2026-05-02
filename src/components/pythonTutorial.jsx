@@ -78,7 +78,7 @@ const PythonTutorial = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-foreground font-sans antialiased">
+    <div className="min-h-screen mm-site-theme">
       {/* Meta Tags for SEO */}
       <head>
         <title>Python for Beginners - Learn Python Step by Step | Complete Tutorial</title>
@@ -87,7 +87,7 @@ const PythonTutorial = () => {
       </head>
 
       {/* HEADER */}
-      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-border px-5">
+      <header className="mm-sticky-header px-5">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between py-4">
           <Link to="/" className="transition-transform hover:scale-[1.02]">
             <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
@@ -192,17 +192,17 @@ const PythonTutorial = () => {
 
             <div className="space-y-4">
               <div>
-                <h4 className="font-bold text-cyan-400 mb-2">1. Super Easy to Learn</h4>
+                <h4 className="font-bold text-primary mb-2">1. Super Easy to Learn</h4>
                 <p className="text-muted-foreground">Python reads like English. If you can read English, you can understand Python code. It's the perfect first programming language.</p>
               </div>
 
               <div>
-                <h4 className="font-bold text-cyan-400 mb-2">2. Highly Demanded Skill</h4>
+                <h4 className="font-bold text-primary mb-2">2. Highly Demanded Skill</h4>
                 <p className="text-muted-foreground">Companies worldwide need Python developers. Great career opportunities and excellent salaries. Used by companies like Google, Netflix, Instagram, and Spotify.</p>
               </div>
 
               <div>
-                <h4 className="font-bold text-cyan-400 mb-2">3. Used Everywhere</h4>
+                <h4 className="font-bold text-primary mb-2">3. Used Everywhere</h4>
                 <ul className="text-muted-foreground ml-4 space-y-1">
                   <li>• Web development (building websites)</li>
                   <li>• Data science (analyzing huge amounts of data)</li>
@@ -213,7 +213,7 @@ const PythonTutorial = () => {
               </div>
 
               <div>
-                <h4 className="font-bold text-cyan-400 mb-2">4. Strong Community</h4>
+                <h4 className="font-bold text-primary mb-2">4. Strong Community</h4>
                 <p className="text-muted-foreground">Millions of Python developers. Tons of free libraries (pre-written code) to use. Easy to find help and solutions online.</p>
               </div>
             </div>
@@ -253,7 +253,7 @@ const PythonTutorial = () => {
           <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">Step-by-Step Installation</h3>
 
-            <h4 className="text-xl font-bold mb-4 text-cyan-400">For Windows:</h4>
+            <h4 className="text-xl font-bold mb-4 text-primary">For Windows:</h4>
             <ol className="text-muted-foreground space-y-2 ml-4 mb-6">
               <li>1. Go to: https://www.python.org/</li>
               <li>2. Click "Downloads"</li>
@@ -264,7 +264,7 @@ const PythonTutorial = () => {
               <li>7. Wait for installation to complete</li>
             </ol>
 
-            <h4 className="text-xl font-bold mb-4 text-cyan-400">For Mac:</h4>
+            <h4 className="text-xl font-bold mb-4 text-primary">For Mac:</h4>
             <ol className="text-muted-foreground space-y-2 ml-4 mb-6">
               <li>1. Go to: https://www.python.org/</li>
               <li>2. Download macOS installer</li>
@@ -272,7 +272,7 @@ const PythonTutorial = () => {
               <li>4. Follow on-screen instructions</li>
             </ol>
 
-            <h4 className="text-xl font-bold mb-4 text-cyan-400">For Linux:</h4>
+            <h4 className="text-xl font-bold mb-4 text-primary">For Linux:</h4>
             <CodeBlock
               code={`sudo apt-get update
 sudo apt-get install python3 python3-pip`}
@@ -321,16 +321,16 @@ sudo apt-get install python3 python3-pip`}
           <div className="bg-white border border-border rounded-xl p-8 mb-8">
             <h3 className="text-2xl font-bold mb-4">How to Run Python Code</h3>
 
-            <h4 className="text-lg font-bold mb-4 text-cyan-400">Step 1: Create a file</h4>
+            <h4 className="text-lg font-bold mb-4 text-primary">Step 1: Create a file</h4>
             <p className="text-muted-foreground mb-4">Create a new file named <code className="bg-[#1e1e1e] px-2 py-1 rounded text-slate-200">hello.py</code> (the .py extension means it's a Python file)</p>
 
-            <h4 className="text-lg font-bold mb-4 text-cyan-400">Step 2: Write the code</h4>
+            <h4 className="text-lg font-bold mb-4 text-primary">Step 2: Write the code</h4>
             <CodeBlock
               code={`print("Hello, World!")`}
               id="hello-code"
             />
 
-            <h4 className="text-lg font-bold mb-4 text-cyan-400">Step 3: Run the code</h4>
+            <h4 className="text-lg font-bold mb-4 text-primary">Step 3: Run the code</h4>
             <p className="text-muted-foreground mb-2">Open Command Prompt/Terminal and type:</p>
             <CodeBlock
               code={`python hello.py`}
@@ -658,7 +658,7 @@ while count &lt; 3:
           <div className="bg-white border border-border rounded-xl p-8">
             <h3 className="text-2xl font-bold mb-4">break and continue</h3>
 
-            <p className="text-muted-foreground mb-4"><strong className="text-cyan-400">break</strong> - Exit loop immediately:</p>
+            <p className="text-muted-foreground mb-4"><strong className="text-primary">break</strong> - Exit loop immediately:</p>
             <CodeBlock
               code={`for i in range(10):
     if i == 5:
@@ -669,7 +669,7 @@ while count &lt; 3:
               id="break-example"
             />
 
-            <p className="text-muted-foreground my-4"><strong className="text-cyan-400">continue</strong> - Skip to next iteration:</p>
+            <p className="text-muted-foreground my-4"><strong className="text-primary">continue</strong> - Skip to next iteration:</p>
             <CodeBlock
               code={`for i in range(5):
     if i == 2:
@@ -1200,8 +1200,8 @@ print("Thanks for playing!")`}
 
         {/* FINAL CTA */}
         <section className="mb-16">
-          <div className="bg-gradient-to-r from-[#4F46E5] to-[#06B6D4] rounded-2xl p-12 text-center border border-border">
-            <h2 className="text-3xl font-black mb-4">Ready to Master Python?</h2>
+          <div className="bg-gradient-to-r from-[#4F46E5] to-[#06B6D4] rounded-2xl p-12 text-center border border-border text-white">
+            <h2 className="text-3xl font-black mb-4 text-white">Ready to Master Python?</h2>
             <p className="text-lg mb-8 text-white/90">Join thousands of students learning Python with our interactive courses and 1:1 mentorship.</p>
             <button className="bg-white text-[#4F46E5] px-8 py-4 rounded-xl font-bold hover:bg-white/90 transition-all text-lg">
               Start Your Python Journey Today

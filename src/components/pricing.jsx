@@ -28,7 +28,7 @@ const PLANS = [
     ],
     cta: 'Start free',
     ctaTo: '/start-assessment',
-    ctaStyle: 'border border-border bg-white text-muted-foreground hover:bg-[#FFF8EE] hover:border-[#FFB347]',
+    ctaStyle: 'border border-border bg-card text-muted-foreground hover:bg-secondary hover:border-cta-mid',
   },
   {
     id: 'core',
@@ -48,7 +48,7 @@ const PLANS = [
     ],
     cta: 'Enroll — ₹10,000 total',
     ctaTo: '/contact',
-    ctaStyle: 'bg-[#FF9500] hover:bg-[#E88600] text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)]',
+    ctaStyle: 'bg-cta hover:bg-cta-hover text-white shadow-lg shadow-button',
     highlight: true,
   },
   {
@@ -68,7 +68,7 @@ const PLANS = [
     ],
     cta: 'Apply for Elite',
     ctaTo: '/contact',
-    ctaStyle: 'border border-border bg-white text-muted-foreground hover:bg-[#FFF8EE] hover:border-[#FFB347]',
+    ctaStyle: 'border border-border bg-card text-muted-foreground hover:bg-secondary hover:border-cta-mid',
   },
 ];
 
@@ -104,32 +104,31 @@ const PricingPage = () => {
   const [openFaq, setOpenFaq] = useState(null);
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-foreground font-sans antialiased">
+    <div className="min-h-screen mm-site-theme overflow-x-hidden">
 
       {/* ── Hero ── */}
-      <section className="max-w-3xl mx-auto px-6 pt-16 pb-10 text-center">
+      <section className="mm-marketing-hero-backdrop border-b border-border">
+        <div className="relative z-10 mx-auto max-w-3xl px-6 pb-10 pt-20 text-center">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/10 px-4 py-1.5 text-sm font-semibold text-emerald-800">
+            <ShieldCheck size={15} className="text-emerald-700" />
+            Full mentorship support until you get placed
+          </div>
 
-        {/* Support badge */}
-        <div className="inline-flex items-center gap-2 bg-emerald-500/10 border border-emerald-600/25 text-emerald-800 px-4 py-1.5 rounded-full text-sm font-semibold mb-6">
-          <ShieldCheck size={15} className="text-emerald-700" />
-          Full mentorship support until you get placed
+          <h1 className="mb-3 text-4xl font-black leading-tight tracking-tight text-foreground md:text-5xl">
+            Simple, honest pricing.
+            <br />
+            <span className="mm-gradient-text-cta">One program. Complete support.</span>
+          </h1>
+          <p className="mb-4 text-lg text-muted-foreground">Until you&apos;re placed.</p>
+          <p className="text-sm text-hint">No hidden fees. No upsells. No &quot;basic&quot; tier that doesn&apos;t work.</p>
         </div>
-
-        <h1 className="text-4xl md:text-5xl font-black tracking-tight mb-3 leading-tight text-foreground">
-          Simple, honest pricing.
-          <br />
-          <span className="text-[#FF9500]">One program. Complete support.</span>
-        </h1>
-        <p className="text-muted-foreground text-lg mb-4">Until you&apos;re placed.</p>
-        <p className="text-hint text-sm">No hidden fees. No upsells. No &quot;basic&quot; tier that doesn&apos;t work.</p>
-
       </section>
 
       {/* ── Scarcity banner ── */}
-      <div className="max-w-3xl mx-auto px-6 mb-8">
+      <div className="mx-auto mb-8 max-w-3xl px-6 pt-10">
         <div className="flex items-center justify-center gap-3 bg-amber-500/10 border border-amber-600/25 rounded-xl px-5 py-3">
           <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0" />
-          <p className="text-sm text-[#92400e] font-medium">
+          <p className="text-sm font-medium text-warning-ink-deep">
             <span className="font-bold">Next cohort</span>
             {' · '}Limited seats
             {' · '}
@@ -146,13 +145,13 @@ const PricingPage = () => {
               key={plan.id}
               className={`relative rounded-2xl p-6 flex flex-col h-full transition-all ${
                 plan.highlight
-                  ? 'bg-[#FF9500]/10 border-2 border-[#FF9500] shadow-xl shadow-[0_2px_12px_rgba(255,149,0,0.15)]'
-                  : 'bg-white border border-border'
+                  ? 'border-2 border-cta bg-cta/10 shadow-xl shadow-cta-card'
+                  : 'border border-border bg-card'
               }`}
             >
               {plan.badge && (
                 <div className={`absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full text-xs font-bold whitespace-nowrap ${
-                  plan.highlight ? 'bg-[#FF9500] text-white' : 'bg-[#FFF8EE] text-muted-foreground border border-border'
+                  plan.highlight ? 'bg-cta text-white' : 'border border-border bg-secondary text-muted-foreground'
                 }`}>
                   {plan.badge}
                 </div>
@@ -161,7 +160,7 @@ const PricingPage = () => {
               <div className="mb-5 pt-2">
                 <p className="text-xs text-hint uppercase tracking-wider font-medium mb-1">{plan.name}</p>
                 <div className="flex items-baseline gap-2 mb-1">
-                  <span className={`text-4xl font-black ${plan.highlight ? 'text-[#E88600]' : 'text-foreground'}`}>{plan.price}</span>
+                  <span className={`text-4xl font-black ${plan.highlight ? 'text-cta-hover' : 'text-foreground'}`}>{plan.price}</span>
                 </div>
                 <p className="text-xs text-hint mb-3">{plan.sub}</p>
                 <p className="text-sm text-muted-foreground leading-relaxed">{plan.desc}</p>
@@ -171,7 +170,7 @@ const PricingPage = () => {
                 {plan.features.map((f) => (
                   <li key={f.text} className="flex items-start gap-2.5 text-sm">
                     {f.yes
-                      ? <CheckCircle2 size={15} className={`mt-0.5 shrink-0 ${plan.highlight ? 'text-[#FF9500]' : 'text-emerald-600'}`} />
+                      ? <CheckCircle2 size={15} className={`mt-0.5 shrink-0 ${plan.highlight ? 'text-cta' : 'text-emerald-600'}`} />
                       : <X size={15} className="mt-0.5 shrink-0 text-[#BBBBBB]" />}
                     <span className={f.yes ? 'text-muted-foreground' : 'text-[#999999]'}>{f.text}</span>
                   </li>
@@ -203,7 +202,7 @@ const PricingPage = () => {
               <span className="text-sm font-semibold text-hint">{row.market}</span>
             </div>
           ))}
-          <div className="flex items-center justify-between px-5 py-3.5 border-t border-border bg-[#FFFDF8]">
+          <div className="flex items-center justify-between px-5 py-3.5 border-t border-border bg-background">
             <span className="text-sm text-muted-foreground">Market value total</span>
             <span className="text-sm font-bold text-hint line-through">₹36,000</span>
           </div>
@@ -272,20 +271,20 @@ const PricingPage = () => {
 
       {/* ── Final CTA ── */}
       <section className="max-w-xl mx-auto px-6 pb-20 text-center">
-        <div className="bg-[#FF9500]/10 border border-[#FF9500]/35 rounded-2xl p-8">
-          <p className="text-xs text-[#CC7000] uppercase tracking-wider mb-2 font-medium">Founding cohort · Limited seats</p>
+        <div className="rounded-2xl border border-cta/35 bg-warning-bg/90 p-8">
+          <p className="mb-2 text-xs font-medium uppercase tracking-wider text-warning-text">Founding cohort · Limited seats</p>
           <h3 className="text-2xl font-bold text-foreground mb-2">Start free. Upgrade when ready.</h3>
           <p className="text-muted-foreground text-sm mb-6">Take the free readiness test first — no card needed. Enroll when you&apos;ve seen your score and know it&apos;s worth it.</p>
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
               to="/start-assessment"
-              className="flex-1 flex items-center justify-center gap-2 border border-border bg-white text-muted-foreground hover:bg-[#FFF8EE] font-semibold text-sm py-3 rounded-xl transition-all"
+              className="flex-1 flex items-center justify-center gap-2 border border-border bg-white text-muted-foreground hover:bg-secondary font-semibold text-sm py-3 rounded-xl transition-all"
             >
               {PRIMARY_CTA_LABEL}
             </Link>
             <Link
               to="/contact"
-              className="flex-1 flex items-center justify-center gap-2 bg-[#FF9500] hover:bg-[#E88600] text-white font-bold text-sm py-3 rounded-xl transition-all shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)]"
+              className="flex-1 flex items-center justify-center gap-2 bg-cta py-3 text-sm font-bold text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-cta-hover"
             >
               Enroll now — ₹10,000
               <ArrowRight size={15} />
@@ -295,7 +294,7 @@ const PricingPage = () => {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="border-t border-border bg-[#FFF8EE] py-14 px-6">
+      <footer className="border-t border-border bg-secondary py-14 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 mb-10">
             <div className="md:col-span-1">

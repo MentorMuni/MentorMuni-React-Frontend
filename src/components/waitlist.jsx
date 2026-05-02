@@ -149,58 +149,57 @@ export default function WaitlistPage() {
     }`;
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-foreground font-sans antialiased">
-      <div className="max-w-3xl mx-auto px-5 pt-16 pb-24">
-
-        {/* ── Hero ── */}
-        <div className="text-center mb-10">
-
-          {/* Pill badge */}
-          <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-x-2.5 gap-y-2 bg-[#FFF4E0] border border-[#FFB347]/40 rounded-full px-4 py-2.5 sm:px-5 mb-7 shadow-[0_2px_12px_rgba(0,0,0,0.06)]">
-            <span className="w-2 h-2 rounded-full bg-[#1A8C55] shrink-0" style={{ animation: 'pulse 1.5s ease-in-out infinite', boxShadow: '0 0 6px rgba(26,140,85,0.5)' }} />
-            <span className="text-sm font-semibold text-[#CC7000] tracking-wide">
-              Mentorship program
-            </span>
-            <span className="w-px h-3.5 bg-[#F0ECE0]" />
-            <span className="text-sm font-bold text-foreground">First batch starting April</span>
-            <span className="text-xs font-semibold bg-red-500/10 text-red-600 border border-red-400/30 rounded-full px-2.5 py-0.5 leading-none">
-              Limited seats
-            </span>
-            <span className="w-px h-3.5 bg-[#F0ECE0] hidden sm:block" />
-            <span className="text-xs font-bold text-[#B45309] sm:text-sm">
-              Pricing — revealing soon
-            </span>
-          </div>
-          <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
-
-          <h1 className="text-3xl md:text-4xl font-black leading-snug tracking-tight mb-4">
-            Be the first to get placed with <span className="text-[#FF9500]">MentorMuni</span> — Mentorship and interview preparation.
-          </h1>
-
-          <p className="text-muted-foreground leading-relaxed mb-6 max-w-lg mx-auto">
-            Full mentorship with AI mocks, company-aligned readiness, HR and technical prep — built for real hiring bar.
-            {' '}
-            <span className="text-foreground font-semibold">Pricing will be announced soon; waitlist members hear first.</span>
-          </p>
-
-          {/* Social proof */}
-          <div className="flex items-center justify-center gap-3">
-            <div className="flex -space-x-2">
-              {AVATARS.map(({ init, bg }) => (
-                <div key={init} className={`w-8 h-8 rounded-full border-2 border-[#FFFDF8] ${bg} flex items-center justify-center text-xs font-bold text-white shadow-sm`}>
-                  {init}
-                </div>
-              ))}
+    <div className="min-h-screen mm-site-theme overflow-x-hidden">
+      <section className="mm-marketing-hero-backdrop border-b border-border">
+        <div className="relative z-10 mx-auto max-w-3xl px-5 pb-12 pt-16">
+          <div className="mb-10 text-center">
+            <div className="mb-7 inline-flex max-w-full flex-wrap items-center justify-center gap-x-2.5 gap-y-2 rounded-full border border-border bg-warning-bg/90 px-4 py-2.5 shadow-[var(--shadow-card)] sm:px-5">
+              <span className="h-2 w-2 shrink-0 rounded-full bg-[#1A8C55]" style={{ animation: 'pulse 1.5s ease-in-out infinite', boxShadow: '0 0 6px rgba(26,140,85,0.5)' }} />
+              <span className="text-sm font-semibold tracking-wide text-warning-text">
+                Mentorship program
+              </span>
+              <span className="h-3.5 w-px bg-border" />
+              <span className="text-sm font-bold text-foreground">First batch starting April</span>
+              <span className="rounded-full border border-red-400/30 bg-red-500/10 px-2.5 py-0.5 text-xs font-semibold leading-none text-red-600">
+                Limited seats
+              </span>
+              <span className="hidden h-3.5 w-px bg-border sm:block" />
+              <span className="text-xs font-bold text-warning-ink-deep sm:text-sm">
+                Pricing — revealing soon
+              </span>
             </div>
-              <p className="text-sm text-muted-foreground">
-              <span className="text-[#1A8C55] font-bold">{count}+</span>
-              {' '}students already on the waitlist
+            <style>{`@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }`}</style>
+
+            <h1 className="mb-4 text-3xl font-black leading-snug tracking-tight md:text-4xl">
+              Be the first to get placed with <span className="mm-gradient-text-cta">MentorMuni</span> — Mentorship and interview preparation.
+            </h1>
+
+            <p className="mx-auto mb-6 max-w-lg leading-relaxed text-muted-foreground">
+              Full mentorship with AI mocks, company-aligned readiness, HR and technical prep — built for real hiring bar.
+              {' '}
+              <span className="font-semibold text-foreground">Pricing will be announced soon; waitlist members hear first.</span>
             </p>
+
+            <div className="flex items-center justify-center gap-3">
+              <div className="flex -space-x-2">
+                {AVATARS.map(({ init, bg }) => (
+                  <div key={init} className={`flex h-8 w-8 items-center justify-center rounded-full border-2 border-background text-xs font-bold text-white shadow-sm ${bg}`}>
+                    {init}
+                  </div>
+                ))}
+              </div>
+              <p className="text-sm text-muted-foreground">
+                <span className="font-bold text-[#1A8C55]">{count}+</span>
+                {' '}students already on the waitlist
+              </p>
+            </div>
           </div>
         </div>
+      </section>
 
+      <div className="mx-auto max-w-3xl px-5 pb-24 pt-10">
         {/* ── What we'll cover + pricing note ── */}
-        <div className="mb-10 rounded-2xl border border-[#FFB347]/35 bg-gradient-to-br from-[#FFF8EE] via-white to-[#FFFDF8] p-6 md:p-8 shadow-[0_8px_32px_-20px_rgba(234,88,12,0.15)]">
+        <div className="mb-10 rounded-2xl border border-border bg-gradient-to-br from-accent-soft/60 via-background to-secondary p-6 shadow-[var(--shadow-card)] md:p-8">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4 mb-6">
             <div>
               <h2 className="text-lg font-bold text-foreground tracking-tight">What we'll cover</h2>
@@ -208,16 +207,16 @@ export default function WaitlistPage() {
                 The mentorship program is designed around how companies actually run campus and lateral hiring — not generic prep.
               </p>
             </div>
-            <div className="shrink-0 rounded-xl border border-dashed border-[#FF9500]/50 bg-[#FFF4E0]/80 px-4 py-2.5 text-center sm:text-right">
-              <p className="text-[10px] font-bold uppercase tracking-wider text-[#CC7000]">Investment</p>
+            <div className="shrink-0 rounded-xl border border-dashed border-cta/40 bg-warning-bg/90 px-4 py-2.5 text-center sm:text-right">
+              <p className="text-[10px] font-bold uppercase tracking-wider text-warning-text">Investment</p>
               <p className="text-base font-black text-foreground">Pricing revealing soon</p>
             </div>
           </div>
           <ul className="space-y-4">
             {COVERAGE.map(({ Icon, title, desc }) => (
               <li key={title} className="flex gap-3.5">
-                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#FFF4E0] ring-1 ring-[#FFB347]/30">
-                  <Icon className="h-4 w-4 text-[#FF9500]" strokeWidth={2.25} aria-hidden />
+                <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-accent-soft ring-1 ring-cta/25">
+                  <Icon className="h-4 w-4 text-cta" strokeWidth={2.25} aria-hidden />
                 </span>
                 <div className="min-w-0">
                   <p className="font-semibold text-foreground text-sm">{title}</p>
@@ -229,7 +228,7 @@ export default function WaitlistPage() {
         </div>
 
         {/* ── Form card ── */}
-        <div className="bg-white border border-border rounded-2xl p-6 md:p-8 mb-12">
+        <div className="mb-12 rounded-2xl border border-border bg-card p-6 md:p-8 shadow-[var(--shadow-card)]">
           {submitted ? (
             <div className="text-center py-8">
               <div className="w-16 h-16 rounded-full bg-green-500/15 border border-green-500/30 flex items-center justify-center mx-auto mb-4">

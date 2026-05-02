@@ -30,6 +30,9 @@ Thumbs.db
 # Local
 *.local
 
+# Claude / agent worktrees (nested repos — do not commit)
+.claude/
+
 # Cache
 .cache/
 .parcel-cache/

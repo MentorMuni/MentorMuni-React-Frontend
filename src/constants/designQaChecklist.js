@@ -7,7 +7,7 @@ export const DESIGN_QA_CHECKLIST = [
   'Typography: uses .typo-display / .typo-h1–h3 / .typo-body / .typo-caption — no random font sizes',
   'Line length: marketing body uses .max-w-prose-marketing or equivalent (≤~42rem)',
   'Color: neutrals + surfaces from tokens; orange (#FF9500) for primary CTA and key metrics only',
-  'Contrast: no light-gray text on white below ~4.5:1; scorecards tested on cream #FFFDF8',
+  'Contrast: no light-gray text on white below ~4.5:1; scorecards tested on page bg #f8fbff',
   'Depth: cards use .mm-card-elevated or same shadow token — one elevation language',
   'Motion: one signature moment per page max; respects prefers-reduced-motion',
   'Loading: Suspense fallback is skeleton or branded placeholder — not blank',

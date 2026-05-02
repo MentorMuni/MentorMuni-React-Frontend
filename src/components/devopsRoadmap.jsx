@@ -49,9 +49,9 @@ const DevOpsRoadmap = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE] text-foreground">
+    <div className="min-h-screen mm-site-theme text-foreground">
       {/* Header */}
-      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-border shadow-sm">
+      <header className="mm-sticky-header">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img src={logo} alt="MentorMuni Logo" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />

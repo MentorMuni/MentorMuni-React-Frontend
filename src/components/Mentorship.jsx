@@ -6,94 +6,88 @@ const Mentorship = () => {
   const features = [
     {
       id: 1,
-      title: "1:1 Mentor Guidance",
-      description: "Get personalized guidance from experienced engineers who have cracked top tech companies.",
+      title: '1:1 Mentor Guidance',
+      description: 'Get personalized guidance from experienced engineers who have cracked top tech companies.',
       icon: Users,
-      color: "indigo"
+      color: 'indigo',
     },
     {
       id: 2,
-      title: "Career Roadmap",
-      description: "Create a structured learning plan tailored to your target role, timeline, and career goals.",
+      title: 'Career Roadmap',
+      description: 'Create a structured learning plan tailored to your target role, timeline, and career goals.',
       icon: Target,
-      color: "cyan"
+      color: 'cyan',
     },
     {
       id: 3,
-      title: "Interview Preparation",
-      description: "Intensive interview prep with mock interviews, real-time feedback, and personalized improvement plans.",
+      title: 'Interview Preparation',
+      description: 'Intensive interview prep with mock interviews, real-time feedback, and personalized improvement plans.',
       icon: TrendingUp,
-      color: "purple"
+      color: 'purple',
     },
     {
       id: 4,
-      title: "Job Placement Support",
-      description: "Get support with application strategy, negotiation tips, and placement into top tech companies.",
+      title: 'Job Placement Support',
+      description: 'Get support with application strategy, negotiation tips, and placement into top tech companies.',
       icon: Award,
-      color: "emerald"
-    }
+      color: 'emerald',
+    },
   ];
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-muted-foreground pt-20 pb-20">
-      <div className="max-w-6xl mx-auto px-6">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-5xl font-black text-white mb-4">
-            Learn from Industry Mentors
-          </h1>
-          <p className="text-xl text-slate-300 max-w-3xl mx-auto">
+    <div className="min-h-screen mm-site-theme overflow-x-hidden text-foreground pb-20 pt-20">
+      <section className="mm-marketing-hero-backdrop border-b border-border">
+        <div className="relative z-10 mx-auto max-w-6xl px-6 pb-14 pt-6 text-center md:pb-16">
+          <h1 className="mb-4 text-4xl font-black text-foreground md:text-5xl">Learn from Industry Mentors</h1>
+          <p className="mx-auto max-w-3xl text-lg text-muted-foreground md:text-xl">
             Get guidance from experienced engineers and tech leaders who have successfully navigated tech careers
           </p>
         </div>
+      </section>
 
-        {/* Features Grid */}
-        <div className="grid md:grid-cols-2 gap-8 mb-14">
+      <div className="mx-auto max-w-6xl px-6 pt-14">
+        <div className="mb-14 grid gap-8 md:grid-cols-2">
           {features.map((feature) => {
             const Icon = feature.icon;
             const colorMap = {
-              indigo: { bg: "bg-[#FF9500]/10", border: "border-[#FF9500]/25", icon: "text-[#FF9500]" },
-              cyan: { bg: "bg-cyan-500/10", border: "border-cyan-500/20", icon: "text-cyan-400" },
-              purple: { bg: "bg-purple-500/10", border: "border-purple-500/20", icon: "text-purple-400" },
-              emerald: { bg: "bg-emerald-500/10", border: "border-emerald-500/20", icon: "text-emerald-400" }
+              indigo: { bg: 'bg-cta/10', border: 'border-cta/25', icon: 'text-cta' },
+              cyan: { bg: 'bg-cyan-500/10', border: 'border-cyan-500/25', icon: 'text-cyan-600' },
+              purple: { bg: 'bg-purple-500/10', border: 'border-purple-500/25', icon: 'text-purple-600' },
+              emerald: { bg: 'bg-emerald-500/10', border: 'border-emerald-500/25', icon: 'text-emerald-600' },
             };
             const colors = colorMap[feature.color];
 
             return (
               <div
                 key={feature.id}
-                className={`${colors.bg} ${colors.border} border rounded-2xl p-8 hover:border-opacity-60 transition-all hover:shadow-lg hover:shadow-black/20`}
+                className={`rounded-2xl border bg-card p-8 shadow-[var(--shadow-card)] transition-all hover:border-opacity-80 ${colors.border} ${colors.bg}`}
               >
-                {/* Icon */}
-                <div className={`w-12 h-12 ${colors.bg} rounded-lg flex items-center justify-center mb-4`}>
-                  <Icon className={`w-6 h-6 ${colors.icon}`} />
+                <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-lg ${colors.bg}`}>
+                  <Icon className={`h-6 w-6 ${colors.icon}`} aria-hidden />
                 </div>
-
-                {/* Title & Description */}
-                <h3 className="text-xl font-bold text-white mb-2">{feature.title}</h3>
-                <p className="text-slate-300 text-sm leading-relaxed">{feature.description}</p>
+                <h3 className="mb-2 text-xl font-bold text-foreground">{feature.title}</h3>
+                <p className="text-sm leading-relaxed text-muted-foreground">{feature.description}</p>
               </div>
             );
           })}
         </div>
 
-        {/* Call to Action */}
-        <div className="bg-gradient-to-r from-[#FF9500]/20 to-purple-600/20 border border-[#FF9500]/35 rounded-2xl p-12 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">Ready to Get a Mentor?</h2>
-          <p className="text-slate-300 mb-8 max-w-2xl mx-auto">
+        <div className="rounded-2xl border border-border bg-gradient-to-br from-accent-soft/60 via-background to-secondary p-10 text-center shadow-[var(--shadow-card)] md:p-12">
+          <h2 className="mb-4 text-2xl font-bold text-foreground md:text-3xl">Ready to Get a Mentor?</h2>
+          <p className="mx-auto mb-8 max-w-2xl text-muted-foreground">
             Start with our free tools to identify your gaps, then upgrade to access experienced mentors who will guide you to success.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
+          <div className="flex flex-col justify-center gap-4 sm:flex-row">
             <Link
               to="/learning-paths"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-[#FF9500] to-blue-500 hover:from-[#FF9500] hover:to-blue-600 text-white font-bold shadow-lg hover:shadow-xl transition-all hover:scale-105"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cta to-primary px-8 py-4 font-bold text-white shadow-button transition-all hover:scale-[1.02] hover:shadow-lg"
             >
               Explore Mentorship Programs
-              <ArrowRight className="w-5 h-5" />
+              <ArrowRight className="h-5 w-5" aria-hidden />
             </Link>
             <Link
               to="/start-assessment"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-xl border-2 border-[#FFB347]/50 text-[#CC7000] hover:border-[#FFB347] hover:text-[#CC7000] font-bold transition-all hover:scale-105"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border-2 border-cta/45 px-8 py-4 font-bold text-cta transition-all hover:border-cta hover:bg-accent-soft/80"
             >
               Start Free Assessment
             </Link>

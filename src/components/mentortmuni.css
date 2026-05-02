@@ -1,9 +1,9 @@
-/* src/MentorMuniTheme.css — warm light theme */
+/* Legacy mentor card styles — surfaces aligned with src/theme/mentorMuniTheme.css */
 
 :root {
-  --bg: #fffdf8;
+  --bg: #f8fbff;
   --surface: #ffffff;
-  --surface-light: #fff8ee;
+  --surface-light: #eef6fb;
   --text: #1a1a1a;
   --muted: #666666;
   --primary: #ff9500;
@@ -65,14 +65,14 @@ body {
 }
 
 .mentor-card {
-  background: linear-gradient(135deg, #ffffff 0%, #fff8ee 100%);
+  background: linear-gradient(135deg, #ffffff 0%, #eef6fb 100%);
   border-radius: 20px;
   padding: 24px;
   display: flex;
   align-items: center;
   gap: 20px;
   border-left: 5px solid var(--primary);
-  border: 1px solid #f0ece0;
+  border: 1px solid #d8e8f0;
   transition: all 0.3s ease;
 }
 

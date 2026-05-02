@@ -112,35 +112,36 @@ const PlacementTracks = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE] text-foreground">
-      <div className="max-w-6xl mx-auto px-6 py-16 md:py-20">
-        {!showCurriculum ? (
-          <>
-            {/* Header */}
-            <div className="text-center mb-14">
-              <div className="inline-flex items-center gap-2 rounded-full border border-[#FFB347]/40 bg-[#FFF4E0] px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-[#CC7000] mb-4">
-                <Target size={14} />
+    <div className="min-h-screen mm-site-theme overflow-x-hidden text-foreground">
+      {!showCurriculum ? (
+        <>
+          <section className="mm-marketing-hero-backdrop border-b border-border">
+            <div className="relative z-10 mx-auto max-w-6xl px-6 pb-14 pt-20 text-center md:pb-16">
+              <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-warning-bg/90 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-warning-text">
+                <Target size={14} className="text-cta" aria-hidden />
                 Career Tracks
               </div>
-              <h1 className="text-3xl md:text-5xl font-black tracking-tight text-foreground mb-4">
-                Placement <span className="text-[#FF9500]">Tracks</span>
+              <h1 className="mb-4 text-3xl font-black tracking-tight text-foreground md:text-5xl">
+                Placement <span className="mm-gradient-text-cta">Tracks</span>
               </h1>
-              <p className="text-base md:text-lg text-muted-foreground max-w-2xl mx-auto">
+              <p className="mx-auto max-w-2xl text-base text-muted-foreground md:text-lg">
                 Choose your career path and master the skills that companies actually test in interviews
               </p>
             </div>
+          </section>
 
+          <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
             {/* 6 Tiles Grid */}
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {placementTracks.map((track) => (
                 <div 
                   key={track.id} 
-                  className="bg-white p-6 rounded-2xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.04)] hover:border-[#FFB347]/50 hover:shadow-[0_8px_24px_rgba(255,149,0,0.10)] transition-all cursor-pointer group"
+                  className="group cursor-pointer rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)] transition-all hover:border-cta/35 hover:shadow-md"
                 >
                   <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">{track.icon}</div>
                   <h3 className="text-xl font-bold text-foreground mb-2">{track.title}</h3>
                   <p className="text-sm text-muted-foreground mb-4">{track.description}</p>
-                  <div className="flex items-center gap-2 text-[#FF9500] text-sm font-medium mb-5">
+                  <div className="mb-5 flex items-center gap-2 text-sm font-medium text-cta">
                     <Clock size={14} />
                     {track.duration}
                   </div>
@@ -152,7 +153,7 @@ const PlacementTracks = () => {
                       setShowCurriculum(true);
                       window.scrollTo(0, 0);
                     }}
-                    className="w-full bg-[#FF9500] hover:bg-[#E88600] text-white font-bold py-3 rounded-xl transition-all shadow-[0_4px_14px_rgba(255,149,0,0.25)] group-hover:shadow-[0_6px_20px_rgba(255,149,0,0.30)]"
+                    className="w-full rounded-xl bg-cta py-3 font-bold text-white shadow-button transition-all hover:bg-cta-hover group-hover:shadow-lg"
                   >
                     Explore Curriculum
                   </button>
@@ -162,36 +163,37 @@ const PlacementTracks = () => {
 
             {/* Bottom CTA */}
             <div className="mt-14 text-center">
-              <p className="text-sm text-muted-foreground mb-4">Not sure which track is right for you?</p>
+              <p className="mb-4 text-sm text-muted-foreground">Not sure which track is right for you?</p>
               <Link
                 to="/start-assessment"
-                className="inline-flex items-center gap-2 rounded-xl border border-[#FF9500] px-6 py-3 text-sm font-bold text-[#FF9500] transition hover:bg-[#FFF4E0]"
+                className="inline-flex items-center gap-2 rounded-xl border border-cta px-6 py-3 text-sm font-bold text-cta transition hover:bg-accent-soft"
               >
                 Take the free readiness check first <ArrowRight size={16} />
               </Link>
             </div>
-          </>
-        ) : (
-          <>
+          </div>
+        </>
+      ) : (
+        <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
             {/* Curriculum View */}
             <button 
               onClick={() => {
                 setShowCurriculum(false);
                 setSelectedTrack(null);
               }}
-              className="mb-8 flex items-center gap-2 text-[#FF9500] hover:text-[#E88600] font-bold transition-colors"
+              className="mb-8 flex items-center gap-2 font-bold text-cta transition-colors hover:text-cta-hover"
             >
               ← Back to Tracks
             </button>
 
             {/* Track Header */}
-            <div className="rounded-2xl border border-[#FFB347]/40 bg-gradient-to-r from-[#FFF8EE] to-[#FFFCF7] p-8 md:p-10 mb-10">
+            <div className="mb-10 rounded-2xl border border-border bg-gradient-to-r from-accent-soft/60 to-secondary p-8 md:p-10">
               <div className="flex flex-col md:flex-row items-start md:items-center gap-6">
                 <div className="text-6xl">{selectedTrack?.icon}</div>
                 <div>
                   <h2 className="text-3xl md:text-4xl font-black text-foreground mb-2">{selectedTrack?.title}</h2>
                   <p className="text-muted-foreground mb-3">{selectedTrack?.description}</p>
-                  <div className="flex items-center gap-2 text-[#FF9500] font-semibold">
+                  <div className="flex items-center gap-2 font-semibold text-cta">
                     <Clock size={18} />
                     Duration: {selectedTrack?.duration}
                   </div>
@@ -202,7 +204,7 @@ const PlacementTracks = () => {
             {/* Curriculum Modules */}
             <div className="mb-12">
               <div className="flex items-center gap-2 mb-6">
-                <BookOpen size={20} className="text-[#FF9500]" />
+                <BookOpen size={20} className="text-cta" aria-hidden />
                 <h3 className="text-2xl font-bold text-foreground">Curriculum Modules</h3>
               </div>
               <p className="text-sm text-muted-foreground mb-6">Click on any module to see detailed topics</p>
@@ -210,10 +212,10 @@ const PlacementTracks = () => {
                 {selectedTrack?.modules.map((module, index) => (
                   <div 
                     key={index} 
-                    className={`bg-white rounded-xl border transition-all cursor-pointer ${
+                    className={`cursor-pointer rounded-xl border bg-card transition-all ${
                       expandedModule === index 
-                        ? 'border-[#FF9500] shadow-[0_4px_16px_rgba(255,149,0,0.12)]' 
-                        : 'border-border hover:border-[#FFB347]/50'
+                        ? 'border-cta shadow-md shadow-cta-card' 
+                        : 'border-border hover:border-cta/40'
                     }`}
                   >
                     <button
@@ -222,14 +224,14 @@ const PlacementTracks = () => {
                       className="w-full p-5 flex items-center justify-between gap-4 text-left"
                     >
                       <div className="flex items-center gap-4">
-                        <div className="bg-[#FF9500] text-white w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm shrink-0">
+                        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-cta text-sm font-bold text-white">
                           {index + 1}
                         </div>
                         <div className="text-base font-semibold text-foreground">{module.title}</div>
                       </div>
                       <ChevronDown 
                         size={20} 
-                        className={`text-[#FF9500] transition-transform shrink-0 ${
+                        className={`shrink-0 text-cta transition-transform ${
                           expandedModule === index ? 'rotate-180' : ''
                         }`} 
                       />
@@ -244,7 +246,7 @@ const PlacementTracks = () => {
                               key={topicIndex}
                               className="flex items-center gap-2 text-sm text-muted-foreground"
                             >
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#FF9500] shrink-0" />
+                              <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-cta" />
                               {topic}
                             </li>
                           ))}
@@ -257,22 +259,21 @@ const PlacementTracks = () => {
             </div>
 
             {/* CTA Section */}
-            <div className="rounded-2xl border border-[#FFB347]/40 bg-gradient-to-r from-[#FFF8EE] to-[#FFFCF7] p-8 md:p-10 text-center">
+            <div className="rounded-2xl border border-border bg-gradient-to-r from-accent-soft/60 to-secondary p-8 text-center md:p-10">
               <h3 className="text-2xl font-bold text-foreground mb-3">Ready to Start Your Journey?</h3>
               <p className="text-muted-foreground mb-6 max-w-xl mx-auto">
                 Get access to the complete {selectedTrack?.title} curriculum with 1:1 mentorship and interview prep
               </p>
               <Link
                 to="/contact"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#FF9500] hover:bg-[#E88600] px-8 py-4 font-bold text-white transition-colors shadow-[0_4px_14px_rgba(255,149,0,0.30)]"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-cta px-8 py-4 font-bold text-white shadow-button transition-colors hover:bg-cta-hover"
               >
                 Contact us to enroll
                 <ArrowRight size={18} />
               </Link>
             </div>
-          </>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

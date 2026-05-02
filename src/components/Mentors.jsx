@@ -111,7 +111,7 @@ function MentorProfileCard({ name, experience, companies, tag, gradient }) {
     <article className="flex h-full flex-col rounded-2xl border border-[#EDE8DD] bg-white p-5 shadow-[0_2px_20px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#FFB347]/45 hover:shadow-[0_14px_40px_rgba(255,149,0,0.12)]">
       <div className="flex gap-4">
         <div
-          className="relative h-[5.25rem] w-[5.25rem] shrink-0 overflow-hidden rounded-full ring-[3px] ring-[#FFF4E0] shadow-[0_4px_14px_rgba(0,0,0,0.08)]"
+          className="relative h-[5.25rem] w-[5.25rem] shrink-0 overflow-hidden rounded-full ring-[3px] ring-accent-soft shadow-[0_4px_14px_rgba(0,0,0,0.08)]"
           aria-hidden
         >
           <div
@@ -136,13 +136,13 @@ function MentorProfileCard({ name, experience, companies, tag, gradient }) {
         {companies.map((c) => (
           <span
             key={c}
-            className="inline-flex rounded-full border border-[#FF9500]/25 bg-[#FFF4E0]/90 px-2.5 py-1 text-[11px] font-semibold text-[#9A3412]"
+            className="inline-flex rounded-full border border-cta/25 bg-warning-bg/90 px-2.5 py-1 text-[11px] font-semibold text-warning-ink-deep"
           >
             {c}
           </span>
         ))}
       </div>
-      <p className="mt-4 border-t border-[#F0ECE0] pt-3 text-[13px] leading-relaxed text-muted-foreground">{tag}</p>
+      <p className="mt-4 border-t border-border pt-3 text-[13px] leading-relaxed text-muted-foreground">{tag}</p>
     </article>
   );
 }
@@ -268,7 +268,7 @@ export default function Mentors() {
   };
 
   return (
-    <div className="min-h-screen bg-[#fffdf8] font-sans text-foreground antialiased">
+    <div className="min-h-screen mm-site-theme overflow-x-hidden">
       <style>{`
         @keyframes mentors-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
         @keyframes mentors-amber-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
@@ -302,7 +302,7 @@ export default function Mentors() {
       {/* ══════════════ SECTION 2 — MENTOR PROFILES (blurred photos) ══════════════ */}
       <section
         ref={teaserRef}
-        className="border-y border-[#EDE8DD]/90 bg-gradient-to-b from-[#FFFBF5] via-white to-[#FFFBF5] px-5 py-14 sm:px-6 md:py-16"
+        className="border-y border-border bg-gradient-to-b from-accent-soft/30 via-background to-secondary px-5 py-14 sm:px-6 md:py-16"
         style={REVEAL_STYLE}
       >
         <div className="mx-auto max-w-5xl">
@@ -310,7 +310,7 @@ export default function Mentors() {
             Know your mentors
           </p>
           <h2 className="mt-2 text-center text-2xl font-bold tracking-tight text-[#1a1a1a] md:text-[1.65rem] md:leading-snug">
-            <span className="bg-gradient-to-r from-[#FF9500] to-[#D97706] bg-clip-text text-transparent">
+            <span className="mm-gradient-text-cta">
               They&apos;ve sat on interview panels.
             </span>
             <br className="hidden sm:block" />
@@ -410,7 +410,7 @@ export default function Mentors() {
                     style={{
                       width: '100%', boxSizing: 'border-box',
                       paddingLeft: 42, paddingRight: 14, paddingTop: 12, paddingBottom: 12,
-                      background: '#ffffff', border: `1px solid ${err ? 'rgba(248,113,113,0.6)' : '#F0ECE0'}`,
+                      background: '#ffffff', border: `1px solid ${err ? 'rgba(248,113,113,0.6)' : 'var(--border)'}`,
                       borderRadius: 8, color: '#1a1a1a', fontSize: 14,
                       outline: 'none',
                     }}
@@ -493,8 +493,8 @@ export default function Mentors() {
               type="button"
               onClick={() => navigate('/waitlist')}
               onMouseEnter={e => { e.currentTarget.style.borderColor = '#FFB347'; e.currentTarget.style.color = '#CC7000'; }}
-              onMouseLeave={e => { e.currentTarget.style.borderColor = '#F0ECE0'; e.currentTarget.style.color = '#666666'; }}
-              style={{ background: 'transparent', color: 'var(--text-secondary)', border: '1px solid #F0ECE0', padding: '13px 24px', borderRadius: 9, fontSize: 14, fontWeight: 500, cursor: 'pointer', transition: 'border-color 0.15s, color 0.15s', whiteSpace: 'nowrap' }}
+              onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = '#666666'; }}
+              style={{ background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border)', padding: '13px 24px', borderRadius: 9, fontSize: 14, fontWeight: 500, cursor: 'pointer', transition: 'border-color 0.15s, color 0.15s', whiteSpace: 'nowrap' }}
             >
               Join the waitlist
             </button>

@@ -73,7 +73,7 @@ const TrustIndicators = () => {
                 </svg>
               </div>
 
-              <div className="text-4xl sm:text-5xl font-extrabold text-orange-400 leading-none">
+              <div className="text-4xl sm:text-5xl font-extrabold text-cta leading-none">
                 <CountUp target={s.target} suffix={s.suffix} start={onScreen} />
               </div>
 

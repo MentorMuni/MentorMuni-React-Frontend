@@ -4,8 +4,8 @@ import { Check, ArrowRight } from 'lucide-react';
 
 const Plan = ({ title, price, bullets, cta, href, primary }) => (
   <div className="card-dark rounded-xl p-6 md:p-8 flex flex-col">
-    <div className="text-lg font-bold text-white">{title}</div>
-    <div className="mt-2 text-3xl font-black text-white">{price}</div>
+    <div className="text-lg font-bold text-foreground">{title}</div>
+    <div className="mt-2 text-3xl font-black text-foreground">{price}</div>
     <ul className="mt-4 text-sm text-muted-foreground space-y-2 flex-grow">
       {bullets.map((b, i) => (
         <li key={i} className="flex items-center gap-2">
@@ -30,7 +30,7 @@ const Plan = ({ title, price, bullets, cta, href, primary }) => (
 
 export default function PricingSection() {
   return (
-    <section className="py-16 md:py-20 px-6 section-dark border-t border-slate-800/60">
+    <section className="border-t border-border bg-gradient-to-b from-accent-soft/30 via-background to-secondary/35 py-16 md:py-20 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-black text-on-dark">Pricing</h2>

@@ -59,47 +59,47 @@ const JobRolesSection = () => {
       bg: "card-dark",
       border: "border-[#FF9500]/25",
       icon: "text-[#FF9500]",
-      badge: "bg-[#FF9500]/20 text-[#CC7000]",
+      badge: "bg-cta/15 text-warning-text",
       button: "from-[#FF9500] to-blue-600",
       hover: "hover:border-[#FFB347]/50"
     },
     cyan: {
       bg: "card-dark",
       border: "border-cyan-500/20",
-      icon: "text-cyan-400",
-      badge: "bg-cyan-500/20 text-cyan-300",
+      icon: "text-cyan-700",
+      badge: "bg-cyan-500/15 text-cyan-900",
       button: "from-cyan-600 to-blue-600",
       hover: "hover:border-cyan-400/50"
     },
     purple: {
       bg: "card-dark",
       border: "border-purple-500/20",
-      icon: "text-purple-400",
-      badge: "bg-purple-500/20 text-purple-300",
+      icon: "text-purple-700",
+      badge: "bg-purple-500/15 text-purple-900",
       button: "from-purple-600 to-pink-600",
       hover: "hover:border-purple-400/50"
     },
     blue: {
       bg: "card-dark",
       border: "border-blue-500/20",
-      icon: "text-blue-400",
-      badge: "bg-blue-500/20 text-blue-300",
+      icon: "text-blue-700",
+      badge: "bg-blue-500/15 text-blue-900",
       button: "from-blue-600 to-cyan-600",
       hover: "hover:border-blue-400/50"
     },
     amber: {
       bg: "card-dark",
       border: "border-amber-500/20",
-      icon: "text-amber-400",
-      badge: "bg-amber-500/20 text-amber-300",
+      icon: "text-amber-800",
+      badge: "bg-amber-500/15 text-amber-950",
       button: "from-amber-600 to-orange-600",
       hover: "hover:border-amber-400/50"
     },
     rose: {
       bg: "card-dark",
       border: "border-rose-500/20",
-      icon: "text-rose-400",
-      badge: "bg-rose-500/20 text-rose-300",
+      icon: "text-rose-700",
+      badge: "bg-rose-500/15 text-rose-900",
       button: "from-rose-600 to-pink-600",
       hover: "hover:border-rose-400/50"
     }

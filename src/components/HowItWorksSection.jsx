@@ -8,83 +8,71 @@ export default function HowItWorksSection() {
       title: 'Upload Your Resume',
       description: 'AI analyzes your resume, experience, and skills to understand your current profile.',
       icon: FileText,
-      color: 'indigo',
-      bgColor: 'bg-[#FF9500]/10',
-      borderColor: 'border-[#FF9500]/25',
-      iconColor: 'text-[#FF9500]'
+      badgeClass: 'bg-gradient-to-br from-cta to-cta-mid',
+      bgColor: 'bg-warning-bg/60',
+      borderColor: 'border-cta/25',
+      iconColor: 'text-cta',
     },
     {
       step: 2,
       title: 'Discover Your Skill Gap',
       description: 'Compare your profile with real industry expectations and identify missing skills.',
       icon: TrendingUp,
-      color: 'cyan',
+      badgeClass: 'bg-gradient-to-br from-cyan-500 to-sky-600',
       bgColor: 'bg-cyan-500/10',
-      borderColor: 'border-cyan-500/20',
-      iconColor: 'text-cyan-400'
+      borderColor: 'border-cyan-500/25',
+      iconColor: 'text-cyan-600',
     },
     {
       step: 3,
       title: 'Prepare with Mentors',
       description: 'Get a personalized roadmap and interview preparation guidance from industry mentors.',
       icon: Users,
-      color: 'purple',
-      bgColor: 'bg-purple-500/10',
-      borderColor: 'border-purple-500/20',
-      iconColor: 'text-purple-400'
-    }
+      badgeClass: 'bg-gradient-to-br from-violet-500 to-purple-600',
+      bgColor: 'bg-violet-500/10',
+      borderColor: 'border-violet-500/25',
+      iconColor: 'text-violet-600',
+    },
   ];
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-b from-slate-900/50 via-transparent to-slate-900/50 border-y border-slate-800">
-      <div className="max-w-6xl mx-auto">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
-            How MentorMuni Works
-          </h2>
-          <p className="text-lg text-slate-300 max-w-2xl mx-auto">
+    <section className="border-y border-border bg-secondary/30 px-6 py-20">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-16 text-center">
+          <h2 className="mb-4 text-4xl font-black text-foreground md:text-5xl">How MentorMuni Works</h2>
+          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
             Follow a simple 3-step process to become interview ready and land your dream tech job.
           </p>
         </div>
 
-        {/* Steps Container */}
-        <div className="grid md:grid-cols-3 gap-8 relative">
-          {/* Connection line (desktop only) */}
-          <div className="hidden md:block absolute top-32 left-0 right-0 h-0.5 bg-gradient-to-r from-[#FF9500] via-cyan-500 to-purple-500 -z-10" />
+        <div className="relative grid gap-8 md:grid-cols-3">
+          <div className="pointer-events-none absolute left-0 right-0 top-16 -z-0 hidden h-0.5 bg-gradient-to-r from-cta via-cyan-500 to-violet-500 opacity-40 md:block" />
 
           {steps.map((item, index) => {
             const IconComponent = item.icon;
             return (
-              <div key={index} className="relative">
-                {/* Step Card */}
-                <div className={`${item.bgColor} border ${item.borderColor} rounded-xl p-8 backdrop-blur-sm hover:border-${item.color}-500/40 transition-all hover:shadow-lg hover:shadow-${item.color}-500/20`}>
-                  {/* Step Number Badge */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div className={`w-12 h-12 rounded-full bg-gradient-to-br from-${item.color}-500 to-${item.color}-600 flex items-center justify-center text-white text-xl font-black`}>
+              <div key={index} className="relative z-10">
+                <div
+                  className={`rounded-xl border ${item.borderColor} ${item.bgColor} p-8 backdrop-blur-sm transition-all hover:border-opacity-60 hover:shadow-md`}
+                >
+                  <div className="mb-6 flex items-center justify-between">
+                    <div
+                      className={`flex h-12 w-12 items-center justify-center rounded-full ${item.badgeClass} text-xl font-black text-white shadow-sm`}
+                    >
                       {item.step}
                     </div>
                   </div>
 
-                  {/* Icon */}
-                  <div className={`mb-6 p-4 rounded-lg ${item.bgColor} w-fit`}>
-                    <IconComponent className={`${item.iconColor}`} size={32} />
+                  <div className={`mb-6 w-fit rounded-lg p-4 ${item.bgColor}`}>
+                    <IconComponent className={item.iconColor} size={32} aria-hidden />
                   </div>
 
-                  {/* Title */}
-                  <h3 className="text-xl font-bold text-white mb-3">
-                    {item.title}
-                  </h3>
+                  <h3 className="mb-3 text-xl font-bold text-foreground">{item.title}</h3>
+                  <p className="leading-relaxed text-muted-foreground">{item.description}</p>
 
-                  {/* Description */}
-                  <p className="text-slate-300 leading-relaxed">
-                    {item.description}
-                  </p>
-
-                  {/* Arrow to next step (mobile only) */}
                   {index < steps.length - 1 && (
-                    <div className="md:hidden flex justify-center mt-6">
-                      <ArrowRight size={24} className="text-muted-foreground rotate-90" />
+                    <div className="mt-6 flex justify-center md:hidden">
+                      <ArrowRight size={24} className="rotate-90 text-muted-foreground" aria-hidden />
                     </div>
                   )}
                 </div>
@@ -93,14 +81,11 @@ export default function HowItWorksSection() {
           })}
         </div>
 
-        {/* CTA Section */}
         <div className="mt-16 text-center">
-          <p className="text-muted-foreground mb-6">
-            Ready to start your journey?
-          </p>
+          <p className="mb-6 text-muted-foreground">Ready to start your journey?</p>
           <a
             href="#get-started"
-            className="inline-block px-8 py-3 rounded-lg bg-gradient-to-r from-[#FF9500] to-blue-500 text-white font-semibold hover:scale-105 transition-transform"
+            className="inline-block rounded-lg bg-gradient-to-r from-cta to-primary px-8 py-3 font-semibold text-white shadow-button transition-transform hover:scale-[1.02]"
           >
             Start Free Assessment
           </a>

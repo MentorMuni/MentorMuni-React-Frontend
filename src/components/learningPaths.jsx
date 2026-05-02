@@ -51,21 +51,22 @@ const LearningPaths = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE] text-foreground">
-      {/* Header */}
-      <div className="max-w-6xl mx-auto px-6 py-20">
-        <div className="text-center mb-20">
-          <h1 className="text-5xl md:text-6xl font-black mb-4 text-foreground">
+    <div className="min-h-screen mm-site-theme overflow-x-hidden text-foreground">
+      <section className="mm-marketing-hero-backdrop border-b border-border">
+        <div className="relative z-10 mx-auto max-w-6xl px-6 pb-16 pt-20 text-center md:pb-20">
+          <h1 className="mb-4 text-5xl font-black text-foreground md:text-6xl">
             Learning Paths
           </h1>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-            Choose your perfect learning journey. Whether you're a beginner or advancing your skills, 
+          <p className="mx-auto max-w-3xl text-xl text-muted-foreground">
+            Choose your perfect learning journey. Whether you're a beginner or advancing your skills,
             we have the right path for you to become interview-ready.
           </p>
         </div>
+      </section>
 
+      <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
         {/* Learning Paths Grid */}
-        <div className="grid md:grid-cols-2 gap-8 mb-20">
+        <div className="mb-20 grid gap-8 md:grid-cols-2">
           {pathsData.map((path) => (
             <a
               key={path.id}
@@ -74,19 +75,19 @@ const LearningPaths = () => {
             >
               <div className={`absolute inset-0 bg-gradient-to-r ${path.color} rounded-3xl opacity-0 group-hover:opacity-5 transition-opacity duration-300`}></div>
               
-              <div className="relative bg-white border border-border hover:border-[#FF9500]/30 rounded-3xl p-8 transition-all duration-300 hover:shadow-lg">
+              <div className="relative rounded-3xl border border-border bg-card p-8 transition-all duration-300 hover:border-cta/30 hover:shadow-lg">
                 {/* Badge */}
                 <div className={`absolute top-6 right-6 bg-gradient-to-r ${path.color} text-white text-xs font-bold px-4 py-1 rounded-full`}>
                   {path.badge}
                 </div>
 
                 {/* Icon */}
-                <div className="mb-6 p-4 bg-[#FFF4E0] w-fit rounded-2xl group-hover:bg-[#FFE8C2] transition-colors">
+                <div className="mb-6 w-fit rounded-2xl bg-accent-soft p-4 transition-colors group-hover:bg-accent-soft/80">
                   {path.icon}
                 </div>
 
                 {/* Content */}
-                <h3 className="text-2xl font-bold mb-3 text-foreground group-hover:text-[#FF9500] transition-colors">
+                <h3 className="mb-3 text-2xl font-bold text-foreground transition-colors group-hover:text-cta">
                   {path.title}
                 </h3>
                 <p className="text-muted-foreground mb-8 leading-relaxed">
@@ -94,7 +95,7 @@ const LearningPaths = () => {
                 </p>
 
                 {/* CTA */}
-                <div className="flex items-center gap-2 text-[#FF9500] group-hover:gap-3 transition-all font-semibold">
+                <div className="flex items-center gap-2 font-semibold text-cta transition-all group-hover:gap-3">
                   Get Started
                   <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
                 </div>
@@ -104,11 +105,11 @@ const LearningPaths = () => {
         </div>
 
         {/* Why Choose Section */}
-        <div className="bg-white border border-border rounded-3xl p-12 mb-12 shadow-sm">
+        <div className="mb-12 rounded-3xl border border-border bg-card p-12 shadow-[var(--shadow-card)]">
           <h2 className="text-3xl font-black mb-8 text-center text-foreground">Why Choose MentorMuni?</h2>
           <div className="grid md:grid-cols-4 gap-6">
             <div className="text-center">
-              <div className="text-4xl font-black text-[#FF9500] mb-2">AI-Powered</div>
+              <div className="mb-2 text-4xl font-black text-cta">AI-Powered</div>
               <p className="text-muted-foreground">Real-time AI feedback and personalized recommendations</p>
             </div>
             <div className="text-center">
@@ -120,21 +121,22 @@ const LearningPaths = () => {
               <p className="text-muted-foreground">Clear steps and milestones—so you always know what to learn next</p>
             </div>
             <div className="text-center">
-              <div className="text-4xl font-black text-[#FF9500] mb-2">Get Placement Ready</div>
+              <div className="mb-2 text-4xl font-black text-cta">Get Placement Ready</div>
               <p className="text-muted-foreground">Mocks, gap fixes, and reps aligned with what companies actually test</p>
             </div>
           </div>
         </div>
 
         {/* CTA Section */}
-        <div className="bg-gradient-to-r from-[#FF9500] to-[#E88600] rounded-3xl p-12 text-center">
-          <h2 className="text-3xl font-bold mb-4 text-white">Not sure where to start?</h2>
-          <p className="text-lg text-white/90 mb-8 max-w-2xl mx-auto">
+        <div className="rounded-3xl bg-gradient-to-r from-cta to-cta-hover p-12 text-center shadow-lg shadow-button">
+          <h2 className="mb-4 text-3xl font-bold text-white">Not sure where to start?</h2>
+          <p className="mx-auto mb-8 max-w-2xl text-lg text-white/90">
             Take our free interview readiness assessment to discover which learning path is perfect for your goals.
           </p>
           <button
-            onClick={() => window.location.href = '/start-assessment'}
-            className="bg-white text-[#FF9500] font-bold py-4 px-8 rounded-xl hover:shadow-lg hover:shadow-white/20 transition-all inline-flex items-center gap-2"
+            type="button"
+            onClick={() => (window.location.href = '/start-assessment')}
+            className="inline-flex items-center gap-2 rounded-xl bg-card px-8 py-4 font-bold text-cta shadow-md transition-all hover:shadow-lg"
           >
             Take Free Assessment
             <ArrowRight size={20} />

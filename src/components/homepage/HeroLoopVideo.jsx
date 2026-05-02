@@ -70,7 +70,7 @@ export function HeroLoopVideo({ className = '' }) {
         <div className="relative aspect-video w-full bg-zinc-900/5">
           {!showVideo && (
             <div
-              className="absolute inset-0 animate-pulse bg-gradient-to-br from-[#FFF8EE] to-[#f4f4f5]"
+              className="absolute inset-0 animate-pulse bg-gradient-to-br from-secondary to-neutral-100"
               aria-hidden
             />
           )}

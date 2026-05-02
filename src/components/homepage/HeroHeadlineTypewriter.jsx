@@ -52,7 +52,7 @@ export function HeroHeadlineTypewriter({ phrases, reducedMotion = false, classNa
     <span className={`${className} inline-flex items-end`}>
       <span>{displayed}</span>
       <span
-        className={`ml-0.5 inline-block h-[0.92em] w-[2px] translate-y-[0.08em] bg-[#FF9500] align-[-0.12em] ${
+        className={`ml-0.5 inline-block h-[0.92em] w-[2px] translate-y-[0.08em] bg-[#1A8FC4] align-[-0.12em] ${
           showCursor ? 'opacity-100' : 'opacity-30'
         } transition-opacity duration-200`}
         aria-hidden

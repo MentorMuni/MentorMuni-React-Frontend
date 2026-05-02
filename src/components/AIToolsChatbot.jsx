@@ -212,20 +212,20 @@ export default function AIToolsChatbot() {
           role="dialog"
           aria-label="AI Tools chat assistant"
         >
-          <div className="flex items-center justify-between gap-2 px-4 py-3 border-b border-border bg-gradient-to-r from-[#FF9500]/30 to-[#FFB347]/20">
-            <div className="flex items-center gap-2 min-w-0">
-              <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#FF9500]/30 border border-[#FFB347]/40">
-                <Bot size={18} className="text-[#CC7000] shrink-0" />
+          <div className="flex items-center justify-between gap-2 border-b border-border bg-gradient-to-r from-accent-soft/95 to-secondary px-4 py-3">
+            <div className="flex min-w-0 items-center gap-2">
+              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border bg-card shadow-sm">
+                <Bot size={18} className="text-cta" />
               </span>
               <div className="min-w-0">
-                <p className="text-sm font-bold text-white truncate">AI Tools Assistant</p>
-                <p className="text-[10px] text-[#CC7000]/80 truncate">KB + rules + Wikipedia summaries</p>
+                <p className="truncate text-sm font-bold text-foreground">AI Tools Assistant</p>
+                <p className="truncate text-[10px] text-muted-foreground">KB + rules + Wikipedia summaries</p>
               </div>
             </div>
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="p-2 rounded-lg text-muted-foreground hover:text-white hover:bg-white/10 transition-colors"
+              className="rounded-lg p-2 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
               aria-label="Close chat"
             >
               <X size={18} />
@@ -241,15 +241,15 @@ export default function AIToolsChatbot() {
                 <div
                   className={`max-w-[92%] rounded-2xl px-3.5 py-2.5 leading-relaxed ${
                     msg.role === 'user'
-                      ? 'bg-[#FF9500] text-white rounded-br-md'
-                      : 'bg-white/8 border border-border text-slate-200 rounded-bl-md'
+                      ? 'rounded-br-md bg-cta text-white'
+                      : 'rounded-bl-md border border-border bg-secondary text-foreground'
                   }`}
                 >
                   {msg.role === 'bot' ? (
                     msg.text === '__LOADING__' ? (
                       <span className="text-muted-foreground italic">Looking up…</span>
                     ) : (
-                      <span className="whitespace-pre-wrap [&_strong]:text-[#CC7000] [&_strong]:font-semibold">
+                      <span className="whitespace-pre-wrap [&_strong]:font-semibold [&_strong]:text-warning-text">
                         {msg.text.split('**').map((part, j) =>
                           j % 2 === 1 ? (
                             <strong key={j}>{part}</strong>
@@ -268,7 +268,7 @@ export default function AIToolsChatbot() {
             <div ref={bottomRef} />
           </div>
 
-          <div className="p-3 border-t border-border bg-[#FFF8EE]/90">
+          <div className="border-t border-border bg-secondary/90 p-3">
             <div className="flex gap-2">
               <input
                 type="text"
@@ -276,12 +276,12 @@ export default function AIToolsChatbot() {
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && send()}
                 placeholder="Prompting, Gen AI, LLMs, tools…"
-                className="flex-1 min-w-0 rounded-xl border border-border bg-white/5 px-3 py-2.5 text-sm text-white placeholder-slate-500 outline-none focus:border-[#FF9500]/50"
+                className="min-w-0 flex-1 rounded-xl border border-border bg-card px-3 py-2.5 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-cta/50"
               />
               <button
                 type="button"
                 onClick={send}
-                className="shrink-0 rounded-xl bg-[#FF9500] hover:bg-[#E88600] px-3 py-2.5 text-white transition-colors"
+                className="shrink-0 rounded-xl bg-cta px-3 py-2.5 text-white transition-colors hover:bg-cta-hover"
                 aria-label="Send message"
               >
                 <Send size={18} />
@@ -298,7 +298,7 @@ export default function AIToolsChatbot() {
                   key={s}
                   type="button"
                   onClick={() => pushExchange(s)}
-                  className="text-[10px] font-medium rounded-full border border-border bg-white/5 px-2 py-1 text-muted-foreground hover:text-[#CC7000] hover:border-[#FF9500]/35 transition-colors"
+                  className="rounded-full border border-border bg-card px-2 py-1 text-[10px] font-medium text-muted-foreground transition-colors hover:border-cta/35 hover:text-warning-text"
                 >
                   {s}
                 </button>
@@ -306,7 +306,7 @@ export default function AIToolsChatbot() {
             </div>
             <p className="mt-2 text-[10px] text-muted-foreground text-center leading-snug">
               Local knowledge base + rules; may add a Wikipedia excerpt (not ChatGPT).{' '}
-              <Link to="/start-assessment" className="text-[#FF9500] hover:underline">
+              <Link to="/start-assessment" className="font-semibold text-cta hover:underline">
                 Readiness test
               </Link>
             </p>

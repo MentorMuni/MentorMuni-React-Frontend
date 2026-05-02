@@ -29,48 +29,48 @@ const MORE_LINKS = [
 const TOOLS = [
   {
     icon: BarChart2,
-    color: 'text-[#FF9500]',
-    bg: 'bg-[#FFF4E0]',
+    color: 'text-primary',
+    bg: 'bg-accent-soft',
     title: 'Interview Readiness Score',
     desc: 'DSA, SD & HR score — finish the test for a coupon (1:1 mentorship + AI mock)',
     href: '/interview-readiness-tools',
   },
   {
     icon: Mic,
-    color: 'text-[#FF9500]',
-    bg: 'bg-[#FFF4E0]',
+    color: 'text-primary',
+    bg: 'bg-accent-soft',
     title: 'AI Mock Interviews',
     desc: 'Practice with real-time AI interviewer feedback',
     href: '/mock-interviews',
   },
   {
     icon: FileSearch,
-    color: 'text-[#FF9500]',
-    bg: 'bg-[#FFF4E0]',
+    color: 'text-primary',
+    bg: 'bg-accent-soft',
     title: 'Resume ATS Checker',
     desc: 'See your ATS score and fix what gets you filtered',
     href: '/resume-analyzer',
   },
   {
     icon: Cpu,
-    color: 'text-[#CC7000]',
-    bg: 'bg-[#FFF4E0]',
+    color: 'text-primary-hover',
+    bg: 'bg-accent-soft',
     title: 'AI Tools Knowledge Base',
     desc: 'Learn GitHub Copilot, ChatGPT & Cursor for interviews',
     href: '/ai-tools',
   },
   {
     icon: GraduationCap,
-    color: 'text-[#FF9500]',
-    bg: 'bg-[#FFF4E0]',
+    color: 'text-primary',
+    bg: 'bg-accent-soft',
     title: 'Placement Tracks',
-    desc: 'Company-wise prep paths — TCS, Infosys, Wipro, and more',
+    desc: 'Company-wise preparation paths — TCS, Infosys, Wipro, and more',
     href: '/placement-tracks',
   },
   {
     icon: BookOpen,
-    color: 'text-[#FF9500]',
-    bg: 'bg-[#FFF4E0]',
+    color: 'text-primary',
+    bg: 'bg-accent-soft',
     title: 'Free Tutorials',
     desc: 'Topic refreshers and panel-ready framing — start free',
     href: '/free-tutorials',
@@ -134,8 +134,8 @@ const Navbar = () => {
   const defaultNavDesktopClass = (active) =>
     `inline-flex h-10 max-w-full items-center whitespace-nowrap rounded-lg px-2 text-[0.8125rem] font-semibold leading-none transition-all lg:px-2.5 xl:px-3 xl:text-[0.875rem] ${
       active
-        ? 'text-[#FF9500] bg-[#FFF4E0] ring-1 ring-[#FFB347]/35'
-        : 'text-[#333333] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+        ? 'text-primary bg-accent-soft ring-1 ring-brand-teal/35'
+        : 'text-ink hover:text-primary hover:bg-accent-faint'
     }`;
 
   const moreMenuActive = MORE_LINKS.some((l) => isActive(l.path, l.exact));
@@ -145,8 +145,8 @@ const Navbar = () => {
     if (item.variant === 'roadmap') {
       return `inline-flex h-10 max-w-full items-center whitespace-nowrap rounded-lg px-2 text-[0.8125rem] leading-none transition-all lg:px-2.5 xl:px-3 xl:text-[0.875rem] ${
         active
-          ? 'font-bold text-[#1D9E75] underline decoration-2 decoration-[#1D9E75] underline-offset-[5px]'
-          : 'font-semibold text-[#333333] hover:text-[#1D9E75] hover:underline hover:decoration-[#1D9E75]/70 hover:underline-offset-[5px]'
+          ? 'font-bold text-success-strong underline decoration-2 decoration-success-strong underline-offset-[5px]'
+          : 'font-semibold text-ink hover:text-success-strong hover:underline hover:decoration-success-strong/70 hover:underline-offset-[5px]'
       }`;
     }
     return defaultNavDesktopClass(active);
@@ -157,29 +157,29 @@ const Navbar = () => {
     if (item.variant === 'roadmap') {
       return `px-4 py-3.5 text-lg rounded-xl transition-all ${
         active
-          ? 'font-bold text-[#1D9E75] underline decoration-2 decoration-[#1D9E75] underline-offset-[6px] bg-emerald-50/90 border border-[#1D9E75]/25'
-          : 'font-semibold text-muted-foreground hover:text-[#1D9E75] hover:bg-emerald-50/50'
+          ? 'font-bold text-success-strong underline decoration-2 decoration-success-strong underline-offset-[6px] bg-emerald-50/90 border border-success-strong/25'
+          : 'font-semibold text-muted-foreground hover:text-success-strong hover:bg-emerald-50/50'
       }`;
     }
     return `px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
       active
-        ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
-        : 'text-muted-foreground hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+        ? 'text-primary bg-accent-soft border border-brand-teal/40'
+        : 'text-muted-foreground hover:text-primary hover:bg-accent-faint'
     }`;
   };
 
   return (
-    <header className="sticky top-0 z-[100] border-b border-border bg-white/95 shadow-[0_1px_0_rgba(0,0,0,0.04)] backdrop-blur-md">
+    <header className="mm-sticky-header">
       <div className="mx-auto max-w-7xl pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-6 sm:pr-6 lg:pl-8 lg:pr-8">
         <div className="flex h-[4.25rem] items-center gap-3 lg:h-[4.5rem] lg:gap-4">
           <Link to="/" onClick={handleHomeClick} className="group flex shrink-0 items-center gap-2.5 sm:gap-3">
             <img
               src={logoSrc}
               alt="MentorMuni Logo"
-              className="h-11 w-11 shrink-0 rounded-full object-contain ring-2 ring-border transition-all group-hover:ring-[#FFB347]/50 sm:h-12 sm:w-12"
+              className="h-11 w-11 shrink-0 rounded-full object-contain ring-2 ring-border transition-all group-hover:ring-brand-teal/50 sm:h-12 sm:w-12"
             />
             <span className="hidden text-xl font-extrabold tracking-tight text-foreground xl:inline xl:text-[1.4rem]">
-              Mentor<span className="text-[#FF9500]">Muni</span>
+              Mentor<span className="text-primary">Muni</span>
             </span>
           </Link>
 
@@ -206,8 +206,8 @@ const Navbar = () => {
                 aria-haspopup="true"
                 className={`inline-flex h-10 items-center gap-0.5 rounded-lg px-2 text-[0.8125rem] font-semibold transition-all lg:gap-1 lg:px-2.5 xl:px-3 xl:text-[0.875rem] ${
                   toolsOpen
-                    ? 'text-[#FF9500] bg-[#FFF4E0] ring-1 ring-[#FFB347]/35'
-                    : 'text-[#333333] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+                    ? 'text-primary bg-accent-soft ring-1 ring-[#2AAA8A]/35'
+                    : 'text-ink hover:text-primary hover:bg-accent-faint'
                 }`}
               >
                 Tools
@@ -224,20 +224,20 @@ const Navbar = () => {
                           key={tool.href}
                           to={tool.href}
                           onClick={() => setToolsOpen(false)}
-                          className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-[#FFF8EE] transition-colors group"
+                          className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-secondary transition-colors group"
                         >
                           <span className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${tool.bg}`}>
                             <Icon size={17} className={tool.color} strokeWidth={2} />
                           </span>
                           <span>
-                            <span className="block text-[0.9375rem] font-semibold text-foreground group-hover:text-[#FF9500] transition-colors">{tool.title}</span>
+                            <span className="block text-[0.9375rem] font-semibold text-foreground group-hover:text-primary transition-colors">{tool.title}</span>
                             <span className="block text-[13px] text-muted-foreground leading-snug mt-0.5">{tool.desc}</span>
                           </span>
                         </Link>
                       );
                     })}
                   </div>
-                  <div className="border-t border-border px-4 py-3 bg-gradient-to-r from-amber-50/90 to-[#FFF8EE]">
+                  <div className="border-t border-border px-4 py-3 bg-gradient-to-r from-sky-50/90 to-secondary">
                     <div className="mb-1.5 w-fit">
                       <LimitedRewardLabel className="text-[8px] px-2 py-0.5 [&_svg]:h-2.5 [&_svg]:w-2.5" />
                     </div>
@@ -245,7 +245,7 @@ const Navbar = () => {
                     <Link
                       to="/interview-readiness-tools"
                       onClick={() => setToolsOpen(false)}
-                      className="text-sm font-semibold text-[#FF9500] hover:text-[#E88600] transition-colors"
+                      className="text-sm font-semibold text-primary hover:text-primary-hover transition-colors"
                     >
                       Start with a free readiness check →
                     </Link>
@@ -263,8 +263,8 @@ const Navbar = () => {
                 aria-label="Colleges, about, and contact"
                 className={`inline-flex h-10 max-w-full items-center gap-0.5 whitespace-nowrap rounded-lg px-2 text-[0.8125rem] font-semibold transition-all lg:gap-1 lg:px-2.5 xl:px-3 xl:text-[0.875rem] ${
                   moreOpen || moreMenuActive
-                    ? 'text-[#FF9500] bg-[#FFF4E0] ring-1 ring-[#FFB347]/35'
-                    : 'text-[#333333] hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+                    ? 'text-primary bg-accent-soft ring-1 ring-[#2AAA8A]/35'
+                    : 'text-ink hover:text-primary hover:bg-accent-faint'
                 }`}
               >
                 About/Contact
@@ -280,11 +280,11 @@ const Navbar = () => {
                         to={path}
                         onClick={() => setMoreOpen(false)}
                         className={`flex items-center gap-3 px-3 py-2.5 text-[0.9375rem] font-semibold transition-colors ${
-                          active ? 'bg-[#FFF4E0] text-[#FF9500]' : 'text-foreground hover:bg-[#FFF8EE]'
+                          active ? 'bg-accent-soft text-primary' : 'text-foreground hover:bg-secondary'
                         }`}
                       >
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[#FFF4E0]">
-                          <Icon size={16} className="text-[#CC7000]" strokeWidth={2} />
+                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent-soft">
+                          <Icon size={16} className="text-[#15799F]" strokeWidth={2} />
                         </span>
                         {label}
                       </Link>
@@ -310,19 +310,19 @@ const Navbar = () => {
             `}</style>
             <Link
               to="/waitlist"
-              className="inline-flex h-11 min-w-[7.5rem] items-center justify-center rounded-xl border-2 border-[#FF9500] px-4 text-[0.8125rem] font-semibold text-[#FF9500] transition-all hover:bg-[#FFF4E0] active:scale-[0.98] xl:text-[0.875rem]"
+              className="inline-flex h-11 min-w-[7.5rem] items-center justify-center rounded-xl border-2 border-cta px-4 text-[0.8125rem] font-semibold text-cta transition-all hover:bg-warning-bg active:scale-[0.98] xl:text-[0.875rem]"
             >
               Join Waitlist
             </Link>
             <button
               type="button"
               onClick={goToStartAssessment}
-              className="nb-cta relative inline-flex h-11 max-w-[16.5rem] items-center justify-center gap-2 overflow-hidden rounded-xl bg-[#FF9500] px-4 text-[0.8125rem] font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-[#E88600] active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9500] xl:max-w-none xl:px-5 xl:text-[0.875rem]"
+              className="nb-cta relative inline-flex h-11 max-w-[16.5rem] items-center justify-center gap-2 overflow-hidden rounded-xl bg-cta px-4 text-[0.8125rem] font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-cta-hover active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta xl:max-w-none xl:px-5 xl:text-[0.875rem]"
             >
               <span className="nb-shine pointer-events-none absolute inset-0 w-1/3 bg-white/25 blur-sm" style={{ transform: 'translateX(-100%) skewX(-15deg)' }} />
               <span className="relative flex h-2 w-2 shrink-0">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#1A8C55] opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-[#1A8C55]" />
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-live opacity-75" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-live" />
               </span>
               <span className="relative max-w-[11rem] truncate text-left leading-tight sm:max-w-none">
                 {PRIMARY_CTA_LABEL}
@@ -332,7 +332,7 @@ const Navbar = () => {
 
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 text-muted-foreground hover:text-[#FF9500] transition-colors"
+            className="lg:hidden p-2 text-muted-foreground hover:text-primary transition-colors"
             aria-label="Toggle mobile menu"
           >
             {isOpen ? <X size={28} /> : <Menu size={28} />}
@@ -347,7 +347,7 @@ const Navbar = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:hidden border-t border-border bg-[#FFF8EE]"
+            className="lg:hidden border-t border-border bg-background"
           >
             <nav className="flex max-h-[calc(100vh-5.5rem)] flex-col space-y-2 overflow-y-auto p-4">
               {navItems.map((item) => {
@@ -374,7 +374,7 @@ const Navbar = () => {
                       key={tool.href}
                       to={tool.href}
                       onClick={handleNavClick}
-                      className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-muted-foreground hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)] transition-all"
+                      className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-muted-foreground hover:text-primary hover:bg-accent-faint transition-all"
                     >
                       <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${tool.bg}`}>
                         <Icon size={13} className={tool.color} />
@@ -383,7 +383,7 @@ const Navbar = () => {
                     </Link>
                   );
                 })}
-                <div className="mx-2 mt-2 rounded-xl border border-orange-200/60 bg-gradient-to-r from-amber-50 to-[#FFF8EE] px-3 py-3">
+                <div className="mx-2 mt-2 rounded-xl border border-sky-200/60 bg-gradient-to-r from-sky-50 to-secondary px-3 py-3">
                   <div className="mb-1.5 w-fit">
                     <LimitedRewardLabel className="text-[8px] px-2 py-0.5 [&_svg]:h-2.5 [&_svg]:w-2.5" />
                   </div>
@@ -394,7 +394,7 @@ const Navbar = () => {
                       handleNavClick();
                       goToStartAssessment();
                     }}
-                    className="text-sm font-semibold text-[#FF9500] hover:text-[#E88600] transition-colors"
+                    className="text-sm font-semibold text-primary hover:text-[#15799F] transition-colors"
                   >
                     Take the test →
                   </button>
@@ -412,12 +412,12 @@ const Navbar = () => {
                       onClick={handleNavClick}
                       className={`flex items-center gap-3 px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
                         active
-                          ? 'text-[#FF9500] bg-[#FFF4E0] border border-[#FFB347]/40'
-                          : 'text-muted-foreground hover:text-[#FF9500] hover:bg-[rgba(255,149,0,0.06)]'
+                          ? 'text-primary bg-accent-soft border border-brand-teal/40'
+                          : 'text-muted-foreground hover:text-primary hover:bg-accent-faint'
                       }`}
                     >
-                      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${active ? 'bg-white/80' : 'bg-[#FFF4E0]'}`}>
-                        <Icon size={18} className="text-[#CC7000]" strokeWidth={2} />
+                      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${active ? 'bg-white/80' : 'bg-accent-soft'}`}>
+                        <Icon size={18} className="text-[#15799F]" strokeWidth={2} />
                       </span>
                       {label}
                     </Link>
@@ -430,7 +430,7 @@ const Navbar = () => {
               <Link
                 to="/waitlist"
                 onClick={handleNavClick}
-                className="px-4 py-3.5 text-lg font-semibold rounded-xl border-2 border-[#FF9500] text-[#FF9500] flex items-center justify-center w-full transition-all"
+                className="px-4 py-3.5 text-lg font-semibold rounded-xl border-2 border-cta text-cta flex items-center justify-center w-full transition-all"
               >
                 Join Waitlist
               </Link>
@@ -440,7 +440,7 @@ const Navbar = () => {
                   handleNavClick();
                   goToStartAssessment();
                 }}
-                className="px-4 py-3.5 text-lg font-bold rounded-xl bg-[#FF9500] hover:bg-[#E88600] text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all flex items-center justify-center gap-2 w-full"
+                className="px-4 py-3.5 text-lg font-bold rounded-xl bg-cta hover:bg-cta-hover text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all flex items-center justify-center gap-2 w-full"
               >
                 {PRIMARY_CTA_LABEL}
               </button>

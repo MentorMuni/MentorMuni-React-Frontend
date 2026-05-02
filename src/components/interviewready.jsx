@@ -319,7 +319,7 @@ function readToolsEntryFromHash() {
 const MM_FIELD_INVALID =
   'border-2 border-red-500 bg-red-50 ring-2 ring-red-500/25 focus:border-red-600 focus:ring-2 focus:ring-red-500/35';
 const MM_FIELD_VALID =
-  'border border-border hover:border-border focus:border-[#FF9500] focus:ring-2 focus:ring-[#FF9500]/30';
+  'border border-border hover:border-border focus:border-cta focus:ring-2 focus:ring-cta/30';
 
 function scrollFirstInvalidFieldIntoView() {
   if (typeof document === 'undefined') return;
@@ -432,7 +432,7 @@ function ReadinessScoreRing({ pct }) {
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="#EDE4D8"
+          stroke="var(--border)"
           strokeWidth={stroke}
         />
         <motion.circle
@@ -496,7 +496,7 @@ function ScoreFactorRow({ label, value, hint, icon: Icon, variant = 'orange', de
             <span className="tabular-nums text-sm font-bold text-muted-foreground">{Math.round(v)}%</span>
           </div>
           {hint ? <p className="mt-0.5 text-xs leading-snug text-muted-foreground">{hint}</p> : null}
-          <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-[#EDE8E0]">
+          <div className="mt-2 h-2.5 overflow-hidden rounded-full bg-surface-track">
             <motion.div
               className="h-full rounded-full"
               initial={{ width: 0 }}
@@ -573,7 +573,7 @@ function buildWhatsAppChallengeMessage(pct, readinessLabel, modeLabel) {
     `I scored ${pct}% on MentorMuni ${product} (${readinessLabel}).\n\n` +
     `Think you can beat me? Same free 5-minute quiz — no signup.\n\n` +
     `Challenge your batchmates:\n${url}\n\n` +
-    `Interview prep · Students & professionals`
+    `Interview preparation · Students & professionals`
   );
 }
 
@@ -618,8 +618,8 @@ function HowItWorksVisual() {
             transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="group flex h-full"
           >
-            <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-[#E6E0D6] bg-white shadow-[0_16px_48px_-28px_rgba(45,35,20,0.28)] ring-1 ring-black/[0.04] transition-shadow duration-300 group-hover:shadow-[0_22px_56px_-24px_rgba(234,88,12,0.22)]">
-              <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#f0ebe3]">
+            <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-[0_16px_48px_-28px_rgba(45,35,20,0.28)] ring-1 ring-black/[0.04] transition-shadow duration-300 group-hover:shadow-[0_22px_56px_-24px_rgba(234,88,12,0.22)]">
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-secondary">
                 <img
                   src={posterCarouselAssetPath(image)}
                   alt={imageAlt}
@@ -631,7 +631,7 @@ function HowItWorksVisual() {
                   className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-80"
                   aria-hidden
                 />
-                <div className="absolute left-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-sm font-bold tabular-nums text-[#c2410c] shadow-md ring-1 ring-black/5">
+                <div className="absolute left-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-sm font-bold tabular-nums text-cta-deep shadow-md ring-1 ring-black/5">
                   {i + 1}
                 </div>
               </div>
@@ -652,7 +652,7 @@ const ASSESSMENT_MODE_OPTIONS = [
     mode: ASSESSMENT_FOCUS_SKILL,
     emoji: '💻',
     title: ASSESSMENT_MODE_LABEL[ASSESSMENT_FOCUS_SKILL],
-    badge: 'One skill, deep prep',
+    badge: 'One skill, deep preparation',
     compactHint: 'Drill one stack end-to-end — Java, Python, AI, etc.',
     details: [
       'You name one skill (Java, C#, Python, AI…)',
@@ -681,7 +681,7 @@ const ASSESSMENT_MODE_OPTIONS = [
     details: [
       `Fixed ${APTITUDE_QUESTION_COUNT}-question mixed aptitude set`,
       'No skill-stack prompt; personal info and then start',
-      'Best for campus aptitude prep and screening rounds',
+      'Best for campus aptitude preparation and screening rounds',
     ],
   },
 ];
@@ -706,7 +706,7 @@ function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
               isHero
                 ? {
                     y: -8,
-                    boxShadow: '0 24px 48px -12px rgba(255, 149, 0, 0.35)',
+                    boxShadow: 'var(--shadow-cta-hover-lift)',
                     transition: { duration: 0.22, ease: [0.22, 1, 0.36, 1] },
                   }
                 : undefined
@@ -717,19 +717,19 @@ function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
               isHero
                 ? `group relative cursor-pointer select-none text-left rounded-3xl border-2 transition-colors duration-200 will-change-transform ${
                     selected
-                      ? 'border-[#FF9500] bg-gradient-to-br from-[#FFF8EE] to-white shadow-xl shadow-[#FF9500]/25 ring-2 ring-[#FF9500]/30'
-                      : 'border-[#E0D8CF] bg-gradient-to-br from-white to-[#FFFCF7] shadow-md shadow-black/[0.06] hover:border-[#FF9500] hover:ring-4 hover:ring-[#FF9500]/15'
+                      ? 'border-cta bg-gradient-to-br from-secondary to-white shadow-xl shadow-button ring-2 ring-cta/30'
+                      : 'border-border bg-gradient-to-br from-white to-tint-subtle shadow-md shadow-black/[0.06] hover:border-cta hover:ring-4 hover:ring-cta/15'
                   } p-6 sm:p-7`
                 : `cursor-pointer p-5 rounded-2xl text-left transition-all border-2 group relative ${
                     selected
-                      ? 'border-[#FF9500] bg-[#FF9500]/15 shadow-lg shadow-[0_2px_12px_rgba(255,149,0,0.15)]'
-                      : 'border-border bg-white hover:border-border hover:bg-[#FFFDF8]'
+                      ? 'border-cta bg-cta/15 shadow-lg shadow-cta-card'
+                      : 'border-border bg-white hover:border-border hover:bg-background'
                   }`
             }
           >
             {selected && (
               <div
-                className={`absolute rounded-full bg-[#FF9500] flex items-center justify-center text-white ${
+                className={`absolute rounded-full bg-cta flex items-center justify-center text-white ${
                   isHero ? 'top-4 right-4 w-7 h-7' : 'top-3 right-3 w-5 h-5'
                 }`}
               >
@@ -737,7 +737,7 @@ function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
               </div>
             )}
             <div
-              className={`mb-4 flex items-center justify-center rounded-2xl bg-gradient-to-br from-[#FF9500]/20 to-amber-100/80 ${
+              className={`mb-4 flex items-center justify-center rounded-2xl bg-gradient-to-br from-cta/20 to-amber-100/80 ${
                 isHero ? 'h-16 w-16 text-4xl shadow-inner' : 'h-14 w-14 text-3xl'
               }`}
             >
@@ -747,7 +747,7 @@ function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
               {option.title}
             </h3>
             <p
-              className={`font-semibold uppercase tracking-wide ${isHero ? 'text-[11px] mt-1.5 text-[#CC7000]' : `text-xs mb-3 ${selected ? 'text-[#FF9500]' : 'text-muted-foreground'}`}`}
+              className={`font-semibold uppercase tracking-wide ${isHero ? 'text-[11px] mt-1.5 text-warning-text' : `text-xs mb-3 ${selected ? 'text-cta' : 'text-muted-foreground'}`}`}
             >
               {option.badge}
             </p>
@@ -757,15 +757,15 @@ function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
               <div className="space-y-1.5">
                 {option.details.map((d) => (
                   <div key={d} className="flex items-start gap-1.5 text-xs text-muted-foreground">
-                    <Check size={11} className={`mt-0.5 shrink-0 ${selected ? 'text-[#FF9500]' : 'text-muted-foreground'}`} />
+                    <Check size={11} className={`mt-0.5 shrink-0 ${selected ? 'text-cta' : 'text-muted-foreground'}`} />
                     {d}
                   </div>
                 ))}
               </div>
             )}
             {isHero && (
-              <div className="mt-5 flex items-center gap-2 text-sm font-bold text-[#FF9500] transition-all group-hover:gap-3">
-                <span className="rounded-lg bg-[#FF9500]/10 px-2 py-0.5 text-xs font-black uppercase tracking-wide text-[#CC7000]">
+              <div className="mt-5 flex items-center gap-2 text-sm font-bold text-cta transition-all group-hover:gap-3">
+                <span className="rounded-lg bg-cta/10 px-2 py-0.5 text-xs font-black uppercase tracking-wide text-warning-text">
                   Tap to continue
                 </span>
                 <ArrowRight size={18} className="shrink-0 transition-transform group-hover:translate-x-1" />
@@ -824,9 +824,9 @@ function PlanGenerationLoader() {
   const mocksHref = appHashUrl('/mock-interviews');
 
   const promoPrimaryClass =
-    'inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-5 py-3 text-sm font-bold text-white shadow-md shadow-[#FF9500]/25 transition-all sm:w-auto';
+    'inline-flex w-full items-center justify-center gap-2 rounded-xl bg-cta px-5 py-3 text-sm font-bold text-white shadow-md shadow-button transition-all sm:w-auto';
   const promoSecondaryClass =
-    'inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-[#FAFAFA] px-5 py-3 text-sm font-semibold text-[#333333] transition-all sm:w-auto';
+    'inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border bg-surface-muted px-5 py-3 text-sm font-semibold text-ink transition-all sm:w-auto';
   const promoSpanExtra = 'pointer-events-none cursor-default select-none opacity-95';
 
   const spinTransition = reduceMotion
@@ -838,13 +838,13 @@ function PlanGenerationLoader() {
 
   return (
     <div
-      className="relative min-h-screen overflow-hidden bg-[#FFFDF8] font-sans"
+      className="relative min-h-screen overflow-hidden mm-site-theme"
       role="status"
       aria-live="polite"
       aria-busy="true"
     >
       <div className="pointer-events-none absolute inset-0">
-        <div className="absolute left-1/4 top-20 h-64 w-64 rounded-full bg-[#FF9500]/10 blur-3xl" />
+        <div className="absolute left-1/4 top-20 h-64 w-64 rounded-full bg-cta/10 blur-3xl" />
         <div className="absolute bottom-24 right-1/4 h-56 w-56 rounded-full bg-cyan-400/10 blur-3xl" />
       </div>
 
@@ -857,7 +857,7 @@ function PlanGenerationLoader() {
         >
           <div className="relative mx-auto mb-8 flex h-28 w-28 items-center justify-center" aria-hidden>
             <motion.div
-              className="absolute inset-0 rounded-full border border-[#FF9500]/25 bg-white/60"
+              className="absolute inset-0 rounded-full border border-cta/25 bg-white/60"
               animate={reduceMotion ? {} : { scale: [1, 1.06, 1], opacity: [0.55, 0.85, 0.55] }}
               transition={reduceMotion ? {} : { duration: 2.2, repeat: Infinity, ease: 'easeInOut' }}
             />
@@ -868,16 +868,16 @@ function PlanGenerationLoader() {
               transition={spinTransition}
             />
             <motion.div
-              className="absolute inset-2 rounded-full border-2 border-transparent border-t-[#FF9500] border-r-[#FF9500]/35"
+              className="absolute inset-2 rounded-full border-2 border-transparent border-t-cta border-r-cta/35"
               animate={reduceMotion ? { rotate: 0 } : { rotate: -360 }}
               transition={spinReverseTransition}
             />
             <motion.div
-              className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#FFF8EE] to-white shadow-inner"
+              className="relative z-10 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-secondary to-white shadow-inner"
               animate={reduceMotion ? {} : { y: [0, -5, 0] }}
               transition={reduceMotion ? {} : { duration: 2.4, repeat: Infinity, ease: 'easeInOut' }}
             >
-              <Sparkles className="h-7 w-7 text-[#FF9500]" strokeWidth={2} />
+              <Sparkles className="h-7 w-7 text-cta" strokeWidth={2} />
             </motion.div>
           </div>
 
@@ -889,9 +889,9 @@ function PlanGenerationLoader() {
           </p>
 
           <div className="mx-auto mt-6 max-w-md">
-            <div className="relative h-2 overflow-hidden rounded-full bg-[#E8E4DC]/80">
+            <div className="relative h-2 overflow-hidden rounded-full bg-surface-track/80">
               <motion.div
-                className="absolute inset-y-0 w-2/5 rounded-full bg-gradient-to-r from-[#FF9500] via-[#FFB04A] to-cyan-500 shadow-sm"
+                className="absolute inset-y-0 w-2/5 rounded-full bg-gradient-to-r from-cta via-cta-mid to-cyan-500 shadow-sm"
                 initial={false}
                 animate={reduceMotion ? { left: '30%' } : { left: ['-45%', '105%'] }}
                 transition={
@@ -905,7 +905,7 @@ function PlanGenerationLoader() {
               {[0, 1, 2, 3, 4].map((i) => (
                 <motion.span
                   key={i}
-                  className="h-2 w-2 rounded-full bg-[#FF9500]/35"
+                  className="h-2 w-2 rounded-full bg-cta/35"
                   animate={
                     reduceMotion
                       ? { opacity: 0.5 }
@@ -927,7 +927,7 @@ function PlanGenerationLoader() {
           </div>
 
           <div className="mx-auto mt-6 min-h-[4.5rem] max-w-md px-1">
-            <div className="mb-1 flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-[#FF9500]/90">
+            <div className="mb-1 flex items-center justify-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-cta/90">
               <Lightbulb className="h-3.5 w-3.5 shrink-0" aria-hidden />
               While you wait
             </div>
@@ -938,7 +938,7 @@ function PlanGenerationLoader() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                className="text-sm font-medium leading-relaxed text-[#333333]"
+                className="text-sm font-medium leading-relaxed text-ink"
               >
                 {PLAN_LOADER_ROTATING_TIPS[tipIdx]}
               </motion.p>
@@ -952,16 +952,16 @@ function PlanGenerationLoader() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-10 rounded-2xl border border-[#E8E4DC] bg-white/95 p-6 shadow-lg shadow-black/[0.04] backdrop-blur-sm sm:p-7"
+          className="mt-10 rounded-2xl border border-border bg-white/95 p-6 shadow-lg shadow-black/[0.04] backdrop-blur-sm sm:p-7"
         >
           <div className="mb-4 flex items-center justify-center gap-2 text-foreground">
-            <Users className="h-5 w-5 shrink-0 text-[#FF9500]" strokeWidth={2} />
+            <Users className="h-5 w-5 shrink-0 text-cta" strokeWidth={2} />
             <h3 className="text-base font-bold sm:text-lg">Bridge the gap with MentorMuni</h3>
           </div>
           <p className="text-center text-sm leading-relaxed text-muted-foreground">
             Practice alone only gets you so far. Join MentorMuni for{' '}
-            <span className="font-semibold text-[#333333]">1:1 mentorship</span> and{' '}
-            <span className="font-semibold text-[#333333]">AI mock interviews</span> — structured to build confidence before
+            <span className="font-semibold text-ink">1:1 mentorship</span> and{' '}
+            <span className="font-semibold text-ink">AI mock interviews</span> — structured to build confidence before
             the real round.
           </p>
           <div className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:justify-center sm:gap-4">
@@ -971,7 +971,7 @@ function PlanGenerationLoader() {
                   href={mentorsHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`${promoPrimaryClass} hover:bg-[#E88600]`}
+                  className={`${promoPrimaryClass} hover:bg-cta-hover`}
                 >
                   <Headphones className="h-4 w-4" aria-hidden />
                   Explore mentorship
@@ -980,7 +980,7 @@ function PlanGenerationLoader() {
                   href={mocksHref}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`${promoSecondaryClass} hover:border-[#FF9500]/40 hover:bg-[#FFF8EE]`}
+                  className={`${promoSecondaryClass} hover:border-cta/40 hover:bg-secondary`}
                 >
                   AI mock interviews
                   <ArrowRight className="h-4 w-4" aria-hidden />
@@ -1008,9 +1008,9 @@ function PlanGenerationLoader() {
 /** Lighter loader while answers are evaluated (step 5) */
 function EvaluatingAnswersLoader() {
   return (
-    <div className="min-h-screen bg-[#FFFDF8] px-4 py-12 font-sans sm:px-6">
+    <div className="min-h-screen mm-site-theme px-4 py-12 sm:px-6">
       <div className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center text-center">
-        <div className="mx-auto mb-6 h-16 w-16 rounded-full border-4 border-[#FF9500]/25 border-t-[#FF9500] animate-spin" />
+        <div className="mx-auto mb-6 h-16 w-16 rounded-full border-4 border-cta/25 border-t-cta animate-spin" />
         <h2 className="text-xl font-black text-foreground sm:text-2xl">Scoring your readiness</h2>
         <p className="mt-2 text-sm text-muted-foreground">Analyzing your answers — almost there.</p>
         <p className="mx-auto mt-8 max-w-sm rounded-xl border border-border bg-white px-4 py-3 text-xs leading-relaxed text-muted-foreground">
@@ -1301,7 +1301,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] py-6 px-4 font-sans sm:px-6 sm:py-8 lg:px-8">
+    <div className="min-h-screen mm-site-theme py-6 px-4 sm:px-6 sm:py-8 lg:px-8">
       <div className="mx-auto max-w-3xl">
         <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-xl sm:rounded-3xl">
           {/* Expanded header — hidden once user scrolls the question list */}
@@ -1315,7 +1315,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <h2 className="text-lg font-bold leading-tight text-foreground sm:text-xl">{quizTitle}</h2>
-                  <span className="shrink-0 rounded-full border border-[#E8D9C8] bg-[#FFF8EE] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-[#8B6914] sm:text-[11px]">
+                  <span className="shrink-0 rounded-full border border-border bg-secondary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-warning-ink-deep sm:text-[11px]">
                     {isAptitudeQuiz
                       ? `MCQ · ${items.length} question${items.length === 1 ? '' : 's'}`
                       : `Mixed · ${items.length} questions`}
@@ -1344,18 +1344,18 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
                   ) : null}
                 </p>
               </div>
-              <div className="shrink-0 rounded-lg border border-border bg-[#FFFDF8] px-3 py-2 text-right">
+              <div className="shrink-0 rounded-lg border border-border bg-background px-3 py-2 text-right">
                 <div className="text-lg font-black tabular-nums leading-none text-foreground sm:text-xl">
                   {answered}
-                  <span className="text-[#999999]">/</span>
+                  <span className="text-icon-muted">/</span>
                   {items.length}
                 </div>
                 <p className="text-[10px] font-medium uppercase tracking-wide text-hint">Answered</p>
               </div>
             </div>
-            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-[#F0ECE0]">
+            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-border">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-500 transition-[width] duration-300"
+                className="h-full rounded-full bg-gradient-to-r from-cta to-cyan-500 transition-[width] duration-300"
                 style={{ width: `${pct}%` }}
               />
             </div>
@@ -1363,7 +1363,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
 
           {/* Slim bar — only after scrolling */}
           <div
-            className={`border-b border-border bg-[#FAFAFA]/95 px-4 backdrop-blur-sm transition-all duration-200 sm:px-6 ${
+            className={`border-b border-border bg-surface-muted/95 px-4 backdrop-blur-sm transition-all duration-200 sm:px-6 ${
               scrolled ? 'max-h-24 py-2.5 opacity-100' : 'max-h-0 overflow-hidden border-0 py-0 opacity-0'
             }`}
           >
@@ -1373,9 +1373,9 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
                 {answered}/{items.length}
               </span>
             </div>
-            <div className="mt-2 h-0.5 w-full overflow-hidden rounded-full bg-[#E8E4DC]">
+            <div className="mt-2 h-0.5 w-full overflow-hidden rounded-full bg-surface-track">
               <div
-                className="h-full rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-500"
+                className="h-full rounded-full bg-gradient-to-r from-cta to-cyan-500"
                 style={{ width: `${pct}%` }}
               />
             </div>
@@ -1398,10 +1398,10 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
               return (
                 <div key={i} className="border-b border-border pb-6 last:border-0 last:pb-2">
                   <div className="mb-3 flex flex-wrap items-center gap-2">
-                    <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-600 text-xs font-black text-white">
+                    <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-cta to-cyan-600 text-xs font-black text-white">
                       {i + 1}
                     </span>
-                    <span className="rounded-full border border-border bg-[#FAFAFA] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+                    <span className="rounded-full border border-border bg-surface-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
                       {planQuestionTypeBadge(kind)}
                     </span>
                   </div>
@@ -1451,13 +1451,13 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
                             onClick={() => setAnswers({ ...answers, [i]: letter })}
                             className={`flex w-full items-start gap-3 rounded-xl border-2 px-3 py-3 text-left text-sm transition-all ${
                               picked
-                                ? 'border-[#FF9500] bg-[#FFF8EE] text-foreground shadow-md shadow-[#FF9500]/15'
-                                : 'border-border bg-white text-muted-foreground hover:border-[#FFB347]/50 hover:bg-[#FFFCF9]'
+                                ? 'border-cta bg-secondary text-foreground shadow-md shadow-button'
+                                : 'border-border bg-white text-muted-foreground hover:border-cta-mid/50 hover:bg-tint-subtle'
                             }`}
                           >
                             <span
                               className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black ${
-                                picked ? 'bg-[#FF9500] text-white' : 'bg-[#F0ECE0] text-foreground'
+                                picked ? 'bg-cta text-white' : 'bg-border text-foreground'
                               }`}
                             >
                               {letter}
@@ -1478,7 +1478,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
             })}
           </div>
 
-          <div className="border-t border-border bg-[#FFFCF9] px-4 py-4 sm:px-6">
+          <div className="border-t border-border bg-tint-subtle px-4 py-4 sm:px-6">
             {error && (
               <div
                 className="mb-4 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-3 text-left text-sm font-medium text-red-800"
@@ -1493,7 +1493,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
               className={`w-full rounded-2xl py-3.5 text-base font-bold text-white shadow-lg transition-all sm:py-4 ${
                 answered < items.length
                   ? 'cursor-not-allowed bg-slate-500 text-slate-200'
-                  : 'bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#FF9500] hover:to-[#E88600] active:scale-[0.99]'
+                  : 'bg-gradient-to-r from-cta to-cta-hover hover:from-cta hover:to-cta-hover active:scale-[0.99]'
               }`}
               disabled={answered < items.length || loading}
               onClick={onSubmit}
@@ -2334,11 +2334,11 @@ const InterviewReady = () => {
       return <EvaluatingAnswersLoader />;
     }
     return (
-      <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl">
           <div className="rounded-3xl border border-border bg-white p-10 text-center shadow-xl backdrop-blur animate-in fade-in duration-500">
             <div className="mb-6">
-              <div className="mx-auto h-14 w-14 rounded-full border-4 border-[#FF9500]/25 border-t-[#FF9500] animate-spin" />
+              <div className="mx-auto h-14 w-14 rounded-full border-4 border-cta/25 border-t-cta animate-spin" />
             </div>
             <h2 className="mb-2 text-2xl font-black text-foreground">Processing your request</h2>
             <p className="text-muted-foreground">Please wait a moment…</p>
@@ -2351,7 +2351,7 @@ const InterviewReady = () => {
   // ========== STEP 12: ASSESSMENT MODE (tools entry — same picker as landing) ==========
   if (step === 12) {
     return (
-      <div className="min-h-screen bg-[#FFFDF8] py-10 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen mm-site-theme py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
           <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-border">
             <h2 className="text-3xl md:text-4xl font-black text-foreground mb-2 tracking-tight">Choose what to measure</h2>
@@ -2374,7 +2374,7 @@ const InterviewReady = () => {
             <button
               type="button"
               onClick={() => navigate('/interview-readiness-tools')}
-              className="mt-6 px-6 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-[#FFF8EE] rounded-xl transition-all border border-border hover:border-border text-sm"
+              className="mt-6 px-6 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all border border-border hover:border-border text-sm"
             >
               ← Back to tools
             </button>
@@ -2387,9 +2387,9 @@ const InterviewReady = () => {
   // ========== STEP 0: LANDING ==========
   if (step === 0) {
     return (
-      <div className="relative min-h-screen overflow-hidden bg-[#FFFDF8] text-muted-foreground font-sans">
+      <div className="relative min-h-screen overflow-hidden mm-site-theme text-muted-foreground">
         <div className="pointer-events-none absolute inset-0 overflow-hidden">
-          <div className="absolute -left-20 top-10 h-72 w-72 rounded-full bg-[#FF9500]/12 blur-3xl" />
+          <div className="absolute -left-20 top-10 h-72 w-72 rounded-full bg-cta/12 blur-3xl" />
           <div className="absolute -right-16 top-1/3 h-64 w-64 rounded-full bg-cyan-400/10 blur-3xl" />
           <div className="absolute bottom-0 left-1/2 h-48 w-[min(100%,480px)] -translate-x-1/2 rounded-full bg-amber-200/20 blur-3xl" />
         </div>
@@ -2409,7 +2409,7 @@ const InterviewReady = () => {
           <div className="mx-auto mb-4 max-w-xl text-center sm:mb-5">
             <h1 className="text-3xl font-black leading-[1.1] tracking-tight text-foreground sm:text-4xl md:text-5xl">
               Interview{' '}
-              <span className="bg-gradient-to-r from-[#FF9500] to-amber-500 bg-clip-text text-transparent">Readiness</span>{' '}
+              <span className="bg-gradient-to-r from-cta to-amber-500 bg-clip-text text-transparent">Readiness</span>{' '}
               <span className="text-foreground">Check</span>
             </h1>
             <p className="mt-2 text-sm text-muted-foreground sm:text-base">
@@ -2437,8 +2437,8 @@ const InterviewReady = () => {
 
           {/* Reward — below CTAs */}
           <div className="mx-auto mt-6 w-full max-w-2xl sm:mt-8">
-            <div className="flex items-start gap-3 rounded-2xl border border-orange-200/60 bg-gradient-to-r from-[#FFF8EE] to-white px-4 py-3 shadow-sm">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#FF9500] to-amber-600 text-white shadow-md">
+            <div className="flex items-start gap-3 rounded-2xl border border-orange-200/60 bg-gradient-to-r from-secondary to-white px-4 py-3 shadow-sm">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cta to-amber-600 text-white shadow-md">
                 <Gift size={18} strokeWidth={2} />
               </span>
               <div className="min-w-0 pt-0.5">
@@ -2453,12 +2453,12 @@ const InterviewReady = () => {
           {/* How it works — pictorial strip below tiles & reward */}
           <div className="relative mx-auto mt-12 w-full max-w-5xl px-0 sm:mt-16">
             <div
-              className="pointer-events-none absolute inset-x-[-12px] -top-6 bottom-8 -z-10 rounded-[2rem] bg-gradient-to-b from-[#FFF4E6]/90 via-[#FFFDF8]/60 to-transparent sm:inset-x-[-24px]"
+              className="pointer-events-none absolute inset-x-[-12px] -top-6 bottom-8 -z-10 rounded-[2rem] bg-gradient-to-b from-warning-bg/90 via-background/60 to-transparent sm:inset-x-[-24px]"
               aria-hidden
             />
             <div className="mb-8 text-center sm:mb-10">
               <div className="mb-3 flex flex-wrap items-center justify-center gap-2">
-                <Zap size={20} className="shrink-0 text-[#FF9500]" aria-hidden />
+                <Zap size={20} className="shrink-0 text-cta" aria-hidden />
                 <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
                   How it works &amp; what you get
                 </h2>
@@ -2477,13 +2477,13 @@ const InterviewReady = () => {
   // ========== STEP 1: COLLECT CONTACT INFO ==========
   if (step === 1 && !otpSent) {
     return (
-      <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white border border-border rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-4">
-                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#FF9500]/20 border border-[#FF9500]">
-                  <Mail className="text-[#FF9500]" size={24} />
+                <div className="flex items-center justify-center w-12 h-12 rounded-full bg-cta/20 border border-cta">
+                  <Mail className="text-cta" size={24} />
                 </div>
                 <h2 className="text-3xl font-black text-foreground">Verify Your Contact</h2>
               </div>
@@ -2494,7 +2494,7 @@ const InterviewReady = () => {
             
             <form onSubmit={handleRequestOTP} className="space-y-6">
               <div>
-                <label className="text-sm font-bold text-[#333333] block mb-3">
+                <label className="text-sm font-bold text-ink block mb-3">
                   Email Address <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -2507,7 +2507,7 @@ const InterviewReady = () => {
                   placeholder="your.email@example.com"
                   aria-invalid={validationErrors.email ? 'true' : undefined}
                   data-mm-invalid={validationErrors.email ? 'true' : undefined}
-                  className={`w-full rounded-xl bg-white px-4 py-3 outline-none transition-all text-foreground placeholder-[#AAAAAA] ${
+                  className={`w-full rounded-xl bg-white px-4 py-3 outline-none transition-all text-foreground placeholder:text-hint ${
                     validationErrors.email 
                       ? MM_FIELD_INVALID 
                       : MM_FIELD_VALID
@@ -2523,7 +2523,7 @@ const InterviewReady = () => {
               </div>
 
               <div>
-                <label className="text-sm font-bold text-[#333333] block mb-3">
+                <label className="text-sm font-bold text-ink block mb-3">
                   Phone Number <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -2536,7 +2536,7 @@ const InterviewReady = () => {
                   placeholder="+91 9876543210"
                   aria-invalid={validationErrors.phone ? 'true' : undefined}
                   data-mm-invalid={validationErrors.phone ? 'true' : undefined}
-                  className={`w-full rounded-xl bg-white px-4 py-3 outline-none transition-all text-foreground placeholder-[#AAAAAA] ${
+                  className={`w-full rounded-xl bg-white px-4 py-3 outline-none transition-all text-foreground placeholder:text-hint ${
                     validationErrors.phone 
                       ? MM_FIELD_INVALID 
                       : MM_FIELD_VALID
@@ -2562,14 +2562,14 @@ const InterviewReady = () => {
                 <button 
                   type="button" 
                   onClick={() => setStep(0)}
-                  className="flex-1 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-[#FFF8EE] rounded-2xl transition-all border border-border hover:border-border"
+                  className="flex-1 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-secondary rounded-2xl transition-all border border-border hover:border-border"
                 >
                   Back
                 </button>
                 <button 
                   type="submit"
                   disabled={loading}
-                  className="flex-[2] bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#FF9500] hover:to-[#E88600] disabled:from-slate-600 disabled:to-slate-700 text-white font-bold py-3 rounded-2xl shadow-lg transition-all active:scale-95"
+                  className="flex-[2] bg-gradient-to-r from-cta to-cta-hover hover:from-cta hover:to-cta-hover disabled:from-slate-600 disabled:to-slate-700 text-white font-bold py-3 rounded-2xl shadow-lg transition-all active:scale-95"
                 >
                   {loading ? 'Sending OTP...' : 'Send OTP'}
                 </button>
@@ -2584,7 +2584,7 @@ const InterviewReady = () => {
   // ========== STEP 1B: VERIFY OTP ==========
   if (step === 1 && otpSent && !otpVerified) {
     return (
-      <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
           <div className="bg-white border border-border rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-8">
@@ -2604,7 +2604,7 @@ const InterviewReady = () => {
             
             <form onSubmit={handleVerifyOTP} className="space-y-6">
               <div>
-                <label className="text-sm font-bold text-[#333333] block mb-3">
+                <label className="text-sm font-bold text-ink block mb-3">
                   Enter OTP <span className="text-red-400">*</span>
                 </label>
                 <input 
@@ -2613,7 +2613,7 @@ const InterviewReady = () => {
                   onChange={(e) => setOtpCode(e.target.value.slice(0, 6))}
                   placeholder="000000"
                   maxLength="6"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-[#FAFAFA] outline-none text-center text-3xl font-black tracking-widest text-foreground placeholder-[#AAAAAA] hover:border-border focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30 transition-all"
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-surface-muted outline-none text-center text-3xl font-black tracking-widest text-foreground placeholder:text-hint hover:border-border focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/30 transition-all"
                   required
                 />
               </div>
@@ -2629,7 +2629,7 @@ const InterviewReady = () => {
                 <button 
                   type="button" 
                   onClick={() => setOtpSent(false)}
-                  className="flex-1 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-[#FFF8EE] rounded-2xl transition-all border border-border hover:border-border"
+                  className="flex-1 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-secondary rounded-2xl transition-all border border-border hover:border-border"
                 >
                   Back
                 </button>
@@ -2685,7 +2685,7 @@ const InterviewReady = () => {
     const currentStepIndex = 1;
 
     return (
-      <div className="min-h-screen bg-[#FFFDF8] py-10 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen mm-site-theme py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-border">
 
@@ -2700,7 +2700,7 @@ const InterviewReady = () => {
                 aria-valuemax={ASSESSMENT_STEPS}
               >
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-400 transition-[width] duration-300"
+                  className="h-full rounded-full bg-gradient-to-r from-cta to-cyan-400 transition-[width] duration-300"
                   style={{ width: `${(currentStepIndex / ASSESSMENT_STEPS) * 100}%` }}
                 />
               </div>
@@ -2708,7 +2708,7 @@ const InterviewReady = () => {
 
             {profile.assessmentMode && (
               <div className="mb-4">
-                <span className="inline-flex items-center rounded-full border border-cyan-500/35 bg-cyan-500/10 px-3 py-1.5 text-xs font-semibold text-[#0E7490]">
+                <span className="inline-flex items-center rounded-full border border-cyan-500/35 bg-cyan-500/10 px-3 py-1.5 text-xs font-semibold text-semantic-cyan-ink">
                   {ASSESSMENT_MODE_LABEL[profile.assessmentMode]}
                 </span>
               </div>
@@ -2742,12 +2742,12 @@ const InterviewReady = () => {
                     }}
                     className={`p-5 rounded-2xl text-left border-2 group relative cursor-pointer transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out motion-reduce:transition-none ${
                       selected
-                        ? 'border-[#FF9500] bg-[#FF9500]/15 shadow-lg shadow-[0_2px_12px_rgba(255,149,0,0.15)]'
-                        : 'border-border bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-[#FFB347] hover:bg-gradient-to-br hover:from-[#FFFBF7] hover:to-[#FFF4E0]/90 hover:shadow-[0_12px_32px_-12px_rgba(255,149,0,0.35)] hover:-translate-y-1 motion-reduce:hover:translate-y-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9500]'
+                        ? 'border-cta bg-cta/15 shadow-lg shadow-cta-card'
+                        : 'border-border bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-cta-mid hover:bg-gradient-to-br hover:from-tint-subtle hover:to-warning-bg/90 hover:shadow-[0_12px_32px_-12px_var(--accent-cta-shadow)] hover:-translate-y-1 motion-reduce:hover:translate-y-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta'
                     }`}
                   >
                     {selected && (
-                      <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-[#FF9500] flex items-center justify-center">
+                      <div className="absolute top-3 right-3 w-5 h-5 rounded-full bg-cta flex items-center justify-center">
                         <Check size={11} className="text-white" />
                       </div>
                     )}
@@ -2760,11 +2760,11 @@ const InterviewReady = () => {
                       {option.emoji}
                     </div>
                     <h3 className="font-bold text-foreground text-sm mb-1">{option.label}</h3>
-                    <p className={`text-xs font-medium mb-3 ${selected ? 'text-[#FF9500]' : 'text-muted-foreground'}`}>{option.badge}</p>
+                    <p className={`text-xs font-medium mb-3 ${selected ? 'text-cta' : 'text-muted-foreground'}`}>{option.badge}</p>
                     <div className="space-y-1.5">
                       {option.details.map((d) => (
                         <div key={d} className="flex items-start gap-1.5 text-xs text-muted-foreground">
-                          <Check size={11} className={`mt-0.5 shrink-0 ${selected ? 'text-[#FF9500]' : 'text-muted-foreground'}`} />
+                          <Check size={11} className={`mt-0.5 shrink-0 ${selected ? 'text-cta' : 'text-muted-foreground'}`} />
                           {d}
                         </div>
                       ))}
@@ -2782,7 +2782,7 @@ const InterviewReady = () => {
                   if (fromToolsEntry) setStep(12);
                   else setStep(0);
                 }}
-                className="px-6 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-[#FFF8EE] rounded-xl transition-all border border-border hover:border-border text-sm"
+                className="px-6 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-secondary rounded-xl transition-all border border-border hover:border-border text-sm"
               >
                 ← Back
               </button>
@@ -2792,7 +2792,7 @@ const InterviewReady = () => {
                 onClick={() => setStep(profile.userCategory === 'professional' ? 3 : 4)}
                 className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all ${
                   profile.userCategory
-                    ? 'bg-gradient-to-r from-[#FF9500] to-[#FFB347] text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.3)] hover:from-[#FF9500] hover:to-[#FFB347] active:scale-[0.98]'
+                    ? 'bg-gradient-to-r from-cta to-cta-mid text-white shadow-lg shadow-button-strong hover:from-cta hover:to-cta-mid active:scale-[0.98]'
                     : 'cursor-not-allowed border border-border bg-white/[0.04] text-muted-foreground'
                 }`}
               >
@@ -2816,7 +2816,7 @@ const InterviewReady = () => {
       profile.userCategory.replace(/_/g, ' ');
 
     return (
-      <div className="min-h-screen bg-[#FFFDF8] py-10 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen mm-site-theme py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-border animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-6">
@@ -2829,14 +2829,14 @@ const InterviewReady = () => {
                 aria-valuemax={ASSESSMENT_STEPS}
               >
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-400 transition-[width] duration-300"
+                  className="h-full rounded-full bg-gradient-to-r from-cta to-cyan-400 transition-[width] duration-300"
                   style={{ width: `${(currentStepIndex / ASSESSMENT_STEPS) * 100}%` }}
                 />
               </div>
             </div>
 
             <div className="mb-6 flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center rounded-full border border-[#FF9500]/35 bg-[#FF9500]/10 px-3 py-1.5 text-xs font-semibold text-[#CC7000]">
+              <span className="inline-flex items-center rounded-full border border-cta/35 bg-cta/10 px-3 py-1.5 text-xs font-semibold text-warning-text">
                 Profile: <span className="ml-1 text-muted-foreground">{roleLabel}</span>
               </span>
             </div>
@@ -2851,8 +2851,8 @@ const InterviewReady = () => {
 
             <div className="space-y-6">
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-bold text-[#333333]">
-                  <Briefcase size={16} className="text-[#FF9500]" />
+                <label className="flex items-center gap-2 text-sm font-bold text-ink">
+                  <Briefcase size={16} className="text-cta" />
                   Years of experience <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -2886,8 +2886,8 @@ const InterviewReady = () => {
                 )}
               </div>
               <div className="space-y-2">
-                <label className="flex items-center gap-2 text-sm font-bold text-[#333333]">
-                  <Building2 size={16} className="text-[#FF9500]" />
+                <label className="flex items-center gap-2 text-sm font-bold text-ink">
+                  <Building2 size={16} className="text-cta" />
                   Current organization <span className="text-red-400">*</span>
                 </label>
                 <input
@@ -2923,7 +2923,7 @@ const InterviewReady = () => {
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="rounded-xl border border-border bg-white px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-[#FFB347]/70 hover:bg-[#FFF8EE] hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9500]"
+                className="rounded-xl border border-border bg-white px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-cta-mid/70 hover:bg-secondary hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta"
               >
                 ← Back
               </button>
@@ -2936,7 +2936,7 @@ const InterviewReady = () => {
                   }
                   setStep(4);
                 }}
-                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FF9500] to-[#FFB347] py-3 text-sm font-bold text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-all hover:from-[#FF9500] hover:to-[#FFB347] active:scale-[0.98]"
+                className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cta to-cta-mid py-3 text-sm font-bold text-white shadow-lg shadow-button-strong transition-all hover:from-cta hover:to-cta-mid active:scale-[0.98]"
               >
                 Continue to skills
                 <ChevronRight size={16} />
@@ -2963,7 +2963,7 @@ const InterviewReady = () => {
       profile.userCategory.replace(/_/g, ' ');
 
     return (
-      <div className="min-h-screen bg-[#FFFDF8] py-10 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen mm-site-theme py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-border animate-in slide-in-from-bottom-4 duration-500">
             {/* Progress — matches role step */}
@@ -2977,7 +2977,7 @@ const InterviewReady = () => {
                 aria-valuemax={ASSESSMENT_STEPS}
               >
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-400 transition-[width] duration-300"
+                  className="h-full rounded-full bg-gradient-to-r from-cta to-cyan-400 transition-[width] duration-300"
                   style={{ width: `${(currentStepIndex / ASSESSMENT_STEPS) * 100}%` }}
                 />
               </div>
@@ -2989,15 +2989,15 @@ const InterviewReady = () => {
               </h2>
               <div className="flex flex-wrap items-center gap-2">
                 {profile.assessmentMode && (
-                  <span className="inline-flex items-center rounded-full border border-cyan-500/30 bg-cyan-500/[0.12] px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-[#0E7490] sm:text-xs">
+                  <span className="inline-flex items-center rounded-full border border-cyan-500/30 bg-cyan-500/[0.12] px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-semantic-cyan-ink sm:text-xs">
                     {ASSESSMENT_MODE_LABEL[profile.assessmentMode]}
                   </span>
                 )}
-                <span className="inline-flex items-center rounded-full border border-border bg-[#FAFAFA] px-3 py-1 text-[11px] font-semibold text-foreground sm:text-xs">
+                <span className="inline-flex items-center rounded-full border border-border bg-surface-muted px-3 py-1 text-[11px] font-semibold text-foreground sm:text-xs">
                   {roleLabel}
                 </span>
                 <span
-                  className="inline-flex items-center rounded-full border border-[#FFB347]/45 bg-[#FFF4E0] px-3 py-1 text-[11px] font-bold tabular-nums text-[#B45309] sm:text-xs"
+                  className="inline-flex items-center rounded-full border border-cta-mid/45 bg-warning-bg px-3 py-1 text-[11px] font-bold tabular-nums text-warning-ink-strong sm:text-xs"
                   title="Free-tier attempts you can still use"
                 >
                   {usageInfo.remaining_attempts} of {FREE_TIER_LIMIT} attempts left
@@ -3023,7 +3023,7 @@ const InterviewReady = () => {
                   ) : (
                     <>
                       Add subjects for context (e.g. DSA, OOP, DBMS). You&apos;ll get a{' '}
-                      <span className="font-medium text-[#333333]">broad interview mix</span>, not drills on one language.{' '}
+                      <span className="font-medium text-ink">broad interview mix</span>, not drills on one language.{' '}
                       <span className="text-hint">Max {PLAN_PRIMARY_SKILL_MAX} characters.</span>
                     </>
                   )}
@@ -3056,7 +3056,7 @@ const InterviewReady = () => {
                 )}
               </div>
 
-              <div className="rounded-lg border border-[#E8E4DC] bg-[#FAFAFA] px-3 py-2.5">
+              <div className="rounded-lg border border-border bg-surface-muted px-3 py-2.5">
                 <p className="text-xs leading-snug text-muted-foreground">
                   {isAptitudeFocus ? (
                     <>
@@ -3098,14 +3098,14 @@ const InterviewReady = () => {
                 <button
                   type="button"
                   onClick={() => setStep(profile.userCategory === 'professional' ? 3 : 2)}
-                  className="rounded-xl border border-border bg-white px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-[#FFB347]/70 hover:bg-[#FFF8EE] hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF9500]"
+                  className="rounded-xl border border-border bg-white px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-cta-mid/70 hover:bg-secondary hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta"
                 >
                   ← Back
                 </button>
                 <button
                   type="submit"
                   disabled={loading || usageInfo.remaining_attempts <= 0}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FF9500] to-[#FFB347] py-3 text-sm font-bold text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-all hover:from-[#FF9500] hover:to-[#FFB347] active:scale-[0.98] disabled:cursor-not-allowed disabled:from-slate-600 disabled:to-slate-700 disabled:shadow-none"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cta to-cta-mid py-3 text-sm font-bold text-white shadow-lg shadow-button-strong transition-all hover:from-cta hover:to-cta-mid active:scale-[0.98] disabled:cursor-not-allowed disabled:from-slate-600 disabled:to-slate-700 disabled:shadow-none"
                 >
                   {loading ? (
                     'Preparing your questions…'
@@ -3139,7 +3139,7 @@ const InterviewReady = () => {
       profile.userCategory.replace(/_/g, ' ');
 
     return (
-      <div className="min-h-screen bg-[#FFFDF8] py-10 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen mm-site-theme py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
           <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-border animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-6">
@@ -3152,7 +3152,7 @@ const InterviewReady = () => {
                 aria-valuemax={ASSESSMENT_STEPS}
               >
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-[#FF9500] to-cyan-400 transition-[width] duration-300"
+                  className="h-full rounded-full bg-gradient-to-r from-cta to-cyan-400 transition-[width] duration-300"
                   style={{ width: `${(currentStepIndex / ASSESSMENT_STEPS) * 100}%` }}
                 />
               </div>
@@ -3163,10 +3163,10 @@ const InterviewReady = () => {
                 {isPro ? 'Target companies & context' : 'Quick vibe check'}
               </h2>
               <p className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                <span className="rounded-full border border-cyan-500/30 bg-cyan-500/[0.12] px-2.5 py-0.5 font-semibold text-[#0E7490]">
+                <span className="rounded-full border border-cyan-500/30 bg-cyan-500/[0.12] px-2.5 py-0.5 font-semibold text-semantic-cyan-ink">
                   {ASSESSMENT_MODE_LABEL[ASSESSMENT_FOCUS_PLACEMENT]}
                 </span>
-                <span className="rounded-full border border-border bg-[#FAFAFA] px-2.5 py-0.5 font-semibold text-foreground">
+                <span className="rounded-full border border-border bg-surface-muted px-2.5 py-0.5 font-semibold text-foreground">
                   {roleLabel}
                 </span>
               </p>
@@ -3183,13 +3183,13 @@ const InterviewReady = () => {
             >
               {!isPro ? (
                 <>
-                  <div className="relative overflow-hidden rounded-2xl border border-[#FF9500]/20 bg-gradient-to-br from-[#FFF8EE] via-white to-cyan-50/40 p-5 sm:p-6 shadow-sm">
-                    <div className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-[#FF9500]/10 blur-2xl" aria-hidden />
+                  <div className="relative overflow-hidden rounded-2xl border border-cta/20 bg-gradient-to-br from-secondary via-white to-cyan-50/40 p-5 sm:p-6 shadow-sm">
+                    <div className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-cta/10 blur-2xl" aria-hidden />
                     <div className="pointer-events-none absolute -bottom-4 left-8 h-16 w-16 rounded-full bg-cyan-400/10 blur-xl" aria-hidden />
                     <div className="relative space-y-5">
                       <div className="flex flex-wrap items-center gap-2">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-[#FF9500]/15 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-[#B45309]">
-                          <Sparkles size={12} className="text-[#FF9500]" aria-hidden />
+                        <span className="inline-flex items-center gap-1 rounded-full bg-cta/15 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wide text-warning-ink-strong">
+                          <Sparkles size={12} className="text-cta" aria-hidden />
                           Placement season
                         </span>
                         <span className="text-xs text-muted-foreground">Campus drive or grinding off-campus?</span>
@@ -3203,15 +3203,15 @@ const InterviewReady = () => {
                             key={o.id}
                             className={`flex min-w-[140px] flex-1 cursor-pointer flex-col rounded-2xl border px-4 py-3 text-sm font-bold transition-all sm:min-w-0 sm:max-w-[200px] ${
                               profile.placementCampusType === o.id
-                                ? 'border-[#FF9500] bg-white shadow-md shadow-[#FF9500]/15 ring-2 ring-[#FF9500]/20'
-                                : 'border-border/80 bg-white/70 hover:border-[#FFB347]/50'
+                                ? 'border-cta bg-white shadow-md shadow-button ring-2 ring-cta/20'
+                                : 'border-border/80 bg-white/70 hover:border-cta-mid/50'
                             }`}
                           >
                             <span className="flex items-center gap-2">
                               <input
                                 type="radio"
                                 name="placementCampusType"
-                                className="accent-[#FF9500]"
+                                className="accent-cta"
                                 checked={profile.placementCampusType === o.id}
                                 onChange={() =>
                                   setProfile((p) => ({ ...p, placementCampusType: o.id }))
@@ -3238,13 +3238,13 @@ const InterviewReady = () => {
                           <label
                             className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
                               profile.placementTargetMnc
-                                ? 'border-[#FF9500] bg-[#FFF4E0] text-[#B45309]'
-                                : 'border-border bg-white/90 hover:border-[#FFB347]/60'
+                                ? 'border-cta bg-warning-bg text-warning-ink-strong'
+                                : 'border-border bg-white/90 hover:border-cta-mid/60'
                             }`}
                           >
                             <input
                               type="checkbox"
-                              className="accent-[#FF9500]"
+                              className="accent-cta"
                               checked={profile.placementTargetMnc}
                               onChange={(e) =>
                                 setProfile((p) => ({ ...p, placementTargetMnc: e.target.checked }))
@@ -3310,7 +3310,7 @@ const InterviewReady = () => {
                         <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-dashed border-border/90 bg-white/60 px-3 py-2.5 transition-colors hover:bg-white">
                           <input
                             type="checkbox"
-                            className="mt-0.5 accent-[#FF9500]"
+                            className="mt-0.5 accent-cta"
                             checked={profile.placementSpecificRole}
                             onChange={(e) =>
                               setProfile((p) => ({
@@ -3401,7 +3401,7 @@ const InterviewReady = () => {
                         <input
                           type="radio"
                           name="jd"
-                          className="accent-[#FF9500]"
+                          className="accent-cta"
                           checked={!profile.placementJdProvided}
                           onChange={() => {
                             setProfile((p) => ({ ...p, placementJdProvided: false, placementJdText: '' }));
@@ -3414,7 +3414,7 @@ const InterviewReady = () => {
                         <input
                           type="radio"
                           name="jd"
-                          className="accent-[#FF9500]"
+                          className="accent-cta"
                           checked={profile.placementJdProvided}
                           onChange={() => {
                             setProfile((p) => ({ ...p, placementJdProvided: true }));
@@ -3451,11 +3451,11 @@ const InterviewReady = () => {
                     )}
                   </div>
 
-                  <div className="space-y-2 rounded-xl border border-border bg-[#FAFAFA] p-4">
+                  <div className="space-y-2 rounded-xl border border-border bg-surface-muted p-4">
                     <label className="flex cursor-pointer items-center gap-2 text-sm font-semibold">
                       <input
                         type="checkbox"
-                        className="accent-[#FF9500]"
+                        className="accent-cta"
                         checked={profile.placementHasTargetCompany}
                         onChange={(e) => {
                           const checked = e.target.checked;
@@ -3531,14 +3531,14 @@ const InterviewReady = () => {
                     setError(null);
                     setStep(4);
                   }}
-                  className="rounded-xl border border-border bg-white px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-[#FFB347]/70 hover:bg-[#FFF8EE] hover:text-foreground"
+                  className="rounded-xl border border-border bg-white px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-cta-mid/70 hover:bg-secondary hover:text-foreground"
                 >
                   ← Back
                 </button>
                 <button
                   type="submit"
                   disabled={loading || usageInfo.remaining_attempts <= 0}
-                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FF9500] to-[#FFB347] py-3 text-sm font-bold text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-all hover:from-[#FF9500] hover:to-[#FFB347] active:scale-[0.98] disabled:cursor-not-allowed disabled:from-slate-600 disabled:to-slate-700 disabled:shadow-none"
+                  className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cta to-cta-mid py-3 text-sm font-bold text-white shadow-lg shadow-button-strong transition-all hover:from-cta hover:to-cta-mid active:scale-[0.98] disabled:cursor-not-allowed disabled:from-slate-600 disabled:to-slate-700 disabled:shadow-none"
                 >
                   {loading ? (
                     'Preparing your questions…'
@@ -3621,23 +3621,23 @@ const InterviewReady = () => {
     const peerDims = peerDimensionsFromResult(pct, strengthSignal, gapPressure);
 
     return (
-      <div className="min-h-screen bg-[#FFFDF8] py-8 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen mm-site-theme py-8 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-3xl space-y-6">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">Your readiness score</h1>
             <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
               <span className="font-medium text-muted-foreground">{modeLabel}</span>
-              <span className="text-[#D4D0C8]" aria-hidden>
+              <span className="text-muted-foreground/35" aria-hidden>
                 ·
               </span>
               <span className="capitalize">{roleShort}</span>
-              <span className="text-[#D4D0C8]" aria-hidden>
+              <span className="text-muted-foreground/35" aria-hidden>
                 ·
               </span>
               <span className="max-w-[200px] truncate sm:max-w-none" title={areaShort}>
                 {areaShort}
               </span>
-              <span className="text-[#D4D0C8]" aria-hidden>
+              <span className="text-muted-foreground/35" aria-hidden>
                 ·
               </span>
               <span className="tabular-nums">
@@ -3652,7 +3652,7 @@ const InterviewReady = () => {
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="relative overflow-hidden rounded-3xl border border-border bg-white p-6 shadow-xl sm:p-8"
           >
-            <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-[#FF9500]/10 blur-3xl" />
+            <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-cta/10 blur-3xl" />
 
             <div className="relative grid gap-10 lg:grid-cols-[minmax(0,280px)_1fr] lg:items-start lg:gap-12">
               <div className="flex flex-col items-center text-center lg:items-start lg:text-left">
@@ -3673,9 +3673,9 @@ const InterviewReady = () => {
                 <p className="mt-3 text-xs leading-relaxed text-hint">{result.summary}</p>
               </div>
 
-              <div className="rounded-2xl border border-[#E8E4DC] bg-[#FAFAFA]/80 p-5 sm:p-6">
+              <div className="rounded-2xl border border-border bg-surface-muted/80 p-5 sm:p-6">
                 <p className="mb-5 flex items-center gap-2 text-xs font-bold uppercase tracking-[0.12em] text-muted-foreground">
-                  <BarChart3 size={15} className="text-[#FF9500]" />
+                  <BarChart3 size={15} className="text-cta" />
                   Score factors
                 </p>
                 <div className="space-y-6">
@@ -3704,7 +3704,7 @@ const InterviewReady = () => {
                     delay={0.24}
                   />
                 </div>
-                <p className="mt-5 border-t border-[#EDE8E0] pt-4 text-[10px] leading-relaxed text-hint">
+                <p className="mt-5 border-t border-border pt-4 text-[10px] leading-relaxed text-hint">
                   Directional only — derived from your score and how many strength vs gap topics we detected.
                 </p>
               </div>
@@ -3729,7 +3729,7 @@ const InterviewReady = () => {
                 <button
                   type="button"
                   onClick={() => printReadinessReportPdf(result)}
-                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-border bg-[#FAFAFA] px-4 py-2.5 text-sm font-bold text-foreground transition hover:bg-[#FFF8EE]"
+                  className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl border border-border bg-surface-muted px-4 py-2.5 text-sm font-bold text-foreground transition hover:bg-secondary"
                 >
                   <Printer size={16} aria-hidden />
                   Save as PDF
@@ -3737,7 +3737,7 @@ const InterviewReady = () => {
               </div>
 
               <details className="group mt-5">
-                <summary className="cursor-pointer list-none text-sm font-semibold text-[#CC7000] [&::-webkit-details-marker]:hidden">
+                <summary className="cursor-pointer list-none text-sm font-semibold text-warning-text [&::-webkit-details-marker]:hidden">
                   <span className="inline-flex items-center gap-1">
                     Question-by-question breakdown
                     <ChevronRight className="h-4 w-4 shrink-0 transition-transform group-open:rotate-90" aria-hidden />
@@ -3745,7 +3745,7 @@ const InterviewReady = () => {
                 </summary>
                 <ol className="mt-4 space-y-4 border-t border-border pt-4">
                   {result.attemptExport.questions.map((row) => (
-                    <li key={row.index} className="rounded-xl border border-[#E8E4DC] bg-[#FFFCF9] p-4 text-sm">
+                    <li key={row.index} className="rounded-xl border border-border bg-tint-subtle p-4 text-sm">
                       <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-muted-foreground">
                         <span className="tabular-nums text-foreground">Q{row.index}</span>
                         <span className="rounded-full bg-white px-2 py-0.5 text-[10px] uppercase tracking-wide text-foreground ring-1 ring-border">
@@ -3797,15 +3797,15 @@ const InterviewReady = () => {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.12 }}
-              className="relative overflow-hidden rounded-3xl border-2 border-[#FFB347]/60 bg-gradient-to-br from-[#FFF8EE] via-white to-[#FFF4E6] p-6 shadow-lg sm:p-8"
+              className="relative overflow-hidden rounded-3xl border-2 border-cta-mid/60 bg-gradient-to-br from-secondary via-white to-warning-bg p-6 shadow-lg sm:p-8"
             >
-              <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-[#FF9500]/15 blur-2xl" />
+              <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-cta/15 blur-2xl" />
               <div className="relative">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center rounded-full bg-[#FF9500] px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
+                  <span className="inline-flex items-center rounded-full bg-cta px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white">
                     {HERO_EARLY_BIRD_RIBBON}
                   </span>
-                  <Gift className="h-5 w-5 text-[#CC7000]" aria-hidden />
+                  <Gift className="h-5 w-5 text-warning-text" aria-hidden />
                 </div>
                 <h3 className="mt-3 text-lg font-black text-foreground sm:text-xl">
                   {READINESS_TEST_COUPON_OFFER_HEADLINE}
@@ -3829,7 +3829,7 @@ const InterviewReady = () => {
                         /* clipboard unavailable */
                       }
                     }}
-                    className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-5 py-3 text-sm font-bold text-white shadow-md transition hover:bg-[#E88600]"
+                    className="inline-flex shrink-0 items-center justify-center gap-2 rounded-xl bg-cta px-5 py-3 text-sm font-bold text-white shadow-md transition hover:bg-cta-hover"
                   >
                     {couponCopied ? (
                       <>
@@ -3856,7 +3856,7 @@ const InterviewReady = () => {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="rounded-2xl bg-[#141414] px-6 py-8 text-left text-white shadow-xl sm:px-8"
+            className="rounded-2xl bg-inverse-surface px-6 py-8 text-left text-white shadow-xl sm:px-8"
           >
             <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-white/50">What this means for you</p>
             <h3 className="mt-3 max-w-xl text-lg font-semibold leading-snug text-white sm:text-xl">
@@ -3870,7 +3870,7 @@ const InterviewReady = () => {
             <div className="mt-6">
               <Link
                 to="/mentors"
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-5 py-3.5 text-sm font-semibold text-[#141414] shadow-lg transition hover:bg-[#FFB347] sm:w-auto"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-cta px-5 py-3.5 text-sm font-semibold text-foreground shadow-lg transition hover:bg-cta-mid sm:w-auto"
               >
                 Book free intro call
                 <ArrowRight size={16} />
@@ -3889,7 +3889,7 @@ const InterviewReady = () => {
             <ol className="mt-5 space-y-4">
               {nextSteps.map((stepItem, i) => (
                 <li key={stepItem.title} className="flex gap-4">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#FFF8EE] text-sm font-black text-[#CC7000] ring-1 ring-border">
+                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-black text-warning-text ring-1 ring-border">
                     {i + 1}
                   </span>
                   <div>
@@ -3930,7 +3930,7 @@ const InterviewReady = () => {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.15 }}
-            className="rounded-2xl border border-emerald-500/25 bg-gradient-to-br from-emerald-50/90 to-[#FFF8EE] p-6"
+            className="rounded-2xl border border-emerald-500/25 bg-gradient-to-br from-emerald-50/90 to-secondary p-6"
           >
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
               <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-emerald-500/20">
@@ -3956,7 +3956,7 @@ const InterviewReady = () => {
                     )}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-900/25 transition hover:bg-[#20bd5a]"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-whatsapp px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-emerald-900/25 transition hover:bg-brand-whatsapp-hover"
                   >
                     <Share2 size={14} />
                     Dare on WhatsApp
@@ -3965,7 +3965,7 @@ const InterviewReady = () => {
                     href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(getInterviewReadinessShareUrl())}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0A66C2] px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-950/30 transition hover:bg-[#095195]"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-brand-linkedin px-4 py-2.5 text-sm font-bold text-white shadow-lg shadow-blue-950/30 transition hover:bg-brand-linkedin-hover"
                   >
                     <Linkedin size={14} aria-hidden />
                     LinkedIn
@@ -3976,7 +3976,7 @@ const InterviewReady = () => {
                       const msg = buildWhatsAppChallengeMessage(pct, result.readiness_label, result.assessmentMode ? ASSESSMENT_MODE_LABEL[result.assessmentMode] : '');
                       navigator.clipboard.writeText(msg);
                     }}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-white px-4 py-2.5 text-sm font-semibold text-foreground transition hover:bg-[#FAFAFA]"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-white px-4 py-2.5 text-sm font-semibold text-foreground transition hover:bg-surface-muted"
                   >
                     <Copy size={14} />
                     Copy message
@@ -4012,14 +4012,14 @@ const InterviewReady = () => {
                     value={reportEmail}
                     onChange={(e) => setReportEmail(e.target.value)}
                     placeholder="your@email.com"
-                    className="flex-1 rounded-xl border border-border bg-[#FAFAFA] px-4 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-hint focus:border-[#FF9500]"
+                    className="flex-1 rounded-xl border border-border bg-surface-muted px-4 py-2.5 text-sm text-foreground outline-none transition-colors placeholder:text-hint focus:border-cta"
                   />
                   <button
                     type="button"
                     onClick={() => {
                       if (reportEmail.includes('@')) setReportSent(true);
                     }}
-                    className="whitespace-nowrap rounded-xl bg-[#FF9500] px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#E88600]"
+                    className="whitespace-nowrap rounded-xl bg-cta px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-cta-hover"
                   >
                     Send Report
                   </button>
@@ -4032,7 +4032,7 @@ const InterviewReady = () => {
             <motion.div
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              className="rounded-2xl border border-cyan-500/25 bg-gradient-to-br from-cyan-500/10 to-[#E88600]/5 p-6"
+              className="rounded-2xl border border-cyan-500/25 bg-gradient-to-br from-cyan-500/10 to-cta-hover/5 p-6"
             >
               <h3 className="mb-4 flex items-center gap-2 text-lg font-black text-cyan-900">
                 <Lightbulb size={20} className="text-cyan-600" />
@@ -4058,7 +4058,7 @@ const InterviewReady = () => {
                       transition={{ delay: 0.05 * i }}
                       className="rounded-xl border border-border bg-white p-4 text-left"
                     >
-                      <p className="text-[10px] font-bold uppercase tracking-wider text-[#CC7000]">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-warning-text">
                         {rec.priority || 'Focus'}
                       </p>
                       <p className="mt-1 font-semibold text-foreground">{rec.topic}</p>
@@ -4090,7 +4090,7 @@ const InterviewReady = () => {
                     <motion.div
                       key={i}
                       variants={resultsListItem}
-                      className="flex items-start gap-3 rounded-xl border border-[#E8F0EA] bg-[#FAFDFB] px-3.5 py-2.5 text-left text-sm leading-snug text-[#333333]"
+                      className="flex items-start gap-3 rounded-xl border border-success-bg bg-success-bg/40 px-3.5 py-2.5 text-left text-sm leading-snug text-ink"
                     >
                       <CheckCircle2 size={16} className="mt-0.5 shrink-0 text-emerald-600" strokeWidth={2} aria-hidden />
                       <span className="font-medium">{strength}</span>
@@ -4119,7 +4119,7 @@ const InterviewReady = () => {
                     <motion.div
                       key={i}
                       variants={resultsListItem}
-                      className="flex items-start gap-3 rounded-xl border border-[#F5EBDD] bg-[#FFFCF7] px-3.5 py-2.5 text-left text-sm leading-snug text-[#333333]"
+                      className="flex items-start gap-3 rounded-xl border border-warning-bg/60 bg-tint-subtle px-3.5 py-2.5 text-left text-sm leading-snug text-ink"
                     >
                       <Target size={16} className="mt-0.5 shrink-0 text-amber-600" strokeWidth={2} aria-hidden />
                       <span className="font-medium">{gap}</span>
@@ -4151,7 +4151,7 @@ const InterviewReady = () => {
                       currentOrganization: '',
                     });
                   }}
-                  className="w-full rounded-2xl bg-gradient-to-r from-[#FF9500] to-[#FFB347] py-4 text-base font-bold text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-all hover:from-[#FF9500] hover:to-[#FFB347] active:scale-[0.98]"
+                  className="w-full rounded-2xl bg-gradient-to-r from-cta to-cta-mid py-4 text-base font-bold text-white shadow-lg shadow-button-strong transition-all hover:from-cta hover:to-cta-mid active:scale-[0.98]"
                 >
                   Try another category
                 </button>
@@ -4162,7 +4162,7 @@ const InterviewReady = () => {
                     setStep(7);
                     setAuthMode(null);
                   }}
-                  className="w-full rounded-2xl bg-[#FF9500] py-4 text-base font-bold text-white shadow-lg shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-[#E88600] active:scale-[0.98]"
+                  className="w-full rounded-2xl bg-cta py-4 text-base font-bold text-white shadow-lg shadow-button transition-all hover:bg-cta-hover active:scale-[0.98]"
                 >
                   Unlock premium — get more interviews
                 </button>
@@ -4170,7 +4170,7 @@ const InterviewReady = () => {
               <button
                 type="button"
                 onClick={resetAll}
-                className="w-full rounded-2xl border border-border bg-[#FAFAFA] py-4 text-base font-bold text-muted-foreground transition-all hover:border-border hover:bg-[#FFF8EE]"
+                className="w-full rounded-2xl border border-border bg-surface-muted py-4 text-base font-bold text-muted-foreground transition-all hover:border-border hover:bg-secondary"
               >
                 Start fresh
               </button>
@@ -4196,12 +4196,12 @@ const InterviewReady = () => {
   // ========== STEP 7: AUTHENTICATION CHECK ==========
   if (step === 7) {
     return (
-      <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white border border-[#FF9500]/25 rounded-3xl shadow-2xl p-8 text-center animate-in zoom-in duration-500">
+          <div className="bg-white border border-cta/25 rounded-3xl shadow-2xl p-8 text-center animate-in zoom-in duration-500">
             <div className="mb-8">
-              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-[#FF9500]/20 border border-[#FF9500]/45 mb-6">
-                <div className="w-2 h-10 bg-[#FFB347] rounded-full"></div>
+              <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-cta/20 border border-cta/45 mb-6">
+                <div className="w-2 h-10 bg-cta-mid rounded-full"></div>
               </div>
               <h1 className="text-4xl font-black text-foreground mb-3">
                 Unlock AI Mock Interviews
@@ -4217,7 +4217,7 @@ const InterviewReady = () => {
                   setAuthMode('signin');
                   setStep(8);
                 }}
-                className="w-full bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#FF9500] hover:to-[#E88600] text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95"
+                className="w-full bg-gradient-to-r from-cta to-cta-hover hover:from-cta hover:to-cta-hover text-white font-bold py-4 rounded-2xl shadow-lg transition-all active:scale-95"
               >
                 Sign In to Your Account
               </button>
@@ -4247,7 +4247,7 @@ const InterviewReady = () => {
   if (step === 8) {
     if (authMode === 'signin') {
       return (
-        <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+        <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-md mx-auto">
             <div className="bg-white border border-border rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
               <h2 className="text-3xl font-black text-foreground mb-2">Sign In</h2>
@@ -4258,25 +4258,25 @@ const InterviewReady = () => {
                 setStep(9);
               }} className="space-y-6">
                 <div>
-                  <label className="text-sm font-bold text-[#333333] block mb-2">Email</label>
+                  <label className="text-sm font-bold text-ink block mb-2">Email</label>
                   <input 
                     type="email"
                     value={signInData.email}
                     onChange={(e) => setSignInData({...signInData, email: e.target.value})}
                     placeholder="you@example.com"
-                    className="w-full px-4 py-3 rounded-xl border border-border bg-[#FAFAFA] text-foreground placeholder-[#888888] outline-none focus:border-[#FF9500]"
+                    className="w-full px-4 py-3 rounded-xl border border-border bg-surface-muted text-foreground placeholder:text-muted-foreground outline-none focus:border-cta"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="text-sm font-bold text-[#333333] block mb-2">Password</label>
+                  <label className="text-sm font-bold text-ink block mb-2">Password</label>
                   <input 
                     type="password"
                     value={signInData.password}
                     onChange={(e) => setSignInData({...signInData, password: e.target.value})}
                     placeholder="••••••••"
-                    className="w-full px-4 py-3 rounded-xl border border-border bg-[#FAFAFA] text-foreground placeholder-[#888888] outline-none focus:border-[#FF9500]"
+                    className="w-full px-4 py-3 rounded-xl border border-border bg-surface-muted text-foreground placeholder:text-muted-foreground outline-none focus:border-cta"
                     required
                   />
                 </div>
@@ -4285,13 +4285,13 @@ const InterviewReady = () => {
                   <button 
                     type="button"
                     onClick={() => setStep(7)}
-                    className="flex-1 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-[#FFF8EE] rounded-2xl transition-all border border-border"
+                    className="flex-1 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-secondary rounded-2xl transition-all border border-border"
                   >
                     Back
                   </button>
                   <button 
                     type="submit"
-                    className="flex-1 bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#FF9500] hover:to-[#E88600] text-white font-bold py-3 rounded-2xl shadow-lg transition-all"
+                    className="flex-1 bg-gradient-to-r from-cta to-cta-hover hover:from-cta hover:to-cta-hover text-white font-bold py-3 rounded-2xl shadow-lg transition-all"
                   >
                     Sign In
                   </button>
@@ -4299,7 +4299,7 @@ const InterviewReady = () => {
               </form>
 
               <p className="text-xs text-muted-foreground text-center mt-6">
-                Don't have an account? <button onClick={() => setAuthMode('signup')} className="text-[#FF9500] font-semibold hover:text-[#CC7000]">Sign up here</button>
+                Don't have an account? <button onClick={() => setAuthMode('signup')} className="text-cta font-semibold hover:text-warning-text">Sign up here</button>
               </p>
             </div>
           </div>
@@ -4309,7 +4309,7 @@ const InterviewReady = () => {
 
     // SIGNUP
     return (
-      <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md mx-auto">
           <div className="bg-white border border-border rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
             <h2 className="text-3xl font-black text-foreground mb-2">Create Account</h2>
@@ -4320,61 +4320,61 @@ const InterviewReady = () => {
               setStep(9);
             }} className="space-y-6">
               <div>
-                <label className="text-sm font-bold text-[#333333] block mb-2">Full Name</label>
+                <label className="text-sm font-bold text-ink block mb-2">Full Name</label>
                 <input 
                   type="text"
                   value={authData.fullName}
                   onChange={(e) => setAuthData({...authData, fullName: e.target.value})}
                   placeholder="John Doe"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-cta"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-sm font-bold text-[#333333] block mb-2">Email</label>
+                <label className="text-sm font-bold text-ink block mb-2">Email</label>
                 <input 
                   type="email"
                   value={authData.email}
                   onChange={(e) => setAuthData({...authData, email: e.target.value})}
                   placeholder="you@example.com"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-cta"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-sm font-bold text-[#333333] block mb-2">Phone</label>
+                <label className="text-sm font-bold text-ink block mb-2">Phone</label>
                 <input 
                   type="tel"
                   value={authData.phone}
                   onChange={(e) => setAuthData({...authData, phone: e.target.value})}
                   placeholder="+91 9876543210"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-cta"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-sm font-bold text-[#333333] block mb-2">Password</label>
+                <label className="text-sm font-bold text-ink block mb-2">Password</label>
                 <input 
                   type="password"
                   value={authData.password}
                   onChange={(e) => setAuthData({...authData, password: e.target.value})}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-cta"
                   required
                 />
               </div>
 
               <div>
-                <label className="text-sm font-bold text-[#333333] block mb-2">Confirm Password</label>
+                <label className="text-sm font-bold text-ink block mb-2">Confirm Password</label>
                 <input 
                   type="password"
                   value={authData.confirmPassword}
                   onChange={(e) => setAuthData({...authData, confirmPassword: e.target.value})}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-[#FF9500]"
+                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-cta"
                   required
                 />
               </div>
@@ -4383,13 +4383,13 @@ const InterviewReady = () => {
                 <button 
                   type="button"
                   onClick={() => setStep(7)}
-                  className="flex-1 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-[#FFF8EE] rounded-2xl transition-all border border-border"
+                  className="flex-1 py-3 font-bold text-muted-foreground hover:text-foreground hover:bg-secondary rounded-2xl transition-all border border-border"
                 >
                   Back
                 </button>
                 <button 
                   type="submit"
-                  className="flex-1 bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#FF9500] hover:to-[#E88600] text-white font-bold py-3 rounded-2xl shadow-lg transition-all"
+                  className="flex-1 bg-gradient-to-r from-cta to-cta-hover hover:from-cta hover:to-cta-hover text-white font-bold py-3 rounded-2xl shadow-lg transition-all"
                 >
                   Sign Up
                 </button>
@@ -4397,7 +4397,7 @@ const InterviewReady = () => {
             </form>
 
             <p className="text-xs text-muted-foreground text-center mt-6">
-              Already have an account? <button onClick={() => setAuthMode('signin')} className="text-[#FF9500] font-semibold hover:text-[#CC7000]">Sign in here</button>
+              Already have an account? <button onClick={() => setAuthMode('signin')} className="text-cta font-semibold hover:text-warning-text">Sign in here</button>
             </p>
           </div>
         </div>
@@ -4461,7 +4461,7 @@ const InterviewReady = () => {
     ];
 
     return (
-      <div className="min-h-screen bg-[#FFFDF8] py-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl font-black text-white mb-4">
@@ -4478,13 +4478,13 @@ const InterviewReady = () => {
                 key={plan.id}
                 className={`relative rounded-3xl transition-all transform hover:scale-105 ${
                   plan.highlighted
-                    ? 'bg-gradient-to-br from-[#FF9500] to-cyan-600 p-1 md:scale-105'
+                    ? 'bg-gradient-to-br from-cta to-cyan-600 p-1 md:scale-105'
                     : 'border border-border'
                 }`}
               >
                 {plan.highlighted && (
                   <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                    <span className="bg-[#FF9500] text-white px-4 py-1 rounded-full text-xs font-black">
+                    <span className="bg-cta text-white px-4 py-1 rounded-full text-xs font-black">
                       {plan.badge}
                     </span>
                   </div>
@@ -4492,7 +4492,7 @@ const InterviewReady = () => {
 
                 <div className={`${
                   plan.highlighted
-                    ? 'bg-[#FFFDF8] rounded-[calc(1.5rem-1px)]'
+                    ? 'bg-background rounded-[calc(1.5rem-1px)]'
                     : 'bg-white/5'
                 } p-8 h-full`}>
                   <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
@@ -4508,7 +4508,7 @@ const InterviewReady = () => {
                   <div className="space-y-4 mb-8">
                     {plan.features.map((feature, i) => (
                       <div key={i} className="flex items-start gap-3">
-                        <CheckCircle size={18} className={`flex-shrink-0 mt-0.5 ${plan.highlighted ? 'text-cyan-400' : 'text-[#FF9500]'}`} />
+                        <CheckCircle size={18} className={`flex-shrink-0 mt-0.5 ${plan.highlighted ? 'text-cyan-400' : 'text-cta'}`} />
                         <span className="text-sm text-muted-foreground">{feature}</span>
                       </div>
                     ))}
@@ -4520,7 +4520,7 @@ const InterviewReady = () => {
                       selectedPlan === plan.id
                         ? plan.highlighted
                           ? 'bg-cyan-600 text-white'
-                          : 'bg-[#FF9500] text-white'
+                          : 'bg-cta text-white'
                         : plan.highlighted
                         ? 'bg-cyan-600/30 border border-cyan-600 text-cyan-400 hover:bg-cyan-600/50'
                         : 'bg-white/5 border border-border text-white hover:bg-white/10'
@@ -4540,11 +4540,11 @@ const InterviewReady = () => {
           </div>
 
           {selectedPlan && (
-            <div className="bg-gradient-to-r from-[#FF9500] to-cyan-600 rounded-3xl p-8 text-center">
+            <div className="bg-gradient-to-r from-cta to-cyan-600 rounded-3xl p-8 text-center">
               <h2 className="text-2xl font-black text-white mb-4">
                 Ready to master interviews?
               </h2>
-              <button className="bg-white text-[#FF9500] px-12 py-4 rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-white/20 transition-all">
+              <button className="bg-white text-cta px-12 py-4 rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-white/20 transition-all">
                 Proceed to Payment
               </button>
             </div>
@@ -4572,19 +4572,19 @@ const InterviewReady = () => {
   // OTP verified → step 2 in same update; rare fallthrough while step is still 1
   if (step === 1 && otpSent && otpVerified) {
     return (
-      <div className="min-h-screen bg-[#FFFDF8] flex items-center justify-center px-4">
-        <div className="w-12 h-12 border-4 border-[#FF9500]/35 border-t-[#FF9500] rounded-full animate-spin" aria-hidden />
+      <div className="min-h-screen mm-site-theme flex items-center justify-center px-4">
+        <div className="w-12 h-12 border-4 border-cta/35 border-t-cta rounded-full animate-spin" aria-hidden />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] flex flex-col items-center justify-center gap-4 px-4 py-12">
+    <div className="min-h-screen mm-site-theme flex flex-col items-center justify-center gap-4 px-4 py-12">
       <p className="text-muted-foreground text-center max-w-md">Something went wrong loading this screen.</p>
       <button
         type="button"
         onClick={resetAll}
-        className="rounded-xl bg-[#FF9500] hover:bg-[#E88600] px-6 py-3 font-bold text-white shadow-lg transition-colors"
+        className="rounded-xl bg-cta hover:bg-cta-hover px-6 py-3 font-bold text-white shadow-lg transition-colors"
       >
         Start over
       </button>

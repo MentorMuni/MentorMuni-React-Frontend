@@ -79,11 +79,11 @@ export const SectionHeading = ({
 }) => {
   return (
     <div className={`${centered ? 'text-center' : ''} ${className}`}>
-      <h2 className="text-4xl md:text-5xl font-black text-white mb-4">
+      <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">
         {title}
       </h2>
       {subtitle && (
-        <p className="text-lg text-slate-300 max-w-2xl mx-auto">
+        <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           {subtitle}
         </p>
       )}
@@ -104,10 +104,10 @@ export const FeatureCard = ({
   ...props
 }) => {
   const colorMap = {
-    indigo: { bg: 'from-[#FF9500]/20 to-blue-600/20', border: 'border-[#FF9500]/35', icon: 'text-[#FF9500]' },
-    purple: { bg: 'from-purple-600/20 to-pink-600/20', border: 'border-purple-500/30', icon: 'text-purple-400' },
-    orange: { bg: 'from-orange-600/20 to-red-600/20', border: 'border-orange-500/30', icon: 'text-orange-400' },
-    cyan: { bg: 'from-cyan-600/20 to-emerald-600/20', border: 'border-cyan-500/30', icon: 'text-cyan-400' },
+    indigo: { bg: 'from-cta/15 to-blue-600/15', border: 'border-cta/30', icon: 'text-cta' },
+    purple: { bg: 'from-purple-600/15 to-pink-600/15', border: 'border-purple-500/25', icon: 'text-purple-700' },
+    orange: { bg: 'from-orange-600/15 to-red-600/15', border: 'border-orange-500/25', icon: 'text-orange-700' },
+    cyan: { bg: 'from-cyan-600/15 to-emerald-600/15', border: 'border-cyan-500/25', icon: 'text-cyan-700' },
   };
 
   const color = colorMap[colorScheme] || colorMap.indigo;
@@ -119,16 +119,16 @@ export const FeatureCard = ({
       {...props}
     >
       {Icon && (
-        <div className="mb-4 p-3 rounded-lg bg-gradient-to-br from-slate-800 to-slate-900">
+        <div className="mb-4 rounded-lg border border-border bg-secondary/90 p-3">
           <Icon className={`w-6 h-6 ${color.icon}`} />
         </div>
       )}
-      <h3 className="text-xl font-bold text-white mb-3">{title}</h3>
-      <p className="text-slate-300 text-sm mb-4 flex-grow">{description}</p>
+      <h3 className="text-xl font-bold text-foreground mb-3">{title}</h3>
+      <p className="text-muted-foreground text-sm mb-4 flex-grow">{description}</p>
       {cta && (
         <div className="mt-auto">
           {typeof cta === 'string' ? (
-            <a href="#" className="text-[#FF9500] hover:text-[#CC7000] font-semibold text-sm inline-flex items-center gap-1">
+            <a href="#" className="text-cta hover:text-cta/90 font-semibold text-sm inline-flex items-center gap-1">
               {cta} →
             </a>
           ) : (

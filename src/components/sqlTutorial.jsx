@@ -78,7 +78,7 @@ const SqlTutorial = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-foreground font-sans antialiased">
+    <div className="min-h-screen mm-site-theme">
       {/* Meta Tags for SEO */}
       <head>
         <title>SQL for Beginners - Learn SQL Step by Step | Complete SQL Basics Tutorial</title>
@@ -87,7 +87,7 @@ const SqlTutorial = () => {
       </head>
 
       {/* HEADER */}
-      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-border px-5">
+      <header className="mm-sticky-header px-5">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between py-4">
           <Link to="/" className="transition-transform hover:scale-[1.02]">
             <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
@@ -183,11 +183,11 @@ const SqlTutorial = () => {
 
             <h4 className="text-xl font-bold mb-4 mt-6">Common Examples You Use Every Day:</h4>
             <ul className="text-muted-foreground space-y-3 ml-4">
-              <li><strong className="text-cyan-400">• Banking:</strong> Your account balance, transaction history, loan details</li>
-              <li><strong className="text-cyan-400">• Social Media:</strong> Facebook stores posts, messages, photos, followers</li>
-              <li><strong className="text-cyan-400">• E-commerce:</strong> Amazon stores products, prices, inventory, customer orders</li>
-              <li><strong className="text-cyan-400">• Colleges:</strong> Store student names, grades, enrollment records</li>
-              <li><strong className="text-cyan-400">• Hospitals:</strong> Patient records, medical history, appointments</li>
+              <li><strong className="text-primary">• Banking:</strong> Your account balance, transaction history, loan details</li>
+              <li><strong className="text-primary">• Social Media:</strong> Facebook stores posts, messages, photos, followers</li>
+              <li><strong className="text-primary">• E-commerce:</strong> Amazon stores products, prices, inventory, customer orders</li>
+              <li><strong className="text-primary">• Colleges:</strong> Store student names, grades, enrollment records</li>
+              <li><strong className="text-primary">• Hospitals:</strong> Patient records, medical history, appointments</li>
             </ul>
           </div>
 
@@ -222,17 +222,17 @@ const SqlTutorial = () => {
               </div>
 
               <div>
-                <h4 className="font-bold text-cyan-400 mb-2">2. Universal Language</h4>
+                <h4 className="font-bold text-primary mb-2">2. Universal Language</h4>
                 <p className="text-muted-foreground">Works with all major databases. Learn once, use everywhere.</p>
               </div>
 
               <div>
-                <h4 className="font-bold text-cyan-400 mb-2">3. Foundation for Other Skills</h4>
+                <h4 className="font-bold text-primary mb-2">3. Foundation for Other Skills</h4>
                 <p className="text-muted-foreground">Essential for Data Analysis, Business Intelligence, Web Development, and Data Science.</p>
               </div>
 
               <div>
-                <h4 className="font-bold text-cyan-400 mb-2">4. Relatively Easy to Learn</h4>
+                <h4 className="font-bold text-primary mb-2">4. Relatively Easy to Learn</h4>
                 <p className="text-muted-foreground">SQL reads almost like English. Much easier than programming languages like Python or Java.</p>
               </div>
             </div>
@@ -458,7 +458,7 @@ const SqlTutorial = () => {
             />
 
             <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-cyan-400/30">
-              📌 <strong>Naming tip:</strong> Use descriptive names with underscores. Good: <code className="bg-[#FFFDF8] px-2 py-1">school_db</code>, Bad: <code className="bg-[#FFFDF8] px-2 py-1">db1</code>
+              📌 <strong>Naming tip:</strong> Use descriptive names with underscores. Good: <code className="bg-background px-2 py-1">school_db</code>, Bad: <code className="bg-background px-2 py-1">db1</code>
             </p>
           </div>
 
@@ -474,7 +474,7 @@ const SqlTutorial = () => {
             />
 
             <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-yellow-400/30">
-              ⚠️ <strong>Important:</strong> Always run <code className="bg-[#FFFDF8] px-2 py-1">USE database_name;</code> before creating tables!
+              ⚠️ <strong>Important:</strong> Always run <code className="bg-background px-2 py-1">USE database_name;</code> before creating tables!
             </p>
           </div>
         </section>
@@ -558,11 +558,11 @@ CREATE TABLE students (
 
             <p className="text-slate-200 mt-6 p-4 bg-[#1E293B] rounded-lg border border-border">
               <strong>Explanation:</strong><br/>
-              • <code className="bg-[#FFFDF8] px-1">AUTO_INCREMENT</code> - ID increases automatically<br/>
-              • <code className="bg-[#FFFDF8] px-1">NOT NULL</code> - Must have a value<br/>
-              • <code className="bg-[#FFFDF8] px-1">UNIQUE</code> - No duplicate emails<br/>
-              • <code className="bg-[#FFFDF8] px-1">CHECK</code> - Age must be realistic<br/>
-              • <code className="bg-[#FFFDF8] px-1">DEFAULT</code> - Automatic values
+              • <code className="bg-background px-1">AUTO_INCREMENT</code> - ID increases automatically<br/>
+              • <code className="bg-background px-1">NOT NULL</code> - Must have a value<br/>
+              • <code className="bg-background px-1">UNIQUE</code> - No duplicate emails<br/>
+              • <code className="bg-background px-1">CHECK</code> - Age must be realistic<br/>
+              • <code className="bg-background px-1">DEFAULT</code> - Automatic values
             </p>
           </div>
         </section>
@@ -662,9 +662,9 @@ VALUES
 
             <p className="text-slate-200 mt-4 p-4 bg-[#1E293B] rounded-lg border border-border">
               <strong>More WHERE examples:</strong><br/>
-              • <code className="bg-[#FFFDF8] px-1">WHERE Age = 20</code> - Exact match<br/>
-              • <code className="bg-[#FFFDF8] px-1">WHERE Age &gt;= 20</code> - Greater than or equal<br/>
-              • <code className="bg-[#FFFDF8] px-1">WHERE Name = 'Alice'</code> - Text comparison
+              • <code className="bg-background px-1">WHERE Age = 20</code> - Exact match<br/>
+              • <code className="bg-background px-1">WHERE Age &gt;= 20</code> - Greater than or equal<br/>
+              • <code className="bg-background px-1">WHERE Name = 'Alice'</code> - Text comparison
             </p>
           </div>
 
@@ -1395,8 +1395,8 @@ SELECT * FROM students WHERE Email IS NOT NULL;`}
 
         {/* FINAL CTA */}
         <section className="mb-16">
-          <div className="bg-gradient-to-r from-[#4F46E5] to-[#06B6D4] rounded-2xl p-12 text-center border border-border">
-            <h2 className="text-3xl font-black mb-4">Ready to Master SQL?</h2>
+          <div className="bg-gradient-to-r from-[#4F46E5] to-[#06B6D4] rounded-2xl p-12 text-center border border-border text-white">
+            <h2 className="text-3xl font-black mb-4 text-white">Ready to Master SQL?</h2>
             <p className="text-lg mb-8 text-white/90">Join thousands of students learning SQL with our interactive courses and 1:1 mentorship.</p>
             <button className="bg-white text-[#4F46E5] px-8 py-4 rounded-xl font-bold hover:bg-white/90 transition-all text-lg">
               Start Your SQL Journey Today

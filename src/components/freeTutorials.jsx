@@ -72,32 +72,34 @@ const FreeTutorials = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#FFFDF8] to-[#FFF8EE] text-foreground">
-      <div className="max-w-7xl mx-auto px-6 py-20">
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <BookOpen size={40} className="text-[#FF9500]" />
-            <h1 className="text-5xl md:text-6xl font-black text-foreground">Free Tutorials</h1>
+    <div className="min-h-screen mm-site-theme overflow-x-hidden text-foreground">
+      <section className="mm-marketing-hero-backdrop border-b border-border">
+        <div className="relative z-10 mx-auto max-w-7xl px-6 pb-16 pt-20 text-center md:pb-20">
+          <div className="mb-4 flex items-center justify-center gap-3">
+            <BookOpen size={40} className="text-cta" aria-hidden />
+            <h1 className="text-5xl font-black text-foreground md:text-6xl">Free Tutorials</h1>
           </div>
-          <p className="text-lg sm:text-xl text-foreground/85 max-w-2xl mx-auto leading-relaxed">
+          <p className="mx-auto max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
             Self-paced learning modules designed for beginners. Start learning for free and upgrade to advanced courses when you&apos;re ready.
           </p>
         </div>
+      </section>
 
+      <div className="mx-auto max-w-7xl px-6 py-16 md:py-20">
         {/* Tutorials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
           {tutorials.map((tutorial) => (
             <div 
               key={tutorial.id} 
-              className="group bg-white p-8 rounded-3xl border border-border hover:border-[#FF9500]/50 transition-all hover:shadow-lg"
+              className="group rounded-3xl border border-border bg-card p-8 transition-all hover:border-cta/40 hover:shadow-lg"
             >
-              <div className="w-12 h-1 bg-gradient-to-r from-[#FF9500] to-[#FFB347] mb-6 rounded-full"></div>
+              <div className="mb-6 h-1 w-12 rounded-full bg-gradient-to-r from-cta to-cta-mid" />
               <h3 className="text-2xl font-bold mb-3 text-foreground">{tutorial.title}</h3>
               <p className="text-muted-foreground text-sm mb-8 leading-relaxed">{tutorial.description}</p>
               <button
                 type="button"
                 onClick={() => navigate(tutorial.route)}
-                className="inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#FF9500] to-[#E88600] px-5 py-3 text-sm font-bold text-white shadow-md shadow-[#FF9500]/25 transition-all hover:from-[#E88600] hover:to-[#CC7000] hover:shadow-lg sm:justify-start"
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cta to-cta-hover px-5 py-3 text-sm font-bold text-white shadow-md shadow-button transition-all hover:shadow-lg sm:w-auto sm:justify-start"
               >
                 <Code size={18} className="shrink-0" aria-hidden />
                 Start Learning
@@ -108,7 +110,7 @@ const FreeTutorials = () => {
         </div>
 
         {/* Additional Resources */}
-        <div className="bg-white border border-border rounded-3xl p-12 shadow-sm">
+        <div className="rounded-3xl border border-border bg-card p-12 shadow-[var(--shadow-card)]">
           <div className="grid md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-2xl font-bold mb-4 text-foreground">Why Our Free Tutorials?</h3>
@@ -139,7 +141,7 @@ const FreeTutorials = () => {
               <button
                 type="button"
                 onClick={() => navigate('/learning-paths')}
-                className="bg-gradient-to-r from-[#FF9500] to-[#E88600] text-white font-bold py-3 px-6 rounded-xl hover:shadow-lg hover:shadow-[0_4px_14px_rgba(255,149,0,0.2)] transition-all flex items-center gap-2"
+                className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cta to-cta-hover px-6 py-3 font-bold text-white shadow-button transition-all hover:shadow-lg"
               >
                 Explore Placement Tracks
                 <ArrowRight size={18} />

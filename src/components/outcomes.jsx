@@ -35,7 +35,7 @@ function useReveal(delay = 0, threshold = 0.12) {
 function StatCard({ icon, value, label }) {
   return (
     <div style={{
-      background: '#ffffff', border: '1px solid #f0ece0',
+      background: 'var(--bg-card)', border: '1px solid var(--border)',
       borderRadius: 10, padding: '24px 16px', textAlign: 'center',
     }}>
       <div style={{ fontSize: 28, marginBottom: 10 }}>{icon}</div>
@@ -49,7 +49,7 @@ function StatCard({ icon, value, label }) {
 function FeedbackCard({ quote, initial, avBg, name }) {
   return (
     <div style={{
-      background: '#ffffff', border: '1px solid #f0ece0',
+      background: 'var(--bg-card)', border: '1px solid var(--border)',
       borderRadius: 12, padding: '24px 22px',
     }}>
       <p style={{ fontSize: 14, color: 'var(--text-body)', lineHeight: 1.75, marginBottom: 20, fontStyle: 'italic' }}>
@@ -73,7 +73,7 @@ function FeedbackCard({ quote, initial, avBg, name }) {
 function RoleCard({ title, companies, focus }) {
   return (
     <div style={{
-      background: '#ffffff', border: '1px solid #f0ece0',
+      background: 'var(--bg-card)', border: '1px solid var(--border)',
       borderRadius: 12, padding: '20px 20px',
     }}>
       <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#FF9500', marginBottom: 8 }}>
@@ -134,8 +134,8 @@ function CTAButtons({ navigate }) {
           type="button"
           onClick={() => navigate('/waitlist')}
           onMouseEnter={e => { e.currentTarget.style.borderColor = '#FFB347'; e.currentTarget.style.color = '#CC7000'; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = '#F0ECE0'; e.currentTarget.style.color = '#666666'; }}
-          style={{ background: 'transparent', color: 'var(--text-secondary)', border: '1px solid #F0ECE0', padding: '13px 24px', borderRadius: 9, fontSize: 14, fontWeight: 500, cursor: 'pointer', transition: 'border-color 0.15s, color 0.15s', whiteSpace: 'nowrap' }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = '#666666'; }}
+          style={{ background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border)', padding: '13px 24px', borderRadius: 9, fontSize: 14, fontWeight: 500, cursor: 'pointer', transition: 'border-color 0.15s, color 0.15s', whiteSpace: 'nowrap' }}
         >
           Join the waitlist
         </button>
@@ -164,7 +164,7 @@ export default function SuccessStories() {
   const ctaRef       = useReveal(0);
 
   return (
-    <div className="min-h-screen bg-[#fffdf8] font-sans text-foreground antialiased">
+    <div className="min-h-screen mm-site-theme">
       <style>{`
         @keyframes ss-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
         @media(max-width:640px){
@@ -311,8 +311,8 @@ export default function SuccessStories() {
           ref={commitRef}
           style={{
             ...REVEAL_BASE, maxWidth: 640, width: '100%',
-            background: '#ffffff',
-            border: '1px solid #f0ece0',
+            background: 'var(--bg-card)',
+            border: '1px solid var(--border)',
             borderRadius: 14, padding: '32px 28px',
           }}
         >
@@ -351,7 +351,7 @@ export default function SuccessStories() {
       </section>
 
       {/* ══════ SECTION 8 — FOOTER ══════ */}
-      <footer style={{ borderTop: '1px solid #F0ECE0', background: '#FFF8EE', padding: '56px 24px 32px' }}>
+      <footer style={{ borderTop: '1px solid var(--border)', background: 'var(--bg-secondary)', padding: '56px 24px 32px' }}>
         <div style={{ maxWidth: 960, margin: '0 auto' }}>
           <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 32, marginBottom: 40 }} className="ss-footer-grid">
             <style>{`@media(max-width:640px){ .ss-footer-grid{ grid-template-columns:1fr 1fr !important; } }`}</style>
@@ -400,7 +400,7 @@ export default function SuccessStories() {
           </div>
 
           {/* Bottom bar */}
-          <div style={{ borderTop: '1px solid #F0ECE0', paddingTop: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
+          <div style={{ borderTop: '1px solid var(--border)', paddingTop: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
             <p style={{ fontSize: 12, color: '#888888' }}>© {new Date().getFullYear()} MentorMuni. All rights reserved.</p>
             <div style={{ display: 'flex', gap: 20 }}>
               {['Terms', 'Privacy', 'Cookies'].map(t => (

@@ -4,89 +4,71 @@ import { Users, Target, Zap } from 'lucide-react';
 const ImpactStats = () => {
   const stats = [
     {
-      number: "200+",
-      label: "Students Mentored",
-      description: "Active learners preparing for tech careers",
+      number: '200+',
+      label: 'Students Mentored',
+      description: 'Active learners preparing for tech careers',
       icon: Users,
-      color: "indigo",
-      bgColor: "bg-[#FF9500]/10",
-      borderColor: "border-[#FF9500]/25",
-      iconColor: "text-[#FF9500]"
+      bgColor: 'bg-cta/10',
+      borderColor: 'border-cta/25',
+      iconColor: 'text-cta',
     },
     {
-      number: "85%",
-      label: "Got Interview Calls",
-      description: "After completing our interview readiness program",
+      number: '85%',
+      label: 'Got Interview Calls',
+      description: 'After completing our interview readiness program',
       icon: Target,
-      color: "cyan",
-      bgColor: "bg-cyan-500/10",
-      borderColor: "border-cyan-500/20",
-      iconColor: "text-cyan-400"
+      bgColor: 'bg-cyan-500/10',
+      borderColor: 'border-cyan-500/25',
+      iconColor: 'text-cyan-700',
     },
     {
-      number: "50+",
-      label: "Companies Cracked",
-      description: "Tech companies our students joined",
+      number: '50+',
+      label: 'Companies Cracked',
+      description: 'Tech companies our students joined',
       icon: Zap,
-      color: "emerald",
-      bgColor: "bg-emerald-500/10",
-      borderColor: "border-emerald-500/20",
-      iconColor: "text-emerald-400"
-    }
+      bgColor: 'bg-emerald-500/10',
+      borderColor: 'border-emerald-500/25',
+      iconColor: 'text-emerald-700',
+    },
   ];
 
   return (
-    <section className="py-16 md:py-24 px-6 bg-slate-900/50">
-      <div className="max-w-6xl mx-auto">
-        {/* Section Header */}
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
-            Trusted by Students Preparing for Tech Careers
-          </h2>
-          <p className="text-lg text-slate-300 max-w-2xl mx-auto">
+    <section className="border-y border-border bg-gradient-to-b from-accent-soft/35 via-background to-secondary/40 px-6 py-16 md:py-24">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-16 text-center">
+          <h2 className="mb-4 text-3xl font-black text-foreground md:text-4xl">Trusted by Students Preparing for Tech Careers</h2>
+          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
             Real outcomes from real students using MentorMuni to ace their tech interviews
           </p>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid gap-8 md:grid-cols-3">
           {stats.map((stat, index) => {
             const Icon = stat.icon;
             return (
               <div
                 key={index}
-                className={`${stat.bgColor} ${stat.borderColor} border rounded-2xl p-10 text-center hover:border-opacity-60 transition-all hover:shadow-lg hover:shadow-black/20`}
+                className={`rounded-2xl border bg-card p-10 text-center shadow-[var(--shadow-card)] transition-all hover:-translate-y-0.5 hover:shadow-md ${stat.borderColor} ${stat.bgColor}`}
               >
-                {/* Icon Container */}
-                <div className="flex justify-center mb-6">
-                  <div className="w-14 h-14 rounded-full bg-slate-800/50 border border-slate-700/50 flex items-center justify-center">
-                    <Icon className={`w-7 h-7 ${stat.iconColor}`} />
+                <div className="mb-6 flex justify-center">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-full border border-border bg-secondary/90">
+                    <Icon className={`h-7 w-7 ${stat.iconColor}`} aria-hidden />
                   </div>
                 </div>
 
-                {/* Number */}
-                <div className={`text-5xl md:text-6xl font-black ${stat.iconColor} mb-2`}>
-                  {stat.number}
-                </div>
+                <div className={`mb-2 text-5xl font-black md:text-6xl ${stat.iconColor}`}>{stat.number}</div>
 
-                {/* Label */}
-                <h3 className="text-xl font-bold text-white mb-2">
-                  {stat.label}
-                </h3>
+                <h3 className="mb-2 text-xl font-bold text-foreground">{stat.label}</h3>
 
-                {/* Description */}
-                <p className="text-muted-foreground text-sm leading-relaxed">
-                  {stat.description}
-                </p>
+                <p className="text-sm leading-relaxed text-muted-foreground">{stat.description}</p>
               </div>
             );
           })}
         </div>
 
-        {/* Bottom CTA */}
         <div className="mt-14 text-center">
-          <p className="text-slate-300 text-sm">
-            These numbers are growing every day. <span className="text-[#CC7000] font-semibold">You could be next.</span>
+          <p className="text-sm text-muted-foreground">
+            These numbers are growing every day. <span className="font-semibold text-warning-text">You could be next.</span>
           </p>
         </div>
       </div>

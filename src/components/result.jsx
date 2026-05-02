@@ -104,7 +104,7 @@ const ShareCard = React.forwardRef(({ score, role }, ref) => (
   <div
     ref={ref}
     style={{
-      background: '#fffdf8',
+      background: '#f8fbff',
       border: '1px solid #ff9500',
       borderRadius: 16,
       padding: 32,
@@ -268,7 +268,7 @@ export default function ResultPage() {
           document.head.appendChild(s);
         });
       }
-      const canvas = await window.html2canvas(shareRef.current, { backgroundColor: '#fffdf8', scale: 2 });
+      const canvas = await window.html2canvas(shareRef.current, { backgroundColor: '#f8fbff', scale: 2 });
       const link = document.createElement('a');
       link.download = `mentormuni-score-${totalScore}.png`;
       link.href = canvas.toDataURL();
@@ -287,7 +287,7 @@ export default function ResultPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] px-4 py-10 font-sans text-foreground antialiased sm:py-12">
+    <div className="min-h-screen mm-site-theme px-4 py-10 sm:py-12">
       <div className="mx-auto max-w-2xl space-y-6">
         <div className="mm-card-elevated p-6 text-center sm:p-8">
           <p className="mb-5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -434,7 +434,7 @@ export default function ResultPage() {
         <div className="flex flex-col gap-3 sm:flex-row">
           <Link
             to="/start-assessment"
-            className="mm-focus flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-white py-3 text-sm font-semibold text-foreground transition-all hover:border-[#FFB347] hover:bg-[#FFF8EE] active:scale-[0.98]"
+            className="mm-focus flex min-h-[44px] flex-1 items-center justify-center gap-2 rounded-xl border border-border bg-white py-3 text-sm font-semibold text-foreground transition-all hover:border-[#FFB347] hover:bg-secondary active:scale-[0.98]"
           >
             Retake assessment
           </Link>

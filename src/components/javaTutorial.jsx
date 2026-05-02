@@ -78,7 +78,7 @@ const JavaTutorial = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FFFDF8] text-foreground font-sans antialiased">
+    <div className="min-h-screen mm-site-theme">
       {/* Meta Tags for SEO */}
       <head>
         <title>Java for Beginners - Learn Java Step by Step | Complete Tutorial</title>
@@ -87,7 +87,7 @@ const JavaTutorial = () => {
       </head>
 
       {/* HEADER */}
-      <header className="sticky top-0 z-[100] bg-[#FFFDF8]/95 backdrop-blur-md border-b border-border px-5">
+      <header className="mm-sticky-header px-5">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between py-4">
           <Link to="/" className="transition-transform hover:scale-[1.02]">
             <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
@@ -99,7 +99,7 @@ const JavaTutorial = () => {
             </Link>
           </nav>
 
-          <button onClick={() => setIsNavOpen(!isNavOpen)} className="md:hidden text-white">
+          <button onClick={() => setIsNavOpen(!isNavOpen)} className="md:hidden text-foreground" aria-label={isNavOpen ? 'Close menu' : 'Open menu'}>
             {isNavOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
@@ -1353,8 +1353,8 @@ public class StudentGradeSystem {
 
         {/* FINAL CTA */}
         <section className="mb-16">
-          <div className="bg-gradient-to-r from-[#4F46E5] to-[#06B6D4] rounded-2xl p-12 text-center border border-border">
-            <h2 className="text-3xl font-black mb-4">Ready to Master Java?</h2>
+          <div className="bg-gradient-to-r from-[#4F46E5] to-[#06B6D4] rounded-2xl p-12 text-center border border-border text-white">
+            <h2 className="text-3xl font-black mb-4 text-white">Ready to Master Java?</h2>
             <p className="text-lg mb-8 text-white/90">Join thousands of students learning Java with our interactive courses and 1:1 mentorship.</p>
             <button className="bg-white text-[#4F46E5] px-8 py-4 rounded-xl font-bold hover:bg-white/90 transition-all text-lg">
               Start Your Java Journey Today
