@@ -60,6 +60,7 @@ import { AnimatedPrepMapPanel } from './homepage/prepMapPanel';
 import { HeroFlagshipVisual } from './homepage/HeroFlagshipVisual';
 import { HeroHeadlineTypewriter } from './homepage/HeroHeadlineTypewriter';
 import { HeroLoopVideo } from './homepage/HeroLoopVideo';
+import { MentorMuniSystemLoop } from './homepage/MentorMuniSystemLoop';
 
 import {
   ArrowRight, Brain, Target,
@@ -171,21 +172,6 @@ function homepagePosterAsset(filename) {
   const base = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '/');
   return `${base}MentorMuni-React-Frontend/images/poster-carousel/${filename}`;
 }
-
-const HERO_FLOW_STEPS = [
-  {
-    title: 'Take the free score',
-    body: 'Get your interview-readiness baseline in about 5 minutes.',
-  },
-  {
-    title: 'See exact gaps',
-    body: 'Know what to fix first instead of random preparation.',
-  },
-  {
-    title: 'Practice to perform',
-    body: 'Use mocks and mentor feedback to improve answer delivery.',
-  },
-];
 
 /** Premium animated “platform stack” strip — mesh, gradient border, spring cards */
 function HeroValueStack({ reduceMotion }) {
@@ -970,31 +956,7 @@ const HomePage = () => {
 
       <VisualPrepJourney reduceMotion={reduceMotion} />
 
-      <section className="border-t border-slate-100 bg-white px-5 py-12 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl">
-          <FadeUp>
-            <div className="mb-7 text-center md:text-left">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#1A8FC4]">How it works</p>
-              <h2 className="mt-2 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-                Clear workflow. No random preparation.
-              </h2>
-            </div>
-          </FadeUp>
-          <div className="grid gap-4 md:grid-cols-3">
-            {HERO_FLOW_STEPS.map((step, idx) => (
-              <FadeUp key={step.title} delay={idx * 0.07}>
-                <div className="h-full rounded-2xl border border-slate-200 bg-white p-5 shadow-[0_4px_18px_rgba(15,23,42,0.05)]">
-                  <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#e0f0fa] text-sm font-bold text-[#1A8FC4]">
-                    {idx + 1}
-                  </div>
-                  <h3 className="text-base font-bold text-slate-900">{step.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{step.body}</p>
-                </div>
-              </FadeUp>
-            ))}
-          </div>
-        </div>
-      </section>
+      <MentorMuniSystemLoop reduceMotion={reduceMotion} />
 
       {/* ════════════════ THE REAL PROBLEM — pain + three cards ════════════════ */}
       <section
