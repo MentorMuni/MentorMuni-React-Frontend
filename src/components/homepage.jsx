@@ -245,7 +245,7 @@ function HeroValueStack({ reduceMotion }) {
                   },
                 },
               }}
-              className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4"
+              className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4"
             >
               {HERO_PLATFORM_HIGHLIGHTS.map((item, idx) => {
                 const Icon = HERO_PLATFORM_HIGHLIGHT_ICONS[idx] ?? Sparkles;
@@ -276,7 +276,7 @@ function HeroValueStack({ reduceMotion }) {
                     <motion.div
                       whileHover={reduceMotion ? undefined : cardSpringHover}
                       whileTap={reduceMotion ? undefined : cardTap}
-                      className={`group relative flex h-full min-h-[9rem] flex-col overflow-hidden rounded-2xl border p-5 transition-shadow duration-300 hover:shadow-xl sm:min-h-0 ${theme.card}`}
+                      className={`group relative flex h-full min-h-[7.5rem] flex-col overflow-hidden rounded-2xl border p-4 transition-shadow duration-300 hover:shadow-xl sm:p-5 sm:min-h-0 ${theme.card}`}
                     >
                       <div
                         className={`pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full blur-2xl transition-opacity duration-500 group-hover:opacity-100 ${theme.glow} opacity-60`}
@@ -682,7 +682,7 @@ const HomePage = () => {
                   <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.25)]" aria-hidden />
                   <span className="min-w-0">{HERO_EYEBROW}</span>
                 </span>
-                <div className="inline-flex items-center gap-2 whitespace-nowrap">
+                <div className="flex flex-wrap items-center gap-2">
                   <span
                     className="inline-flex rotate-[-2.5deg] items-center rounded-md border-2 border-[#1A8FC4] bg-gradient-to-br from-sky-100 to-sky-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#0e5e85] shadow-[2px_3px_0_0_rgba(26,143,196,0.35)] sm:text-[11px]"
                     title="Limited early-bird offer"
@@ -713,7 +713,7 @@ const HomePage = () => {
                   <span className="typo-display mt-1 block text-neutral-900 leading-[1.06] tracking-tight">
                     {HERO_HEADLINE_LINE2}
                   </span>
-                  <span className="mt-2 block min-h-[4.75rem] sm:min-h-[6rem] sm:mt-3 md:min-h-[5.5rem]">
+                  <span className="mt-2 block min-h-[2.2rem] sm:min-h-[4.5rem] sm:mt-3 md:min-h-[5rem]">
                     <HeroHeadlineTypewriter
                       phrases={HERO_TYPEWRITER_PHRASES}
                       reducedMotion={reduceMotion}
@@ -1320,7 +1320,7 @@ const HomePage = () => {
             variants={studentStoriesContainer}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.12 }}
+            viewport={{ once: true, amount: 0.05, margin: '0px 0px -80px 0px' }}
           >
             {STUDENT_SNIPPETS.map((t) => {
               const CardIcon = t.Icon;
@@ -1653,9 +1653,9 @@ const HomePage = () => {
           <div className="border-t border-border pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-muted-foreground">
             <p>© {new Date().getFullYear()} MentorMuni. All rights reserved.</p>
             <div className="flex gap-5">
-              <Link to="/contact" className="hover:text-[#1A8FC4] transition-colors">Terms</Link>
-              <Link to="/contact" className="hover:text-[#1A8FC4] transition-colors">Privacy</Link>
-              <Link to="/contact" className="hover:text-[#1A8FC4] transition-colors">Cookies</Link>
+              <Link to="/terms" className="hover:text-[#1A8FC4] transition-colors">Terms</Link>
+              <Link to="/privacy" className="hover:text-[#1A8FC4] transition-colors">Privacy</Link>
+              <Link to="/contact" className="hover:text-[#1A8FC4] transition-colors">Contact</Link>
             </div>
           </div>
         </div>

@@ -160,7 +160,7 @@ export default function MuniBot() {
         initial={{ opacity: 0, x: 12 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 1.2, duration: 0.4 }}
-        className="pointer-events-none fixed bottom-[5.5rem] right-6 z-[9997] hidden max-w-[220px] sm:block"
+        className="pointer-events-none fixed bottom-[9.5rem] right-4 z-[9997] hidden max-w-[220px] sm:block md:bottom-[5.5rem] md:right-6"
         aria-hidden
       >
         <div className="pointer-events-none rounded-2xl border border-border bg-white/95 px-3 py-2 text-xs font-medium text-muted-foreground shadow-lg backdrop-blur">
@@ -174,7 +174,7 @@ export default function MuniBot() {
       <motion.button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-[9998] flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-white/90 text-white shadow-xl focus:outline-none focus:ring-4 focus:ring-[#1A8FC4]/35"
+        className="fixed bottom-[5.5rem] right-4 z-[9998] flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-white/90 text-white shadow-xl focus:outline-none focus:ring-4 focus:ring-[#1A8FC4]/35 md:bottom-6 md:right-6"
         style={{
           background: 'linear-gradient(135deg, #1A8FC4 0%, #15799F 50%, #0d5f7f 100%)',
           boxShadow: '0 10px 40px -10px rgba(26, 143, 196, 0.45)',

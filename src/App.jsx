@@ -185,6 +185,8 @@ function App() {
               <Route path="/colleges" element={<Colleges />} />
               <Route path="/about" element={<AboutUs />} />
               <Route path="/contact" element={<ContactPage />} />
+              <Route path="/terms" element={<ContactPage />} />
+              <Route path="/privacy" element={<ContactPage />} />
               <Route path="/dashboard" element={<MentorDashboard />} />
               <Route path="/java-tutorial" element={<JavaTutorial />} />
               <Route path="/java-for-beginners" element={<JavaTutorial />} />
