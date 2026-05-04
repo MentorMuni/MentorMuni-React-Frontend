@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { X } from "lucide-react";
 import { goToStartAssessment } from "../utils/startAssessmentNavigation";
-import {
-  PRIMARY_CTA_LABEL,
-  WAITLIST_STICKY_TEASER,
-} from "../constants/brandCopy";
+import { PRIMARY_CTA_LABEL } from "../constants/brandCopy";
 
 /** Full-screen flows — no competing bottom bar */
 const HIDE_STICKY_PATHS = new Set([
@@ -69,13 +66,6 @@ export default function StickyConversionBar() {
         >
           {PRIMARY_CTA_LABEL}
         </button>
-        <Link
-          to="/waitlist"
-          className="mm-focus flex min-h-[48px] min-w-0 flex-1 flex-col items-center justify-center rounded-xl border-2 border-[#1A8FC4] bg-background px-2 py-1.5 text-center text-[11px] font-bold leading-tight text-[#15799F] transition-colors hover:bg-accent-soft active:scale-[0.98]"
-        >
-          <span>Join waitlist</span>
-          <span className="text-[9px] font-semibold text-muted-foreground">{WAITLIST_STICKY_TEASER}</span>
-        </Link>
         <button
           type="button"
           aria-label="Dismiss quick actions"

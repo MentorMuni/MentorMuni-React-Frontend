@@ -3,8 +3,15 @@
  * Import from components; update here to align the whole site.
  */
 
+/**
+ * Single customer-facing name for the free scored assessment (homepage, nav, promos).
+ * Use this phrase instead of mixing “reality check”, “readiness test”, and “readiness score” as product names.
+ * (The numeric outcome can still be called “score” or “your score”.)
+ */
+export const READINESS_CHECK_PRODUCT_NOUN = 'readiness check';
+
 /** Primary action to the free readiness assessment — use everywhere for that flow */
-export const PRIMARY_CTA_LABEL = 'Take Free Reality Check';
+export const PRIMARY_CTA_LABEL = 'Take the free readiness check';
 
 /** Secondary — talk to team (homepage, final CTA row) */
 export const SECONDARY_CTA_BOOK_CALL = 'Book a call';
@@ -24,9 +31,9 @@ export const HERO_EARLY_BIRD_STICKER = 'Early bird · First 50';
 export const HERO_GENZ_STICKER = 'Not a course — a system';
 export const HERO_HEADLINE = "You can't fix what you don't measure.";
 /** Orange payoff line — own line under the dark headline (readability + emphasis) */
-export const HERO_HEADLINE_ACCENT = 'Get your readiness score in ~5 minutes.';
+export const HERO_HEADLINE_ACCENT = 'Get your score from the free readiness check in ~5 minutes.';
 /** Homepage hero — two-line headline (render as two blocks; avoids awkward 3-line wrap) */
-export const HERO_HEADLINE_LINE1 = 'Check if You Are Actually';
+export const HERO_HEADLINE_LINE1 = 'Are You Actually';
 export const HERO_HEADLINE_LINE2 = 'Interview-Ready?';
 /** Light quip under the eyebrow — playful, not the main headline */
 export const HERO_PLAYFUL_CLAUSE = 'From reels to reality — different kind of screen time.';
@@ -39,7 +46,7 @@ export const HERO_TYPEWRITER_PHRASES = [
 ];
 /** Homepage hero — body copy under the typewriter (single paragraph; no read-more) */
 export const HERO_HOME_SUB =
-  'Most students think they are prepared. They fail when it matters. A free reality check shows where you stand vs what panels actually test — then you close gaps with reps, not hope.';
+  'Most students think they are prepared. They fail when it matters. A free readiness check shows where you stand vs what panels actually test — then you close gaps with reps, not hope.';
 /** Highlighted journey lines (homepage hero) — loop + positioning */
 export const HERO_JOURNEY_STEPS = 'Mock interview → 1:1 session → Improve → Repeat';
 export const HERO_JOURNEY_ARC =
@@ -62,6 +69,18 @@ export const HERO_PROOF_BULLETS = [
   '500+ mock rounds logged on the platform',
 ];
 
+/** Homepage hero — one line under CTAs (scannable; avoid bullet walls) */
+export const HERO_PROOF_ONE_LINER =
+  'Free · No signup · ~5 min · Mocks + mentors when you level up';
+
+/** Homepage hero — social proof (screen readers get full sentence; UI stays tiny) */
+export const HERO_SOCIAL_PROOF_ARIA =
+  'Engineering students across India use the free readiness check before placement season. You can take it too.';
+
+/** Visible hero social line (no inflated counts — qualitative trust) */
+export const HERO_SOCIAL_PROOF_VISIBLE_LINE =
+  'Students across IITs, NITs, IIITs & state colleges — the free readiness check first.';
+
 /** Homepage hero — quick clarity about what we offer */
 export const HERO_PLATFORM_HIGHLIGHTS = [
   'Interview preparation platform',
@@ -69,8 +88,8 @@ export const HERO_PLATFORM_HIGHLIGHTS = [
   'Mock interview preparation',
   'Technical + HR interview practice',
   '1:1 mentorship',
-  'Interview readiness check',
-  'Skill readiness check',
+  'Scored readiness check',
+  'Skill gap visibility',
   'Mentor + AI driven platform',
 ];
 
@@ -144,10 +163,10 @@ export const HOW_IT_WORKS_HEADLINE =
 
 /** One paragraph under HOW_IT_WORKS_HEADLINE on homepage */
 export const HOW_IT_WORKS_SUB =
-  'Everything else supports that path. Mocks, resume checks, and tutorials are secondary — the conversion engine is: Take the reality check, see your gap, then join the 60-day interview readiness system if you want structured reps.';
+  'Everything else supports that path. Mocks, resume checks, and tutorials are secondary — the conversion engine is: take the readiness check, see your gap, then join the 60-day interview readiness system if you want structured reps.';
 
-/** Homepage — dark “reality check” (who it’s for / not for) */
-export const REALITY_CHECK_EYEBROW = 'Reality check';
+/** Homepage — fit block (who it’s for / not for); uses same product name as READINESS_CHECK_PRODUCT_NOUN */
+export const REALITY_CHECK_EYEBROW = 'After your readiness check';
 export const REALITY_CHECK_HEADLINE = 'This is not for everyone.';
 export const REALITY_CHECK_SUB =
   'If you want comfort, watch another tutorial. If you want an offer, we will push you where it hurts — in a safe practice room first.';
@@ -167,13 +186,36 @@ export const REALITY_CHECK_FOR_ITEMS = [
   "You're willing to work hard for 60 days to change your outcome",
   'You want an offer at a company worth joining — not just any job',
 ];
-export const REALITY_CHECK_CTA = 'Take Free Reality Check';
+export const REALITY_CHECK_CTA = PRIMARY_CTA_LABEL;
+
+/** Homepage — HR & communication confidence (inclusive of Hindi-medium learners) */
+export const HR_READINESS_EYEBROW = 'Interviews · Communication · Confidence';
+export const HR_READINESS_HEADLINE = 'Scared of interviews—or English after Hindi medium?';
+export const HR_READINESS_HEADLINE_ACCENT = 'Our HR readiness track is built to lift you up, not judge you.';
+export const HR_READINESS_SUB =
+  'Plenty of strong students freeze in HR rounds or doubt how they sound. That is a skill gap like any other—and it is fixable with the right reps, feedback, and a safe space to practise before the real panel.';
+export const HR_READINESS_PROGRAM_LINE =
+  'Our HR readiness program focuses on how you show up: opening confidently, structuring answers, handling common HR questions, and sounding clear under pressure—so you walk in steadier than you feel today.';
+export const HR_READINESS_POINTS = [
+  {
+    title: 'Interview fear',
+    body: 'You are not “weak”—you are under-rehearsed for live scrutiny. We replace panic with a repeatable practice loop.',
+  },
+  {
+    title: 'Communication in the room',
+    body: 'Panels listen to how you speak, not only what you memorised. You train delivery, pace, and presence—not endless grammar drills alone.',
+  },
+  {
+    title: 'Hindi-medium background',
+    body: 'If you studied in Hindi and worry about English in interviews, you are welcome here. Mentors work with your level and push you where it helps—without embarrassment.',
+  },
+];
 
 /** Homepage — 60-day interview readiness program (timeline + pricing card) */
 export const PROGRAM_6WEEK_EYEBROW = 'The 60-day system';
 export const PROGRAM_6WEEK_HEADLINE = 'From your score to real interview performance.';
 export const PROGRAM_6WEEK_SUB =
-  'Structured, mentor-guided execution — not a “course” you half-watch. Built around your reality-check score. Every week has a job to do.';
+  'Structured, mentor-guided execution — not a “course” you half-watch. Built around your readiness-check score. Every week has a job to do.';
 export const PROGRAM_6WEEK_PHASES = [
   {
     title: 'Days 1–15: Gap audit + foundation fix',
@@ -198,13 +240,13 @@ export const PROGRAM_6WEEK_PHASES = [
 ];
 export const PROGRAM_6WEEK_CARD_BADGE = 'Structured program';
 export const PROGRAM_6WEEK_CARD_TITLE = '60-Day Interview Readiness Program';
-/** Display prices blurred in UI; keep for ops / future unblur */
+/** Public offer shown on homepage pricing card */
 export const PROGRAM_6WEEK_PRICE_MAIN = '₹5,999';
 export const PROGRAM_6WEEK_PRICE_MAIN_SUFFIX = 'one-time';
 export const PROGRAM_6WEEK_PRICE_STRIKE = '₹9,999 — Early bird pricing';
 /** Single line instead of a long checklist on the homepage */
 export const PROGRAM_6WEEK_SUMMARY =
-  'Includes your roadmap, scored mocks, weekly mentor sessions, answer modules, a final re-test, and a small accountability group—details when pricing goes live.';
+  'Includes your roadmap, scored mocks, weekly mentor sessions, answer modules, a final re-test, and a small accountability group across 60 days.';
 
 /**
  * Homepage hero — personalized by academic year or experience level.
@@ -230,10 +272,10 @@ export const HERO_YEAR_COPY = {
   },
   y4: {
     headline: HERO_HEADLINE,
-    accent: HERO_HEADLINE_ACCENT,
-    subShort: '',
-    /** Shown directly under `subShort` on the homepage hero (HeroSocialProof + aria-label) */
-    socialProofLine: '100+ students checked their readiness. When will you?',
+    accent: 'Scored mock interviews, 1:1 mentorship, structured prep—until you perform in the room.',
+    subShort: 'Mocks · 1:1 mentors · Structured placement prep.',
+    /** @deprecated Homepage uses HERO_SOCIAL_PROOF_ARIA; kept for other experiments */
+    socialProofLine: 'Campus hires reward clarity — start with the free readiness check.',
     sub: HERO_HOME_SUB,
   },
   /** Working professionals — interview + skill readiness (same rubric; framing matches career moves). */
@@ -266,7 +308,7 @@ export function buildResultShareMessage(score, roleLabel = 'Student') {
       : score >= 50
         ? 'Found my gaps before placement season.'
         : 'Got my baseline — now I know what to fix first.';
-  return `${hook} Scored ${score}/100 on MentorMuni (${roleLabel}). ${BRAND_MEME_LINE} Free test (~5 min, no signup):\n${SITE_SHARE_ASSESSMENT_URL}`;
+  return `${hook} Scored ${score}/100 on MentorMuni (${roleLabel}). ${BRAND_MEME_LINE} Free readiness check (~5 min, no signup):\n${SITE_SHARE_ASSESSMENT_URL}`;
 }
 
 /** Mission / positioning — footer, meta, tool intros */
@@ -380,46 +422,61 @@ export const READINESS_TEST_COUPON_OFFER_HEADLINE =
   '1 free 1:1 mentorship + 1 free AI mock interview';
 /** Promo bar — line 2: how you get it */
 export const READINESS_TEST_COUPON_OFFER_HOW =
-  'How: take the free readiness test (~5 min). Your coupon code is emailed right after.';
+  'How: take the free readiness check (~5 min). Your coupon code is emailed right after.';
 /** One-line summary for nav / tool strips that only have room for a single sentence */
 export const READINESS_TEST_COUPON_PROMO =
-  'Free: 1× 1:1 mentorship + 1× AI mock — unlock by completing the free readiness test.';
+  'Free: 1× 1:1 mentorship + 1× AI mock — unlock by completing the free readiness check.';
 /** Short line for badges / narrow layouts */
 export const READINESS_TEST_COUPON_BADGE =
-  '1× 1:1 mentor + 1× AI mock · coupon after free test';
+  '1× 1:1 mentor + 1× AI mock · coupon after free readiness check';
 /** Readiness report card (narrow column) — short lines so nothing clips */
-export const READINESS_TEST_COUPON_CARD_HEADLINE = 'Your real test unlocks a code';
+export const READINESS_TEST_COUPON_CARD_HEADLINE = 'Your readiness check unlocks a code';
 export const READINESS_TEST_COUPON_CARD_BODY =
-  'Coupon: 1 free 1:1 + 1 AI mock after your test';
-export const READINESS_TEST_COUPON_CARD_CTA = 'Check my readiness';
+  'Coupon: 1 free 1:1 + 1 AI mock after your readiness check';
+export const READINESS_TEST_COUPON_CARD_CTA = 'Start readiness check';
 
 /** Stale-date-free mentorship messaging */
 export const MENTORSHIP_BANNER = 'Mentorship programme · Limited seats per batch';
 
 export const MENTORSHIP_TRUST_BADGE = 'Mentorship cohorts · Waitlist open · Limited seats';
 
-/** Sticky mobile bar — second line under Join waitlist */
-export const WAITLIST_STICKY_TEASER = 'Cohort seats · limited';
-
 /** Homepage — bridge between Expert Mentorship and final CTA (mentorship-only; free score: hero + #final-cta) */
 export const HOMEPAGE_MENTORS_TO_CTA_BRIDGE = 'Questions on mentorship or cohort seats?';
 
 /** Homepage — final CTA block (above footer) */
 export const FINAL_CTA_HEADLINE = 'Know the gap before the panel does.';
-export const FINAL_CTA_HEADLINE_ACCENT = 'Take the free reality check — then go deeper only if the gap is real.';
+export const FINAL_CTA_HEADLINE_ACCENT =
+  'Take the free readiness check — then go deeper only if the gap is real.';
 export const FINAL_CTA_BODY =
   'One score, one honest gap list, then optional mocks and the 60-day system. No infinite tabs. No pretend progress.';
 
 /** Footer / nav: name of the free assessment product (not “mock interviews”) */
-export const PRODUCT_READINESS_SCORE = 'Interview readiness score';
+export const PRODUCT_READINESS_SCORE = 'Readiness check';
 
 /** Public contact phone — keep in sync across footer, contact, pricing */
 export const CONTACT_PHONE_DISPLAY = '+91 91464 21302';
 export const CONTACT_PHONE_HREF = 'tel:+919146421302';
 
+/** WhatsApp (India) — same number as phone; pre-filled message for one tap */
+export const CONTACT_WHATSAPP_HREF =
+  'https://wa.me/919146421302?text=' +
+  encodeURIComponent('Hi MentorMuni — I have a question about interview preparation.');
+export const CONTACT_WHATSAPP_LABEL = 'WhatsApp us';
+
+/** Homepage — trust strip below hero (text labels; swap for SVG logos when licensed) */
+export const HERO_TRUST_LOGO_ROW_LABEL = 'Students from these institutions have taken the free readiness check';
+export const HERO_TRUST_LOGO_ROW_ITEMS = [
+  'IITs & IISc',
+  'NITs',
+  'IIITs',
+  'GFTIs',
+  'State universities',
+  'Private engineering colleges',
+];
+
 /** Per-route SEO titles — update document.title dynamically */
 export const ROUTE_TITLES = {
-  '/': 'MentorMuni — Are You Actually Interview-Ready? Free Reality Check',
+  '/': 'MentorMuni — Are You Actually Interview-Ready? Free Readiness Check',
   '/how-it-works': 'How MentorMuni Works — Step-by-Step Interview Prep | MentorMuni',
   '/roadmap': 'How to Prepare — 4-Year Placement Roadmap | MentorMuni',
   '/mentors': 'Expert Industry Mentors — 12–15 Yrs Experience | MentorMuni',
@@ -459,5 +516,5 @@ export const ROUTE_TITLES = {
   '/career-health': 'Career Health Dashboard | MentorMuni',
   '/dashboard/health': 'Career Health Dashboard | MentorMuni',
   '/dashboard': 'Dashboard | MentorMuni',
-  '/result': 'Your Interview Readiness Score | MentorMuni',
+  '/result': 'Your Readiness Check Results | MentorMuni',
 };

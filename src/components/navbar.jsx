@@ -31,8 +31,8 @@ const TOOLS = [
     icon: BarChart2,
     color: 'text-primary',
     bg: 'bg-accent-soft',
-    title: 'Interview Readiness Score',
-    desc: 'DSA, SD & HR score — finish the test for a coupon (1:1 mentorship + AI mock)',
+    title: 'Readiness check',
+    desc: 'DSA, SD & HR score — finish the check for a coupon (1:1 mentorship + AI mock)',
     href: '/interview-readiness-tools',
   },
   {

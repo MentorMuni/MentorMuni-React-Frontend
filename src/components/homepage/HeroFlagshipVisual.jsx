@@ -8,7 +8,7 @@ const CIRC = 2 * Math.PI * R;
 const DEMO_SCORE = 0.72;
 
 /**
- * Hero “Reality Check” card — product-style panel: gradient frame, depth, subtle motion.
+ * Hero readiness-check preview card — product-style panel: gradient frame, depth, subtle motion.
  */
 export function HeroFlagshipVisual({ className = '' }) {
   const reduceMotion = useReducedMotion();
@@ -46,6 +46,7 @@ export function HeroFlagshipVisual({ className = '' }) {
       initial={reduceMotion ? false : { opacity: 0, y: 20, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+      style={{ opacity: 1 }}
     >
       <style>{`
         @keyframes mm-hero-ring-draw {
@@ -89,17 +90,17 @@ export function HeroFlagshipVisual({ className = '' }) {
         <div
           className="relative overflow-hidden rounded-[20.5px] border border-white/80 bg-white/95 p-4 backdrop-blur-sm sm:p-5"
           role="img"
-          aria-label="Sample interview readiness score preview"
+          aria-label="Sample readiness check score preview"
         >
           <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-sky-200/30 blur-3xl" aria-hidden />
           <div className="pointer-events-none absolute -bottom-12 -left-10 h-32 w-32 rounded-full bg-cyan-200/25 blur-3xl" aria-hidden />
 
           <div className="relative mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-neutral-100/90 pb-3">
             <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-              Your reality check
+              Your readiness check
             </span>
             <span className="rounded-full bg-gradient-to-r from-sky-50 to-cyan-50 px-3 py-1 text-[10px] font-semibold text-[#15799F] ring-1 ring-sky-200/90 shadow-sm">
-              Interview Readiness
+              Scored in ~5 min
             </span>
           </div>
 

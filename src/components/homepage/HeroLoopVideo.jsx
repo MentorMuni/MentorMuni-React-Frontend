@@ -9,7 +9,8 @@ const BASE = import.meta.env.BASE_URL.endsWith('/')
 /** Place files under public/MentorMuni-React-Frontend/videos/ (see config). */
 const WEBM = `${BASE}videos/hero-loop.webm`;
 const MP4 = `${BASE}videos/hero-loop.mp4`;
-const POSTER = `${BASE}videos/hero-poster.jpg`;
+/** Product-style still (readiness UI) — avoids generic stock poster when video is off */
+const POSTER = `${BASE}MentorMuni-React-Frontend/images/poster-carousel/readiness.jpg`;
 
 /**
  * Optional muted hero loop — deferred until after idle + in-view to protect LCP.

@@ -141,7 +141,7 @@ export default function WelcomeLaunchOverlay() {
                   With AI + Mentor.
                 </h2>
                 <p className="mt-2 text-sm font-semibold text-[#0e5e85] sm:mt-3 sm:text-base">
-                  5-min reality check to clear action plan.
+                  5-min readiness check to clear action plan.
                 </p>
 
                 <motion.div
@@ -178,7 +178,7 @@ export default function WelcomeLaunchOverlay() {
                     className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#1A8FC4] to-[#15799F] px-4 py-2.5 text-sm font-bold text-white"
                   >
                     <Sparkles className="h-4 w-4" />
-                    Take Free Reality Check
+                    Take the free readiness check
                   </Link>
                   <a
                     href={whatsappShareUrl}
