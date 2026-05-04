@@ -79,7 +79,7 @@ export const HERO_SOCIAL_PROOF_ARIA =
 
 /** Visible hero social line (no inflated counts — qualitative trust) */
 export const HERO_SOCIAL_PROOF_VISIBLE_LINE =
-  'Students across IITs, NITs, IIITs & state colleges — the free readiness check first.';
+  'Engineering students across India — taking the free readiness check first.';
 
 /** Homepage hero — quick clarity about what we offer */
 export const HERO_PLATFORM_HIGHLIGHTS = [
@@ -464,14 +464,13 @@ export const CONTACT_WHATSAPP_HREF =
 export const CONTACT_WHATSAPP_LABEL = 'WhatsApp us';
 
 /** Homepage — trust strip below hero (text labels; swap for SVG logos when licensed) */
-export const HERO_TRUST_LOGO_ROW_LABEL = 'Students from these institutions have taken the free readiness check';
+export const HERO_TRUST_LOGO_ROW_LABEL = 'Used by engineering students preparing for campus placements';
 export const HERO_TRUST_LOGO_ROW_ITEMS = [
-  'IITs & IISc',
-  'NITs',
-  'IIITs',
-  'GFTIs',
-  'State universities',
-  'Private engineering colleges',
+  'Final-year students',
+  '3rd year students',
+  'Placement season prep',
+  'Campus hiring',
+  'Off-campus drives',
 ];
 
 /** Per-route SEO titles — update document.title dynamically */
