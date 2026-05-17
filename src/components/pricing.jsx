@@ -6,6 +6,7 @@ import {
   PRODUCT_READINESS_SCORE,
   CONTACT_PHONE_DISPLAY,
   CONTACT_PHONE_HREF,
+  MENTORSHIP_FIRST_BATCH_START_LABEL,
 } from '../constants/brandCopy';
 import { CheckCircle2, X, ShieldCheck, ArrowRight, Mail, Phone } from 'lucide-react';
 
@@ -129,7 +130,7 @@ const PricingPage = () => {
         <div className="flex items-center justify-center gap-3 bg-amber-500/10 border border-amber-600/25 rounded-xl px-5 py-3">
           <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse shrink-0" />
           <p className="text-sm font-medium text-warning-ink-deep">
-            <span className="font-bold">Next cohort</span>
+            <span className="font-bold">{MENTORSHIP_FIRST_BATCH_START_LABEL}</span>
             {' · '}Limited seats
             {' · '}
             <Link to="/contact" className="underline hover:no-underline">Reserve yours →</Link>

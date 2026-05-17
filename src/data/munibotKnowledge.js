@@ -64,7 +64,7 @@ export const MUNIBOT_CHUNKS = [
     id: 'mentors-waitlist',
     keywords: ['mentor', 'mentorship', 'waitlist', 'cohort', '1:1', 'guidance'],
     text:
-      `**Mentors** are industry professionals who help you close gaps after the score and mocks show where to focus. **Cohort / waitlist** batches run with limited seats — use **Join Waitlist** in the nav or **Contact** for questions.\n\n` +
+      `**Mentors** are industry professionals who help you close gaps after the score and mocks show where to focus. The **first mentorship batch starts in June** (limited seats) — use **Join Waitlist** in the nav or **Contact** for questions.\n\n` +
       `We **stay with you until you get placed** as part of the paid programme (no fake “guaranteed job” promises — real support).`,
   },
   {

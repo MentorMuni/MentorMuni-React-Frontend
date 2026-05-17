@@ -435,6 +435,9 @@ export const READINESS_TEST_COUPON_CARD_BODY =
   'Coupon: 1 free 1:1 + 1 AI mock after your readiness check';
 export const READINESS_TEST_COUPON_CARD_CTA = 'Start readiness check';
 
+/** Mentorship programme — first cohort start month (waitlist, mentors, pricing) */
+export const MENTORSHIP_FIRST_BATCH_START_LABEL = 'First batch starting June';
+
 /** Stale-date-free mentorship messaging */
 export const MENTORSHIP_BANNER = 'Mentorship programme · Limited seats per batch';
 

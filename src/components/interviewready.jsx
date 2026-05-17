@@ -315,6 +315,15 @@ function readToolsEntryFromHash() {
   }
 }
 
+/** Aptitude has no year/profile step — back from skills (4) returns to mode picker, not step 2. */
+function getStepBeforeSkillsFocus(profile, fromToolsEntry) {
+  if (profile.assessmentMode === ASSESSMENT_FOCUS_APTITUDE) {
+    return fromToolsEntry ? 12 : 0;
+  }
+  if (profile.userCategory === 'professional') return 3;
+  return 2;
+}
+
 /** Strong invalid state: obvious red outline + fill (validation is field-first, not essay-first). */
 const MM_FIELD_INVALID =
   'border-2 border-red-500 bg-red-50 ring-2 ring-red-500/25 focus:border-red-600 focus:ring-2 focus:ring-red-500/35';
@@ -1638,6 +1647,14 @@ const InterviewReady = () => {
       setStep(4);
     }
   }, [step, profile.userCategory]);
+
+  /** Aptitude skips profile/year steps — never land on 2 or 3 (e.g. stale back navigation). */
+  useEffect(() => {
+    if (profile.assessmentMode !== ASSESSMENT_FOCUS_APTITUDE) return;
+    if (step === 2 || step === 3) {
+      setStep(fromToolsEntry ? 12 : 0);
+    }
+  }, [step, profile.assessmentMode, fromToolsEntry]);
 
   const checkBackendHealth = async () => {
     try {
@@ -2993,9 +3010,11 @@ const InterviewReady = () => {
                     {ASSESSMENT_MODE_LABEL[profile.assessmentMode]}
                   </span>
                 )}
-                <span className="inline-flex items-center rounded-full border border-border bg-surface-muted px-3 py-1 text-[11px] font-semibold text-foreground sm:text-xs">
-                  {roleLabel}
-                </span>
+                {!isAptitudeFocus && (
+                  <span className="inline-flex items-center rounded-full border border-border bg-surface-muted px-3 py-1 text-[11px] font-semibold text-foreground sm:text-xs">
+                    {roleLabel}
+                  </span>
+                )}
                 <span
                   className="inline-flex items-center rounded-full border border-cta-mid/45 bg-warning-bg px-3 py-1 text-[11px] font-bold tabular-nums text-warning-ink-strong sm:text-xs"
                   title="Free-tier attempts you can still use"
@@ -3097,7 +3116,7 @@ const InterviewReady = () => {
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
-                  onClick={() => setStep(profile.userCategory === 'professional' ? 3 : 2)}
+                  onClick={() => setStep(getStepBeforeSkillsFocus(profile, fromToolsEntry))}
                   className="rounded-xl border border-border bg-white px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-cta-mid/70 hover:bg-secondary hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta"
                 >
                   ← Back
@@ -4141,8 +4160,13 @@ const InterviewReady = () => {
                 <button
                   type="button"
                   onClick={() => {
-                    setStep(2);
                     setAnswers({});
+                    if (result.assessmentMode === ASSESSMENT_FOCUS_APTITUDE) {
+                      setStep(4);
+                      setError(null);
+                      return;
+                    }
+                    setStep(2);
                     setProfile({
                       ...profile,
                       primarySkill: '',
@@ -4153,7 +4177,9 @@ const InterviewReady = () => {
                   }}
                   className="w-full rounded-2xl bg-gradient-to-r from-cta to-cta-mid py-4 text-base font-bold text-white shadow-lg shadow-button-strong transition-all hover:from-cta hover:to-cta-mid active:scale-[0.98]"
                 >
-                  Try another category
+                  {result.assessmentMode === ASSESSMENT_FOCUS_APTITUDE
+                    ? 'Retake aptitude test'
+                    : 'Try another category'}
                 </button>
               ) : (
                 <button

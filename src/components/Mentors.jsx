@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { PRIMARY_CTA_LABEL, MENTORSHIP_TRUST_BADGE } from '../constants/brandCopy';
+import {
+  PRIMARY_CTA_LABEL,
+  MENTORSHIP_TRUST_BADGE,
+  MENTORSHIP_FIRST_BATCH_START_LABEL,
+} from '../constants/brandCopy';
 
 /* ─── Scroll-reveal hook ───────────────────────────────────── */
 function useReveal(threshold = 0.12) {
@@ -329,7 +333,7 @@ export default function Mentors() {
           </div>
 
           <p className="mx-auto mt-8 max-w-md text-center text-xs leading-relaxed text-muted-foreground">
-            <span className="font-semibold text-[#9A3412]">MentorMuni batches starting soon.</span>{' '}
+            <span className="font-semibold text-[#9A3412]">{MENTORSHIP_FIRST_BATCH_START_LABEL}.</span>{' '}
             From first gap analysis to mock panels and offer prep — your mentor&apos;s job is to get you placement-ready, not
             just &ldquo;more studied.&rdquo;
           </p>

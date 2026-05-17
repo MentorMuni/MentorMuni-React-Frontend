@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { ArrowRight, Check, Users, Mic2, Target, MessagesSquare, Code2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { INQUIRIES_URL } from '../config';
+import { MENTORSHIP_FIRST_BATCH_START_LABEL } from '../constants/brandCopy';
 
 const AVATARS = [
   { init: 'P', bg: 'bg-[#FF9500]' },
@@ -159,7 +160,7 @@ export default function WaitlistPage() {
                 Mentorship program
               </span>
               <span className="h-3.5 w-px bg-border" />
-              <span className="text-sm font-bold text-foreground">First batch starting April</span>
+              <span className="text-sm font-bold text-foreground">{MENTORSHIP_FIRST_BATCH_START_LABEL}</span>
               <span className="rounded-full border border-red-400/30 bg-red-500/10 px-2.5 py-0.5 text-xs font-semibold leading-none text-red-600">
                 Limited seats
               </span>
