@@ -18,6 +18,7 @@ import AIAnalysisLoader from './AIAnalysisLoader';
 import { useFreeUsageTracker } from './FreeUsageCounter';
 import UpgradePromptModal from './UpgradePromptModal';
 import PrepLoungePanel from './interviewready/PrepLoungePanel';
+import { fetchWithDeduplication, getCachedResponse, generateCacheKey } from '../utils/apiOptimization';
 const FREE_TIER_LIMIT = 3;
 
 /** Interview readiness (breadth) — POST /interview-ready/interview-readiness/plan */
@@ -269,7 +270,7 @@ async function parseResponseJson(res) {
   }
 }
 
-const PLAN_FETCH_TIMEOUT_MS = 120000;
+const PLAN_FETCH_TIMEOUT_MS = 3000; // Reduced from 120s to 3s for aggressive timeout-driven backend optimization
 
 /** User-facing copy only — never show raw HTTP status codes (e.g. 500) in the UI */
 function explainPlanHttpError(status, apiMessage) {
@@ -2088,33 +2089,40 @@ const InterviewReady = () => {
     const leadSkill = isAptitudeMode ? APTITUDE_SKILLS.join(', ').toLowerCase() : primarySkill;
     void postAdminLeadCapture(API_BASE, buildAdminLeadsPayload(profile, leadSkill, expParsed, isSkillMode || isAptitudeMode));
 
-    const timeoutId = window.setTimeout(() => controller.abort(), PLAN_FETCH_TIMEOUT_MS);
-
     try {
-      const res = await fetch(`${API_BASE}${planPath}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        signal: controller.signal,
-      });
+      // Check session cache first (avoid unnecessary API calls)
+      const cacheKey = generateCacheKey(`${API_BASE}${planPath}`, payload);
+      const cachedData = getCachedResponse(cacheKey);
+      
+      if (cachedData && import.meta.env.DEV) {
+        console.log('[PERF] Using cached response for:', planPath);
+      }
 
-      const data = await parseResponseJson(res);
-
-      if (!res.ok) {
-        if (res.status === 429) {
-          setPlanLoading(false);
-          setEvaluationData(null);
-          setStep(7);
-          return;
+      // Fetch with deduplication & caching (aggressive 3s timeout)
+      const result = await fetchWithDeduplication(
+        `${API_BASE}${planPath}`,
+        payload,
+        {
+          timeout: PLAN_FETCH_TIMEOUT_MS,
+          debug: import.meta.env.DEV,
+          allowCache: true,
+          cacheKey,
         }
+      );
+
+      if (!result.ok) {
+        const data = result.data || {};
         const msg = formatPlanApiError(data);
         if (import.meta.env.DEV) {
-          console.warn(`[${planPath}] error`, res.status, data);
+          console.warn(`[${planPath}] error`, result.status, data);
         }
-        setError(explainPlanHttpError(res.status, msg));
+        setError(explainPlanHttpError(result.status, msg));
         setPlanLoading(false);
         return;
       }
+
+      const data = result.data;
+
 
       const apiPlan = Array.isArray(data?.evaluation_plan)
         ? data.evaluation_plan
@@ -2157,21 +2165,14 @@ const InterviewReady = () => {
       }
       setEvaluationData(finalPlan);
     } catch (err) {
-      console.error('Plan request:', err);
-      if (err.name === 'AbortError') {
-        if (skipPlanErrorRef.current) {
-          skipPlanErrorRef.current = false;
-          setPlanLoading(false);
-          return;
-        }
-        setError(
-          `No response after ${PLAN_FETCH_TIMEOUT_MS / 1000}s. Generating questions can be slow — try again, or check your network.`
-        );
-      } else {
-        setError(`Cannot reach ${API_BASE}. Check your connection or try again later.`);
+      console.error('Plan request error:', err);
+      if (skipPlanErrorRef.current) {
+        skipPlanErrorRef.current = false;
+        setPlanLoading(false);
+        return;
       }
+      setError(err.message || `Cannot reach ${API_BASE}. Check your connection or try again later.`);
     } finally {
-      window.clearTimeout(timeoutId);
       if (planAbortRef.current === controller) {
         planAbortRef.current = null;
       }
