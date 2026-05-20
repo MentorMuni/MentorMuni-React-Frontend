@@ -1,63 +1,23 @@
 /**
  * API Optimization Utilities
- * Implements request deduplication, caching, and streaming support
+ * Implements streaming support and performance monitoring
  * for faster readiness assessment responses (target: 0.5-1.2s)
+ * 
+ * NOTE: Caching has been disabled per architecture decision.
+ * All requests go directly to the backend.
  */
 
 /**
- * In-flight request deduplication cache
- * Prevents duplicate simultaneous API calls for identical requests
- */
-const inflightRequests = new Map();
-
-/**
- * Session-level response cache
- * Stores successful responses for reuse within session
- * Automatically cleared on page unload
- */
-const sessionCache = new Map();
-
-/**
- * Generate cache key from endpoint and payload
- */
-function generateCacheKey(endpoint, payload) {
-  try {
-    return `${endpoint}:${JSON.stringify(payload)}`;
-  } catch {
-    return `${endpoint}:${Math.random()}`;
-  }
-}
-
-/**
- * Fetch with request deduplication
- * If the same request is already in flight, returns the same promise
- * Prevents duplicate API calls when user rapidly retries or multiple components request same data
+ * Fetch without caching - all requests go directly to backend
+ * Provides timeout, error handling, and performance monitoring
  */
 export async function fetchWithDeduplication(
   endpoint,
   payload,
   options = {}
 ) {
-  const cacheKey = generateCacheKey(endpoint, payload);
-  
-  // Return existing promise if request is in flight
-  if (inflightRequests.has(cacheKey)) {
-    if (options.debug) {
-      console.log('[API Cache] Returning deduplicated request:', endpoint);
-    }
-    return inflightRequests.get(cacheKey);
-  }
-  
-  // Create new request promise
-  const requestPromise = performFetch(endpoint, payload, options);
-  inflightRequests.set(cacheKey, requestPromise);
-  
-  // Remove from in-flight cache after completion
-  requestPromise.finally(() => {
-    inflightRequests.delete(cacheKey);
-  });
-  
-  return requestPromise;
+  // Direct fetch without deduplication or caching
+  return performFetch(endpoint, payload, options);
 }
 
 /**
@@ -101,14 +61,6 @@ async function performFetch(endpoint, payload, options = {}) {
     }
 
     const data = await response.json();
-
-    // Cache successful response if enabled
-    if (allowCache && cacheKey) {
-      sessionCache.set(cacheKey, { data, timestamp: Date.now() });
-      if (debug) {
-        console.log('[API Cache] Cached response for:', cacheKey);
-      }
-    }
 
     return { ok: true, data, status: response.status };
   } catch (error) {
@@ -229,33 +181,19 @@ async function handleStreamingResponse(response, onChunk, debug) {
 }
 
 /**
- * Get cached response if available and fresh
+ * No-op function for backward compatibility
+ * Caching has been disabled
  */
-export function getCachedResponse(cacheKey, maxAgeSec = 3600) {
-  const cached = sessionCache.get(cacheKey);
-
-  if (!cached) {
-    return null;
-  }
-
-  const ageMs = Date.now() - cached.timestamp;
-  const maxAgeMs = maxAgeSec * 1000;
-
-  if (ageMs > maxAgeMs) {
-    sessionCache.delete(cacheKey);
-    return null;
-  }
-
-  return cached.data;
+export function getCachedResponse() {
+  return null;
 }
 
 /**
- * Clear all caches
+ * No-op function for backward compatibility
+ * Caching has been disabled
  */
 export function clearAllCaches() {
-  inflightRequests.clear();
-  sessionCache.clear();
-  console.log('[API Cache] All caches cleared');
+  console.log('[API] No caches to clear (caching disabled)');
 }
 
 /**
@@ -297,16 +235,10 @@ function trackApiMetric(endpoint, durationMs, status, isError) {
   }
 }
 
-/**
- * Clear cache on page unload to avoid memory leaks
- */
-if (typeof window !== 'undefined') {
-  window.addEventListener('unload', () => {
-    clearAllCaches();
-  });
-}
 
 /**
- * Export useful utilities for component usage
+ * No-op function for backward compatibility
  */
-export { generateCacheKey };
+export function generateCacheKey() {
+  return null;
+}

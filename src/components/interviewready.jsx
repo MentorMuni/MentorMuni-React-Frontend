@@ -18,7 +18,7 @@ import AIAnalysisLoader from './AIAnalysisLoader';
 import { useFreeUsageTracker } from './FreeUsageCounter';
 import UpgradePromptModal from './UpgradePromptModal';
 import PrepLoungePanel from './interviewready/PrepLoungePanel';
-import { fetchWithDeduplication, getCachedResponse, generateCacheKey } from '../utils/apiOptimization';
+import { fetchWithDeduplication } from '../utils/apiOptimization';
 const FREE_TIER_LIMIT = 3;
 
 /** Interview readiness (breadth) — POST /interview-ready/interview-readiness/plan */
@@ -2090,23 +2090,13 @@ const InterviewReady = () => {
     void postAdminLeadCapture(API_BASE, buildAdminLeadsPayload(profile, leadSkill, expParsed, isSkillMode || isAptitudeMode));
 
     try {
-      // Check session cache first (avoid unnecessary API calls)
-      const cacheKey = generateCacheKey(`${API_BASE}${planPath}`, payload);
-      const cachedData = getCachedResponse(cacheKey);
-      
-      if (cachedData && import.meta.env.DEV) {
-        console.log('[PERF] Using cached response for:', planPath);
-      }
-
-      // Fetch with deduplication & caching (aggressive 3s timeout)
+      // Fetch directly from API (no caching)
       const result = await fetchWithDeduplication(
         `${API_BASE}${planPath}`,
         payload,
         {
           timeout: PLAN_FETCH_TIMEOUT_MS,
           debug: import.meta.env.DEV,
-          allowCache: true,
-          cacheKey,
         }
       );
 
