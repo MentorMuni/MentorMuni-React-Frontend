@@ -176,7 +176,7 @@ const Navbar = () => {
             <img
               src={logoSrc}
               alt="MentorMuni Logo"
-              className="h-11 w-11 shrink-0 rounded-full object-contain ring-2 ring-border transition-all group-hover:ring-brand-teal/50 sm:h-12 sm:w-12"
+              className="h-14 w-14 shrink-0 object-contain transition-all group-hover:opacity-80 sm:h-16 sm:w-16"
             />
             <span className="hidden text-xl font-extrabold tracking-tight text-foreground xl:inline xl:text-[1.4rem]">
               Mentor<span className="text-primary">Muni</span>
