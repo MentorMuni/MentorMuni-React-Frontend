@@ -1151,29 +1151,62 @@ const HomePage = () => {
             </FadeUp>
 
             <FadeUp delay={0.1}>
-              <div className="relative rounded-2xl border-2 border-[#2AAA8A] bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.06)] md:p-7">
+              <div className="relative rounded-2xl border-2 border-emerald-400 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-6 shadow-[0_4px_24px_rgba(16,185,129,0.15)] md:p-7">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="inline-block rounded-full bg-[#1A8FC4] px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-sm">
-                    {PROGRAM_6WEEK_CARD_BADGE}
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-sm">
+                    <Gift className="h-3.5 w-3.5" /> Limited Time Offer
                   </span>
                 </div>
                 <div className="mt-4 text-center">
-                  <h3 className="text-lg font-bold text-foreground md:text-xl">{PROGRAM_6WEEK_CARD_TITLE}</h3>
-                  <div className="mt-5 flex flex-col items-center gap-1">
-                    <p className="flex flex-wrap items-baseline justify-center gap-2">
-                      <span className="text-3xl font-extrabold tracking-tight text-foreground">
-                        {PROGRAM_6WEEK_PRICE_MAIN}
+                  <h3 className="text-lg font-bold text-foreground md:text-xl">Start Your Placement Prep</h3>
+                  <div className="mt-5 flex flex-col items-center gap-2">
+                    <p className="flex items-center gap-2">
+                      <span className="text-4xl font-extrabold tracking-tight text-emerald-600">
+                        FREE
                       </span>
-                      <span className="text-sm font-medium text-muted-foreground">{PROGRAM_6WEEK_PRICE_MAIN_SUFFIX}</span>
+                      <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">
+                        For Now
+                      </span>
                     </p>
-                    <p className="text-sm text-muted-foreground line-through">
-                      {PROGRAM_6WEEK_PRICE_STRIKE}
+                    <p className="text-sm text-muted-foreground">
+                      No credit card • No signup walls
                     </p>
                   </div>
                 </div>
-                <p className="mt-6 border-t border-border pt-6 text-left text-sm leading-relaxed text-muted-foreground">
-                  {PROGRAM_6WEEK_SUMMARY}
-                </p>
+                <div className="mt-6 border-t border-emerald-200 pt-6">
+                  <p className="text-center text-base font-semibold text-foreground mb-4">
+                    Everything you need to prepare & feel confident for placements
+                  </p>
+                  <ul className="space-y-2.5 text-sm text-muted-foreground">
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 mt-0.5 text-emerald-600 shrink-0" />
+                      <span>Complete placement roadmap for TCS, Infosys, Wipro & more</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 mt-0.5 text-emerald-600 shrink-0" />
+                      <span>AI mock interviews with instant feedback</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 mt-0.5 text-emerald-600 shrink-0" />
+                      <span>Resume ATS checker to beat screening</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 mt-0.5 text-emerald-600 shrink-0" />
+                      <span>Free tutorials for DSA, System Design & HR</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 mt-0.5 text-emerald-600 shrink-0" />
+                      <span>Readiness score to track your progress</span>
+                    </li>
+                  </ul>
+                  <button
+                    type="button"
+                    onClick={goToStartAssessment}
+                    className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-3.5 text-base font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.3)] transition-all hover:shadow-[0_6px_20px_rgba(16,185,129,0.4)] hover:scale-[1.02]"
+                  >
+                    Start Free Now <ArrowRight className="h-5 w-5" />
+                  </button>
+                </div>
               </div>
             </FadeUp>
           </div>
