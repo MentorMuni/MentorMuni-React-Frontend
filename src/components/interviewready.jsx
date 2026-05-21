@@ -270,7 +270,7 @@ async function parseResponseJson(res) {
   }
 }
 
-const PLAN_FETCH_TIMEOUT_MS = 3000; // Reduced from 120s to 3s for aggressive timeout-driven backend optimization
+const PLAN_FETCH_TIMEOUT_MS = 60000; // 60 seconds - allows time for LLM to generate questions
 
 /** User-facing copy only — never show raw HTTP status codes (e.g. 500) in the UI */
 function explainPlanHttpError(status, apiMessage) {
