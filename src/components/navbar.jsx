@@ -169,17 +169,17 @@ const Navbar = () => {
   };
 
   return (
-    <header className="mm-sticky-header border-b border-border/50 bg-white/95 backdrop-blur-sm">
+    <header className="mm-sticky-header">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-[120px] items-center gap-8">
+        <div className="flex h-20 items-center gap-8">
           {/* Logo & Brand - Fixed width */}
           <Link to="/" onClick={handleHomeClick} className="group flex shrink-0 items-center gap-2">
             <img
               src={logoSrc}
               alt="MentorMuni Logo"
-              className="h-[100px] w-[100px] shrink-0 object-contain transition-all group-hover:opacity-80"
+              className="h-14 w-14 shrink-0 object-contain transition-all group-hover:opacity-80"
             />
-            <span className="text-2xl font-extrabold tracking-tight text-foreground">
+            <span className="text-xl font-extrabold tracking-tight text-foreground">
               Mentor<span className="text-primary">Muni</span>
             </span>
           </Link>
