@@ -823,7 +823,7 @@ const HomePage = () => {
             </div>
             <div className="hidden h-8 w-px bg-border sm:block" aria-hidden />
             <div className="text-center">
-              <p className="text-2xl font-extrabold text-[#FF9500]">FREE</p>
+              <p className="text-2xl font-extrabold text-[#FF9500]">5 min</p>
               <p className="text-[11px] font-semibold text-muted-foreground">no signup required</p>
             </div>
           </div>
@@ -880,7 +880,7 @@ const HomePage = () => {
                 </div>
                 <div className="flex flex-col gap-4 lg:min-w-[220px]">
                   <div className="rounded-xl border border-border bg-white/90 p-4 shadow-sm text-center">
-                    <p className="text-3xl font-extrabold text-[#1A8FC4]">FREE</p>
+                    <p className="text-3xl font-extrabold text-[#1A8FC4]">Instant</p>
                     <p className="mt-1 text-xs font-semibold text-muted-foreground">to start · no signup needed</p>
                   </div>
                   <div className="rounded-xl border border-border bg-white/90 p-4 shadow-sm text-center">
@@ -896,127 +896,6 @@ const HomePage = () => {
                   </button>
                 </div>
               </div>
-            </div>
-          </FadeUp>
-        </div>
-      </section>
-
-      {/* ════════════════ FREE TOOLS — Prominent showcase of all free offerings ════════════════ */}
-      <section className="border-t border-border bg-gradient-to-b from-emerald-50/60 via-white to-sky-50/40 py-14 md:py-16 px-5 sm:px-6 lg:px-8" aria-labelledby="free-tools-heading">
-        <div className="mx-auto max-w-6xl">
-          <FadeUp>
-            <header className="mb-10 text-center">
-              <span className="inline-flex items-center gap-2 rounded-full border border-emerald-300 bg-emerald-100 px-4 py-1.5 text-sm font-bold text-emerald-800 mb-4">
-                <Gift className="h-4 w-4" aria-hidden />
-                100% FREE — No Credit Card Required
-              </span>
-              <h2 id="free-tools-heading" className="text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl md:text-[2.5rem]">
-                Everything You Need to{' '}
-                <span className="bg-gradient-to-r from-emerald-600 to-teal-600 bg-clip-text text-transparent">Start for Free</span>
-              </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-lg text-muted-foreground">
-                No hidden charges. No signup walls. Just real tools to help you prepare.
-              </p>
-            </header>
-          </FadeUp>
-
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {[
-              {
-                icon: BarChart3,
-                title: 'Free Readiness Check',
-                desc: 'Get your interview readiness score across DSA, System Design & HR in just 5 minutes.',
-                highlight: '5 min • Instant Score',
-                link: '/interview-readiness-tools',
-                color: 'from-sky-500 to-blue-600',
-                border: 'border-sky-200',
-                bg: 'bg-sky-50',
-              },
-              {
-                icon: BookOpen,
-                title: 'Free Roadmap',
-                desc: 'Complete placement preparation roadmap with week-by-week plan for your target companies.',
-                highlight: 'TCS, Infosys, Wipro & more',
-                link: '/roadmap',
-                color: 'from-violet-500 to-purple-600',
-                border: 'border-violet-200',
-                bg: 'bg-violet-50',
-              },
-              {
-                icon: GraduationCap,
-                title: 'Free Tutorials',
-                desc: 'Topic refreshers and panel-ready framing for all core subjects and interview topics.',
-                highlight: 'DSA, DBMS, OS, CN & more',
-                link: '/free-tutorials',
-                color: 'from-amber-500 to-orange-600',
-                border: 'border-amber-200',
-                bg: 'bg-amber-50',
-              },
-              {
-                icon: Target,
-                title: 'Resume ATS Checker',
-                desc: 'See how ATS software reads your resume. Get keyword suggestions and structure fixes.',
-                highlight: 'ATS Score + Fixes',
-                link: '/resume-analyzer',
-                color: 'from-rose-500 to-pink-600',
-                border: 'border-rose-200',
-                bg: 'bg-rose-50',
-              },
-              {
-                icon: Mic2,
-                title: 'AI Mock Interview',
-                desc: 'Practice with AI interviewer. Get real-time feedback on clarity, depth and structure.',
-                highlight: 'Voice Practice + Scoring',
-                link: '/mock-interviews',
-                color: 'from-teal-500 to-cyan-600',
-                border: 'border-teal-200',
-                bg: 'bg-teal-50',
-              },
-              {
-                icon: Cpu,
-                title: 'AI Tools Knowledge',
-                desc: 'Learn GitHub Copilot, ChatGPT & Cursor — skills that give you an edge in interviews.',
-                highlight: 'Modern Dev Skills',
-                link: '/ai-tools',
-                color: 'from-indigo-500 to-blue-600',
-                border: 'border-indigo-200',
-                bg: 'bg-indigo-50',
-              },
-            ].map((tool, idx) => (
-              <FadeUp key={tool.title} delay={0.05 * idx}>
-                <Link
-                  to={tool.link}
-                  className={`group flex flex-col rounded-2xl border ${tool.border} ${tool.bg} p-6 shadow-sm transition-all hover:shadow-lg hover:scale-[1.02]`}
-                >
-                  <div className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br ${tool.color} text-white shadow-md`}>
-                    <tool.icon className="h-6 w-6" strokeWidth={2} aria-hidden />
-                  </div>
-                  <h3 className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">{tool.title}</h3>
-                  <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground">{tool.desc}</p>
-                  <div className="mt-4 flex items-center justify-between">
-                    <span className="inline-flex items-center rounded-full bg-white/80 px-3 py-1 text-xs font-semibold text-emerald-700 border border-emerald-200">
-                      <Check className="mr-1 h-3 w-3" /> FREE
-                    </span>
-                    <span className="text-xs font-medium text-muted-foreground">{tool.highlight}</span>
-                  </div>
-                  <div className="mt-4 flex items-center gap-1 text-sm font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                    Try it now <ArrowRight className="h-4 w-4" />
-                  </div>
-                </Link>
-              </FadeUp>
-            ))}
-          </div>
-
-          <FadeUp delay={0.3}>
-            <div className="mt-10 text-center">
-              <button
-                type="button"
-                onClick={goToStartAssessment}
-                className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-8 py-4 text-base font-bold text-white shadow-[0_4px_20px_rgba(16,185,129,0.3)] transition-all hover:shadow-[0_6px_28px_rgba(16,185,129,0.4)] hover:scale-[1.02]"
-              >
-                Start with Free Readiness Check <ArrowRight className="h-5 w-5" />
-              </button>
-              <p className="mt-3 text-sm text-muted-foreground">No signup required • Results in 5 minutes</p>
             </div>
           </FadeUp>
         </div>
@@ -1153,63 +1032,51 @@ const HomePage = () => {
             </FadeUp>
             </div>
 
-            {/* Right Column - FREE Card */}
+            {/* Right Column - Get Started Card */}
             <FadeUp delay={0.1}>
-              <div className="relative rounded-2xl border-2 border-emerald-400 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-6 shadow-[0_4px_24px_rgba(16,185,129,0.15)] md:p-7">
+              <div className="relative rounded-2xl border border-sky-200 bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.06)] md:p-7">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-sm">
-                    <Gift className="h-3.5 w-3.5" /> Limited Time Offer
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1A8FC4] px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-sm">
+                    Get Started Today
                   </span>
                 </div>
                 <div className="mt-4 text-center">
-                  <h3 className="text-lg font-bold text-foreground md:text-xl">Start Your Placement Prep</h3>
-                  <div className="mt-5 flex flex-col items-center gap-2">
-                    <p className="flex items-center gap-2">
-                      <span className="text-4xl font-extrabold tracking-tight text-emerald-600">
-                        FREE
-                      </span>
-                      <span className="rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700">
-                        For Now
-                      </span>
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      No credit card • No signup walls
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-6 border-t border-emerald-200 pt-6">
-                  <p className="text-center text-base font-semibold text-foreground mb-4">
-                    Everything you need to prepare & feel confident for placements
+                  <h3 className="text-lg font-bold text-foreground md:text-xl">Your Placement Prep Toolkit</h3>
+                  <p className="mt-3 text-sm text-muted-foreground">
+                    Everything you need to prepare confidently — all in one place.
                   </p>
-                  <ul className="space-y-2.5 text-sm text-muted-foreground">
+                </div>
+                <div className="mt-6 border-t border-border pt-6">
+                  <ul className="space-y-3 text-sm text-muted-foreground">
                     <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 mt-0.5 text-emerald-600 shrink-0" />
-                      <span>Complete placement roadmap for TCS, Infosys, Wipro & more</span>
+                      <Check className="h-4 w-4 mt-0.5 text-[#2AAA8A] shrink-0" />
+                      <span>Readiness score across DSA, System Design & HR</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 mt-0.5 text-emerald-600 shrink-0" />
+                      <Check className="h-4 w-4 mt-0.5 text-[#2AAA8A] shrink-0" />
+                      <span>Placement roadmap for TCS, Infosys, Wipro & more</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <Check className="h-4 w-4 mt-0.5 text-[#2AAA8A] shrink-0" />
                       <span>AI mock interviews with instant feedback</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 mt-0.5 text-emerald-600 shrink-0" />
-                      <span>Resume ATS checker to beat screening</span>
+                      <Check className="h-4 w-4 mt-0.5 text-[#2AAA8A] shrink-0" />
+                      <span>Resume ATS checker</span>
                     </li>
                     <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 mt-0.5 text-emerald-600 shrink-0" />
-                      <span>Free tutorials for DSA, System Design & HR</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 mt-0.5 text-emerald-600 shrink-0" />
-                      <span>Readiness score to track your progress</span>
+                      <Check className="h-4 w-4 mt-0.5 text-[#2AAA8A] shrink-0" />
+                      <span>Topic tutorials & panel-ready framing</span>
                     </li>
                   </ul>
                   <button
                     type="button"
                     onClick={goToStartAssessment}
-                    className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 px-6 py-3.5 text-base font-bold text-white shadow-[0_4px_14px_rgba(16,185,129,0.3)] transition-all hover:shadow-[0_6px_20px_rgba(16,185,129,0.4)] hover:scale-[1.02]"
+                    className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-6 py-3.5 text-base font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-[#E88600] hover:shadow-[0_6px_20px_rgba(255,149,0,0.35)]"
                   >
-                    Start Free Now <ArrowRight className="h-5 w-5" />
+                    {PRIMARY_CTA_LABEL} <ArrowRight className="h-5 w-5" />
                   </button>
+                  <p className="mt-3 text-center text-xs text-muted-foreground">No signup required • 5 min readiness check</p>
                 </div>
               </div>
             </FadeUp>
@@ -1675,7 +1542,7 @@ const HomePage = () => {
       >
         <div className="mx-auto w-full max-w-3xl text-left">
           <FadeUp className="w-full text-left">
-            <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#15803d] sm:text-sm">Free · 5 minutes · Instant result</p>
+            <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#15803d] sm:text-sm">5 minutes · Instant result · No signup</p>
             <div className="mb-6 flex w-full max-w-full flex-wrap items-start gap-3 rounded-2xl border border-sky-200/70 bg-gradient-to-r from-sky-50/95 to-sky-100/80 px-4 py-3 text-left text-sm font-semibold leading-snug text-foreground shadow-sm">
               <Gift size={16} className="mt-0.5 shrink-0 text-[#1A8FC4]" aria-hidden />
               <span className="min-w-0 flex-1">{READINESS_TEST_COUPON_BADGE}</span>
