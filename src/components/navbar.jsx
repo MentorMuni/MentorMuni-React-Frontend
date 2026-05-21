@@ -173,11 +173,11 @@ const Navbar = () => {
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center gap-8 lg:h-[4.5rem]">
           {/* Logo & Brand - Fixed width */}
-          <Link to="/" onClick={handleHomeClick} className="group flex shrink-0 items-center gap-3">
+          <Link to="/" onClick={handleHomeClick} className="group flex shrink-0 items-center gap-1.5">
             <img
               src={logoSrc}
               alt="MentorMuni Logo"
-              className="h-12 w-12 shrink-0 object-contain transition-all group-hover:opacity-80"
+              className="h-14 w-14 shrink-0 object-contain transition-all group-hover:opacity-80"
             />
             <span className="text-xl font-extrabold tracking-tight text-foreground">
               Mentor<span className="text-primary">Muni</span>
