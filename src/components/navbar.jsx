@@ -169,21 +169,23 @@ const Navbar = () => {
   };
 
   return (
-    <header className="mm-sticky-header">
+    <header className="mm-sticky-header border-b border-border/50 bg-white/95 backdrop-blur-sm">
       <div className="mx-auto max-w-7xl pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-6 sm:pr-6 lg:pl-8 lg:pr-8">
-        <div className="flex h-[4.25rem] items-center gap-3 lg:h-[4.5rem] lg:gap-4">
-          <Link to="/" onClick={handleHomeClick} className="group flex shrink-0 items-center gap-2.5 sm:gap-3">
+        <div className="flex h-20 items-center justify-between gap-6 lg:h-[5.5rem] lg:gap-8">
+          {/* Logo & Brand */}
+          <Link to="/" onClick={handleHomeClick} className="group flex shrink-0 items-center gap-3 sm:gap-4">
             <img
               src={logoSrc}
               alt="MentorMuni Logo"
               className="h-14 w-14 shrink-0 object-contain transition-all group-hover:opacity-80 sm:h-16 sm:w-16"
             />
-            <span className="hidden text-xl font-extrabold tracking-tight text-foreground xl:inline xl:text-[1.4rem]">
+            <span className="hidden text-2xl font-extrabold tracking-tight text-foreground xl:inline">
               Mentor<span className="text-primary">Muni</span>
             </span>
           </Link>
 
-          <nav className="hidden min-w-0 flex-1 items-center justify-center gap-0.5 lg:flex lg:gap-1 xl:gap-1.5">
+          {/* Desktop Navigation - Center */}
+          <nav className="hidden min-w-0 flex-1 items-center justify-center gap-1.5 lg:flex lg:gap-2 xl:gap-2.5">
             {navItems.map((item) => {
               const linkActive = isActive(item.path, item.exact);
               return (
@@ -204,14 +206,14 @@ const Navbar = () => {
                 onClick={() => setToolsOpen(v => !v)}
                 aria-expanded={toolsOpen}
                 aria-haspopup="true"
-                className={`inline-flex h-10 items-center gap-0.5 rounded-lg px-2 text-[0.8125rem] font-semibold transition-all lg:gap-1 lg:px-2.5 xl:px-3 xl:text-[0.875rem] ${
+                className={`inline-flex h-10 items-center gap-1 rounded-lg px-3 text-[0.9375rem] font-semibold transition-all lg:gap-1.5 lg:px-3.5 xl:px-4 xl:text-[0.875rem] ${
                   toolsOpen
                     ? 'text-primary bg-accent-soft ring-1 ring-[#2AAA8A]/35'
                     : 'text-ink hover:text-primary hover:bg-accent-faint'
                 }`}
               >
                 Tools
-                <ChevronDown size={16} strokeWidth={2.25} className={`shrink-0 transition-transform duration-200 ${toolsOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={18} strokeWidth={2.25} className={`shrink-0 transition-transform duration-200 ${toolsOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {toolsOpen && (
@@ -261,14 +263,14 @@ const Navbar = () => {
                 aria-expanded={moreOpen}
                 aria-haspopup="true"
                 aria-label="Colleges, about, and contact"
-                className={`inline-flex h-10 max-w-full items-center gap-0.5 whitespace-nowrap rounded-lg px-2 text-[0.8125rem] font-semibold transition-all lg:gap-1 lg:px-2.5 xl:px-3 xl:text-[0.875rem] ${
+                className={`inline-flex h-10 max-w-full items-center gap-1 whitespace-nowrap rounded-lg px-3 text-[0.9375rem] font-semibold transition-all lg:gap-1.5 lg:px-3.5 xl:px-4 xl:text-[0.875rem] ${
                   moreOpen || moreMenuActive
                     ? 'text-primary bg-accent-soft ring-1 ring-[#2AAA8A]/35'
                     : 'text-ink hover:text-primary hover:bg-accent-faint'
                 }`}
               >
                 About/Contact
-                <ChevronDown size={16} strokeWidth={2.25} className={`shrink-0 transition-transform duration-200 ${moreOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={18} strokeWidth={2.25} className={`shrink-0 transition-transform duration-200 ${moreOpen ? 'rotate-180' : ''}`} />
               </button>
               {moreOpen && (
                 <div className="absolute right-0 top-full z-50 mt-2 w-[min(calc(100vw-2rem),15.5rem)] rounded-xl border border-border bg-white py-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.10)]">
@@ -295,7 +297,8 @@ const Navbar = () => {
             </div>
           </nav>
 
-          <div className="hidden shrink-0 items-center gap-2 lg:flex">
+          {/* Desktop CTA Buttons - Right */}
+          <div className="hidden shrink-0 items-center gap-3 lg:flex lg:gap-4">
             <style>{`
               @keyframes nb-shimmer {
                 0%   { transform: translateX(-100%) skewX(-15deg); }
@@ -310,32 +313,33 @@ const Navbar = () => {
             `}</style>
             <Link
               to="/waitlist"
-              className="inline-flex h-11 min-w-[7.5rem] items-center justify-center rounded-xl border-2 border-cta px-4 text-[0.8125rem] font-semibold text-cta transition-all hover:bg-warning-bg active:scale-[0.98] xl:text-[0.875rem]"
+              className="inline-flex h-11 min-w-[8rem] items-center justify-center rounded-xl border-2 border-cta px-5 text-[0.9375rem] font-semibold text-cta transition-all hover:bg-warning-bg active:scale-[0.98]"
             >
               Join Waitlist
             </Link>
             <button
               type="button"
               onClick={goToStartAssessment}
-              className="nb-cta relative inline-flex h-11 max-w-[16.5rem] items-center justify-center gap-2 overflow-hidden rounded-xl bg-cta px-4 text-[0.8125rem] font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-cta-hover active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta xl:max-w-none xl:px-5 xl:text-[0.875rem]"
+              className="nb-cta relative inline-flex h-11 items-center justify-center gap-2 overflow-hidden rounded-xl bg-cta px-5 text-[0.9375rem] font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-cta-hover active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta"
             >
               <span className="nb-shine pointer-events-none absolute inset-0 w-1/3 bg-white/25 blur-sm" style={{ transform: 'translateX(-100%) skewX(-15deg)' }} />
               <span className="relative flex h-2 w-2 shrink-0">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-live opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-live" />
               </span>
-              <span className="relative max-w-[11rem] truncate text-left leading-tight sm:max-w-none">
+              <span className="relative whitespace-nowrap leading-tight">
                 {PRIMARY_CTA_LABEL}
               </span>
             </button>
           </div>
 
+          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2 text-muted-foreground hover:text-primary transition-colors"
+            className="lg:hidden p-2.5 text-muted-foreground hover:text-primary transition-colors ml-auto"
             aria-label="Toggle mobile menu"
           >
-            {isOpen ? <X size={28} /> : <Menu size={28} />}
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
