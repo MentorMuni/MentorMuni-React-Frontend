@@ -1107,26 +1107,28 @@ const HomePage = () => {
         aria-labelledby="program-6week-heading"
       >
         <div className="mx-auto max-w-5xl">
-          <FadeUp>
-            <header className="mb-10 text-center md:mb-12 md:text-left">
-              <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#1A8FC4] sm:text-sm">
-                {PROGRAM_6WEEK_EYEBROW}
-              </p>
-              <h2
-                id="program-6week-heading"
-                className="mx-auto max-w-[40rem] text-balance text-3xl font-bold leading-[1.12] tracking-tight text-foreground sm:text-4xl md:mx-0 md:text-[2.5rem] md:leading-[1.08]"
-              >
-                {PROGRAM_6WEEK_HEADLINE}
-              </h2>
-              <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg md:mx-0">
-                {PROGRAM_6WEEK_SUB}
-              </p>
-            </header>
-          </FadeUp>
+          <div className="grid items-start gap-8 lg:grid-cols-[1fr_minmax(280px,380px)] lg:gap-12 xl:grid-cols-[1fr_400px]">
+            {/* Left Column - Header + Timeline */}
+            <div>
+              <FadeUp>
+                <header className="mb-8 text-center md:text-left">
+                  <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#1A8FC4] sm:text-sm">
+                    {PROGRAM_6WEEK_EYEBROW}
+                  </p>
+                  <h2
+                    id="program-6week-heading"
+                    className="mx-auto max-w-[40rem] text-balance text-3xl font-bold leading-[1.12] tracking-tight text-foreground sm:text-4xl md:mx-0 md:text-[2.5rem] md:leading-[1.08]"
+                  >
+                    {PROGRAM_6WEEK_HEADLINE}
+                  </h2>
+                  <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg md:mx-0">
+                    {PROGRAM_6WEEK_SUB}
+                  </p>
+                </header>
+              </FadeUp>
 
-          <div className="grid items-start gap-12 lg:grid-cols-[1fr_minmax(280px,380px)] lg:gap-14 xl:grid-cols-[1fr_400px]">
-            <FadeUp delay={0.06}>
-              <ol className="list-none space-y-0 pl-0">
+              <FadeUp delay={0.06}>
+                <ol className="list-none space-y-0 pl-0">
                 {PROGRAM_6WEEK_PHASES.map((phase, idx) => {
                   const isLast = idx === PROGRAM_6WEEK_PHASES.length - 1;
                   return (
@@ -1149,7 +1151,9 @@ const HomePage = () => {
                 })}
               </ol>
             </FadeUp>
+            </div>
 
+            {/* Right Column - FREE Card */}
             <FadeUp delay={0.1}>
               <div className="relative rounded-2xl border-2 border-emerald-400 bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-6 shadow-[0_4px_24px_rgba(16,185,129,0.15)] md:p-7">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
