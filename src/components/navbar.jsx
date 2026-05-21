@@ -132,10 +132,10 @@ const Navbar = () => {
   };
 
   const defaultNavDesktopClass = (active) =>
-    `inline-flex h-10 max-w-full items-center whitespace-nowrap rounded-lg px-2 text-[0.8125rem] font-semibold leading-none transition-all lg:px-2.5 xl:px-3 xl:text-[0.875rem] ${
+    `text-[0.9375rem] font-medium whitespace-nowrap transition-colors ${
       active
-        ? 'text-primary bg-accent-soft ring-1 ring-brand-teal/35'
-        : 'text-ink hover:text-primary hover:bg-accent-faint'
+        ? 'text-primary font-semibold'
+        : 'text-gray-700 hover:text-primary'
     }`;
 
   const moreMenuActive = MORE_LINKS.some((l) => isActive(l.path, l.exact));
@@ -143,10 +143,10 @@ const Navbar = () => {
   const navLinkClass = (item) => {
     const active = isActive(item.path, item.exact);
     if (item.variant === 'roadmap') {
-      return `inline-flex h-10 max-w-full items-center whitespace-nowrap rounded-lg px-2 text-[0.8125rem] leading-none transition-all lg:px-2.5 xl:px-3 xl:text-[0.875rem] ${
+      return `text-[0.9375rem] whitespace-nowrap transition-colors ${
         active
-          ? 'font-bold text-success-strong underline decoration-2 decoration-success-strong underline-offset-[5px]'
-          : 'font-semibold text-ink hover:text-success-strong hover:underline hover:decoration-success-strong/70 hover:underline-offset-[5px]'
+          ? 'font-semibold text-success-strong'
+          : 'font-medium text-gray-700 hover:text-success-strong'
       }`;
     }
     return defaultNavDesktopClass(active);
@@ -170,22 +170,22 @@ const Navbar = () => {
 
   return (
     <header className="mm-sticky-header border-b border-border/50 bg-white/95 backdrop-blur-sm">
-      <div className="mx-auto max-w-7xl pl-[max(1rem,env(safe-area-inset-left,0px))] pr-[max(1rem,env(safe-area-inset-right,0px))] sm:pl-6 sm:pr-6 lg:pl-8 lg:pr-8">
-        <div className="flex h-20 items-center justify-between gap-6 lg:h-[5.5rem] lg:gap-8">
-          {/* Logo & Brand */}
-          <Link to="/" onClick={handleHomeClick} className="group flex shrink-0 items-center gap-3 sm:gap-4">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center gap-8 lg:h-[4.5rem]">
+          {/* Logo & Brand - Fixed width */}
+          <Link to="/" onClick={handleHomeClick} className="group flex shrink-0 items-center gap-3">
             <img
               src={logoSrc}
               alt="MentorMuni Logo"
-              className="h-14 w-14 shrink-0 object-contain transition-all group-hover:opacity-80 sm:h-16 sm:w-16"
+              className="h-10 w-10 shrink-0 object-contain transition-all group-hover:opacity-80"
             />
-            <span className="hidden text-2xl font-extrabold tracking-tight text-foreground xl:inline">
+            <span className="text-xl font-extrabold tracking-tight text-foreground">
               Mentor<span className="text-primary">Muni</span>
             </span>
           </Link>
 
-          {/* Desktop Navigation - Center */}
-          <nav className="hidden min-w-0 flex-1 items-center justify-center gap-1.5 lg:flex lg:gap-2 xl:gap-2.5">
+          {/* Desktop Navigation - Center with proper spacing */}
+          <nav className="hidden flex-1 items-center justify-center gap-6 lg:flex xl:gap-8">
             {navItems.map((item) => {
               const linkActive = isActive(item.path, item.exact);
               return (
@@ -200,20 +200,20 @@ const Navbar = () => {
               );
             })}
 
-            <div ref={toolsRef} className="relative shrink-0">
+            <div ref={toolsRef} className="relative">
               <button
                 type="button"
                 onClick={() => setToolsOpen(v => !v)}
                 aria-expanded={toolsOpen}
                 aria-haspopup="true"
-                className={`inline-flex h-10 items-center gap-1 rounded-lg px-3 text-[0.9375rem] font-semibold transition-all lg:gap-1.5 lg:px-3.5 xl:px-4 xl:text-[0.875rem] ${
+                className={`inline-flex items-center gap-1 text-[0.9375rem] font-medium transition-colors ${
                   toolsOpen
-                    ? 'text-primary bg-accent-soft ring-1 ring-[#2AAA8A]/35'
-                    : 'text-ink hover:text-primary hover:bg-accent-faint'
+                    ? 'text-primary'
+                    : 'text-gray-700 hover:text-primary'
                 }`}
               >
                 Tools
-                <ChevronDown size={18} strokeWidth={2.25} className={`shrink-0 transition-transform duration-200 ${toolsOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={16} strokeWidth={2} className={`transition-transform duration-200 ${toolsOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {toolsOpen && (
@@ -256,21 +256,21 @@ const Navbar = () => {
               )}
             </div>
 
-            <div ref={moreRef} className="relative shrink-0">
+            <div ref={moreRef} className="relative">
               <button
                 type="button"
                 onClick={() => setMoreOpen((v) => !v)}
                 aria-expanded={moreOpen}
                 aria-haspopup="true"
                 aria-label="Colleges, about, and contact"
-                className={`inline-flex h-10 max-w-full items-center gap-1 whitespace-nowrap rounded-lg px-3 text-[0.9375rem] font-semibold transition-all lg:gap-1.5 lg:px-3.5 xl:px-4 xl:text-[0.875rem] ${
+                className={`inline-flex items-center gap-1 text-[0.9375rem] font-medium whitespace-nowrap transition-colors ${
                   moreOpen || moreMenuActive
-                    ? 'text-primary bg-accent-soft ring-1 ring-[#2AAA8A]/35'
-                    : 'text-ink hover:text-primary hover:bg-accent-faint'
+                    ? 'text-primary'
+                    : 'text-gray-700 hover:text-primary'
                 }`}
               >
                 About/Contact
-                <ChevronDown size={18} strokeWidth={2.25} className={`shrink-0 transition-transform duration-200 ${moreOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={16} strokeWidth={2} className={`transition-transform duration-200 ${moreOpen ? 'rotate-180' : ''}`} />
               </button>
               {moreOpen && (
                 <div className="absolute right-0 top-full z-50 mt-2 w-[min(calc(100vw-2rem),15.5rem)] rounded-xl border border-border bg-white py-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.10)]">
@@ -298,7 +298,7 @@ const Navbar = () => {
           </nav>
 
           {/* Desktop CTA Buttons - Right */}
-          <div className="hidden shrink-0 items-center gap-3 lg:flex lg:gap-4">
+          <div className="hidden shrink-0 items-center gap-3 lg:flex">
             <style>{`
               @keyframes nb-shimmer {
                 0%   { transform: translateX(-100%) skewX(-15deg); }
@@ -313,14 +313,14 @@ const Navbar = () => {
             `}</style>
             <Link
               to="/waitlist"
-              className="inline-flex h-11 min-w-[8rem] items-center justify-center rounded-xl border-2 border-cta px-5 text-[0.9375rem] font-semibold text-cta transition-all hover:bg-warning-bg active:scale-[0.98]"
+              className="inline-flex h-10 items-center justify-center rounded-lg border-2 border-cta px-4 text-sm font-semibold text-cta transition-all hover:bg-warning-bg active:scale-[0.98]"
             >
               Join Waitlist
             </Link>
             <button
               type="button"
               onClick={goToStartAssessment}
-              className="nb-cta relative inline-flex h-11 items-center justify-center gap-2 overflow-hidden rounded-xl bg-cta px-5 text-[0.9375rem] font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-cta-hover active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta"
+              className="nb-cta relative inline-flex h-10 items-center justify-center gap-2 overflow-hidden rounded-lg bg-cta px-4 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-cta-hover active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta"
             >
               <span className="nb-shine pointer-events-none absolute inset-0 w-1/3 bg-white/25 blur-sm" style={{ transform: 'translateX(-100%) skewX(-15deg)' }} />
               <span className="relative flex h-2 w-2 shrink-0">
