@@ -55,12 +55,23 @@ async function performFetch(endpoint, payload, options = {}) {
     // Track performance metrics
     trackApiMetric(endpoint, duration, response.status, false);
 
-    if (!response.ok) {
-      const data = await safeParseJson(response);
-      throw new Error(`HTTP ${response.status}: ${data?.detail || data?.error || 'Unknown error'}`);
-    }
-
     const data = await response.json();
+
+    // Even if status is not OK, check if we got valid data
+    // Some backends return 422 with valid data due to validation warnings
+    if (!response.ok) {
+      // If we have valid evaluation_plan data, treat it as success
+      if (data?.evaluation_plan && Array.isArray(data.evaluation_plan) && data.evaluation_plan.length > 0) {
+        if (debug) {
+          console.warn(`[API] ${endpoint} returned ${response.status} but has valid data - treating as success`);
+        }
+        return { ok: true, data, status: response.status };
+      }
+      
+      // Otherwise, throw the error
+      const errorMsg = data?.detail || data?.error || data?.message || 'Unknown error';
+      throw new Error(`HTTP ${response.status}: ${typeof errorMsg === 'object' ? JSON.stringify(errorMsg) : errorMsg}`);
+    }
 
     return { ok: true, data, status: response.status };
   } catch (error) {
