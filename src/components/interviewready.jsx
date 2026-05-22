@@ -100,7 +100,6 @@ function primarySkillForApiRequest(trimmed) {
     .trim()
     .toLowerCase()
     .slice(0, PLAN_PRIMARY_SKILL_MAX);
-  if (s.length === 1) return `${s}\u200b`;
   return s;
 }
 
