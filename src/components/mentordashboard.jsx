@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { CONTACT_EMAIL } from '../constants/brandCopy';
 import { 
   Calendar, 
   Users, 
@@ -215,7 +216,7 @@ const MentorDashboard = () => {
             <div>
               <h4 className="font-bold text-foreground mb-4">Contact</h4>
               <div className="text-sm text-muted-foreground space-y-1">
-                <p>hello@mentormuni.com</p>
+                <p>{CONTACT_EMAIL}</p>
                 <p>+91 98765 43210</p>
               </div>
             </div>

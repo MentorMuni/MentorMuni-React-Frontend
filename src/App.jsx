@@ -1,7 +1,7 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
 import { HashRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ROUTE_TITLES } from "./constants/brandCopy";
+import { DEFAULT_META_DESCRIPTION, ROUTE_DESCRIPTIONS, ROUTE_TITLES } from "./constants/brandCopy";
 import { goToStartAssessment } from "./utils/startAssessmentNavigation";
 
 import Navbar from "./components/navbar";
@@ -153,12 +153,23 @@ function AnnouncementBar() {
   );
 }
 
-/** Update document.title per route for better SEO and browser tab clarity. */
+function setMetaDescription(content) {
+  let meta = document.querySelector('meta[name="description"]');
+  if (!meta) {
+    meta = document.createElement('meta');
+    meta.setAttribute('name', 'description');
+    document.head.appendChild(meta);
+  }
+  meta.setAttribute('content', content);
+}
+
+/** Update document.title and meta description per route (SEO for placement-related queries). */
 function RouteTitle() {
   const { pathname } = useLocation();
   useEffect(() => {
-    const title = ROUTE_TITLES[pathname] ?? 'MentorMuni — Interview Readiness for Engineers';
+    const title = ROUTE_TITLES[pathname] ?? 'MentorMuni — Placement Mentor & Interview Readiness';
     document.title = title;
+    setMetaDescription(ROUTE_DESCRIPTIONS[pathname] ?? DEFAULT_META_DESCRIPTION);
   }, [pathname]);
   return null;
 }

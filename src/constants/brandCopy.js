@@ -457,6 +457,9 @@ export const FINAL_CTA_BODY =
 export const PRODUCT_READINESS_SCORE = 'Readiness check';
 
 /** Public contact phone — keep in sync across footer, contact, pricing */
+export const CONTACT_EMAIL = 'enroll@mentormuni.com';
+export const CONTACT_EMAIL_HREF = 'mailto:enroll@mentormuni.com';
+
 export const CONTACT_PHONE_DISPLAY = '+91 91464 21302';
 export const CONTACT_PHONE_HREF = 'tel:+919146421302';
 
@@ -476,10 +479,17 @@ export const HERO_TRUST_LOGO_ROW_ITEMS = [
   'Off-campus drives',
 ];
 
+/** Default meta description when a route has no specific entry (SPA + crawlers). */
+export const DEFAULT_META_DESCRIPTION =
+  'MentorMuni is your placement mentor for campus hiring in India — free readiness score in 5 min, AI mock interviews, gap report, and 1:1 mentors for TCS, Infosys, and product companies.';
+
 /** Per-route SEO titles — update document.title dynamically */
 export const ROUTE_TITLES = {
-  '/': 'MentorMuni — Are You Actually Interview-Ready? Free Readiness Check',
-  '/how-it-works': 'How MentorMuni Works — Step-by-Step Interview Prep | MentorMuni',
+  '/': 'Placement Mentor & Interview Readiness for Engineering Students | MentorMuni',
+  '/how-it-works': 'Campus Placement Prep — How MentorMuni Works | MentorMuni',
+  '/start-assessment': 'Free Placement Readiness Check — 5 Minutes | MentorMuni',
+  '/readiness': 'Free Placement Readiness Check — 5 Minutes | MentorMuni',
+  '/interview-ready': 'Free Placement Readiness Check — 5 Minutes | MentorMuni',
   '/roadmap': 'How to Prepare — 4-Year Placement Roadmap | MentorMuni',
   '/mentors': 'Expert Industry Mentors — 12–15 Yrs Experience | MentorMuni',
   '/outcomes': 'Student Outcomes & Success Stories | MentorMuni',
@@ -509,14 +519,42 @@ export const ROUTE_TITLES = {
   '/courses/devops-roadmap-for-beginners': 'DevOps Roadmap for Beginners — Free | MentorMuni',
   '/free-tutorials': 'Free Tutorials for Engineering Students | MentorMuni',
   '/learning-paths': 'Learning Paths for Campus Placements | MentorMuni',
-  '/placement-tracks': 'Placement Tracks — TCS, Infosys, Cognizant & More | MentorMuni',
+  '/placement-tracks': 'Campus Placement Tracks — TCS, Infosys, Wipro & More | MentorMuni',
   '/leadership-board': 'Interview Readiness Leaderboard | MentorMuni',
   '/colleges': 'MentorMuni for Colleges — Batch Readiness Dashboard',
   '/for-recruiters': 'For Recruiters — Pre-Screened Interview-Ready Talent | MentorMuni',
-  '/about': 'About MentorMuni — Interview Readiness for Engineers',
-  '/contact': 'Contact MentorMuni — We\'re Here to Help',
+  '/about': 'About MentorMuni — Placement Mentor for Engineering Students',
+  '/contact': 'Contact MentorMuni — Placement Mentorship Enquiries',
   '/career-health': 'Career Health Dashboard | MentorMuni',
   '/dashboard/health': 'Career Health Dashboard | MentorMuni',
   '/dashboard': 'Dashboard | MentorMuni',
-  '/result': 'Your Readiness Check Results | MentorMuni',
+  '/result': 'Your Placement Readiness Score & Gap Report | MentorMuni',
+};
+
+/** Per-route meta descriptions (placement / campus hiring keywords). */
+export const ROUTE_DESCRIPTIONS = {
+  '/': DEFAULT_META_DESCRIPTION,
+  '/how-it-works':
+    'See how MentorMuni works as your placement mentor — free readiness check, gap report, AI mocks, and 1:1 mentors for campus and off-campus drives in India.',
+  '/placement-tracks':
+    'Company-wise campus placement tracks for TCS, Infosys, Wipro, Cognizant, and product roles — aptitude, technical, and HR prep with MentorMuni.',
+  '/learning-paths':
+    'Structured learning paths for campus placement preparation — DSA, aptitude, HR, and role skills aligned to Indian engineering hiring.',
+  '/mentors': 'Industry mentors with 12–15 years experience for placement interview prep, mock feedback, and campus hiring strategy.',
+  '/start-assessment':
+    'Take the free campus placement readiness check in ~5 minutes — instant score, topic gaps, no signup. Start placement preparation with data.',
+  '/readiness':
+    'Free placement readiness check for engineering students — scored assessment, gap report, and next steps before your campus drive.',
+  '/interview-ready':
+    'Free placement readiness check for engineering students — scored assessment, gap report, and next steps before your campus drive.',
+  '/tools/interview-readiness':
+    'Interview readiness score tool for campus placement — measure gaps before TCS, Infosys, and product company interviews.',
+  '/mock-interviews':
+    'AI mock interviews for campus placement prep — practise technical and HR rounds under time pressure before real drives.',
+  '/contact':
+    'Contact MentorMuni for placement mentorship, college partnerships, and student enrolment — enroll@mentormuni.com.',
+  '/about':
+    'About MentorMuni — a placement mentor platform helping engineering students in India prepare for campus hiring with measurable readiness.',
+  '/pricing': 'MentorMuni plans for placement preparation — readiness check, mocks, and mentor sessions for campus hiring season.',
+  '/waitlist': 'Join the MentorMuni mentorship waitlist — limited seats for placement-focused mock interviews and 1:1 mentors.',
 };

@@ -26,6 +26,8 @@ import {
   ABOUT_SYSTEM_LOOPS,
   PRIMARY_CTA_LABEL,
   SECONDARY_CTA_BOOK_CALL,
+  CONTACT_EMAIL,
+  CONTACT_EMAIL_HREF,
   CONTACT_PHONE_DISPLAY,
   CONTACT_PHONE_HREF,
   ABOUT_PAGE_EYEBROW,
@@ -435,10 +437,10 @@ const AboutUs = () => {
               </div>
               <p className="relative mt-8 text-sm text-white/60">
                 <a
-                  href="mailto:hello@mentormuni.com"
+                  href={CONTACT_EMAIL_HREF}
                   className="font-medium text-[#FFB347] underline-offset-2 hover:text-white hover:underline"
                 >
-                  hello@mentormuni.com
+                  {CONTACT_EMAIL}
                 </a>
                 <span className="mx-2 text-white/40" aria-hidden>
                   ·

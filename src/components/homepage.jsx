@@ -61,7 +61,11 @@ import {
   HOW_IT_WORKS_HEADLINE,
   HOW_IT_WORKS_SUB,
   HOMEPAGE_MENTORS_TO_CTA_BRIDGE,
+  CONTACT_EMAIL,
+  CONTACT_EMAIL_HREF,
 } from '../constants/brandCopy';
+import { HOMEPAGE_META_TITLE, HOMEPAGE_META_DESCRIPTION, HOMEPAGE_FAQ_ITEMS } from '../constants/homepageSeo';
+import { usePageMeta } from '../hooks/usePageMeta';
 import { HeroFlagshipVisual } from './homepage/HeroFlagshipVisual';
 import { HeroHeadlineTypewriter } from './homepage/HeroHeadlineTypewriter';
 import { HeroLoopVideo } from './homepage/HeroLoopVideo';
@@ -599,8 +603,53 @@ function HeroPlayfulClause({ text, reduceMotion }) {
 /* ═══════════════════════════════════════════════════════════════
    MAIN COMPONENT
    ═══════════════════════════════════════════════════════════════ */
+/** Homepage FAQ — visible HTML matches FAQPage JSON-LD in index.html (rich results). */
+function HomepageFaqSection() {
+  return (
+    <section
+      className="border-t border-border bg-white py-14 md:py-16 px-5 sm:px-6 lg:px-8"
+      aria-labelledby="homepage-faq-heading"
+    >
+      <div className="mx-auto max-w-3xl">
+        <FadeUp>
+          <h2 id="homepage-faq-heading" className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
+            Placement prep — common questions
+          </h2>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground md:text-base">
+            Answers about campus placement, placement mentorship, and our free readiness check for engineering students
+            in India.
+          </p>
+        </FadeUp>
+        <div className="mt-8 space-y-2">
+          {HOMEPAGE_FAQ_ITEMS.map((item, i) => (
+            <FadeUp key={item.question} delay={i * 0.04}>
+              <details
+                className="group overflow-hidden rounded-xl border border-border bg-card open:shadow-sm"
+                open={i === 0 ? true : undefined}
+              >
+                <summary className="mm-focus cursor-pointer list-none px-4 py-4 text-sm font-semibold text-foreground marker:content-none sm:px-5 sm:text-base [&::-webkit-details-marker]:hidden">
+                  <span className="flex items-center justify-between gap-3">
+                    {item.question}
+                    <span className="text-muted-foreground transition group-open:rotate-45" aria-hidden>
+                      +
+                    </span>
+                  </span>
+                </summary>
+                <p className="border-t border-border px-4 pb-4 pt-3 text-sm leading-relaxed text-muted-foreground sm:px-5">
+                  {item.answer}
+                </p>
+              </details>
+            </FadeUp>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 const HomePage = () => {
   const reduceMotion = useReducedMotion();
+  usePageMeta({ title: HOMEPAGE_META_TITLE, description: HOMEPAGE_META_DESCRIPTION });
   const heroCopy = HERO_YEAR_COPY.y4;
   const heroLeadCopy = heroCopy.subShort || heroCopy.sub;
 
@@ -620,7 +669,7 @@ const HomePage = () => {
   };
 
   return (
-    <div className="mm-site-theme overflow-x-hidden">
+    <main className="mm-site-theme overflow-x-hidden">
       <style>{`
         :focus-visible {
           outline: 2px solid #1A8FC4;
@@ -713,6 +762,9 @@ const HomePage = () => {
                   <span className="typo-display mt-1 block text-neutral-900 leading-[1.06] tracking-tight">
                     {HERO_HEADLINE_LINE2}
                   </span>
+                  <span className="mt-2 block text-base font-medium text-neutral-600 sm:text-lg">
+                    Campus placement mentor &amp; interview readiness for engineering students in India
+                  </span>
                   <span className="mt-2 block min-h-[2.2rem] sm:min-h-[4.5rem] sm:mt-3 md:min-h-[5rem]">
                     <HeroHeadlineTypewriter
                       phrases={HERO_TYPEWRITER_PHRASES}
@@ -752,25 +804,16 @@ const HomePage = () => {
                     <button
                       type="button"
                       onClick={goToStartAssessment}
-                      className="inline-flex min-h-[44px] w-full touch-manipulation items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-7 py-3.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-colors hover:bg-[#E88600] active:bg-[#D97706] sm:w-auto"
+                      className="inline-flex min-h-[48px] w-full touch-manipulation items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-7 py-3.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-colors hover:bg-[#E88600] active:bg-[#D97706] sm:w-auto"
                     >
                       {PRIMARY_CTA_LABEL} <ArrowRight size={16} aria-hidden />
                     </button>
                     <Link
-                      to="/contact"
-                      className="inline-flex min-h-[44px] w-full touch-manipulation items-center justify-center rounded-xl border border-border bg-white px-7 py-3.5 text-sm font-bold text-foreground shadow-sm transition-colors hover:border-[#2AAA8A] hover:bg-secondary active:bg-neutral-50 sm:w-auto"
+                      to="/how-it-works"
+                      className="inline-flex min-h-[48px] w-full touch-manipulation items-center justify-center rounded-xl border border-border bg-white px-7 py-3.5 text-sm font-bold text-foreground shadow-sm transition-colors hover:border-[#1A8FC4] hover:bg-secondary sm:w-auto"
                     >
-                      {SECONDARY_CTA_BOOK_CALL}
+                      How it works
                     </Link>
-                    <a
-                      href={CONTACT_WHATSAPP_HREF}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex min-h-[44px] w-full touch-manipulation items-center justify-center gap-2 rounded-xl border-2 border-[#25D366]/80 bg-[#f0fdf4] px-7 py-3.5 text-sm font-bold text-[#15803d] shadow-sm transition-colors hover:bg-emerald-50 sm:w-auto"
-                    >
-                      <MessageCircle className="h-4 w-4 shrink-0" aria-hidden />
-                      {CONTACT_WHATSAPP_LABEL}
-                    </a>
                   </div>
 
                   <p className="mt-3 text-center text-xs text-neutral-600 sm:text-left">
@@ -779,10 +822,23 @@ const HomePage = () => {
                       onClick={scrollToHomepagePricing}
                       className="font-semibold text-[#1A8FC4] underline decoration-[#2AAA8A]/45 underline-offset-[4px] transition hover:text-[#15799F] bg-transparent border-0 p-0 cursor-pointer font-inherit text-inherit"
                     >
-                      60-day program & pricing
+                      60-day placement program
                     </button>
                     <span className="text-neutral-400"> · </span>
-                    <span>{HERO_PROOF_ONE_LINER}</span>
+                    <Link to="/contact" className="font-semibold text-[#1A8FC4] hover:text-[#15799F]">
+                      {SECONDARY_CTA_BOOK_CALL}
+                    </Link>
+                    <span className="text-neutral-400"> · </span>
+                    <a
+                      href={CONTACT_WHATSAPP_HREF}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-[#15803d] hover:underline"
+                    >
+                      {CONTACT_WHATSAPP_LABEL}
+                    </a>
+                    <span className="hidden sm:inline text-neutral-400"> · </span>
+                    <span className="block sm:inline mt-1 sm:mt-0">{HERO_PROOF_ONE_LINER}</span>
                   </p>
                 </motion.div>
               </div>
@@ -794,14 +850,6 @@ const HomePage = () => {
             </div>
           </div>
 
-          <div className="mt-8 flex w-full flex-col items-center gap-8 lg:mt-10 lg:gap-10">
-            <div className="flex w-full max-w-3xl justify-center">
-              <HeroLoopVideo />
-            </div>
-          </div>
-
-          <HeroValueStack reduceMotion={reduceMotion} />
-          <HeroProblemTicker reduceMotion={reduceMotion} />
         </div>
       </section>
 
@@ -814,17 +862,17 @@ const HomePage = () => {
           <div className="mb-5 flex flex-wrap items-center justify-center gap-5 sm:gap-8">
             <div className="text-center">
               <p className="text-2xl font-extrabold text-[#1A8FC4]">500+</p>
-              <p className="text-[11px] font-semibold text-muted-foreground">mock rounds logged</p>
+              <p className="text-[11px] font-semibold text-muted-foreground">mock rounds on platform</p>
             </div>
             <div className="hidden h-8 w-px bg-border sm:block" aria-hidden />
             <div className="text-center">
-              <p className="text-2xl font-extrabold text-[#2AAA8A]">5 min</p>
-              <p className="text-[11px] font-semibold text-muted-foreground">to your readiness score</p>
+              <p className="text-2xl font-extrabold text-[#2AAA8A]">~5 min</p>
+              <p className="text-[11px] font-semibold text-muted-foreground">free readiness score</p>
             </div>
             <div className="hidden h-8 w-px bg-border sm:block" aria-hidden />
             <div className="text-center">
-              <p className="text-2xl font-extrabold text-[#FF9500]">5 min</p>
-              <p className="text-[11px] font-semibold text-muted-foreground">no signup required</p>
+              <p className="text-2xl font-extrabold text-[#FF9500]">No signup</p>
+              <p className="text-[11px] font-semibold text-muted-foreground">to start the check</p>
             </div>
           </div>
           <p className="mb-3 text-center text-[11px] font-bold uppercase tracking-[0.2em] text-muted-foreground sm:text-xs">
@@ -844,6 +892,17 @@ const HomePage = () => {
         </div>
       </section>
 
+      {/* ════════════════ Platform depth — below fold (lighter hero, better LCP) ════════════════ */}
+      <section className="border-t border-border bg-gradient-to-b from-white to-secondary/40 py-10 md:py-14 px-5 sm:px-6 lg:px-8" aria-label="Platform overview">
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-10">
+          <div className="flex w-full max-w-3xl justify-center">
+            <HeroLoopVideo />
+          </div>
+          <HeroValueStack reduceMotion={reduceMotion} />
+          <HeroProblemTicker reduceMotion={reduceMotion} />
+        </div>
+      </section>
+
       {/* ════════════════ WHAT IS MENTORMUNI — one clear explainer block ════════════════ */}
       <section className="border-t border-border bg-white py-12 md:py-14 px-5 sm:px-6 lg:px-8" aria-labelledby="what-is-mm-heading">
         <div className="mx-auto max-w-5xl">
@@ -859,10 +918,10 @@ const HomePage = () => {
                     </span>
                   </h2>
                   <p className="mb-6 text-base leading-relaxed text-muted-foreground md:text-lg">
-                    MentorMuni measures where you actually stand with a free 5-minute readiness check, then gives you a
-                    personalised gap report. From there, you close gaps through AI mock interviews, 1:1 mentorship, and
-                    a structured 60-day program — all under one roof, built specifically for Indian engineering students
-                    heading into campus placements.
+                    MentorMuni is a <strong className="font-semibold text-foreground">placement mentor</strong> for
+                    engineering students: a free 5-minute readiness check, a personalised gap report, then AI mock
+                    interviews, 1:1 mentorship, and a structured 60-day program — built for Indian campus and off-campus
+                    hiring (TCS, Infosys, product companies, and more).
                   </p>
                   <div className="flex flex-wrap gap-2">
                     {[
@@ -1535,6 +1594,8 @@ const HomePage = () => {
         </div>
       </section>
 
+      <HomepageFaqSection />
+
       {/* ════════════════ FINAL CTA (single primary conversion zone for free check — hero also) ════════════════ */}
       <section
         id="final-cta"
@@ -1624,8 +1685,8 @@ const HomePage = () => {
                 </div>
               </div>
               <div className="space-y-1.5 text-sm text-muted-foreground">
-                <a href="mailto:hello@mentormuni.com" className="flex items-center gap-2 hover:text-[#1A8FC4] transition-colors">
-                  <Mail size={13} /> hello@mentormuni.com
+                <a href={CONTACT_EMAIL_HREF} className="flex items-center gap-2 hover:text-[#1A8FC4] transition-colors">
+                  <Mail size={13} /> {CONTACT_EMAIL}
                 </a>
                 <a href={CONTACT_PHONE_HREF} className="flex items-center gap-2 hover:text-[#1A8FC4] transition-colors">
                   <Phone size={13} /> {CONTACT_PHONE_DISPLAY}
@@ -1686,7 +1747,7 @@ const HomePage = () => {
         </div>
       </footer>
 
-    </div>
+    </main>
   );
 };
 

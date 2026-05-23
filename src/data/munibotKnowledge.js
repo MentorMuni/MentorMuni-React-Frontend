@@ -6,6 +6,7 @@
 import {
   MISSION_TAGLINE,
   PRODUCT_READINESS_SCORE,
+  CONTACT_EMAIL,
   CONTACT_PHONE_DISPLAY,
   READINESS_TEST_COUPON_PROMO,
   HERO_PROOF_STAT,
@@ -78,7 +79,7 @@ export const MUNIBOT_CHUNKS = [
     id: 'contact-nav',
     keywords: ['contact', 'email', 'phone', 'reach', 'support', 'hello'],
     text:
-      `**Contact us:** hello@mentormuni.com · **Phone:** ${CONTACT_PHONE_DISPLAY} (Mon–Fri, IST). Use the **Contact** link in the nav or the contact form for partnerships and student questions.`,
+      `**Contact us:** ${CONTACT_EMAIL} · **Phone:** ${CONTACT_PHONE_DISPLAY} (Mon–Fri, IST). Use the **Contact** link in the nav or the contact form for partnerships and student questions.`,
   },
   {
     id: 'recruiters',

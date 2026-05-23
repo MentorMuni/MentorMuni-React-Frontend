@@ -1,9 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
-import { Send, RotateCcw, Loader2, UserRound, GraduationCap, Sparkles } from 'lucide-react';
+import { Send, RotateCcw, Loader2, UserRound, GraduationCap, Sparkles, Mail, Phone } from 'lucide-react';
 import { INQUIRIES_URL } from '../config';
-import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_HREF, MISSION_TAGLINE } from '../constants/brandCopy';
+import {
+  CONTACT_EMAIL,
+  CONTACT_EMAIL_HREF,
+  CONTACT_PHONE_DISPLAY,
+  CONTACT_PHONE_HREF,
+  MISSION_TAGLINE,
+} from '../constants/brandCopy';
 
 const easeOut = [0.22, 1, 0.36, 1];
 const WORD_LIMIT = 50;
@@ -162,8 +168,8 @@ const ContactPage = () => {
         const msg =
           data?.message ||
           (response.status === 404
-            ? 'Contact endpoint not configured on server. Please email hello@mentormuni.com'
-            : 'Unable to send. Please try again or email hello@mentormuni.com');
+            ? `Contact endpoint not configured on server. Please email ${CONTACT_EMAIL}`
+            : `Unable to send. Please try again or email ${CONTACT_EMAIL}`);
         setSubmitStatus({ type: 'error', message: msg });
       }
     } catch (err) {
@@ -172,8 +178,8 @@ const ContactPage = () => {
       setSubmitStatus({
         type: 'error',
         message: isCorsOrNetwork
-          ? 'Cannot reach server. Please email hello@mentormuni.com'
-          : 'Unable to send. Please try again or email hello@mentormuni.com',
+          ? `Cannot reach server. Please email ${CONTACT_EMAIL}`
+          : `Unable to send. Please try again or email ${CONTACT_EMAIL}`,
       });
     } finally {
       setIsSubmitting(false);
@@ -399,32 +405,51 @@ const ContactPage = () => {
           <div className="space-y-10">
             <FadeUp>
               <div className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
-                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#EA580C]">Direct contact</h2>
-                <ul className="mt-5 space-y-6 border-t border-border pt-6">
-                  <li>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Email</p>
-                    <a
-                      href="mailto:hello@mentormuni.com"
-                      className="mt-1 block text-[15px] font-semibold text-foreground transition hover:text-[#FF9500]"
-                    >
-                      hello@mentormuni.com
-                    </a>
-                  </li>
-                  <li>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Phone</p>
-                    <a
-                      href={CONTACT_PHONE_HREF}
-                      className="mt-1 block text-[15px] font-semibold text-foreground transition hover:text-[#FF9500]"
-                    >
-                      {CONTACT_PHONE_DISPLAY}
-                    </a>
-                    <p className="mt-1 text-xs text-hint">Mon–Fri · 9am–6pm IST</p>
-                  </li>
-                  <li>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Office</p>
-                    <p className="mt-1 text-[15px] font-semibold text-foreground">Bangalore, India</p>
-                  </li>
-                </ul>
+                <h2 className="text-sm font-bold tracking-tight text-foreground">Contact us</h2>
+                <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">
+                  Reach the MentorMuni team for enrollments, college partnerships, or product questions.
+                </p>
+                <p className="mt-2 text-xs text-hint">Typical reply within one business day (IST).</p>
+
+                <div className="mt-6 space-y-3">
+                  <a
+                    href={CONTACT_EMAIL_HREF}
+                    className="group flex gap-4 rounded-xl border border-border bg-white p-4 transition hover:border-[#FF9500]/40 hover:bg-secondary/50"
+                  >
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-[#15799F] transition group-hover:bg-[#FF9500]/10 group-hover:text-[#EA580C]">
+                      <Mail className="h-4 w-4" strokeWidth={2} aria-hidden />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        Email
+                      </span>
+                      <span className="mt-0.5 block text-[15px] font-semibold text-foreground group-hover:text-[#EA580C]">
+                        {CONTACT_EMAIL}
+                      </span>
+                      <span className="mt-0.5 block text-xs text-muted-foreground">
+                        Enrollments, partnerships &amp; general inquiries
+                      </span>
+                    </span>
+                  </a>
+
+                  <a
+                    href={CONTACT_PHONE_HREF}
+                    className="group flex gap-4 rounded-xl border border-border bg-white p-4 transition hover:border-[#FF9500]/40 hover:bg-secondary/50"
+                  >
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-[#15799F] transition group-hover:bg-[#FF9500]/10 group-hover:text-[#EA580C]">
+                      <Phone className="h-4 w-4" strokeWidth={2} aria-hidden />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+                        Phone
+                      </span>
+                      <span className="mt-0.5 block text-[15px] font-semibold text-foreground group-hover:text-[#EA580C]">
+                        {CONTACT_PHONE_DISPLAY}
+                      </span>
+                      <span className="mt-0.5 block text-xs text-muted-foreground">Mon–Fri · 9am–6pm IST</span>
+                    </span>
+                  </a>
+                </div>
               </div>
             </FadeUp>
 
