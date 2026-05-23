@@ -614,7 +614,7 @@ function Year4Section({ theme }) {
       />
       <p className="text-center text-sm text-muted-foreground">
         <a
-          href={`${MENTORMUNI_ORIGIN}/MentorMuni-React-Frontend/contact`}
+          href="https://www.mentormuni.com/contact"
           target="_blank"
           rel="noopener noreferrer"
           className="font-semibold text-[#7F77DD] underline decoration-[#7F77DD]/40 underline-offset-2 transition hover:text-[#5B54B8]"

@@ -5,4 +5,4 @@ Allow: /
 Disallow: /src/
 Disallow: /*.json$
 
-Sitemap: https://mentormuni.com/MentorMuni-React-Frontend/sitemap.xml
+Sitemap: https://www.mentormuni.com/sitemap.xml

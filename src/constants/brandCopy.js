@@ -290,7 +290,7 @@ export const HERO_YEAR_COPY = {
 };
 
 /** Canonical public URL for share links (WhatsApp, copy) — matches deployed base path */
-export const SITE_SHARE_BASE = 'https://mentormuni.com/MentorMuni-React-Frontend';
+export const SITE_SHARE_BASE = 'https://www.mentormuni.com';
 export const SITE_SHARE_ASSESSMENT_URL = `${SITE_SHARE_BASE}/start-assessment`;
 
 /**

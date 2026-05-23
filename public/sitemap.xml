@@ -3,184 +3,194 @@
 
   <!-- Core pages -->
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/</loc>
+    <loc>https://www.mentormuni.com/</loc>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/how-it-works</loc>
+    <loc>https://www.mentormuni.com/how-it-works</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/mentors</loc>
+    <loc>https://www.mentormuni.com/roadmap</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.85</priority>
+  </url>
+  <url>
+    <loc>https://www.mentormuni.com/mentors</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/outcomes</loc>
+    <loc>https://www.mentormuni.com/outcomes</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <!-- SEO ranking pages -->
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/placement-roadmap</loc>
+    <loc>https://www.mentormuni.com/placement-roadmap</loc>
     <changefreq>monthly</changefreq>
     <priority>0.92</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/dsa-roadmap</loc>
+    <loc>https://www.mentormuni.com/dsa-roadmap</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/mock-interview</loc>
+    <loc>https://www.mentormuni.com/mock-interview</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/resume-ats-checker</loc>
+    <loc>https://www.mentormuni.com/resume-ats-checker</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/ai-interview-preparation</loc>
+    <loc>https://www.mentormuni.com/ai-interview-preparation</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/software-engineer-interview-questions</loc>
+    <loc>https://www.mentormuni.com/software-engineer-interview-questions</loc>
     <changefreq>monthly</changefreq>
     <priority>0.88</priority>
   </url>
 
   <!-- Tools — high-intent landing pages -->
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/start-assessment</loc>
+    <loc>https://www.mentormuni.com/start-assessment</loc>
     <changefreq>weekly</changefreq>
     <priority>0.95</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/tools/interview-readiness</loc>
+    <loc>https://www.mentormuni.com/tools/interview-readiness</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/mock-interviews</loc>
+    <loc>https://www.mentormuni.com/interview-readiness-tools</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://www.mentormuni.com/mock-interviews</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/resume-analyzer</loc>
+    <loc>https://www.mentormuni.com/resume-analyzer</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/skill-gap-analyzer</loc>
+    <loc>https://www.mentormuni.com/skill-gap-analyzer</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/ai-tools</loc>
+    <loc>https://www.mentormuni.com/ai-tools</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
-  <!-- Free tutorials — best for organic search traffic -->
+  <!-- Free tutorials -->
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/java-tutorial</loc>
+    <loc>https://www.mentormuni.com/java-tutorial</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/python-tutorial</loc>
+    <loc>https://www.mentormuni.com/python-tutorial</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/sql-tutorial</loc>
+    <loc>https://www.mentormuni.com/sql-tutorial</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/generative-ai-tutorial</loc>
+    <loc>https://www.mentormuni.com/generative-ai-tutorial</loc>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/prompt-engineering</loc>
+    <loc>https://www.mentormuni.com/prompt-engineering</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/rag-systems</loc>
+    <loc>https://www.mentormuni.com/rag-systems</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/quantum-computing</loc>
+    <loc>https://www.mentormuni.com/quantum-computing</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/courses/devops-roadmap-for-beginners</loc>
+    <loc>https://www.mentormuni.com/courses/devops-roadmap-for-beginners</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <!-- Learning & placement -->
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/free-tutorials</loc>
+    <loc>https://www.mentormuni.com/free-tutorials</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/learning-paths</loc>
+    <loc>https://www.mentormuni.com/learning-paths</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/placement-tracks</loc>
+    <loc>https://www.mentormuni.com/placement-tracks</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/leadership-board</loc>
+    <loc>https://www.mentormuni.com/leadership-board</loc>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
 
   <!-- Institutional -->
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/colleges</loc>
+    <loc>https://www.mentormuni.com/colleges</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/for-recruiters</loc>
+    <loc>https://www.mentormuni.com/for-recruiters</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
 
   <!-- Conversion pages -->
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/pricing</loc>
+    <loc>https://www.mentormuni.com/pricing</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/waitlist</loc>
+    <loc>https://www.mentormuni.com/waitlist</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/contact</loc>
+    <loc>https://www.mentormuni.com/contact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.5</priority>
   </url>
   <url>
-    <loc>https://mentormuni.com/MentorMuni-React-Frontend/about</loc>
+    <loc>https://www.mentormuni.com/about</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
