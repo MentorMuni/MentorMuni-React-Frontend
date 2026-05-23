@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { CONTACT_EMAIL } from '../constants/brandCopy';
+import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import { 
   Calendar, 
   Users, 
@@ -67,17 +69,17 @@ const MentorDashboard = () => {
           </p>
           <div className="space-y-3">
             <button
-              onClick={() => window.location.href = '/start-assessment'}
+              onClick={goToStartAssessment}
               className="w-full bg-gradient-to-r from-[#FF9500] to-[#E88600] hover:from-[#E88600] hover:to-[#E88600] text-white font-bold py-3 rounded-lg transition-all"
             >
               Start Free Assessment
             </button>
-            <button
-              onClick={() => window.location.href = '/'}
-              className="w-full bg-[#FFF4E0] hover:bg-[#FFE8C2] border border-border text-foreground font-bold py-3 rounded-lg transition-all"
+            <Link
+              to="/"
+              className="block w-full bg-[#FFF4E0] hover:bg-[#FFE8C2] border border-border text-foreground font-bold py-3 rounded-lg transition-all text-center"
             >
               Back to Home
-            </button>
+            </Link>
           </div>
         </div>
       </div>
@@ -91,13 +93,13 @@ const MentorDashboard = () => {
       <header className="mm-sticky-header">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <a href="/" className="flex-shrink-0">
+            <Link to="/" className="flex-shrink-0">
               <img src={logoSrc} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
-            </a>
+            </Link>
             <nav className="hidden md:flex gap-6 text-sm font-medium text-muted-foreground">
-              <a href="/index.html" className="hover:text-[#FF9500] transition-colors">Home</a>
-              <a href="/index.html#courses" className="hover:text-[#FF9500] transition-colors">Courses</a>
-              <a href="/index.html#contact" className="hover:text-[#FF9500] transition-colors">Contact</a>
+              <Link to="/" className="hover:text-[#FF9500] transition-colors">Home</Link>
+              <Link to="/placement-tracks" className="hover:text-[#FF9500] transition-colors">Courses</Link>
+              <Link to="/contact" className="hover:text-[#FF9500] transition-colors">Contact</Link>
             </nav>
           </div>
           <div className="flex items-center gap-4">
@@ -209,8 +211,8 @@ const MentorDashboard = () => {
             <div>
               <h4 className="font-bold text-foreground mb-4">Company</h4>
               <div className="flex flex-col gap-2 text-sm text-muted-foreground">
-                <a href="/about" className="hover:text-[#FF9500]">About Us</a>
-                <a href="/careers" className="hover:text-[#FF9500]">Careers</a>
+                <Link to="/about" className="hover:text-[#FF9500]">About Us</Link>
+                <Link to="/contact" className="hover:text-[#FF9500]">Careers</Link>
               </div>
             </div>
             <div>
@@ -224,8 +226,8 @@ const MentorDashboard = () => {
           <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center gap-4 text-xs font-bold text-muted-foreground uppercase tracking-widest">
             <p>© {new Date().getFullYear()} MentorMuni. All rights reserved.</p>
             <div className="flex gap-6">
-              <a href="#privacy">Privacy</a>
-              <a href="#terms">Terms</a>
+              <Link to="/privacy">Privacy</Link>
+              <Link to="/terms">Terms</Link>
             </div>
           </div>
         </div>

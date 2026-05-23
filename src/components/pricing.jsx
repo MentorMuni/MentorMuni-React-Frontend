@@ -336,8 +336,8 @@ const PricingPage = () => {
           <div className="border-t border-border pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-muted-foreground">
             <p>© {new Date().getFullYear()} MentorMuni. All rights reserved.</p>
             <div className="flex gap-5">
-              <Link to="/contact" className="hover:text-[#FF9500] transition-colors">Terms</Link>
-              <Link to="/contact" className="hover:text-[#FF9500] transition-colors">Privacy</Link>
+              <Link to="/terms" className="hover:text-[#FF9500] transition-colors">Terms</Link>
+              <Link to="/privacy" className="hover:text-[#FF9500] transition-colors">Privacy</Link>
             </div>
           </div>
         </div>

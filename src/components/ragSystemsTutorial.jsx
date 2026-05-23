@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Copy, Menu, X, Check, AlertCircle } from 'lucide-react';
+import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import logo from '../assets/logo.png';
 
 const RAGSystemsTutorial = () => {
@@ -903,32 +904,32 @@ if uploaded_file:
             <div className="mt-16 bg-gradient-to-r from-[#FF9500]/20 to-purple-600/20 border border-[#FFB347]/40 rounded-xl p-8">
               <h3 className="text-2xl font-bold mb-6">Continue Your Learning Journey</h3>
               <div className="grid md:grid-cols-3 gap-6">
-                <a 
-                  href="/tutorials/generative-ai-for-beginners"
+                <Link
+                  to="/tutorials/generative-ai-for-beginners"
                   className="group bg-white hover:bg-white/10 border border-border hover:border-[#FFB347]/40 rounded-lg p-6 transition-all"
                 >
                   <div className="text-3xl mb-3">🤖</div>
                   <h4 className="font-bold mb-2 group-hover:text-[#FF9500] transition-colors">Generative AI for Beginners</h4>
                   <p className="text-muted-foreground text-sm">Master LLM fundamentals before diving into RAG.</p>
-                </a>
+                </Link>
 
-                <a 
-                  href="/courses/prompt-engineering-masterclass"
+                <Link
+                  to="/courses/prompt-engineering-masterclass"
                   className="group bg-white hover:bg-white/10 border border-border hover:border-cyan-400/30 rounded-lg p-6 transition-all"
                 >
                   <div className="text-3xl mb-3">✍️</div>
                   <h4 className="font-bold mb-2 group-hover:text-cyan-400 transition-colors">Prompt Engineering Masterclass</h4>
                   <p className="text-muted-foreground text-sm">Optimize how RAG systems generate responses.</p>
-                </a>
+                </Link>
 
-                <a 
-                  href="/start-assessment"
+                <Link
+                  to="/start-assessment"
                   className="group bg-white hover:bg-white/10 border border-border hover:border-green-400/30 rounded-lg p-6 transition-all"
                 >
                   <div className="text-3xl mb-3">📊</div>
                   <h4 className="font-bold mb-2 group-hover:text-green-400 transition-colors">Interview Assessment</h4>
                   <p className="text-muted-foreground text-sm">Test your RAG and AI knowledge.</p>
-                </a>
+                </Link>
               </div>
             </div>
           </section>
@@ -941,7 +942,7 @@ if uploaded_file:
                 Take your skills further. Test your understanding with our interview assessment.
               </p>
               <button 
-                onClick={() => window.location.href = '/start-assessment'}
+                onClick={goToStartAssessment}
                 className="bg-white text-[#4F46E5] px-8 py-4 rounded-xl font-bold hover:bg-white/90 transition-all text-lg"
               >
                 Take the Assessment →

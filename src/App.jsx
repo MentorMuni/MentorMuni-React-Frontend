@@ -1,9 +1,12 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate, Navigate } from "react-router-dom";
 import { getRouterBasename } from "./utils/appPaths";
 import { motion } from "framer-motion";
 import { getRouteSeo } from "./constants/routeSeoMeta";
 import { goToStartAssessment } from "./utils/startAssessmentNavigation";
+import { sanitizeBrokenSpaUrl } from "./utils/sanitizeBrokenSpaUrl";
+
+sanitizeBrokenSpaUrl();
 
 import Navbar from "./components/navbar";
 import HomePage from "./components/homepage";
@@ -54,6 +57,7 @@ const CareerHealthDashboard = lazy(() => import("./components/CareerHealthDashbo
 const SoftwareEngineerInterviewQuestionsPage = lazy(
   () => import("./components/SoftwareEngineerInterviewQuestionsPage")
 );
+const NotFoundPage = lazy(() => import("./components/NotFoundPage"));
 const AIToolsKnowledgeBase = lazy(() => import("./components/AIToolsKnowledgeBase"));
 const InterviewReadinessToolsPage = lazy(() => import("./components/InterviewReadinessToolsPage"));
 const LeadershipBoard = lazy(() => import("./components/leadershipBoard"));
@@ -271,6 +275,10 @@ function App() {
               <Route path="/ai-tools" element={<AIToolsKnowledgeBase />} />
               {/* Design System Demo - For Development Only */}
               <Route path="/design-system" element={<DesignSystemDemo />} />
+              {/* Legacy / marketing URLs → canonical routes */}
+              <Route path="/courses" element={<Navigate to="/placement-tracks" replace />} />
+              <Route path="/careers" element={<Navigate to="/contact" replace />} />
+              <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>
         </AnimatedMain>

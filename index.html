@@ -184,18 +184,26 @@
       })(window, document, "clarity", "script", "YOUR_CLARITY_ID");
     </script>
 
-    <!-- GitHub Pages SPA redirect helper — do not remove -->
+    <!-- GitHub Pages SPA redirect helper — decodes ?/route from 404.html (BrowserRouter) -->
     <script type="text/javascript">
-      (function(l) {
-        if (l.search[1] === '/' ) {
-          var decoded = l.search.slice(1).split('&').map(function(s) { 
-            return s.replace(/~and~/g, '&')
-          }).join('?');
-          window.history.replaceState(null, null,
-              l.pathname.slice(0, -1) + decoded + l.hash
-          );
+      (function (l) {
+        var search = l.search;
+        if (!search || search.charAt(1) !== '/') return;
+
+        /* Broken redirect loop (?/&/~and~/…) — strip query and keep pathname only */
+        if (search.indexOf('~and~') !== -1 || search.indexOf('/&/') !== -1) {
+          var cleanPath = l.pathname.replace(/\/+$/, '') || '/';
+          window.history.replaceState(null, '', cleanPath + l.hash);
+          return;
         }
-      }(window.location))
+
+        var decoded = search.slice(1).split('&').map(function (s) {
+          return s.replace(/~and~/g, '&');
+        }).join('?');
+        var base = l.pathname.endsWith('/') ? l.pathname.slice(0, -1) : l.pathname;
+        if (!base) base = '';
+        window.history.replaceState(null, '', base + decoded + l.hash);
+      })(window.location);
     </script>
   </head>
   <body style="background-color:#f8fbff;color:#3f3f46">

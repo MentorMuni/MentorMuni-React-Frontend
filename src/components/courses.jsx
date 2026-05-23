@@ -1,6 +1,14 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Menu, X, CheckCircle2, ArrowRight, ChevronDown } from 'lucide-react';
 import logo from '../assets/logo.png';
+
+const NAV_LINKS = [
+  { label: 'Home', to: '/' },
+  { label: 'Interview Readiness', to: '/interview-readiness-tools' },
+  { label: 'Outcomes', to: '/outcomes' },
+  { label: 'Contact', to: '/contact' },
+];
 
 const CoursesPage = () => {
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -53,61 +61,61 @@ const CoursesPage = () => {
 
   return (
     <div className="min-h-screen mm-site-theme text-muted-foreground">
-      {/* --- HEADER --- */}
       <header className="mm-sticky-header px-5 py-2">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between py-2">
-          <a href="/">
+          <Link to="/">
             <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain transition-transform hover:scale-105" />
-          </a>
+          </Link>
 
           <nav className="hidden md:flex items-center gap-7">
-            {['Home', 'Interview Readiness', 'Outcomes', 'Contact'].map((item) => (
-              <a 
-                key={item} 
-                href={`/${item.toLowerCase().replace(' ', '-')}`} 
+            {NAV_LINKS.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
                 className="text-sm font-semibold text-muted-foreground hover:text-[#FF9500] transition-colors"
               >
-                {item}
-              </a>
+                {item.label}
+              </Link>
             ))}
-            
-            {/* Courses Dropdown */}
+
             <div className="relative group">
-              <button className="text-sm font-semibold text-[#FF9500] flex items-center gap-1 hover:text-[#E88600] transition-colors">
+              <button type="button" className="text-sm font-semibold text-[#FF9500] flex items-center gap-1 hover:text-[#E88600] transition-colors">
                 Courses
                 <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
               </button>
               <div className="absolute left-0 mt-0 w-48 bg-white border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                <a 
-                  href="/courses" 
+                <Link
+                  to="/placement-tracks"
                   className="block px-4 py-3 text-sm font-semibold text-foreground hover:text-[#FF9500] hover:bg-[#FFF4E0] first:rounded-t-lg transition-colors"
                 >
                   Placement Tracks
-                </a>
-                <a 
-                  href="/free-tutorials" 
+                </Link>
+                <Link
+                  to="/free-tutorials"
                   className="block px-4 py-3 text-sm font-semibold text-foreground hover:text-[#FF9500] hover:bg-[#FFF4E0] last:rounded-b-lg transition-colors"
                 >
                   Free Tutorials
-                </a>
+                </Link>
               </div>
             </div>
           </nav>
 
-          <button className="md:hidden text-foreground" onClick={() => setIsNavOpen(!isNavOpen)}>
+          <button type="button" className="md:hidden text-foreground" onClick={() => setIsNavOpen(!isNavOpen)}>
             {isNavOpen ? <X size={28} /> : <Menu size={28} />}
           </button>
         </div>
 
         {isNavOpen && (
           <div className="md:hidden absolute top-full left-0 right-0 bg-background border-b border-border p-5 flex flex-col gap-4 shadow-2xl">
-            {['Home', 'Interview Readiness', 'Outcomes', 'Contact'].map((item) => (
-              <a key={item} href="#" className="font-bold text-muted-foreground hover:text-[#FF9500]">{item}</a>
+            {NAV_LINKS.map((item) => (
+              <Link key={item.to} to={item.to} className="font-bold text-muted-foreground hover:text-[#FF9500]" onClick={() => setIsNavOpen(false)}>
+                {item.label}
+              </Link>
             ))}
-            
-            {/* Mobile Courses Dropdown */}
+
             <div className="border-t border-border pt-4">
-              <button 
+              <button
+                type="button"
                 onClick={() => setIsCoursesDropdownOpen(!isCoursesDropdownOpen)}
                 className="font-bold text-[#FF9500] hover:text-[#E88600] flex items-center gap-2 w-full"
               >
@@ -116,8 +124,12 @@ const CoursesPage = () => {
               </button>
               {isCoursesDropdownOpen && (
                 <div className="pl-4 space-y-2 pt-2">
-                  <a href="/courses" className="block text-sm font-semibold text-foreground hover:text-[#FF9500] p-2">Placement Tracks</a>
-                  <a href="/free-tutorials" className="block text-sm font-semibold text-foreground hover:text-[#FF9500] p-2">Free Tutorials</a>
+                  <Link to="/placement-tracks" className="block text-sm font-semibold text-foreground hover:text-[#FF9500] p-2" onClick={() => setIsNavOpen(false)}>
+                    Placement Tracks
+                  </Link>
+                  <Link to="/free-tutorials" className="block text-sm font-semibold text-foreground hover:text-[#FF9500] p-2" onClick={() => setIsNavOpen(false)}>
+                    Free Tutorials
+                  </Link>
                 </div>
               )}
             </div>
@@ -125,7 +137,6 @@ const CoursesPage = () => {
         )}
       </header>
 
-      {/* --- MAIN CONTENT --- */}
       <main className="max-w-[1200px] mx-auto px-6 py-16 md:py-24">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-4 text-foreground">
@@ -136,11 +147,10 @@ const CoursesPage = () => {
           </p>
         </div>
 
-        {/* --- COURSE GRID --- */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {courses.map((course, index) => (
-            <article 
-              key={index} 
+            <article
+              key={index}
               className="group bg-white border border-border rounded-3xl p-8 flex flex-col transition-all duration-300 hover:-translate-y-2 hover:border-[#FF9500]/30 hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)]"
             >
               <div className="flex-1">
@@ -165,20 +175,19 @@ const CoursesPage = () => {
                   <span className="text-2xl font-bold text-foreground">{course.price}</span>
                   <span className="text-xs text-muted-foreground ml-1">{course.period}</span>
                 </div>
-                <a 
-                  href="/contact" 
+                <Link
+                  to="/contact"
                   className="bg-[#FFF4E0] hover:bg-[#FF9500] text-[#CC7000] hover:text-white p-3 rounded-full transition-all group-hover:px-6 flex items-center gap-2"
                 >
                   <span className="hidden group-hover:block text-sm font-bold">Enroll</span>
                   <ArrowRight size={20} />
-                </a>
+                </Link>
               </div>
             </article>
           ))}
         </div>
       </main>
 
-      {/* --- FOOTER --- */}
       <footer className="bg-secondary border-t border-border pt-16 pb-8 px-6">
         <div className="max-w-[1200px] mx-auto grid md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-1">
@@ -187,11 +196,15 @@ const CoursesPage = () => {
           </div>
           <div>
             <h4 className="font-bold mb-4 text-foreground">Courses</h4>
-            <a href="/courses" className="text-muted-foreground text-sm hover:text-[#FF9500] block mb-2">All Courses</a>
+            <Link to="/placement-tracks" className="text-muted-foreground text-sm hover:text-[#FF9500] block mb-2">
+              All Courses
+            </Link>
           </div>
           <div>
             <h4 className="font-bold mb-4 text-foreground">Company</h4>
-            <a href="/about" className="text-muted-foreground text-sm hover:text-[#FF9500] block mb-2">About Us</a>
+            <Link to="/about" className="text-muted-foreground text-sm hover:text-[#FF9500] block mb-2">
+              About Us
+            </Link>
           </div>
           <div>
             <h4 className="font-bold mb-4 text-foreground">Support</h4>

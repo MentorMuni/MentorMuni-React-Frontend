@@ -1,5 +1,6 @@
 import React from 'react';
 import { ArrowRight, Rocket, BookOpen, Video, TrendingUp, ScanSearch } from 'lucide-react';
+import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 
 const LearningPaths = () => {
   const pathsData = [
@@ -135,7 +136,7 @@ const LearningPaths = () => {
           </p>
           <button
             type="button"
-            onClick={() => (window.location.href = '/start-assessment')}
+            onClick={goToStartAssessment}
             className="inline-flex items-center gap-2 rounded-xl bg-card px-8 py-4 font-bold text-cta shadow-md transition-all hover:shadow-lg"
           >
             Take Free Assessment

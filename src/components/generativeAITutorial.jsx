@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Copy, Menu, X, Check } from 'lucide-react';
+import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import logo from '../assets/logo.png';
 
 const GenerativeAITutorial = () => {
@@ -895,7 +896,7 @@ and brief answers for each (50-75 words).`}
               <h2 className="text-3xl font-black mb-4">Ready to Test Your AI Knowledge?</h2>
               <p className="text-lg mb-8 text-white/90">Take our AI interview assessment to evaluate your understanding and get personalized feedback.</p>
               <button 
-                onClick={() => window.location.href = '/start-assessment'}
+                onClick={goToStartAssessment}
                 className="bg-white text-[#4F46E5] px-8 py-4 rounded-xl font-bold hover:bg-white/90 transition-all text-lg"
               >
                 Take AI Interview Assessment →

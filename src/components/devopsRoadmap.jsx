@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { Copy, Menu, X, Check, AlertCircle, Download } from 'lucide-react';
 import logo from '../assets/logo.png';
 
@@ -1108,18 +1109,18 @@ Load balancer health`}
                   <h3 className="text-2xl font-bold mb-4 text-white">Ready for Your Interview?</h3>
                   <p className="text-white/90 mb-6">Take our DevOps assessment or practice with mock interviews</p>
                   <div className="flex flex-wrap gap-4 justify-center">
-                    <a
-                      href="/start-assessment"
+                    <Link
+                      to="/start-assessment"
                       className="px-6 py-3 bg-white text-[#FF9500] font-bold rounded-lg hover:bg-slate-100 transition-all"
                     >
                       Start Assessment
-                    </a>
-                    <a
-                      href="/mock-interviews"
+                    </Link>
+                    <Link
+                      to="/mock-interviews"
                       className="px-6 py-3 border-2 border-white text-white font-bold rounded-lg hover:bg-white/10 transition-all"
                     >
                       Mock Interviews
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </section>
@@ -1157,19 +1158,19 @@ Load balancer health`}
               <h3 className="font-bold text-[#FF9500] mb-3">Next Steps</h3>
               <ul className="text-sm text-muted-foreground space-y-2">
                 <li>
-                  <a href="/resume-analyzer" className="text-[#FF9500] hover:text-[#FF9500]">
+                  <Link to="/resume-analyzer" className="text-[#FF9500] hover:text-[#FF9500]">
                     Optimize your resume
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/start-assessment" className="text-[#FF9500] hover:text-[#FF9500]">
+                  <Link to="/start-assessment" className="text-[#FF9500] hover:text-[#FF9500]">
                     Take DevOps assessment
-                  </a>
+                  </Link>
                 </li>
                 <li>
-                  <a href="/mock-interviews" className="text-[#FF9500] hover:text-[#FF9500]">
+                  <Link to="/mock-interviews" className="text-[#FF9500] hover:text-[#FF9500]">
                     Practice with mock interviews
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -1183,18 +1184,18 @@ Load balancer health`}
             Master DevOps with hands-on projects, assessments, and 1:1 mentorship from industry experts.
           </p>
           <div className="flex flex-wrap gap-4 justify-center">
-            <a
-              href="/start-assessment"
+            <Link
+              to="/start-assessment"
               className="px-8 py-4 bg-white text-[#FF9500] rounded-xl font-bold hover:bg-slate-100 transition-all"
             >
               Start Assessment
-            </a>
-            <a
-              href="/learning-paths"
+            </Link>
+            <Link
+              to="/learning-paths"
               className="px-8 py-4 border-2 border-white text-white rounded-xl font-bold hover:bg-white/10 transition-all"
             >
               View All Paths
-            </a>
+            </Link>
           </div>
         </section>
       </div>

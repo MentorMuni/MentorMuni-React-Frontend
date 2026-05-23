@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
+import { isNavActive } from '../utils/navRouteMatch';
 import { PRIMARY_CTA_LABEL, READINESS_TEST_COUPON_BADGE } from '../constants/brandCopy';
 import LimitedRewardLabel from './LimitedRewardLabel';
 
@@ -111,12 +112,7 @@ const Navbar = () => {
     { label: 'Outcomes', path: '/outcomes', exact: false },
   ];
 
-  const isActive = (path, exact = false) => {
-    if (exact) {
-      return location.pathname === path;
-    }
-    return location.pathname.startsWith(path);
-  };
+  const isActive = (path, exact = false) => isNavActive(location.pathname, path, exact);
 
   const handleNavClick = () => {
     setIsOpen(false);
