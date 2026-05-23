@@ -18,6 +18,7 @@ import AIAnalysisLoader from './AIAnalysisLoader';
 import { useFreeUsageTracker } from './FreeUsageCounter';
 import UpgradePromptModal from './UpgradePromptModal';
 import PrepLoungePanel from './interviewready/PrepLoungePanel';
+import SkillValidationModal from './SkillValidationModal';
 import { fetchWithDeduplication } from '../utils/apiOptimization';
 const FREE_TIER_LIMIT = 3;
 
@@ -90,6 +91,18 @@ const PLACEMENT_ROLE_OPTIONS = [
 
 /** PlanRequest.primary_skill maxLength in OpenAPI schema */
 const PLAN_PRIMARY_SKILL_MAX = 100;
+
+/** Skill readiness — one skill only (no lists; max length for single focus) */
+const SKILL_FOCUS_MAX_CHARS = 15;
+
+function shouldPromptSingleSkillInput(value) {
+  const trimmed = String(value ?? '').trim();
+  if (!trimmed) return false;
+  if (trimmed.includes(',')) return true;
+  if (trimmed.split(/\s+/).filter(Boolean).length > 1) return true;
+  if (trimmed.length > SKILL_FOCUS_MAX_CHARS) return true;
+  return false;
+}
 
 /**
  * Normalize skill line for API: trim, lowercase, max length. Single-letter languages (C, R, …):
@@ -337,7 +350,7 @@ function scrollFirstInvalidFieldIntoView() {
   });
 }
 
-const InputField = ({ label, type, name, value, onChange, placeholder, error, maxLength, showCharCount }) => {
+const InputField = ({ label, type, name, value, onChange, onBlur, placeholder, error, maxLength, showCharCount, autoComplete }) => {
   const showInlineError = error && error !== 'Required';
   const errId = `${name}-err`;
   return (
@@ -358,8 +371,10 @@ const InputField = ({ label, type, name, value, onChange, placeholder, error, ma
           name={name}
           value={value}
           onChange={onChange}
+          onBlur={onBlur}
           placeholder={placeholder}
           maxLength={maxLength}
+          autoComplete={autoComplete}
           rows={3}
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={error ? errId : undefined}
@@ -374,8 +389,10 @@ const InputField = ({ label, type, name, value, onChange, placeholder, error, ma
           name={name}
           value={value}
           onChange={onChange}
+          onBlur={onBlur}
           placeholder={placeholder}
           maxLength={maxLength}
+          autoComplete={autoComplete}
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={error ? errId : undefined}
           className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal outline-none transition-[border-color,box-shadow,background-color] duration-150 text-foreground placeholder:font-normal placeholder:text-hint ${
@@ -1531,6 +1548,7 @@ const InterviewReady = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
+  const [showSkillValidationModal, setShowSkillValidationModal] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
   const [otpSent, setOtpSent] = useState(false);
   
@@ -1945,6 +1963,13 @@ const InterviewReady = () => {
   const handleStep4Submit = (e) => {
     e.preventDefault();
     setError(null);
+    if (
+      profile.assessmentMode === ASSESSMENT_FOCUS_SKILL &&
+      shouldPromptSingleSkillInput(profile.primarySkill)
+    ) {
+      setShowSkillValidationModal(true);
+      return;
+    }
     if (!validateForm()) {
       scrollFirstInvalidFieldIntoView();
       return;
@@ -3024,10 +3049,10 @@ const InterviewReady = () => {
                     </>
                   ) : isSkillFocus ? (
                     <>
-                      Enter <span className="font-semibold text-foreground">one</span> skill or stack for{' '}
-                      <span className="font-semibold text-foreground">in-depth preparation</span>. Every question stays on that
-                      focus — not a mixed panel.{' '}
-                      <span className="text-hint">Max {PLAN_PRIMARY_SKILL_MAX} characters.</span>
+                      Enter <span className="font-semibold text-foreground">one</span> skill for{' '}
+                      <span className="font-semibold text-foreground">in-depth preparation</span> (e.g. React, Java, JavaScript — up to{' '}
+                      {SKILL_FOCUS_MAX_CHARS} characters, no commas or spaces).{' '}
+                      <span className="text-hint">API max {PLAN_PRIMARY_SKILL_MAX} characters.</span>
                     </>
                   ) : (
                     <>
@@ -3049,12 +3074,20 @@ const InterviewReady = () => {
                     value={profile.primarySkill}
                     onChange={(e) => {
                       const v = e.target.value;
+                      if (isSkillFocus && shouldPromptSingleSkillInput(v)) {
+                        setShowSkillValidationModal(true);
+                      }
                       setProfile((prev) => ({ ...prev, primarySkill: v }));
                       setValidationErrors((prev) => (prev.primarySkill ? { ...prev, primarySkill: '' } : prev));
                     }}
+                    onBlur={(e) => {
+                      if (isSkillFocus && shouldPromptSingleSkillInput(e.target.value)) {
+                        setShowSkillValidationModal(true);
+                      }
+                    }}
                     placeholder={
                       isSkillFocus
-                        ? 'e.g. Java — one focus for in-depth prep (not a list)'
+                        ? 'e.g. JavaScript — one skill for in-depth prep (not a list)'
                         : 'e.g. DSA, OOP, DBMS, system design — comma-separated areas'
                     }
                     error={validationErrors.primarySkill}
@@ -3074,8 +3107,8 @@ const InterviewReady = () => {
                     </>
                   ) : isSkillFocus ? (
                     <>
-                      <span className="font-semibold text-muted-foreground">Tip:</span> One stack only (e.g. Java or Python).
-                      We go deep on it — skip comma-separated lists.
+                      <span className="font-semibold text-muted-foreground">Tip:</span> One skill only (max {SKILL_FOCUS_MAX_CHARS}{' '}
+                      characters) — e.g. React, Java, JavaScript. No commas or multiple skills in one field.
                     </>
                   ) : (
                     <>
@@ -4615,6 +4648,10 @@ const InterviewReady = () => {
         isOpen={showUpgradeModal}
         onClose={() => setShowUpgradeModal(false)}
         toolName="Interview Readiness Check"
+      />
+      <SkillValidationModal
+        open={showSkillValidationModal}
+        onClose={() => setShowSkillValidationModal(false)}
       />
     </>
   );
