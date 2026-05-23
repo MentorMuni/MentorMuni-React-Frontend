@@ -19,7 +19,7 @@ const CTAButtons = ({
 
   return (
     <div className={`flex flex-col sm:flex-row gap-4 ${className}`}>
-      {/* Primary CTA — full page load to reset assessment wizard (HashRouter) */}
+      {/* Primary CTA — full page load to reset assessment wizard */}
       {primaryIsAssessment ? (
         <button
           type="button"

@@ -1,6 +1,29 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { FileText, BarChart3, Zap, MapPin, ArrowDown, ArrowRight, Sparkles, CheckCircle } from 'lucide-react';
 import { PRODUCT_READINESS_SCORE, PRIMARY_CTA_LABEL } from '../constants/brandCopy';
+import { goToStartAssessment, isStartAssessmentPath } from '../utils/startAssessmentNavigation';
+
+function DiagnosticStepCta({ link, cta, className }) {
+  const inner = (
+    <>
+      <span>{cta}</span>
+      <ArrowRight className="w-4 h-4" />
+    </>
+  );
+  if (isStartAssessmentPath(link)) {
+    return (
+      <button type="button" onClick={goToStartAssessment} className={className}>
+        {inner}
+      </button>
+    );
+  }
+  return (
+    <Link to={link} className={className}>
+      {inner}
+    </Link>
+  );
+}
 
 const CareerDiagnosticJourney = () => {
   const [hoveredStep, setHoveredStep] = useState(null);
@@ -16,7 +39,7 @@ const CareerDiagnosticJourney = () => {
       benefits: ["ATS Score Check", "Content Gap Analysis", "Industry Benchmarking"],
       color: "indigo",
       cta: "Analyze Resume",
-      link: "/#/resume-analyzer"
+      link: "/resume-analyzer"
     },
     {
       id: 2,
@@ -28,7 +51,7 @@ const CareerDiagnosticJourney = () => {
       benefits: ["Role-Specific Skills", "Priority Ranking", "Learning Timeline"],
       color: "cyan",
       cta: "Find Gaps",
-      link: "/#/skill-gap-analyzer"
+      link: "/skill-gap-analyzer"
     },
     {
       id: 3,
@@ -40,7 +63,7 @@ const CareerDiagnosticJourney = () => {
       benefits: ["DSA Readiness", "System Design Score", "Confidence Level"],
       color: "amber",
       cta: PRIMARY_CTA_LABEL,
-      link: "/#/start-assessment"
+      link: "/start-assessment"
     },
     {
       id: 4,
@@ -52,7 +75,7 @@ const CareerDiagnosticJourney = () => {
       benefits: ["Personalized Plan", "Mentor Matching", "Progress Tracking"],
       color: "purple",
       cta: "Get Roadmap",
-      link: "/#/learning-paths"
+      link: "/learning-paths"
     }
   ];
 
@@ -177,14 +200,11 @@ const CareerDiagnosticJourney = () => {
                         ))}
                       </ul>
 
-                      {/* CTA Button */}
-                      <a
-                        href={step.link}
+                      <DiagnosticStepCta
+                        link={step.link}
+                        cta={step.cta}
                         className={`inline-flex items-center gap-2 w-full justify-center px-4 py-3 bg-gradient-to-r ${colors.button} text-white font-bold text-sm rounded-lg transition-all duration-300 hover:shadow-lg active:scale-95`}
-                      >
-                        <span>{step.cta}</span>
-                        <ArrowRight className="w-4 h-4" />
-                      </a>
+                      />
                     </div>
                   </div>
                 );
@@ -250,14 +270,11 @@ const CareerDiagnosticJourney = () => {
                       ))}
                     </ul>
 
-                    {/* CTA Button */}
-                    <a
-                      href={step.link}
+                    <DiagnosticStepCta
+                      link={step.link}
+                      cta={step.cta}
                       className={`inline-flex items-center gap-2 w-full justify-center px-4 py-3 bg-gradient-to-r ${colors.button} text-white font-bold text-sm rounded-lg transition-all duration-300 hover:shadow-lg active:scale-95`}
-                    >
-                      <span>{step.cta}</span>
-                      <ArrowRight className="w-4 h-4" />
-                    </a>
+                    />
                   </div>
                 </div>
               </div>
@@ -278,20 +295,20 @@ const CareerDiagnosticJourney = () => {
               Get 3 free analyses. No credit card required. Takes just 15 minutes to complete.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="/#/resume-analyzer"
+              <Link
+                to="/resume-analyzer"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#FF9500] font-bold rounded-lg hover:shadow-lg hover:-translate-y-1 transition-all duration-300 active:scale-95"
               >
                 <Sparkles className="w-5 h-5" />
                 <span>Start Career Diagnosis</span>
-              </a>
-              <a
-                href="/#/learning-paths"
+              </Link>
+              <Link
+                to="/learning-paths"
                 className="inline-flex items-center gap-2 px-8 py-4 border-2 border-white text-white font-bold rounded-lg hover:bg-white/10 transition-all duration-300"
               >
                 <span>Explore Paths</span>
                 <ArrowRight className="w-5 h-5" />
-              </a>
+              </Link>
             </div>
             <p className="text-xs text-white/80 mt-6">
               ✓ 1,350+ students already diagnosed • ✓ 85% improvement rate • ✓ Mentor-backed recommendations

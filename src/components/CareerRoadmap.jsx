@@ -1,5 +1,6 @@
 import React from 'react';
 import { GraduationCap, Zap, Briefcase, Users, Trophy, ArrowRight } from 'lucide-react';
+import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 
 const CareerRoadmap = () => {
   const roadmapSteps = [
@@ -176,13 +177,14 @@ const CareerRoadmap = () => {
           <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
             Start your transformation today. Our platform guides you through each step with curated content, expert mentorship, and real-world projects.
           </p>
-          <a
-            href="/#/start-assessment"
+          <button
+            type="button"
+            onClick={goToStartAssessment}
             className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-r from-orange-600 to-red-600 text-white font-bold rounded-lg hover:shadow-lg hover:shadow-orange-500/30 hover:-translate-y-1 transition-all duration-300 active:scale-95"
           >
             <span>Check my readiness — free</span>
             <ArrowRight className="w-5 h-5" />
-          </a>
+          </button>
         </div>
       </div>
     </section>

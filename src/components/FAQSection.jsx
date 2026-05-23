@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { ChevronDown, HelpCircle } from 'lucide-react';
 
 const FAQSection = () => {
@@ -86,9 +87,9 @@ const FAQSection = () => {
         {/* Bottom CTA */}
         <div className="mt-16 text-center">
           <p className="text-on-dark-sub mb-6">Still have questions? We're here to help!</p>
-          <a href="/#/contact" className="btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-lg font-bold">
+          <Link to="/contact" className="btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-lg font-bold">
             <span>Contact Our Team</span>
-          </a>
+          </Link>
         </div>
       </div>
     </section>

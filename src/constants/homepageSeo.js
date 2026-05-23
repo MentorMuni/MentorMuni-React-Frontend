@@ -9,6 +9,9 @@ export const HOMEPAGE_META_TITLE =
 export const HOMEPAGE_META_DESCRIPTION =
   'MentorMuni is your placement mentor for campus hiring in India — free readiness score in 5 min, AI mock interviews, gap report, and 1:1 mentors for TCS, Infosys, and product companies. No signup.';
 
+export const HOMEPAGE_META_KEYWORDS =
+  'placement mentor, placement preparation, campus placement, placement interview prep, engineering placement India, interview readiness, TCS placement prep, AI mock interview, MentorMuni';
+
 /** Visible homepage FAQ — keep in sync with FAQPage JSON-LD in index.html */
 export const HOMEPAGE_FAQ_ITEMS = [
   {

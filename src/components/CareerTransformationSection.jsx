@@ -1,6 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { XCircle, Zap, CheckCircle, ArrowRight, Sparkles } from 'lucide-react';
 import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
+import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 
 const CareerTransformationSection = () => {
   const transformationStages = [
@@ -161,12 +163,18 @@ const CareerTransformationSection = () => {
           <p className="text-on-dark-sub mb-8 max-w-2xl mx-auto text-lg">Start with our free AI assessment and discover exactly where you stand and what you need to reach your dream tech job.</p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/#/resume-analyzer" className="btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-lg font-bold">
+            <Link to="/resume-analyzer" className="btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-lg font-bold">
               <span>Analyze My Resume (Free)</span>
               <ArrowRight className="w-5 h-5 text-white" />
-            </a>
+            </Link>
 
-            <a href="/#/start-assessment" className="btn-secondary inline-flex items-center gap-2 px-8 py-4 rounded-lg font-bold">Check my readiness — free</a>
+            <button
+              type="button"
+              onClick={goToStartAssessment}
+              className="btn-secondary inline-flex items-center gap-2 px-8 py-4 rounded-lg font-bold"
+            >
+              {PRIMARY_CTA_LABEL}
+            </button>
           </div>
 
           <p className="text-sm text-on-dark-sub mt-6">✓ 1,350+ students transformed • ✓ 85% got interview calls • ✓ No credit card required</p>

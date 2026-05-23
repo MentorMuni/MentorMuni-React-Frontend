@@ -14,7 +14,7 @@ export const DESIGN_QA_CHECKLIST = [
   'Empty: lists/dashboards explain why empty + next step',
   'Focus: interactive elements have visible :focus-visible (orange ring)',
   'Tap targets: buttons/links ≥44px min height on mobile where possible',
-  'Router: internal nav uses <Link> — works with HashRouter + base path',
+  'Router: internal nav uses <Link> — works with BrowserRouter + Vite base path',
   'Forms: labels, errors inline, disabled + loading states on submit',
   'Mobile nav: menu closes on navigate; no horizontal overflow',
   'Footer: links match App routes; legal/contact consistent',

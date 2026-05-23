@@ -21,6 +21,7 @@ import PrepLoungePanel from './interviewready/PrepLoungePanel';
 import TestCountdownTimer from './interviewready/TestCountdownTimer';
 import SkillValidationModal from './SkillValidationModal';
 import { fetchWithDeduplication } from '../utils/apiOptimization';
+import { toAppAbsoluteUrl } from '../utils/appPaths';
 const FREE_TIER_LIMIT = 3;
 
 /** Interview readiness (breadth) — POST /interview-ready/interview-readiness/plan */
@@ -369,14 +370,11 @@ function explainPlanHttpError(status, apiMessage) {
   return base || 'Something went wrong. Please try again.';
 }
 
-/** HashRouter: #/start-assessment?entry=tools */
-function readToolsEntryFromHash() {
+/** BrowserRouter: /start-assessment?entry=tools */
+function readToolsEntryFromSearch() {
   if (typeof window === 'undefined') return false;
   try {
-    const h = window.location.hash || '';
-    const qi = h.indexOf('?');
-    if (qi === -1) return false;
-    return new URLSearchParams(h.slice(qi + 1)).get('entry') === 'tools';
+    return new URLSearchParams(window.location.search).get('entry') === 'tools';
   } catch {
     return false;
   }
@@ -639,11 +637,9 @@ function peerDimensionsFromResult(pct, strengthSignal, gapPressure) {
   ];
 }
 
-/** Public link to start the same assessment (HashRouter + Vite base). */
+/** Public link to start the same assessment (BrowserRouter + Vite base). */
 function getInterviewReadinessShareUrl() {
-  if (typeof window === 'undefined') return '';
-  const base = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '/');
-  return `${window.location.origin}${base}#/start-assessment`;
+  return toAppAbsoluteUrl('/start-assessment');
 }
 
 function buildWhatsAppChallengeMessage(pct, readinessLabel, modeLabel) {
@@ -858,12 +854,9 @@ function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
   );
 }
 
-/** Full URL for a HashRouter path — use with target="_blank" so the assessment tab keeps running */
-function appHashUrl(routePath) {
-  if (typeof window === 'undefined') return `#${routePath}`;
-  const { origin, pathname, search } = window.location;
-  const p = routePath.startsWith('/') ? routePath : `/${routePath}`;
-  return `${origin}${pathname}${search}#${p}`;
+/** Full URL for an in-app route — use with target="_blank" so the assessment tab keeps running */
+function appRouteUrl(routePath) {
+  return toAppAbsoluteUrl(routePath);
 }
 
 /** Short rotating lines — keeps the wait feeling alive without implying fake % progress */
@@ -900,8 +893,8 @@ function PlanGenerationLoader() {
     return () => clearInterval(id);
   }, [reduceMotion]);
 
-  const mentorsHref = appHashUrl('/mentors');
-  const mocksHref = appHashUrl('/mock-interviews');
+  const mentorsHref = appRouteUrl('/mentors');
+  const mocksHref = appRouteUrl('/mock-interviews');
 
   const promoPrimaryClass =
     'inline-flex w-full items-center justify-center gap-2 rounded-xl bg-cta px-5 py-3 text-sm font-bold text-white shadow-md shadow-button transition-all sm:w-auto';
@@ -1609,13 +1602,13 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
 const InterviewReady = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [fromToolsEntry] = useState(() => readToolsEntryFromHash());
+  const [fromToolsEntry] = useState(() => readToolsEntryFromSearch());
 
   // Initialize free usage tracker and modal
   const { incrementUsage, getUsageInfo } = useFreeUsageTracker('interview_readiness');
 
   // 0: landing, 12: mode (tools entry), 2: role, … — tools skips hero, starts at mode picker
-  const [step, setStep] = useState(() => (readToolsEntryFromHash() ? 12 : 0));
+  const [step, setStep] = useState(() => (readToolsEntryFromSearch() ? 12 : 0));
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);

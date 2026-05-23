@@ -1,6 +1,8 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Users, MessageSquare, Lightbulb, Heart, MessageCircle, Slack, ArrowRight } from 'lucide-react';
 import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
+import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 
 const CommunitySection = () => {
   const communityBenefits = [
@@ -178,19 +180,20 @@ const CommunitySection = () => {
             Join the community, take our free assessment, and get personalized guidance on your path to a tech job.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="/#/start-assessment"
+            <button
+              type="button"
+              onClick={goToStartAssessment}
               className="btn-primary inline-flex items-center gap-2 px-8 py-4 text-white font-bold rounded-lg hover:shadow-lg hover:-translate-y-1 transition-all duration-300 active:scale-95"
             >
               <span>{PRIMARY_CTA_LABEL}</span>
               <ArrowRight className="w-5 h-5" />
-            </a>
-            <a
-              href="/#/skill-gap-analyzer"
+            </button>
+            <Link
+              to="/skill-gap-analyzer"
               className="inline-flex items-center gap-2 px-8 py-4 border border-primary text-primary font-bold rounded-lg hover:bg-primary/10 transition-all duration-300"
             >
               Analyze My Skills
-            </a>
+            </Link>
           </div>
         </div>
 

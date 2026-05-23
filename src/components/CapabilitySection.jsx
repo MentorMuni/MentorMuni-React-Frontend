@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Zap, BarChart3, Code, ArrowRight, Star } from 'lucide-react';
 
 const CapabilitySection = () => {
@@ -231,19 +232,19 @@ const CapabilitySection = () => {
               Get 3 free analyses. No credit card required.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
-                href="/#/resume-analyzer"
+              <Link
+                to="/resume-analyzer"
                 className="inline-flex items-center gap-2 px-8 py-4 bg-white text-[#FF9500] font-bold rounded-lg hover:shadow-lg hover:-translate-y-1 transition-all duration-300 active:scale-95"
               >
                 <span>Get Started Free</span>
                 <ArrowRight className="w-5 h-5" />
-              </a>
-              <a
-                href="/#/career-health"
+              </Link>
+              <Link
+                to="/career-health"
                 className="inline-flex items-center gap-2 px-8 py-4 border-2 border-white text-white font-bold rounded-lg hover:bg-white/10 transition-all duration-300"
               >
                 View Your Career Health
-              </a>
+              </Link>
             </div>
           </div>
         </div>

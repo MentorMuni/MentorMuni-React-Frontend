@@ -1,7 +1,8 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
-import { HashRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { getRouterBasename } from "./utils/appPaths";
 import { motion } from "framer-motion";
-import { DEFAULT_META_DESCRIPTION, ROUTE_DESCRIPTIONS, ROUTE_TITLES } from "./constants/brandCopy";
+import { getRouteSeo } from "./constants/routeSeoMeta";
 import { goToStartAssessment } from "./utils/startAssessmentNavigation";
 
 import Navbar from "./components/navbar";
@@ -50,6 +51,9 @@ const ContactPage = lazy(() => import("./components/contactPage"));
 const AboutUs = lazy(() => import("./components/aboutUs"));
 const DesignSystemDemo = lazy(() => import("./components/DesignSystemDemo"));
 const CareerHealthDashboard = lazy(() => import("./components/CareerHealthDashboard"));
+const SoftwareEngineerInterviewQuestionsPage = lazy(
+  () => import("./components/SoftwareEngineerInterviewQuestionsPage")
+);
 const AIToolsKnowledgeBase = lazy(() => import("./components/AIToolsKnowledgeBase"));
 const InterviewReadinessToolsPage = lazy(() => import("./components/InterviewReadinessToolsPage"));
 const LeadershipBoard = lazy(() => import("./components/leadershipBoard"));
@@ -153,30 +157,50 @@ function AnnouncementBar() {
   );
 }
 
-function setMetaDescription(content) {
-  let meta = document.querySelector('meta[name="description"]');
+function setMetaTag(name, content) {
+  if (!content) return;
+  let meta = document.querySelector(`meta[name="${name}"]`);
   if (!meta) {
     meta = document.createElement('meta');
-    meta.setAttribute('name', 'description');
+    meta.setAttribute('name', name);
     document.head.appendChild(meta);
   }
   meta.setAttribute('content', content);
 }
 
-/** Update document.title and meta description per route (SEO for placement-related queries). */
+/** Redirect old HashRouter URLs (#/path) to BrowserRouter paths — keeps bookmarks & shared links working. */
+function HashLegacyRedirect() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const { hash } = window.location;
+    if (!hash.startsWith('#/')) return;
+    const raw = hash.slice(1);
+    const qi = raw.indexOf('?');
+    const path = qi === -1 ? raw : raw.slice(0, qi);
+    const search = qi === -1 ? '' : raw.slice(qi);
+    navigate(`${path}${search}`, { replace: true });
+  }, [navigate]);
+
+  return null;
+}
+
+/** Update document title, description, and keywords per route. */
 function RouteTitle() {
   const { pathname } = useLocation();
   useEffect(() => {
-    const title = ROUTE_TITLES[pathname] ?? 'MentorMuni — Placement Mentor & Interview Readiness';
+    const { title, description, keywords } = getRouteSeo(pathname);
     document.title = title;
-    setMetaDescription(ROUTE_DESCRIPTIONS[pathname] ?? DEFAULT_META_DESCRIPTION);
+    setMetaTag('description', description);
+    setMetaTag('keywords', keywords);
   }, [pathname]);
   return null;
 }
 
 function App() {
   return (
-    <Router>
+    <BrowserRouter basename={getRouterBasename()}>
+      <HashLegacyRedirect />
       <ScrollToTop />
       <RouteTitle />
       <div className="mm-site-theme flex min-h-screen w-full min-w-0 flex-col text-foreground">
@@ -188,6 +212,16 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/roadmap" element={<RoadmapPage />} />
+              {/* SEO landing URLs — same tools, keyword-focused paths for search */}
+              <Route path="/placement-roadmap" element={<RoadmapPage />} />
+              <Route path="/dsa-roadmap" element={<LearningPaths />} />
+              <Route path="/mock-interview" element={<MockInterviews />} />
+              <Route path="/resume-ats-checker" element={<ResumeAnalyzer />} />
+              <Route path="/ai-interview-preparation" element={<MockInterviews />} />
+              <Route
+                path="/software-engineer-interview-questions"
+                element={<SoftwareEngineerInterviewQuestionsPage />}
+              />
               <Route path="/leadership-board" element={<LeadershipBoard />} />
               {/* Specific /tools/* routes must be listed before /tools so they match first */}
               <Route path="/tools/interview-readiness" element={<InterviewReadinessToolsPage />} />
@@ -244,7 +278,7 @@ function App() {
         <WelcomeLaunchOverlay />
         <MuniBot />
       </div>
-    </Router>
+    </BrowserRouter>
   );
 }
 

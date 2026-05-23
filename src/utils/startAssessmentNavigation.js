@@ -1,26 +1,24 @@
+import { toAppPath } from './appPaths';
+
 /**
- * Full-page navigation to Interview Readiness (`#/start-assessment`).
- * HashRouter + SPA: client-side <Link> only swaps the hash without reloading,
- * so wizard state can stick around. This forces a real navigation / reload.
- *
- * If already on this route, reloads the page so state resets.
+ * Full-page navigation to Interview Readiness (`/start-assessment`).
+ * Client-side <Link> does not reset wizard state — this forces a real navigation / reload.
  */
-const TARGET_HASH = '#/start-assessment';
+const TARGET_PATH = '/start-assessment';
 
 export function goToStartAssessment() {
-  const base = import.meta.env.BASE_URL || '/';
-  const url = new URL(base, window.location.origin);
-  url.hash = TARGET_HASH;
+  const target = toAppPath(TARGET_PATH);
+  const { pathname } = window.location;
 
-  const current = window.location.hash.split('?')[0];
-  if (current === TARGET_HASH) {
+  if (pathname === target || pathname.endsWith(TARGET_PATH)) {
     window.location.reload();
     return;
   }
-  window.location.href = url.href;
+
+  window.location.assign(target);
 }
 
 export function isStartAssessmentPath(href) {
   if (!href || typeof href !== 'string') return false;
-  return href === '/start-assessment' || href.startsWith('/start-assessment?');
+  return href === TARGET_PATH || href.startsWith(`${TARGET_PATH}?`);
 }

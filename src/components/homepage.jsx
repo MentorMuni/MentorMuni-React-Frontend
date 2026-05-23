@@ -64,7 +64,12 @@ import {
   CONTACT_EMAIL,
   CONTACT_EMAIL_HREF,
 } from '../constants/brandCopy';
-import { HOMEPAGE_META_TITLE, HOMEPAGE_META_DESCRIPTION, HOMEPAGE_FAQ_ITEMS } from '../constants/homepageSeo';
+import {
+  HOMEPAGE_META_TITLE,
+  HOMEPAGE_META_DESCRIPTION,
+  HOMEPAGE_META_KEYWORDS,
+  HOMEPAGE_FAQ_ITEMS,
+} from '../constants/homepageSeo';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { HeroFlagshipVisual } from './homepage/HeroFlagshipVisual';
 import { HeroHeadlineTypewriter } from './homepage/HeroHeadlineTypewriter';
@@ -649,11 +654,15 @@ function HomepageFaqSection() {
 
 const HomePage = () => {
   const reduceMotion = useReducedMotion();
-  usePageMeta({ title: HOMEPAGE_META_TITLE, description: HOMEPAGE_META_DESCRIPTION });
+  usePageMeta({
+    title: HOMEPAGE_META_TITLE,
+    description: HOMEPAGE_META_DESCRIPTION,
+    keywords: HOMEPAGE_META_KEYWORDS,
+  });
   const heroCopy = HERO_YEAR_COPY.y4;
   const heroLeadCopy = heroCopy.subShort || heroCopy.sub;
 
-  /** Same-page scroll to the conversion block — avoids `href="#…"` breaking HashRouter. */
+  /** Same-page scroll to the conversion block — use scrollIntoView, not hash links. */
   const scrollToFinalCta = () => {
     document.getElementById('final-cta')?.scrollIntoView({
       behavior: reduceMotion ? 'auto' : 'smooth',
