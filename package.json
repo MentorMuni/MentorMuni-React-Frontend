@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "start": "serve -s dist -l $PORT",
+    "vercel-build": "vite build && rm -f dist/404.html",
+    "start": "serve dist -l tcp://0.0.0.0:${PORT:-3000} -c serve.json",
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
