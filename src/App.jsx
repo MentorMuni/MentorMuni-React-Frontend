@@ -9,7 +9,14 @@ import HomePage from "./components/homepage";
 import MuniBot from "./components/MuniBot";
 import WelcomeLaunchOverlay from "./components/WelcomeLaunchOverlay";
 import StickyConversionBar from "./components/StickyConversionBar";
+import RouteErrorBoundary from "./components/RouteErrorBoundary";
 import "./index.css";
+
+const ASSESSMENT_PATHS = new Set([
+  "/start-assessment",
+  "/readiness",
+  "/interview-ready",
+]);
 
 const MotionMain = motion.main;
 
@@ -49,9 +56,16 @@ const LeadershipBoard = lazy(() => import("./components/leadershipBoard"));
 const RoadmapPage = lazy(() => import("./components/RoadmapPage"));
 
 function PageFallback() {
+  const { pathname } = useLocation();
+  const isAssessment = ASSESSMENT_PATHS.has(pathname);
   return (
     <div className="min-h-[60vh] bg-background px-4 py-12">
       <div className="mx-auto max-w-2xl space-y-4">
+        {isAssessment && (
+          <p className="text-center text-sm font-semibold text-muted-foreground">
+            Loading assessment…
+          </p>
+        )}
         <div className="h-9 w-2/3 max-w-md animate-pulse rounded-xl bg-shell-1" />
         <div className="h-4 w-full animate-pulse rounded-lg bg-shell-2" />
         <div className="h-4 w-5/6 animate-pulse rounded-lg bg-shell-2" />
@@ -62,21 +76,24 @@ function PageFallback() {
   );
 }
 
-/** Subtle route transition — skip enter animation on home to protect LCP. */
+/** Route shell — avoid opacity:0 enter (can look like a blank page if motion fails to run). */
 function AnimatedMain({ children, className = "" }) {
   const { pathname } = useLocation();
-  const isHome = pathname === "/";
   return (
     <MotionMain
       key={pathname}
-      initial={isHome ? false : { opacity: 0, y: 12 }}
+      initial={false}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
       className={`relative z-0 w-full min-w-0 flex-grow ${className}`}
     >
       {children}
     </MotionMain>
   );
+}
+
+function AssessmentRoute({ children }) {
+  return <RouteErrorBoundary>{children}</RouteErrorBoundary>;
 }
 
 /** Reset scroll position on every route change. */
@@ -166,9 +183,9 @@ function App() {
               <Route path="/interview-readiness-tools" element={<InterviewReadinessToolsPage />} />
               <Route path="/tools" element={<Tools />} />
               <Route path="/mentors" element={<Mentors />} />
-              <Route path="/start-assessment" element={<InterviewReady />} />
-              <Route path="/readiness" element={<InterviewReady />} />
-              <Route path="/interview-ready" element={<InterviewReady />} />
+              <Route path="/start-assessment" element={<AssessmentRoute><InterviewReady /></AssessmentRoute>} />
+              <Route path="/readiness" element={<AssessmentRoute><InterviewReady /></AssessmentRoute>} />
+              <Route path="/interview-ready" element={<AssessmentRoute><InterviewReady /></AssessmentRoute>} />
               <Route path="/learning-paths" element={<LearningPaths />} />
               <Route path="/placement-tracks" element={<PlacementTracks />} />
               <Route path="/free-tutorials" element={<FreeTutorials />} />

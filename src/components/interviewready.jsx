@@ -18,6 +18,7 @@ import AIAnalysisLoader from './AIAnalysisLoader';
 import { useFreeUsageTracker } from './FreeUsageCounter';
 import UpgradePromptModal from './UpgradePromptModal';
 import PrepLoungePanel from './interviewready/PrepLoungePanel';
+import TestCountdownTimer from './interviewready/TestCountdownTimer';
 import SkillValidationModal from './SkillValidationModal';
 import { fetchWithDeduplication } from '../utils/apiOptimization';
 const FREE_TIER_LIMIT = 3;
@@ -283,6 +284,59 @@ async function parseResponseJson(res) {
 }
 
 const PLAN_FETCH_TIMEOUT_MS = 60000; // 60 seconds - allows time for LLM to generate questions
+/** Scoring can be slow after idle / cold backend — allow retries */
+const EVALUATE_FETCH_TIMEOUT_MS = 90000;
+
+function formatApiError(data, fallback = 'Request failed') {
+  if (!data) return fallback;
+  if (typeof data.detail === 'string') return data.detail;
+  if (Array.isArray(data.detail)) {
+    return data.detail
+      .map((d) => {
+        if (typeof d === 'string') return d;
+        const locTail = Array.isArray(d.loc)
+          ? d.loc.filter((x) => x !== 'body' && x !== 'query').join('.')
+          : '';
+        const msg = d.msg || JSON.stringify(d);
+        return locTail ? `${locTail}: ${msg}` : msg;
+      })
+      .join(' ');
+  }
+  return data.error || data.message || fallback;
+}
+
+function explainEvaluateHttpError(status, apiMessage) {
+  const base = (apiMessage || '').trim();
+
+  if (status === 504 || status === 408) {
+    return base || 'Scoring took too long. Please tap “Get My Readiness Score” again.';
+  }
+
+  if (status === 502 || status === 503) {
+    return (
+      base ||
+      'The scoring service was briefly unavailable — this can happen if the page was open for a few minutes. Please try submitting again.'
+    );
+  }
+
+  if (status === 500) {
+    return base || 'Something went wrong while scoring your answers. Please try again in a moment.';
+  }
+
+  if (status === 422 || status === 400) {
+    return base || 'We could not score this attempt. Make sure every question has an answer, then try again.';
+  }
+
+  if (status === 429) {
+    return base || 'Too many scoring requests. Please wait a moment and try again.';
+  }
+
+  return base || 'Failed to evaluate answers. Please try again.';
+}
+
+function isEvaluateRetryableStatus(status) {
+  return status === 502 || status === 503 || status === 504 || status === 408;
+}
 
 /** User-facing copy only — never show raw HTTP status codes (e.g. 500) in the UI */
 function explainPlanHttpError(status, apiMessage) {
@@ -1301,6 +1355,7 @@ function planQuestionTypeBadge(kind) {
 function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSubmit, loading, error }) {
   const [scrolled, setScrolled] = useState(false);
   const listRef = useRef(null);
+  const autoSubmitFiredRef = useRef(false);
   const isSkillQuiz = profile.assessmentMode === ASSESSMENT_FOCUS_SKILL;
   const isAptitudeQuiz = profile.assessmentMode === ASSESSMENT_FOCUS_APTITUDE;
   const quizTitle = isSkillQuiz
@@ -1309,6 +1364,21 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
       ? 'Aptitude preparation quiz'
       : 'Interview readiness quiz';
   const items = Array.isArray(evaluationPlan) ? evaluationPlan : [];
+
+  const handleAutoSubmit = () => {
+    if (loading || autoSubmitFiredRef.current) return;
+    const total = items.length;
+    const answeredAll = total > 0 && items.every((_, i) => String(answers[i] ?? '').trim());
+    if (!answeredAll) return;
+    autoSubmitFiredRef.current = true;
+    onSubmit();
+  };
+
+  useEffect(() => {
+    if (!loading && error) {
+      autoSubmitFiredRef.current = false;
+    }
+  }, [loading, error]);
   const answered = Object.keys(answers).length;
   const total = items.length || 1;
   const pct = Math.min(100, Math.round((answered / total) * 100));
@@ -1330,6 +1400,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
     <div className="min-h-screen mm-site-theme py-6 px-4 sm:px-6 sm:py-8 lg:px-8">
       <div className="mx-auto max-w-3xl">
         <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-xl sm:rounded-3xl">
+          <TestCountdownTimer onAutoSubmit={handleAutoSubmit} disabled={loading} />
           {/* Expanded header — hidden once user scrolls the question list */}
           <div
             className={`border-b border-border px-4 transition-all duration-200 sm:px-6 ${
@@ -2195,78 +2266,130 @@ const InterviewReady = () => {
   };
 
   const handleEvalSubmit = async () => {
+    if (!Array.isArray(evaluationData) || evaluationData.length === 0) {
+      setError('No questions loaded. Go back and generate your question set again.');
+      return;
+    }
+
+    const missingNums = [];
+    for (let i = 0; i < evaluationData.length; i += 1) {
+      if (!String(answers[i] ?? '').trim()) missingNums.push(i + 1);
+    }
+    if (missingNums.length > 0) {
+      const preview = missingNums.slice(0, 6).join(', ');
+      const suffix = missingNums.length > 6 ? '…' : '';
+      setError(`Please answer every question before submitting (still open: ${preview}${suffix}).`);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
+    const payload = {
+      questions: evaluationData.map((q) => q.question),
+      answers: evaluationData.map((_, i) => answers[i] || ''),
+      correct_answers: evaluationData.map((q) => q.correct_answer),
+      study_topics: evaluationData.map((q) => q.study_topic),
+    };
+
+    const runEvaluate = async () => {
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => controller.abort(), EVALUATE_FETCH_TIMEOUT_MS);
+      try {
+        const res = await fetch(`${API_BASE}/interview-ready/evaluate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+          signal: controller.signal,
+        });
+        const data = await parseResponseJson(res);
+        return { res, data };
+      } finally {
+        window.clearTimeout(timeoutId);
+      }
+    };
+
     try {
-      const payload = {
-        questions: evaluationData.map((q) => q.question),
-        answers: evaluationData.map((_, i) => answers[i] || ''),
-        correct_answers: evaluationData.map((q) => q.correct_answer),
-        study_topics: evaluationData.map((q) => q.study_topic),
-      };
+      let lastResult = null;
+      for (let attempt = 0; attempt < 2; attempt += 1) {
+        if (attempt > 0) {
+          await new Promise((r) => window.setTimeout(r, 1200));
+        }
+        try {
+          lastResult = await runEvaluate();
+        } catch (err) {
+          if (err.name === 'AbortError') {
+            if (attempt === 0) continue;
+            setError('Scoring timed out. Please try again — the server may need a moment after being idle.');
+            return;
+          }
+          if (attempt === 0) continue;
+          setError('Cannot connect to backend. Check your connection and try again.');
+          return;
+        }
 
-      const res = await fetch(`${API_BASE}/interview-ready/evaluate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+        const { res, data } = lastResult;
+        if (res.ok) {
+          const pctRaw = data.readiness_percentage ?? data.readinessPercentage;
+          const pctNum =
+            typeof pctRaw === 'number' && !Number.isNaN(pctRaw)
+              ? pctRaw
+              : parseFloat(String(pctRaw ?? '').replace(/,/g, ''), 10);
+          const readinessPct = Number.isFinite(pctNum) ? Math.min(100, Math.max(0, pctNum)) : 0;
+          const readinessLabel =
+            (typeof data.readiness_label === 'string' && data.readiness_label) ||
+            (typeof data.readinessLabel === 'string' && data.readinessLabel) ||
+            'Your result';
 
-      const data = await parseResponseJson(res);
+          const attemptExport = buildReadinessAttemptExport({
+            profile,
+            evaluationData,
+            answers,
+            evaluatePayload: payload,
+            evaluateResponse: data,
+          });
 
-      if (!res.ok) {
-        const msg =
-          (typeof data.detail === 'string' && data.detail) ||
-          data.error ||
-          data.message ||
-          'Failed to evaluate answers. Please try again.';
-        setError(msg);
+          setEarlyBirdCouponCode(pickRandomEarlyBirdCoupon());
+          setCouponCopied(false);
+          setResult({
+            readiness_percentage: readinessPct,
+            readiness_label: readinessLabel,
+            summary: `${readinessLabel} — ${readinessPct}% readiness score`,
+            userCategory: profile.userCategory,
+            assessmentMode: profile.assessmentMode,
+            techStack: String(profile.primarySkill ?? '')
+              .trim()
+              .toLowerCase()
+              .slice(0, PLAN_PRIMARY_SKILL_MAX),
+            strengths: data.strengths || [],
+            gaps: data.gaps || [],
+            learning_recommendations: data.learning_recommendations || data.learningRecommendations || [],
+            evaluatedAt: Date.now(),
+            attemptExport,
+          });
+          setStep(6);
+
+          const { isLimitReached } = incrementUsage();
+          if (isLimitReached) setShowUpgradeModal(true);
+          return;
+        }
+
+        if (attempt === 0 && isEvaluateRetryableStatus(res.status)) {
+          continue;
+        }
+
+        setError(explainEvaluateHttpError(res.status, formatApiError(data, 'Failed to evaluate answers. Please try again.')));
         return;
       }
 
-      const pctRaw = data.readiness_percentage ?? data.readinessPercentage;
-      const pctNum =
-        typeof pctRaw === 'number' && !Number.isNaN(pctRaw)
-          ? pctRaw
-          : parseFloat(String(pctRaw ?? '').replace(/,/g, ''), 10);
-      const readinessPct = Number.isFinite(pctNum) ? Math.min(100, Math.max(0, pctNum)) : 0;
-      const readinessLabel =
-        (typeof data.readiness_label === 'string' && data.readiness_label) ||
-        (typeof data.readinessLabel === 'string' && data.readinessLabel) ||
-        'Your result';
-
-      const attemptExport = buildReadinessAttemptExport({
-        profile,
-        evaluationData,
-        answers,
-        evaluatePayload: payload,
-        evaluateResponse: data,
-      });
-
-      const evalResult = {
-        readiness_percentage: readinessPct,
-        readiness_label: readinessLabel,
-        summary: `${readinessLabel} — ${readinessPct}% readiness score`,
-        userCategory: profile.userCategory,
-        assessmentMode: profile.assessmentMode,
-        techStack: String(profile.primarySkill ?? '')
-          .trim()
-          .toLowerCase()
-          .slice(0, PLAN_PRIMARY_SKILL_MAX),
-        strengths: data.strengths || [],
-        gaps: data.gaps || [],
-        learning_recommendations: data.learning_recommendations || data.learningRecommendations || [],
-        evaluatedAt: Date.now(),
-        attemptExport,
-      };
-
-      setEarlyBirdCouponCode(pickRandomEarlyBirdCoupon());
-      setCouponCopied(false);
-      setResult(evalResult);
-      setStep(6);
-
-      const { isLimitReached } = incrementUsage();
-      if (isLimitReached) setShowUpgradeModal(true);
+      if (lastResult && !lastResult.res.ok) {
+        setError(
+          explainEvaluateHttpError(
+            lastResult.res.status,
+            formatApiError(lastResult.data, 'Failed to evaluate answers. Please try again.')
+          )
+        );
+      }
     } catch (err) {
       console.error('Evaluate error:', err);
       setError('Cannot connect to backend. Please try again.');
