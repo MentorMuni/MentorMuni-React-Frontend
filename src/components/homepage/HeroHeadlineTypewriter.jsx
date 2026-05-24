@@ -45,18 +45,29 @@ export function HeroHeadlineTypewriter({ phrases, reducedMotion = false, classNa
     return () => clearInterval(id);
   }, [reducedMotion]);
 
+  const reservePhrase = useMemo(() => {
+    if (!safePhrases.length) return '';
+    return safePhrases.reduce((longest, phrase) => (phrase.length > longest.length ? phrase : longest));
+  }, [safePhrases]);
+
   const currentPhrase = safePhrases[phraseIndex] ?? '';
   const displayed = reducedMotion ? currentPhrase : currentPhrase.slice(0, charIndex);
 
   return (
-    <span className={`${className} inline-flex items-end`}>
-      <span>{displayed}</span>
-      <span
-        className={`ml-0.5 inline-block h-[0.92em] w-[2px] translate-y-[0.08em] bg-[#1A8FC4] align-[-0.12em] ${
-          showCursor ? 'opacity-100' : 'opacity-30'
-        } transition-opacity duration-200`}
-        aria-hidden
-      />
+    <span className={`grid w-full ${className}`}>
+      {/* Locks height to the tallest wrap (e.g. two lines on mobile) so typing does not shift layout */}
+      <span className="invisible col-start-1 row-start-1 select-none whitespace-normal" aria-hidden>
+        {reservePhrase}
+      </span>
+      <span className="col-start-1 row-start-1 inline-flex min-w-0 items-end">
+        <span>{displayed}</span>
+        <span
+          className={`ml-0.5 inline-block h-[0.92em] w-[2px] shrink-0 translate-y-[0.08em] bg-[#1A8FC4] align-[-0.12em] ${
+            showCursor ? 'opacity-100' : 'opacity-30'
+          } transition-opacity duration-200`}
+          aria-hidden
+        />
+      </span>
     </span>
   );
 }

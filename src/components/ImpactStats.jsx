@@ -1,7 +1,10 @@
 import React from 'react';
 import { Users, Target, Zap } from 'lucide-react';
+import { useNewUI } from '../context/NewUIContext';
+import AnimatedCounter from './new-ui/AnimatedCounter';
 
 const ImpactStats = () => {
+  const { newUI } = useNewUI();
   const stats = [
     {
       number: '200+',
@@ -56,7 +59,13 @@ const ImpactStats = () => {
                   </div>
                 </div>
 
-                <div className={`mb-2 text-5xl font-black md:text-6xl ${stat.iconColor}`}>{stat.number}</div>
+                <div className={`mb-2 text-5xl font-black md:text-6xl ${stat.iconColor}`}>
+                  {newUI ? (
+                    <AnimatedCounter value={stat.number} className="inline-block" />
+                  ) : (
+                    stat.number
+                  )}
+                </div>
 
                 <h3 className="mb-2 text-xl font-bold text-foreground">{stat.label}</h3>
 

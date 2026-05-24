@@ -10,9 +10,10 @@ sanitizeBrokenSpaUrl();
 
 import Navbar from "./components/navbar";
 import HomePage from "./components/homepage";
+import ParticleBackground from "./components/new-ui/ParticleBackground";
+import NewUIBetaSwitch from "./components/new-ui/NewUIBetaSwitch";
 import MuniBot from "./components/MuniBot";
 import WelcomeLaunchOverlay from "./components/WelcomeLaunchOverlay";
-import StickyConversionBar from "./components/StickyConversionBar";
 import RouteErrorBoundary from "./components/RouteErrorBoundary";
 import "./index.css";
 
@@ -207,10 +208,14 @@ function App() {
       <HashLegacyRedirect />
       <ScrollToTop />
       <RouteTitle />
-      <div className="mm-site-theme flex min-h-screen w-full min-w-0 flex-col text-foreground">
-        <AnnouncementBar />
-        <Navbar />
-        <AnimatedMain>
+      <div className="mm-site-theme relative flex min-h-screen w-full min-w-0 flex-col text-foreground">
+        <ParticleBackground />
+        <div className="relative z-[2]">
+          <AnnouncementBar />
+          <Navbar />
+          <NewUIBetaSwitch />
+        </div>
+        <AnimatedMain className="relative z-[1]">
           <Suspense fallback={<PageFallback />}>
             <Routes>
               <Route path="/" element={<HomePage />} />
@@ -282,7 +287,6 @@ function App() {
             </Routes>
           </Suspense>
         </AnimatedMain>
-        <StickyConversionBar />
         <WelcomeLaunchOverlay />
         <MuniBot />
       </div>

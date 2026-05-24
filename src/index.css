@@ -258,3 +258,28 @@ body {
   outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
 }
+
+/* Beta preview bar — under header */
+html.mm-new-ui .mm-beta-switch-bar {
+  backdrop-filter: blur(8px);
+}
+
+/* Readiness quiz — cap card below nav chrome; vh fallback when dvh is unsupported */
+.mm-quiz-panel-card {
+  max-height: calc(100vh - 10rem);
+}
+@supports (height: 100dvh) {
+  .mm-quiz-panel-card {
+    max-height: calc(100dvh - 10rem);
+  }
+}
+@media (min-width: 640px) {
+  .mm-quiz-panel-card {
+    max-height: calc(100vh - 9rem);
+  }
+  @supports (height: 100dvh) {
+    .mm-quiz-panel-card {
+      max-height: calc(100dvh - 9rem);
+    }
+  }
+}

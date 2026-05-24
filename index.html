@@ -202,8 +202,21 @@
         window.history.replaceState(null, '', base + decoded + l.hash);
       })(window.location);
     </script>
+    <script>
+      try {
+        var p = new URLSearchParams(window.location.search);
+        var classic = p.get('classic') === '1';
+        var newui = p.get('newui') === '1';
+        if (!classic && (newui || localStorage.getItem('mm-new-ui') === '1')) {
+          document.documentElement.classList.add('mm-new-ui');
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body style="background-color:#f8fbff;color:#3f3f46">
+    <style>
+      html.mm-new-ui body { background-color: #070b14 !important; color: #dce4ef !important; }
+    </style>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

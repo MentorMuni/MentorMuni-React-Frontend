@@ -71,6 +71,8 @@ import {
   HOMEPAGE_FAQ_ITEMS,
 } from '../constants/homepageSeo';
 import { usePageMeta } from '../hooks/usePageMeta';
+import { useNewUI } from '../context/NewUIContext';
+import AnimatedCounter from './new-ui/AnimatedCounter';
 import { HeroFlagshipVisual } from './homepage/HeroFlagshipVisual';
 import { HeroHeadlineTypewriter } from './homepage/HeroHeadlineTypewriter';
 import { HeroLoopVideo } from './homepage/HeroLoopVideo';
@@ -196,7 +198,7 @@ function HeroValueStack({ reduceMotion }) {
         viewport={{ once: true, amount: 0.02, margin: '0px 0px -60px 0px' }}
         transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
         style={{ opacity: 1 }}
-        className="relative mt-8 w-full sm:mt-10"
+        className="relative mt-0 w-full"
         aria-label="What MentorMuni offers"
       >
         <div className="relative mx-auto max-w-5xl">
@@ -209,14 +211,14 @@ function HeroValueStack({ reduceMotion }) {
             aria-hidden
           />
 
-          <div className="relative px-4 py-8 sm:px-7 sm:py-10 lg:px-10">
+          <div className="relative px-4 pt-2 pb-6 sm:px-7 sm:pt-3 sm:pb-8 lg:px-10">
             <motion.div
               initial={{ y: 12 }}
               whileInView={{ y: 0 }}
               viewport={{ once: true, amount: 0.02, margin: '0px 0px -60px 0px' }}
               transition={{ duration: 0.5, ease: [0.2, 0.8, 0.2, 1] }}
               style={{ opacity: 1 }}
-              className="mb-10 flex flex-col items-center gap-4 text-center"
+              className="mb-8 flex flex-col items-center gap-3 text-center"
             >
               <span className="inline-flex items-center gap-2 rounded-full border border-[#1A8FC4]/20 bg-[#1A8FC4]/[0.08] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.22em] text-[#1A8FC4] sm:text-[11px]">
                 <Sparkles className="h-3.5 w-3.5" aria-hidden />
@@ -519,7 +521,7 @@ function HeroProblemTicker({ reduceMotion }) {
 function HeroPlayfulClause({ text, reduceMotion }) {
   return (
     <motion.div
-      className="relative w-full max-w-[min(100%,440px)]"
+      className="relative mb-6 w-full max-w-[min(100%,440px)] sm:mb-8 lg:mb-0"
       initial={reduceMotion ? false : { opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.42, ease: [0.22, 1, 0.36, 1] }}
@@ -654,6 +656,7 @@ function HomepageFaqSection() {
 
 const HomePage = () => {
   const reduceMotion = useReducedMotion();
+  const { newUI } = useNewUI();
   usePageMeta({
     title: HOMEPAGE_META_TITLE,
     description: HOMEPAGE_META_DESCRIPTION,
@@ -678,7 +681,7 @@ const HomePage = () => {
   };
 
   return (
-    <main className="mm-site-theme overflow-x-hidden">
+    <main className="mm-site-theme relative z-[1] overflow-x-hidden">
       <style>{`
         :focus-visible {
           outline: 2px solid #1A8FC4;
@@ -722,10 +725,20 @@ const HomePage = () => {
         }
       `}</style>
 
-      {/* ════════════════ HERO — copy left · reality-check card right · white field ════════════════ */}
-      <section className="relative overflow-hidden border-b-0 bg-gradient-to-b from-slate-50/90 via-white to-[#fff8f0] pb-0 pt-10 md:pt-12 lg:pt-14">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_70%_-10%,rgba(26,143,196,0.12),transparent)]" aria-hidden />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_10%_50%,rgba(14,165,233,0.06),transparent)]" aria-hidden />
+      {/* ════════════════ HERO — copy left · reality-check card right ════════════════ */}
+      <section
+        className={
+          newUI
+            ? 'mm-new-ui-hero mm-marketing-hero-backdrop relative overflow-hidden border-b border-white/[0.06] pb-0 pt-10 md:pt-12 lg:pt-14'
+            : 'relative overflow-hidden border-b-0 bg-gradient-to-b from-slate-50/90 via-white to-[#fff8f0] pb-0 pt-10 md:pt-12 lg:pt-14'
+        }
+      >
+        {!newUI && (
+          <>
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_70%_-10%,rgba(26,143,196,0.12),transparent)]" aria-hidden />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_10%_50%,rgba(14,165,233,0.06),transparent)]" aria-hidden />
+          </>
+        )}
         <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-5 sm:px-6 lg:px-8">
           <div className="grid w-full min-w-0 grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-x-12 lg:gap-y-0 xl:gap-x-16">
             <div className="flex w-full min-w-0 flex-col gap-5 sm:gap-6">
@@ -774,11 +787,15 @@ const HomePage = () => {
                   <span className="mt-2 block text-base font-medium text-neutral-600 sm:text-lg">
                     Campus placement mentor &amp; interview readiness for engineering students in India
                   </span>
-                  <span className="mt-2 block min-h-[2.2rem] sm:min-h-[4.5rem] sm:mt-3 md:min-h-[5rem]">
+                  <span className="mt-2 block w-full sm:mt-3">
                     <HeroHeadlineTypewriter
                       phrases={HERO_TYPEWRITER_PHRASES}
                       reducedMotion={reduceMotion}
-                      className="mm-hero-typewriter-line block mm-hero-accent bg-gradient-to-r from-[#15799F] via-[#1A8FC4] to-[#2AAA8A] bg-clip-text text-transparent"
+                      className={
+                        newUI
+                          ? 'mm-hero-typewriter-line mm-hero-accent block text-[#7dd3fc]'
+                          : 'mm-hero-typewriter-line mm-hero-accent bg-gradient-to-r from-[#15799F] via-[#1A8FC4] to-[#2AAA8A] bg-clip-text text-transparent'
+                      }
                     />
                   </span>
                 </motion.h1>
@@ -825,7 +842,7 @@ const HomePage = () => {
                     </Link>
                   </div>
 
-                  <p className="mt-3 text-center text-xs text-neutral-600 sm:text-left">
+                  <p className="mt-3 mb-8 text-center text-xs leading-relaxed text-neutral-600 sm:mb-10 sm:text-left">
                     <button
                       type="button"
                       onClick={scrollToHomepagePricing}
@@ -864,18 +881,30 @@ const HomePage = () => {
 
       {/* ════════════════ TRUST — campus types + stats ════════════════ */}
       <section
-        className="border-t border-border bg-white py-8 md:py-10 px-5 sm:px-6 lg:px-8"
+        className="border-t border-border bg-white py-6 md:py-7 px-5 sm:px-6 lg:px-8"
         aria-label={HERO_TRUST_LOGO_ROW_LABEL}
       >
         <div className="mx-auto max-w-5xl">
           <div className="mb-5 flex flex-wrap items-center justify-center gap-5 sm:gap-8">
             <div className="text-center">
-              <p className="text-2xl font-extrabold text-[#1A8FC4]">500+</p>
-              <p className="text-[11px] font-semibold text-muted-foreground">mock rounds on platform</p>
+              <p className="text-2xl font-extrabold text-[#1A8FC4]">
+                {newUI ? (
+                  <AnimatedCounter value="200+" className="inline-block" />
+                ) : (
+                  '200+'
+                )}
+              </p>
+              <p className="text-[11px] font-semibold text-muted-foreground">readiness scores checked</p>
             </div>
             <div className="hidden h-8 w-px bg-border sm:block" aria-hidden />
             <div className="text-center">
-              <p className="text-2xl font-extrabold text-[#2AAA8A]">~5 min</p>
+              <p className="text-2xl font-extrabold text-[#2AAA8A]">
+                {newUI ? (
+                  <AnimatedCounter value="~5 min" className="inline-block" />
+                ) : (
+                  '~5 min'
+                )}
+              </p>
               <p className="text-[11px] font-semibold text-muted-foreground">free readiness score</p>
             </div>
             <div className="hidden h-8 w-px bg-border sm:block" aria-hidden />
@@ -902,8 +931,8 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ Platform depth — below fold (lighter hero, better LCP) ════════════════ */}
-      <section className="border-t border-border bg-gradient-to-b from-white to-secondary/40 py-10 md:py-14 px-5 sm:px-6 lg:px-8" aria-label="Platform overview">
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-10">
+      <section className="border-t border-border bg-gradient-to-b from-white to-secondary/40 py-5 md:py-7 px-5 sm:px-6 lg:px-8" aria-label="Platform overview">
+        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-5 md:gap-6">
           <div className="flex w-full max-w-3xl justify-center">
             <HeroLoopVideo />
           </div>

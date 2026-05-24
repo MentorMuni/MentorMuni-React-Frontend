@@ -1,10 +1,17 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { X, Send, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getMuniBotReply } from '../utils/munibotEngine';
 
 const LOGO_SRC = `${import.meta.env.BASE_URL}mentormuni-logo.png`;
+const POSITION_KEY = 'mm-munibot-position';
+const MOBILE_NUDGE_KEY = 'mm-munibot-mobile-nudge-seen';
+const MOBILE_NUDGE_MS = 4500;
+const FAB_SIZE = 56;
+const VIEWPORT_MARGIN = 12;
+const DRAG_THRESHOLD = 6;
+const PANEL_MAX_H = 540;
 
 const GREETING =
   "Hi — I'm **MuniBot**, your MentorMuni assistant. Ask me about our **programme**, **interview readiness**, **AI & LLM topics**, **prompting**, or **where to learn** online.";
@@ -18,6 +25,60 @@ const QUICK_QUESTIONS = [
   'Free learning resources',
   'How do I contact you?',
 ];
+
+function clamp(n, min, max) {
+  return Math.min(max, Math.max(min, n));
+}
+
+function getDefaultFabPosition() {
+  if (typeof window === 'undefined') return { left: 16, top: 400 };
+  const margin = window.innerWidth >= 768 ? 24 : 16;
+  const bottomOffset = window.innerWidth >= 768 ? 24 : 88;
+  return {
+    left: window.innerWidth - margin - FAB_SIZE,
+    top: window.innerHeight - bottomOffset - FAB_SIZE,
+  };
+}
+
+function loadFabPosition() {
+  try {
+    const raw = localStorage.getItem(POSITION_KEY);
+    if (!raw) return getDefaultFabPosition();
+    const parsed = JSON.parse(raw);
+    if (typeof parsed.left !== 'number' || typeof parsed.top !== 'number') {
+      return getDefaultFabPosition();
+    }
+    return parsed;
+  } catch {
+    return getDefaultFabPosition();
+  }
+}
+
+function clampFabPosition(pos) {
+  if (typeof window === 'undefined') return pos;
+  return {
+    left: clamp(pos.left, VIEWPORT_MARGIN, window.innerWidth - FAB_SIZE - VIEWPORT_MARGIN),
+    top: clamp(pos.top, VIEWPORT_MARGIN, window.innerHeight - FAB_SIZE - VIEWPORT_MARGIN),
+  };
+}
+
+function getPanelLayout(fabPos) {
+  if (typeof window === 'undefined') {
+    return { left: 12, top: 80, width: 360, maxHeight: PANEL_MAX_H };
+  }
+  const width = Math.min(448, window.innerWidth - 24);
+  const maxHeight = Math.min(window.innerHeight * 0.72, PANEL_MAX_H);
+  let left = fabPos.left + FAB_SIZE / 2 - width / 2;
+  left = clamp(left, VIEWPORT_MARGIN, window.innerWidth - width - VIEWPORT_MARGIN);
+
+  let top = fabPos.top - maxHeight - 12;
+  if (top < VIEWPORT_MARGIN) {
+    top = fabPos.top + FAB_SIZE + 12;
+  }
+  top = clamp(top, VIEWPORT_MARGIN, window.innerHeight - maxHeight - VIEWPORT_MARGIN);
+
+  return { left, top, width, maxHeight };
+}
 
 function TypingIndicator() {
   return (
@@ -38,7 +99,6 @@ function TypingIndicator() {
   );
 }
 
-/** **bold** + plain text segments */
 function renderBoldSegments(line) {
   const parts = line.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((part, i) =>
@@ -52,7 +112,6 @@ function renderBoldSegments(line) {
   );
 }
 
-/** Linkify https URLs + bold */
 function MessageBody({ text, isMarkdown, variant = 'bot' }) {
   const isUser = variant === 'user';
   const textClass = isUser ? 'text-white' : 'text-[#333]';
@@ -104,14 +163,60 @@ function MessageBubble({ text, isBot, isMarkdown }) {
 }
 
 export default function MuniBot() {
+  const reduceMotion = useReducedMotion();
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([{ text: GREETING, isBot: true, isMarkdown: true }]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showQuickReplies, setShowQuickReplies] = useState(true);
+  const [fabPos, setFabPos] = useState(loadFabPosition);
+  const [isDragging, setIsDragging] = useState(false);
+  const [panelLayout, setPanelLayout] = useState(() => getPanelLayout(loadFabPosition()));
+  const [showMobileNudge, setShowMobileNudge] = useState(false);
+
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const dragRef = useRef({
+    active: false,
+    moved: false,
+    startX: 0,
+    startY: 0,
+    startLeft: 0,
+    startTop: 0,
+  });
+
+  const persistPosition = useCallback((pos) => {
+    const clamped = clampFabPosition(pos);
+    try {
+      localStorage.setItem(POSITION_KEY, JSON.stringify(clamped));
+    } catch {
+      /* ignore */
+    }
+    return clamped;
+  }, []);
+
+  const updateFabPos = useCallback(
+    (next) => {
+      setFabPos((prev) => {
+        const resolved = typeof next === 'function' ? next(prev) : next;
+        return clampFabPosition(resolved);
+      });
+    },
+    [],
+  );
+
+  useEffect(() => {
+    setPanelLayout(getPanelLayout(fabPos));
+  }, [fabPos, isOpen]);
+
+  useEffect(() => {
+    const onResize = () => {
+      setFabPos((prev) => persistPosition(prev));
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, [persistPosition]);
 
   const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
 
@@ -122,6 +227,102 @@ export default function MuniBot() {
   useEffect(() => {
     if (isOpen) inputRef.current?.focus();
   }, [isOpen]);
+
+  /** Mobile: one short pill per session — FAB is the affordance; no large callout */
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+    const mq = window.matchMedia('(max-width: 639px)');
+    const maybeShow = () => {
+      if (!mq.matches) {
+        setShowMobileNudge(false);
+        return;
+      }
+      try {
+        if (sessionStorage.getItem(MOBILE_NUDGE_KEY) === '1') return;
+      } catch {
+        /* ignore */
+      }
+      setShowMobileNudge(true);
+    };
+    maybeShow();
+    mq.addEventListener('change', maybeShow);
+    return () => mq.removeEventListener('change', maybeShow);
+  }, []);
+
+  useEffect(() => {
+    if (!showMobileNudge) return undefined;
+    const t = window.setTimeout(() => {
+      setShowMobileNudge(false);
+      try {
+        sessionStorage.setItem(MOBILE_NUDGE_KEY, '1');
+      } catch {
+        /* ignore */
+      }
+    }, MOBILE_NUDGE_MS);
+    return () => window.clearTimeout(t);
+  }, [showMobileNudge]);
+
+  const dismissMobileNudge = useCallback(() => {
+    setShowMobileNudge(false);
+    try {
+      sessionStorage.setItem(MOBILE_NUDGE_KEY, '1');
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  const onFabPointerDown = (e) => {
+    if (e.button !== 0 || isOpen) return;
+    e.currentTarget.setPointerCapture(e.pointerId);
+    dragRef.current = {
+      active: true,
+      moved: false,
+      startX: e.clientX,
+      startY: e.clientY,
+      startLeft: fabPos.left,
+      startTop: fabPos.top,
+    };
+    setIsDragging(true);
+  };
+
+  const onFabPointerMove = (e) => {
+    if (!dragRef.current.active) return;
+    const dx = e.clientX - dragRef.current.startX;
+    const dy = e.clientY - dragRef.current.startY;
+    if (!dragRef.current.moved && (Math.abs(dx) > DRAG_THRESHOLD || Math.abs(dy) > DRAG_THRESHOLD)) {
+      dragRef.current.moved = true;
+    }
+    if (dragRef.current.moved) {
+      updateFabPos({
+        left: dragRef.current.startLeft + dx,
+        top: dragRef.current.startTop + dy,
+      });
+    }
+  };
+
+  const onFabPointerUp = (e) => {
+    if (!dragRef.current.active) return;
+    const wasDrag = dragRef.current.moved;
+    dragRef.current.active = false;
+    setIsDragging(false);
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {
+      /* ignore */
+    }
+    setFabPos((prev) => persistPosition(prev));
+    if (!wasDrag) {
+      dismissMobileNudge();
+      setIsOpen(true);
+    }
+  };
+
+  const onFabPointerCancel = () => {
+    dragRef.current.active = false;
+    dragRef.current.moved = false;
+    setIsDragging(false);
+    setFabPos((prev) => persistPosition(prev));
+  };
 
   const sendMessage = (text) => {
     const msg = text?.trim() || input.trim();
@@ -154,43 +355,106 @@ export default function MuniBot() {
     setIsOpen(false);
   };
 
+  const showHint = !isOpen && !isDragging;
+  const showDesktopHint = showHint;
+  const showCompactMobileNudge = showHint && showMobileNudge;
+
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, x: 12 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 1.2, duration: 0.4 }}
-        className="pointer-events-none fixed bottom-[9.5rem] right-4 z-[9997] hidden max-w-[220px] sm:block md:bottom-[5.5rem] md:right-6"
-        aria-hidden
+      {/* Draggable FAB anchor */}
+      <div
+        className="fixed z-[9998] touch-none select-none"
+        style={{ left: fabPos.left, top: fabPos.top, width: FAB_SIZE, height: FAB_SIZE }}
       >
-        <div className="pointer-events-none rounded-2xl border border-border bg-white/95 px-3 py-2 text-xs font-medium text-muted-foreground shadow-lg backdrop-blur">
-          <span className="inline-flex items-center gap-1.5">
-            <Sparkles className="h-3.5 w-3.5 shrink-0 text-[#1A8FC4]" />
-            Ask MuniBot anything
-          </span>
-        </div>
-      </motion.div>
+        {/* Mobile — tiny pill, auto-hides (~4.5s), once per session */}
+        <AnimatePresence>
+          {showCompactMobileNudge && (
+            <motion.span
+              initial={{ opacity: 0, y: 4, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 4, scale: 0.92 }}
+              transition={{ duration: 0.25 }}
+              className="pointer-events-none absolute bottom-full left-1/2 z-[1] mb-1.5 -translate-x-1/2 whitespace-nowrap rounded-full bg-gradient-to-r from-[#1A8FC4] to-[#2AAA8A] px-2.5 py-1 text-[10px] font-bold tracking-tight text-white shadow-[0_4px_14px_rgba(26,143,196,0.45)] ring-2 ring-white/90 sm:hidden"
+              aria-hidden
+            >
+              Ask MuniBot
+            </motion.span>
+          )}
+        </AnimatePresence>
 
-      <motion.button
-        type="button"
-        onClick={() => setIsOpen(true)}
-        className="fixed bottom-[5.5rem] right-4 z-[9998] flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-white/90 text-white shadow-xl focus:outline-none focus:ring-4 focus:ring-[#1A8FC4]/35 md:bottom-6 md:right-6"
-        style={{
-          background: 'linear-gradient(135deg, #1A8FC4 0%, #15799F 50%, #0d5f7f 100%)',
-          boxShadow: '0 10px 40px -10px rgba(26, 143, 196, 0.45)',
-        }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.98 }}
-        aria-label="Open MuniBot"
-      >
-        <span className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-2xl">
-          <img src={LOGO_SRC} alt="" className="h-10 w-10 rounded-full object-cover ring-2 ring-white/50" width={40} height={40} />
-        </span>
-        <span className="pointer-events-none absolute -right-0.5 -top-0.5 flex h-4 w-4">
-          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/80 opacity-75" />
-          <span className="relative inline-flex h-4 w-4 rounded-full border-2 border-white bg-emerald-500" />
-        </span>
-      </motion.button>
+        {/* Tablet/desktop — full callout; hidden on narrow phones */}
+        {showDesktopHint && (
+          <motion.div
+            initial={{ opacity: 0, y: 6, scale: 0.96 }}
+            animate={
+              reduceMotion
+                ? { opacity: 1, y: 0, scale: 1 }
+                : { opacity: 1, y: [0, -4, 0], scale: 1 }
+            }
+            transition={
+              reduceMotion
+                ? { delay: 0.9, duration: 0.45 }
+                : {
+                    opacity: { delay: 0.9, duration: 0.45 },
+                    scale: { delay: 0.9, duration: 0.45 },
+                    y: { delay: 1.35, duration: 2.8, repeat: Infinity, ease: 'easeInOut' },
+                  }
+            }
+            className="pointer-events-none absolute bottom-full right-0 mb-2 hidden whitespace-nowrap sm:block sm:mb-2.5"
+            aria-hidden
+          >
+            <div className="relative inline-flex items-center gap-2 rounded-full border border-sky-200/90 bg-gradient-to-r from-white via-sky-50/95 to-cyan-50/90 py-1 pl-1 pr-3 shadow-[0_6px_20px_-4px_rgba(26,143,196,0.35)] ring-1 ring-[#1A8FC4]/15 backdrop-blur-sm">
+              <span className="relative flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#1A8FC4] to-[#2AAA8A] shadow-sm">
+                <Sparkles className="h-3 w-3 text-white" strokeWidth={2.25} aria-hidden />
+                <span className="absolute -right-px -top-px h-1.5 w-1.5 rounded-full border border-white bg-emerald-400" />
+              </span>
+              <span className="bg-gradient-to-r from-[#0e5e85] via-[#1A8FC4] to-[#2AAA8A] bg-clip-text text-xs font-bold tracking-tight text-transparent">
+                Ask MuniBot
+              </span>
+              <span
+                className="absolute -bottom-1 right-5 h-2 w-2 rotate-45 border-b border-r border-sky-200/90 bg-gradient-to-br from-white to-cyan-50"
+                aria-hidden
+              />
+            </div>
+          </motion.div>
+        )}
+
+        <motion.button
+          type="button"
+          onPointerDown={onFabPointerDown}
+          onPointerMove={onFabPointerMove}
+          onPointerUp={onFabPointerUp}
+          onPointerCancel={onFabPointerCancel}
+          className={`relative flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-white/90 text-white shadow-xl focus:outline-none focus:ring-4 focus:ring-[#1A8FC4]/35 ${
+            isDragging ? 'cursor-grabbing scale-[1.02]' : 'cursor-grab'
+          }`}
+          style={{
+            background: 'linear-gradient(135deg, #1A8FC4 0%, #15799F 50%, #0d5f7f 100%)',
+            boxShadow: isDragging
+              ? '0 16px 48px -8px rgba(26, 143, 196, 0.55)'
+              : '0 10px 40px -10px rgba(26, 143, 196, 0.45)',
+            touchAction: 'none',
+          }}
+          whileHover={isDragging ? undefined : { scale: 1.05 }}
+          whileTap={isDragging ? undefined : { scale: 0.98 }}
+          aria-label="Open MuniBot chat"
+        >
+          <span className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-2xl">
+            <img
+              src={LOGO_SRC}
+              alt=""
+              className="h-10 w-10 rounded-full object-cover ring-2 ring-white/50"
+              width={40}
+              height={40}
+              draggable={false}
+            />
+          </span>
+          <span className="pointer-events-none absolute -right-0.5 -top-0.5 flex h-4 w-4">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/80 opacity-75" />
+            <span className="relative inline-flex h-4 w-4 rounded-full border-2 border-white bg-emerald-500" />
+          </span>
+        </motion.button>
+      </div>
 
       <AnimatePresence>
         {isOpen && (
@@ -199,8 +463,12 @@ export default function MuniBot() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.96 }}
             transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-            className="fixed bottom-24 right-6 z-[9999] flex h-[min(72vh,540px)] w-[calc(100vw-1.5rem)] max-w-md flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl"
+            className="fixed z-[9999] flex flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl"
             style={{
+              left: panelLayout.left,
+              top: panelLayout.top,
+              width: panelLayout.width,
+              height: panelLayout.maxHeight,
               boxShadow: '0 25px 50px -12px rgba(0,0,0,0.18), 0 0 0 1px rgba(26,143,196,0.08)',
             }}
             role="dialog"

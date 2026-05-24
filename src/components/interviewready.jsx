@@ -398,7 +398,23 @@ const MM_FIELD_VALID =
 function scrollFirstInvalidFieldIntoView() {
   if (typeof document === 'undefined') return;
   requestAnimationFrame(() => {
-    document.querySelector('[data-mm-invalid="true"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    const el = document.querySelector('[data-mm-invalid="true"]');
+    if (!el) return;
+    let node = el.parentElement;
+    while (node && node !== document.body) {
+      const { overflowY } = window.getComputedStyle(node);
+      if (overflowY === 'auto' || overflowY === 'scroll') {
+        const parentRect = node.getBoundingClientRect();
+        const elRect = el.getBoundingClientRect();
+        const offset = elRect.top - parentRect.top - parentRect.height / 2 + elRect.height / 2;
+        if (Math.abs(offset) > 8) {
+          node.scrollTo({ top: node.scrollTop + offset, behavior: 'smooth' });
+        }
+        return;
+      }
+      node = node.parentElement;
+    }
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   });
 }
 
@@ -1389,14 +1405,24 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
     setScrolled(el.scrollTop > 28);
   };
 
+  useEffect(() => {
+    listRef.current?.scrollTo({ top: 0, behavior: 'auto' });
+    setScrolled(false);
+  }, [evaluationPlan]);
+
   return (
-    <div className="min-h-screen mm-site-theme py-6 px-4 sm:px-6 sm:py-8 lg:px-8">
-      <div className="mx-auto max-w-3xl">
-        <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-xl sm:rounded-3xl">
+    <div className="mm-site-theme px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
+      <div className="mx-auto w-full max-w-3xl">
+        {/*
+          Cap card height below the nav/announcement chrome so only the question list scrolls.
+          Use max-h (not fixed h) + no outer overflow-hidden — page can still scroll if chrome is
+          taller than the offset, so submit/timer are never clipped off-screen.
+        */}
+        <div className="mm-quiz-panel-card flex min-h-0 flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-xl sm:rounded-3xl">
           <TestCountdownTimer onAutoSubmit={handleAutoSubmit} disabled={loading} />
           {/* Expanded header — hidden once user scrolls the question list */}
           <div
-            className={`border-b border-border px-4 transition-all duration-200 sm:px-6 ${
+            className={`shrink-0 border-b border-border px-4 transition-all duration-200 sm:px-6 ${
               scrolled ? 'max-h-0 overflow-hidden border-0 opacity-0' : 'max-h-[220px] opacity-100 py-4 sm:py-5'
             }`}
             aria-hidden={scrolled}
@@ -1453,7 +1479,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
 
           {/* Slim bar — only after scrolling */}
           <div
-            className={`border-b border-border bg-surface-muted/95 px-4 backdrop-blur-sm transition-all duration-200 sm:px-6 ${
+            className={`shrink-0 border-b border-border bg-surface-muted/95 px-4 backdrop-blur-sm transition-all duration-200 sm:px-6 ${
               scrolled ? 'max-h-24 py-2.5 opacity-100' : 'max-h-0 overflow-hidden border-0 py-0 opacity-0'
             }`}
           >
@@ -1473,8 +1499,10 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
 
           <div
             ref={listRef}
+            role="region"
+            aria-label="Quiz questions"
             onScroll={onListScroll}
-            className="max-h-[min(75dvh,720px)] space-y-6 overflow-y-auto px-4 py-4 sm:px-6 sm:py-5"
+            className="min-h-0 flex-1 space-y-6 overflow-x-hidden overflow-y-auto px-4 py-4 [-webkit-overflow-scrolling:touch] sm:px-6 sm:py-5"
           >
             {items.map((item, i) => {
               const qText = typeof item?.question === 'string' ? item.question : String(item?.question ?? '');
@@ -1568,7 +1596,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
             })}
           </div>
 
-          <div className="border-t border-border bg-tint-subtle px-4 py-4 sm:px-6">
+          <div className="shrink-0 border-t border-border bg-tint-subtle px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-6">
             {error && (
               <div
                 className="mb-4 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-3 text-left text-sm font-medium text-red-800"
