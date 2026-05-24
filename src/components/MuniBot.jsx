@@ -1,6 +1,6 @@
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, useId } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
-import { X, Send, Sparkles } from 'lucide-react';
+import { X, Send, Sparkles, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getMuniBotReply } from '../utils/munibotEngine';
 
@@ -11,10 +11,13 @@ const MOBILE_NUDGE_MS = 4500;
 const FAB_SIZE = 56;
 const VIEWPORT_MARGIN = 12;
 const DRAG_THRESHOLD = 6;
-const PANEL_MAX_H = 540;
+const PANEL_MAX_H = 580;
+const MOBILE_PANEL_MAX_H = 420;
+const MOBILE_PANEL_VH = 0.52;
+const MOBILE_BREAKPOINT = 640;
 
 const GREETING =
-  "Hi — I'm **MuniBot**, your MentorMuni assistant. Ask me about our **programme**, **interview readiness**, **AI & LLM topics**, **prompting**, or **where to learn** online.";
+  "Hi — I'm **MuniBot**, your MentorMuni assistant.\n\nAsk about our **programme**, **interview readiness**, **AI & LLM topics**, **prompting**, or **where to learn** online.";
 
 const QUICK_QUESTIONS = [
   'What is MentorMuni?',
@@ -28,6 +31,23 @@ const QUICK_QUESTIONS = [
 
 function clamp(n, min, max) {
   return Math.min(max, Math.max(min, n));
+}
+
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth < MOBILE_BREAKPOINT;
+  });
+
+  useEffect(() => {
+    const mq = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
+    const update = () => setIsMobile(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  return isMobile;
 }
 
 function getDefaultFabPosition() {
@@ -62,12 +82,18 @@ function clampFabPosition(pos) {
   };
 }
 
-function getPanelLayout(fabPos) {
+function getPanelLayout(fabPos, isMobile) {
   if (typeof window === 'undefined') {
-    return { left: 12, top: 80, width: 360, maxHeight: PANEL_MAX_H };
+    return { left: 12, top: 80, width: 360, maxHeight: MOBILE_PANEL_MAX_H };
   }
-  const width = Math.min(448, window.innerWidth - 24);
-  const maxHeight = Math.min(window.innerHeight * 0.72, PANEL_MAX_H);
+
+  const width = isMobile
+    ? Math.min(360, window.innerWidth - VIEWPORT_MARGIN * 2)
+    : Math.min(400, window.innerWidth - VIEWPORT_MARGIN * 2);
+  const maxHeight = isMobile
+    ? Math.min(window.innerHeight * MOBILE_PANEL_VH, MOBILE_PANEL_MAX_H)
+    : Math.min(window.innerHeight * 0.8, PANEL_MAX_H);
+
   let left = fabPos.left + FAB_SIZE / 2 - width / 2;
   left = clamp(left, VIEWPORT_MARGIN, window.innerWidth - width - VIEWPORT_MARGIN);
 
@@ -82,17 +108,21 @@ function getPanelLayout(fabPos) {
 
 function TypingIndicator() {
   return (
-    <div className="flex items-center gap-1 rounded-2xl rounded-bl-md border border-border bg-white px-3 py-2.5 shadow-sm w-fit">
+    <div
+      className="mm-munibot-typing flex w-fit items-center gap-1 rounded-2xl rounded-bl-md px-3.5 py-3"
+      role="status"
+      aria-label="MuniBot is typing"
+    >
       <span
-        className="h-2 w-2 rounded-full bg-[#1A8FC4] animate-bounce"
+        className="mm-munibot-typing__dot h-1.5 w-1.5 rounded-full animate-bounce"
         style={{ animationDelay: '0ms' }}
       />
       <span
-        className="h-2 w-2 rounded-full bg-[#1A8FC4] animate-bounce"
+        className="mm-munibot-typing__dot h-1.5 w-1.5 rounded-full animate-bounce"
         style={{ animationDelay: '150ms' }}
       />
       <span
-        className="h-2 w-2 rounded-full bg-[#1A8FC4] animate-bounce"
+        className="mm-munibot-typing__dot h-1.5 w-1.5 rounded-full animate-bounce"
         style={{ animationDelay: '300ms' }}
       />
     </div>
@@ -103,9 +133,7 @@ function renderBoldSegments(line) {
   const parts = line.split(/(\*\*[^*]+\*\*)/g);
   return parts.map((part, i) =>
     part.startsWith('**') && part.endsWith('**') ? (
-      <strong key={i} className="font-semibold text-foreground">
-        {part.slice(2, -2)}
-      </strong>
+      <strong key={i}>{part.slice(2, -2)}</strong>
     ) : (
       <span key={i}>{part}</span>
     ),
@@ -114,46 +142,68 @@ function renderBoldSegments(line) {
 
 function MessageBody({ text, isMarkdown, variant = 'bot' }) {
   const isUser = variant === 'user';
-  const textClass = isUser ? 'text-white' : 'text-[#333]';
-  const linkClass = isUser
-    ? 'break-all font-medium text-white underline decoration-white/50 underline-offset-2 hover:text-white/90'
-    : 'break-all font-medium text-[#0891b2] underline decoration-[#0891b2]/40 underline-offset-2 hover:text-[#0e7490]';
+  const msgClass = isUser ? 'mm-munibot-msg mm-munibot-msg--user' : 'mm-munibot-msg mm-munibot-msg--bot';
+
+  const renderLine = (line, key) => {
+    if (!isMarkdown) {
+      return (
+        <p key={key} className={`${msgClass} whitespace-pre-line`}>
+          {line}
+        </p>
+      );
+    }
+    const segments = line.split(/(https?:\/\/[^\s]+)/g);
+    return (
+      <p key={key} className={msgClass}>
+        {segments.map((segment, i) => {
+          if (/^https?:\/\//.test(segment)) {
+            return (
+              <a key={i} href={segment} target="_blank" rel="noopener noreferrer">
+                {segment}
+              </a>
+            );
+          }
+          return <span key={i}>{renderBoldSegments(segment)}</span>;
+        })}
+      </p>
+    );
+  };
 
   if (!isMarkdown) {
-    return <p className={`text-sm leading-relaxed whitespace-pre-line ${textClass}`}>{text}</p>;
+    const blocks = text.split(/\n\n+/);
+    return blocks.map((block, i) => renderLine(block, i));
   }
 
-  const segments = text.split(/(https?:\/\/[^\s]+)/g);
-
-  return (
-    <p className={`text-sm leading-relaxed whitespace-pre-line ${textClass}`}>
-      {segments.map((segment, i) => {
-        if (/^https?:\/\//.test(segment)) {
-          return (
-            <a key={i} href={segment} target="_blank" rel="noopener noreferrer" className={linkClass}>
-              {segment}
-            </a>
-          );
-        }
-        return <span key={i}>{renderBoldSegments(segment)}</span>;
-      })}
-    </p>
-  );
+  const paragraphs = text.split(/\n\n+/);
+  return paragraphs.map((para, i) => {
+    const lines = para.split('\n');
+    return (
+      <div key={i} className={i > 0 ? 'mt-2' : undefined}>
+        {lines.map((line, j) => renderLine(line, `${i}-${j}`))}
+      </div>
+    );
+  });
 }
 
-function MessageBubble({ text, isBot, isMarkdown }) {
+function MessageBubble({ text, isBot, isMarkdown, animate }) {
   return (
-    <div className={`flex gap-2.5 ${isBot ? '' : 'flex-row-reverse'}`}>
+    <div
+      className={`flex gap-2.5 ${animate ? 'mm-munibot-msg-enter' : ''} ${isBot ? '' : 'flex-row-reverse'}`}
+    >
       {isBot && (
-        <div className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-white shadow-sm ring-2 ring-[#e0f0fa]">
-          <img src={LOGO_SRC} alt="" className="h-full w-full object-cover" width={36} height={36} />
+        <div className="mm-munibot-avatar flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full">
+          <img
+            src={LOGO_SRC}
+            alt="MuniBot"
+            className="h-full w-full object-cover"
+            width={32}
+            height={32}
+          />
         </div>
       )}
       <div
-        className={`max-w-[88%] rounded-2xl px-3.5 py-2.5 shadow-sm ${
-          isBot
-            ? 'rounded-bl-md border border-border bg-white'
-            : 'rounded-br-md bg-gradient-to-br from-[#1A8FC4] to-[#15799F] text-white'
+        className={`max-w-[86%] rounded-[1.125rem] px-3.5 py-2.5 sm:max-w-[82%] ${
+          isBot ? 'mm-munibot-bubble--bot rounded-bl-md' : 'mm-munibot-bubble--user rounded-br-md'
         }`}
       >
         <MessageBody text={text} isMarkdown={isMarkdown && isBot} variant={isBot ? 'bot' : 'user'} />
@@ -165,6 +215,10 @@ function MessageBubble({ text, isBot, isMarkdown }) {
 export default function MuniBot() {
   const reduceMotion = useReducedMotion();
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
+  const dialogTitleId = useId();
+  const liveRegionId = useId();
+
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([{ text: GREETING, isBot: true, isMarkdown: true }]);
   const [input, setInput] = useState('');
@@ -172,11 +226,19 @@ export default function MuniBot() {
   const [showQuickReplies, setShowQuickReplies] = useState(true);
   const [fabPos, setFabPos] = useState(loadFabPosition);
   const [isDragging, setIsDragging] = useState(false);
-  const [panelLayout, setPanelLayout] = useState(() => getPanelLayout(loadFabPosition()));
+  const [panelLayout, setPanelLayout] = useState(() =>
+    getPanelLayout(
+      loadFabPosition(),
+      typeof window !== 'undefined' && window.innerWidth < MOBILE_BREAKPOINT,
+    ),
+  );
   const [showMobileNudge, setShowMobileNudge] = useState(false);
+  const [lastAnnounced, setLastAnnounced] = useState('');
 
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const panelRef = useRef(null);
+  const replyTimeoutRef = useRef(null);
   const dragRef = useRef({
     active: false,
     moved: false,
@@ -196,19 +258,16 @@ export default function MuniBot() {
     return clamped;
   }, []);
 
-  const updateFabPos = useCallback(
-    (next) => {
-      setFabPos((prev) => {
-        const resolved = typeof next === 'function' ? next(prev) : next;
-        return clampFabPosition(resolved);
-      });
-    },
-    [],
-  );
+  const updateFabPos = useCallback((next) => {
+    setFabPos((prev) => {
+      const resolved = typeof next === 'function' ? next(prev) : next;
+      return clampFabPosition(resolved);
+    });
+  }, []);
 
   useEffect(() => {
-    setPanelLayout(getPanelLayout(fabPos));
-  }, [fabPos, isOpen]);
+    setPanelLayout(getPanelLayout(fabPos, isMobile));
+  }, [fabPos, isOpen, isMobile]);
 
   useEffect(() => {
     const onResize = () => {
@@ -218,22 +277,58 @@ export default function MuniBot() {
     return () => window.removeEventListener('resize', onResize);
   }, [persistPosition]);
 
-  const scrollToBottom = () => messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  useEffect(() => {
+    return () => {
+      if (replyTimeoutRef.current) window.clearTimeout(replyTimeoutRef.current);
+    };
+  }, []);
+
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
+  }, [reduceMotion]);
 
   useEffect(() => {
     scrollToBottom();
+  }, [messages, isTyping, scrollToBottom]);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const t = window.setTimeout(() => inputRef.current?.focus(), 120);
+    return () => window.clearTimeout(t);
+  }, [isOpen]);
+
+  useEffect(() => {
+    const el = inputRef.current;
+    if (!el) return;
+    el.style.height = 'auto';
+    el.style.height = `${Math.min(el.scrollHeight, 104)}px`;
+  }, [input]);
+
+  useEffect(() => {
+    if (!isOpen) return undefined;
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [isOpen]);
+
+  useEffect(() => {
+    const lastBot = [...messages].reverse().find((m) => m.isBot);
+    if (lastBot && !isTyping) {
+      const plain = lastBot.text.replace(/\*\*/g, '').slice(0, 120);
+      setLastAnnounced(plain);
+    }
   }, [messages, isTyping]);
 
   useEffect(() => {
-    if (isOpen) inputRef.current?.focus();
-  }, [isOpen]);
-
-  /** Mobile: one short pill per session — FAB is the affordance; no large callout */
-  useEffect(() => {
     if (typeof window === 'undefined') return undefined;
-    const mq = window.matchMedia('(max-width: 639px)');
+    const mq = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
     const maybeShow = () => {
-      if (!mq.matches) {
+      if (!mq.matches || isOpen) {
         setShowMobileNudge(false);
         return;
       }
@@ -247,7 +342,7 @@ export default function MuniBot() {
     maybeShow();
     mq.addEventListener('change', maybeShow);
     return () => mq.removeEventListener('change', maybeShow);
-  }, []);
+  }, [isOpen]);
 
   useEffect(() => {
     if (!showMobileNudge) return undefined;
@@ -324,21 +419,38 @@ export default function MuniBot() {
     setFabPos((prev) => persistPosition(prev));
   };
 
+  const resetChat = () => {
+    if (replyTimeoutRef.current) window.clearTimeout(replyTimeoutRef.current);
+    setIsTyping(false);
+    setMessages([{ text: GREETING, isBot: true, isMarkdown: true }]);
+    setShowQuickReplies(true);
+    setInput('');
+    inputRef.current?.focus();
+  };
+
   const sendMessage = (text) => {
     const msg = text?.trim() || input.trim();
-    if (!msg) return;
+    if (!msg || isTyping) return;
 
     setInput('');
     setShowQuickReplies(false);
     setMessages((m) => [...m, { text: msg, isBot: false, isMarkdown: false }]);
     setIsTyping(true);
 
-    const delay = 500 + Math.min(msg.length * 12, 500);
-    window.setTimeout(() => {
+    const delay = 450 + Math.min(msg.length * 10, 450);
+    replyTimeoutRef.current = window.setTimeout(() => {
       const reply = getMuniBotReply(msg);
       setMessages((m) => [...m, { text: reply, isBot: true, isMarkdown: true }]);
       setIsTyping(false);
+      replyTimeoutRef.current = null;
     }, delay);
+  };
+
+  const handleComposerKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
   };
 
   const handleQuickQuestion = (q) => {
@@ -355,209 +467,279 @@ export default function MuniBot() {
     setIsOpen(false);
   };
 
-  const showHint = !isOpen && !isDragging;
-  const showDesktopHint = showHint;
+  const showFab = !isOpen;
+  const showHint = showFab && !isDragging;
   const showCompactMobileNudge = showHint && showMobileNudge;
+  const canSend = input.trim().length > 0 && !isTyping;
+  const panelClass = isMobile ? 'mm-munibot-panel mm-munibot-panel--mobile' : 'mm-munibot-panel';
 
   return (
     <>
-      {/* Draggable FAB anchor */}
-      <div
-        className="fixed z-[9998] touch-none select-none"
-        style={{ left: fabPos.left, top: fabPos.top, width: FAB_SIZE, height: FAB_SIZE }}
-      >
-        {/* Mobile — tiny pill, auto-hides (~4.5s), once per session */}
-        <AnimatePresence>
-          {showCompactMobileNudge && (
-            <motion.span
-              initial={{ opacity: 0, y: 4, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 4, scale: 0.92 }}
-              transition={{ duration: 0.25 }}
-              className="pointer-events-none absolute bottom-full left-1/2 z-[1] mb-1.5 -translate-x-1/2 whitespace-nowrap rounded-full bg-gradient-to-r from-[#1A8FC4] to-[#2AAA8A] px-2.5 py-1 text-[10px] font-bold tracking-tight text-white shadow-[0_4px_14px_rgba(26,143,196,0.45)] ring-2 ring-white/90 sm:hidden"
+      <AnimatePresence>
+        {isOpen && (
+          <motion.button
+            type="button"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="mm-munibot-backdrop fixed inset-0 z-[9998] cursor-default"
+            aria-label="Close chat"
+            onClick={() => setIsOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
+      {showFab && (
+        <div
+          className="fixed z-[9998] touch-none select-none"
+          style={{ left: fabPos.left, top: fabPos.top, width: FAB_SIZE, height: FAB_SIZE }}
+        >
+          <AnimatePresence>
+            {showCompactMobileNudge && (
+              <motion.span
+                initial={{ opacity: 0, y: 4, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 4, scale: 0.92 }}
+                transition={{ duration: 0.25 }}
+                className="mm-munibot-fab-hint-mobile pointer-events-none absolute bottom-full left-1/2 z-[1] mb-1.5 -translate-x-1/2 whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-bold tracking-tight shadow-lg ring-2 ring-white/20 sm:hidden"
+                aria-hidden
+              >
+                Ask MuniBot
+              </motion.span>
+            )}
+          </AnimatePresence>
+
+          {showHint && (
+            <motion.div
+              initial={{ opacity: 0, y: 6, scale: 0.96 }}
+              animate={
+                reduceMotion
+                  ? { opacity: 1, y: 0, scale: 1 }
+                  : { opacity: 1, y: [0, -4, 0], scale: 1 }
+              }
+              transition={
+                reduceMotion
+                  ? { delay: 0.9, duration: 0.45 }
+                  : {
+                      opacity: { delay: 0.9, duration: 0.45 },
+                      scale: { delay: 0.9, duration: 0.45 },
+                      y: { delay: 1.35, duration: 2.8, repeat: Infinity, ease: 'easeInOut' },
+                    }
+              }
+              className="pointer-events-none absolute bottom-full right-0 mb-2 hidden whitespace-nowrap sm:block sm:mb-2.5"
               aria-hidden
             >
-              Ask MuniBot
-            </motion.span>
+              <div className="mm-munibot-fab-hint relative inline-flex items-center gap-2 rounded-full py-1 pl-1 pr-3 backdrop-blur-sm">
+                <span className="mm-munibot-fab-hint__accent relative flex h-6 w-6 shrink-0 items-center justify-center rounded-full shadow-sm">
+                  <Sparkles className="h-3 w-3 text-white" strokeWidth={2.25} aria-hidden />
+                  <span className="absolute -right-px -top-px h-1.5 w-1.5 rounded-full border border-white bg-emerald-400" />
+                </span>
+                <span className="text-xs font-bold tracking-tight">Ask MuniBot</span>
+              </div>
+            </motion.div>
           )}
-        </AnimatePresence>
 
-        {/* Tablet/desktop — full callout; hidden on narrow phones */}
-        {showDesktopHint && (
-          <motion.div
-            initial={{ opacity: 0, y: 6, scale: 0.96 }}
-            animate={
-              reduceMotion
-                ? { opacity: 1, y: 0, scale: 1 }
-                : { opacity: 1, y: [0, -4, 0], scale: 1 }
-            }
-            transition={
-              reduceMotion
-                ? { delay: 0.9, duration: 0.45 }
-                : {
-                    opacity: { delay: 0.9, duration: 0.45 },
-                    scale: { delay: 0.9, duration: 0.45 },
-                    y: { delay: 1.35, duration: 2.8, repeat: Infinity, ease: 'easeInOut' },
-                  }
-            }
-            className="pointer-events-none absolute bottom-full right-0 mb-2 hidden whitespace-nowrap sm:block sm:mb-2.5"
-            aria-hidden
+          <motion.button
+            type="button"
+            onPointerDown={onFabPointerDown}
+            onPointerMove={onFabPointerMove}
+            onPointerUp={onFabPointerUp}
+            onPointerCancel={onFabPointerCancel}
+            className={`mm-munibot-fab relative flex h-14 w-14 items-center justify-center rounded-2xl text-white ${
+              isDragging ? 'mm-munibot-fab--dragging cursor-grabbing scale-[1.02]' : 'cursor-grab'
+            }`}
+            style={{ touchAction: 'none' }}
+            whileHover={isDragging ? undefined : { scale: 1.05 }}
+            whileTap={isDragging ? undefined : { scale: 0.98 }}
+            aria-label="Open MuniBot chat"
+            aria-expanded={isOpen}
+            aria-haspopup="dialog"
           >
-            <div className="relative inline-flex items-center gap-2 rounded-full border border-sky-200/90 bg-gradient-to-r from-white via-sky-50/95 to-cyan-50/90 py-1 pl-1 pr-3 shadow-[0_6px_20px_-4px_rgba(26,143,196,0.35)] ring-1 ring-[#1A8FC4]/15 backdrop-blur-sm">
-              <span className="relative flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-[#1A8FC4] to-[#2AAA8A] shadow-sm">
-                <Sparkles className="h-3 w-3 text-white" strokeWidth={2.25} aria-hidden />
-                <span className="absolute -right-px -top-px h-1.5 w-1.5 rounded-full border border-white bg-emerald-400" />
-              </span>
-              <span className="bg-gradient-to-r from-[#0e5e85] via-[#1A8FC4] to-[#2AAA8A] bg-clip-text text-xs font-bold tracking-tight text-transparent">
-                Ask MuniBot
-              </span>
-              <span
-                className="absolute -bottom-1 right-5 h-2 w-2 rotate-45 border-b border-r border-sky-200/90 bg-gradient-to-br from-white to-cyan-50"
-                aria-hidden
+            <span className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-2xl">
+              <img
+                src={LOGO_SRC}
+                alt=""
+                className="h-10 w-10 rounded-full object-cover ring-2 ring-white/50"
+                width={40}
+                height={40}
+                draggable={false}
               />
-            </div>
-          </motion.div>
-        )}
+            </span>
+            <span className="pointer-events-none absolute -right-0.5 -top-0.5 flex h-4 w-4">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/80 opacity-75" />
+              <span className="relative inline-flex h-4 w-4 rounded-full border-2 border-white bg-emerald-500" />
+            </span>
+          </motion.button>
+        </div>
+      )}
 
-        <motion.button
-          type="button"
-          onPointerDown={onFabPointerDown}
-          onPointerMove={onFabPointerMove}
-          onPointerUp={onFabPointerUp}
-          onPointerCancel={onFabPointerCancel}
-          className={`relative flex h-14 w-14 items-center justify-center rounded-2xl border-2 border-white/90 text-white shadow-xl focus:outline-none focus:ring-4 focus:ring-[#1A8FC4]/35 ${
-            isDragging ? 'cursor-grabbing scale-[1.02]' : 'cursor-grab'
-          }`}
-          style={{
-            background: 'linear-gradient(135deg, #1A8FC4 0%, #15799F 50%, #0d5f7f 100%)',
-            boxShadow: isDragging
-              ? '0 16px 48px -8px rgba(26, 143, 196, 0.55)'
-              : '0 10px 40px -10px rgba(26, 143, 196, 0.45)',
-            touchAction: 'none',
-          }}
-          whileHover={isDragging ? undefined : { scale: 1.05 }}
-          whileTap={isDragging ? undefined : { scale: 0.98 }}
-          aria-label="Open MuniBot chat"
-        >
-          <span className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-2xl">
-            <img
-              src={LOGO_SRC}
-              alt=""
-              className="h-10 w-10 rounded-full object-cover ring-2 ring-white/50"
-              width={40}
-              height={40}
-              draggable={false}
-            />
-          </span>
-          <span className="pointer-events-none absolute -right-0.5 -top-0.5 flex h-4 w-4">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/80 opacity-75" />
-            <span className="relative inline-flex h-4 w-4 rounded-full border-2 border-white bg-emerald-500" />
-          </span>
-        </motion.button>
+      <div id={liveRegionId} className="sr-only" aria-live="polite" aria-atomic="true">
+        {isTyping ? 'MuniBot is typing' : lastAnnounced}
       </div>
 
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            ref={panelRef}
             initial={{ opacity: 0, y: 16, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.96 }}
-            transition={{ type: 'spring', damping: 26, stiffness: 320 }}
-            className="fixed z-[9999] flex flex-col overflow-hidden rounded-2xl border border-border bg-background shadow-2xl"
+            transition={{ type: 'spring', damping: 28, stiffness: 340 }}
+            className={`${panelClass} fixed z-[9999] flex flex-col overflow-hidden`}
             style={{
               left: panelLayout.left,
               top: panelLayout.top,
               width: panelLayout.width,
               height: panelLayout.maxHeight,
-              boxShadow: '0 25px 50px -12px rgba(0,0,0,0.18), 0 0 0 1px rgba(26,143,196,0.08)',
             }}
             role="dialog"
-            aria-label="MuniBot chat"
+            aria-modal="true"
+            aria-labelledby={dialogTitleId}
           >
-            <div className="flex items-center justify-between border-b border-border bg-background px-3 py-2.5">
+            <header className="mm-munibot-header flex shrink-0 items-center justify-between gap-2 px-4 py-3">
               <div className="flex min-w-0 items-center gap-3">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-full border border-border bg-white shadow-sm ring-2 ring-[#2AAA8A]/25">
-                  <img src={LOGO_SRC} alt="" className="h-full w-full object-cover" width={44} height={44} />
+                <div className="mm-munibot-avatar flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full">
+                  <img
+                    src={LOGO_SRC}
+                    alt=""
+                    className="h-full w-full object-cover"
+                    width={40}
+                    height={40}
+                  />
                 </div>
                 <div className="min-w-0">
-                  <p className="truncate font-bold text-foreground">MuniBot</p>
-                  <p className="truncate text-xs text-muted-foreground">MentorMuni · interviews · AI help</p>
+                  <p id={dialogTitleId} className="mm-munibot-header__title truncate">
+                    MuniBot
+                  </p>
+                  <p className="mm-munibot-header__meta truncate">
+                    <span className="mm-munibot-status__dot" aria-hidden />
+                    Online · MentorMuni assistant
+                  </p>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setIsOpen(false)}
-                className="shrink-0 rounded-xl p-2 text-muted-foreground transition-colors hover:bg-black/5 hover:text-foreground"
-                aria-label="Close chat"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
+              <div className="flex shrink-0 items-center gap-0.5">
+                <button
+                  type="button"
+                  onClick={resetChat}
+                  className="mm-munibot-icon-btn"
+                  aria-label="Start new conversation"
+                  title="New chat"
+                >
+                  <RotateCcw className="h-4 w-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setIsOpen(false)}
+                  className="mm-munibot-icon-btn"
+                  aria-label="Close chat"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+            </header>
 
-            <div className="min-h-0 flex-1 space-y-3 overflow-y-auto bg-[#f7f5f0]/80 p-3">
-              {messages.map((m, i) => (
-                <MessageBubble key={i} text={m.text} isBot={m.isBot} isMarkdown={m.isMarkdown} />
-              ))}
-              {isTyping && <TypingIndicator />}
-              {showQuickReplies && (
-                <div className="pt-1">
-                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-                    Quick questions
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {QUICK_QUESTIONS.map((q) => (
-                      <button
-                        key={q}
-                        type="button"
-                        onClick={() => handleQuickQuestion(q)}
-                        className="rounded-full border border-border bg-white px-2.5 py-1.5 text-[11px] font-medium text-muted-foreground transition hover:border-[#2AAA8A] hover:bg-[#e0f0fa] hover:text-[#15799F]"
-                      >
-                        {q}
-                      </button>
-                    ))}
+            <div className="mm-munibot-messages-wrap">
+              <div
+                className="mm-munibot-messages flex-1 space-y-3.5 overflow-y-auto px-3.5 py-3.5"
+                role="log"
+                aria-label="Chat messages"
+                aria-relevant="additions"
+              >
+                {messages.map((m, i) => (
+                  <MessageBubble
+                    key={`${i}-${m.text.slice(0, 24)}`}
+                    text={m.text}
+                    isBot={m.isBot}
+                    isMarkdown={m.isMarkdown}
+                    animate={i === messages.length - 1 && !reduceMotion}
+                  />
+                ))}
+                {isTyping && (
+                  <div className="flex gap-2.5 mm-munibot-msg-enter">
+                    <div className="mm-munibot-avatar flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full">
+                      <img
+                        src={LOGO_SRC}
+                        alt=""
+                        className="h-full w-full object-cover"
+                        width={32}
+                        height={32}
+                      />
+                    </div>
+                    <TypingIndicator />
                   </div>
+                )}
+                {showQuickReplies && !isTyping && (
+                  <div className="pt-1">
+                    <p className="mm-munibot-quick-label mb-2">Suggested</p>
+                    <div className="mm-munibot-chips">
+                      {QUICK_QUESTIONS.map((q) => (
+                        <button
+                          key={q}
+                          type="button"
+                          onClick={() => handleQuickQuestion(q)}
+                          className="mm-munibot-chip rounded-full px-3 py-2"
+                        >
+                          {q}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} className="h-px shrink-0" aria-hidden />
+              </div>
+            </div>
+
+            <footer className="mm-munibot-footer shrink-0">
+              <div className="mm-munibot-cta-row">
+                <button
+                  type="button"
+                  onClick={goToReadiness}
+                  className="mm-munibot-cta mm-munibot-cta--primary"
+                >
+                  <Sparkles className="h-3.5 w-3.5" aria-hidden />
+                  Readiness test
+                </button>
+                <button
+                  type="button"
+                  onClick={goToContact}
+                  className="mm-munibot-cta mm-munibot-cta--secondary"
+                >
+                  Contact
+                </button>
+              </div>
+
+              <div className="mm-munibot-composer">
+                <div className="mm-munibot-composer__inner">
+                  <textarea
+                    ref={inputRef}
+                    rows={1}
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={handleComposerKeyDown}
+                    placeholder="Message MuniBot…"
+                    className="mm-munibot-input min-w-0 flex-1 border-0 outline-none focus:ring-0"
+                    autoComplete="off"
+                    aria-label="Message"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => sendMessage()}
+                    disabled={!canSend}
+                    className={`mm-munibot-send flex items-center justify-center ${canSend ? 'mm-munibot-send--ready' : ''}`}
+                    aria-label="Send message"
+                  >
+                    <Send className="h-4 w-4" />
+                  </button>
                 </div>
-              )}
-              <div ref={messagesEndRef} />
-            </div>
-
-            <div className="flex gap-2 border-t border-border bg-white/90 px-3 py-2">
-              <button
-                type="button"
-                onClick={goToReadiness}
-                className="flex flex-1 items-center justify-center gap-1 rounded-xl bg-[#FF9500] py-2.5 text-xs font-bold text-white shadow-sm transition hover:bg-[#15799F]"
-              >
-                <Sparkles className="h-3.5 w-3.5" />
-                Readiness
-              </button>
-              <button
-                type="button"
-                onClick={goToContact}
-                className="flex flex-1 items-center justify-center gap-1 rounded-xl border border-border bg-background py-2.5 text-xs font-bold text-muted-foreground transition hover:border-[#2AAA8A]"
-              >
-                Contact
-              </button>
-            </div>
-
-            <div className="flex gap-2 bg-white px-3 pb-3 pt-0">
-              <input
-                ref={inputRef}
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => e.key === 'Enter' && sendMessage()}
-                placeholder="Ask about MentorMuni, interviews, AI…"
-                className="min-w-0 flex-1 rounded-xl border border-border bg-white px-3 py-2.5 text-sm text-foreground placeholder:text-muted-foreground focus:border-[#2AAA8A] focus:outline-none focus:ring-2 focus:ring-[#1A8FC4]/25"
-              />
-              <button
-                type="button"
-                onClick={() => sendMessage()}
-                className="shrink-0 rounded-xl bg-[#FF9500] p-2.5 text-white transition hover:bg-[#15799F] disabled:opacity-50"
-                aria-label="Send"
-              >
-                <Send className="h-5 w-5" />
-              </button>
-            </div>
+                <p className="mm-munibot-disclaimer">
+                  Knowledge-base answers — not a live LLM.{' '}
+                  <button type="button" className="font-semibold underline" onClick={resetChat}>
+                    New chat
+                  </button>
+                </p>
+              </div>
+            </footer>
           </motion.div>
         )}
       </AnimatePresence>

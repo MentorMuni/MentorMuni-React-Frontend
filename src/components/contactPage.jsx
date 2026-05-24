@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { motion, useInView, useReducedMotion } from 'framer-motion';
-import { Send, RotateCcw, Loader2, UserRound, GraduationCap, Sparkles, Mail, Phone } from 'lucide-react';
+import { Send, RotateCcw, Loader2, UserRound, GraduationCap, Mail, Phone } from 'lucide-react';
 import { INQUIRIES_URL } from '../config';
 import {
   CONTACT_EMAIL,
@@ -337,8 +337,8 @@ const ContactPage = () => {
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-200/80 bg-cyan-50/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-cyan-900">
-                <Sparkles className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
-                AI-assisted routing
+                <Mail className="h-3.5 w-3.5 text-[#1A8FC4]" aria-hidden />
+                Contact MentorMuni
               </div>
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#EA580C]">{hero.eyebrow}</p>
               <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">

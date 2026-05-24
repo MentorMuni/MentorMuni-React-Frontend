@@ -1,0 +1,597 @@
+/**
+ * MuniBot — floating chat (classic + dark theme).
+ * Isolated tokens; immune to page theme / legacy bridge bleed.
+ */
+
+:root {
+  --mm-munibot-shell-bg: #ffffff;
+  --mm-munibot-shell-border: rgba(15, 23, 42, 0.1);
+  --mm-munibot-shell-shadow: 0 24px 48px -12px rgba(15, 23, 42, 0.2),
+    0 0 0 1px rgba(15, 23, 42, 0.06);
+
+  --mm-munibot-header-bg: #ffffff;
+  --mm-munibot-header-border: rgba(15, 23, 42, 0.08);
+  --mm-munibot-title: #0f172a;
+  --mm-munibot-subtitle: #64748b;
+
+  --mm-munibot-messages-bg: #f4f4f5;
+  --mm-munibot-bot-bg: #ffffff;
+  --mm-munibot-bot-border: rgba(15, 23, 42, 0.08);
+  --mm-munibot-bot-text: #27272a;
+  --mm-munibot-bot-link: #0e7490;
+  --mm-munibot-bot-strong: #0f172a;
+
+  --mm-munibot-user-bg: linear-gradient(135deg, #1a8fc4 0%, #15799f 55%, #0d6b8f 100%);
+  --mm-munibot-user-text: #ffffff;
+  --mm-munibot-user-link: #e0f2fe;
+
+  --mm-munibot-avatar-ring: rgba(26, 143, 196, 0.22);
+  --mm-munibot-avatar-bg: #ffffff;
+
+  --mm-munibot-chip-bg: #ffffff;
+  --mm-munibot-chip-border: rgba(15, 23, 42, 0.1);
+  --mm-munibot-chip-text: #52525b;
+  --mm-munibot-chip-hover-bg: #e0f0fa;
+  --mm-munibot-chip-hover-border: #2aaa8a;
+  --mm-munibot-chip-hover-text: #15799f;
+
+  --mm-munibot-footer-bg: #ffffff;
+  --mm-munibot-footer-border: rgba(15, 23, 42, 0.08);
+  --mm-munibot-input-bg: #ffffff;
+  --mm-munibot-input-border: rgba(15, 23, 42, 0.1);
+  --mm-munibot-input-text: #18181b;
+  --mm-munibot-input-placeholder: #a1a1aa;
+  --mm-munibot-input-focus-ring: rgba(26, 143, 196, 0.28);
+
+  --mm-munibot-link-cta: #15799f;
+  --mm-munibot-link-cta-hover: #0e5e85;
+
+  --mm-munibot-close-hover: rgba(15, 23, 42, 0.06);
+  --mm-munibot-typing-bg: #ffffff;
+  --mm-munibot-typing-dot: #1a8fc4;
+  --mm-munibot-disclaimer: #a1a1aa;
+
+  --mm-munibot-backdrop: rgba(15, 23, 42, 0.42);
+  --mm-munibot-fab-hint-bg: #ffffff;
+  --mm-munibot-fab-hint-border: rgba(26, 143, 196, 0.2);
+  --mm-munibot-fab-hint-text: #0e5e85;
+  --mm-munibot-handle: rgba(15, 23, 42, 0.14);
+}
+
+html.mm-new-ui {
+  --mm-munibot-shell-bg: #18181b;
+  --mm-munibot-shell-border: rgba(255, 255, 255, 0.08);
+  --mm-munibot-shell-shadow: 0 -8px 40px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.06);
+
+  --mm-munibot-header-bg: #1f1f23;
+  --mm-munibot-header-border: rgba(255, 255, 255, 0.08);
+  --mm-munibot-title: #f4f4f5;
+  --mm-munibot-subtitle: #a1a1aa;
+
+  --mm-munibot-messages-bg: #09090b;
+  --mm-munibot-bot-bg: #27272a;
+  --mm-munibot-bot-border: rgba(255, 255, 255, 0.08);
+  --mm-munibot-bot-text: #e4e4e7;
+  --mm-munibot-bot-link: #67e8f9;
+  --mm-munibot-bot-strong: #fafafa;
+
+  --mm-munibot-user-bg: linear-gradient(135deg, #0e7490 0%, #0891b2 50%, #06b6d4 100%);
+  --mm-munibot-user-text: #f0fdfa;
+  --mm-munibot-user-link: #ccfbf1;
+
+  --mm-munibot-avatar-ring: rgba(56, 189, 248, 0.35);
+  --mm-munibot-avatar-bg: #27272a;
+
+  --mm-munibot-chip-bg: #27272a;
+  --mm-munibot-chip-border: rgba(255, 255, 255, 0.1);
+  --mm-munibot-chip-text: #d4d4d8;
+  --mm-munibot-chip-hover-bg: rgba(6, 182, 212, 0.14);
+  --mm-munibot-chip-hover-border: rgba(56, 189, 248, 0.45);
+  --mm-munibot-chip-hover-text: #a5f3fc;
+
+  --mm-munibot-footer-bg: #18181b;
+  --mm-munibot-footer-border: rgba(255, 255, 255, 0.08);
+  --mm-munibot-input-bg: #27272a;
+  --mm-munibot-input-border: rgba(255, 255, 255, 0.1);
+  --mm-munibot-input-text: #fafafa;
+  --mm-munibot-input-placeholder: #71717a;
+  --mm-munibot-input-focus-ring: rgba(56, 189, 248, 0.32);
+
+  --mm-munibot-link-cta: #67e8f9;
+  --mm-munibot-link-cta-hover: #a5f3fc;
+
+  --mm-munibot-close-hover: rgba(255, 255, 255, 0.08);
+  --mm-munibot-typing-bg: #27272a;
+  --mm-munibot-typing-dot: #38bdf8;
+  --mm-munibot-disclaimer: #71717a;
+
+  --mm-munibot-backdrop: rgba(0, 0, 0, 0.62);
+  --mm-munibot-fab-hint-bg: #27272a;
+  --mm-munibot-fab-hint-border: rgba(56, 189, 248, 0.35);
+  --mm-munibot-fab-hint-text: #a5f3fc;
+  --mm-munibot-handle: rgba(255, 255, 255, 0.2);
+}
+
+/* Backdrop — lighter on phones so the page stays visible behind the chat */
+@media (max-width: 639px) {
+  :root {
+    --mm-munibot-backdrop: rgba(15, 23, 42, 0.22);
+  }
+
+  html.mm-new-ui {
+    --mm-munibot-backdrop: rgba(0, 0, 0, 0.35);
+  }
+}
+
+.mm-munibot-backdrop {
+  background: var(--mm-munibot-backdrop);
+  -webkit-backdrop-filter: blur(2px);
+  backdrop-filter: blur(2px);
+}
+
+/* Panel */
+.mm-munibot-panel {
+  background: var(--mm-munibot-shell-bg);
+  border: 1px solid var(--mm-munibot-shell-border);
+  box-shadow: var(--mm-munibot-shell-shadow);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Mobile: compact floating card (not full-screen sheet) */
+.mm-munibot-panel--mobile {
+  border-radius: 1.125rem;
+  max-height: min(52dvh, 420px);
+}
+
+.mm-munibot-header {
+  background: var(--mm-munibot-header-bg);
+  border-bottom: 1px solid var(--mm-munibot-header-border);
+}
+
+.mm-munibot-header__title {
+  color: var(--mm-munibot-title);
+  font-size: 1rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.mm-munibot-header__meta {
+  color: var(--mm-munibot-subtitle);
+  font-size: 0.75rem;
+  line-height: 1.35;
+  margin-top: 0.125rem;
+}
+
+.mm-munibot-status__dot {
+  display: inline-block;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 9999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.28);
+  margin-right: 0.3rem;
+  vertical-align: 0.05em;
+}
+
+.mm-munibot-icon-btn {
+  color: var(--mm-munibot-subtitle);
+  border-radius: 0.625rem;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.mm-munibot-icon-btn:hover {
+  background: var(--mm-munibot-close-hover);
+  color: var(--mm-munibot-title);
+}
+
+.mm-munibot-icon-btn:focus-visible {
+  outline: 2px solid var(--mm-munibot-typing-dot);
+  outline-offset: 2px;
+}
+
+.mm-munibot-avatar {
+  background: var(--mm-munibot-avatar-bg);
+  border: 1px solid var(--mm-munibot-bot-border);
+  box-shadow: 0 0 0 2px var(--mm-munibot-avatar-ring);
+}
+
+/* Messages */
+.mm-munibot-messages-wrap {
+  position: relative;
+  min-height: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.mm-munibot-messages-wrap::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1.25rem;
+  z-index: 1;
+  background: linear-gradient(to bottom, var(--mm-munibot-messages-bg), transparent);
+}
+
+.mm-munibot-messages {
+  background: var(--mm-munibot-messages-bg);
+  scrollbar-color: rgba(113, 113, 122, 0.4) transparent;
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+
+.mm-munibot-messages::-webkit-scrollbar {
+  width: 5px;
+}
+
+.mm-munibot-messages::-webkit-scrollbar-thumb {
+  background: rgba(113, 113, 122, 0.35);
+  border-radius: 9999px;
+}
+
+.mm-munibot-bubble--bot {
+  background: var(--mm-munibot-bot-bg);
+  border: 1px solid var(--mm-munibot-bot-border);
+  color: var(--mm-munibot-bot-text);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.mm-munibot-bubble--user {
+  background: var(--mm-munibot-user-bg);
+  color: var(--mm-munibot-user-text);
+  box-shadow: 0 2px 10px rgba(26, 143, 196, 0.2);
+}
+
+.mm-munibot-msg {
+  font-size: 0.875rem;
+  line-height: 1.58;
+  letter-spacing: 0.01em;
+}
+
+@media (min-width: 640px) {
+  .mm-munibot-msg {
+    font-size: 0.9375rem;
+  }
+}
+
+.mm-munibot-msg--bot {
+  color: var(--mm-munibot-bot-text);
+}
+
+.mm-munibot-msg--bot strong {
+  color: var(--mm-munibot-bot-strong);
+  font-weight: 600;
+}
+
+.mm-munibot-msg--bot a {
+  color: var(--mm-munibot-bot-link);
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  text-decoration-color: color-mix(in srgb, var(--mm-munibot-bot-link) 45%, transparent);
+}
+
+.mm-munibot-msg--bot a:hover {
+  opacity: 0.88;
+}
+
+.mm-munibot-msg--user {
+  color: var(--mm-munibot-user-text);
+}
+
+.mm-munibot-msg--user a {
+  color: var(--mm-munibot-user-link);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.mm-munibot-msg + .mm-munibot-msg {
+  margin-top: 0.5rem;
+}
+
+.mm-munibot-msg-enter {
+  animation: mm-munibot-fade-in 0.28s ease-out both;
+}
+
+@keyframes mm-munibot-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mm-munibot-msg-enter {
+    animation: none;
+  }
+
+  .mm-munibot-typing__dot {
+    animation: none !important;
+    opacity: 0.65;
+  }
+}
+
+.mm-munibot-typing {
+  background: var(--mm-munibot-typing-bg);
+  border: 1px solid var(--mm-munibot-bot-border);
+}
+
+.mm-munibot-typing__dot {
+  background: var(--mm-munibot-typing-dot);
+}
+
+.mm-munibot-quick-label {
+  color: var(--mm-munibot-subtitle);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.mm-munibot-chips {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.25rem;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.mm-munibot-chips::-webkit-scrollbar {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .mm-munibot-chips {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+}
+
+.mm-munibot-chip {
+  background: var(--mm-munibot-chip-bg);
+  border: 1px solid var(--mm-munibot-chip-border);
+  color: var(--mm-munibot-chip-text);
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-height: 2.25rem;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease,
+    transform 0.1s ease;
+}
+
+@media (min-width: 640px) {
+  .mm-munibot-chip {
+    white-space: normal;
+    flex-shrink: 1;
+  }
+}
+
+.mm-munibot-chip:hover {
+  background: var(--mm-munibot-chip-hover-bg);
+  border-color: var(--mm-munibot-chip-hover-border);
+  color: var(--mm-munibot-chip-hover-text);
+}
+
+.mm-munibot-chip:focus-visible {
+  outline: 2px solid var(--mm-munibot-typing-dot);
+  outline-offset: 2px;
+}
+
+.mm-munibot-chip:active {
+  transform: scale(0.98);
+}
+
+/* Footer */
+.mm-munibot-footer {
+  background: var(--mm-munibot-footer-bg);
+  border-top: 1px solid var(--mm-munibot-footer-border);
+  padding-bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+}
+
+.mm-munibot-cta-row {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem 0;
+}
+
+.mm-munibot-cta {
+  flex: 1;
+  min-height: 2.5rem;
+  border-radius: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  transition: filter 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+
+.mm-munibot-cta:focus-visible {
+  outline: 2px solid var(--mm-munibot-typing-dot);
+  outline-offset: 2px;
+}
+
+.mm-munibot-cta--primary {
+  background: linear-gradient(135deg, #ff9500 0%, #f59e0b 100%);
+  color: #ffffff;
+  box-shadow: 0 1px 4px rgba(234, 88, 12, 0.28);
+}
+
+.mm-munibot-cta--primary:hover {
+  filter: brightness(1.06);
+}
+
+.mm-munibot-cta--secondary {
+  background: var(--mm-munibot-chip-bg);
+  border: 1px solid var(--mm-munibot-chip-border);
+  color: var(--mm-munibot-chip-text);
+}
+
+.mm-munibot-cta--secondary:hover {
+  border-color: var(--mm-munibot-chip-hover-border);
+  color: var(--mm-munibot-chip-hover-text);
+}
+
+.mm-munibot-composer {
+  padding: 0.625rem 1rem 0;
+}
+
+.mm-munibot-composer__inner {
+  background: var(--mm-munibot-input-bg);
+  border: 1px solid var(--mm-munibot-input-border);
+  border-radius: 1.25rem;
+  padding: 0.3125rem 0.3125rem 0.3125rem 1rem;
+  min-height: 2.75rem;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.25rem;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.mm-munibot-composer__inner:focus-within {
+  border-color: rgba(26, 143, 196, 0.4);
+  box-shadow: 0 0 0 3px var(--mm-munibot-input-focus-ring);
+}
+
+html.mm-new-ui .mm-munibot-composer__inner:focus-within {
+  border-color: rgba(56, 189, 248, 0.45);
+}
+
+.mm-munibot-input {
+  background: transparent;
+  color: var(--mm-munibot-input-text);
+  font-size: 1rem;
+  line-height: 1.45;
+  resize: none;
+  max-height: 6.5rem;
+  padding: 0.5rem 0;
+}
+
+@media (min-width: 640px) {
+  .mm-munibot-input {
+    font-size: 0.9375rem;
+  }
+}
+
+.mm-munibot-input::placeholder {
+  color: var(--mm-munibot-input-placeholder);
+}
+
+.mm-munibot-send {
+  background: var(--mm-munibot-chip-border);
+  color: #ffffff;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 9999px;
+  flex-shrink: 0;
+  margin-bottom: 0.125rem;
+  transition: background 0.15s ease, transform 0.1s ease, opacity 0.15s ease;
+}
+
+.mm-munibot-send--ready {
+  background: linear-gradient(135deg, #1a8fc4 0%, #15799f 100%);
+  box-shadow: 0 2px 8px rgba(26, 143, 196, 0.35);
+}
+
+.mm-munibot-send--ready:hover:not(:disabled) {
+  filter: brightness(1.08);
+  transform: scale(1.04);
+}
+
+.mm-munibot-send:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.mm-munibot-send:focus-visible {
+  outline: 2px solid var(--mm-munibot-typing-dot);
+  outline-offset: 2px;
+}
+
+.mm-munibot-disclaimer {
+  color: var(--mm-munibot-disclaimer);
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  text-align: center;
+  padding: 0.5rem 1rem 0;
+}
+
+.mm-munibot-disclaimer a {
+  color: var(--mm-munibot-link-cta);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.mm-munibot-disclaimer a:hover,
+.mm-munibot-disclaimer button:hover {
+  color: var(--mm-munibot-link-cta-hover);
+}
+
+.mm-munibot-disclaimer button {
+  color: var(--mm-munibot-link-cta);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-size: inherit;
+}
+
+/* FAB */
+.mm-munibot-fab {
+  background: linear-gradient(135deg, #1a8fc4 0%, #15799f 50%, #0d5f7f 100%);
+  box-shadow: 0 10px 40px -10px rgba(26, 143, 196, 0.45);
+  border: 2px solid rgba(255, 255, 255, 0.92);
+}
+
+.mm-munibot-fab:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 3px;
+}
+
+.mm-munibot-fab--dragging {
+  box-shadow: 0 16px 48px -8px rgba(26, 143, 196, 0.55);
+}
+
+.mm-munibot-fab-hint {
+  background: var(--mm-munibot-fab-hint-bg);
+  border: 1px solid var(--mm-munibot-fab-hint-border);
+  color: var(--mm-munibot-fab-hint-text);
+  box-shadow: 0 6px 20px -4px rgba(0, 0, 0, 0.15);
+}
+
+.mm-munibot-fab-hint .text-xs {
+  color: var(--mm-munibot-fab-hint-text);
+}
+
+.mm-munibot-fab-hint__accent {
+  background: linear-gradient(135deg, #1a8fc4 0%, #2aaa8a 100%);
+}
+
+.mm-munibot-fab-hint-mobile {
+  background: linear-gradient(135deg, #1a8fc4 0%, #2aaa8a 100%);
+  color: #ffffff;
+}
