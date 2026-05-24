@@ -9,4 +9,7 @@
  * your variable. Or use arbitrary values: bg-[color:var(--your-token)].
  */
 @import "../theme/mentorMuniTheme.css";
+@import "../theme/semantic-tokens.css";
 @import "../theme/new-ui-theme.css";
+@import "../theme/new-ui-assessment.css";
+@import "../theme/new-ui-semantic-scopes.css";

@@ -65,7 +65,7 @@ export function HeroLoopVideo({ className = '' }) {
           loaded ? 'opacity-100' : 'opacity-90'
         }`}
       >
-        <p className="border-b border-border bg-white/80 px-3 py-2 text-center text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
+        <p className="border-b border-border mm-surface-panel px-3 py-2 text-center text-[10px] font-bold uppercase tracking-[0.18em] text-muted-foreground">
           See the flow · muted · loops
         </p>
         <div className="relative aspect-video w-full bg-zinc-900/5">

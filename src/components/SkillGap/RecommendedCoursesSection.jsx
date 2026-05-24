@@ -29,7 +29,7 @@ const RecommendedCoursesSection = ({ courses }) => {
   };
 
   return (
-    <div className="bg-white rounded-2xl border border-border p-8 shadow-sm">
+    <div className="mm-surface-panel rounded-2xl p-8">
       <div className="mb-8">
         <h2 className="text-3xl font-bold text-foreground mb-2">Recommended Courses</h2>
         <p className="text-muted-foreground">

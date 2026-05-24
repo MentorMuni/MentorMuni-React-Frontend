@@ -3,8 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import { useNewUI } from '../../context/NewUIContext';
 
 /**
- * Preview theme switch — sits in a slim bar directly under the site header
- * (not fixed over page content). Compact segmented control.
+ * Classic / Dark theme switch — slim bar under the site header.
  */
 export default function NewUIBetaSwitch() {
   const { newUI, setNewUI } = useNewUI();
@@ -12,24 +11,16 @@ export default function NewUIBetaSwitch() {
 
   return (
     <div
-      className={`mm-beta-switch-bar border-b ${
-        newUI
-          ? 'border-white/[0.06] bg-[#070b14]/95'
-          : 'border-border/60 bg-slate-50/90'
-      }`}
+      className="mm-beta-switch-bar"
       data-mm-beta-switch
     >
       <div className="mx-auto flex max-w-7xl items-center justify-center gap-2 px-4 py-1 sm:px-6 lg:px-8">
-        <span
-          className={`hidden text-[10px] font-semibold uppercase tracking-[0.16em] sm:inline ${
-            newUI ? 'text-slate-500' : 'text-muted-foreground'
-          }`}
-        >
-          Preview
+        <span className="hidden text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground sm:inline">
+          Theme
         </span>
         <div
           role="group"
-          aria-label="Interface preview"
+          aria-label="Site theme"
           className={`mm-beta-switch relative inline-grid grid-cols-2 rounded-full border p-px ${
             newUI
               ? 'mm-beta-switch--new border-cyan-500/30 bg-[#0c121f]/90'
@@ -77,20 +68,11 @@ export default function NewUIBetaSwitch() {
             type="button"
             aria-pressed={newUI}
             onClick={() => setNewUI(true)}
-            className={`relative z-[1] inline-flex items-center justify-center gap-1 rounded-full px-3 py-1 text-[10px] font-semibold leading-none transition-colors sm:px-3.5 sm:text-[11px] ${
+            className={`relative z-[1] rounded-full px-3 py-1 text-[10px] font-semibold leading-none transition-colors sm:px-3.5 sm:text-[11px] ${
               newUI ? 'text-cyan-100' : 'text-slate-600 hover:text-slate-800'
             }`}
           >
-            New UI
-            <span
-              className={`rounded px-1 py-px text-[8px] font-bold uppercase leading-none tracking-wider ${
-                newUI
-                  ? 'bg-amber-400/25 text-amber-200'
-                  : 'bg-amber-100 text-amber-800'
-              }`}
-            >
-              Beta
-            </span>
+            Dark theme
           </button>
         </div>
       </div>

@@ -1,0 +1,117 @@
+/**
+ * New UI — assessment flow (/start-assessment, readiness routes)
+ * Scoped to .mm-assessment-flow — uses semantic classes (minimal !important).
+ */
+
+html.mm-new-ui .mm-assessment-flow {
+  color: var(--text-body);
+}
+
+html.mm-new-ui .mm-assessment-flow .mm-surface-panel,
+html.mm-new-ui .mm-assessment-flow .mm-surface-panel--lg,
+html.mm-new-ui .mm-assessment-flow .mm-surface-panel--md,
+html.mm-new-ui .mm-assessment-flow .mm-surface-panel--quiz,
+html.mm-new-ui .mm-assessment-flow .mm-surface-panel--section,
+html.mm-new-ui .mm-assessment-flow .mm-surface-panel--results,
+html.mm-new-ui .mm-assessment-flow .mm-surface-panel--glass,
+html.mm-new-ui .mm-assessment-flow .mm-surface-panel--promo {
+  box-shadow:
+    0 16px 48px -12px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+html.mm-new-ui .mm-assessment-flow .mm-surface-chip,
+html.mm-new-ui .mm-assessment-flow .mm-surface-input,
+html.mm-new-ui .mm-assessment-flow .mm-surface-inset,
+html.mm-new-ui .mm-assessment-flow .mm-surface-subtle,
+html.mm-new-ui .mm-assessment-flow .mm-badge-tag {
+  border-color: rgba(148, 163, 184, 0.22);
+}
+
+html.mm-new-ui .mm-assessment-flow .mm-surface-chip {
+  color: var(--text-secondary);
+}
+
+html.mm-new-ui .mm-assessment-flow .mm-surface-input,
+html.mm-new-ui .mm-assessment-flow .mm-surface-input::placeholder {
+  color: var(--text-heading);
+}
+
+html.mm-new-ui .mm-assessment-flow .mm-surface-input::placeholder {
+  color: var(--text-muted);
+}
+
+html.mm-new-ui .mm-assessment-flow .mm-btn-secondary,
+html.mm-new-ui .mm-assessment-flow .mm-btn-ghost {
+  color: var(--text-secondary);
+}
+
+html.mm-new-ui .mm-assessment-flow .mm-btn-secondary:hover,
+html.mm-new-ui .mm-assessment-flow .mm-btn-ghost:hover {
+  border-color: rgba(56, 189, 248, 0.45);
+  background-color: rgba(24, 38, 62, 0.95);
+  color: var(--text-heading);
+}
+
+html.mm-new-ui .mm-assessment-flow .mm-choice-tile {
+  background-color: rgba(17, 28, 48, 0.85);
+  border-color: rgba(148, 163, 184, 0.25);
+}
+
+html.mm-new-ui .mm-assessment-flow .mm-choice-tile:hover:not(:disabled) {
+  border-color: rgba(56, 189, 248, 0.4);
+  background-color: rgba(24, 38, 62, 0.9);
+}
+
+html.mm-new-ui .mm-assessment-flow .mm-choice-tile--selected {
+  background-color: rgba(245, 158, 11, 0.12);
+  border-color: var(--accent-cta);
+}
+
+html.mm-new-ui .mm-assessment-flow .mm-choice-tile--role:hover:not(:disabled) {
+  background-image: linear-gradient(
+    to bottom right,
+    rgba(24, 38, 62, 0.9),
+    rgba(245, 158, 11, 0.08)
+  );
+}
+
+html.mm-new-ui .mm-assessment-flow .mm-progress-track {
+  background-color: rgba(51, 65, 85, 0.45);
+}
+
+html.mm-new-ui .mm-assessment-flow .mm-text-title,
+html.mm-new-ui .mm-assessment-flow .text-foreground {
+  color: var(--text-heading);
+}
+
+html.mm-new-ui .mm-assessment-flow .text-muted-foreground,
+html.mm-new-ui .mm-assessment-flow .mm-text-muted {
+  color: var(--text-secondary);
+}
+
+html.mm-new-ui .mm-assessment-flow .mm-quiz-panel-card.mm-surface-panel--quiz {
+  background-color: rgba(14, 22, 38, 0.95);
+}
+
+html.mm-new-ui .mm-assessment-flow .mm-surface-panel--promo {
+  background: linear-gradient(
+    135deg,
+    rgba(11, 18, 32, 0.95) 0%,
+    rgba(17, 28, 48, 0.9) 50%,
+    rgba(245, 158, 11, 0.1) 100%
+  );
+}
+
+/* Ambient orbs on landing — softer on dark */
+html.mm-new-ui .mm-assessment-flow .bg-cta\/12 {
+  opacity: 0.35;
+}
+
+html.mm-new-ui .mm-assessment-flow .bg-cyan-400\/10 {
+  opacity: 0.4;
+}
+
+html.mm-new-ui .mm-assessment-flow .bg-amber-200\/20 {
+  opacity: 0.25;
+}

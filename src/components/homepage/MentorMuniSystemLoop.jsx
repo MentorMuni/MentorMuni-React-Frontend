@@ -166,7 +166,7 @@ export function MentorMuniSystemLoop({ reduceMotion: reduceMotionProp }) {
                       className={`relative z-10 flex h-16 w-16 items-center justify-center rounded-full border-4 transition-all duration-500 ${
                         isActive
                           ? 'border-white bg-gradient-to-br ' + step.gradient + ' shadow-lg'
-                          : 'border-gray-200 bg-white'
+                          : 'mm-choice-tile border-gray-200'
                       }`}
                       animate={isCurrent && !reduceMotion ? { scale: [1, 1.1, 1] } : {}}
                       transition={{ duration: 1.5, repeat: isCurrent ? Infinity : 0 }}

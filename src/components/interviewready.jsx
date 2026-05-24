@@ -22,6 +22,8 @@ import TestCountdownTimer from './interviewready/TestCountdownTimer';
 import SkillValidationModal from './SkillValidationModal';
 import { fetchWithDeduplication } from '../utils/apiOptimization';
 import { toAppAbsoluteUrl } from '../utils/appPaths';
+import { useNewUI } from '../context/NewUIContext';
+
 const FREE_TIER_LIMIT = 3;
 
 /** Interview readiness (breadth) — POST /interview-ready/interview-readiness/plan */
@@ -446,7 +448,7 @@ const InputField = ({ label, type, name, value, onChange, onBlur, placeholder, e
           rows={3}
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={error ? errId : undefined}
-          className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal outline-none transition-[border-color,box-shadow,background-color] duration-150 resize-none text-foreground placeholder:font-normal placeholder:text-hint ${
+          className={`w-full mm-surface-input rounded-xl px-4 py-3 text-base font-normal outline-none transition-[border-color,box-shadow,background-color] duration-150 resize-none text-foreground placeholder:font-normal placeholder:text-hint ${
             error ? MM_FIELD_INVALID : MM_FIELD_VALID
           }`}
         />
@@ -463,7 +465,7 @@ const InputField = ({ label, type, name, value, onChange, onBlur, placeholder, e
           autoComplete={autoComplete}
           aria-invalid={error ? 'true' : undefined}
           aria-describedby={error ? errId : undefined}
-          className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal outline-none transition-[border-color,box-shadow,background-color] duration-150 text-foreground placeholder:font-normal placeholder:text-hint ${
+          className={`w-full mm-surface-input rounded-xl px-4 py-3 text-base font-normal outline-none transition-[border-color,box-shadow,background-color] duration-150 text-foreground placeholder:font-normal placeholder:text-hint ${
             error ? MM_FIELD_INVALID : MM_FIELD_VALID
           }`}
         />
@@ -710,7 +712,7 @@ function HowItWorksVisual() {
             transition={{ delay: i * 0.1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="group flex h-full"
           >
-            <div className="flex h-full w-full flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-[0_16px_48px_-28px_rgba(45,35,20,0.28)] ring-1 ring-black/[0.04] transition-shadow duration-300 group-hover:shadow-[0_22px_56px_-24px_rgba(234,88,12,0.22)]">
+            <div className="mm-surface-panel flex h-full w-full flex-col overflow-hidden rounded-2xl ring-1 ring-black/[0.04] transition-shadow duration-300 group-hover:shadow-[0_22px_56px_-24px_rgba(234,88,12,0.22)]">
               <div className="relative aspect-[4/3] w-full overflow-hidden bg-secondary">
                 <img
                   src={posterCarouselAssetPath(image)}
@@ -723,7 +725,7 @@ function HowItWorksVisual() {
                   className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/25 via-transparent to-transparent opacity-80"
                   aria-hidden
                 />
-                <div className="absolute left-3 top-3 flex h-9 w-9 items-center justify-center rounded-full bg-white/95 text-sm font-bold tabular-nums text-cta-deep shadow-md ring-1 ring-black/5">
+                <div className="absolute left-3 top-3 flex h-9 w-9 items-center justify-center mm-surface-badge rounded-full text-sm font-bold tabular-nums text-cta-deep shadow-md ring-1 ring-black/5">
                   {i + 1}
                 </div>
               </div>
@@ -809,13 +811,13 @@ function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
               isHero
                 ? `group relative cursor-pointer select-none text-left rounded-3xl border-2 transition-colors duration-200 will-change-transform ${
                     selected
-                      ? 'border-cta bg-gradient-to-br from-secondary to-white shadow-xl shadow-button ring-2 ring-cta/30'
-                      : 'border-border bg-gradient-to-br from-white to-tint-subtle shadow-md shadow-black/[0.06] hover:border-cta hover:ring-4 hover:ring-cta/15'
+                      ? 'border-cta bg-gradient-to-br from-secondary to-[color:var(--bg-card)] shadow-xl shadow-button ring-2 ring-cta/30 mm-choice-tile--selected'
+                      : 'mm-choice-tile border-border bg-gradient-to-br from-[color:var(--bg-card)] to-tint-subtle shadow-md shadow-black/[0.06] hover:border-cta hover:ring-4 hover:ring-cta/15'
                   } p-6 sm:p-7`
                 : `cursor-pointer p-5 rounded-2xl text-left transition-all border-2 group relative ${
                     selected
-                      ? 'border-cta bg-cta/15 shadow-lg shadow-cta-card'
-                      : 'border-border bg-white hover:border-border hover:bg-background'
+                      ? 'border-cta bg-cta/15 shadow-lg shadow-cta-card mm-choice-tile--selected'
+                      : 'mm-choice-tile border-2 hover:border-border hover:bg-background'
                   }`
             }
           >
@@ -1041,7 +1043,7 @@ function PlanGenerationLoader() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-          className="mt-10 rounded-2xl border border-border bg-white/95 p-6 shadow-lg shadow-black/[0.04] backdrop-blur-sm sm:p-7"
+          className="mm-surface-panel mm-surface-panel--glass mt-10"
         >
           <div className="mb-4 flex items-center justify-center gap-2 text-foreground">
             <Users className="h-5 w-5 shrink-0 text-cta" strokeWidth={2} />
@@ -1102,7 +1104,7 @@ function EvaluatingAnswersLoader() {
         <div className="mx-auto mb-6 h-16 w-16 rounded-full border-4 border-cta/25 border-t-cta animate-spin" />
         <h2 className="text-xl font-black text-foreground sm:text-2xl">Scoring your readiness</h2>
         <p className="mt-2 text-sm text-muted-foreground">Analyzing your answers — almost there.</p>
-        <p className="mx-auto mt-8 max-w-sm rounded-xl border border-border bg-white px-4 py-3 text-xs leading-relaxed text-muted-foreground">
+        <p className="mm-surface-panel mx-auto mt-8 max-w-sm rounded-xl px-4 py-3 text-xs leading-relaxed text-muted-foreground">
           <span className="font-semibold text-muted-foreground">MentorMuni</span> pairs you with mentors and AI mocks so gaps turn
           into confidence — explore after your score appears.
         </p>
@@ -1418,7 +1420,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
           Use max-h (not fixed h) + no outer overflow-hidden — page can still scroll if chrome is
           taller than the offset, so submit/timer are never clipped off-screen.
         */}
-        <div className="mm-quiz-panel-card flex min-h-0 flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-xl sm:rounded-3xl">
+        <div className="mm-quiz-panel-card mm-surface-panel mm-surface-panel--quiz flex min-h-0 flex-col overflow-hidden shadow-xl sm:rounded-3xl">
           <TestCountdownTimer onAutoSubmit={handleAutoSubmit} disabled={loading} />
           {/* Expanded header — hidden once user scrolls the question list */}
           <div
@@ -1539,7 +1541,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
                         className={`flex-1 rounded-xl border-2 py-2.5 text-sm font-bold transition-all sm:py-3 ${
                           answers[i] === 'Yes'
                             ? 'border-emerald-500 bg-emerald-600 text-white shadow-md shadow-emerald-500/25'
-                            : 'border-border bg-white text-muted-foreground hover:border-emerald-400/60 hover:bg-emerald-50'
+                            : 'mm-choice-tile mm-choice-tile--yes-neutral text-muted-foreground'
                         }`}
                       >
                         Yes
@@ -1550,7 +1552,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
                         className={`flex-1 rounded-xl border-2 py-2.5 text-sm font-bold transition-all sm:py-3 ${
                           answers[i] === 'No'
                             ? 'border-rose-500 bg-rose-600 text-white shadow-md shadow-rose-500/25'
-                            : 'border-border bg-white text-muted-foreground hover:border-rose-400/60 hover:bg-rose-50'
+                            : 'mm-choice-tile mm-choice-tile--no-neutral text-muted-foreground'
                         }`}
                       >
                         No
@@ -1569,8 +1571,8 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
                             onClick={() => setAnswers({ ...answers, [i]: letter })}
                             className={`flex w-full items-start gap-3 rounded-xl border-2 px-3 py-3 text-left text-sm transition-all ${
                               picked
-                                ? 'border-cta bg-secondary text-foreground shadow-md shadow-button'
-                                : 'border-border bg-white text-muted-foreground hover:border-cta-mid/50 hover:bg-tint-subtle'
+                                ? 'border-cta bg-secondary text-foreground shadow-md shadow-button mm-choice-tile--selected'
+                                : 'mm-choice-tile text-muted-foreground'
                             }`}
                           >
                             <span
@@ -1628,6 +1630,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
 }
 
 const InterviewReady = () => {
+  const { newUI } = useNewUI();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [fromToolsEntry] = useState(() => readToolsEntryFromSearch());
@@ -2512,7 +2515,7 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
         <div className="mx-auto max-w-2xl">
-          <div className="rounded-3xl border border-border bg-white p-10 text-center shadow-xl backdrop-blur animate-in fade-in duration-500">
+          <div className="mm-surface-panel p-10 text-center shadow-xl backdrop-blur animate-in fade-in duration-500">
             <div className="mb-6">
               <div className="mx-auto h-14 w-14 rounded-full border-4 border-cta/25 border-t-cta animate-spin" />
             </div>
@@ -2529,7 +2532,7 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen mm-site-theme py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-3xl mx-auto">
-          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-border">
+          <div className="mm-surface-panel mm-surface-panel--lg">
             <h2 className="text-3xl md:text-4xl font-black text-foreground mb-2 tracking-tight">Choose what to measure</h2>
             <p className="text-muted-foreground text-sm md:text-base mb-6 leading-relaxed">
               One skill in depth, or a broad interview mix — tap a card to continue.
@@ -2573,7 +2576,7 @@ const InterviewReady = () => {
         <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-3xl flex-col px-4 pb-10 pt-4 sm:px-6 sm:pt-5 lg:max-w-5xl lg:px-8">
           {/* Credibility — compact */}
           <div className="mb-3 flex justify-center sm:mb-4">
-            <div className="inline-flex max-w-full items-center gap-2 rounded-full border border-border bg-white/90 px-3 py-1.5 shadow-sm backdrop-blur sm:px-4">
+            <div className="mm-surface-chip max-w-full px-3 py-1.5 backdrop-blur sm:px-4">
               <Star size={14} className="shrink-0 text-amber-400" />
               <span className="text-center text-[11px] font-medium text-muted-foreground sm:text-xs">
                 Patterns from 500+ companies · free score
@@ -2655,7 +2658,7 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white border border-border rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
+          <div className="mm-surface-panel mm-surface-panel--md backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-cta/20 border border-cta">
@@ -2683,7 +2686,7 @@ const InterviewReady = () => {
                   placeholder="your.email@example.com"
                   aria-invalid={validationErrors.email ? 'true' : undefined}
                   data-mm-invalid={validationErrors.email ? 'true' : undefined}
-                  className={`w-full rounded-xl bg-white px-4 py-3 outline-none transition-all text-foreground placeholder:text-hint ${
+                  className={`w-full mm-surface-input rounded-xl px-4 py-3 outline-none transition-all text-foreground placeholder:text-hint ${
                     validationErrors.email 
                       ? MM_FIELD_INVALID 
                       : MM_FIELD_VALID
@@ -2712,7 +2715,7 @@ const InterviewReady = () => {
                   placeholder="+91 9876543210"
                   aria-invalid={validationErrors.phone ? 'true' : undefined}
                   data-mm-invalid={validationErrors.phone ? 'true' : undefined}
-                  className={`w-full rounded-xl bg-white px-4 py-3 outline-none transition-all text-foreground placeholder:text-hint ${
+                  className={`w-full mm-surface-input rounded-xl px-4 py-3 outline-none transition-all text-foreground placeholder:text-hint ${
                     validationErrors.phone 
                       ? MM_FIELD_INVALID 
                       : MM_FIELD_VALID
@@ -2762,7 +2765,7 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white border border-border rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
+          <div className="mm-surface-panel mm-surface-panel--md backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex items-center justify-center w-12 h-12 rounded-full bg-cyan-500/20 border border-cyan-500">
@@ -2863,12 +2866,12 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen mm-site-theme py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-border">
+          <div className="mm-surface-panel mm-surface-panel--lg">
 
             {/* Progress bar only — no step numbers or labels */}
             <div className="mb-6">
               <div
-                className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden"
+                className="mm-progress-track"
                 role="progressbar"
                 aria-label="Assessment progress"
                 aria-valuenow={currentStepIndex}
@@ -2918,8 +2921,8 @@ const InterviewReady = () => {
                     }}
                     className={`p-5 rounded-2xl text-left border-2 group relative cursor-pointer transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out motion-reduce:transition-none ${
                       selected
-                        ? 'border-cta bg-cta/15 shadow-lg shadow-cta-card'
-                        : 'border-border bg-white shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:border-cta-mid hover:bg-gradient-to-br hover:from-tint-subtle hover:to-warning-bg/90 hover:shadow-[0_12px_32px_-12px_var(--accent-cta-shadow)] hover:-translate-y-1 motion-reduce:hover:translate-y-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta'
+                        ? 'border-cta bg-cta/15 shadow-lg shadow-cta-card mm-choice-tile--selected'
+                        : 'mm-choice-tile mm-choice-tile--role hover:border-cta-mid hover:-translate-y-1 motion-reduce:hover:translate-y-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta'
                     }`}
                   >
                     {selected && (
@@ -2969,7 +2972,7 @@ const InterviewReady = () => {
                 className={`flex flex-1 items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold transition-all ${
                   profile.userCategory
                     ? 'bg-gradient-to-r from-cta to-cta-mid text-white shadow-lg shadow-button-strong hover:from-cta hover:to-cta-mid active:scale-[0.98]'
-                    : 'cursor-not-allowed border border-border bg-white/[0.04] text-muted-foreground'
+                    : 'cursor-not-allowed border border-border bg-[color:var(--surface-track)] text-muted-foreground'
                 }`}
               >
                 Continue
@@ -2994,10 +2997,10 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen mm-site-theme py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-border animate-in slide-in-from-bottom-4 duration-500">
+          <div className="mm-surface-panel mm-surface-panel--lg animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-6">
               <div
-                className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden"
+                className="mm-progress-track"
                 role="progressbar"
                 aria-label="Assessment progress"
                 aria-valuenow={currentStepIndex}
@@ -3048,7 +3051,7 @@ const InterviewReady = () => {
                   placeholder="e.g. 2"
                   aria-invalid={validationErrors.experienceYears ? 'true' : undefined}
                   data-mm-invalid={validationErrors.experienceYears ? 'true' : undefined}
-                  className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
+                  className={`w-full mm-surface-input rounded-xl px-4 py-3 text-base font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
                     validationErrors.experienceYears
                       ? MM_FIELD_INVALID
                       : MM_FIELD_VALID
@@ -3080,7 +3083,7 @@ const InterviewReady = () => {
                   placeholder="Company or employer name"
                   aria-invalid={validationErrors.currentOrganization ? 'true' : undefined}
                   data-mm-invalid={validationErrors.currentOrganization ? 'true' : undefined}
-                  className={`w-full rounded-xl bg-white px-4 py-3 text-base font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
+                  className={`w-full mm-surface-input rounded-xl px-4 py-3 text-base font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
                     validationErrors.currentOrganization
                       ? MM_FIELD_INVALID
                       : MM_FIELD_VALID
@@ -3099,7 +3102,7 @@ const InterviewReady = () => {
               <button
                 type="button"
                 onClick={() => setStep(2)}
-                className="rounded-xl border border-border bg-white px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-cta-mid/70 hover:bg-secondary hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta"
+                className="mm-btn-secondary rounded-xl px-6 py-3 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta"
               >
                 ← Back
               </button>
@@ -3141,11 +3144,11 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen mm-site-theme py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-border animate-in slide-in-from-bottom-4 duration-500">
+          <div className="mm-surface-panel mm-surface-panel--lg animate-in slide-in-from-bottom-4 duration-500">
             {/* Progress — matches role step */}
             <div className="mb-6">
               <div
-                className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden"
+                className="mm-progress-track"
                 role="progressbar"
                 aria-label="Assessment progress"
                 aria-valuenow={currentStepIndex}
@@ -3284,7 +3287,7 @@ const InterviewReady = () => {
                 <button
                   type="button"
                   onClick={() => setStep(getStepBeforeSkillsFocus(profile, fromToolsEntry))}
-                  className="rounded-xl border border-border bg-white px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-cta-mid/70 hover:bg-secondary hover:text-foreground focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta"
+                  className="mm-btn-secondary rounded-xl px-6 py-3 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta"
                 >
                   ← Back
                 </button>
@@ -3327,10 +3330,10 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen mm-site-theme py-10 px-4 sm:px-6 lg:px-8">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-white rounded-3xl shadow-2xl p-8 md:p-10 border border-border animate-in slide-in-from-bottom-4 duration-500">
+          <div className="mm-surface-panel mm-surface-panel--lg animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-6">
               <div
-                className="h-1.5 rounded-full bg-white/[0.06] overflow-hidden"
+                className="mm-progress-track"
                 role="progressbar"
                 aria-label="Assessment progress"
                 aria-valuenow={currentStepIndex}
@@ -3389,8 +3392,8 @@ const InterviewReady = () => {
                             key={o.id}
                             className={`flex min-w-[140px] flex-1 cursor-pointer flex-col rounded-2xl border px-4 py-3 text-sm font-bold transition-all sm:min-w-0 sm:max-w-[200px] ${
                               profile.placementCampusType === o.id
-                                ? 'border-cta bg-white shadow-md shadow-button ring-2 ring-cta/20'
-                                : 'border-border/80 bg-white/70 hover:border-cta-mid/50'
+                                ? 'border-cta mm-choice-tile--selected shadow-md shadow-button ring-2 ring-cta/20'
+                                : 'mm-choice-tile border-border/80 hover:border-cta-mid/50'
                             }`}
                           >
                             <span className="flex items-center gap-2">
@@ -3425,7 +3428,7 @@ const InterviewReady = () => {
                             className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
                               profile.placementTargetMnc
                                 ? 'border-cta bg-warning-bg text-warning-ink-strong'
-                                : 'border-border bg-white/90 hover:border-cta-mid/60'
+                                : 'mm-choice-tile rounded-full hover:border-cta-mid/60'
                             }`}
                           >
                             <input
@@ -3442,7 +3445,7 @@ const InterviewReady = () => {
                             className={`inline-flex cursor-pointer items-center gap-2 rounded-full border px-4 py-2 text-sm font-semibold transition-all ${
                               profile.placementTargetProduct
                                 ? 'border-cyan-600/40 bg-cyan-50 text-cyan-900'
-                                : 'border-border bg-white/90 hover:border-cyan-300/60'
+                                : 'mm-choice-tile rounded-full hover:border-cyan-300/60'
                             }`}
                           >
                             <input
@@ -3466,7 +3469,7 @@ const InterviewReady = () => {
                           }
                           placeholder="TCS, Razorpay, whoever — comma-separated is fine"
                           rows={2}
-                          className={`mt-1 w-full rounded-xl border border-border/80 bg-white/90 px-3 py-2.5 text-sm font-normal outline-none transition-all placeholder:font-normal placeholder:text-hint ${
+                          className={`mt-1 w-full rounded-xl border mm-surface-input px-3 py-2.5 text-sm font-normal outline-none transition-all placeholder:font-normal placeholder:text-hint ${
                             validationErrors.placementCompanies ? MM_FIELD_INVALID : MM_FIELD_VALID
                           }`}
                           aria-invalid={validationErrors.placementCompanies ? 'true' : undefined}
@@ -3493,7 +3496,7 @@ const InterviewReady = () => {
                             </p>
                           </div>
                         </div>
-                        <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-dashed border-border/90 bg-white/60 px-3 py-2.5 transition-colors hover:bg-white">
+                        <label className="flex cursor-pointer items-start gap-3 rounded-xl mm-surface-subtle px-3 py-2.5 transition-colors hover:bg-[color:var(--bg-card)]">
                           <input
                             type="checkbox"
                             className="mt-0.5 accent-cta"
@@ -3518,7 +3521,7 @@ const InterviewReady = () => {
                               onChange={(e) =>
                                 setProfile((p) => ({ ...p, placementRoleChoice: e.target.value }))
                               }
-                              className={`w-full max-w-md rounded-xl border bg-white px-3 py-2.5 text-sm font-medium outline-none ${
+                              className={`w-full max-w-md rounded-xl mm-surface-input px-3 py-2.5 text-sm font-medium outline-none ${
                                 validationErrors.placementRoleChoice ? MM_FIELD_INVALID : MM_FIELD_VALID
                               }`}
                             >
@@ -3540,7 +3543,7 @@ const InterviewReady = () => {
                                   setProfile((p) => ({ ...p, placementRoleOther: e.target.value }))
                                 }
                                 placeholder="Describe it your way (optional)"
-                                className={`w-full max-w-md rounded-xl border bg-white px-3 py-2.5 text-sm outline-none ${
+                                className={`w-full max-w-md rounded-xl mm-surface-input px-3 py-2.5 text-sm outline-none ${
                                   validationErrors.placementRoleOther ? MM_FIELD_INVALID : MM_FIELD_VALID
                                 }`}
                               />
@@ -3568,7 +3571,7 @@ const InterviewReady = () => {
                         setProfile((p) => ({ ...p, placementCoreSkill: e.target.value }))
                       }
                       placeholder="e.g. Java backend, React, AWS, Data engineering"
-                      className={`w-full rounded-xl bg-white px-4 py-3 text-sm outline-none ${
+                      className={`w-full mm-surface-input rounded-xl px-4 py-3 text-sm outline-none ${
                         validationErrors.placementCoreSkill ? MM_FIELD_INVALID : MM_FIELD_VALID
                       }`}
                     />
@@ -3625,7 +3628,7 @@ const InterviewReady = () => {
                           }}
                           placeholder="Paste the JD text here…"
                           rows={5}
-                          className={`w-full rounded-xl border border-border bg-white px-4 py-3 text-sm font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
+                          className={`w-full rounded-xl mm-surface-input px-4 py-3 text-sm font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
                             validationErrors.placementJdText ? MM_FIELD_INVALID : MM_FIELD_VALID
                           }`}
                           aria-invalid={validationErrors.placementJdText ? 'true' : undefined}
@@ -3677,7 +3680,7 @@ const InterviewReady = () => {
                             );
                           }}
                           placeholder="e.g. Acme Corp"
-                          className={`w-full max-w-md rounded-xl border border-border bg-white px-4 py-3 text-sm font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
+                          className={`w-full max-w-md rounded-xl mm-surface-input px-4 py-3 text-sm font-normal text-foreground outline-none transition-all placeholder:font-normal placeholder:text-hint ${
                             validationErrors.placementTargetCompanyName ? MM_FIELD_INVALID : MM_FIELD_VALID
                           }`}
                           aria-invalid={validationErrors.placementTargetCompanyName ? 'true' : undefined}
@@ -3717,7 +3720,7 @@ const InterviewReady = () => {
                     setError(null);
                     setStep(4);
                   }}
-                  className="rounded-xl border border-border bg-white px-6 py-3 text-sm font-bold text-muted-foreground transition-all hover:border-cta-mid/70 hover:bg-secondary hover:text-foreground"
+                  className="mm-btn-secondary rounded-xl px-6 py-3 text-sm"
                 >
                   ← Back
                 </button>
@@ -3836,7 +3839,7 @@ const InterviewReady = () => {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-            className="relative overflow-hidden rounded-3xl border border-border bg-white p-6 shadow-xl sm:p-8"
+            className="mm-surface-panel mm-surface-panel--results relative overflow-hidden"
           >
             <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-cta/10 blur-3xl" />
 
@@ -3902,7 +3905,7 @@ const InterviewReady = () => {
               initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 }}
-              className="rounded-2xl border border-border bg-white p-6 shadow-sm sm:p-7"
+              className="mm-surface-panel mm-surface-panel--section"
             >
               <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                 <div>
@@ -3934,7 +3937,7 @@ const InterviewReady = () => {
                     <li key={row.index} className="rounded-xl border border-border bg-tint-subtle p-4 text-sm">
                       <div className="flex flex-wrap items-center gap-2 text-xs font-bold text-muted-foreground">
                         <span className="tabular-nums text-foreground">Q{row.index}</span>
-                        <span className="rounded-full bg-white px-2 py-0.5 text-[10px] uppercase tracking-wide text-foreground ring-1 ring-border">
+                        <span className="mm-badge-tag px-2 py-0.5 text-[10px] uppercase tracking-wide ring-1">
                           {String(row.question_type ?? '').replace(/_/g, ' ')}
                         </span>
                         {row.section ? (
@@ -3983,7 +3986,7 @@ const InterviewReady = () => {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.12 }}
-              className="relative overflow-hidden rounded-3xl border-2 border-cta-mid/60 bg-gradient-to-br from-secondary via-white to-warning-bg p-6 shadow-lg sm:p-8"
+              className="mm-surface-panel mm-surface-panel--promo relative overflow-hidden"
             >
               <div className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-cta/15 blur-2xl" />
               <div className="relative">
@@ -4001,7 +4004,7 @@ const InterviewReady = () => {
                   session, or checkout when we share the link).
                 </p>
                 <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <code className="break-all rounded-2xl border border-border bg-white px-4 py-3 text-center font-mono text-lg font-bold tracking-wide text-foreground shadow-inner sm:text-xl">
+                  <code className="mm-surface-inset break-all rounded-2xl px-4 py-3 text-center font-mono text-lg font-bold tracking-wide text-foreground shadow-inner sm:text-xl">
                     {earlyBirdCouponCode}
                   </code>
                   <button
@@ -4068,7 +4071,7 @@ const InterviewReady = () => {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.25 }}
-            className="rounded-2xl border border-border bg-white p-6 shadow-sm sm:p-7"
+            className="mm-surface-panel mm-surface-panel--section"
           >
             <h3 className="text-base font-bold text-foreground sm:text-lg">Your next steps</h3>
             <p className="mt-1 text-xs text-muted-foreground">Prioritized for your current band — do them in order.</p>
@@ -4091,7 +4094,7 @@ const InterviewReady = () => {
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="rounded-2xl border border-border bg-white p-6 shadow-sm sm:p-7"
+            className="mm-surface-panel mm-surface-panel--section"
           >
             <h3 className="text-base font-bold text-foreground sm:text-lg">How you compare</h3>
             <p className="mt-1 text-xs text-muted-foreground">
@@ -4162,7 +4165,7 @@ const InterviewReady = () => {
                       const msg = buildWhatsAppChallengeMessage(pct, result.readiness_label, result.assessmentMode ? ASSESSMENT_MODE_LABEL[result.assessmentMode] : '');
                       navigator.clipboard.writeText(msg);
                     }}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-white px-4 py-2.5 text-sm font-semibold text-foreground transition hover:bg-surface-muted"
+                    className="mm-btn-secondary inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-foreground"
                   >
                     <Copy size={14} />
                     Copy message
@@ -4181,7 +4184,7 @@ const InterviewReady = () => {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
-            className="rounded-2xl border border-border bg-white p-6"
+            className="mm-surface-panel mm-surface-panel--section"
           >
             {reportSent ? (
               <div className="py-2 text-center">
@@ -4232,7 +4235,7 @@ const InterviewReady = () => {
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.05 * i }}
-                      className="rounded-xl border border-border bg-white p-4 text-left text-sm text-muted-foreground"
+                      className="mm-surface-panel rounded-xl p-4 text-left text-sm text-muted-foreground"
                     >
                       {rec}
                     </motion.p>
@@ -4242,7 +4245,7 @@ const InterviewReady = () => {
                       initial={{ opacity: 0, x: -8 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.05 * i }}
-                      className="rounded-xl border border-border bg-white p-4 text-left"
+                      className="mm-surface-panel rounded-xl p-4 text-left"
                     >
                       <p className="text-[10px] font-bold uppercase tracking-wider text-warning-text">
                         {rec.priority || 'Focus'}
@@ -4258,7 +4261,7 @@ const InterviewReady = () => {
 
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
             {result.strengths && result.strengths.length > 0 && (
-              <div className="rounded-2xl border border-border bg-white p-6 shadow-sm ring-1 ring-emerald-500/10">
+              <div className="mm-surface-panel mm-surface-panel--section ring-1 ring-emerald-500/10">
                 <h3 className="mb-1 flex items-center gap-2.5 text-base font-semibold tracking-tight text-foreground sm:text-lg">
                   <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-700 ring-1 ring-emerald-100">
                     <CheckCircle2 size={20} className="text-emerald-600" strokeWidth={2} aria-hidden />
@@ -4287,7 +4290,7 @@ const InterviewReady = () => {
             )}
 
             {result.gaps && result.gaps.length > 0 && (
-              <div className="rounded-2xl border border-border bg-white p-6 shadow-sm ring-1 ring-amber-500/10">
+              <div className="mm-surface-panel mm-surface-panel--section ring-1 ring-amber-500/10">
                 <h3 className="mb-1 flex items-center gap-2.5 text-base font-semibold tracking-tight text-foreground sm:text-lg">
                   <span className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 text-amber-800 ring-1 ring-amber-100">
                     <AlertTriangle size={20} className="text-amber-600" strokeWidth={2} aria-hidden />
@@ -4320,7 +4323,7 @@ const InterviewReady = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.35 }}
-            className="rounded-3xl border border-border bg-white p-8 shadow-2xl"
+            className="mm-surface-panel mm-surface-panel--lg"
           >
             <div className="space-y-3">
               {usageInfo.remaining_attempts > 0 ? (
@@ -4391,7 +4394,7 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-2xl mx-auto">
-          <div className="bg-white border border-cta/25 rounded-3xl shadow-2xl p-8 text-center animate-in zoom-in duration-500">
+          <div className="mm-surface-panel mm-surface-panel--lg border-cta/25 text-center animate-in zoom-in duration-500">
             <div className="mb-8">
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-cta/20 border border-cta/45 mb-6">
                 <div className="w-2 h-10 bg-cta-mid rounded-full"></div>
@@ -4419,13 +4422,13 @@ const InterviewReady = () => {
                   setAuthMode('signup');
                   setStep(8);
                 }}
-                className="w-full bg-white/5 hover:bg-white/10 border border-border hover:border-border text-muted-foreground font-bold py-4 rounded-2xl transition-all"
+                className="mm-btn-ghost w-full font-bold py-4 rounded-2xl"
               >
                 Create New Account
               </button>
               <button 
                 onClick={resetAll}
-                className="w-full bg-white/5 hover:bg-white/10 border border-border hover:border-border text-muted-foreground font-bold py-3 rounded-2xl transition-all text-sm"
+                className="mm-btn-ghost w-full font-bold py-3 rounded-2xl text-sm"
               >
                 Go Back Home
               </button>
@@ -4442,7 +4445,7 @@ const InterviewReady = () => {
       return (
         <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
           <div className="max-w-md mx-auto">
-            <div className="bg-white border border-border rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
+            <div className="mm-surface-panel mm-surface-panel--md backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
               <h2 className="text-3xl font-black text-foreground mb-2">Sign In</h2>
               <p className="text-muted-foreground mb-8">Access your premium interviews</p>
 
@@ -4504,7 +4507,7 @@ const InterviewReady = () => {
     return (
       <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-md mx-auto">
-          <div className="bg-white border border-border rounded-3xl shadow-2xl p-8 backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
+          <div className="mm-surface-panel mm-surface-panel--md backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
             <h2 className="text-3xl font-black text-foreground mb-2">Create Account</h2>
             <p className="text-muted-foreground mb-8">Join thousands of job seekers mastering interviews</p>
 
@@ -4519,7 +4522,7 @@ const InterviewReady = () => {
                   value={authData.fullName}
                   onChange={(e) => setAuthData({...authData, fullName: e.target.value})}
                   placeholder="John Doe"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-cta"
+                  className="mm-surface-input w-full px-4 py-3 rounded-xl outline-none focus:border-cta"
                   required
                 />
               </div>
@@ -4531,7 +4534,7 @@ const InterviewReady = () => {
                   value={authData.email}
                   onChange={(e) => setAuthData({...authData, email: e.target.value})}
                   placeholder="you@example.com"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-cta"
+                  className="mm-surface-input w-full px-4 py-3 rounded-xl outline-none focus:border-cta"
                   required
                 />
               </div>
@@ -4543,7 +4546,7 @@ const InterviewReady = () => {
                   value={authData.phone}
                   onChange={(e) => setAuthData({...authData, phone: e.target.value})}
                   placeholder="+91 9876543210"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-cta"
+                  className="mm-surface-input w-full px-4 py-3 rounded-xl outline-none focus:border-cta"
                   required
                 />
               </div>
@@ -4555,7 +4558,7 @@ const InterviewReady = () => {
                   value={authData.password}
                   onChange={(e) => setAuthData({...authData, password: e.target.value})}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-cta"
+                  className="mm-surface-input w-full px-4 py-3 rounded-xl outline-none focus:border-cta"
                   required
                 />
               </div>
@@ -4567,7 +4570,7 @@ const InterviewReady = () => {
                   value={authData.confirmPassword}
                   onChange={(e) => setAuthData({...authData, confirmPassword: e.target.value})}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 rounded-xl border border-border bg-white/5 text-white placeholder-slate-500 outline-none focus:border-cta"
+                  className="mm-surface-input w-full px-4 py-3 rounded-xl outline-none focus:border-cta"
                   required
                 />
               </div>
@@ -4686,7 +4689,7 @@ const InterviewReady = () => {
                 <div className={`${
                   plan.highlighted
                     ? 'bg-background rounded-[calc(1.5rem-1px)]'
-                    : 'bg-white/5'
+                    : 'bg-surface-muted'
                 } p-8 h-full`}>
                   <h3 className="text-2xl font-bold text-white mb-2">{plan.name}</h3>
                   <p className={`text-sm ${plan.highlighted ? 'text-cyan-400' : 'text-muted-foreground'} mb-6`}>{plan.duration}</p>
@@ -4716,7 +4719,7 @@ const InterviewReady = () => {
                           : 'bg-cta text-white'
                         : plan.highlighted
                         ? 'bg-cyan-600/30 border border-cyan-600 text-cyan-400 hover:bg-cyan-600/50'
-                        : 'bg-white/5 border border-border text-white hover:bg-white/10'
+                        : 'mm-btn-ghost text-white'
                     }`}
                   >
                     {selectedPlan === plan.id ? (
@@ -4737,7 +4740,7 @@ const InterviewReady = () => {
               <h2 className="text-2xl font-black text-white mb-4">
                 Ready to master interviews?
               </h2>
-              <button className="bg-white text-cta px-12 py-4 rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-white/20 transition-all">
+              <button className="bg-inverse-surface text-cta px-12 py-4 rounded-2xl font-bold text-lg hover:shadow-lg hover:shadow-white/20 transition-all">
                 Proceed to Payment
               </button>
             </div>
@@ -4746,13 +4749,13 @@ const InterviewReady = () => {
           <div className="flex gap-4 justify-center mt-8">
             <button
               onClick={() => setStep(6)}
-              className="bg-white/5 hover:bg-white/10 border border-border text-muted-foreground font-bold py-3 px-8 rounded-2xl transition-all"
+              className="mm-btn-ghost font-bold py-3 px-8 rounded-2xl"
             >
               ← Back
             </button>
             <button
               onClick={resetAll}
-              className="bg-white/5 hover:bg-white/10 border border-border text-muted-foreground font-bold py-3 px-8 rounded-2xl transition-all"
+              className="mm-btn-ghost font-bold py-3 px-8 rounded-2xl"
             >
               Skip for Now
             </button>
@@ -4786,7 +4789,7 @@ const InterviewReady = () => {
   })();
 
   return (
-    <>
+  <div className={newUI ? 'mm-assessment-flow' : undefined}>
       {stepContent}
       <UpgradePromptModal
         isOpen={showUpgradeModal}
@@ -4797,7 +4800,7 @@ const InterviewReady = () => {
         open={showSkillValidationModal}
         onClose={() => setShowSkillValidationModal(false)}
       />
-    </>
+    </div>
   );
 };
 

@@ -89,7 +89,7 @@ function PosterSlideVisual({ slide, fillParent = false }) {
       />
       <div className="relative flex h-full min-h-[96px] flex-col items-center justify-center gap-1.5 px-4 py-4 sm:min-h-[104px] sm:gap-2 sm:px-5 sm:py-5">
         <div className="flex flex-col items-center">
-          <div className="rounded-xl border border-sky-200/70 bg-white/90 p-2.5 shadow-[0_8px_24px_-12px_rgba(26,143,196,0.18)] ring-1 ring-sky-100/80 sm:p-3">
+          <div className="rounded-xl mm-surface-panel border border-sky-200/70 p-2.5 shadow-[0_8px_24px_-12px_rgba(26,143,196,0.18)] ring-1 ring-sky-100/80 sm:p-3">
             <Icon className="h-7 w-7 text-[#1A8FC4] sm:h-8 sm:w-8" strokeWidth={1.15} aria-hidden />
           </div>
           <p className="mt-2 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#0e5e85]/90 sm:text-[10px]">{slide.visualKicker}</p>
@@ -120,7 +120,7 @@ export function MentorMuniPosterCarousel({ className = '' }) {
 
   return (
     <div
-      className={`relative flex h-full min-h-0 flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-[0_8px_32px_rgba(0,0,0,0.06)] ${className}`}
+      className={`relative flex h-full min-h-0 flex-col overflow-hidden mm-surface-panel rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.06)] ${className}`}
       role="region"
       aria-roledescription="carousel"
       aria-label="How MentorMuni addresses common preparation gaps"
@@ -147,7 +147,7 @@ export function MentorMuniPosterCarousel({ className = '' }) {
           </div>
         </div>
 
-        <div className="relative flex-1 border-t border-border bg-white px-4 py-4 sm:px-5 sm:py-5" aria-live="polite">
+        <div className="relative flex-1 border-t border-border mm-surface-panel px-4 py-4 sm:px-5 sm:py-5" aria-live="polite">
           <div className="relative min-h-[200px] sm:min-h-[200px]">
             <AnimatePresence initial={false} mode="sync">
               <motion.div

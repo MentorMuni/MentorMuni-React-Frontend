@@ -1,0 +1,114 @@
+/**
+ * New UI — dark professional edtech theme (Gen Z energy + placement-trust cues)
+ * Toggle via html.mm-new-ui · overrides mentorMuniTheme.css tokens sitewide.
+ */
+html.mm-new-ui {
+  color-scheme: dark;
+}
+
+html.mm-new-ui {
+  /* Surfaces — deep navy base, cyan/teal accents (less purple noise) */
+  --bg-primary: #060a12;
+  --bg-secondary: #0b1220;
+  --bg-card: rgba(17, 28, 48, 0.72);
+  --bg-soft-peach: rgba(24, 36, 58, 0.65);
+  --bg-tint-subtle: rgba(14, 22, 38, 0.55);
+
+  /* Type — WCAG-friendly on #060a12 (body ≥4.5:1, large text ≥3:1) */
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #a8b8cc;
+  --text-hint: #a8b8cc;
+  --text-body: #e2e8f0;
+  --text-heading: #ffffff;
+  --nav-ink: #e2e8f0;
+  --text-icon-muted: #94a3b8;
+
+  /* Brand — trust (cyan) + growth (teal) + action (amber CTA) */
+  --accent: #38bdf8;
+  --accent-hover: #7dd3fc;
+  --accent-soft: rgba(56, 189, 248, 0.12);
+  --accent-secondary: #34d399;
+  --accent-faint: rgba(56, 189, 248, 0.08);
+
+  --accent-cta: #f59e0b;
+  --accent-cta-hover: #d97706;
+  --accent-cta-mid: #fbbf24;
+  --accent-cta-deep: #ea580c;
+  --accent-cta-faint: rgba(245, 158, 11, 0.18);
+  --accent-cta-glow-soft: rgba(245, 158, 11, 0.15);
+  --accent-cta-glow-hero: rgba(245, 158, 11, 0.12);
+  --accent-cta-shadow: rgba(245, 158, 11, 0.35);
+
+  --success-link: #34d399;
+  --live-indicator: #22c55e;
+
+  --promo-gradient-from: #312e81;
+  --promo-gradient-via: #4338ca;
+  --promo-gradient-to: #0891b2;
+
+  --border: rgba(148, 163, 184, 0.18);
+  --border-hover: #38bdf8;
+  --focus-ring: #38bdf8;
+
+  --success: #22c55e;
+  --success-bg: rgba(34, 197, 94, 0.12);
+  --info: #38bdf8;
+  --info-bg: rgba(56, 189, 248, 0.12);
+  --warning-bg: rgba(245, 158, 11, 0.12);
+  --warning-text: #fbbf24;
+  --warning-ink-deep: #fb923c;
+  --warning-ink-strong: #fdba74;
+
+  --glow-orange-orb: rgba(245, 158, 11, 0.2);
+  --glow-cta-radial: rgba(234, 88, 12, 0.3);
+  --glow-story-orange: rgba(251, 146, 60, 0.25);
+  --glow-story-amber: rgba(251, 191, 36, 0.22);
+  --glow-story-cyan: rgba(34, 211, 238, 0.22);
+  --glow-rail-sky: rgba(56, 189, 248, 0.25);
+  --pattern-dot-warm: rgba(251, 191, 36, 0.06);
+  --pattern-dot-cool: rgba(56, 189, 248, 0.08);
+
+  --ambient-glow-cta: rgba(245, 158, 11, 0.15);
+  --ambient-glow-mid: rgba(167, 139, 250, 0.12);
+
+  --overlay-warm: rgba(56, 189, 248, 0.1);
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --shadow-nav: 0 4px 24px rgba(0, 0, 0, 0.5);
+  --shadow-button-value: 0 4px 20px rgba(245, 158, 11, 0.35);
+  --shadow-button-strong-value: 0 8px 28px rgba(245, 158, 11, 0.4);
+  --shadow-cta-card-value: 0 4px 24px rgba(245, 158, 11, 0.2);
+  --shadow-cta-hover-lift: 0 24px 48px -12px rgba(99, 102, 241, 0.35);
+
+  --shell-skeleton-1: rgba(51, 65, 85, 0.6);
+  --shell-skeleton-2: rgba(30, 41, 59, 0.7);
+  --shell-skeleton-3: rgba(51, 65, 85, 0.5);
+  --shell-card-warm: rgba(30, 41, 59, 0.65);
+  --shell-card-cream: rgba(15, 23, 42, 0.55);
+  --shell-card-neutral: rgba(30, 41, 59, 0.6);
+
+  /* Dark theme: white header chrome (Classic parity), dark page body */
+  --mm-chrome-bg: #f8fbff;
+  --mm-chrome-border: #dbe8f2;
+  --sticky-header-bg: var(--mm-chrome-bg);
+  --surface-track: rgba(51, 65, 85, 0.5);
+  --surface-muted: rgba(15, 23, 42, 0.6);
+  --inverse-surface: #f8fafc;
+  --semantic-cyan-ink: #22d3ee;
+}
+
+html.mm-new-ui,
+html.mm-new-ui body {
+  background-color: #060a12;
+  background-image:
+    radial-gradient(ellipse 80% 50% at 50% -15%, rgba(30, 58, 95, 0.35), transparent 55%),
+    linear-gradient(180deg, #060a12 0%, #080d14 100%);
+  background-attachment: scroll;
+}
+
+@media (min-width: 768px) {
+  html.mm-new-ui,
+  html.mm-new-ui body {
+    background-attachment: fixed;
+  }
+}

@@ -154,7 +154,7 @@ export function AnimatedPrepMapPanel() {
               <PrepMapReadinessScoreRing pct={PREP_MAP_ILLUSTRATIVE_SCORE} inView={inView} />
             </div>
             <div className="min-w-0 flex-1 text-center sm:text-left">
-              <div className="mb-2 inline-flex items-center justify-center gap-1.5 rounded-full border border-neutral-200/90 bg-white px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:justify-start">
+              <div className="mb-2 inline-flex items-center justify-center gap-1.5 rounded-full border border-neutral-200/90 mm-surface-chip px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.12em] text-muted-foreground sm:justify-start">
                 <Target size={12} className="text-[#1A8FC4]" strokeWidth={2.5} aria-hidden />
                 Interview readiness score
               </div>
@@ -164,7 +164,7 @@ export function AnimatedPrepMapPanel() {
             </div>
           </div>
 
-          <div className="mb-4 grid gap-2 rounded-xl border border-neutral-200/80 bg-white/90 p-3 sm:grid-cols-2 sm:gap-3 sm:p-4">
+          <div className="mb-4 grid gap-2 rounded-xl border border-neutral-200/80 mm-surface-panel p-3 sm:grid-cols-2 sm:gap-3 sm:p-4">
             <div className="rounded-lg border border-emerald-200/60 bg-emerald-50/50 px-3 py-2.5">
               <p className="text-[10px] font-bold uppercase tracking-wider text-emerald-800">Strongest area (sample)</p>
               <p className="mt-1 text-sm font-bold text-foreground">{glance.strongest.label}</p>
@@ -187,7 +187,7 @@ export function AnimatedPrepMapPanel() {
               {PREP_MAP_PREP_TOPIC_EXAMPLES.map((topic) => (
                 <span
                   key={topic}
-                  className="rounded-lg border border-violet-200/70 bg-white/90 px-2.5 py-1.5 text-[11px] font-semibold text-foreground shadow-sm"
+                  className="rounded-lg border border-violet-200/70 mm-surface-panel px-2.5 py-1.5 text-[11px] font-semibold text-foreground shadow-sm"
                 >
                   {topic}
                 </span>

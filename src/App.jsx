@@ -12,6 +12,7 @@ import Navbar from "./components/navbar";
 import HomePage from "./components/homepage";
 import ParticleBackground from "./components/new-ui/ParticleBackground";
 import NewUIBetaSwitch from "./components/new-ui/NewUIBetaSwitch";
+import SiteChromeShell from "./components/new-ui/SiteChromeShell";
 import MuniBot from "./components/MuniBot";
 import WelcomeLaunchOverlay from "./components/WelcomeLaunchOverlay";
 import RouteErrorBoundary from "./components/RouteErrorBoundary";
@@ -210,11 +211,13 @@ function App() {
       <RouteTitle />
       <div className="mm-site-theme relative flex min-h-screen w-full min-w-0 flex-col text-foreground">
         <ParticleBackground />
-        <div className="relative z-[2]">
+        <SiteChromeShell>
           <AnnouncementBar />
-          <Navbar />
-          <NewUIBetaSwitch />
-        </div>
+          <div className="mm-site-chrome__stack">
+            <Navbar />
+            <NewUIBetaSwitch />
+          </div>
+        </SiteChromeShell>
         <AnimatedMain className="relative z-[1]">
           <Suspense fallback={<PageFallback />}>
             <Routes>

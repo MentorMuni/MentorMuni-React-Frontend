@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { READINESS_TEST_COUPON_OFFER_HEADLINE, READINESS_TEST_COUPON_OFFER_HOW } from '../constants/brandCopy';
 import LimitedRewardLabel from './LimitedRewardLabel';
+import InnerRouteShell from './new-ui/InnerRouteShell';
 
 /**
  * Tools entry for Interview Readiness — uses global theme only (mentorMuniTheme.css).
@@ -37,7 +38,7 @@ export default function InterviewReadinessToolsPage() {
   ];
 
   return (
-    <div className="min-h-screen mm-site-theme overflow-x-hidden">
+    <InnerRouteShell scope="inner" className="min-h-screen mm-site-theme overflow-x-hidden">
       <section className="mm-marketing-hero-backdrop border-b border-border">
         <div className="relative z-10 mx-auto max-w-4xl px-6 pb-12 pt-10 md:pb-16 md:pt-14">
           <nav className="mb-8 flex items-center gap-2 text-xs font-medium">
@@ -135,6 +136,6 @@ export default function InterviewReadinessToolsPage() {
           </div>
         </div>
       </section>
-    </div>
+    </InnerRouteShell>
   );
 }

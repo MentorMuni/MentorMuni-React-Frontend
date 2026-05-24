@@ -104,8 +104,12 @@
   --shell-card-cream: #f8fbff;
   --shell-card-neutral: rgba(238, 246, 251, 0.9);
 
+  /* Site chrome (nav bar) — shared Classic canvas; New UI reuses these for parity */
+  --mm-chrome-bg: #f8fbff;
+  --mm-chrome-border: #dbe8f2;
+
   /* UI chrome derived from surfaces (change bg-primary → header updates) */
-  --sticky-header-bg: color-mix(in srgb, var(--bg-primary) 92%, transparent);
+  --sticky-header-bg: color-mix(in srgb, var(--mm-chrome-bg) 92%, transparent);
 
   /* Legacy warm neutrals → align to border / cool grays (assessment UI) */
   --surface-track: #dbe8f2;

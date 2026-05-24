@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { RESUME_ATS_URL } from '../config';
 import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
+import InnerRouteShell from './new-ui/InnerRouteShell';
 
 /**
  * POST {API_BASE}/api/resume/ats — multipart/form-data only (no JSON body).
@@ -268,7 +269,7 @@ export default function ResumeAnalyzer() {
   const canAnalyze = file && role && !analyzing;
 
   return (
-    <div className="mm-site-theme min-h-screen">
+    <InnerRouteShell scope="tool" className="mm-site-theme min-h-screen">
 
       {/* ── Hero ── */}
       <section className="relative overflow-hidden border-b border-border">
@@ -317,7 +318,7 @@ export default function ResumeAnalyzer() {
           <div className="flex flex-col gap-5">
 
             {/* Upload zone */}
-            <div className="rounded-2xl border border-border bg-white shadow-sm overflow-hidden">
+            <div className="mm-surface-panel rounded-2xl overflow-hidden">
               <div className="px-5 pt-5 pb-4 border-b border-border">
                 <h2 className="text-sm font-black text-foreground">Upload Resume</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">
@@ -378,7 +379,7 @@ export default function ResumeAnalyzer() {
             </div>
 
             {/* Role selector */}
-            <div className="rounded-2xl border border-border bg-white shadow-sm overflow-hidden">
+            <div className="mm-surface-panel rounded-2xl overflow-hidden">
               <div className="px-5 pt-5 pb-4 border-b border-border">
                 <h2 className="text-sm font-black text-foreground">Target Role</h2>
                 <p className="text-xs text-muted-foreground mt-0.5">We match keywords specific to this role</p>
@@ -392,7 +393,7 @@ export default function ResumeAnalyzer() {
                       className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                         role === r
                           ? 'bg-[#FF9500] text-white border border-[#FF9500]'
-                          : 'bg-white border border-border text-muted-foreground hover:border-[#FF9500]/45 hover:bg-[#FFF4E0] hover:text-foreground'
+                          : 'mm-choice-tile text-muted-foreground hover:border-[#FF9500]/45 hover:text-foreground'
                       }`}
                     >
                       {r}
@@ -442,7 +443,7 @@ export default function ResumeAnalyzer() {
           {/* ─── RIGHT: Results ─── */}
           <div className="flex flex-col gap-5">
             {!result && !analyzing && (
-              <div className="rounded-2xl border border-border bg-white p-8 flex flex-col items-center justify-center gap-4 text-center min-h-[320px] shadow-sm">
+              <div className="mm-surface-panel rounded-2xl p-8 flex flex-col items-center justify-center gap-4 text-center min-h-[320px] shadow-sm">
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary border border-border">
                   <Target size={22} className="text-muted-foreground" />
                 </div>
@@ -477,7 +478,7 @@ export default function ResumeAnalyzer() {
             {result && (
               <>
                 {/* Score card */}
-                <div className="rounded-2xl border border-border bg-white p-6 shadow-sm">
+                <div className="mm-surface-panel rounded-2xl p-6 shadow-sm">
                   <div className="flex items-center justify-between mb-5">
                     <div>
                       <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-1">ATS Score</p>
@@ -513,7 +514,7 @@ export default function ResumeAnalyzer() {
                 </div>
 
                 {/* Keywords */}
-                <div className="rounded-2xl border border-border bg-white p-5 shadow-sm">
+                <div className="mm-surface-panel rounded-2xl p-5 shadow-sm">
                   <h3 className="text-sm font-black text-foreground mb-4">Keyword Analysis</h3>
                   <div className="mb-3">
                     <p className="text-xs font-semibold text-green-800 mb-2">✓ Matched in your resume</p>
@@ -562,7 +563,7 @@ export default function ResumeAnalyzer() {
                     <ul className="flex flex-col gap-2.5">
                       {result.portal_tips.map((tip, i) => (
                         <li key={i} className="flex items-start gap-2.5 text-xs text-muted-foreground leading-relaxed">
-                          <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border border-sky-200/80 bg-white text-[10px] font-bold text-sky-700">
+                          <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md mm-badge-tag text-[10px] font-bold text-sky-700">
                             {i + 1}
                           </span>
                           <span>{tip}</span>
@@ -582,7 +583,7 @@ export default function ResumeAnalyzer() {
                 )}
 
                 {result.score_breakdown && (
-                  <div className="rounded-2xl border border-border bg-white p-4 shadow-sm">
+                  <div className="mm-surface-panel rounded-2xl p-4 shadow-sm">
                     <p className="text-xs font-black text-foreground mb-2">Score breakdown (LLM narrative)</p>
                     <ul className="space-y-1 text-xs text-muted-foreground">
                       {Object.entries(result.score_breakdown).map(([k, v]) => (
@@ -636,7 +637,7 @@ export default function ResumeAnalyzer() {
                 )}
 
                 {result.keyword_gaps_llm.length > 0 && (
-                  <div className="rounded-2xl border border-border bg-white p-4">
+                  <div className="mm-surface-panel rounded-2xl p-4">
                     <p className="text-xs font-semibold text-foreground mb-2">Additional keyword gaps (LLM)</p>
                     <div className="flex flex-wrap gap-2">
                       {result.keyword_gaps_llm.map((k) => (
@@ -652,7 +653,7 @@ export default function ResumeAnalyzer() {
                 )}
 
                 {result.rewrite_examples.length > 0 && (
-                  <div className="rounded-2xl border border-border bg-white p-4">
+                  <div className="mm-surface-panel rounded-2xl p-4">
                     <h3 className="text-sm font-black text-foreground mb-2">Rewrite examples</h3>
                     <ul className="space-y-2 text-xs text-muted-foreground">
                       {result.rewrite_examples.map((line, i) => (
@@ -665,7 +666,7 @@ export default function ResumeAnalyzer() {
                 )}
 
                 {result.positioning_improvement.length > 0 && (
-                  <div className="rounded-2xl border border-border bg-white p-4">
+                  <div className="mm-surface-panel rounded-2xl p-4">
                     <h3 className="text-sm font-black text-foreground mb-2">Positioning</h3>
                     <ul className="space-y-1 text-xs text-muted-foreground">
                       {result.positioning_improvement.map((line, i) => (
@@ -680,7 +681,7 @@ export default function ResumeAnalyzer() {
                     const v = result.section_rewrites[key];
                     return v != null && v !== '' && (!Array.isArray(v) || v.length > 0);
                   }) && (
-                  <div className="rounded-2xl border border-border bg-white p-4 shadow-sm">
+                  <div className="mm-surface-panel rounded-2xl p-4 shadow-sm">
                     <h3 className="text-sm font-black text-foreground mb-3">Section rewrites</h3>
                     <div className="space-y-3 text-xs">
                       {['headline', 'summary', 'skills', 'project_or_experience'].map((key) => {
@@ -744,7 +745,7 @@ export default function ResumeAnalyzer() {
             </Link>
             <Link
               to="/mock-interviews"
-              className="inline-flex items-center justify-center gap-2 border border-[#FF9500]/45 bg-white text-[#FF9500] hover:bg-[#FFF4E0] hover:border-[#FFB347] font-semibold px-6 py-3 rounded-xl transition-all text-sm"
+              className="inline-flex items-center justify-center gap-2 mm-btn-secondary text-[#FF9500] hover:bg-[#FFF4E0] hover:border-[#FFB347] font-semibold px-6 py-3 rounded-xl transition-all text-sm"
             >
               Try AI Mock Interview
             </Link>
@@ -752,6 +753,6 @@ export default function ResumeAnalyzer() {
         </div>
       </section>
 
-    </div>
+    </InnerRouteShell>
   );
 }

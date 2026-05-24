@@ -1,6 +1,19 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 const STORAGE_KEY = 'mm-new-ui';
+const THEME_COLOR_CLASSIC = '#1A8FC4';
+const THEME_COLOR_NEW_UI = '#060a12';
+
+function syncThemeColorMeta(isNewUI) {
+  if (typeof document === 'undefined') return;
+  let meta = document.querySelector('meta[name="theme-color"]');
+  if (!meta) {
+    meta = document.createElement('meta');
+    meta.setAttribute('name', 'theme-color');
+    document.head.appendChild(meta);
+  }
+  meta.setAttribute('content', isNewUI ? THEME_COLOR_NEW_UI : THEME_COLOR_CLASSIC);
+}
 
 const NewUIContext = createContext({
   newUI: false,
@@ -32,6 +45,7 @@ export function NewUIProvider({ children }) {
     const root = document.documentElement;
     if (newUI) root.classList.add('mm-new-ui');
     else root.classList.remove('mm-new-ui');
+    syncThemeColorMeta(newUI);
     try {
       localStorage.setItem(STORAGE_KEY, newUI ? '1' : '0');
     } catch {

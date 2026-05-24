@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import InnerRouteShell from './new-ui/InnerRouteShell';
 import {
   PRIMARY_CTA_LABEL,
   MENTORSHIP_TRUST_BADGE,
@@ -272,7 +273,7 @@ export default function Mentors() {
   };
 
   return (
-    <div className="min-h-screen mm-site-theme overflow-x-hidden">
+    <InnerRouteShell scope="inner" className="min-h-screen mm-site-theme overflow-x-hidden">
       <style>{`
         @keyframes mentors-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
         @keyframes mentors-amber-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
@@ -514,6 +515,6 @@ export default function Mentors() {
           </div>
         </div>
       </section>
-    </div>
+    </InnerRouteShell>
   );
 }

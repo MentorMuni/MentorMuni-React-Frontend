@@ -6,8 +6,14 @@ import { useEffect, useMemo, useState } from 'react';
  * @param {string[]} props.phrases
  * @param {boolean} [props.reducedMotion]
  * @param {string} [props.className]
+ * @param {string} [props.cursorClassName]
  */
-export function HeroHeadlineTypewriter({ phrases, reducedMotion = false, className = '' }) {
+export function HeroHeadlineTypewriter({
+  phrases,
+  reducedMotion = false,
+  className = '',
+  cursorClassName = 'bg-[#1A8FC4]',
+}) {
   const safePhrases = useMemo(() => (Array.isArray(phrases) ? phrases.filter(Boolean) : []), [phrases]);
   const [phraseIndex, setPhraseIndex] = useState(0);
   const [charIndex, setCharIndex] = useState(0);
@@ -62,7 +68,7 @@ export function HeroHeadlineTypewriter({ phrases, reducedMotion = false, classNa
       <span className="col-start-1 row-start-1 inline-flex min-w-0 items-end">
         <span>{displayed}</span>
         <span
-          className={`ml-0.5 inline-block h-[0.92em] w-[2px] shrink-0 translate-y-[0.08em] bg-[#1A8FC4] align-[-0.12em] ${
+          className={`ml-0.5 inline-block h-[0.92em] w-[2px] shrink-0 translate-y-[0.08em] align-[-0.12em] ${cursorClassName} ${
             showCursor ? 'opacity-100' : 'opacity-30'
           } transition-opacity duration-200`}
           aria-hidden

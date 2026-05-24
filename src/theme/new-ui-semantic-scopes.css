@@ -1,0 +1,65 @@
+/**
+ * New UI — semantic route scopes (inner, marketing, tools).
+ * Panels/inputs use token variables; no global .bg-white !important needed inside these shells.
+ */
+
+html.mm-new-ui .mm-inner-route,
+html.mm-new-ui .mm-marketing-flow,
+html.mm-new-ui .mm-tool-flow {
+  color: var(--text-body);
+}
+
+html.mm-new-ui .mm-inner-route .mm-surface-panel,
+html.mm-new-ui .mm-inner-route .mm-surface-panel--section,
+html.mm-new-ui .mm-inner-route .mm-surface-panel--lg,
+html.mm-new-ui .mm-marketing-flow .mm-surface-panel,
+html.mm-new-ui .mm-marketing-flow .mm-surface-panel--section,
+html.mm-new-ui .mm-marketing-flow .mm-surface-panel--glass,
+html.mm-new-ui .mm-marketing-flow .mm-surface-section,
+html.mm-new-ui .mm-tool-flow .mm-surface-panel,
+html.mm-new-ui .mm-tool-flow .mm-surface-panel--section,
+html.mm-new-ui .mm-tool-flow .mm-surface-panel--lg {
+  box-shadow:
+    0 12px 40px -12px rgba(0, 0, 0, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+html.mm-new-ui .mm-marketing-flow .mm-surface-section {
+  background-color: rgba(8, 13, 24, 0.55);
+}
+
+html.mm-new-ui .mm-inner-route .mm-choice-tile,
+html.mm-new-ui .mm-tool-flow .mm-choice-tile {
+  background-color: rgba(17, 28, 48, 0.85);
+  border-color: rgba(148, 163, 184, 0.22);
+}
+
+html.mm-new-ui .mm-inner-route .mm-surface-input,
+html.mm-new-ui .mm-tool-flow .mm-surface-input {
+  background-color: rgba(15, 23, 42, 0.85);
+  border-color: rgba(148, 163, 184, 0.25);
+  color: var(--text-heading);
+}
+
+html.mm-new-ui .mm-inner-route .mm-surface-input::placeholder,
+html.mm-new-ui .mm-tool-flow .mm-surface-input::placeholder {
+  color: var(--text-muted);
+}
+
+html.mm-new-ui .mm-inner-route .mm-btn-secondary:hover,
+html.mm-new-ui .mm-marketing-flow .mm-btn-secondary:hover,
+html.mm-new-ui .mm-tool-flow .mm-btn-secondary:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  background-color: rgba(24, 38, 62, 0.9);
+  color: var(--text-heading);
+}
+
+html.mm-new-ui .mm-marketing-flow .text-foreground,
+html.mm-new-ui .mm-tool-flow .text-foreground {
+  color: var(--text-heading);
+}
+
+html.mm-new-ui .mm-marketing-flow .text-muted-foreground,
+html.mm-new-ui .mm-tool-flow .text-muted-foreground {
+  color: var(--text-secondary);
+}

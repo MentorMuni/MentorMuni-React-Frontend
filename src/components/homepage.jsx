@@ -72,6 +72,7 @@ import {
 } from '../constants/homepageSeo';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { useNewUI } from '../context/NewUIContext';
+import InnerRouteShell from './new-ui/InnerRouteShell';
 import AnimatedCounter from './new-ui/AnimatedCounter';
 import { HeroFlagshipVisual } from './homepage/HeroFlagshipVisual';
 import { HeroHeadlineTypewriter } from './homepage/HeroHeadlineTypewriter';
@@ -493,7 +494,7 @@ function HeroSocialProof({ ariaLabel, reduceMotion }) {
 function HeroProblemTicker({ reduceMotion }) {
   const tickerItems = [...HERO_PROBLEM_TICKER, ...HERO_PROBLEM_TICKER];
   return (
-    <section className="relative mt-7 w-full overflow-hidden rounded-2xl border border-[#FFD9A8]/80 bg-white/90 shadow-[0_6px_22px_rgba(26,143,196,0.08)]">
+    <section className="relative mt-7 w-full overflow-hidden mm-surface-panel rounded-2xl border border-[#FFD9A8]/80 shadow-[0_6px_22px_rgba(26,143,196,0.08)]">
       <div
         className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-white to-transparent"
         aria-hidden
@@ -518,7 +519,7 @@ function HeroProblemTicker({ reduceMotion }) {
 }
 
 /** Quip below hero score card — shimmer + sparkles (respects reduced motion). */
-function HeroPlayfulClause({ text, reduceMotion }) {
+function HeroPlayfulClause({ text, reduceMotion, newUI = false }) {
   return (
     <motion.div
       className="relative mb-6 w-full max-w-[min(100%,440px)] sm:mb-8 lg:mb-0"
@@ -529,11 +530,15 @@ function HeroPlayfulClause({ text, reduceMotion }) {
     >
       <div className="flex justify-center lg:justify-end">
         <div
-          className={`inline-flex max-w-full items-start gap-2 rounded-xl px-3.5 py-2.5 text-left ${
-            reduceMotion
-              ? 'border border-sky-100/90 bg-sky-50/50'
-              : 'border border-sky-200/70 bg-gradient-to-br from-sky-50/95 via-white to-cyan-50/40 shadow-[0_6px_24px_-10px_rgba(26,143,196,0.35),0_0_0_1px_rgba(26,143,196,0.08)]'
-          }`}
+          className={
+            newUI
+              ? 'mm-hero-playful-clause-new-ui inline-flex max-w-full items-start gap-2 rounded-xl border px-3.5 py-2.5 text-left'
+              : `inline-flex max-w-full items-start gap-2 rounded-xl px-3.5 py-2.5 text-left ${
+                  reduceMotion
+                    ? 'border border-sky-100/90 bg-sky-50/50'
+                    : 'border border-sky-200/70 bg-gradient-to-br from-sky-50/95 via-white to-cyan-50/40 shadow-[0_6px_24px_-10px_rgba(26,143,196,0.35),0_0_0_1px_rgba(26,143,196,0.08)]'
+                }`
+          }
         >
         <motion.span
           className="mt-0.5 shrink-0 text-[#1A8FC4] drop-shadow-[0_0_10px_rgba(26,143,196,0.45)]"
@@ -556,7 +561,11 @@ function HeroPlayfulClause({ text, reduceMotion }) {
         </motion.span>
         <p
           className={`text-[13px] italic leading-snug ${
-            reduceMotion ? 'text-neutral-600' : 'mm-hero-playful-shimmer'
+            newUI
+              ? 'mm-hero-playful-new-ui'
+              : reduceMotion
+                ? 'text-neutral-600'
+                : 'mm-hero-playful-shimmer'
           }`}
         >
           {text}
@@ -614,7 +623,7 @@ function HeroPlayfulClause({ text, reduceMotion }) {
 function HomepageFaqSection() {
   return (
     <section
-      className="border-t border-border bg-white py-14 md:py-16 px-5 sm:px-6 lg:px-8"
+      className="mm-surface-section border-t py-14 md:py-16 px-5 sm:px-6 lg:px-8"
       aria-labelledby="homepage-faq-heading"
     >
       <div className="mx-auto max-w-3xl">
@@ -681,6 +690,7 @@ const HomePage = () => {
   };
 
   return (
+    <InnerRouteShell scope="marketing">
     <main className="mm-site-theme relative z-[1] overflow-x-hidden">
       <style>{`
         :focus-visible {
@@ -749,24 +759,44 @@ const HomePage = () => {
                 style={{ opacity: 1 }}
                 className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 lg:justify-start"
               >
-                <span className="inline-flex max-w-full items-center gap-2 rounded-full border border-sky-200/90 bg-sky-50/90 px-3 py-1.5 text-left text-[11px] font-medium leading-snug text-[#0c4a6e] sm:text-xs">
-                  <span className="h-2 w-2 shrink-0 rounded-full bg-emerald-500 shadow-[0_0_0_2px_rgba(16,185,129,0.25)]" aria-hidden />
+                <span
+                  className={
+                    newUI
+                      ? 'mm-new-ui-chip mm-new-ui-chip--eyebrow max-w-full px-3 py-1.5 text-left text-[11px] leading-snug sm:text-xs'
+                      : 'inline-flex max-w-full items-center gap-2 rounded-full border border-sky-200/90 bg-sky-50/90 px-3 py-1.5 text-left text-[11px] font-medium leading-snug text-[#0c4a6e] sm:text-xs'
+                  }
+                >
+                  <span
+                    className={`h-2 w-2 shrink-0 rounded-full shadow-[0_0_0_2px_rgba(16,185,129,0.25)] ${
+                      newUI ? 'bg-emerald-400' : 'bg-emerald-500'
+                    }`}
+                    aria-hidden
+                  />
                   <span className="min-w-0">{HERO_EYEBROW}</span>
                 </span>
-                <div className="flex flex-wrap items-center gap-2">
+                {newUI ? (
                   <span
-                    className="inline-flex rotate-[-2.5deg] items-center rounded-md border-2 border-[#1A8FC4] bg-gradient-to-br from-sky-100 to-sky-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#0e5e85] shadow-[2px_3px_0_0_rgba(26,143,196,0.35)] sm:text-[11px]"
-                    title="Limited early-bird offer"
+                    className="mm-new-ui-chip mm-new-ui-chip--promo px-2.5 py-1 sm:text-[11px]"
+                    title="Limited early-bird offer · Skills-first placement prep"
                   >
-                    {HERO_EARLY_BIRD_STICKER}
+                    {HERO_EARLY_BIRD_STICKER} · {HERO_GENZ_STICKER}
                   </span>
-                  <span
-                    className="inline-flex rotate-[2deg] items-center rounded-md border-2 border-cyan-600/75 bg-gradient-to-br from-cyan-50 to-sky-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-cyan-950 shadow-[2px_3px_0_0_rgba(8,145,178,0.35)] sm:text-[11px]"
-                    title="Skills-first interview preparation for students and early-career engineers"
-                  >
-                    {HERO_GENZ_STICKER}
-                  </span>
-                </div>
+                ) : (
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span
+                      className="inline-flex rotate-[-2.5deg] items-center rounded-md border-2 border-[#1A8FC4] bg-gradient-to-br from-sky-100 to-sky-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#0e5e85] shadow-[2px_3px_0_0_rgba(26,143,196,0.35)] sm:text-[11px]"
+                      title="Limited early-bird offer"
+                    >
+                      {HERO_EARLY_BIRD_STICKER}
+                    </span>
+                    <span
+                      className="inline-flex rotate-[2deg] items-center rounded-md border-2 border-cyan-600/75 bg-gradient-to-br from-cyan-50 to-sky-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-cyan-950 shadow-[2px_3px_0_0_rgba(8,145,178,0.35)] sm:text-[11px]"
+                      title="Skills-first interview preparation for students and early-career engineers"
+                    >
+                      {HERO_GENZ_STICKER}
+                    </span>
+                  </div>
+                )}
               </motion.div>
 
               <div className="w-full text-center lg:text-left">
@@ -791,9 +821,10 @@ const HomePage = () => {
                     <HeroHeadlineTypewriter
                       phrases={HERO_TYPEWRITER_PHRASES}
                       reducedMotion={reduceMotion}
+                      cursorClassName={newUI ? 'bg-[#38bdf8]' : 'bg-[#1A8FC4]'}
                       className={
                         newUI
-                          ? 'mm-hero-typewriter-line mm-hero-accent block text-[#7dd3fc]'
+                          ? 'mm-hero-typewriter-line mm-hero-accent-new-ui block'
                           : 'mm-hero-typewriter-line mm-hero-accent bg-gradient-to-r from-[#15799F] via-[#1A8FC4] to-[#2AAA8A] bg-clip-text text-transparent'
                       }
                     />
@@ -815,13 +846,31 @@ const HomePage = () => {
                     role="region"
                     aria-label="What MentorMuni offers"
                   >
-                    <span className="rounded-full border border-emerald-200/90 bg-emerald-50/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-emerald-900">
+                    <span
+                      className={
+                        newUI
+                          ? 'mm-new-ui-chip mm-new-ui-chip--emerald px-2.5 py-1 text-[10px] uppercase tracking-[0.1em]'
+                          : 'rounded-full border border-emerald-200/90 bg-emerald-50/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-emerald-900'
+                      }
+                    >
                       Mocks → Mentor → Repeat
                     </span>
-                    <span className="rounded-full border border-sky-200/90 bg-sky-50/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-sky-900">
+                    <span
+                      className={
+                        newUI
+                          ? 'mm-new-ui-chip mm-new-ui-chip--sky px-2.5 py-1 text-[10px] uppercase tracking-[0.1em]'
+                          : 'rounded-full border border-sky-200/90 bg-sky-50/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-sky-900'
+                      }
+                    >
                       Your score
                     </span>
-                    <span className="rounded-full border border-violet-200/90 bg-violet-50/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-violet-900">
+                    <span
+                      className={
+                        newUI
+                          ? 'mm-new-ui-chip mm-new-ui-chip--violet px-2.5 py-1 text-[10px] uppercase tracking-[0.1em]'
+                          : 'rounded-full border border-violet-200/90 bg-violet-50/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-violet-900'
+                      }
+                    >
                       60-day program
                     </span>
                   </div>
@@ -836,7 +885,7 @@ const HomePage = () => {
                     </button>
                     <Link
                       to="/how-it-works"
-                      className="inline-flex min-h-[48px] w-full touch-manipulation items-center justify-center rounded-xl border border-border bg-white px-7 py-3.5 text-sm font-bold text-foreground shadow-sm transition-colors hover:border-[#1A8FC4] hover:bg-secondary sm:w-auto"
+                      className="inline-flex min-h-[48px] w-full touch-manipulation items-center justify-center mm-btn-secondary rounded-xl px-7 py-3.5 text-sm font-bold text-foreground shadow-sm transition-colors hover:border-[#1A8FC4] hover:bg-secondary sm:w-auto"
                     >
                       How it works
                     </Link>
@@ -872,7 +921,7 @@ const HomePage = () => {
 
             <div className="flex w-full min-w-0 flex-col items-center justify-center gap-3 lg:items-end lg:pt-1">
               <HeroFlagshipVisual />
-              <HeroPlayfulClause text={HERO_PLAYFUL_CLAUSE} reduceMotion={reduceMotion} />
+              <HeroPlayfulClause text={HERO_PLAYFUL_CLAUSE} reduceMotion={reduceMotion} newUI={newUI} />
             </div>
           </div>
 
@@ -881,15 +930,15 @@ const HomePage = () => {
 
       {/* ════════════════ TRUST — campus types + stats ════════════════ */}
       <section
-        className="border-t border-border bg-white py-6 md:py-7 px-5 sm:px-6 lg:px-8"
+        className="mm-surface-section border-t py-6 md:py-7 px-5 sm:px-6 lg:px-8"
         aria-label={HERO_TRUST_LOGO_ROW_LABEL}
       >
         <div className="mx-auto max-w-5xl">
           <div className="mb-5 flex flex-wrap items-center justify-center gap-5 sm:gap-8">
             <div className="text-center">
-              <p className="text-2xl font-extrabold text-[#1A8FC4]">
+              <p className={`text-2xl font-extrabold ${newUI ? 'mm-new-ui-stat-value' : 'text-[#1A8FC4]'}`}>
                 {newUI ? (
-                  <AnimatedCounter value="200+" className="inline-block" />
+                  <AnimatedCounter value="200+" className="inline-block tabular-nums" />
                 ) : (
                   '200+'
                 )}
@@ -898,9 +947,9 @@ const HomePage = () => {
             </div>
             <div className="hidden h-8 w-px bg-border sm:block" aria-hidden />
             <div className="text-center">
-              <p className="text-2xl font-extrabold text-[#2AAA8A]">
+              <p className={`text-2xl font-extrabold ${newUI ? 'mm-new-ui-stat-value--teal' : 'text-[#2AAA8A]'}`}>
                 {newUI ? (
-                  <AnimatedCounter value="~5 min" className="inline-block" />
+                  <AnimatedCounter value="~5 min" className="inline-block tabular-nums" />
                 ) : (
                   '~5 min'
                 )}
@@ -909,7 +958,9 @@ const HomePage = () => {
             </div>
             <div className="hidden h-8 w-px bg-border sm:block" aria-hidden />
             <div className="text-center">
-              <p className="text-2xl font-extrabold text-[#FF9500]">No signup</p>
+              <p className={`text-2xl font-extrabold ${newUI ? 'mm-new-ui-stat-value--cta' : 'text-[#FF9500]'}`}>
+                No signup
+              </p>
               <p className="text-[11px] font-semibold text-muted-foreground">to start the check</p>
             </div>
           </div>
@@ -920,7 +971,11 @@ const HomePage = () => {
             {HERO_TRUST_LOGO_ROW_ITEMS.map((label) => (
               <span
                 key={label}
-                className="inline-flex items-center gap-1.5 rounded-full border border-slate-200/90 bg-slate-50/90 px-3 py-1.5 text-[11px] font-semibold text-slate-700 sm:text-xs"
+                className={
+                  newUI
+                    ? 'mm-new-ui-chip mm-new-ui-chip--trust px-3 py-1.5 text-[11px] sm:text-xs'
+                    : 'inline-flex items-center gap-1.5 rounded-full border border-slate-200/90 bg-slate-50/90 px-3 py-1.5 text-[11px] font-semibold text-slate-700 sm:text-xs'
+                }
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden />
                 {label}
@@ -942,7 +997,7 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ WHAT IS MENTORMUNI — one clear explainer block ════════════════ */}
-      <section className="border-t border-border bg-white py-12 md:py-14 px-5 sm:px-6 lg:px-8" aria-labelledby="what-is-mm-heading">
+      <section className="mm-surface-section border-t py-12 md:py-14 px-5 sm:px-6 lg:px-8" aria-labelledby="what-is-mm-heading">
         <div className="mx-auto max-w-5xl">
           <FadeUp>
             <div className="rounded-2xl border border-sky-200/70 bg-gradient-to-br from-sky-50/80 via-white to-emerald-50/40 p-7 md:p-10 shadow-[0_4px_28px_rgba(26,143,196,0.08)]">
@@ -976,11 +1031,11 @@ const HomePage = () => {
                   </div>
                 </div>
                 <div className="flex flex-col gap-4 lg:min-w-[220px]">
-                  <div className="rounded-xl border border-border bg-white/90 p-4 shadow-sm text-center">
+                  <div className="mm-surface-panel rounded-xl p-4 text-center">
                     <p className="text-3xl font-extrabold text-[#1A8FC4]">Instant</p>
                     <p className="mt-1 text-xs font-semibold text-muted-foreground">to start · no signup needed</p>
                   </div>
-                  <div className="rounded-xl border border-border bg-white/90 p-4 shadow-sm text-center">
+                  <div className="mm-surface-panel rounded-xl p-4 text-center">
                     <p className="text-3xl font-extrabold text-[#2AAA8A]">5 min</p>
                     <p className="mt-1 text-xs font-semibold text-muted-foreground">readiness check · instant result</p>
                   </div>
@@ -1026,7 +1081,7 @@ const HomePage = () => {
 
           <div className="grid gap-6 lg:grid-cols-[1fr_minmax(0,1.05fr)] lg:gap-10 lg:items-start">
             <FadeUp delay={0.06}>
-              <div className="rounded-2xl border border-violet-200/80 bg-white/90 p-6 shadow-[0_4px_24px_rgba(124,58,237,0.08)] md:p-7">
+              <div className="mm-surface-panel rounded-2xl p-6 shadow-[0_4px_24px_rgba(124,58,237,0.08)] md:p-7">
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-md">
                   <Languages className="h-5 w-5" strokeWidth={2} aria-hidden />
                 </div>
@@ -1044,7 +1099,7 @@ const HomePage = () => {
                   </button>
                   <Link
                     to="/contact"
-                    className="inline-flex min-h-[44px] items-center justify-center rounded-xl border-2 border-violet-300 bg-white px-6 py-3 text-sm font-bold text-violet-900 transition-colors hover:bg-violet-50"
+                    className="inline-flex min-h-[44px] items-center justify-center rounded-xl mm-btn-secondary border-2 border-violet-300 px-6 py-3 text-sm font-bold text-violet-900 transition-colors hover:bg-violet-50"
                   >
                     {SECONDARY_CTA_BOOK_CALL}
                   </Link>
@@ -1055,7 +1110,7 @@ const HomePage = () => {
             <ul className="list-none space-y-4 p-0">
               {HR_READINESS_POINTS.map((point, idx) => (
                 <FadeUp key={point.title} delay={0.08 + idx * 0.05}>
-                  <li className="flex gap-4 rounded-2xl border border-sky-100 bg-white/95 p-5 shadow-sm md:p-6">
+                  <li className="flex gap-4 mm-surface-panel rounded-2xl p-5 shadow-sm md:p-6">
                     <span
                       className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-sky-100 text-sm font-bold text-[#15799F]"
                       aria-hidden
@@ -1079,7 +1134,7 @@ const HomePage = () => {
       {/* ════════════════ 60-DAY PROGRAM — timeline + pricing card (moved up: after system loop) ════════════════ */}
       <section
         id="homepage-pricing"
-        className="border-t border-border bg-white py-14 md:py-16 px-5 sm:px-6 lg:px-8"
+        className="mm-surface-section border-t py-14 md:py-16 px-5 sm:px-6 lg:px-8"
         aria-labelledby="program-6week-heading"
       >
         <div className="mx-auto max-w-5xl">
@@ -1131,7 +1186,7 @@ const HomePage = () => {
 
             {/* Right Column - Get Started Card */}
             <FadeUp delay={0.1}>
-              <div className="relative rounded-2xl border border-sky-200 bg-white p-6 shadow-[0_4px_24px_rgba(0,0,0,0.06)] md:p-7">
+              <div className="relative mm-surface-panel rounded-2xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.06)] md:p-7">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1A8FC4] px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-sm">
                     Get Started Today
@@ -1213,7 +1268,7 @@ const HomePage = () => {
               const CardIcon = [Clock, Users, TrendingUp][idx];
               return (
                 <FadeUp key={card.title} delay={idx * 0.05}>
-                  <div className="flex h-full flex-col rounded-2xl border border-sky-100/90 bg-white/95 p-5 shadow-sm">
+                  <div className="flex h-full flex-col mm-surface-panel rounded-2xl p-5 shadow-sm">
                     <div
                       className="mb-3 flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-rose-50 ring-1 ring-rose-100/80"
                       aria-hidden
@@ -1307,7 +1362,7 @@ const HomePage = () => {
                     {COMPARISON_TABLE_ROWS.map((row, ri) => {
                       const isLast = ri === COMPARISON_TABLE_ROWS.length - 1;
                       return (
-                        <tr key={row.label} className="bg-white">
+                        <tr key={row.label} className="mm-surface-panel">
                           <th
                             scope="row"
                             className="px-4 py-3.5 text-left text-[13px] font-medium leading-snug text-foreground sm:px-5 sm:py-4 sm:text-sm"
@@ -1344,7 +1399,7 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ HOW IT WORKS — what we give (after the “why”) ════════════════ */}
-      <section className="border-t border-border bg-white py-14 md:py-16 px-5 sm:px-6 lg:px-8">
+      <section className="mm-surface-section border-t py-14 md:py-16 px-5 sm:px-6 lg:px-8">
         <div className="mx-auto w-full max-w-5xl text-left">
           <FadeUp className="w-full text-left">
             <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-primary">How it works</span>
@@ -1364,7 +1419,7 @@ const HomePage = () => {
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {FEATURES.map((f, i) => (
               <FadeUp key={f.title} delay={i * 0.07} className="w-full text-left">
-                <div className="group flex h-full gap-4 rounded-2xl border border-border bg-white p-6 shadow-[0_2px_12px_rgba(0,0,0,0.05)] transition-all hover:border-[#2AAA8A]">
+                <div className="group flex h-full gap-4 mm-surface-panel rounded-2xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.05)] transition-all hover:border-[#2AAA8A]">
                   <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-accent-soft group-hover:bg-secondary">
                     <f.Icon size={18} className="text-[#1A8FC4]" />
                   </div>
@@ -1420,7 +1475,7 @@ const HomePage = () => {
             style={{ opacity: 1 }}
             className="mb-10 text-center md:text-left"
           >
-            <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-[#2AAA8A]/35 bg-white/80 px-3 py-1.5 shadow-sm backdrop-blur-sm md:mb-4">
+            <div className="mb-3 inline-flex items-center gap-2 mm-surface-chip px-3 py-1.5 shadow-sm backdrop-blur-sm md:mb-4">
               <Sparkles size={14} className="text-[#1A8FC4]" aria-hidden />
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#15799F]">
                 Real voices
@@ -1460,7 +1515,7 @@ const HomePage = () => {
                     className={`pointer-events-none absolute -inset-0.5 rounded-3xl bg-gradient-to-br ${t.gradient} opacity-0 blur-xl transition-opacity duration-500 group-hover:opacity-70`}
                     aria-hidden
                   />
-                  <div className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-border bg-white/90 p-5 shadow-[0_4px_24px_rgba(0,0,0,0.06)] backdrop-blur-md transition-all duration-300 group-hover:border-[#2AAA8A]/45 group-hover:shadow-[0_16px_48px_rgba(26,143,196,0.14)] md:p-6">
+                  <div className="relative flex h-full flex-col overflow-hidden mm-surface-panel rounded-3xl p-5 shadow-[0_4px_24px_rgba(0,0,0,0.06)] backdrop-blur-md transition-all duration-300 group-hover:border-[#2AAA8A]/45 group-hover:shadow-[0_16px_48px_rgba(26,143,196,0.14)] md:p-6">
                     <div className="absolute right-4 top-4 text-[4rem] font-serif font-bold leading-none text-[#1A8FC4]/[0.07] transition-transform duration-500 group-hover:scale-110 group-hover:text-[#1A8FC4]/10">
                       &ldquo;
                     </div>
@@ -1484,7 +1539,7 @@ const HomePage = () => {
                       <div
                         className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${t.gradient} p-[1px] shadow-sm`}
                       >
-                        <div className="flex h-full w-full items-center justify-center rounded-[11px] bg-white/95">
+                        <div className="flex h-full w-full items-center justify-center rounded-[11px] bg-[color:var(--bg-card)]">
                           <CardIcon size={18} className="text-muted-foreground" strokeWidth={2} aria-hidden />
                         </div>
                       </div>
@@ -1562,7 +1617,7 @@ const HomePage = () => {
               <div className="flex flex-wrap items-center gap-3">
                 <Link
                   to="/contact"
-                  className="inline-flex items-center gap-1.5 rounded-xl border-2 border-[#1A8FC4] bg-white px-6 py-3 text-sm font-bold text-[#1A8FC4] shadow-sm transition-colors hover:bg-secondary"
+                  className="inline-flex items-center gap-1.5 rounded-xl mm-btn-secondary border-2 border-[#1A8FC4] px-6 py-3 text-sm font-bold text-[#1A8FC4] shadow-sm transition-colors hover:bg-secondary"
                 >
                   {SECONDARY_CTA_BOOK_CALL}
                 </Link>
@@ -1602,7 +1657,7 @@ const HomePage = () => {
                 ].map((c) => (
                   <div
                     key={c.label}
-                    className="flex gap-3 rounded-xl border border-border bg-white p-3.5 shadow-[0_2px_12px_rgba(0,0,0,0.05)]"
+                    className="flex gap-3 mm-surface-panel rounded-xl p-3.5 shadow-[0_2px_12px_rgba(0,0,0,0.05)]"
                   >
                     <span className="mt-0.5 text-lg" aria-hidden>
                       {c.icon}
@@ -1681,7 +1736,7 @@ const HomePage = () => {
               </button>
               <Link
                 to="/contact"
-                className="inline-flex min-h-[48px] w-full touch-manipulation shrink-0 items-center justify-center rounded-xl border-2 border-[#1A8FC4]/80 bg-white px-6 py-3.5 text-sm font-bold text-[#1A8FC4] transition hover:bg-secondary active:bg-sky-50/50 sm:w-auto"
+                className="mm-btn-secondary inline-flex min-h-[48px] w-full touch-manipulation shrink-0 items-center justify-center rounded-xl border-2 border-[#1A8FC4]/80 px-6 py-3.5 text-sm font-bold text-[#1A8FC4] transition hover:bg-secondary active:bg-sky-50/50 sm:w-auto"
               >
                 {SECONDARY_CTA_BOOK_CALL}
               </Link>
@@ -1706,7 +1761,7 @@ const HomePage = () => {
               <p className="text-muted-foreground text-sm leading-relaxed mb-4 max-w-xs">
                 {MISSION_TAGLINE}
               </p>
-              <div className="mb-4 max-w-sm rounded-xl border border-sky-200/60 bg-white/90 px-3 py-3 shadow-sm">
+              <div className="mb-4 mm-surface-panel max-w-sm rounded-xl px-3 py-3 shadow-sm">
                 <div className="flex gap-2.5">
                   <Gift className="h-4 w-4 shrink-0 text-[#15799F] mt-0.5" aria-hidden />
                   <div>
@@ -1786,6 +1841,7 @@ const HomePage = () => {
       </footer>
 
     </main>
+    </InnerRouteShell>
   );
 };
 

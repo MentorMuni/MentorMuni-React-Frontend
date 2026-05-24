@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function ResumeAnalyzer(){
   return (
-    <div className="p-4 bg-white rounded shadow">
+    <div className="p-4 mm-surface-panel rounded shadow">
       <h4 className="font-semibold">Why Your Resume Isn't Getting Interview Calls</h4>
       <div className="text-sm text-gray-600 mt-2">Upload your resume — our AI pinpoints wording, achievements, and structure issues that stop interview invites.</div>
       <div className="mt-4">

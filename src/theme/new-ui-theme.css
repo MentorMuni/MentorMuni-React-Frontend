@@ -1,107 +1,9 @@
 /**
- * New UI — dark professional edtech theme (Gen Z energy + placement-trust cues)
- * Toggle via html.mm-new-ui · overrides mentorMuniTheme.css tokens sitewide.
+ * New UI theme — tokens + component styles + legacy bridge.
+ * Toggle: html.mm-new-ui
  */
-html.mm-new-ui {
-  color-scheme: dark;
-}
-
-html.mm-new-ui {
-  /* Surfaces — deep navy base, cyan/teal accents (less purple noise) */
-  --bg-primary: #060a12;
-  --bg-secondary: #0b1220;
-  --bg-card: rgba(17, 28, 48, 0.72);
-  --bg-soft-peach: rgba(24, 36, 58, 0.65);
-  --bg-tint-subtle: rgba(14, 22, 38, 0.55);
-
-  /* Type — WCAG-friendly on #060a12 (body ≥4.5:1, large text ≥3:1) */
-  --text-primary: #f1f5f9;
-  --text-secondary: #c5d0de;
-  --text-muted: #94a3b8;
-  --text-hint: #a8b8cc;
-  --text-body: #e2e8f0;
-  --text-heading: #ffffff;
-  --nav-ink: #e2e8f0;
-  --text-icon-muted: #94a3b8;
-
-  /* Brand — trust (cyan) + growth (teal) + action (amber CTA) */
-  --accent: #38bdf8;
-  --accent-hover: #7dd3fc;
-  --accent-soft: rgba(56, 189, 248, 0.12);
-  --accent-secondary: #34d399;
-  --accent-faint: rgba(56, 189, 248, 0.08);
-
-  --accent-cta: #f59e0b;
-  --accent-cta-hover: #d97706;
-  --accent-cta-mid: #fbbf24;
-  --accent-cta-deep: #ea580c;
-  --accent-cta-faint: rgba(245, 158, 11, 0.18);
-  --accent-cta-glow-soft: rgba(245, 158, 11, 0.15);
-  --accent-cta-glow-hero: rgba(245, 158, 11, 0.12);
-  --accent-cta-shadow: rgba(245, 158, 11, 0.35);
-
-  --success-link: #34d399;
-  --live-indicator: #22c55e;
-
-  --promo-gradient-from: #312e81;
-  --promo-gradient-via: #4338ca;
-  --promo-gradient-to: #0891b2;
-
-  --border: rgba(148, 163, 184, 0.18);
-  --border-hover: #38bdf8;
-  --focus-ring: #38bdf8;
-
-  --success: #22c55e;
-  --success-bg: rgba(34, 197, 94, 0.12);
-  --info: #38bdf8;
-  --info-bg: rgba(56, 189, 248, 0.12);
-  --warning-bg: rgba(245, 158, 11, 0.12);
-  --warning-text: #fbbf24;
-  --warning-ink-deep: #fb923c;
-  --warning-ink-strong: #fdba74;
-
-  --glow-orange-orb: rgba(245, 158, 11, 0.2);
-  --glow-cta-radial: rgba(234, 88, 12, 0.3);
-  --glow-story-orange: rgba(251, 146, 60, 0.25);
-  --glow-story-amber: rgba(251, 191, 36, 0.22);
-  --glow-story-cyan: rgba(34, 211, 238, 0.22);
-  --glow-rail-sky: rgba(56, 189, 248, 0.25);
-  --pattern-dot-warm: rgba(251, 191, 36, 0.06);
-  --pattern-dot-cool: rgba(56, 189, 248, 0.08);
-
-  --ambient-glow-cta: rgba(245, 158, 11, 0.15);
-  --ambient-glow-mid: rgba(167, 139, 250, 0.12);
-
-  --overlay-warm: rgba(56, 189, 248, 0.1);
-  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
-  --shadow-nav: 0 4px 24px rgba(0, 0, 0, 0.5);
-  --shadow-button-value: 0 4px 20px rgba(245, 158, 11, 0.35);
-  --shadow-button-strong-value: 0 8px 28px rgba(245, 158, 11, 0.4);
-  --shadow-cta-card-value: 0 4px 24px rgba(245, 158, 11, 0.2);
-  --shadow-cta-hover-lift: 0 24px 48px -12px rgba(99, 102, 241, 0.35);
-
-  --shell-skeleton-1: rgba(51, 65, 85, 0.6);
-  --shell-skeleton-2: rgba(30, 41, 59, 0.7);
-  --shell-skeleton-3: rgba(51, 65, 85, 0.5);
-  --shell-card-warm: rgba(30, 41, 59, 0.65);
-  --shell-card-cream: rgba(15, 23, 42, 0.55);
-  --shell-card-neutral: rgba(30, 41, 59, 0.6);
-
-  --sticky-header-bg: rgba(10, 15, 28, 0.88);
-  --surface-track: rgba(51, 65, 85, 0.5);
-  --surface-muted: rgba(15, 23, 42, 0.6);
-  --inverse-surface: #f8fafc;
-  --semantic-cyan-ink: #22d3ee;
-}
-
-html.mm-new-ui,
-html.mm-new-ui body {
-  background-color: #060a12;
-  background-image:
-    radial-gradient(ellipse 80% 50% at 50% -15%, rgba(30, 58, 95, 0.35), transparent 55%),
-    linear-gradient(180deg, #060a12 0%, #080d14 100%);
-  background-attachment: fixed;
-}
+@import "./new-ui-tokens.css";
+@import "./new-ui-legacy-bridge.css";
 
 html.mm-new-ui .mm-site-theme {
   background: transparent;
@@ -174,6 +76,10 @@ html.mm-new-ui .mm-text-body {
   color: var(--text-secondary);
 }
 
+html.mm-new-ui footer .text-muted-foreground {
+  color: #c5d0de !important;
+}
+
 html.mm-new-ui .mm-text-hint,
 html.mm-new-ui .text-hint {
   color: var(--text-secondary) !important;
@@ -239,14 +145,53 @@ html.mm-new-ui .card-dark:hover {
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-/* Sticky header — dark frosted bar (matches New UI body) */
+/* ── Site chrome shell — white header + theme bar, dark body below ─────── */
+html.mm-new-ui .mm-site-chrome__stack {
+  background-color: var(--mm-chrome-bg);
+  box-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.04),
+    0 12px 40px -8px rgba(0, 0, 0, 0.18);
+  color: #18181b;
+}
+
+html.mm-new-ui .mm-site-chrome__edge {
+  height: 6px;
+  background: linear-gradient(
+    to bottom,
+    var(--mm-chrome-border) 0%,
+    color-mix(in srgb, var(--mm-chrome-bg) 35%, #060a12) 45%,
+    #060a12 100%
+  );
+  pointer-events: none;
+}
+
+html.mm-new-ui .mm-site-chrome .mm-sticky-header,
+html.mm-new-ui .mm-site-chrome .mm-beta-switch-bar {
+  background-color: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  color: #18181b;
+}
+
+html.mm-new-ui .mm-site-chrome .mm-sticky-header {
+  border-bottom-color: var(--mm-chrome-border);
+}
+
+html.mm-new-ui .mm-site-chrome .mm-beta-switch-bar {
+  border-top: 1px solid var(--mm-chrome-border);
+  border-bottom: none;
+}
+
+/* In-page headers (tutorials) — white chrome in Dark theme too */
 html.mm-new-ui .mm-sticky-header {
-  background: rgba(10, 15, 28, 0.88);
-  border-bottom-color: rgba(148, 163, 184, 0.14);
-  backdrop-filter: blur(20px) saturate(1.4);
-  -webkit-backdrop-filter: blur(20px) saturate(1.4);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 8px 32px rgba(0, 0, 0, 0.35);
-  color: var(--text-heading);
+  background-color: var(--mm-chrome-bg);
+  border-bottom-color: var(--mm-chrome-border);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
+  color: #18181b;
+  isolation: isolate;
 }
 
 /* Homepage hero — clear focal hierarchy, no light “sheet” bleed-through */
@@ -270,19 +215,137 @@ html.mm-new-ui .mm-new-ui-hero .font-semibold.text-neutral-800 {
   color: var(--text-body) !important;
 }
 
-/* Hero — static accent line (no shimmer animation) */
-html.mm-new-ui .mm-new-ui-hero .mm-hero-accent {
-  animation: none !important;
-  background: none !important;
-  color: #7dd3fc !important;
-  -webkit-text-fill-color: #7dd3fc !important;
+/* Hero typewriter — slow gradient shift (Gen Z hook, not flashy) */
+@keyframes mm-hero-accent-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
 }
 
-html.mm-new-ui .mm-hero-playful-shimmer {
-  animation: none !important;
-  background: none !important;
-  color: #94a3b8 !important;
-  -webkit-text-fill-color: #94a3b8 !important;
+html.mm-new-ui .mm-new-ui-hero .mm-hero-accent-new-ui {
+  background: linear-gradient(90deg, #7dd3fc 0%, #2dd4bf 40%, #38bdf8 70%, #7dd3fc 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  animation: mm-hero-accent-shift 14s ease-in-out infinite;
+}
+
+html.mm-new-ui .mm-hero-playful-new-ui {
+  color: #cbd5e1 !important;
+  -webkit-text-fill-color: #cbd5e1 !important;
+}
+
+html.mm-new-ui .mm-hero-playful-clause-new-ui {
+  border-color: rgba(56, 189, 248, 0.22) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(17, 28, 48, 0.92) 0%,
+    rgba(12, 20, 36, 0.88) 100%
+  ) !important;
+  box-shadow: 0 6px 24px -10px rgba(0, 0, 0, 0.45) !important;
+}
+
+/* ── Homepage chips (semantic; no light sky-50 bleed) ───────────────────── */
+html.mm-new-ui .mm-new-ui-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  border-radius: 9999px;
+  border: 1px solid rgba(56, 189, 248, 0.32);
+  background: rgba(56, 189, 248, 0.1);
+  color: #bae6fd;
+  font-weight: 600;
+}
+
+/* Eyebrow must not inherit base cyan chip tokens */
+html.mm-new-ui .mm-new-ui-chip.mm-new-ui-chip--eyebrow {
+  border-color: rgba(148, 163, 184, 0.32);
+  background: rgba(17, 28, 48, 0.88);
+  color: #e2e8f0;
+}
+
+/* Hero eyebrow — slate glass on dark (matches body, not Classic sky pill) */
+html.mm-new-ui .mm-new-ui-chip--eyebrow,
+html.mm-new-ui .mm-new-ui-hero .mm-new-ui-chip--eyebrow {
+  border: 1px solid rgba(148, 163, 184, 0.32);
+  background: rgba(17, 28, 48, 0.88);
+  color: #e2e8f0;
+  font-weight: 600;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 2px 12px rgba(0, 0, 0, 0.2);
+}
+
+html.mm-new-ui .mm-new-ui-chip--live {
+  border-color: rgba(34, 197, 94, 0.35);
+  background: rgba(34, 197, 94, 0.1);
+  color: #a7f3d0;
+}
+
+html.mm-new-ui .mm-new-ui-hero .mm-new-ui-chip--promo {
+  border-color: rgba(245, 158, 11, 0.38);
+  background: rgba(245, 158, 11, 0.12);
+  color: #fde68a;
+  border-radius: 0.375rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 700;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+html.mm-new-ui .mm-new-ui-chip--promo {
+  border-color: rgba(245, 158, 11, 0.35);
+  background: rgba(245, 158, 11, 0.1);
+  color: #fde68a;
+  border-radius: 0.375rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+html.mm-new-ui .mm-new-ui-chip--emerald {
+  border-color: rgba(52, 211, 153, 0.32);
+  background: rgba(52, 211, 153, 0.1);
+  color: #a7f3d0;
+}
+
+html.mm-new-ui .mm-new-ui-chip--sky {
+  border-color: rgba(56, 189, 248, 0.32);
+  background: rgba(56, 189, 248, 0.1);
+  color: #bae6fd;
+}
+
+html.mm-new-ui .mm-new-ui-chip--violet {
+  border-color: rgba(167, 139, 250, 0.32);
+  background: rgba(167, 139, 250, 0.1);
+  color: #ddd6fe;
+}
+
+html.mm-new-ui .mm-new-ui-chip--trust {
+  border-color: rgba(148, 163, 184, 0.22);
+  background: rgba(30, 41, 59, 0.65);
+  color: #e2e8f0;
+}
+
+html.mm-new-ui .mm-new-ui-stat-value {
+  font-variant-numeric: tabular-nums;
+  color: #7dd3fc !important;
+}
+
+html.mm-new-ui .mm-new-ui-stat-value--teal {
+  color: #6ee7b7 !important;
+}
+
+html.mm-new-ui .mm-new-ui-stat-value--cta {
+  color: #fbbf24 !important;
 }
 
 /* Hero badges — flat, no sticker rotation */
@@ -301,642 +364,24 @@ html.mm-new-ui .mm-new-ui-hero .inline-flex.rounded-md.border-2 {
   letter-spacing: 0.08em !important;
 }
 
-/* Primary CTA — high affordance for Gen Z “tap to start” */
+/* Primary CTA — high affordance + WCAG contrast on amber */
 html.mm-new-ui .bg-cta,
 html.mm-new-ui button[class*="bg-[#FF9500]"],
 html.mm-new-ui a[class*="bg-[#FF9500]"] {
   box-shadow: var(--shadow-button-value) !important;
+  color: #ffffff !important;
 }
 
-html.mm-new-ui button[class*="border-border"][class*="bg-white"],
-html.mm-new-ui a[class*="border-border"][class*="bg-white"] {
-  background-color: rgba(17, 28, 48, 0.85) !important;
-  border-color: rgba(148, 163, 184, 0.28) !important;
-  color: var(--text-heading) !important;
-}
-
-html.mm-new-ui button[class*="border-border"][class*="bg-white"]:hover,
-html.mm-new-ui a[class*="border-border"][class*="bg-white"]:hover {
-  border-color: rgba(56, 189, 248, 0.45) !important;
-  background-color: rgba(24, 38, 62, 0.9) !important;
+html.mm-new-ui .bg-cta:hover,
+html.mm-new-ui button[class*="bg-[#FF9500]"]:hover,
+html.mm-new-ui a[class*="bg-[#FF9500]"]:hover {
+  color: #ffffff !important;
 }
 
 html.mm-new-ui .mm-gradient-text-cta {
   background: linear-gradient(90deg, #fbbf24, #f59e0b, #fb923c);
   -webkit-background-clip: text;
   background-clip: text;
-}
-
-/* ── Light surfaces → dark glass (fixes white-on-white / light-on-light) ─ */
-html.mm-new-ui .bg-white,
-html.mm-new-ui [class*="bg-white/"] {
-  background-color: rgba(15, 23, 42, 0.72) !important;
-}
-
-html.mm-new-ui [class*="bg-[#FFF4E0]"],
-html.mm-new-ui [class*="bg-[#FFE8C2]"],
-html.mm-new-ui [class*="bg-[#FFF4E6]"],
-html.mm-new-ui [class*="bg-[#e0f0fa]"],
-html.mm-new-ui [class*="bg-[#E0F0FA]"],
-html.mm-new-ui .bg-sky-100,
-html.mm-new-ui [class*="bg-sky-100"],
-html.mm-new-ui .bg-emerald-100,
-html.mm-new-ui [class*="bg-emerald-100"] {
-  background-color: rgba(30, 41, 59, 0.72) !important;
-  color: var(--text-body);
-}
-
-html.mm-new-ui section.bg-white,
-html.mm-new-ui section[class*="bg-white"],
-html.mm-new-ui section[class*="bg-gradient-to-b"][class*="from-slate"],
-html.mm-new-ui section[class*="bg-gradient-to-b"][class*="from-white"],
-html.mm-new-ui section[class*="bg-gradient-to-b"][class*="via-white"] {
-  background-color: rgba(12, 18, 34, 0.55) !important;
-  background-image: linear-gradient(
-    180deg,
-    rgba(12, 18, 34, 0.88) 0%,
-    rgba(15, 23, 42, 0.78) 50%,
-    rgba(30, 27, 75, 0.45) 100%
-  ) !important;
-}
-
-/* ── Hardcoded nav / zinc text ─────────────────────────────────────────── */
-html.mm-new-ui .text-gray-700,
-html.mm-new-ui .text-gray-600,
-html.mm-new-ui .text-slate-600,
-html.mm-new-ui .text-slate-700,
-html.mm-new-ui .text-slate-800,
-html.mm-new-ui .text-slate-900,
-html.mm-new-ui .text-zinc-900,
-html.mm-new-ui .text-zinc-800,
-html.mm-new-ui .text-zinc-700,
-html.mm-new-ui .text-black {
-  color: var(--text-secondary) !important;
-}
-
-/* Preserve headline weight — do not flatten hero/card titles to muted gray */
-html.mm-new-ui .text-neutral-900,
-html.mm-new-ui .text-neutral-800 {
-  color: var(--text-heading) !important;
-}
-
-/* ── Brand hex accents → brighter on dark ────────────────────────────────── */
-html.mm-new-ui [class*="text-[#1A8FC4]"],
-html.mm-new-ui [class*="text-[#15799F]"],
-html.mm-new-ui [class*="text-[#1A6FC4]"],
-html.mm-new-ui [class*="text-[#155a9e]"],
-html.mm-new-ui [class*="text-[#0e5e85]"],
-html.mm-new-ui [class*="text-[#0c4a6e]"] {
-  color: #67e8f9 !important;
-}
-
-html.mm-new-ui [class*="text-[#2AAA8A]"],
-html.mm-new-ui [class*="text-[#1A8C55]"],
-html.mm-new-ui [class*="text-[#15803d]"] {
-  color: #6ee7b7 !important;
-}
-
-html.mm-new-ui [class*="text-[#FF9500]"],
-html.mm-new-ui [class*="text-[#CC7000]"],
-html.mm-new-ui [class*="text-[#EA580C]"],
-html.mm-new-ui [class*="text-[#E88600]"] {
-  color: #fbbf24 !important;
-}
-
-html.mm-new-ui .text-emerald-700,
-html.mm-new-ui .text-emerald-800,
-html.mm-new-ui [class*="text-emerald-7"],
-html.mm-new-ui [class*="text-emerald-8"] {
-  color: #6ee7b7 !important;
-}
-
-html.mm-new-ui .text-cyan-700,
-html.mm-new-ui .text-cyan-800 {
-  color: #67e8f9 !important;
-}
-
-html.mm-new-ui .text-violet-800,
-html.mm-new-ui .text-violet-900 {
-  color: #c4b5fd !important;
-}
-
-html.mm-new-ui .text-amber-700,
-html.mm-new-ui .text-amber-800 {
-  color: #fcd34d !important;
-}
-
-html.mm-new-ui [class*="from-slate-50"],
-html.mm-new-ui [class*="from-white"],
-html.mm-new-ui [class*="via-white"],
-html.mm-new-ui [class*="to-white"],
-html.mm-new-ui [class*="to-[#fff"] {
-  --tw-gradient-from: rgba(15, 23, 42, 0.7) !important;
-  --tw-gradient-via: rgba(30, 41, 59, 0.55) !important;
-  --tw-gradient-to: rgba(30, 27, 75, 0.45) !important;
-}
-
-html.mm-new-ui [class*="from-sky-50"],
-html.mm-new-ui [class*="from-emerald-50"],
-html.mm-new-ui [class*="from-teal-50"],
-html.mm-new-ui [class*="from-violet-50"],
-html.mm-new-ui [class*="from-amber-50"],
-html.mm-new-ui [class*="from-rose-50"],
-html.mm-new-ui [class*="from-blue-50"],
-html.mm-new-ui [class*="from-fuchsia-50"] {
-  --tw-gradient-from: rgba(30, 41, 59, 0.75) !important;
-  --tw-gradient-via: rgba(15, 23, 42, 0.55) !important;
-  --tw-gradient-to: rgba(49, 46, 129, 0.35) !important;
-}
-
-html.mm-new-ui [class*="border-slate-200"],
-html.mm-new-ui [class*="border-sky-200"],
-html.mm-new-ui [class*="border-emerald-200"],
-html.mm-new-ui [class*="border-teal-200"],
-html.mm-new-ui [class*="border-violet-200"],
-html.mm-new-ui [class*="border-amber-200"],
-html.mm-new-ui [class*="border-rose-200"],
-html.mm-new-ui [class*="border-blue-200"],
-html.mm-new-ui [class*="border-fuchsia-200"] {
-  border-color: rgba(148, 163, 184, 0.2) !important;
-}
-
-html.mm-new-ui [class*="bg-slate-50"],
-html.mm-new-ui [class*="bg-sky-50"],
-html.mm-new-ui [class*="bg-emerald-50"],
-html.mm-new-ui [class*="bg-teal-50"],
-html.mm-new-ui [class*="bg-violet-50"],
-html.mm-new-ui [class*="bg-amber-50"],
-html.mm-new-ui [class*="bg-rose-50"],
-html.mm-new-ui [class*="bg-blue-50"],
-html.mm-new-ui [class*="bg-fuchsia-50"],
-html.mm-new-ui [class*="bg-emerald-50/"] {
-  background-color: rgba(15, 23, 42, 0.55) !important;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-/* Tile / chip dark palette labels */
-html.mm-new-ui [class*="text-sky-900"],
-html.mm-new-ui [class*="text-teal-900"],
-html.mm-new-ui [class*="text-blue-900"] {
-  color: #bae6fd !important;
-}
-
-html.mm-new-ui [class*="text-violet-900"],
-html.mm-new-ui [class*="text-fuchsia-900"] {
-  color: #ddd6fe !important;
-}
-
-html.mm-new-ui [class*="text-amber-900"],
-html.mm-new-ui [class*="text-orange-900"] {
-  color: #fde68a !important;
-}
-
-html.mm-new-ui [class*="text-rose-900"] {
-  color: #fecdd3 !important;
-}
-
-html.mm-new-ui [class*="text-emerald-900"] {
-  color: #a7f3d0 !important;
-}
-
-/* Badge pills with dark ink on light chip — keep readable */
-html.mm-new-ui [class*="bg-[#e0f0fa]"] [class*="text-[#15799F]"],
-html.mm-new-ui [class*="bg-[#FFF4E0]"] [class*="text-[#CC7000]"] {
-  color: #fde68a !important;
-}
-
-/* Links & buttons — preserve hover contrast */
-html.mm-new-ui a.text-primary,
-html.mm-new-ui .text-primary {
-  color: var(--accent);
-}
-
-html.mm-new-ui a:hover.text-primary,
-html.mm-new-ui .hover\:text-primary:hover {
-  color: #7dd3fc;
-}
-
-html.mm-new-ui strong,
-html.mm-new-ui b,
-html.mm-new-ui .font-semibold.text-foreground,
-html.mm-new-ui .font-bold.text-foreground {
-  color: var(--text-heading);
-}
-
-/* Preserve intentional light copy on gradients / CTA bands */
-html.mm-new-ui .text-white,
-html.mm-new-ui [class*="text-white/"] {
-  color: #ffffff !important;
-}
-
-html.mm-new-ui input,
-html.mm-new-ui textarea,
-html.mm-new-ui select {
-  color: var(--text-heading);
-  background-color: rgba(15, 23, 42, 0.85);
-  border-color: rgba(148, 163, 184, 0.25);
-}
-
-html.mm-new-ui ::placeholder {
-  color: var(--text-hint);
-  opacity: 1;
-}
-
-/* ── Neutral / slate surfaces (fixes invisible light-on-light text) ─────── */
-html.mm-new-ui .bg-neutral-50,
-html.mm-new-ui [class*="bg-neutral-50"],
-html.mm-new-ui .bg-neutral-100,
-html.mm-new-ui [class*="bg-neutral-100"],
-html.mm-new-ui section[class*="bg-neutral"] {
-  background-color: rgba(12, 18, 34, 0.78) !important;
-}
-
-html.mm-new-ui .bg-slate-50,
-html.mm-new-ui [class*="bg-slate-50"],
-html.mm-new-ui [class*="to-slate-50"] {
-  background-color: rgba(12, 18, 34, 0.72) !important;
-}
-
-html.mm-new-ui [class*="divide-neutral"] > :not([hidden]) ~ :not([hidden]) {
-  border-color: rgba(148, 163, 184, 0.16) !important;
-}
-
-html.mm-new-ui .bg-neutral-200,
-html.mm-new-ui [class*="bg-neutral-200"]:not([class*="text-"]) {
-  background-color: rgba(51, 65, 85, 0.55) !important;
-}
-
-html.mm-new-ui .bg-rose-50,
-html.mm-new-ui [class*="bg-rose-50"] {
-  background-color: rgba(127, 29, 29, 0.22) !important;
-}
-
-html.mm-new-ui [class*="border-sky-100"],
-html.mm-new-ui [class*="ring-rose-100"] {
-  border-color: rgba(148, 163, 184, 0.2) !important;
-}
-
-html.mm-new-ui .ring-white,
-html.mm-new-ui [class*="ring-white"] {
-  --tw-ring-color: rgba(15, 23, 42, 0.92) !important;
-}
-
-/* Hero stickers & cyan chips — dark ink → light on dark glass */
-html.mm-new-ui .text-cyan-950,
-html.mm-new-ui .text-cyan-900 {
-  color: #a5f3fc !important;
-}
-
-html.mm-new-ui [class*="from-sky-100"],
-html.mm-new-ui [class*="from-cyan-50"],
-html.mm-new-ui [class*="to-sky-100"],
-html.mm-new-ui [class*="to-cyan-50"] {
-  --tw-gradient-from: rgba(30, 58, 95, 0.88) !important;
-  --tw-gradient-to: rgba(15, 40, 65, 0.88) !important;
-}
-
-html.mm-new-ui [class*="from-sky-50"],
-html.mm-new-ui [class*="from-sky-50/"] {
-  --tw-gradient-from: rgba(12, 18, 34, 0.92) !important;
-}
-
-html.mm-new-ui [class*="via-white"],
-html.mm-new-ui [class*="via-slate-50"] {
-  --tw-gradient-via: rgba(20, 30, 52, 0.82) !important;
-}
-
-html.mm-new-ui .text-rose-700,
-html.mm-new-ui [class*="text-rose-7"] {
-  color: #fda4af !important;
-}
-
-html.mm-new-ui .text-emerald-600,
-html.mm-new-ui .text-emerald-700 {
-  color: #6ee7b7 !important;
-}
-
-html.mm-new-ui .text-red-500,
-html.mm-new-ui [class*="text-red-5"] {
-  color: #f87171 !important;
-}
-
-/* Comparison table & pricing cards */
-html.mm-new-ui table thead tr,
-html.mm-new-ui table thead th {
-  background-color: rgba(30, 41, 59, 0.88) !important;
-  color: var(--text-heading) !important;
-}
-
-html.mm-new-ui table tbody tr {
-  background-color: rgba(15, 23, 42, 0.62) !important;
-}
-
-html.mm-new-ui table td[class*="bg-secondary"],
-html.mm-new-ui table th[class*="bg-secondary"] {
-  background-color: rgba(56, 189, 248, 0.08) !important;
-}
-
-html.mm-new-ui table th[class*="FFF4E6"] {
-  background-color: rgba(245, 158, 11, 0.14) !important;
-  color: #fcd34d !important;
-}
-
-html.mm-new-ui [class*="border-sky-200"][class*="bg-white"] {
-  background-color: rgba(15, 23, 42, 0.72) !important;
-  border-color: rgba(56, 189, 248, 0.22) !important;
-}
-
-/* Outline / ghost CTAs (Book a call, etc.) */
-html.mm-new-ui a[class*="bg-white"],
-html.mm-new-ui button[class*="bg-white"]:not([class*="text-white"]) {
-  background-color: rgba(15, 23, 42, 0.75) !important;
-}
-
-html.mm-new-ui a[class*="border-[#1A8FC4]"],
-html.mm-new-ui button[class*="border-[#1A8FC4]"] {
-  border-color: rgba(56, 189, 248, 0.45) !important;
-}
-
-/* Mentor benefit cards & proof cards */
-html.mm-new-ui [class*="bg-white/95"],
-html.mm-new-ui [class*="bg-white/90"],
-html.mm-new-ui [class*="bg-white/80"] {
-  background-color: rgba(15, 23, 42, 0.72) !important;
-}
-
-html.mm-new-ui [class*="bg-slate-50/80"],
-html.mm-new-ui [class*="bg-slate-50/"] {
-  background-color: rgba(15, 23, 42, 0.68) !important;
-}
-
-html.mm-new-ui [class*="text-muted-foreground/"] {
-  color: var(--text-secondary) !important;
-}
-
-html.mm-new-ui section[class*="from-sky-50"],
-html.mm-new-ui section[class*="via-sky-50"],
-html.mm-new-ui section[class*="to-slate-50"],
-html.mm-new-ui section[class*="from-background"][class*="via-sky"] {
-  background-image: linear-gradient(
-    180deg,
-    rgba(12, 18, 34, 0.92) 0%,
-    rgba(15, 23, 42, 0.84) 45%,
-    rgba(24, 34, 58, 0.74) 100%
-  ) !important;
-  background-color: rgba(10, 15, 28, 0.55) !important;
-}
-
-/* ═══════════════════════════════════════════════════════════════════════════
-   COMPREHENSIVE PASS — gray/zinc, chips, borders, shadows, remaining hex
-   ═══════════════════════════════════════════════════════════════════════════ */
-
-/* Gray & zinc surfaces */
-html.mm-new-ui .bg-gray-50,
-html.mm-new-ui [class*="bg-gray-50"],
-html.mm-new-ui .bg-gray-100,
-html.mm-new-ui [class*="bg-gray-100"],
-html.mm-new-ui .bg-gray-200,
-html.mm-new-ui [class*="bg-gray-200"]:not([class*="text-"]),
-html.mm-new-ui .bg-gray-300,
-html.mm-new-ui [class*="bg-gray-300"]:not([class*="text-"]),
-html.mm-new-ui .bg-zinc-50,
-html.mm-new-ui [class*="bg-zinc-50"],
-html.mm-new-ui .bg-zinc-100,
-html.mm-new-ui [class*="bg-zinc-100"],
-html.mm-new-ui .bg-zinc-200,
-html.mm-new-ui [class*="bg-zinc-200"]:not([class*="text-"]),
-html.mm-new-ui [class*="bg-[#FAFAFA]"],
-html.mm-new-ui [class*="bg-[#fafafa]"] {
-  background-color: rgba(30, 41, 59, 0.58) !important;
-}
-
-html.mm-new-ui [class*="hover:bg-gray-100"]:hover,
-html.mm-new-ui [class*="hover:bg-gray-200"]:hover,
-html.mm-new-ui [class*="hover:bg-[#FFF4E0]"]:hover,
-html.mm-new-ui [class*="hover:bg-[#FFE8C2]"]:hover,
-html.mm-new-ui [class*="hover:bg-[#DFF7E8]"]:hover {
-  background-color: rgba(51, 65, 85, 0.55) !important;
-}
-
-/* Cream / chip / pastel hex backgrounds */
-html.mm-new-ui [class*="bg-[#FFF7ED]"],
-html.mm-new-ui [class*="bg-[#EEF2FF]"],
-html.mm-new-ui [class*="bg-[#ECFDF3]"],
-html.mm-new-ui [class*="bg-[#E0DCCF]"],
-html.mm-new-ui [class*="bg-[#DFF7E8]"],
-html.mm-new-ui [class*="bg-[#EAF3FF]"],
-html.mm-new-ui [class*="bg-[#DCEBFF]"],
-html.mm-new-ui [class*="bg-[#F2ECFF]"],
-html.mm-new-ui [class*="bg-[#E9DDFF]"],
-html.mm-new-ui [class*="bg-[#DCFCE7]"],
-html.mm-new-ui [class*="from-[#e0f0fa]"],
-html.mm-new-ui [class*="from-[#E0F0FA]"],
-html.mm-new-ui [class*="from-[#EAF3FF]"],
-html.mm-new-ui [class*="from-[#ECFDF3]"],
-html.mm-new-ui [class*="from-[#F2ECFF]"],
-html.mm-new-ui [class*="to-[#bae6fd]"],
-html.mm-new-ui [class*="to-[#DCEBFF]"],
-html.mm-new-ui [class*="to-[#DCFCE7]"],
-html.mm-new-ui [class*="to-[#E9DDFF]"] {
-  --tw-gradient-from: rgba(30, 41, 59, 0.82) !important;
-  --tw-gradient-to: rgba(49, 46, 129, 0.42) !important;
-  --tw-gradient-via: rgba(20, 30, 52, 0.72) !important;
-  background-color: rgba(30, 41, 59, 0.68) !important;
-}
-
-/* Gray / zinc / slate text ladder */
-html.mm-new-ui .text-gray-400,
-html.mm-new-ui .text-gray-500 {
-  color: var(--text-muted) !important;
-}
-
-html.mm-new-ui .text-gray-800,
-html.mm-new-ui .text-gray-900,
-html.mm-new-ui .text-slate-400,
-html.mm-new-ui .text-slate-500,
-html.mm-new-ui .text-slate-800,
-html.mm-new-ui .text-sky-800 {
-  color: var(--text-secondary) !important;
-}
-
-html.mm-new-ui .text-slate-400 {
-  color: var(--text-muted) !important;
-}
-
-html.mm-new-ui .text-slate-200,
-html.mm-new-ui .text-slate-300,
-html.mm-new-ui [class*="text-slate-2"],
-html.mm-new-ui [class*="text-slate-3"] {
-  color: #cbd5e1 !important;
-}
-
-/* Tailwind palette text on dark */
-html.mm-new-ui .text-sky-600,
-html.mm-new-ui .text-sky-700,
-html.mm-new-ui [class*="from-sky-600"],
-html.mm-new-ui [class*="to-teal-600"] {
-  --tw-gradient-from: #38bdf8 !important;
-  --tw-gradient-to: #2dd4bf !important;
-}
-
-html.mm-new-ui .text-teal-700,
-html.mm-new-ui .text-teal-800 {
-  color: #5eead4 !important;
-}
-
-html.mm-new-ui .text-purple-700,
-html.mm-new-ui .text-purple-800 {
-  color: #c4b5fd !important;
-}
-
-/* Remaining brand / chip hex text */
-html.mm-new-ui [class*="text-[#4F46E5]"],
-html.mm-new-ui [class*="text-[#3730A3]"],
-html.mm-new-ui [class*="text-[#1E3A8A]"],
-html.mm-new-ui [class*="text-[#2563EB]"] {
-  color: #a5b4fc !important;
-}
-
-html.mm-new-ui [class*="text-[#5B21B6]"],
-html.mm-new-ui [class*="text-[#7C3AED]"] {
-  color: #ddd6fe !important;
-}
-
-html.mm-new-ui [class*="text-[#166534]"],
-html.mm-new-ui [class*="text-[#16A34A]"] {
-  color: #6ee7b7 !important;
-}
-
-html.mm-new-ui [class*="text-[#C2410C]"],
-html.mm-new-ui [class*="text-[#B45309]"] {
-  color: #fdba74 !important;
-}
-
-/* Gray / neutral borders & dividers */
-html.mm-new-ui [class*="border-gray-100"],
-html.mm-new-ui [class*="border-gray-200"],
-html.mm-new-ui [class*="border-gray-300"],
-html.mm-new-ui [class*="border-neutral-"],
-html.mm-new-ui [class*="border-zinc-"],
-html.mm-new-ui .border-white,
-html.mm-new-ui [class*="border-white"] {
-  border-color: rgba(148, 163, 184, 0.22) !important;
-}
-
-html.mm-new-ui [class*="divide-gray-"] > :not([hidden]) ~ :not([hidden]),
-html.mm-new-ui [class*="divide-slate-"] > :not([hidden]) ~ :not([hidden]) {
-  border-color: rgba(148, 163, 184, 0.16) !important;
-}
-
-/* Gray gradient stops */
-html.mm-new-ui [class*="from-gray-50"],
-html.mm-new-ui [class*="from-gray-100"],
-html.mm-new-ui [class*="to-gray-100"],
-html.mm-new-ui [class*="to-gray-200"],
-html.mm-new-ui [class*="via-gray-"],
-html.mm-new-ui [class*="from-slate-50"],
-html.mm-new-ui [class*="via-slate-50"],
-html.mm-new-ui [class*="to-sky-50/"] {
-  --tw-gradient-from: rgba(12, 18, 34, 0.88) !important;
-  --tw-gradient-via: rgba(20, 30, 52, 0.78) !important;
-  --tw-gradient-to: rgba(30, 27, 75, 0.42) !important;
-}
-
-html.mm-new-ui [class*="from-purple-50"],
-html.mm-new-ui [class*="to-cyan-50"],
-html.mm-new-ui [class*="from-cyan-50"],
-html.mm-new-ui [class*="to-cyan-50/"] {
-  --tw-gradient-from: rgba(49, 46, 129, 0.38) !important;
-  --tw-gradient-to: rgba(15, 40, 65, 0.48) !important;
-}
-
-/* Progress / track bars */
-html.mm-new-ui [class*="bg-gray-200"].rounded-full,
-html.mm-new-ui [class*="bg-slate-200"].rounded-full,
-html.mm-new-ui [class*="bg-zinc-100"].rounded-full,
-html.mm-new-ui [class*="bg-[#E0DCCF]"].rounded-full {
-  background-color: rgba(51, 65, 85, 0.55) !important;
-}
-
-/* Dropdowns, modals, overlays — glass panels */
-html.mm-new-ui .mm-sticky-header [class*="bg-white"],
-html.mm-new-ui [role="dialog"] [class*="bg-white"],
-html.mm-new-ui [class*="rounded-xl"][class*="border-border"][class*="bg-white"],
-html.mm-new-ui [class*="rounded-2xl"][class*="border"][class*="bg-white"]:not([class*="bg-[#FF9500]"]) {
-  background-color: rgba(12, 18, 34, 0.92) !important;
-  border-color: rgba(148, 163, 184, 0.2) !important;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-}
-
-/* Card shadows — dark depth (exclude orange CTAs) */
-html.mm-new-ui [class*="shadow-sm"]:not([class*="bg-[#FF9500]"]):not([class*="bg-cta"]):not(.btn-primary),
-html.mm-new-ui [class*="shadow-md"]:not([class*="bg-[#FF9500]"]):not([class*="bg-cta"]):not(.btn-primary),
-html.mm-new-ui [class*="shadow-lg"]:not([class*="bg-[#FF9500]"]):not([class*="bg-cta"]):not(.btn-primary),
-html.mm-new-ui [class*="shadow-xl"]:not([class*="bg-[#FF9500]"]):not([class*="bg-cta"]):not(.btn-primary),
-html.mm-new-ui [class*="shadow-2xl"]:not([class*="bg-[#FF9500]"]):not([class*="bg-cta"]):not(.btn-primary) {
-  box-shadow: var(--shadow-card) !important;
-}
-
-html.mm-new-ui [class*="hover:shadow-xl"]:hover:not([class*="bg-[#FF9500]"]),
-html.mm-new-ui [class*="hover:shadow-lg"]:hover:not([class*="bg-[#FF9500]"]) {
-  box-shadow:
-    0 16px 48px rgba(0, 0, 0, 0.45),
-    0 0 0 1px rgba(56, 189, 248, 0.08) !important;
-}
-
-/* Custom light rgba glows on marketing tiles */
-html.mm-new-ui [class*="shadow-[0_"][class*="rgba(251"],
-html.mm-new-ui [class*="shadow-[0_"][class*="rgba(56"],
-html.mm-new-ui [class*="shadow-[0_"][class*="rgba(26"],
-html.mm-new-ui [class*="shadow-[0_"][class*="rgba(0,0,0,0.0"],
-html.mm-new-ui [class*="shadow-[0_"][class*="rgba(0,0,0,0.04"],
-html.mm-new-ui [class*="shadow-[0_"][class*="rgba(0,0,0,0.05"],
-html.mm-new-ui [class*="shadow-[0_"][class*="rgba(0,0,0,0.06"] {
-  box-shadow: var(--shadow-card) !important;
-}
-
-/* Preserve code / terminal blocks (already dark) */
-html.mm-new-ui [class*="bg-[#1e1e1e]"],
-html.mm-new-ui [class*="bg-[#1E293B]"],
-html.mm-new-ui [class*="bg-[#1e293b]"] {
-  background-color: #0f172a !important;
-  border-color: rgba(56, 189, 248, 0.15) !important;
-}
-
-/* Orange CTA buttons — keep glow */
-html.mm-new-ui [class*="bg-[#FF9500]"][class*="shadow"],
-html.mm-new-ui .btn-primary[class*="shadow"],
-html.mm-new-ui [class*="bg-cta"][class*="shadow"] {
-  box-shadow: var(--shadow-button-value) !important;
-}
-
-/* Secondary outline buttons on cream bg */
-html.mm-new-ui [class*="bg-[#FFF4E0]"][class*="text-[#CC7000]"],
-html.mm-new-ui [class*="bg-[#FFF4E0]/"][class*="text-[#CC7000]"] {
-  background-color: rgba(245, 158, 11, 0.12) !important;
-  color: #fcd34d !important;
-  border-color: rgba(245, 158, 11, 0.35) !important;
-}
-
-/* Fixed bottom bars — dark glass */
-html.mm-new-ui [class*="fixed"][class*="bottom-0"][class*="bg-white"],
-html.mm-new-ui [class*="fixed"][class*="bottom-0"][class*="bg-white/"] {
-  background-color: rgba(10, 15, 28, 0.9) !important;
-  border-color: rgba(148, 163, 184, 0.15) !important;
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  color: var(--text-heading);
-}
-
-/* Announcement bar — keep gradient readable */
-html.mm-new-ui [role="banner"][class*="bg-gradient-to-r"] {
-  color: #ffffff;
-}
-
-html.mm-new-ui [role="banner"] strong {
-  color: #ffffff;
 }
 
 /* ── Homepage hero — subline, card, spacing ─────────────────────────────── */
@@ -1161,10 +606,8 @@ html.mm-new-ui .mm-new-ui-glass {
 }
 
 /*
- * Header + footer — dark glass chrome with light type (placed late to win over
- * sitewide remaps that broke the previous light-chrome attempt).
+ * Footer — dark chrome, light type. Header — light chrome (rules below).
  */
-html.mm-new-ui .mm-sticky-header,
 html.mm-new-ui footer {
   --text-heading: #f8fafc;
   --text-body: #dce4ef;
@@ -1175,6 +618,74 @@ html.mm-new-ui footer {
   --text-icon-muted: #94a3b8;
   --border: rgba(148, 163, 184, 0.18);
   color: var(--text-heading);
+}
+
+/* Nav legibility on white header (Dark theme) */
+html.mm-new-ui .mm-sticky-header .text-foreground,
+html.mm-new-ui .mm-sticky-header h1,
+html.mm-new-ui .mm-sticky-header h2,
+html.mm-new-ui .mm-sticky-header h3 {
+  color: #18181b !important;
+}
+
+html.mm-new-ui .mm-sticky-header .text-muted-foreground,
+html.mm-new-ui .mm-sticky-header .text-gray-700,
+html.mm-new-ui .mm-sticky-header .text-gray-600,
+html.mm-new-ui .mm-sticky-header .text-slate-600,
+html.mm-new-ui .mm-sticky-header .text-slate-700,
+html.mm-new-ui .mm-sticky-header .text-neutral-800,
+html.mm-new-ui .mm-sticky-header .text-neutral-900 {
+  color: #52525b !important;
+}
+
+html.mm-new-ui .mm-sticky-header .text-hint {
+  color: #a1a1aa !important;
+}
+
+html.mm-new-ui .mm-sticky-header .text-primary,
+html.mm-new-ui .mm-sticky-header [class*="text-[#1A8FC4]"],
+html.mm-new-ui .mm-sticky-header [class*="text-[#15799F]"],
+html.mm-new-ui .mm-sticky-header [class*="text-[#0c4a6e]"] {
+  color: #1a8fc4 !important;
+}
+
+html.mm-new-ui .mm-sticky-header a:hover,
+html.mm-new-ui .mm-sticky-header button:hover:not([class*="bg-cta"]):not([class*="bg-[#FF9500]"]) {
+  color: #15799f !important;
+}
+
+html.mm-new-ui .mm-sticky-header [class*="border-border"] {
+  border-color: #dbe8f2 !important;
+}
+
+html.mm-new-ui .mm-sticky-header .border-t.border-border.bg-background,
+html.mm-new-ui .mm-sticky-header [class*="border-t"][class*="bg-background"],
+html.mm-new-ui .mm-sticky-header [class*="bg-background"] {
+  background-color: var(--mm-chrome-bg) !important;
+  border-top-color: var(--mm-chrome-border) !important;
+}
+
+html.mm-new-ui .mm-sticky-header [class*="bg-white"],
+html.mm-new-ui .mm-sticky-header [class*="bg-white/"] {
+  background-color: #ffffff !important;
+  border-color: #dbe8f2 !important;
+}
+
+html.mm-new-ui .mm-sticky-header [class*="from-sky-50"],
+html.mm-new-ui .mm-sticky-header [class*="to-secondary"] {
+  background-image: linear-gradient(
+    90deg,
+    rgba(224, 240, 250, 0.92) 0%,
+    #eef6fb 100%
+  ) !important;
+}
+
+html.mm-new-ui .mm-sticky-header [class*="bg-white"] .text-foreground {
+  color: #18181b !important;
+}
+
+html.mm-new-ui .mm-sticky-header [class*="bg-white"] .text-muted-foreground {
+  color: #52525b !important;
 }
 
 html.mm-new-ui footer {
@@ -1192,85 +703,54 @@ html.mm-new-ui footer[class*="bg-secondary"] {
   background-color: rgba(10, 15, 28, 0.94) !important;
 }
 
-html.mm-new-ui .mm-sticky-header .text-foreground,
 html.mm-new-ui footer .text-foreground,
-html.mm-new-ui .mm-sticky-header h1,
-html.mm-new-ui .mm-sticky-header h2,
-html.mm-new-ui .mm-sticky-header h3,
 html.mm-new-ui footer h3 {
   color: #f8fafc !important;
 }
 
-html.mm-new-ui .mm-sticky-header .text-muted-foreground,
 html.mm-new-ui footer .text-muted-foreground,
-html.mm-new-ui .mm-sticky-header p,
 html.mm-new-ui footer p,
-html.mm-new-ui .mm-sticky-header li,
 html.mm-new-ui footer li {
   color: #b8c5d6 !important;
 }
 
-html.mm-new-ui .mm-sticky-header .text-hint,
 html.mm-new-ui footer .text-hint {
   color: #b0bdd0 !important;
 }
 
-html.mm-new-ui .mm-sticky-header .text-gray-700,
-html.mm-new-ui .mm-sticky-header .text-gray-600,
-html.mm-new-ui .mm-sticky-header .text-slate-600,
-html.mm-new-ui .mm-sticky-header .text-slate-700,
 html.mm-new-ui footer .text-gray-700,
 html.mm-new-ui footer .text-neutral-600,
 html.mm-new-ui footer .text-neutral-700 {
   color: #cbd5e1 !important;
 }
 
-html.mm-new-ui .mm-sticky-header .text-neutral-800,
-html.mm-new-ui .mm-sticky-header .text-neutral-900,
 html.mm-new-ui footer .text-neutral-800,
 html.mm-new-ui footer .text-neutral-900 {
   color: #f1f5f9 !important;
 }
 
-html.mm-new-ui .mm-sticky-header .text-primary,
 html.mm-new-ui footer .text-primary,
-html.mm-new-ui .mm-sticky-header [class*="text-[#1A8FC4]"],
-html.mm-new-ui .mm-sticky-header [class*="text-[#15799F]"],
 html.mm-new-ui footer [class*="text-[#1A8FC4]"],
 html.mm-new-ui footer [class*="text-[#15799F]"],
-html.mm-new-ui .mm-sticky-header [class*="text-[#0c4a6e]"],
 html.mm-new-ui footer [class*="text-[#0c4a6e]"] {
   color: #67e8f9 !important;
 }
 
-html.mm-new-ui .mm-sticky-header a:hover,
-html.mm-new-ui footer a:hover,
-html.mm-new-ui .mm-sticky-header button:hover:not([class*="bg-cta"]):not([class*="bg-[#FF9500]"]) {
+html.mm-new-ui footer a:hover {
   color: #a5f3fc !important;
 }
 
-html.mm-new-ui .mm-sticky-header [class*="border-border"],
 html.mm-new-ui footer [class*="border-border"] {
   border-color: rgba(148, 163, 184, 0.18) !important;
 }
 
-html.mm-new-ui .mm-sticky-header .border-t.border-border.bg-background,
-html.mm-new-ui .mm-sticky-header [class*="border-t"][class*="bg-background"] {
-  background-color: rgba(10, 15, 28, 0.98) !important;
-  border-top-color: rgba(148, 163, 184, 0.16) !important;
-}
-
-html.mm-new-ui .mm-sticky-header [class*="bg-white"],
-html.mm-new-ui .mm-sticky-header [class*="bg-white/"],
 html.mm-new-ui footer [class*="bg-white"],
 html.mm-new-ui footer [class*="bg-white/"] {
   background-color: rgba(15, 23, 42, 0.88) !important;
   border-color: rgba(56, 189, 248, 0.22) !important;
 }
 
-html.mm-new-ui .mm-sticky-header [class*="from-sky-50"],
 html.mm-new-ui footer [class*="from-sky-50"],
-html.mm-new-ui .mm-sticky-header [class*="to-secondary"],
 html.mm-new-ui footer [class*="to-secondary"] {
   background-image: linear-gradient(
     90deg,
@@ -1279,12 +759,10 @@ html.mm-new-ui footer [class*="to-secondary"] {
   ) !important;
 }
 
-html.mm-new-ui .mm-sticky-header [class*="bg-white"] .text-foreground,
 html.mm-new-ui footer [class*="bg-white"] .text-foreground {
   color: #f1f5f9 !important;
 }
 
-html.mm-new-ui .mm-sticky-header [class*="bg-white"] .text-muted-foreground,
 html.mm-new-ui footer [class*="bg-white"] .text-muted-foreground {
   color: #b8c5d6 !important;
 }
@@ -1293,6 +771,11 @@ html.mm-new-ui footer [class*="bg-white"] .text-muted-foreground {
   html.mm-new-ui main section,
   html.mm-new-ui .mm-site-theme > section {
     animation: none;
+  }
+
+  html.mm-new-ui .mm-new-ui-hero .mm-hero-accent-new-ui {
+    animation: none !important;
+    background-position: 0% 50% !important;
   }
 
   html.mm-new-ui .mm-card-elevated:hover,

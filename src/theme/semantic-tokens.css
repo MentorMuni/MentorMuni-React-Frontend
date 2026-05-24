@@ -1,0 +1,264 @@
+/**
+ * Semantic surface & type utilities — theme via CSS variables (Classic + New UI).
+ * Prefer these over bg-white / text-neutral-* in assessment and inner routes.
+ */
+
+/* ── Surfaces ───────────────────────────────────────────────────────────── */
+.mm-surface-panel {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-body);
+  box-shadow: var(--shadow-card);
+}
+
+.mm-surface-panel--lg {
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.12);
+}
+
+@media (min-width: 768px) {
+  .mm-surface-panel--lg {
+    padding: 2.5rem;
+  }
+}
+
+.mm-surface-panel--md {
+  border-radius: 1.5rem;
+  padding: 2rem;
+  box-shadow: 0 16px 40px -12px rgba(15, 23, 42, 0.1);
+}
+
+.mm-surface-panel--quiz {
+  border-radius: 1rem;
+  overflow: hidden;
+}
+
+.mm-surface-panel--section {
+  border-radius: 1rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 24px -8px rgba(15, 23, 42, 0.08);
+}
+
+@media (min-width: 640px) {
+  .mm-surface-panel--section {
+    padding: 1.75rem;
+  }
+}
+
+.mm-surface-panel--results {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  box-shadow: 0 20px 50px -12px rgba(15, 23, 42, 0.14);
+}
+
+@media (min-width: 640px) {
+  .mm-surface-panel--results {
+    padding: 2rem;
+  }
+}
+
+.mm-surface-panel--glass {
+  border-radius: 1rem;
+  padding: 1.5rem;
+  background-color: color-mix(in srgb, var(--bg-card) 95%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 8px 32px -12px rgba(15, 23, 42, 0.1);
+}
+
+@media (min-width: 640px) {
+  .mm-surface-panel--glass {
+    padding: 1.75rem;
+  }
+}
+
+.mm-surface-section {
+  background-color: var(--bg-primary);
+  border-color: var(--border);
+}
+
+.mm-surface-panel--promo {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1.5rem;
+  padding: 1.5rem;
+  border: 2px solid color-mix(in srgb, var(--accent-cta-mid) 60%, var(--border));
+  background: linear-gradient(
+    135deg,
+    var(--bg-secondary) 0%,
+    var(--bg-card) 45%,
+    color-mix(in srgb, var(--warning-bg) 80%, var(--bg-card)) 100%
+  );
+  box-shadow: 0 12px 40px -12px rgba(15, 23, 42, 0.12);
+}
+
+@media (min-width: 640px) {
+  .mm-surface-panel--promo {
+    padding: 2rem;
+  }
+}
+
+.mm-surface-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background-color: color-mix(in srgb, var(--bg-card) 92%, transparent);
+  color: var(--text-secondary);
+  box-shadow: var(--shadow-soft);
+}
+
+.mm-surface-input {
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+.mm-surface-input:focus {
+  border-color: var(--focus-ring);
+  outline: none;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-ring) 28%, transparent);
+}
+
+.mm-surface-inset {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-primary);
+}
+
+.mm-surface-subtle {
+  background-color: color-mix(in srgb, var(--bg-card) 60%, transparent);
+  border: 1px dashed var(--border);
+}
+
+.mm-surface-subtle:hover {
+  background-color: var(--bg-card);
+}
+
+.mm-surface-badge {
+  background-color: color-mix(in srgb, var(--bg-card) 95%, white);
+  color: var(--accent-cta-deep);
+  box-shadow: 0 1px 4px rgba(15, 23, 42, 0.08);
+}
+
+.mm-badge-tag {
+  display: inline-flex;
+  border-radius: 9999px;
+  background-color: var(--bg-card);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+/* ── Choice tiles (MCQ, role grid, mode picker) ───────────────────────── */
+.mm-choice-tile {
+  border-width: 2px;
+  border-style: solid;
+  border-color: var(--border);
+  background-color: var(--bg-card);
+  color: var(--text-secondary);
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.mm-choice-tile:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent-cta-mid) 50%, var(--border));
+  background-color: var(--bg-tint-subtle);
+}
+
+.mm-choice-tile--selected {
+  border-color: var(--accent-cta);
+  background-color: var(--accent-cta-faint);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-cta-card-value);
+}
+
+.mm-choice-tile--role {
+  border-width: 2px;
+  border-radius: 1rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.mm-choice-tile--role:hover:not(:disabled) {
+  border-color: var(--accent-cta-mid);
+  background-image: linear-gradient(
+    to bottom right,
+    var(--bg-tint-subtle),
+    color-mix(in srgb, var(--warning-bg) 90%, transparent)
+  );
+  box-shadow: 0 12px 32px -12px var(--accent-cta-shadow);
+}
+
+.mm-choice-tile--yes-neutral:hover:not(:disabled) {
+  border-color: color-mix(in srgb, #34d399 60%, var(--border));
+  background-color: var(--success-bg);
+}
+
+.mm-choice-tile--no-neutral:hover:not(:disabled) {
+  border-color: color-mix(in srgb, #fb7185 60%, var(--border));
+  background-color: color-mix(in srgb, #fb7185 12%, var(--bg-card));
+}
+
+.mm-progress-track {
+  height: 0.375rem;
+  border-radius: 9999px;
+  background-color: var(--surface-track);
+  overflow: hidden;
+}
+
+.mm-btn-secondary {
+  border: 1px solid var(--border);
+  background-color: var(--bg-card);
+  color: var(--text-secondary);
+  font-weight: 700;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.mm-btn-secondary:hover {
+  border-color: var(--border-hover);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.mm-btn-ghost {
+  border: 1px solid var(--border);
+  background-color: color-mix(in srgb, var(--bg-card) 8%, transparent);
+  color: var(--text-secondary);
+  font-weight: 700;
+  transition:
+    border-color 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.mm-btn-ghost:hover {
+  border-color: var(--border);
+  background-color: color-mix(in srgb, var(--bg-card) 14%, transparent);
+}
+
+/* ── Type roles ─────────────────────────────────────────────────────────── */
+.mm-text-title {
+  color: var(--text-heading);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.mm-text-body {
+  color: var(--text-body);
+}
+
+.mm-text-muted {
+  color: var(--text-secondary);
+}
+
+.mm-text-accent {
+  color: var(--accent);
+}

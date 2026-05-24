@@ -238,7 +238,7 @@ const SkillGapAnalyzer = () => {
         </div>
 
         <div className="grid md:grid-cols-3 gap-8 mb-12">
-          <div className="bg-white p-8 rounded-2xl border border-border hover:border-[#FF9500]/50 transition-colors shadow-sm">
+          <div className="mm-surface-panel rounded-2xl p-8 hover:border-[#FF9500]/50 transition-colors shadow-sm">
             <Target size={32} className="text-[#FF9500] mb-4" />
             <h3 className="text-xl font-bold mb-3 text-foreground">Analyze Your Gap</h3>
             <p className="text-muted-foreground">
@@ -246,7 +246,7 @@ const SkillGapAnalyzer = () => {
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-2xl border border-border hover:border-[#FF9500]/50 transition-colors shadow-sm">
+          <div className="mm-surface-panel rounded-2xl p-8 hover:border-[#FF9500]/50 transition-colors shadow-sm">
             <Zap size={32} className="text-[#FF9500] mb-4" />
             <h3 className="text-xl font-bold mb-3 text-foreground">Recommended Courses</h3>
             <p className="text-muted-foreground">
@@ -254,7 +254,7 @@ const SkillGapAnalyzer = () => {
             </p>
           </div>
 
-          <div className="bg-white p-8 rounded-2xl border border-border hover:border-[#FF9500]/50 transition-colors shadow-sm">
+          <div className="mm-surface-panel rounded-2xl p-8 hover:border-[#FF9500]/50 transition-colors shadow-sm">
             <TrendingUp size={32} className="text-[#FF9500] mb-4" />
             <h3 className="text-xl font-bold mb-3 text-foreground">Transition Roadmap</h3>
             <p className="text-muted-foreground">
@@ -264,7 +264,7 @@ const SkillGapAnalyzer = () => {
         </div>
 
         <div className="bg-gradient-to-r from-[#FF9500] to-[#E88600] p-1 rounded-2xl">
-          <div className="bg-white p-12 rounded-2xl text-center">
+          <div className="mm-surface-panel rounded-2xl p-12 text-center">
             <h2 className="text-3xl font-bold mb-4 text-foreground">Ready to Transition?</h2>
             <p className="text-muted-foreground mb-8">
               Whether you want to switch from QA to Automation, Testing to Development, 
@@ -293,7 +293,7 @@ const SkillGapAnalyzer = () => {
           ← Back
         </button>
 
-        <div className="bg-white p-8 rounded-2xl border border-border shadow-sm">
+        <div className="mm-surface-panel rounded-2xl p-8 shadow-sm">
           <h2 className="text-3xl font-bold mb-6 text-foreground">Skill Gap Analysis</h2>
 
           {/* Free Usage Counter */}
@@ -351,7 +351,7 @@ const SkillGapAnalyzer = () => {
                 value={formData.current_role}
                 onChange={handleInputChange}
                 disabled={rolesLoading}
-                className="w-full bg-white border border-border rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full mm-surface-input rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <option value="">
                   {rolesLoading ? 'Loading roles...' : 'Select your current role...'}
@@ -383,7 +383,7 @@ const SkillGapAnalyzer = () => {
                 value={formData.target_role}
                 onChange={handleInputChange}
                 disabled={rolesLoading}
-                className="w-full bg-white border border-border rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                className="w-full mm-surface-input rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 <option value="">
                   {rolesLoading ? 'Loading roles...' : 'Select your target role...'}
@@ -417,7 +417,7 @@ const SkillGapAnalyzer = () => {
                 max="50"
                 value={formData.experience_years}
                 onChange={handleInputChange}
-                className="w-full bg-white border border-border rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 transition-colors"
+                className="w-full mm-surface-input rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 transition-colors"
               />
               <p className="text-muted-foreground text-sm mt-1">0-50 years</p>
             </div>
@@ -441,7 +441,7 @@ const SkillGapAnalyzer = () => {
                   }}
                   placeholder="e.g., React, JavaScript, Node.js..."
                   autoComplete="off"
-                  className="flex-1 bg-white border border-border rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 transition-colors"
+                  className="flex-1 mm-surface-input rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 transition-colors"
                 />
                 <button
                   type="button"
@@ -497,7 +497,7 @@ const SkillGapAnalyzer = () => {
                 onChange={handleInputChange}
                 placeholder="Paste your resume text here for skill extraction..."
                 rows="4"
-                className="w-full bg-white border border-border rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 transition-colors resize-none"
+                className="w-full mm-surface-input rounded-lg px-4 py-2 text-foreground focus:border-[#FF9500] focus:outline-none focus:ring-2 focus:ring-[#FF9500]/20 transition-colors resize-none"
               />
               <p className="text-muted-foreground text-sm mt-1">
                 Helps us extract your existing skills
@@ -567,10 +567,12 @@ const SkillGapAnalyzer = () => {
   );
 
   // ==================== RENDER ====================
-  if (formStep === 0) return <IntroSection />;
+  const wrap = (node) => <InnerRouteShell scope="tool">{node}</InnerRouteShell>;
+
+  if (formStep === 0) return wrap(<IntroSection />);
   if (formStep === 1) {
     if (analyzing) {
-      return (
+      return wrap(
         <AIAnalysisLoader
           onComplete={() => {
             // Loader completes, results will be displayed automatically
@@ -579,10 +581,10 @@ const SkillGapAnalyzer = () => {
         />
       );
     }
-    return <FormSection />;
+    return wrap(<FormSection />);
   }
   if (formStep === 2) {
-    return (
+    return wrap(
       <>
         <ResultsSection />
         <UpgradePromptModal

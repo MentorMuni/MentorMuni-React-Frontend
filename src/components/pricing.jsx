@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import InnerRouteShell from './new-ui/InnerRouteShell';
 import {
   PRIMARY_CTA_LABEL,
   MISSION_TAGLINE,
@@ -105,7 +106,7 @@ const PricingPage = () => {
   const [openFaq, setOpenFaq] = useState(null);
 
   return (
-    <div className="min-h-screen mm-site-theme overflow-x-hidden">
+    <InnerRouteShell scope="inner" className="min-h-screen mm-site-theme overflow-x-hidden">
 
       {/* ── Hero ── */}
       <section className="mm-marketing-hero-backdrop border-b border-border">
@@ -196,7 +197,7 @@ const PricingPage = () => {
         <h2 className="text-xl font-bold text-foreground mb-1 text-center">What you&apos;d pay separately</h2>
         <p className="text-muted-foreground text-sm text-center mb-6">This is why ₹10,000 is not expensive — it&apos;s what you&apos;re saving.</p>
 
-        <div className="bg-white border border-border rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
+        <div className="mm-surface-panel rounded-2xl overflow-hidden">
           {VALUE_ROWS.map((row, i) => (
             <div key={row.label} className={`flex items-center justify-between px-5 py-3.5 ${i < VALUE_ROWS.length - 1 ? 'border-b border-border' : ''}`}>
               <span className="text-sm text-muted-foreground">{row.label}</span>
@@ -231,7 +232,7 @@ const PricingPage = () => {
               { icon: '👤', label: 'Small batch', sub: 'More attention per student' },
               { icon: '🤝', label: "Till you're placed", sub: 'Mentorship support through your placement journey' },
             ].map(c => (
-              <div key={c.label} className="bg-white border border-border rounded-xl p-3 shadow-sm">
+              <div key={c.label} className="mm-surface-panel rounded-xl p-3">
                 <span className="text-xl block mb-1">{c.icon}</span>
                 <p className="text-xs font-bold text-foreground mb-0.5">{c.label}</p>
                 <p className="text-[10px] text-muted-foreground leading-snug">{c.sub}</p>
@@ -246,7 +247,7 @@ const PricingPage = () => {
         <h2 className="text-xl font-bold text-foreground mb-6 text-center">Common questions</h2>
         <div className="space-y-2">
           {FAQS.map((faq, i) => (
-            <div key={i} className="bg-white border border-border rounded-xl overflow-hidden shadow-sm">
+            <div key={i} className="mm-surface-panel rounded-xl overflow-hidden">
               <button
                 type="button"
                 className="w-full flex items-center justify-between px-5 py-4 text-left"
@@ -279,7 +280,7 @@ const PricingPage = () => {
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
               to="/start-assessment"
-              className="flex-1 flex items-center justify-center gap-2 border border-border bg-white text-muted-foreground hover:bg-secondary font-semibold text-sm py-3 rounded-xl transition-all"
+              className="mm-btn-secondary flex-1 flex items-center justify-center gap-2 font-semibold text-sm py-3 rounded-xl"
             >
               {PRIMARY_CTA_LABEL}
             </Link>
@@ -343,7 +344,7 @@ const PricingPage = () => {
         </div>
       </footer>
 
-    </div>
+    </InnerRouteShell>
   );
 };
 
