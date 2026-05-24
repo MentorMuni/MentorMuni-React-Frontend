@@ -14,10 +14,7 @@ export default function NewUIBetaSwitch() {
       className="mm-beta-switch-bar"
       data-mm-beta-switch
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-center gap-2 px-4 py-1 sm:px-6 lg:px-8">
-        <span className="hidden text-[10px] font-semibold uppercase tracking-[0.16em] text-muted-foreground sm:inline">
-          Theme
-        </span>
+      <div className="mx-auto flex max-w-7xl items-center justify-center px-4 py-1 sm:px-6 lg:px-8">
         <div
           role="group"
           aria-label="Site theme"
