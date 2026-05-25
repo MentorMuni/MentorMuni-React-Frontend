@@ -166,22 +166,25 @@ const Navbar = () => {
 
   return (
     <header className="mm-sticky-header">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-20 items-center gap-8">
-          {/* Logo & Brand - Fixed width */}
-          <Link to="/" onClick={handleHomeClick} className="group flex shrink-0 items-center gap-2">
+      <div className="mm-container">
+        <div className="flex h-16 min-w-0 items-center gap-2 sm:gap-4 xl:h-[4.5rem] xl:gap-6">
+          <Link
+            to="/"
+            onClick={handleHomeClick}
+            className="group flex min-w-0 shrink-0 items-center gap-1.5 sm:gap-2"
+          >
             <img
               src={logoSrc}
               alt="MentorMuni Logo"
-              className="h-14 w-14 shrink-0 object-contain transition-all group-hover:opacity-80"
+              className="h-10 w-10 shrink-0 object-contain transition-all group-hover:opacity-80 sm:h-11 sm:w-11 xl:h-12 xl:w-12"
             />
-            <span className="text-xl font-extrabold tracking-tight text-foreground">
+            <span className="truncate text-base font-extrabold tracking-tight text-foreground sm:text-lg xl:text-xl">
               Mentor<span className="text-primary">Muni</span>
             </span>
           </Link>
 
-          {/* Desktop Navigation - Center with proper spacing */}
-          <nav className="hidden flex-1 items-center justify-center gap-6 lg:flex xl:gap-8">
+          {/* Desktop nav — xl+ only so 1024–1279px laptops don’t overflow horizontally */}
+          <nav className="hidden min-w-0 flex-1 items-center justify-center gap-4 xl:flex 2xl:gap-6">
             {navItems.map((item) => {
               const linkActive = isActive(item.path, item.exact);
               return (
@@ -293,8 +296,7 @@ const Navbar = () => {
             </div>
           </nav>
 
-          {/* Desktop CTA Buttons - Right */}
-          <div className="hidden shrink-0 items-center gap-3 lg:flex">
+          <div className="hidden shrink-0 items-center gap-2 xl:flex 2xl:gap-3">
             <style>{`
               @keyframes nb-shimmer {
                 0%   { transform: translateX(-100%) skewX(-15deg); }
@@ -309,30 +311,30 @@ const Navbar = () => {
             `}</style>
             <Link
               to="/waitlist"
-              className="inline-flex h-10 items-center justify-center rounded-lg border-2 border-cta px-4 text-sm font-semibold text-cta transition-all hover:bg-warning-bg active:scale-[0.98]"
+              className="inline-flex h-9 items-center justify-center rounded-lg border-2 border-cta px-3 text-sm font-semibold text-cta transition-all hover:bg-warning-bg active:scale-[0.98] 2xl:h-10 2xl:px-4"
             >
-              Join Waitlist
+              Waitlist
             </Link>
             <button
               type="button"
               onClick={goToStartAssessment}
-              className="nb-cta relative inline-flex h-10 items-center justify-center gap-2 overflow-hidden rounded-lg bg-cta px-4 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-cta-hover active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta"
+              className="nb-cta relative inline-flex h-9 max-w-[11rem] items-center justify-center gap-1.5 overflow-hidden rounded-lg bg-cta px-3 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-cta-hover active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta 2xl:h-10 2xl:max-w-none 2xl:gap-2 2xl:px-4"
             >
               <span className="nb-shine pointer-events-none absolute inset-0 w-1/3 bg-white/25 blur-sm" style={{ transform: 'translateX(-100%) skewX(-15deg)' }} />
               <span className="relative flex h-2 w-2 shrink-0">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-live opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-live" />
               </span>
-              <span className="relative whitespace-nowrap leading-tight">
-                {PRIMARY_CTA_LABEL}
+              <span className="relative truncate leading-tight 2xl:whitespace-nowrap">
+                <span className="2xl:hidden">Free check</span>
+                <span className="hidden 2xl:inline">{PRIMARY_CTA_LABEL}</span>
               </span>
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsOpen(!isOpen)}
-            className="lg:hidden p-2.5 text-muted-foreground hover:text-primary transition-colors ml-auto"
+            className="ml-auto shrink-0 p-2 text-muted-foreground transition-colors hover:text-primary xl:hidden"
             aria-label="Toggle mobile menu"
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -347,7 +349,7 @@ const Navbar = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="lg:hidden border-t border-border bg-background"
+            className="border-t border-border bg-background xl:hidden"
           >
             <nav className="flex max-h-[calc(100vh-5.5rem)] flex-col space-y-2 overflow-y-auto p-4">
               {navItems.map((item) => {

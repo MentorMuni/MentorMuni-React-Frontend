@@ -67,9 +67,9 @@ export default function TestCountdownTimer({ onAutoSubmit, disabled = false }) {
   }, [remainingMs, fireAutoSubmit]);
 
   return (
-    <div className="shrink-0 border-b border-border/80 bg-white/95 px-4 py-3 sm:px-6">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div className="flex items-center gap-2.5">
+    <div className="mm-quiz-timer border-b border-border/80">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <div className="flex items-center gap-2">
           <motion.span
             animate={
               !reduceMotion && isCritical
@@ -77,7 +77,7 @@ export default function TestCountdownTimer({ onAutoSubmit, disabled = false }) {
                 : { scale: 1 }
             }
             transition={{ duration: 0.8, repeat: isCritical ? Infinity : 0 }}
-            className={`flex h-9 w-9 items-center justify-center rounded-xl ${
+            className={`flex h-7 w-7 items-center justify-center rounded-lg ${
               isCritical
                 ? 'bg-red-100 text-red-600'
                 : isUrgent
@@ -92,11 +92,11 @@ export default function TestCountdownTimer({ onAutoSubmit, disabled = false }) {
             )}
           </motion.span>
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            <p className="text-[9px] font-bold uppercase tracking-wider text-muted-foreground">
               Time remaining
             </p>
             <p
-              className={`text-xl font-black tabular-nums leading-none ${
+              className={`text-lg font-black tabular-nums leading-none ${
                 isCritical ? 'text-red-600' : isUrgent ? 'text-amber-700' : 'text-foreground'
               }`}
             >
@@ -105,8 +105,8 @@ export default function TestCountdownTimer({ onAutoSubmit, disabled = false }) {
           </div>
         </div>
 
-        <div className="min-w-[8rem] flex-1 max-w-xs">
-          <div className="h-1.5 overflow-hidden rounded-full bg-border">
+        <div className="min-w-[6rem] flex-1 max-w-[7.5rem] sm:max-w-xs">
+          <div className="h-1 overflow-hidden rounded-full bg-border">
             <motion.div
               className={`h-full rounded-full ${
                 isCritical

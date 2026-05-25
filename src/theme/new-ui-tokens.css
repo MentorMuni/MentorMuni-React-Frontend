@@ -103,12 +103,6 @@ html.mm-new-ui body {
   background-image:
     radial-gradient(ellipse 80% 50% at 50% -15%, rgba(30, 58, 95, 0.35), transparent 55%),
     linear-gradient(180deg, #060a12 0%, #080d14 100%);
+  /* scroll only — fixed backgrounds often add phantom overflow / scrollbars */
   background-attachment: scroll;
-}
-
-@media (min-width: 768px) {
-  html.mm-new-ui,
-  html.mm-new-ui body {
-    background-attachment: fixed;
-  }
 }

@@ -22,7 +22,6 @@ import TestCountdownTimer from './interviewready/TestCountdownTimer';
 import SkillValidationModal from './SkillValidationModal';
 import { fetchWithDeduplication } from '../utils/apiOptimization';
 import { toAppAbsoluteUrl } from '../utils/appPaths';
-import { useNewUI } from '../context/NewUIContext';
 
 const FREE_TIER_LIMIT = 3;
 
@@ -1362,9 +1361,38 @@ function planQuestionTypeBadge(kind) {
   }
 }
 
-/** Step 5: compact header; on list scroll, swap to slim title bar so questions stay visible */
+function QuizSubmitFooter({ answered, items, loading, error, onSubmit, className = '' }) {
+  return (
+    <div className={`mm-quiz-footer border-t border-border bg-tint-subtle ${className}`.trim()}>
+      {error && (
+        <div
+          className="mb-2 flex items-start gap-2 rounded-lg border border-red-200 bg-red-50 p-2.5 text-left text-sm font-medium text-red-800"
+          role="alert"
+        >
+          <AlertCircle size={18} className="mt-0.5 shrink-0" aria-hidden />
+          <span>{error}</span>
+        </div>
+      )}
+      <button
+        type="button"
+        className={`w-full rounded-xl py-2.5 text-sm font-bold text-white shadow-md transition-all sm:text-base ${
+          answered < items.length
+            ? 'cursor-not-allowed bg-slate-500 text-slate-200'
+            : 'bg-gradient-to-r from-cta to-cta-hover hover:from-cta hover:to-cta-hover active:scale-[0.99]'
+        }`}
+        disabled={answered < items.length || loading}
+        onClick={onSubmit}
+      >
+        {answered < items.length
+          ? `Answer ${items.length - answered} more ${items.length - answered === 1 ? 'question' : 'questions'}`
+          : 'Get My Readiness Score'}
+      </button>
+    </div>
+  );
+}
+
+/** Step 5: scrollable quiz; mobile = full-page scroll incl. submit; desktop = pinned submit */
 function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSubmit, loading, error }) {
-  const [scrolled, setScrolled] = useState(false);
   const listRef = useRef(null);
   const autoSubmitFiredRef = useRef(false);
   const isSkillQuiz = profile.assessmentMode === ASSESSMENT_FOCUS_SKILL;
@@ -1401,57 +1429,48 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
     (profile.userCategory ? String(profile.userCategory).replace(/_/g, ' ') : '') ||
     '';
 
-  const onListScroll = () => {
-    const el = listRef.current;
-    if (!el) return;
-    setScrolled(el.scrollTop > 28);
-  };
-
   useEffect(() => {
     listRef.current?.scrollTo({ top: 0, behavior: 'auto' });
-    setScrolled(false);
   }, [evaluationPlan]);
 
+  const metaBlurb = isAptitudeQuiz
+    ? 'Quantitative, logical, and verbal MCQs — choose A–D for each.'
+    : isSkillQuiz
+      ? 'Yes/No claims plus A–D items for your skill focus.'
+      : 'Mixed question types for engineering-style readiness.';
+
   return (
-    <div className="mm-site-theme px-4 py-4 sm:px-6 sm:py-5 lg:px-8">
-      <div className="mx-auto w-full max-w-3xl">
-        {/*
-          Cap card height below the nav/announcement chrome so only the question list scrolls.
-          Use max-h (not fixed h) + no outer overflow-hidden — page can still scroll if chrome is
-          taller than the offset, so submit/timer are never clipped off-screen.
-        */}
-        <div className="mm-quiz-panel-card mm-surface-panel mm-surface-panel--quiz flex min-h-0 flex-col overflow-hidden shadow-xl sm:rounded-3xl">
-          <TestCountdownTimer onAutoSubmit={handleAutoSubmit} disabled={loading} />
-          {/* Expanded header — hidden once user scrolls the question list */}
+    <div className="mm-assessment-quiz-page mm-site-theme">
+      <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col max-sm:min-h-0 sm:min-h-0">
+        <div className="mm-quiz-panel-card mm-surface-panel mm-surface-panel--quiz flex flex-1 flex-col shadow-xl max-sm:overflow-visible sm:min-h-0 sm:overflow-hidden sm:rounded-3xl">
           <div
-            className={`shrink-0 border-b border-border px-4 transition-all duration-200 sm:px-6 ${
-              scrolled ? 'max-h-0 overflow-hidden border-0 opacity-0' : 'max-h-[220px] opacity-100 py-4 sm:py-5'
-            }`}
-            aria-hidden={scrolled}
+            ref={listRef}
+            role="region"
+            aria-label="Quiz"
+            tabIndex={-1}
+            className="mm-quiz-scroll min-h-0 flex-1 overflow-x-hidden max-sm:flex-none max-sm:overflow-visible sm:overflow-y-auto"
           >
-            <div className="flex flex-wrap items-start justify-between gap-3 gap-y-2">
-              <div className="min-w-0 flex-1">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-lg font-bold leading-tight text-foreground sm:text-xl">{quizTitle}</h2>
-                  <span className="shrink-0 rounded-full border border-border bg-secondary px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-warning-ink-deep sm:text-[11px]">
-                    {isAptitudeQuiz
-                      ? `MCQ · ${items.length} question${items.length === 1 ? '' : 's'}`
-                      : `Mixed · ${items.length} questions`}
-                  </span>
-                </div>
-                <p className="mt-1.5 line-clamp-2 text-xs leading-snug text-muted-foreground sm:text-sm">
-                  {isAptitudeQuiz ? (
-                    <>
-                      Placement-style multiple-choice items across quantitative, logical, and verbal reasoning — choose A–D for
-                      each.
-                    </>
-                  ) : isSkillQuiz ? (
-                    'Yes/No claims plus A–D items — scoped to your skill focus.'
-                  ) : (
-                    'Yes/No, multiple choice, scenarios, and code-style items — broad engineering-style readiness.'
-                  )}
+            <TestCountdownTimer onAutoSubmit={handleAutoSubmit} disabled={loading} />
+
+            <header className="mm-quiz-meta">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
+                <h2 className="mm-quiz-meta__title min-w-0 flex-1 text-sm font-bold leading-snug text-foreground sm:text-base">
+                  {quizTitle}
+                </h2>
+                <p className="shrink-0 text-[11px] font-semibold tabular-nums text-muted-foreground sm:text-xs">
+                  <span className="text-foreground">{answered}</span>/{items.length} answered
                 </p>
-                <p className="mt-1 truncate text-xs text-hint">
+              </div>
+              <div className="mt-1.5 h-0.5 w-full overflow-hidden rounded-full bg-border">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-cta to-cyan-500 transition-[width] duration-300"
+                  style={{ width: `${pct}%` }}
+                />
+              </div>
+              <details className="mm-quiz-meta__details">
+                <summary>About this quiz</summary>
+                <p className="text-[11px] leading-snug text-muted-foreground">{metaBlurb}</p>
+                <p className="mt-1 truncate text-[11px] text-hint">
                   {isSkillQuiz ? 'Skill: ' : isAptitudeQuiz ? 'Focus: ' : 'Context: '}
                   <span className="font-medium text-muted-foreground">{skillSnippet}</span>
                   {roleLabel ? (
@@ -1461,51 +1480,10 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
                     </>
                   ) : null}
                 </p>
-              </div>
-              <div className="shrink-0 rounded-lg border border-border bg-background px-3 py-2 text-right">
-                <div className="text-lg font-black tabular-nums leading-none text-foreground sm:text-xl">
-                  {answered}
-                  <span className="text-icon-muted">/</span>
-                  {items.length}
-                </div>
-                <p className="text-[10px] font-medium uppercase tracking-wide text-hint">Answered</p>
-              </div>
-            </div>
-            <div className="mt-3 h-1.5 w-full overflow-hidden rounded-full bg-border">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-cta to-cyan-500 transition-[width] duration-300"
-                style={{ width: `${pct}%` }}
-              />
-            </div>
-          </div>
+              </details>
+            </header>
 
-          {/* Slim bar — only after scrolling */}
-          <div
-            className={`shrink-0 border-b border-border bg-surface-muted/95 px-4 backdrop-blur-sm transition-all duration-200 sm:px-6 ${
-              scrolled ? 'max-h-24 py-2.5 opacity-100' : 'max-h-0 overflow-hidden border-0 py-0 opacity-0'
-            }`}
-          >
-            <div className="flex items-center justify-between gap-3">
-              <p className="min-w-0 truncate text-sm font-semibold text-foreground">{quizTitle}</p>
-              <span className="shrink-0 text-xs font-bold tabular-nums text-muted-foreground">
-                {answered}/{items.length}
-              </span>
-            </div>
-            <div className="mt-2 h-0.5 w-full overflow-hidden rounded-full bg-surface-track">
-              <div
-                className="h-full rounded-full bg-gradient-to-r from-cta to-cyan-500"
-                style={{ width: `${pct}%` }}
-              />
-            </div>
-          </div>
-
-          <div
-            ref={listRef}
-            role="region"
-            aria-label="Quiz questions"
-            onScroll={onListScroll}
-            className="min-h-0 flex-1 space-y-6 overflow-x-hidden overflow-y-auto px-4 py-4 [-webkit-overflow-scrolling:touch] sm:px-6 sm:py-5"
-          >
+            <div className="mm-quiz-questions space-y-4">
             {items.map((item, i) => {
               const qText = typeof item?.question === 'string' ? item.question : String(item?.question ?? '');
               const kind = inferPlanQuestionKind(item, { inferMcqFromOptions: isAptitudeQuiz });
@@ -1516,9 +1494,9 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
               const codeStyle = kind === 'code_mcq';
 
               return (
-                <div key={i} className="border-b border-border pb-6 last:border-0 last:pb-2">
-                  <div className="mb-3 flex flex-wrap items-center gap-2">
-                    <span className="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-cta to-cyan-600 text-xs font-black text-white">
+                <div key={i} className="mm-quiz-question border-b border-border pb-3 last:border-0 last:pb-0">
+                  <div className="mb-1.5 flex flex-wrap items-center gap-2">
+                    <span className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-gradient-to-r from-cta to-cyan-600 text-[10px] font-black text-white">
                       {i + 1}
                     </span>
                     <span className="rounded-full border border-border bg-surface-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
@@ -1526,8 +1504,8 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
                     </span>
                   </div>
                   <p
-                    className={`mb-4 pl-0 text-base font-semibold leading-relaxed text-foreground sm:pl-10 ${
-                      codeStyle ? 'whitespace-pre-wrap break-words font-mono text-sm font-normal text-foreground' : ''
+                    className={`mb-2 pl-0 text-sm font-semibold leading-snug text-foreground sm:pl-8 ${
+                      codeStyle ? 'whitespace-pre-wrap break-words font-mono text-xs font-normal text-foreground' : ''
                     }`}
                   >
                     {qText}
@@ -1559,7 +1537,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
                       </button>
                     </div>
                   ) : showMcq ? (
-                    <div className="grid grid-cols-1 gap-2 sm:pl-10 sm:grid-cols-2">
+                    <div className="grid grid-cols-1 gap-1.5 sm:grid-cols-2 sm:pl-8">
                       {opts.map((label, j) => {
                         const letter = MCQ_LETTERS[j];
                         const picked = answers[i] === letter;
@@ -1569,14 +1547,14 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
                             key={letter}
                             type="button"
                             onClick={() => setAnswers({ ...answers, [i]: letter })}
-                            className={`flex w-full items-start gap-3 rounded-xl border-2 px-3 py-3 text-left text-sm transition-all ${
+                            className={`flex w-full items-start gap-2 rounded-lg border-2 px-2.5 py-2 text-left text-sm transition-all ${
                               picked
                                 ? 'border-cta bg-secondary text-foreground shadow-md shadow-button mm-choice-tile--selected'
                                 : 'mm-choice-tile text-muted-foreground'
                             }`}
                           >
                             <span
-                              className={`mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg text-xs font-black ${
+                              className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-[10px] font-black ${
                                 picked ? 'bg-cta text-white' : 'bg-border text-foreground'
                               }`}
                             >
@@ -1596,33 +1574,26 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
                 </div>
               );
             })}
+            </div>
+
+            <QuizSubmitFooter
+              answered={answered}
+              items={items}
+              loading={loading}
+              error={error}
+              onSubmit={onSubmit}
+              className="mm-quiz-footer--in-scroll sm:hidden"
+            />
           </div>
 
-          <div className="shrink-0 border-t border-border bg-tint-subtle px-4 py-4 pb-[max(1rem,env(safe-area-inset-bottom))] sm:px-6">
-            {error && (
-              <div
-                className="mb-4 flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-3 text-left text-sm font-medium text-red-800"
-                role="alert"
-              >
-                <AlertCircle size={18} className="mt-0.5 shrink-0" aria-hidden />
-                <span>{error}</span>
-              </div>
-            )}
-            <button
-              type="button"
-              className={`w-full rounded-2xl py-3.5 text-base font-bold text-white shadow-lg transition-all sm:py-4 ${
-                answered < items.length
-                  ? 'cursor-not-allowed bg-slate-500 text-slate-200'
-                  : 'bg-gradient-to-r from-cta to-cta-hover hover:from-cta hover:to-cta-hover active:scale-[0.99]'
-              }`}
-              disabled={answered < items.length || loading}
-              onClick={onSubmit}
-            >
-              {answered < items.length
-                ? `Answer ${items.length - answered} more ${items.length - answered === 1 ? 'question' : 'questions'}`
-                : 'Get My Readiness Score'}
-            </button>
-          </div>
+          <QuizSubmitFooter
+            answered={answered}
+            items={items}
+            loading={loading}
+            error={error}
+            onSubmit={onSubmit}
+            className="hidden shrink-0 sm:block"
+          />
         </div>
       </div>
     </div>
@@ -1630,7 +1601,6 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
 }
 
 const InterviewReady = () => {
-  const { newUI } = useNewUI();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [fromToolsEntry] = useState(() => readToolsEntryFromSearch());
@@ -3769,15 +3739,17 @@ const InterviewReady = () => {
   // ========== STEP 5: QUIZ ==========
   if (step === 5) {
     return (
-      <ReadinessQuizPanel
-        evaluationPlan={evaluationData}
-        answers={answers}
-        setAnswers={setAnswers}
-        profile={profile}
-        onSubmit={handleEvalSubmit}
-        loading={loading}
-        error={error}
-      />
+      <div className="mm-assessment-quiz-shell">
+        <ReadinessQuizPanel
+          evaluationPlan={evaluationData}
+          answers={answers}
+          setAnswers={setAnswers}
+          profile={profile}
+          onSubmit={handleEvalSubmit}
+          loading={loading}
+          error={error}
+        />
+      </div>
     );
   }
 
@@ -4789,7 +4761,9 @@ const InterviewReady = () => {
   })();
 
   return (
-  <div className={newUI ? 'mm-assessment-flow' : undefined}>
+  <div
+    className={`mm-assessment-flow${step === 5 ? ' mm-assessment-flow--quiz' : ''}`}
+  >
       {stepContent}
       <UpgradePromptModal
         isOpen={showUpgradeModal}

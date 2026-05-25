@@ -691,7 +691,7 @@ const HomePage = () => {
 
   return (
     <InnerRouteShell scope="marketing">
-    <main className="mm-site-theme relative z-[1] overflow-x-hidden">
+    <main className="mm-marketing-flow mm-site-theme relative z-[1] overflow-x-hidden">
       <style>{`
         :focus-visible {
           outline: 2px solid #1A8FC4;
@@ -711,19 +711,10 @@ const HomePage = () => {
           animation: mm-problem-track 60s linear infinite;
         }
         .mm-hero-typewriter-line {
-          font-size: 1.5rem;
+          font-size: clamp(1.25rem, 2.8vw + 0.5rem, 2.5rem);
           font-weight: 700;
           line-height: 1.2;
           letter-spacing: -0.025em;
-        }
-        @media (min-width: 400px) {
-          .mm-hero-typewriter-line { font-size: 1.75rem; line-height: 1.15; }
-        }
-        @media (min-width: 640px) {
-          .mm-hero-typewriter-line { font-size: 2.125rem; }
-        }
-        @media (min-width: 768px) {
-          .mm-hero-typewriter-line { font-size: 2.5rem; }
         }
         @keyframes mm-hero-accent {
           0%, 100% { background-position: 0% 50%; }
@@ -739,8 +730,8 @@ const HomePage = () => {
       <section
         className={
           newUI
-            ? 'mm-new-ui-hero mm-marketing-hero-backdrop relative overflow-hidden border-b border-white/[0.06] pb-0 pt-10 md:pt-12 lg:pt-14'
-            : 'relative overflow-hidden border-b-0 bg-gradient-to-b from-slate-50/90 via-white to-[#fff8f0] pb-0 pt-10 md:pt-12 lg:pt-14'
+            ? 'mm-hero-section mm-new-ui-hero mm-marketing-hero-backdrop relative overflow-hidden border-b border-white/[0.06] pb-0 pt-8 md:pt-10 xl:pt-12'
+            : 'mm-hero-section relative overflow-hidden border-b-0 bg-gradient-to-b from-slate-50/90 via-white to-[#fff8f0] pb-0 pt-8 md:pt-10 xl:pt-12'
         }
       >
         {!newUI && (
@@ -749,15 +740,15 @@ const HomePage = () => {
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_10%_50%,rgba(14,165,233,0.06),transparent)]" aria-hidden />
           </>
         )}
-        <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col px-5 sm:px-6 lg:px-8">
-          <div className="grid w-full min-w-0 grid-cols-1 items-start gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,440px)] lg:gap-x-12 lg:gap-y-0 xl:gap-x-16">
-            <div className="flex w-full min-w-0 flex-col gap-5 sm:gap-6">
+        <div className="mm-container relative z-10 flex w-full flex-col">
+          <div className="mm-hero-layout">
+            <div className="flex w-full min-w-0 flex-col gap-4 sm:gap-5 md:gap-6">
               <motion.div
                 initial={reduceMotion ? false : { opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                 style={{ opacity: 1 }}
-                className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 lg:justify-start"
+                className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 xl:justify-start"
               >
                 <span
                   className={
@@ -799,14 +790,14 @@ const HomePage = () => {
                 )}
               </motion.div>
 
-              <div className="w-full text-center lg:text-left">
+              <div className="w-full min-w-0 text-center xl:text-left">
                 <motion.h1
                   key="hero-headline"
                   initial={reduceMotion ? false : { opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                   style={{ opacity: 1 }}
-                  className="mx-auto max-w-[44rem] lg:mx-0 lg:max-w-[38rem]"
+                  className="mx-auto max-w-[44rem] xl:mx-0 xl:max-w-[38rem]"
                 >
                   <span className="typo-display block text-neutral-900 leading-[1.06] tracking-tight">
                     {HERO_HEADLINE_LINE1}
@@ -837,7 +828,7 @@ const HomePage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.38, delay: 0.04 }}
                   style={{ opacity: 1 }}
-                  className="mx-auto mt-4 max-w-prose-marketing px-0 sm:mt-5 lg:mx-0 lg:max-w-[36rem]"
+                  className="mm-hero-sub-block mx-auto mt-4 max-w-prose-marketing px-0 sm:mt-5 xl:mx-0 xl:max-w-[36rem]"
                 >
                   <p className="text-base font-semibold leading-snug text-neutral-800 sm:text-lg">{heroLeadCopy}</p>
                   <HeroSocialProof ariaLabel={HERO_SOCIAL_PROOF_ARIA} reduceMotion={reduceMotion} />
@@ -875,7 +866,7 @@ const HomePage = () => {
                     </span>
                   </div>
 
-                  <div className="mt-6 flex w-full flex-col gap-3 sm:mt-7 sm:flex-row sm:flex-wrap sm:items-center lg:justify-start">
+                  <div className="mm-hero-cta-row mt-6 flex w-full flex-col gap-3 sm:mt-7 sm:flex-row sm:flex-wrap sm:items-center xl:justify-start">
                     <button
                       type="button"
                       onClick={goToStartAssessment}
@@ -891,7 +882,7 @@ const HomePage = () => {
                     </Link>
                   </div>
 
-                  <p className="mt-3 mb-8 text-center text-xs leading-relaxed text-neutral-600 sm:mb-10 sm:text-left">
+                  <p className="mt-3 mb-8 text-center text-xs leading-relaxed text-neutral-600 sm:mb-10 xl:text-left">
                     <button
                       type="button"
                       onClick={scrollToHomepagePricing}
@@ -919,8 +910,8 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="flex w-full min-w-0 flex-col items-center justify-center gap-3 lg:items-end lg:pt-1">
-              <HeroFlagshipVisual />
+            <div className="mm-hero-score-slot flex w-full min-w-0 flex-col items-center justify-center gap-3 xl:items-end xl:pt-1">
+              <HeroFlagshipVisual className="w-full" />
               <HeroPlayfulClause text={HERO_PLAYFUL_CLAUSE} reduceMotion={reduceMotion} newUI={newUI} />
             </div>
           </div>
@@ -930,10 +921,10 @@ const HomePage = () => {
 
       {/* ════════════════ TRUST — campus types + stats ════════════════ */}
       <section
-        className="mm-surface-section border-t py-6 md:py-7 px-5 sm:px-6 lg:px-8"
+        className="mm-band mm-surface-section mm-section--sm border-t"
         aria-label={HERO_TRUST_LOGO_ROW_LABEL}
       >
-        <div className="mx-auto max-w-5xl">
+        <div className="mm-container mm-container--narrow">
           <div className="mb-5 flex flex-wrap items-center justify-center gap-5 sm:gap-8">
             <div className="text-center">
               <p className={`text-2xl font-extrabold ${newUI ? 'mm-new-ui-stat-value' : 'text-[#1A8FC4]'}`}>
@@ -1692,9 +1683,9 @@ const HomePage = () => {
       {/* ════════════════ FINAL CTA (single primary conversion zone for free check — hero also) ════════════════ */}
       <section
         id="final-cta"
-        className="border-t border-emerald-100/80 bg-gradient-to-b from-emerald-50/50 via-white to-white scroll-mt-[5.5rem] py-14 md:py-16 px-5 sm:px-6 lg:px-8"
+        className="mm-band border-t border-emerald-100/80 bg-gradient-to-b from-emerald-50/50 via-white to-white mm-scroll-mt-chrome py-14 md:py-16"
       >
-        <div className="mx-auto w-full max-w-3xl text-left">
+        <div className="mm-container mm-container--prose w-full text-left">
           <FadeUp className="w-full text-left">
             <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-[#15803d] sm:text-sm">5 minutes · Instant result · No signup</p>
             <div className="mb-6 flex w-full max-w-full flex-wrap items-start gap-3 rounded-2xl border border-sky-200/70 bg-gradient-to-r from-sky-50/95 to-sky-100/80 px-4 py-3 text-left text-sm font-semibold leading-snug text-foreground shadow-sm">
@@ -1753,8 +1744,8 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ FOOTER ════════════════ */}
-      <footer className="border-t border-border bg-secondary py-14 px-5 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-6xl w-full">
+      <footer className="mm-band border-t border-border bg-secondary py-14">
+        <div className="mm-container mm-container--wide w-full">
           <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-8 mb-10">
             <div className="md:col-span-2">
               <h3 className="font-bold text-foreground mb-2">Mentor<span className="text-[#1A8FC4]">Muni</span></h3>

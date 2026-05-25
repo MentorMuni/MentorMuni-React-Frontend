@@ -69,8 +69,8 @@ function PageFallback() {
   const { pathname } = useLocation();
   const isAssessment = ASSESSMENT_PATHS.has(pathname);
   return (
-    <div className="min-h-[60vh] bg-background px-4 py-12">
-      <div className="mx-auto max-w-2xl space-y-4">
+    <div className="min-h-[60vh] bg-background py-12">
+      <div className="mm-container mm-container--narrow space-y-4">
         {isAssessment && (
           <p className="text-center text-sm font-semibold text-muted-foreground">
             Loading assessment…
@@ -131,16 +131,21 @@ function AnnouncementBar() {
     <div
       role="banner"
       aria-label="Early bird promotional offer"
-      className="relative flex items-center justify-center gap-2 bg-gradient-to-r from-[#15799F] via-[#1A8FC4] to-[#2AAA8A] px-10 py-2 text-center text-[11px] font-semibold text-white sm:text-xs"
+      className="mm-announcement-bar relative flex flex-wrap items-center justify-center gap-x-2 gap-y-1 bg-gradient-to-r from-[#15799F] via-[#1A8FC4] to-[#2AAA8A] px-11 py-2 text-center text-[10px] font-semibold leading-snug text-white sm:gap-2 sm:px-12 sm:text-[11px] md:text-xs"
     >
       <span aria-hidden className="shrink-0 text-sm">🎁</span>
-      <span>
-        <strong>Early Bird:</strong> 1 free 1:1 mentorship + 1 AI mock — take the free 5-min readiness test to claim.
+      <span className="mm-announcement-bar__text min-w-0">
+        <span className="sm:hidden">
+          <strong>Early bird:</strong> free mentor + AI mock — 5-min test
+        </span>
+        <span className="hidden sm:inline">
+          <strong>Early Bird:</strong> 1 free 1:1 mentorship + 1 AI mock — take the free 5-min readiness test to claim.
+        </span>
       </span>
       <button
         type="button"
         onClick={goToStartAssessment}
-        className="ml-1 shrink-0 rounded-full bg-white/25 px-2.5 py-0.5 text-[11px] font-bold transition hover:bg-white/35 sm:text-xs"
+        className="shrink-0 rounded-full bg-white/25 px-2.5 py-0.5 text-[10px] font-bold transition hover:bg-white/35 sm:text-[11px] md:text-xs"
       >
         Claim →
       </button>
@@ -209,7 +214,7 @@ function App() {
       <HashLegacyRedirect />
       <ScrollToTop />
       <RouteTitle />
-      <div className="mm-site-theme relative flex min-h-screen w-full min-w-0 flex-col text-foreground">
+      <div className="mm-app-shell mm-site-theme relative text-foreground">
         <ParticleBackground />
         <SiteChromeShell>
           <AnnouncementBar />
@@ -218,7 +223,7 @@ function App() {
             <NewUIBetaSwitch />
           </div>
         </SiteChromeShell>
-        <AnimatedMain className="relative z-[1]">
+        <AnimatedMain className="mm-app-main relative z-[1]">
           <Suspense fallback={<PageFallback />}>
             <Routes>
               <Route path="/" element={<HomePage />} />

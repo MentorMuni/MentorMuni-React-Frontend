@@ -13,7 +13,8 @@ const SCOPE_CLASS = {
 export default function InnerRouteShell({ children, className = '', scope = 'inner' }) {
   const { newUI } = useNewUI();
   const scopeClass = newUI ? SCOPE_CLASS[scope] ?? SCOPE_CLASS.inner : null;
-  const rootClass = [scopeClass, className].filter(Boolean).join(' ');
-  if (!rootClass) return children;
+  const scopePart = scopeClass || className;
+  if (!scopePart) return children;
+  const rootClass = ['mm-route-root', scopeClass, className].filter(Boolean).join(' ');
   return <div className={rootClass}>{children}</div>;
 }

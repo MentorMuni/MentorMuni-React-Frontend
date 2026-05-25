@@ -1,0 +1,337 @@
+/**
+ * MentorMuni responsive layout bootstrap
+ * ─────────────────────────────────────
+ * Fluid containers, gutters, and guards so pages adapt to any viewport
+ * (320px phones → ultrawide, short laptop windows).
+ */
+
+:root {
+  --mm-container-max: 80rem;
+  --mm-container-narrow: 48rem;
+  --mm-container-tight: 40rem;
+  --mm-container-prose: 42rem;
+  --mm-container-wide: 90rem;
+
+  /* Fluid gutters: 16px on small phones → 32px on large screens */
+  --mm-gutter: clamp(1rem, 2.5vw + 0.25rem, 2rem);
+  --mm-section-py: clamp(2.5rem, 5vw + 0.5rem, 4rem);
+  --mm-section-py-sm: clamp(1.5rem, 3vw + 0.25rem, 2.5rem);
+
+  --mm-chrome-offset: 5.5rem;
+}
+
+/* ── Viewport guards ─────────────────────────────────────────────────── */
+html {
+  overflow-x: hidden;
+  overflow-y: auto;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  /* Hide scrollbar track; wheel / touch / keys still scroll */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+  background: transparent;
+}
+
+body {
+  overflow-x: hidden;
+  overflow-y: visible;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+
+#root {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.mm-app-shell {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+}
+
+/* Fixed layers must not expand document scroll height */
+.mm-app-shell > canvas[aria-hidden],
+.mm-app-shell > .pointer-events-none.fixed {
+  max-width: 100vw;
+}
+
+.mm-site-theme {
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+}
+
+.mm-route-root,
+.mm-inner-route,
+.mm-marketing-flow,
+.mm-tool-flow {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Main content grows; prevents footer chrome crush on short screens */
+.mm-app-main {
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+/* Quiz step — flex height chain for Classic + Dark (step 5 assessment) */
+.mm-app-main:has(.mm-assessment-flow--quiz) {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.mm-app-main > main:has(.mm-assessment-flow--quiz) {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+@media (max-width: 639px) {
+  .mm-app-main:has(.mm-assessment-flow--quiz),
+  .mm-app-main > main:has(.mm-assessment-flow--quiz) {
+    overflow: visible;
+    height: auto;
+  }
+}
+
+/* ── Site chrome ─────────────────────────────────────────────────────── */
+.mm-site-chrome__stack {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.mm-sticky-header {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.mm-announcement-bar {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+.mm-marketing-flow,
+.mm-inner-route,
+.mm-tool-flow,
+.mm-app-main > main {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+.mm-announcement-bar__text {
+  min-width: 0;
+  text-wrap: balance;
+}
+
+.mm-beta-switch-bar .mm-container {
+  padding-block: 0.25rem;
+}
+
+/* ── Layout containers (use instead of ad-hoc max-w-7xl + px-*) ─────── */
+.mm-container {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--mm-container-max);
+  margin-inline: auto;
+  padding-inline: var(--mm-gutter);
+  min-width: 0;
+}
+
+.mm-container--narrow {
+  max-width: var(--mm-container-narrow);
+}
+
+.mm-container--tight {
+  max-width: var(--mm-container-tight);
+}
+
+.mm-container--prose {
+  max-width: var(--mm-container-prose);
+}
+
+.mm-container--wide {
+  max-width: var(--mm-container-wide);
+}
+
+.mm-container--flush {
+  padding-inline: 0;
+}
+
+/* Section vertical rhythm (pair with mm-container inside) */
+.mm-section {
+  padding-block: var(--mm-section-py);
+  width: 100%;
+  min-width: 0;
+}
+
+.mm-section--sm {
+  padding-block: var(--mm-section-py-sm);
+}
+
+/* Full-bleed band with centered inner content */
+.mm-band {
+  width: 100%;
+  min-width: 0;
+  overflow-x: clip;
+}
+
+/* Responsive grids */
+.mm-grid-auto {
+  display: grid;
+  gap: clamp(1rem, 2.5vw, 1.5rem);
+  grid-template-columns: 1fr;
+  min-width: 0;
+}
+
+@media (min-width: 640px) {
+  .mm-grid-auto--2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .mm-grid-auto--3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .mm-grid-auto--4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Hero two-column — only when enough width AND min height */
+.mm-hero-layout {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  grid-template-columns: 1fr;
+  gap: clamp(1.5rem, 4vw, 2.5rem);
+  align-items: start;
+}
+
+@media (min-width: 1280px) {
+  .mm-hero-layout {
+    grid-template-columns: minmax(0, 1fr) minmax(0, min(400px, 100%));
+    gap: clamp(2rem, 3vw, 3rem);
+  }
+}
+
+/* Scroll anchor below sticky chrome */
+.mm-scroll-mt-chrome {
+  scroll-margin-top: var(--mm-chrome-offset);
+}
+
+/* Tables / wide code — opt-in wrapper */
+.mm-scroll-x {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Media defaults inside marketing surfaces */
+.mm-site-theme picture,
+.mm-site-theme video {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── Hero: short / medium viewports ──────────────────────────────────── */
+@media (max-height: 680px) {
+  .mm-hero-section {
+    padding-top: 1.25rem !important;
+    padding-bottom: 0 !important;
+  }
+
+  .mm-hero-section .mm-hero-typewriter-line {
+    font-size: clamp(1.25rem, 3vw + 0.5rem, 1.5rem) !important;
+    line-height: 1.2 !important;
+  }
+
+  .mm-hero-section .typo-display {
+    font-size: clamp(1.375rem, 4vw + 0.25rem, 1.875rem) !important;
+    line-height: 1.08 !important;
+  }
+
+  .mm-hero-section .mm-hero-sub-block {
+    margin-top: 0.75rem !important;
+  }
+
+  .mm-hero-section .mm-hero-cta-row {
+    margin-top: 1rem !important;
+  }
+
+  .mm-hero-score-slot {
+    max-width: min(100%, 22rem);
+    margin-inline: auto;
+  }
+}
+
+/* Legacy sections: fluid horizontal padding when using old px-* utilities */
+.mm-marketing-flow > section,
+.mm-inner-route > section,
+.mm-tool-flow > section {
+  box-sizing: border-box;
+  max-width: 100%;
+}
+
+@media (max-width: 639px) {
+  .mm-marketing-flow > section[class*="px-5"],
+  .mm-inner-route > section[class*="px-5"] {
+    padding-inline: var(--mm-gutter);
+  }
+}
+
+/* Legacy inner columns — keep centered and within viewport */
+.mm-site-theme .mx-auto[class*="max-w-"] {
+  box-sizing: border-box;
+  padding-inline: max(0px, min(var(--mm-gutter), 1.5rem));
+}
+
+@media (max-width: 380px) {
+  .mm-site-theme [class*="max-w-7xl"],
+  .mm-site-theme [class*="max-w-6xl"],
+  .mm-site-theme [class*="max-w-5xl"] {
+    padding-inline: var(--mm-gutter);
+  }
+}
+
+/* Ultrawide: avoid content stretching uncomfortably */
+@media (min-width: 1600px) {
+  :root {
+    --mm-gutter: clamp(2rem, 2vw, 2.5rem);
+  }
+}

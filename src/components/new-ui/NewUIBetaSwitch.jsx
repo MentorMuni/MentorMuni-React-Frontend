@@ -14,7 +14,7 @@ export default function NewUIBetaSwitch() {
       className="mm-beta-switch-bar"
       data-mm-beta-switch
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-center px-4 py-1 sm:px-6 lg:px-8">
+      <div className="mm-container flex items-center justify-center py-1">
         <div
           role="group"
           aria-label="Site theme"
