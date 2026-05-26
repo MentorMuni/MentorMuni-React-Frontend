@@ -1,5 +1,3 @@
-import { useNewUI } from '../../context/NewUIContext';
-
 const SCOPE_CLASS = {
   inner: 'mm-inner-route',
   marketing: 'mm-marketing-flow',
@@ -7,14 +5,11 @@ const SCOPE_CLASS = {
 };
 
 /**
- * Wraps routes so New UI semantic tokens apply without global .bg-white remaps.
- * @param {'inner' | 'marketing' | 'tool'} scope
+ * Wraps routes for fluid width guards + optional New UI semantic scope.
+ * Always applies mm-route-root (Classic + Dark).
  */
 export default function InnerRouteShell({ children, className = '', scope = 'inner' }) {
-  const { newUI } = useNewUI();
-  const scopeClass = newUI ? SCOPE_CLASS[scope] ?? SCOPE_CLASS.inner : null;
-  const scopePart = scopeClass || className;
-  if (!scopePart) return children;
+  const scopeClass = SCOPE_CLASS[scope] ?? SCOPE_CLASS.inner;
   const rootClass = ['mm-route-root', scopeClass, className].filter(Boolean).join(' ');
   return <div className={rootClass}>{children}</div>;
 }

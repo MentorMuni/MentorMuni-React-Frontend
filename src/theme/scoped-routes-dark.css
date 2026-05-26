@@ -1,0 +1,98 @@
+/**
+ * Dark theme fixes inside route scopes (marketing / inner / tool).
+ * Legacy bridge intentionally skips these shells — mirror critical rules here.
+ */
+
+/* ── Surfaces: white cards & sections ───────────────────────────────────── */
+html.mm-new-ui .mm-marketing-flow .bg-white,
+html.mm-new-ui .mm-marketing-flow [class*='bg-white/'],
+html.mm-new-ui .mm-inner-route .bg-white,
+html.mm-new-ui .mm-inner-route [class*='bg-white/'],
+html.mm-new-ui .mm-tool-flow .bg-white,
+html.mm-new-ui .mm-tool-flow [class*='bg-white/'] {
+  background-color: rgba(15, 23, 42, 0.72) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+html.mm-new-ui .mm-marketing-flow section.bg-white,
+html.mm-new-ui .mm-inner-route section.bg-white,
+html.mm-new-ui .mm-tool-flow section.bg-white {
+  background-color: rgba(12, 18, 34, 0.55) !important;
+  background-image: linear-gradient(
+    180deg,
+    rgba(12, 18, 34, 0.88) 0%,
+    rgba(15, 23, 42, 0.78) 50%,
+    rgba(30, 27, 75, 0.45) 100%
+  ) !important;
+}
+
+/* ── Hardcoded ink on cards (Mentors, outcomes, etc.) ──────────────────── */
+html.mm-new-ui .mm-marketing-flow [class*='text-[#1a1a1a]'],
+html.mm-new-ui .mm-inner-route [class*='text-[#1a1a1a]'],
+html.mm-new-ui .mm-tool-flow [class*='text-[#1a1a1a]'],
+html.mm-new-ui .mm-marketing-flow [class*='text-[#1A1A1A]'],
+html.mm-new-ui .mm-inner-route [class*='text-[#1A1A1A]'],
+html.mm-new-ui .mm-tool-flow [class*='text-[#1A1A1A]'] {
+  color: var(--text-heading) !important;
+}
+
+html.mm-new-ui .mm-marketing-flow [class*='border-[#EDE8DD]'],
+html.mm-new-ui .mm-marketing-flow [class*='border-[#ede8dd]'],
+html.mm-new-ui .mm-inner-route [class*='border-[#EDE8DD]'],
+html.mm-new-ui .mm-tool-flow [class*='border-[#EDE8DD]'] {
+  border-color: rgba(148, 163, 184, 0.22) !important;
+}
+
+/* ── Light gray body copy inside scoped routes ─────────────────────────── */
+html.mm-new-ui .mm-marketing-flow [class*='text-[#888888]'],
+html.mm-new-ui .mm-marketing-flow [class*='text-[#777777]'],
+html.mm-new-ui .mm-marketing-flow [class*='text-[#666666]'],
+html.mm-new-ui .mm-inner-route [class*='text-[#888888]'],
+html.mm-new-ui .mm-inner-route [class*='text-[#777777]'],
+html.mm-new-ui .mm-tool-flow [class*='text-[#888888]'] {
+  color: var(--text-secondary) !important;
+}
+
+/* ── Forms & inputs ────────────────────────────────────────────────────── */
+html.mm-new-ui .mm-marketing-flow input:not([type='checkbox']):not([type='radio']),
+html.mm-new-ui .mm-marketing-flow textarea,
+html.mm-new-ui .mm-marketing-flow select,
+html.mm-new-ui .mm-inner-route input:not([type='checkbox']):not([type='radio']),
+html.mm-new-ui .mm-inner-route textarea,
+html.mm-new-ui .mm-inner-route select,
+html.mm-new-ui .mm-tool-flow input:not([type='checkbox']):not([type='radio']),
+html.mm-new-ui .mm-tool-flow textarea,
+html.mm-new-ui .mm-tool-flow select {
+  color: var(--text-heading);
+  background-color: rgba(15, 23, 42, 0.85);
+  border-color: rgba(148, 163, 184, 0.25);
+}
+
+/* ── Secondary outline buttons ─────────────────────────────────────────── */
+html.mm-new-ui .mm-marketing-flow button[class*='border-border'][class*='bg-white'],
+html.mm-new-ui .mm-marketing-flow a[class*='border-border'][class*='bg-white'],
+html.mm-new-ui .mm-inner-route button[class*='border-border'][class*='bg-white'],
+html.mm-new-ui .mm-inner-route a[class*='border-border'][class*='bg-white'],
+html.mm-new-ui .mm-tool-flow button[class*='border-border'][class*='bg-white'],
+html.mm-new-ui .mm-tool-flow a[class*='border-border'][class*='bg-white'] {
+  background-color: rgba(17, 28, 48, 0.85) !important;
+  border-color: rgba(148, 163, 184, 0.28) !important;
+  color: var(--text-heading) !important;
+}
+
+/* ── Slate / gray borders on cards ─────────────────────────────────────── */
+html.mm-new-ui .mm-marketing-flow [class*='border-slate-200'],
+html.mm-new-ui .mm-inner-route [class*='border-slate-200'],
+html.mm-new-ui .mm-tool-flow [class*='border-slate-200'],
+html.mm-new-ui .mm-marketing-flow [class*='border-gray-100'],
+html.mm-new-ui .mm-inner-route [class*='border-gray-100'],
+html.mm-new-ui .mm-tool-flow [class*='border-gray-100'] {
+  border-color: rgba(148, 163, 184, 0.22) !important;
+}
+
+/* ── Standalone pages (no route scope class) ───────────────────────────── */
+html.mm-new-ui .mm-site-theme:not(.mm-marketing-flow):not(.mm-inner-route):not(.mm-tool-flow) .bg-white,
+html.mm-new-ui .mm-roadmap-page .bg-white {
+  background-color: rgba(15, 23, 42, 0.72) !important;
+}

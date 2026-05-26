@@ -1,7 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import { useNewUI } from '../../context/NewUIContext';
 
-const MOBILE_MQ = '(max-width: 639px)';
+/** Coarse pointer / narrow viewport — skip heavy canvas */
+const MOBILE_MQ = '(max-width: 40em), (hover: none) and (pointer: coarse)';
 const DESKTOP_PARTICLE_CAP = 20;
 
 /** Subtle ambient dots — desktop only; pauses when tab hidden */

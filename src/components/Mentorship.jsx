@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Users, Target, TrendingUp, Award, ArrowRight } from 'lucide-react';
+import RoutePageShell from './layout/RoutePageShell';
 
 const Mentorship = () => {
   const features = [
@@ -94,7 +95,7 @@ const Mentorship = () => {
           </div>
         </div>
       </div>
-    </div>
+    </RoutePageShell>
   );
 };
 

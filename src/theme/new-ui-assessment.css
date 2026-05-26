@@ -1,36 +1,20 @@
 /**
  * Assessment flow (/start-assessment) — Classic + Dark theme.
- * Layout rules use .mm-assessment-* classes (not html.mm-new-ui).
- * Color overrides below are Dark-only (html.mm-new-ui).
+ * Layout uses flex + container queries (no fixed viewport height math).
  */
-
-:root {
-  /* Site chrome: promo + nav + theme bar (tight so quiz card fills viewport) */
-  --mm-quiz-chrome-offset: 9.75rem;
-  --mm-quiz-footer-offset: 3.75rem;
-}
-
-@media (max-height: 720px) {
-  :root {
-    --mm-quiz-chrome-offset: 8.75rem;
-    --mm-quiz-footer-offset: 3.25rem;
-  }
-}
 
 html.mm-new-ui .mm-assessment-flow {
   color: var(--text-body);
 }
 
-/* Step 5 — fixed viewport band so inner .mm-quiz-scroll can overflow + scroll */
+/* Quiz step fills remaining app shell via flex */
 .mm-assessment-flow.mm-assessment-flow--quiz {
   display: flex;
-  flex-direction: column;
   flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
   width: 100%;
   min-width: 0;
-  min-height: 0;
-  height: calc(100dvh - var(--mm-quiz-chrome-offset));
-  max-height: calc(100dvh - var(--mm-quiz-chrome-offset));
   overflow: hidden;
 }
 
@@ -44,19 +28,15 @@ html.mm-new-ui .mm-assessment-flow {
 }
 
 .mm-assessment-quiz-page {
+  container-type: inline-size;
+  container-name: quiz;
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
   min-height: 0;
   width: 100%;
   max-width: 100%;
-  padding: 0.25rem 0.5rem 0.375rem;
-}
-
-@media (min-width: 640px) {
-  .mm-assessment-quiz-page {
-    padding: 0.375rem 0.75rem 0.5rem;
-  }
+  padding: clamp(0.25rem, 1cqi, 0.5rem) clamp(0.5rem, 2cqi, 0.75rem);
 }
 
 .mm-assessment-quiz-page > .mx-auto {
@@ -64,8 +44,7 @@ html.mm-new-ui .mm-assessment-flow {
   flex: 1 1 auto;
   flex-direction: column;
   min-height: 0;
-  height: 100%;
-  max-height: 100%;
+  width: 100%;
 }
 
 .mm-assessment-quiz-page .mm-quiz-panel-card {
@@ -73,52 +52,35 @@ html.mm-new-ui .mm-assessment-flow {
   flex: 1 1 auto;
   flex-direction: column;
   min-height: 0;
-  height: 100%;
-  max-height: 100% !important;
   overflow: hidden;
 }
 
-/* Timer scrolls with content (Classic + Dark) */
 .mm-assessment-quiz-page .mm-quiz-timer {
   background-color: color-mix(in srgb, var(--bg-card) 96%, transparent);
   border-bottom-color: var(--border);
-  padding: 0.375rem 0.75rem !important;
-}
-
-@media (min-width: 640px) {
-  .mm-assessment-quiz-page .mm-quiz-timer {
-    padding: 0.4375rem 1rem !important;
-  }
+  padding: clamp(0.375rem, 1.5cqi, 0.5rem) clamp(0.75rem, 2cqi, 1rem) !important;
 }
 
 .mm-assessment-quiz-page .mm-quiz-timer p.text-lg {
-  font-size: 1rem !important;
+  font-size: clamp(0.9375rem, 2cqi + 0.5rem, 1rem) !important;
 }
 
 .mm-assessment-quiz-page .mm-quiz-timer .h-7.w-7 {
-  height: 1.75rem !important;
-  width: 1.75rem !important;
+  height: clamp(1.5rem, 4cqi, 1.75rem) !important;
+  width: clamp(1.5rem, 4cqi, 1.75rem) !important;
 }
 
 .mm-assessment-quiz-page .mm-quiz-timer .max-w-xs {
-  max-width: 7rem;
+  max-width: min(100%, 7rem);
 }
 
 .mm-assessment-quiz-page .mm-quiz-timer .mt-1.text-right {
   display: none;
 }
 
-@media (min-width: 640px) and (min-height: 640px) {
-  .mm-assessment-quiz-page .mm-quiz-timer .mt-1.text-right {
-    display: block;
-  }
-}
-
-/* Scroll region: timer + title + questions — must use flex-basis 0 to enable overflow */
 .mm-assessment-quiz-page .mm-quiz-scroll {
   flex: 1 1 0;
   min-height: 0;
-  max-height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -127,14 +89,8 @@ html.mm-new-ui .mm-assessment-flow {
 }
 
 .mm-assessment-quiz-page .mm-quiz-meta {
-  padding: 0.375rem 0.75rem 0.5rem;
+  padding: clamp(0.375rem, 1.5cqi, 0.5rem) clamp(0.75rem, 2cqi, 1rem);
   border-bottom: 1px solid var(--border);
-}
-
-@media (min-width: 640px) {
-  .mm-assessment-quiz-page .mm-quiz-meta {
-    padding: 0.5rem 1rem 0.5rem;
-  }
 }
 
 .mm-assessment-quiz-page .mm-quiz-meta__details {
@@ -157,42 +113,41 @@ html.mm-new-ui .mm-assessment-flow {
   margin-bottom: 0.375rem;
 }
 
-/* Question list — inside scroll (compact spacing for 2+ questions visible) */
 .mm-assessment-quiz-page .mm-quiz-questions {
-  padding: 0.5rem 0.75rem 0.75rem;
+  padding: clamp(0.5rem, 1.5cqi, 0.75rem) clamp(0.75rem, 2cqi, 1rem);
 }
 
-@media (min-width: 640px) {
-  .mm-assessment-quiz-page .mm-quiz-questions {
-    padding: 0.5rem 1rem 0.875rem;
-  }
-}
-
-/* Footer — desktop: pinned under scroll; mobile: scrolls after last question */
 .mm-assessment-quiz-page .mm-quiz-footer {
   flex-shrink: 0;
-  padding: 0.375rem 0.75rem;
+  padding: clamp(0.375rem, 1.5cqi, 0.5rem) clamp(0.75rem, 2cqi, 1rem);
   padding-bottom: max(0.375rem, env(safe-area-inset-bottom));
   background-color: var(--bg-card);
 }
 
-@media (min-width: 640px) {
-  .mm-assessment-quiz-page .mm-quiz-footer {
-    z-index: 2;
-    padding: 0.5rem 1rem;
-    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
-  }
+.mm-assessment-quiz-page .mm-quiz-footer--pinned {
+  display: none;
+  z-index: 2;
 }
 
 .mm-assessment-quiz-page .mm-quiz-footer--in-scroll {
+  display: block;
   margin-top: 0.25rem;
 }
 
-/* Mobile: no fixed viewport sandwich — page scroll, submit at end of quiz */
-@media (max-width: 639px) {
+/* Wide quiz column: inner scroll + pinned submit */
+@container quiz (min-width: 40rem) {
+  .mm-assessment-quiz-page .mm-quiz-footer--pinned {
+    display: block;
+  }
+
+  .mm-assessment-quiz-page .mm-quiz-footer--in-scroll {
+    display: none;
+  }
+}
+
+/* Narrow quiz column: natural height, submit scrolls with questions */
+@container quiz (max-width: 39.99rem) {
   .mm-assessment-flow.mm-assessment-flow--quiz {
-    height: auto;
-    max-height: none;
     overflow: visible;
   }
 
@@ -201,29 +156,51 @@ html.mm-new-ui .mm-assessment-flow {
   }
 
   .mm-assessment-quiz-page > .mx-auto {
-    height: auto;
-    max-height: none;
     flex: none;
   }
 
   .mm-assessment-quiz-page .mm-quiz-panel-card {
-    height: auto;
-    max-height: none !important;
     overflow: visible;
   }
 
   .mm-assessment-quiz-page .mm-quiz-scroll {
     flex: none;
-    max-height: none;
     overflow: visible;
   }
+}
 
-  .mm-assessment-quiz-page .mm-quiz-questions {
-    padding-bottom: 0.25rem;
+@supports not (container-type: inline-size) {
+  @media (min-width: 40em) {
+    .mm-assessment-quiz-page .mm-quiz-footer--pinned {
+      display: block;
+    }
+
+    .mm-assessment-quiz-page .mm-quiz-footer--in-scroll {
+      display: none;
+    }
   }
 
-  .mm-assessment-quiz-page .mm-quiz-footer--in-scroll {
-    padding-bottom: max(0.75rem, env(safe-area-inset-bottom));
+  @media (max-width: 39.99em) {
+    .mm-assessment-flow.mm-assessment-flow--quiz {
+      overflow: visible;
+    }
+
+    .mm-assessment-quiz-page .mm-quiz-panel-card,
+    .mm-assessment-quiz-page .mm-quiz-scroll {
+      overflow: visible;
+    }
+
+    .mm-assessment-quiz-page .mm-quiz-scroll {
+      flex: none;
+    }
+  }
+}
+
+@supports (container-type: inline-size) {
+  @container quiz (min-height: 28rem) {
+    .mm-assessment-quiz-page .mm-quiz-timer .mt-1.text-right {
+      display: block;
+    }
   }
 }
 

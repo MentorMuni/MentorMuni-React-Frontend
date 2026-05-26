@@ -95,7 +95,7 @@ function AnimatedMain({ children, className = "" }) {
       initial={false}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-      className={`relative z-0 w-full min-w-0 flex-grow ${className}`}
+      className={`mm-route-root relative z-0 w-full min-w-0 flex-grow ${className}`}
     >
       {children}
     </MotionMain>

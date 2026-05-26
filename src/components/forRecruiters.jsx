@@ -1,12 +1,13 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Briefcase, Users, BarChart3, Mail, ArrowRight, CheckCircle, Building2, Target } from 'lucide-react';
+import RoutePageShell from './layout/RoutePageShell';
 
 const recruiterContact = '/contact?topic=recruiters';
 
 const ForRecruiters = () => {
   return (
-    <div className="min-h-screen mm-site-theme overflow-x-hidden text-foreground">
+    <RoutePageShell scope="marketing" className="text-foreground">
       <section className="mm-marketing-hero-backdrop border-b border-border">
         <div className="relative z-10 mx-auto max-w-6xl px-6 pb-14 pt-20 text-center md:pb-16">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-warning-bg/90 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-warning-text">
@@ -118,7 +119,7 @@ const ForRecruiters = () => {
           </p>
         </div>
       </div>
-    </div>
+    </RoutePageShell>
   );
 };
 

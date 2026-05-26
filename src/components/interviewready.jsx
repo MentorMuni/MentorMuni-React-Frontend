@@ -1441,14 +1441,14 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
 
   return (
     <div className="mm-assessment-quiz-page mm-site-theme">
-      <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col max-sm:min-h-0 sm:min-h-0">
-        <div className="mm-quiz-panel-card mm-surface-panel mm-surface-panel--quiz flex flex-1 flex-col shadow-xl max-sm:overflow-visible sm:min-h-0 sm:overflow-hidden sm:rounded-3xl">
+      <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col min-h-0">
+        <div className="mm-quiz-panel-card mm-surface-panel mm-surface-panel--quiz flex min-h-0 flex-1 flex-col overflow-hidden rounded-2xl shadow-xl">
           <div
             ref={listRef}
             role="region"
             aria-label="Quiz"
             tabIndex={-1}
-            className="mm-quiz-scroll min-h-0 flex-1 overflow-x-hidden max-sm:flex-none max-sm:overflow-visible sm:overflow-y-auto"
+            className="mm-quiz-scroll min-h-0 flex-1 overflow-x-hidden overflow-y-auto"
           >
             <TestCountdownTimer onAutoSubmit={handleAutoSubmit} disabled={loading} />
 
@@ -1582,7 +1582,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
               loading={loading}
               error={error}
               onSubmit={onSubmit}
-              className="mm-quiz-footer--in-scroll sm:hidden"
+              className="mm-quiz-footer--in-scroll"
             />
           </div>
 
@@ -1592,7 +1592,7 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
             loading={loading}
             error={error}
             onSubmit={onSubmit}
-            className="hidden shrink-0 sm:block"
+            className="mm-quiz-footer--pinned"
           />
         </div>
       </div>

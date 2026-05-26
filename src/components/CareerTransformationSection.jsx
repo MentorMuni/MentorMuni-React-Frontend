@@ -43,7 +43,7 @@ const CareerTransformationSection = () => {
 
   return (
     <section className="py-20 px-6 section-dark">
-      <div className="max-w-7xl mx-auto">
+      <div className="mm-cq-section max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-on-dark font-semibold text-sm mb-6" style={{ background: 'rgba(99,102,241,0.06)' }}>
             <Sparkles className="w-4 h-4 text-primary" />
@@ -57,7 +57,7 @@ const CareerTransformationSection = () => {
           </p>
         </div>
 
-        <div className="hidden lg:block mb-16">
+        <div className="mm-cq-wide-only mb-16">
           <div className="grid grid-cols-3 gap-8 items-start">
             {transformationStages.map((stage, index) => {
               const Icon = stage.icon;
@@ -101,7 +101,7 @@ const CareerTransformationSection = () => {
           </div>
         </div>
 
-        <div className="lg:hidden mb-16">
+        <div className="mm-cq-narrow-only mb-16">
           <div className="relative">
             <div className="absolute left-8 top-0 bottom-0 w-1 bg-gradient-to-b from-[#FF9500]/30 to-purple-600/30" />
 

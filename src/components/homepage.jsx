@@ -748,7 +748,7 @@ const HomePage = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                 style={{ opacity: 1 }}
-                className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5 xl:justify-start"
+                className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5"
               >
                 <span
                   className={
@@ -790,14 +790,14 @@ const HomePage = () => {
                 )}
               </motion.div>
 
-              <div className="w-full min-w-0 text-center xl:text-left">
+              <div className="mm-hero-copy w-full min-w-0 text-center">
                 <motion.h1
                   key="hero-headline"
                   initial={reduceMotion ? false : { opacity: 0, y: 12 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                   style={{ opacity: 1 }}
-                  className="mx-auto max-w-[44rem] xl:mx-0 xl:max-w-[38rem]"
+                  className="mx-auto max-w-[44rem]"
                 >
                   <span className="typo-display block text-neutral-900 leading-[1.06] tracking-tight">
                     {HERO_HEADLINE_LINE1}
@@ -828,7 +828,7 @@ const HomePage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.38, delay: 0.04 }}
                   style={{ opacity: 1 }}
-                  className="mm-hero-sub-block mx-auto mt-4 max-w-prose-marketing px-0 sm:mt-5 xl:mx-0 xl:max-w-[36rem]"
+                  className="mm-hero-sub-block mx-auto mt-4 max-w-prose-marketing px-0 sm:mt-5"
                 >
                   <p className="text-base font-semibold leading-snug text-neutral-800 sm:text-lg">{heroLeadCopy}</p>
                   <HeroSocialProof ariaLabel={HERO_SOCIAL_PROOF_ARIA} reduceMotion={reduceMotion} />
@@ -866,7 +866,7 @@ const HomePage = () => {
                     </span>
                   </div>
 
-                  <div className="mm-hero-cta-row mt-6 flex w-full flex-col gap-3 sm:mt-7 sm:flex-row sm:flex-wrap sm:items-center xl:justify-start">
+                  <div className="mm-hero-cta-row mt-6 flex w-full flex-col gap-3 sm:mt-7 sm:flex-row sm:flex-wrap sm:items-center">
                     <button
                       type="button"
                       onClick={goToStartAssessment}
@@ -882,7 +882,7 @@ const HomePage = () => {
                     </Link>
                   </div>
 
-                  <p className="mt-3 mb-8 text-center text-xs leading-relaxed text-neutral-600 sm:mb-10 xl:text-left">
+                  <p className="mm-hero-trust mt-3 mb-8 text-center text-xs leading-relaxed text-neutral-600 sm:mb-10">
                     <button
                       type="button"
                       onClick={scrollToHomepagePricing}
@@ -910,7 +910,7 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="mm-hero-score-slot flex w-full min-w-0 flex-col items-center justify-center gap-3 xl:items-end xl:pt-1">
+            <div className="mm-hero-score-slot flex w-full min-w-0 flex-col items-center justify-center gap-3">
               <HeroFlagshipVisual className="w-full" />
               <HeroPlayfulClause text={HERO_PLAYFUL_CLAUSE} reduceMotion={reduceMotion} newUI={newUI} />
             </div>

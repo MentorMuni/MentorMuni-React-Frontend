@@ -76,7 +76,7 @@ const CareerRoadmap = () => {
 
   return (
     <section className="py-20 px-6 bg-gradient-to-b from-slate-50 to-white">
-      <div className="max-w-7xl mx-auto">
+      <div className="mm-cq-section max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">
@@ -88,7 +88,7 @@ const CareerRoadmap = () => {
         </div>
 
         {/* Desktop Timeline - Horizontal */}
-        <div className="hidden lg:block mb-16">
+        <div className="mm-cq-wide-only mb-16">
           <div className="relative">
             {/* Connecting Line */}
             <div className="absolute top-[60px] left-0 right-0 h-1 bg-gradient-to-r from-[#FF9500] via-purple-400 to-amber-400 z-0"></div>
@@ -131,7 +131,7 @@ const CareerRoadmap = () => {
         </div>
 
         {/* Mobile Timeline - Vertical */}
-        <div className="lg:hidden mb-16">
+        <div className="mm-cq-narrow-only mb-16">
           <div className="relative">
             {roadmapSteps.map((step, index) => {
               const Icon = step.icon;

@@ -167,7 +167,7 @@ const Navbar = () => {
   return (
     <header className="mm-sticky-header">
       <div className="mm-container">
-        <div className="flex h-16 min-w-0 items-center gap-2 sm:gap-4 xl:h-[4.5rem] xl:gap-6">
+        <div className="mm-header-bar flex min-h-[4rem] min-w-0 items-center gap-[clamp(0.5rem,2cqi,1.5rem)] py-1">
           <Link
             to="/"
             onClick={handleHomeClick}
@@ -176,15 +176,17 @@ const Navbar = () => {
             <img
               src={logoSrc}
               alt="MentorMuni Logo"
-              className="h-10 w-10 shrink-0 object-contain transition-all group-hover:opacity-80 sm:h-11 sm:w-11 xl:h-12 xl:w-12"
+              className="h-[clamp(2.25rem,6cqi,3rem)] w-[clamp(2.25rem,6cqi,3rem)] shrink-0 object-contain transition-all group-hover:opacity-80"
             />
-            <span className="truncate text-base font-extrabold tracking-tight text-foreground sm:text-lg xl:text-xl">
+            <span className="truncate text-[clamp(1rem,2.5cqi+0.5rem,1.25rem)] font-extrabold tracking-tight text-foreground">
               Mentor<span className="text-primary">Muni</span>
             </span>
           </Link>
 
-          {/* Desktop nav — xl+ only so 1024–1279px laptops don’t overflow horizontally */}
-          <nav className="hidden min-w-0 flex-1 items-center justify-center gap-4 xl:flex 2xl:gap-6">
+          <nav
+            data-mm-desktop-nav
+            className="mm-desktop-nav min-w-0 flex-1 items-center justify-center"
+          >
             {navItems.map((item) => {
               const linkActive = isActive(item.path, item.exact);
               return (
@@ -296,7 +298,7 @@ const Navbar = () => {
             </div>
           </nav>
 
-          <div className="hidden shrink-0 items-center gap-2 xl:flex 2xl:gap-3">
+          <div data-mm-desktop-cta className="flex shrink-0 items-center">
             <style>{`
               @keyframes nb-shimmer {
                 0%   { transform: translateX(-100%) skewX(-15deg); }
@@ -311,30 +313,33 @@ const Navbar = () => {
             `}</style>
             <Link
               to="/waitlist"
-              className="inline-flex h-9 items-center justify-center rounded-lg border-2 border-cta px-3 text-sm font-semibold text-cta transition-all hover:bg-warning-bg active:scale-[0.98] 2xl:h-10 2xl:px-4"
+              className="inline-flex items-center justify-center rounded-lg border-2 border-cta font-semibold text-cta transition-all hover:bg-warning-bg active:scale-[0.98]"
             >
               Waitlist
             </Link>
             <button
               type="button"
               onClick={goToStartAssessment}
-              className="nb-cta relative inline-flex h-9 max-w-[11rem] items-center justify-center gap-1.5 overflow-hidden rounded-lg bg-cta px-3 text-sm font-semibold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-cta-hover active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta 2xl:h-10 2xl:max-w-none 2xl:gap-2 2xl:px-4"
+              data-mm-primary-cta
+              className="nb-cta relative inline-flex items-center justify-center gap-1.5 overflow-hidden rounded-lg bg-cta font-semibold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-cta-hover active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta"
             >
               <span className="nb-shine pointer-events-none absolute inset-0 w-1/3 bg-white/25 blur-sm" style={{ transform: 'translateX(-100%) skewX(-15deg)' }} />
               <span className="relative flex h-2 w-2 shrink-0">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-live opacity-75" />
                 <span className="relative inline-flex h-2 w-2 rounded-full bg-live" />
               </span>
-              <span className="relative truncate leading-tight 2xl:whitespace-nowrap">
-                <span className="2xl:hidden">Free check</span>
-                <span className="hidden 2xl:inline">{PRIMARY_CTA_LABEL}</span>
+              <span className="relative truncate leading-tight">
+                <span data-mm-cta-short>Free check</span>
+                <span data-mm-cta-full>{PRIMARY_CTA_LABEL}</span>
               </span>
             </button>
           </div>
 
           <button
+            type="button"
+            data-mm-mobile-nav-toggle
             onClick={() => setIsOpen(!isOpen)}
-            className="ml-auto shrink-0 p-2 text-muted-foreground transition-colors hover:text-primary xl:hidden"
+            className="ml-auto shrink-0 p-2 text-muted-foreground transition-colors hover:text-primary"
             aria-label="Toggle mobile menu"
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -349,9 +354,10 @@ const Navbar = () => {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            className="border-t border-border bg-background xl:hidden"
+            data-mm-mobile-nav-panel
+            className="border-t border-border bg-background"
           >
-            <nav className="flex max-h-[calc(100vh-5.5rem)] flex-col space-y-2 overflow-y-auto p-4">
+            <nav className="flex max-h-[min(70dvh,calc(100dvh-env(safe-area-inset-top)-4rem))] flex-col space-y-2 overflow-y-auto p-4">
               {navItems.map((item) => {
                 const linkActive = isActive(item.path, item.exact);
                 return (

@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowRight, Rocket, BookOpen, Video, TrendingUp, ScanSearch } from 'lucide-react';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
+import RoutePageShell from './layout/RoutePageShell';
 
 const LearningPaths = () => {
   const pathsData = [
@@ -52,7 +53,7 @@ const LearningPaths = () => {
   ];
 
   return (
-    <div className="min-h-screen mm-site-theme overflow-x-hidden text-foreground">
+    <RoutePageShell scope="marketing" className="text-foreground">
       <section className="mm-marketing-hero-backdrop border-b border-border">
         <div className="relative z-10 mx-auto max-w-6xl px-6 pb-16 pt-20 text-center md:pb-20">
           <h1 className="mb-4 text-5xl font-black text-foreground md:text-6xl">
@@ -144,7 +145,7 @@ const LearningPaths = () => {
           </button>
         </div>
       </div>
-    </div>
+    </RoutePageShell>
   );
 };
 

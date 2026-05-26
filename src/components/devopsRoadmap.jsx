@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Copy, Menu, X, Check, AlertCircle, Download } from 'lucide-react';
-import logo from '../assets/logo.png';
+import { Copy, Check, AlertCircle, Download } from 'lucide-react';
+import RoutePageShell from './layout/RoutePageShell';
+import TutorialBackLink from './layout/TutorialBackLink';
 
 const DevOpsRoadmap = () => {
-  const [isNavOpen, setIsNavOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('intro');
 
   const topics = [
@@ -50,27 +50,8 @@ const DevOpsRoadmap = () => {
   };
 
   return (
-    <div className="min-h-screen mm-site-theme text-foreground">
-      {/* Header */}
-      <header className="mm-sticky-header">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src={logo} alt="MentorMuni Logo" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
-            <span className="font-bold text-xl text-foreground hidden sm:inline">MentorMuni</span>
-          </div>
-
-          <nav className="hidden md:flex items-center gap-2">
-          </nav>
-
-          {/* Mobile Menu Button */}
-          <button
-            onClick={() => setIsNavOpen(!isNavOpen)}
-            className="md:hidden p-2 hover:bg-[#FFF4E0] rounded-lg transition-all text-foreground"
-          >
-            {isNavOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
-        </div>
-      </header>
+    <RoutePageShell scope="inner" className="text-foreground">
+      <TutorialBackLink className="max-w-7xl" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         {/* Hero Section */}
@@ -1199,7 +1180,7 @@ Load balancer health`}
           </div>
         </section>
       </div>
-    </div>
+    </RoutePageShell>
   );
 };
 

@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
+import RoutePageShell from './layout/RoutePageShell';
 
 /* ─── Shared reveal helper ─────────────────────────────────── */
 const REVEAL_BASE = {
@@ -39,7 +40,7 @@ function StatCard({ icon, value, label }) {
       borderRadius: 10, padding: '24px 16px', textAlign: 'center',
     }}>
       <div style={{ fontSize: 28, marginBottom: 10 }}>{icon}</div>
-      <p style={{ fontSize: 22, fontWeight: 800, color: '#1a1a1a', marginBottom: 6, letterSpacing: '-0.3px' }}>{value}</p>
+      <p style={{ fontSize: 22, fontWeight: 800, color: 'var(--text-heading)', marginBottom: 6, letterSpacing: '-0.3px' }}>{value}</p>
       <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{label}</p>
     </div>
   );
@@ -59,7 +60,7 @@ function FeedbackCard({ quote, initial, avBg, name }) {
         <div style={{
           width: 38, height: 38, borderRadius: '50%', background: avBg,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontWeight: 700, fontSize: 14, color: '#1a1a1a', flexShrink: 0,
+          fontWeight: 700, fontSize: 14, color: 'var(--text-heading)', flexShrink: 0,
         }}>
           {initial}
         </div>
@@ -79,8 +80,8 @@ function RoleCard({ title, companies, focus }) {
       <p style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#FF9500', marginBottom: 8 }}>
         TARGET ROLE
       </p>
-      <h3 style={{ fontSize: 17, fontWeight: 700, color: '#1a1a1a', marginBottom: 8 }}>{title}</h3>
-      <p style={{ fontSize: 13, color: '#CC7000', fontWeight: 500, marginBottom: 6 }}>{companies}</p>
+      <h3 style={{ fontSize: 17, fontWeight: 700, color: 'var(--text-heading)', marginBottom: 8 }}>{title}</h3>
+      <p style={{ fontSize: 13, color: 'var(--warning-text)', fontWeight: 500, marginBottom: 6 }}>{companies}</p>
       <p style={{ fontSize: 13, color: 'var(--text-secondary)' }}>{focus}</p>
     </div>
   );
@@ -98,7 +99,7 @@ function CommitRow({ bold, rest }) {
         <span style={{ color: '#4ade80', fontSize: 13, fontWeight: 700 }}>✓</span>
       </div>
       <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.65 }}>
-        <span style={{ color: '#1a1a1a', fontWeight: 600 }}>{bold}</span>{rest}
+        <span style={{ color: 'var(--text-heading)', fontWeight: 600 }}>{bold}</span>{rest}
       </p>
     </div>
   );
@@ -109,7 +110,7 @@ function SectionLabel({ children }) {
   return (
     <p style={{
       fontSize: 11, fontWeight: 600, letterSpacing: '0.12em',
-      textTransform: 'uppercase', color: '#888888',
+      textTransform: 'uppercase', color: 'var(--text-secondary)',
       textAlign: 'center', marginBottom: 28,
     }}>
       {children}
@@ -126,7 +127,7 @@ function CTAButtons({ navigate }) {
           onClick={() => navigate('/start-assessment')}
           onMouseEnter={e => { e.currentTarget.style.background = '#FF9500'; e.currentTarget.style.transform = 'scale(1.02)'; }}
           onMouseLeave={e => { e.currentTarget.style.background = '#FF9500'; e.currentTarget.style.transform = 'scale(1)'; }}
-          style={{ background: '#FF9500', color: '#1a1a1a', border: 'none', padding: '13px 32px', borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s, transform 0.15s', whiteSpace: 'nowrap' }}
+          style={{ background: '#FF9500', color: 'var(--text-heading)', border: 'none', padding: '13px 32px', borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s, transform 0.15s', whiteSpace: 'nowrap' }}
         >
           {PRIMARY_CTA_LABEL} →
         </button>
@@ -134,7 +135,7 @@ function CTAButtons({ navigate }) {
           type="button"
           onClick={() => navigate('/waitlist')}
           onMouseEnter={e => { e.currentTarget.style.borderColor = '#FFB347'; e.currentTarget.style.color = '#CC7000'; }}
-          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = '#666666'; }}
+          onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
           style={{ background: 'transparent', color: 'var(--text-secondary)', border: '1px solid var(--border)', padding: '13px 24px', borderRadius: 9, fontSize: 14, fontWeight: 500, cursor: 'pointer', transition: 'border-color 0.15s, color 0.15s', whiteSpace: 'nowrap' }}
         >
           Join the waitlist
@@ -142,7 +143,7 @@ function CTAButtons({ navigate }) {
       </div>
       <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginTop: 16, flexWrap: 'wrap' }}>
         {['Free always', '5 minutes', 'No signup'].map(t => (
-          <span key={t} style={{ fontSize: 12, color: '#888888', display: 'flex', alignItems: 'center', gap: 5 }}>
+          <span key={t} style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 5 }}>
             <span style={{ color: '#4ade80' }}>✓</span>{t}
           </span>
         ))}
@@ -164,7 +165,7 @@ export default function SuccessStories() {
   const ctaRef       = useReveal(0);
 
   return (
-    <div className="min-h-screen mm-site-theme">
+    <RoutePageShell scope="marketing">
       <style>{`
         @keyframes ss-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
         @media(max-width:640px){
@@ -187,7 +188,7 @@ export default function SuccessStories() {
           </div>
 
           {/* H1 */}
-          <h1 style={{ fontSize: 'clamp(28px, 5vw, 38px)', fontWeight: 800, letterSpacing: '-0.5px', lineHeight: 1.18, marginBottom: 18, color: '#1a1a1a' }}>
+          <h1 style={{ fontSize: 'clamp(28px, 5vw, 38px)', fontWeight: 800, letterSpacing: '-0.5px', lineHeight: 1.18, marginBottom: 18, color: 'var(--text-heading)' }}>
             The first outcomes from our founding batch are{' '}
             <span style={{ background: 'linear-gradient(90deg,#FF9500,#CC7000)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
               taking shape now.
@@ -227,7 +228,7 @@ export default function SuccessStories() {
           }}
         >
           <p style={{ fontSize: 12, fontWeight: 600, color: '#FF9500', marginBottom: 10, letterSpacing: '0.02em' }}>✦ Founding member opportunity</p>
-          <h2 style={{ fontSize: 21, fontWeight: 700, color: '#1a1a1a', marginBottom: 10, lineHeight: 1.35 }}>
+          <h2 style={{ fontSize: 21, fontWeight: 700, color: 'var(--text-heading)', marginBottom: 10, lineHeight: 1.35 }}>
             Be one of the first 100 students. Your outcome can be featured here.
           </h2>
           <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, marginBottom: 28 }}>
@@ -242,7 +243,7 @@ export default function SuccessStories() {
               'Your outcome listed here when you\'re placed',
             ].map((text, i) => (
               <div key={i} style={{ textAlign: 'center' }}>
-                <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#FF9500', color: '#1a1a1a', fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
+                <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#FF9500', color: 'var(--text-heading)', fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
                   {i + 1}
                 </div>
                 <p style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{text}</p>
@@ -255,13 +256,13 @@ export default function SuccessStories() {
               onClick={() => navigate('/waitlist')}
               onMouseEnter={e => { e.currentTarget.style.background = '#FF9500'; e.currentTarget.style.transform = 'scale(1.02)'; }}
               onMouseLeave={e => { e.currentTarget.style.background = '#FF9500'; e.currentTarget.style.transform = 'scale(1)'; }}
-              style={{ background: '#FF9500', color: '#1a1a1a', border: 'none', padding: '13px 36px', borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s, transform 0.15s' }}
+              style={{ background: '#FF9500', color: 'var(--text-heading)', border: 'none', padding: '13px 36px', borderRadius: 9, fontSize: 14, fontWeight: 600, cursor: 'pointer', transition: 'background 0.15s, transform 0.15s' }}
             >
               Join the founding batch →
             </button>
             <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', justifyContent: 'center' }}>
               {['Start free', 'No commitment', '8 spots left'].map(t => (
-                <span key={t} style={{ fontSize: 12, color: '#888888', display: 'flex', alignItems: 'center', gap: 5 }}>
+                <span key={t} style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 5 }}>
                   <span style={{ color: '#4ade80' }}>✓</span>{t}
                 </span>
               ))}
@@ -340,7 +341,7 @@ export default function SuccessStories() {
         }}
       >
         <div style={{ maxWidth: 460, margin: '0 auto' }}>
-          <h2 style={{ fontSize: 24, fontWeight: 700, color: '#1a1a1a', marginBottom: 12 }}>
+          <h2 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-heading)', marginBottom: 12 }}>
             Be among the first outcomes we feature.
           </h2>
           <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7 }}>
@@ -358,7 +359,7 @@ export default function SuccessStories() {
 
             {/* Brand */}
             <div>
-              <p style={{ fontWeight: 700, color: '#1a1a1a', fontSize: 15, marginBottom: 8 }}>MentorMuni</p>
+              <p style={{ fontWeight: 700, color: 'var(--text-heading)', fontSize: 15, marginBottom: 8 }}>MentorMuni</p>
               <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: 14, maxWidth: 220 }}>
                 Know your interview readiness. Improve it. Crack it.
               </p>
@@ -401,15 +402,15 @@ export default function SuccessStories() {
 
           {/* Bottom bar */}
           <div style={{ borderTop: '1px solid var(--border)', paddingTop: 20, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: 10 }}>
-            <p style={{ fontSize: 12, color: '#888888' }}>© {new Date().getFullYear()} MentorMuni. All rights reserved.</p>
+            <p style={{ fontSize: 12, color: 'var(--text-secondary)' }}>© {new Date().getFullYear()} MentorMuni. All rights reserved.</p>
             <div style={{ display: 'flex', gap: 20 }}>
               {['Terms', 'Privacy', 'Cookies'].map(t => (
-                <Link key={t} to="/contact" style={{ fontSize: 12, color: '#888888', textDecoration: 'none' }}>{t}</Link>
+                <Link key={t} to="/contact" style={{ fontSize: 12, color: 'var(--text-secondary)', textDecoration: 'none' }}>{t}</Link>
               ))}
             </div>
           </div>
         </div>
       </footer>
-    </div>
+    </RoutePageShell>
   );
 }

@@ -8,6 +8,7 @@ import {
   READINESS_TEST_COUPON_OFFER_HOW,
 } from '../constants/brandCopy';
 import LimitedRewardLabel from './LimitedRewardLabel';
+import RoutePageShell from './layout/RoutePageShell';
 
 const Tools = () => {
   const tools = [
@@ -101,7 +102,7 @@ const Tools = () => {
   };
 
   return (
-    <div className="min-h-screen mm-site-theme overflow-x-hidden pb-20">
+    <RoutePageShell scope="marketing" className="pb-20">
       <section className="mm-marketing-hero-backdrop border-b border-border">
         <div className="relative z-10 mx-auto max-w-6xl px-6 pb-12 pt-20">
           <motion.div
@@ -206,7 +207,7 @@ const Tools = () => {
           </Link>
         </motion.div>
       </div>
-    </div>
+    </RoutePageShell>
   );
 };
 

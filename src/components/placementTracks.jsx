@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Clock, ChevronDown, ArrowRight, BookOpen, Target } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import RoutePageShell from './layout/RoutePageShell';
 
 const PlacementTracks = () => {
   const [showCurriculum, setShowCurriculum] = useState(false);
@@ -112,7 +113,7 @@ const PlacementTracks = () => {
   ];
 
   return (
-    <div className="min-h-screen mm-site-theme overflow-x-hidden text-foreground">
+    <RoutePageShell scope="marketing" className="text-foreground">
       {!showCurriculum ? (
         <>
           <section className="mm-marketing-hero-backdrop border-b border-border">
@@ -274,7 +275,7 @@ const PlacementTracks = () => {
             </div>
         </div>
       )}
-    </div>
+    </RoutePageShell>
   );
 };
 

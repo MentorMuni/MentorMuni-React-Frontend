@@ -20,6 +20,7 @@ import {
   CalendarRange,
 } from 'lucide-react';
 import { PRODUCT_READINESS_SCORE, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_HREF } from '../constants/brandCopy';
+import RoutePageShell from './layout/RoutePageShell';
 
 const collegeContact = '/contact?topic=colleges';
 
@@ -61,7 +62,7 @@ const checklist = [
 
 const Colleges = () => {
   return (
-    <div className="min-h-screen mm-site-theme overflow-x-hidden text-muted-foreground">
+    <RoutePageShell scope="marketing" className="text-muted-foreground">
       <section className="mm-marketing-hero-backdrop border-b border-border">
         <div className="relative z-10 mx-auto max-w-6xl px-5 pb-14 pt-14 sm:px-6 sm:pt-16 sm:pb-16">
         <motion.header
@@ -371,7 +372,7 @@ const Colleges = () => {
           </div>
         </section>
       </div>
-    </div>
+    </RoutePageShell>
   );
 };
 

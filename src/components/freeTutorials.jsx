@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, BookOpen, Code, Check } from 'lucide-react';
+import RoutePageShell from './layout/RoutePageShell';
 
 const FreeTutorials = () => {
   const navigate = useNavigate();
@@ -72,7 +73,7 @@ const FreeTutorials = () => {
   ];
 
   return (
-    <div className="min-h-screen mm-site-theme overflow-x-hidden text-foreground">
+    <RoutePageShell scope="marketing" className="text-foreground">
       <section className="mm-marketing-hero-backdrop border-b border-border">
         <div className="relative z-10 mx-auto max-w-7xl px-6 pb-16 pt-20 text-center md:pb-20">
           <div className="mb-4 flex items-center justify-center gap-3">
@@ -150,7 +151,7 @@ const FreeTutorials = () => {
           </div>
         </div>
       </div>
-    </div>
+    </RoutePageShell>
   );
 };
 

@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
+import RoutePageShell from './layout/RoutePageShell';
 import { motion } from 'framer-motion';
 import {
   Trophy,
@@ -137,7 +138,7 @@ export default function LeadershipBoard() {
   };
 
   return (
-    <div className="min-h-screen mm-site-theme overflow-x-hidden pb-16 text-foreground pt-[4.75rem]">
+    <RoutePageShell scope="marketing" className="pb-16 text-foreground pt-[4.75rem]">
       <section className="mm-marketing-hero-backdrop border-b border-border">
         <div className="relative z-10 mx-auto max-w-4xl px-4 pb-12 pt-8 text-center sm:px-6 sm:pt-12 sm:pb-14">
           <motion.div
@@ -465,6 +466,6 @@ export default function LeadershipBoard() {
           </Link>
         </div>
       </div>
-    </div>
+    </RoutePageShell>
   );
 }

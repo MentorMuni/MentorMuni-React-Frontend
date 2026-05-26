@@ -113,7 +113,7 @@ function TimelineStep({ step, index, isLast }) {
 /* ─── Mentor profile card — circular blurred portrait + pills ─ */
 function MentorProfileCard({ name, experience, companies, tag, gradient }) {
   return (
-    <article className="flex h-full flex-col rounded-2xl border border-[#EDE8DD] bg-white p-5 shadow-[0_2px_20px_rgba(15,23,42,0.05)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#FFB347]/45 hover:shadow-[0_14px_40px_rgba(255,149,0,0.12)]">
+    <article className="flex h-full flex-col rounded-2xl border border-border bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#FFB347]/45 hover:shadow-[0_14px_40px_rgba(255,149,0,0.12)]">
       <div className="flex gap-4">
         <div
           className="relative h-[5.25rem] w-[5.25rem] shrink-0 overflow-hidden rounded-full ring-[3px] ring-accent-soft shadow-[0_4px_14px_rgba(0,0,0,0.08)]"
@@ -130,7 +130,7 @@ function MentorProfileCard({ name, experience, companies, tag, gradient }) {
           />
         </div>
         <div className="min-w-0 flex-1 pt-0.5">
-          <h3 className="text-[1.0625rem] font-bold leading-tight tracking-tight text-[#1a1a1a]">{name}</h3>
+          <h3 className="text-[1.0625rem] font-bold leading-tight tracking-tight text-foreground">{name}</h3>
           <p className="mt-1 text-sm font-semibold text-[#C2410C]">{experience} experience</p>
           <p className="mt-2 text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
             Previously at
@@ -155,10 +155,10 @@ function MentorProfileCard({ name, experience, companies, tag, gradient }) {
 /* ─── Mentor feature card ──────────────────────────────────── */
 function FeatureCard({ icon, title, body }) {
   return (
-    <div style={{ background: '#ffffff', border: '1px solid #f0ece0', borderRadius: 12, padding: '20px 22px', display: 'flex', alignItems: 'flex-start', gap: 16 }}>
+    <div style={{ background: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: 12, padding: '20px 22px', display: 'flex', alignItems: 'flex-start', gap: 16 }}>
       <span style={{ fontSize: 26, flexShrink: 0, marginTop: 2 }}>{icon}</span>
       <div>
-        <p style={{ fontWeight: 700, fontSize: 15, color: '#1a1a1a', marginBottom: 6 }}>{title}</p>
+        <p style={{ fontWeight: 700, fontSize: 15, color: 'var(--text-heading)', marginBottom: 6 }}>{title}</p>
         <p style={{ fontSize: 13, color: 'var(--text-secondary)', lineHeight: 1.7 }}>{body}</p>
       </div>
     </div>
@@ -290,7 +290,7 @@ export default function Mentors() {
           </div>
 
           {/* H1 */}
-          <h1 style={{ fontSize: 'clamp(28px, 5vw, 38px)', fontWeight: 800, letterSpacing: '-0.5px', lineHeight: 1.15, marginBottom: 18, color: '#1a1a1a' }}>
+          <h1 style={{ fontSize: 'clamp(28px, 5vw, 38px)', fontWeight: 800, letterSpacing: '-0.5px', lineHeight: 1.15, marginBottom: 18, color: 'var(--text-heading)' }}>
             Your mentor is chosen by{' '}
             <span style={{ background: 'linear-gradient(90deg,#FF9500,#CC7000)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>
               your score, not by luck.
@@ -314,12 +314,12 @@ export default function Mentors() {
           <p className="text-center text-[11px] font-bold uppercase tracking-[0.2em] text-[#CC7000]">
             Know your mentors
           </p>
-          <h2 className="mt-2 text-center text-2xl font-bold tracking-tight text-[#1a1a1a] md:text-[1.65rem] md:leading-snug">
+          <h2 className="mt-2 text-center text-2xl font-bold tracking-tight text-foreground md:text-[1.65rem] md:leading-snug">
             <span className="mm-gradient-text-cta">
               They&apos;ve sat on interview panels.
             </span>
             <br className="hidden sm:block" />
-            <span className="text-[#1a1a1a]"> Now they&apos;re coaching you through yours.</span>
+            <span className="text-foreground"> Now they&apos;re coaching you through yours.</span>
           </h2>
           <p className="mx-auto mt-3 max-w-xl text-center text-sm leading-relaxed text-muted-foreground md:text-[15px]">
             These are the people in your corner: they spot what interviewers actually test, tighten your stories and tech depth,
@@ -343,7 +343,7 @@ export default function Mentors() {
 
       {/* ══════════════ SECTION 3 — HOW MATCHING WORKS ══════════════ */}
       <section ref={timelineRef} style={{ ...REVEAL_STYLE, maxWidth: 700, margin: '0 auto', padding: '48px 24px 80px' }}>
-        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888888', textAlign: 'center', marginBottom: 40 }}>
+        <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)', textAlign: 'center', marginBottom: 40 }}>
           How mentor matching works
         </p>
         {TIMELINE_STEPS.map((step, i) => (
@@ -358,7 +358,7 @@ export default function Mentors() {
           style={{
             ...REVEAL_STYLE,
             maxWidth: 580, width: '100%',
-            background: '#ffffff',
+            background: 'var(--bg-card)',
             border: '1.5px solid rgba(255,149,0,0.35)',
             borderRadius: 14,
             padding: '32px 28px',
@@ -387,7 +387,7 @@ export default function Mentors() {
               "WhatsApp when they're live",
             ].map((text, i) => (
               <div key={i} style={{ textAlign: 'center' }}>
-                <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#FF9500', color: '#1a1a1a', fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
+                <div style={{ width: 28, height: 28, borderRadius: '50%', background: '#FF9500', color: 'var(--text-heading)', fontSize: 13, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 8px' }}>
                   {i + 1}
                 </div>
                 <p style={{ fontSize: 12, color: 'var(--text-secondary)', lineHeight: 1.5 }}>{text}</p>
@@ -415,8 +415,8 @@ export default function Mentors() {
                     style={{
                       width: '100%', boxSizing: 'border-box',
                       paddingLeft: 42, paddingRight: 14, paddingTop: 12, paddingBottom: 12,
-                      background: '#ffffff', border: `1px solid ${err ? 'rgba(248,113,113,0.6)' : 'var(--border)'}`,
-                      borderRadius: 8, color: '#1a1a1a', fontSize: 14,
+                      background: 'var(--bg-card)', border: `1px solid ${err ? 'rgba(248,113,113,0.6)' : 'var(--border)'}`,
+                      borderRadius: 8, color: 'var(--text-heading)', fontSize: 14,
                       outline: 'none',
                     }}
                     maxLength={10}
@@ -426,7 +426,7 @@ export default function Mentors() {
                   onClick={handleNotify}
                   disabled={loading}
                   style={{
-                    background: '#FF9500', color: '#1a1a1a', border: 'none',
+                    background: '#FF9500', color: 'var(--text-heading)', border: 'none',
                     padding: '0 20px', borderRadius: 8, fontSize: 14, fontWeight: 600,
                     cursor: loading ? 'default' : 'pointer', whiteSpace: 'nowrap',
                     opacity: loading ? 0.7 : 1, transition: 'background 0.15s',
@@ -444,7 +444,7 @@ export default function Mentors() {
           {/* Microcopy */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: 18, marginTop: 16, flexWrap: 'wrap' }}>
             {['No spam', 'One message only', 'Free always'].map(t => (
-              <span key={t} style={{ fontSize: 12, color: '#888888', display: 'flex', alignItems: 'center', gap: 5 }}>
+              <span key={t} style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 5 }}>
                 <span style={{ color: '#4ade80' }}>✓</span>{t}
               </span>
             ))}
@@ -455,7 +455,7 @@ export default function Mentors() {
       {/* ══════════════ SECTION 5 — WHAT EVERY MENTOR BRINGS ══════════════ */}
       <section ref={featuresRef} style={{ ...REVEAL_STYLE, padding: '0 24px 80px' }}>
         <div style={{ maxWidth: 820, margin: '0 auto' }}>
-          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: '#888888', textAlign: 'center', marginBottom: 28 }}>
+          <p style={{ fontSize: 11, fontWeight: 600, letterSpacing: '0.12em', textTransform: 'uppercase', color: 'var(--text-secondary)', textAlign: 'center', marginBottom: 28 }}>
             What every mentor brings
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 14 }}>
@@ -476,7 +476,7 @@ export default function Mentors() {
         }}
       >
         <div style={{ maxWidth: 480, margin: '0 auto' }}>
-          <h2 style={{ fontSize: 24, fontWeight: 700, color: '#1a1a1a', marginBottom: 12 }}>
+          <h2 style={{ fontSize: 24, fontWeight: 700, color: 'var(--text-heading)', marginBottom: 12 }}>
             Find out who your mentor will be.
           </h2>
           <p style={{ fontSize: 14, color: 'var(--text-secondary)', lineHeight: 1.7, maxWidth: 400, margin: '0 auto' }}>
@@ -508,7 +508,7 @@ export default function Mentors() {
           {/* Microcopy */}
           <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginTop: 16, flexWrap: 'wrap' }}>
             {['Free always', '5 minutes', 'No signup'].map(t => (
-              <span key={t} style={{ fontSize: 12, color: '#888888', display: 'flex', alignItems: 'center', gap: 5 }}>
+              <span key={t} style={{ fontSize: 12, color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: 5 }}>
                 <span style={{ color: '#4ade80' }}>✓</span>{t}
               </span>
             ))}

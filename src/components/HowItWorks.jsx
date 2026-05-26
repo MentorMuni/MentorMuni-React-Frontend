@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
+import InnerRouteShell from './new-ui/InnerRouteShell';
 
 const PHASES = [
   {
@@ -373,7 +374,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
 export default function HowItWorks() {
   const reduceMotion = useReducedMotion();
   return (
-    <div className="min-h-screen mm-site-theme overflow-x-hidden">
+    <InnerRouteShell scope="marketing" className="min-h-screen mm-site-theme overflow-x-hidden">
       <HowItWorksStoryHero reduceMotion={reduceMotion} />
 
       {/* Phases grid */}
@@ -457,6 +458,6 @@ export default function HowItWorks() {
           </div>
         </FadeUp>
       </section>
-    </div>
+    </InnerRouteShell>
   );
 }

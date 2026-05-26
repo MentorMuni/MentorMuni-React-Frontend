@@ -10,6 +10,7 @@ import {
   CONTACT_PHONE_HREF,
   MISSION_TAGLINE,
 } from '../constants/brandCopy';
+import InnerRouteShell from './new-ui/InnerRouteShell';
 
 const easeOut = [0.22, 1, 0.36, 1];
 const WORD_LIMIT = 50;
@@ -331,7 +332,7 @@ const ContactPage = () => {
   }[audience];
 
   return (
-    <div className="min-h-screen mm-site-theme overflow-x-hidden text-muted-foreground">
+    <InnerRouteShell scope="marketing" className="min-h-screen mm-site-theme overflow-x-hidden text-muted-foreground">
       <section className="mm-marketing-hero-backdrop border-b border-border">
         <div className="relative z-10 mx-auto max-w-5xl px-5 py-10 sm:px-6 sm:py-12 lg:px-8">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
@@ -604,7 +605,7 @@ const ContactPage = () => {
           </ul>
         </FadeUp>
       </div>
-    </div>
+    </InnerRouteShell>
   );
 };
 

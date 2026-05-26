@@ -54,13 +54,12 @@ const ROADMAP_YEAR_THEME = {
 
 const MENTORMUNI_ORIGIN = 'https://mentormuni.com';
 
-function RoadmapCard({ theme, title, tags, note }) {
+function RoadmapCard({ title, tags, note }) {
   return (
     <div className="group rounded-[14px] border border-border bg-card p-5 shadow-sm transition-all duration-200 hover:scale-[1.02] hover:shadow-md md:p-6">
       <div className="flex gap-3">
         <div
-          className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-extrabold"
-          style={{ backgroundColor: theme.light, color: theme.dark }}
+          className="roadmap-card-icon flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-xs font-extrabold"
           aria-hidden
         >
           {title.charAt(0)}
@@ -68,7 +67,7 @@ function RoadmapCard({ theme, title, tags, note }) {
         <div className="min-w-0 flex-1">
           <h4 className="text-sm font-bold leading-snug text-foreground">{title}</h4>
           {note ? (
-            <p className="mt-2 rounded-lg bg-amber-100 px-2.5 py-1.5 text-xs italic leading-snug text-amber-900">
+            <p className="roadmap-note mt-2 rounded-lg px-2.5 py-1.5 text-xs italic leading-snug">
               {note}
             </p>
           ) : null}
@@ -76,8 +75,7 @@ function RoadmapCard({ theme, title, tags, note }) {
             {tags.map((t) => (
               <span
                 key={t}
-                className="inline-block rounded-full px-2.5 py-1 text-[11px] font-medium leading-tight text-foreground/90"
-                style={{ backgroundColor: theme.light }}
+                className="roadmap-tag inline-block rounded-full px-2.5 py-1 text-[11px] font-medium leading-tight"
               >
                 {t}
               </span>
@@ -89,12 +87,11 @@ function RoadmapCard({ theme, title, tags, note }) {
   );
 }
 
-function MilestoneRow({ theme, icon, children }) {
+function MilestoneRow({ icon, children }) {
   return (
     <div className="flex gap-3 rounded-[10px] bg-secondary px-4 py-3 text-[13px] leading-snug text-muted-foreground">
       <span
-        className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold"
-        style={{ backgroundColor: theme.light, color: theme.dark }}
+        className="roadmap-milestone-icon mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold"
         aria-hidden
       >
         {icon === 'check' ? '✓' : '★'}
@@ -466,15 +463,15 @@ function Year1Section({ branch, theme }) {
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:gap-5">
         {cards.map((c) => (
-          <RoadmapCard key={c.title} theme={theme} title={c.title} tags={c.tags} note={c.note} />
+          <RoadmapCard key={c.title} title={c.title} tags={c.tags} note={c.note} />
         ))}
       </div>
       <div className="space-y-3">
-        <MilestoneRow theme={theme} icon="check">
+        <MilestoneRow icon="check">
           <strong className="font-bold text-foreground">Skill Readiness Check:</strong>{' '}
           Take MentorMuni&apos;s C Programming Skill Readiness Test — basic to advanced
         </MilestoneRow>
-        <MilestoneRow theme={theme} icon="star">
+        <MilestoneRow icon="star">
           <strong className="font-bold text-foreground">Goal by Year End:</strong> CGPA on track + C complete + GitHub active +
           LinkedIn created
         </MilestoneRow>
@@ -496,18 +493,18 @@ function Year2Section({ branch, theme }) {
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:gap-5">
         {cards.map((c) => (
-          <RoadmapCard key={c.title} theme={theme} title={c.title} tags={c.tags} note={c.note} />
+          <RoadmapCard key={c.title} title={c.title} tags={c.tags} note={c.note} />
         ))}
       </div>
       <div className="space-y-3">
-        <MilestoneRow theme={theme} icon="check">
+        <MilestoneRow icon="check">
           <strong className="font-bold text-foreground">Skill Readiness Test:</strong> MentorMuni DSA &amp; Language Readiness
           Check
         </MilestoneRow>
-        <MilestoneRow theme={theme} icon="check">
+        <MilestoneRow icon="check">
           <strong className="font-bold text-foreground">Resume Review:</strong> Get your resume reviewed by a mentor
         </MilestoneRow>
-        <MilestoneRow theme={theme} icon="star">
+        <MilestoneRow icon="star">
           <strong className="font-bold text-foreground">Goal:</strong> 50+ LeetCode (CS) / 20+ LeetCode (Non-CS) + Internship
           applied + CS subjects understood + Resume ready
         </MilestoneRow>
@@ -529,19 +526,19 @@ function Year3Section({ branch, theme }) {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:gap-5">
         {Y3_CARDS.map((c) => {
           const extra = branch === 'noncs' && c.nonCsNote ? c.nonCsNote : c.note;
-          return <RoadmapCard key={c.title} theme={theme} title={c.title} tags={c.tags} note={extra} />;
+          return <RoadmapCard key={c.title} title={c.title} tags={c.tags} note={extra} />;
         })}
       </div>
       <div className="space-y-3">
-        <MilestoneRow theme={theme} icon="check">
+        <MilestoneRow icon="check">
           <strong className="font-bold text-foreground">Interview Readiness Test:</strong> Full MentorMuni Assessment —
           coding, design, aptitude, communication
         </MilestoneRow>
-        <MilestoneRow theme={theme} icon="check">
+        <MilestoneRow icon="check">
           <strong className="font-bold text-foreground">Resume Final Version:</strong> Projects + Internship + Skills updated,
           mentor reviewed
         </MilestoneRow>
-        <MilestoneRow theme={theme} icon="star">
+        <MilestoneRow icon="star">
           <strong className="font-bold text-foreground">Goal:</strong> AI project live on cloud + 150+ LeetCode (CS) / 75+
           (Non-CS) + aptitude cleared in mocks + interview-ready
         </MilestoneRow>
@@ -565,13 +562,13 @@ function Year4Section({ theme }) {
           <span className="text-lg" style={{ color: theme.accent }} aria-hidden>
             ✓
           </span>
-          <h3 className="text-lg font-extrabold" style={{ color: theme.dark }}>
+          <h3 className="roadmap-year-heading text-lg font-extrabold">
             If You&apos;re On Track
           </h3>
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:gap-5">
           {Y4_ON_TRACK.map((c) => (
-            <RoadmapCard key={c.title} theme={theme} title={c.title} tags={c.tags} />
+            <RoadmapCard key={c.title} title={c.title} tags={c.tags} />
           ))}
         </div>
       </div>
@@ -581,25 +578,25 @@ function Year4Section({ theme }) {
           <span className="text-lg text-amber-700" aria-hidden>
             ⚠
           </span>
-          <h3 className="text-lg font-extrabold text-amber-900">If You&apos;re Behind — Sprint Plan</h3>
+          <h3 className="roadmap-year-heading text-lg font-extrabold">If You&apos;re Behind — Sprint Plan</h3>
         </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:gap-5">
           {Y4_SPRINT.map((c) => (
-            <RoadmapCard key={c.title} theme={theme} title={c.title} tags={c.tags} />
+            <RoadmapCard key={c.title} title={c.title} tags={c.tags} />
           ))}
         </div>
       </div>
 
       <div className="space-y-3">
-        <MilestoneRow theme={theme} icon="check">
+        <MilestoneRow icon="check">
           <strong className="font-bold text-foreground">Still in doubt?</strong> Visit mentormuni.com — take both readiness tests
           and join the mentorship batch
         </MilestoneRow>
-        <MilestoneRow theme={theme} icon="check">
+        <MilestoneRow icon="check">
           <strong className="font-bold text-foreground">Company tier strategy:</strong> Know which companies suit your current
           level — don&apos;t aim blind
         </MilestoneRow>
-        <MilestoneRow theme={theme} icon="star">
+        <MilestoneRow icon="star">
           <strong className="font-bold text-foreground">Remember:</strong> Off-campus = as important as on-campus. Apply
           everywhere, network actively.
         </MilestoneRow>
@@ -639,7 +636,14 @@ export default function RoadmapPage() {
     : { duration: 0.38, ease: [0.22, 1, 0.36, 1] };
 
   return (
-    <div className="min-h-screen min-w-0 mm-site-theme">
+    <div
+      className="mm-roadmap-page min-h-screen min-w-0 mm-site-theme"
+      style={{
+        '--rm-accent': theme.accent,
+        '--rm-soft': theme.light,
+        '--rm-ink': theme.dark,
+      }}
+    >
       {/* Hero */}
       <section className="border-b border-border px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
         <div className="mx-auto max-w-6xl">
@@ -662,7 +666,7 @@ export default function RoadmapPage() {
                   </Link>
                   <Link
                     to="/waitlist"
-                    className="inline-flex min-h-[48px] items-center justify-center rounded-xl border-2 border-[#FF9500] bg-transparent px-6 py-3 text-sm font-bold text-[#FF9500] transition hover:bg-[#FFF4E0]"
+                    className="roadmap-cta-secondary inline-flex min-h-[48px] items-center justify-center rounded-xl border-2 border-[#FF9500] bg-transparent px-6 py-3 text-sm font-bold text-[#FF9500] transition"
                   >
                     Join Mentorship Batch
                   </Link>
@@ -707,7 +711,7 @@ export default function RoadmapPage() {
                 onClick={() => setBranch('cs')}
                 className={`min-h-[48px] flex-1 rounded-xl border-2 px-4 py-3 text-sm font-bold transition-all duration-300 ease-out sm:flex-none sm:min-w-[200px] ${
                   branch === 'cs'
-                    ? 'border-[#1D9E75] bg-[#E1F5EE] text-[#085041] shadow-sm'
+                    ? 'roadmap-branch-active shadow-sm'
                     : 'border-border bg-card text-muted-foreground hover:border-[#1D9E75]/40'
                 }`}
               >
@@ -718,7 +722,7 @@ export default function RoadmapPage() {
                 onClick={() => setBranch('noncs')}
                 className={`min-h-[48px] flex-1 rounded-xl border-2 px-4 py-3 text-sm font-bold transition-all duration-300 ease-out sm:flex-none sm:min-w-[260px] ${
                   branch === 'noncs'
-                    ? 'border-[#1D9E75] bg-[#E1F5EE] text-[#085041] shadow-sm'
+                    ? 'roadmap-branch-active shadow-sm'
                     : 'border-border bg-card text-muted-foreground hover:border-[#1D9E75]/40'
                 }`}
               >
@@ -751,14 +755,14 @@ export default function RoadmapPage() {
                     aria-label={t.label}
                     id={`roadmap-tab-${y}`}
                     onClick={() => setActiveYear(y)}
-                    className={`relative min-h-[44px] shrink-0 snap-start rounded-t-xl border-x border-t px-3 py-2.5 font-sans text-xs font-bold transition-all duration-300 ease-out min-[400px]:px-4 min-[400px]:text-sm sm:min-h-0 sm:scale-100 sm:px-5 sm:py-3 sm:text-base ${
+                    className={`roadmap-year-tab relative min-h-[44px] shrink-0 snap-start rounded-t-xl border-x border-t px-3 py-2.5 font-sans text-xs font-bold transition-all duration-300 ease-out min-[400px]:px-4 min-[400px]:text-sm sm:min-h-0 sm:scale-100 sm:px-5 sm:py-3 sm:text-base ${
                       active ? 'z-10 scale-[1.02] shadow-md sm:scale-105' : 'opacity-85 hover:opacity-100'
                     }`}
-                    style={{
-                      borderColor: active ? t.accent : '#E0E0DC',
-                      backgroundColor: active ? t.light : '#fff',
-                      color: active ? t.dark : '#666',
-                    }}
+                    style={
+                      active
+                        ? { '--rm-accent': t.accent, '--rm-soft': t.light, '--rm-ink': t.dark }
+                        : undefined
+                    }
                   >
                     <span className="sm:hidden">{t.short}</span>
                     <span className="hidden sm:inline">{t.label}</span>
@@ -769,14 +773,14 @@ export default function RoadmapPage() {
           </div>
 
           {/* Progress bar */}
-          <div className="mt-0 flex h-3 w-full min-w-0 overflow-hidden rounded-full bg-[#E5E5E0] shadow-inner">
+          <div className="roadmap-progress-track mt-0 flex h-3 w-full min-w-0 overflow-hidden rounded-full shadow-inner">
             {yearKeys.map((y) => {
               const t = ROADMAP_YEAR_THEME[y];
               const filled = y <= activeYear;
               return (
                 <div
                   key={y}
-                  className="h-full flex-1 border-r border-white/40 last:border-r-0 transition-all duration-500"
+                  className="roadmap-progress-segment h-full flex-1 last:border-r-0 transition-all duration-500"
                   style={{
                     backgroundColor: filled ? t.accent : 'transparent',
                     opacity: filled ? 1 : 0.25,
@@ -806,7 +810,7 @@ export default function RoadmapPage() {
                 transition={panelTransition}
               >
                 <header className="mb-8 border-b border-border pb-6">
-                  <h2 className="text-2xl font-extrabold leading-tight sm:text-3xl" style={{ color: theme.dark }}>
+                  <h2 className="roadmap-year-heading text-2xl font-extrabold leading-tight sm:text-3xl">
                     {theme.title}
                   </h2>
                   <p className="mt-3 max-w-3xl text-sm font-normal leading-relaxed text-muted-foreground sm:text-base">

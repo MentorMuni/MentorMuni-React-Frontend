@@ -4,6 +4,7 @@ import { ArrowRight, Check, Users, Mic2, Target, MessagesSquare, Code2 } from 'l
 import confetti from 'canvas-confetti';
 import { INQUIRIES_URL } from '../config';
 import { MENTORSHIP_FIRST_BATCH_START_LABEL } from '../constants/brandCopy';
+import RoutePageShell from './layout/RoutePageShell';
 
 const AVATARS = [
   { init: 'P', bg: 'bg-[#FF9500]' },
@@ -150,7 +151,7 @@ export default function WaitlistPage() {
     }`;
 
   return (
-    <div className="min-h-screen mm-site-theme overflow-x-hidden">
+    <RoutePageShell scope="marketing">
       <section className="mm-marketing-hero-backdrop border-b border-border">
         <div className="relative z-10 mx-auto max-w-3xl px-5 pb-12 pt-16">
           <div className="mb-10 text-center">
@@ -339,6 +340,6 @@ export default function WaitlistPage() {
         </p>
 
       </div>
-    </div>
+    </RoutePageShell>
   );
 }

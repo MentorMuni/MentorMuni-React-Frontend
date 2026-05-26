@@ -1,0 +1,144 @@
+/**
+ * Legacy page patterns — fluid layout without per-resolution hacks.
+ * Applies to tutorial shells, ad-hoc max-w-* wrappers, and tool pages.
+ */
+
+/* ── Tutorial / course layout (container-driven sidebar) ─────────────── */
+.mm-tutorial-layout {
+  container-type: inline-size;
+  container-name: tutorial;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: clamp(1rem, 3vw, 2rem);
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.mm-tutorial-layout__sidebar {
+  display: none;
+  width: min(100%, 16rem);
+  flex-shrink: 0;
+  position: sticky;
+  top: clamp(4rem, 12vh, 6rem);
+  max-height: calc(100dvh - clamp(5rem, 14vh, 8rem));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.mm-tutorial-layout__main {
+  flex: 1 1 min(100%, 28rem);
+  min-width: 0;
+  width: 100%;
+}
+
+.mm-tutorial-back {
+  padding-block: clamp(0.75rem, 2vw, 1.25rem);
+  padding-inline: var(--mm-gutter);
+  width: 100%;
+  max-width: var(--mm-container-wide);
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+@container tutorial (min-width: 56rem) {
+  .mm-tutorial-layout__sidebar {
+    display: block;
+  }
+
+  .mm-tutorial-layout__main {
+    flex: 1 1 0;
+    min-width: 0;
+  }
+}
+
+@supports not (container-type: inline-size) {
+  @media (min-width: 56em) {
+    .mm-tutorial-layout__sidebar {
+      display: block;
+    }
+
+    .mm-tutorial-layout__main {
+      flex: 1 1 0;
+      min-width: 0;
+    }
+  }
+}
+
+/* ── Fluid section wrappers (replaces scattered max-w-* + px-*) ─────── */
+.mm-page-section {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: var(--mm-container-max);
+  margin-inline: auto;
+  padding-inline: var(--mm-gutter);
+  min-width: 0;
+}
+
+.mm-page-section--narrow {
+  max-width: var(--mm-container-narrow);
+}
+
+.mm-page-section--prose {
+  max-width: min(var(--mm-container-prose), 100%);
+}
+
+/* Auto-fluid common legacy centering wrappers inside routes */
+.mm-route-root .mx-auto.max-w-5xl,
+.mm-route-root .mx-auto.max-w-6xl,
+.mm-route-root .mx-auto.max-w-7xl,
+.mm-inner-route .mx-auto.max-w-5xl,
+.mm-marketing-flow .mx-auto.max-w-5xl {
+  box-sizing: border-box;
+  width: 100%;
+  max-width: min(var(--mm-container-max), 100%);
+  padding-inline: max(var(--mm-gutter), 1rem);
+}
+
+/* Legacy two-column grids → wrap when narrow */
+@media (max-width: 40em) {
+  .mm-route-root .grid[class*='grid-cols-2'],
+  .mm-marketing-flow .grid[class*='grid-cols-2'],
+  .mm-inner-route .grid[class*='grid-cols-2'] {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Section container queries (replaces hidden lg:block / lg:hidden) ─ */
+.mm-cq-section {
+  container-type: inline-size;
+  container-name: cq-section;
+  width: 100%;
+  min-width: 0;
+}
+
+.mm-cq-section .mm-cq-wide-only {
+  display: none;
+}
+
+.mm-cq-section .mm-cq-narrow-only {
+  display: block;
+}
+
+@container cq-section (min-width: 64rem) {
+  .mm-cq-section .mm-cq-wide-only {
+    display: block;
+  }
+
+  .mm-cq-section .mm-cq-narrow-only {
+    display: none;
+  }
+}
+
+@supports not (container-type: inline-size) {
+  @media (min-width: 64em) {
+    .mm-cq-section .mm-cq-wide-only {
+      display: block;
+    }
+
+    .mm-cq-section .mm-cq-narrow-only {
+      display: none;
+    }
+  }
+}

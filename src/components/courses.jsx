@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, CheckCircle2, ArrowRight, ChevronDown } from 'lucide-react';
 import logo from '../assets/logo.png';
+import RoutePageShell from './layout/RoutePageShell';
 
 const NAV_LINKS = [
   { label: 'Home', to: '/' },
@@ -60,7 +61,7 @@ const CoursesPage = () => {
   ];
 
   return (
-    <div className="min-h-screen mm-site-theme text-muted-foreground">
+    <RoutePageShell scope="inner" className="text-muted-foreground">
       <header className="mm-sticky-header px-5 py-2">
         <div className="max-w-[1200px] mx-auto flex items-center justify-between py-2">
           <Link to="/">
@@ -216,7 +217,7 @@ const CoursesPage = () => {
           © {new Date().getFullYear()} MentorMuni. All rights reserved.
         </div>
       </footer>
-    </div>
+    </RoutePageShell>
   );
 };
 

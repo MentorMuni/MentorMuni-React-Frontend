@@ -10,6 +10,7 @@ import {
   Sparkles,
   Target,
 } from 'lucide-react';
+import RoutePageShell from './layout/RoutePageShell';
 
 const MockInterviews = () => {
   const features = [
@@ -37,7 +38,7 @@ const MockInterviews = () => {
   ];
 
   return (
-    <div className="min-h-screen mm-site-theme overflow-x-hidden">
+    <RoutePageShell scope="marketing">
       {/* Hero — same cool mesh as homepage / tools (mentorMuniTheme: .mm-marketing-hero-backdrop) */}
       <section className="mm-marketing-hero-backdrop border-b border-border">
         <div className="relative z-10 mx-auto max-w-5xl px-6 pb-12 pt-20">
@@ -130,7 +131,7 @@ const MockInterviews = () => {
             </div>
           </div>
         </div>
-    </div>
+    </RoutePageShell>
   );
 };
 

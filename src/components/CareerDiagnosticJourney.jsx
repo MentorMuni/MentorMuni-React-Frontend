@@ -120,7 +120,7 @@ const CareerDiagnosticJourney = () => {
 
   return (
     <section className="py-20 px-6 bg-gradient-to-b from-white via-secondary/20 to-white">
-      <div className="max-w-7xl mx-auto">
+      <div className="mm-cq-section max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFF4E0] rounded-full text-[#CC7000] font-semibold text-sm mb-6">
@@ -139,7 +139,7 @@ const CareerDiagnosticJourney = () => {
         </div>
 
         {/* Desktop Timeline - Horizontal */}
-        <div className="hidden lg:block mb-20">
+        <div className="mm-cq-wide-only mb-20">
           {/* Steps Container */}
           <div className="relative">
             {/* Connecting Line */}
@@ -214,7 +214,7 @@ const CareerDiagnosticJourney = () => {
         </div>
 
         {/* Mobile Timeline - Vertical */}
-        <div className="lg:hidden mb-20">
+        <div className="mm-cq-narrow-only mb-20">
           {diagnosticSteps.map((step, index) => {
             const Icon = step.icon;
             const colors = colorMap[step.color];

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { Menu, X, ChevronDown, Copy, Check } from 'lucide-react';
-import logo from '../assets/logo.png';
+import { Copy, Check } from 'lucide-react';
+import RoutePageShell from './layout/RoutePageShell';
+import TutorialBackLink from './layout/TutorialBackLink';
 
 const JavaTutorial = () => {
-  const [isNavOpen, setIsNavOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('intro');
 
   const topics = [
@@ -78,7 +77,7 @@ const JavaTutorial = () => {
   };
 
   return (
-    <div className="min-h-screen mm-site-theme">
+    <RoutePageShell scope="inner">
       {/* Meta Tags for SEO */}
       <head>
         <title>Java for Beginners - Learn Java Step by Step | Complete Tutorial</title>
@@ -86,30 +85,13 @@ const JavaTutorial = () => {
         <meta name="keywords" content="Java for beginners, learn Java step by step, Java basics tutorial, Java programming for beginners" />
       </head>
 
-      {/* HEADER */}
-      <header className="mm-sticky-header px-5">
-        <div className="max-w-[1200px] mx-auto flex items-center justify-between py-4">
-          <Link to="/" className="transition-transform hover:scale-[1.02]">
-            <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-8">
-            <Link to="/free-tutorials" className="text-sm font-semibold text-muted-foreground hover:text-foreground transition-colors flex items-center gap-2">
-              ← Back to Free Tutorials
-            </Link>
-          </nav>
-
-          <button onClick={() => setIsNavOpen(!isNavOpen)} className="md:hidden text-foreground" aria-label={isNavOpen ? 'Close menu' : 'Open menu'}>
-            {isNavOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
-        </div>
-      </header>
+      <TutorialBackLink />
 
       {/* MAIN LAYOUT */}
-      <div className="flex gap-8 max-w-[1400px] mx-auto px-6 py-16">
+      <div className="mm-tutorial-layout mm-container mm-container--wide py-[clamp(2rem,5vw,4rem)]">
         
         {/* LEFT SIDEBAR NAVIGATION - DESKTOP ONLY */}
-        <aside className="hidden lg:block w-64 sticky top-24 h-[calc(100vh-100px)] overflow-y-auto">
+        <aside className="mm-tutorial-layout__sidebar">
           <div className="bg-white border border-border rounded-xl p-6">
             <h3 className="text-lg font-bold mb-6 text-[#FF9500]">Topics</h3>
             <nav className="space-y-2">
@@ -131,7 +113,7 @@ const JavaTutorial = () => {
         </aside>
 
         {/* MAIN CONTENT */}
-        <main className="flex-1 min-w-0">
+        <main className="mm-tutorial-layout__main">
         
         {/* HERO SECTION */}
         <div className="mb-16">
@@ -1367,7 +1349,7 @@ public class StudentGradeSystem {
       <footer className="py-10 text-center text-muted-foreground text-sm border-t border-border mt-16">
         © 2026 MentorMuni. Learn Java for Beginners - Free Tutorial with Practical Examples.
       </footer>
-    </div>
+    </RoutePageShell>
   );
 };
 

@@ -6,6 +6,7 @@ import {
   SITE_SHARE_ASSESSMENT_URL,
   BRAND_MEME_LINE,
 } from '../constants/brandCopy';
+import RoutePageShell from './layout/RoutePageShell';
 
 /* ─── Helpers — light theme, WCAG-friendly contrast ───────────────── */
 const scoreColor = (s) => (s >= 75 ? '#16a34a' : s >= 50 ? '#d97706' : '#dc2626');
@@ -287,7 +288,7 @@ export default function ResultPage() {
   };
 
   return (
-    <div className="min-h-screen mm-site-theme px-4 py-10 sm:py-12">
+    <RoutePageShell scope="tool" className="px-4 py-10 sm:py-12">
       <div className="mx-auto max-w-2xl space-y-6">
         <div className="mm-card-elevated p-6 text-center sm:p-8">
           <p className="mb-5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
@@ -446,6 +447,6 @@ export default function ResultPage() {
           </Link>
         </div>
       </div>
-    </div>
+    </RoutePageShell>
   );
 }

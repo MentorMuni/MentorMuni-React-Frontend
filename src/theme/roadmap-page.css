@@ -1,0 +1,163 @@
+/**
+ * Placement roadmap (/roadmap) — readable in Classic + New UI (dark) themes.
+ */
+
+.mm-roadmap-page {
+  --rm-tab-inactive-bg: var(--bg-card);
+  --rm-tab-inactive-fg: var(--text-secondary);
+  --rm-tab-inactive-border: var(--border);
+  --rm-progress-track: var(--border);
+  --rm-note-bg: var(--warning-bg);
+  --rm-note-fg: var(--warning-ink-deep);
+}
+
+/* Year tabs */
+.mm-roadmap-page .roadmap-year-tab {
+  border-color: var(--rm-tab-inactive-border);
+  background-color: var(--rm-tab-inactive-bg);
+  color: var(--rm-tab-inactive-fg);
+}
+
+.mm-roadmap-page .roadmap-year-tab[aria-selected='true'] {
+  border-color: var(--rm-accent, #1d9e75);
+  background-color: var(--rm-soft, #e1f5ee);
+  color: var(--rm-ink, #085041);
+}
+
+.mm-roadmap-page .roadmap-progress-track {
+  background-color: var(--rm-progress-track);
+}
+
+.mm-roadmap-page .roadmap-progress-segment {
+  border-right: 1px solid color-mix(in srgb, var(--bg-card) 65%, transparent);
+}
+
+/* Card icon + tags */
+.mm-roadmap-page .roadmap-card-icon {
+  background-color: var(--rm-soft, #e1f5ee);
+  color: var(--rm-ink, #085041);
+}
+
+.mm-roadmap-page .roadmap-tag {
+  background-color: color-mix(in srgb, var(--rm-accent, #1d9e75) 14%, var(--bg-secondary));
+  color: var(--text-body);
+}
+
+.mm-roadmap-page .roadmap-milestone-icon {
+  background-color: var(--rm-soft, #e1f5ee);
+  color: var(--rm-ink, #085041);
+}
+
+.mm-roadmap-page .roadmap-year-heading {
+  color: var(--rm-ink, #085041);
+}
+
+.mm-roadmap-page .roadmap-note {
+  background-color: var(--rm-note-bg);
+  color: var(--rm-note-fg);
+}
+
+.mm-roadmap-page .roadmap-branch-active {
+  border-color: var(--rm-accent, #1d9e75) !important;
+  background-color: var(--rm-soft, #e1f5ee) !important;
+  color: var(--rm-ink, #085041) !important;
+}
+
+.mm-roadmap-page .roadmap-cta-secondary:hover {
+  background-color: color-mix(in srgb, var(--accent-cta) 12%, transparent);
+}
+
+/* ── New UI dark theme ─────────────────────────────────────────────────── */
+html.mm-new-ui .mm-roadmap-page {
+  --rm-tab-inactive-bg: rgba(15, 23, 42, 0.72);
+  --rm-tab-inactive-fg: var(--text-secondary);
+  --rm-tab-inactive-border: rgba(148, 163, 184, 0.28);
+  --rm-progress-track: rgba(51, 65, 85, 0.65);
+  --rm-note-bg: rgba(245, 158, 11, 0.14);
+  --rm-note-fg: #fcd34d;
+}
+
+html.mm-new-ui .mm-roadmap-page .roadmap-year-tab[aria-selected='true'] {
+  background-color: color-mix(in srgb, var(--rm-accent) 22%, rgba(15, 23, 42, 0.9));
+  color: var(--rm-accent);
+  border-color: color-mix(in srgb, var(--rm-accent) 55%, transparent);
+  box-shadow: 0 4px 20px color-mix(in srgb, var(--rm-accent) 25%, transparent);
+}
+
+html.mm-new-ui .mm-roadmap-page .roadmap-card-icon,
+html.mm-new-ui .mm-roadmap-page .roadmap-milestone-icon {
+  background-color: color-mix(in srgb, var(--rm-accent) 20%, rgba(15, 23, 42, 0.85));
+  color: var(--rm-accent);
+}
+
+html.mm-new-ui .mm-roadmap-page .roadmap-tag {
+  background-color: color-mix(in srgb, var(--rm-accent) 16%, rgba(30, 41, 59, 0.9));
+  color: var(--text-body);
+  border: 1px solid color-mix(in srgb, var(--rm-accent) 28%, transparent);
+}
+
+html.mm-new-ui .mm-roadmap-page .roadmap-year-heading {
+  color: var(--rm-accent);
+}
+
+html.mm-new-ui .mm-roadmap-page .roadmap-branch-active {
+  background-color: color-mix(in srgb, var(--rm-accent) 22%, rgba(15, 23, 42, 0.9)) !important;
+  color: var(--rm-accent) !important;
+  border-color: color-mix(in srgb, var(--rm-accent) 55%, transparent) !important;
+}
+
+html.mm-new-ui .mm-roadmap-page .text-amber-900,
+html.mm-new-ui .mm-roadmap-page .text-amber-700 {
+  color: #fcd34d !important;
+}
+
+html.mm-new-ui .mm-roadmap-page [class*='text-[#7F77DD]'] {
+  color: #c4b5fd !important;
+}
+
+html.mm-new-ui .mm-roadmap-page .roadmap-cta-secondary {
+  color: #fbbf24 !important;
+  border-color: color-mix(in srgb, #fbbf24 55%, transparent) !important;
+}
+
+html.mm-new-ui .mm-roadmap-page .roadmap-cta-secondary:hover {
+  background-color: rgba(251, 191, 36, 0.12) !important;
+}
+
+/* Optional `.dark` class (toggle) — same fixes as New UI */
+html.dark .mm-roadmap-page {
+  --rm-tab-inactive-bg: rgba(15, 23, 42, 0.72);
+  --rm-tab-inactive-fg: #c5d0de;
+  --rm-tab-inactive-border: rgba(148, 163, 184, 0.28);
+  --rm-progress-track: rgba(51, 65, 85, 0.65);
+  --rm-note-bg: rgba(245, 158, 11, 0.14);
+  --rm-note-fg: #fcd34d;
+}
+
+html.dark .mm-roadmap-page .roadmap-year-tab[aria-selected='true'] {
+  background-color: color-mix(in srgb, var(--rm-accent) 22%, rgba(15, 23, 42, 0.9));
+  color: var(--rm-accent);
+  border-color: color-mix(in srgb, var(--rm-accent) 55%, transparent);
+}
+
+html.dark .mm-roadmap-page .roadmap-card-icon,
+html.dark .mm-roadmap-page .roadmap-milestone-icon {
+  background-color: color-mix(in srgb, var(--rm-accent) 20%, rgba(15, 23, 42, 0.85));
+  color: var(--rm-accent);
+}
+
+html.dark .mm-roadmap-page .roadmap-tag {
+  background-color: color-mix(in srgb, var(--rm-accent) 16%, rgba(30, 41, 59, 0.9));
+  color: #dce4ef;
+  border: 1px solid color-mix(in srgb, var(--rm-accent) 28%, transparent);
+}
+
+html.dark .mm-roadmap-page .roadmap-year-heading {
+  color: var(--rm-accent);
+}
+
+html.dark .mm-roadmap-page .roadmap-branch-active {
+  background-color: color-mix(in srgb, var(--rm-accent) 22%, rgba(15, 23, 42, 0.9)) !important;
+  color: var(--rm-accent) !important;
+  border-color: color-mix(in srgb, var(--rm-accent) 55%, transparent) !important;
+}

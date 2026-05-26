@@ -44,6 +44,7 @@ import {
   ABOUT_PILLARS_SUB,
   ABOUT_PILLARS,
 } from '../constants/brandCopy';
+import RoutePageShell from './layout/RoutePageShell';
 
 const ABOUT_LOOP_ICONS = [BarChart3, Layers, Repeat2];
 const PILLAR_ICONS = [Target, Users, Sparkles];
@@ -74,7 +75,7 @@ const AboutUs = () => {
   const reduceMotion = useReducedMotion();
 
   return (
-    <div className="min-h-screen mm-site-theme overflow-x-hidden text-muted-foreground">
+    <RoutePageShell scope="marketing" className="text-muted-foreground">
       {/* —— Hero —— */}
       <section
         className="mm-marketing-hero-backdrop border-b border-border"
@@ -456,7 +457,7 @@ const AboutUs = () => {
           </FadeUp>
         </div>
       </section>
-    </div>
+    </RoutePageShell>
   );
 };
 

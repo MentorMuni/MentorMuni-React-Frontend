@@ -244,17 +244,4 @@ html.mm-new-ui .mm-beta-switch-bar {
   backdrop-filter: blur(8px);
 }
 
-/* Readiness quiz — fallback cap; step-5 layout removes it (Classic + Dark) */
-.mm-quiz-panel-card {
-  max-height: calc(100vh - var(--mm-quiz-chrome-offset, 12.5rem));
-}
-@supports (height: 100dvh) {
-  .mm-quiz-panel-card {
-    max-height: calc(100dvh - var(--mm-quiz-chrome-offset, 12.5rem));
-  }
-}
-
-.mm-assessment-quiz-page .mm-quiz-panel-card {
-  max-height: none !important;
-  height: auto;
-}
+/* Readiness quiz height — flex layout in new-ui-assessment.css */
