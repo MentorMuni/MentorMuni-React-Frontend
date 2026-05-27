@@ -1,4 +1,6 @@
+import { useState } from 'react';
 import { useNewUI } from '../../context/NewUIContext';
+import { generateHeroScorePreview } from '../../utils/heroScorePreview';
 import { ClassicHeroScoreCard } from './ClassicHeroScoreCard';
 import { NewUIHeroScoreCard } from './NewUIHeroScoreCard';
 
@@ -7,10 +9,11 @@ import { NewUIHeroScoreCard } from './NewUIHeroScoreCard';
  */
 export function HeroFlagshipVisual({ className = '' }) {
   const { newUI } = useNewUI();
+  const [preview] = useState(() => generateHeroScorePreview());
 
   if (newUI) {
-    return <NewUIHeroScoreCard className={className} />;
+    return <NewUIHeroScoreCard className={className} preview={preview} />;
   }
 
-  return <ClassicHeroScoreCard className={className} />;
+  return <ClassicHeroScoreCard className={className} preview={preview} />;
 }

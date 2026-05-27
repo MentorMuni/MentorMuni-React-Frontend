@@ -5,40 +5,13 @@ const RING_SIZE = 128;
 const STROKE = 10;
 const R = (RING_SIZE - STROKE) / 2;
 const CIRC = 2 * Math.PI * R;
-const DEMO_SCORE = 0.72;
 
 /**
  * Hero readiness-check preview card — product-style panel: gradient frame, depth, subtle motion.
  */
-export function ClassicHeroScoreCard({ className = '' }) {
+export function ClassicHeroScoreCard({ className = '', preview }) {
   const reduceMotion = useReducedMotion();
-
-  const bars = [
-    {
-      label: 'Data structures & algorithms',
-      hint: 'Coding / problem-solving rounds',
-      w: 0.68,
-      color: '#ef4444',
-    },
-    {
-      label: 'System design',
-      hint: 'Architecture & trade-offs',
-      w: 0.52,
-      color: '#ea580c',
-    },
-    {
-      label: 'HR & communication',
-      hint: 'Behavioral & clarity',
-      w: 0.74,
-      color: '#16a34a',
-    },
-    {
-      label: 'Projects & depth',
-      hint: 'What you built & why',
-      w: 0.61,
-      color: '#9333ea',
-    },
-  ];
+  const { score, scoreRatio, skillBars, insightLead, insightRest } = preview;
 
   return (
     <motion.div
@@ -51,7 +24,7 @@ export function ClassicHeroScoreCard({ className = '' }) {
       <style>{`
         @keyframes mm-hero-ring-draw {
           from { stroke-dashoffset: ${CIRC}; }
-          to { stroke-dashoffset: ${CIRC * (1 - DEMO_SCORE)}; }
+          to { stroke-dashoffset: ${CIRC * (1 - scoreRatio)}; }
         }
         @keyframes mm-card-shimmer {
           0%, 100% { opacity: 0.35; transform: translate(0, 0) scale(1); }
@@ -73,13 +46,12 @@ export function ClassicHeroScoreCard({ className = '' }) {
           animation: mm-border-flow 8s ease infinite;
         }
         @media (prefers-reduced-motion: reduce) {
-          .mm-hero-ring-arc { animation: none !important; stroke-dashoffset: ${CIRC * (1 - DEMO_SCORE)} !important; }
+          .mm-hero-ring-arc { animation: none !important; stroke-dashoffset: ${CIRC * (1 - scoreRatio)} !important; }
           .mm-hero-card-glow { animation: none !important; }
           .mm-hero-card-border { animation: none; background-position: 50% 50%; }
         }
       `}</style>
 
-      {/* soft glow behind card */}
       <div
         className="mm-hero-card-glow pointer-events-none absolute -inset-3 rounded-[28px] bg-gradient-to-br from-sky-400/25 via-cyan-300/15 to-teal-400/20 blur-2xl"
         style={{ animation: reduceMotion ? 'none' : 'mm-card-shimmer 6s ease-in-out infinite' }}
@@ -90,7 +62,7 @@ export function ClassicHeroScoreCard({ className = '' }) {
         <div
           className="relative overflow-hidden rounded-[20.5px] border border-white/80 bg-white/95 p-4 backdrop-blur-sm sm:p-5"
           role="img"
-          aria-label="Sample readiness check score preview"
+          aria-label={`Sample readiness check score preview: ${score} out of 100`}
         >
           <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-sky-200/30 blur-3xl" aria-hidden />
           <div className="pointer-events-none absolute -bottom-12 -left-10 h-32 w-32 rounded-full bg-cyan-200/25 blur-3xl" aria-hidden />
@@ -138,42 +110,39 @@ export function ClassicHeroScoreCard({ className = '' }) {
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
                 <span className="text-[2.25rem] font-black tabular-nums leading-none tracking-tight text-neutral-900 sm:text-[2.5rem]">
-                  72
+                  {score}
                 </span>
                 <span className="mt-0.5 text-xs font-medium text-muted-foreground">/ 100</span>
               </div>
             </div>
 
             <div className="flex w-full min-w-0 flex-1 flex-col gap-3 sm:gap-2.5">
-              {bars.map((b, i) => {
-                const pct = Math.round(b.w * 100);
-                return (
-                  <div key={b.label} className="min-w-0">
-                    <div className="mb-1 flex items-start justify-between gap-2">
-                      <div className="min-w-0">
-                        <p className="text-[11px] font-semibold leading-snug text-neutral-800 sm:text-xs">{b.label}</p>
-                        <p className="mt-0.5 text-[10px] leading-snug text-muted-foreground">{b.hint}</p>
-                      </div>
-                      <span className="shrink-0 text-xs font-bold tabular-nums text-neutral-900">{pct}</span>
+              {skillBars.map((b, i) => (
+                <div key={b.label} className="min-w-0">
+                  <div className="mb-1 flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-[11px] font-semibold leading-snug text-neutral-800 sm:text-xs">{b.label}</p>
+                      <p className="mt-0.5 text-[10px] leading-snug text-muted-foreground">{b.hint}</p>
                     </div>
-                    <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-100/90 ring-1 ring-neutral-200/60">
-                      <motion.div
-                        className="h-full rounded-full shadow-[0_0_8px_rgba(0,0,0,0.08)]"
-                        style={{ backgroundColor: b.color }}
-                        initial={reduceMotion ? false : { width: 0 }}
-                        animate={{ width: `${b.w * 100}%` }}
-                        transition={{ duration: 0.85, delay: 0.3 + i * 0.07, ease: [0.22, 1, 0.36, 1] }}
-                      />
-                    </div>
+                    <span className="shrink-0 text-xs font-bold tabular-nums text-neutral-900">{b.pct}</span>
                   </div>
-                );
-              })}
+                  <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-100/90 ring-1 ring-neutral-200/60">
+                    <motion.div
+                      className="h-full rounded-full shadow-[0_0_8px_rgba(0,0,0,0.08)]"
+                      style={{ backgroundColor: b.color }}
+                      initial={reduceMotion ? false : { width: 0 }}
+                      animate={{ width: `${b.w * 100}%` }}
+                      transition={{ duration: 0.85, delay: 0.3 + i * 0.07, ease: [0.22, 1, 0.36, 1] }}
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
           <div className="relative mt-4 overflow-hidden rounded-xl border border-sky-200/80 bg-gradient-to-br from-sky-50/95 to-cyan-50/80 px-3 py-3 text-sm leading-relaxed text-[#0c4a6e] shadow-inner">
-            <span className="font-bold text-neutral-900">System Design is your biggest gap.</span>{' '}
-            Most students with this profile improve +20 pts in 3 weeks with focused practice.
+            <span className="font-bold text-neutral-900">{insightLead}</span>{' '}
+            {insightRest}
           </div>
 
           <div className="relative mt-5 space-y-2 text-center">
