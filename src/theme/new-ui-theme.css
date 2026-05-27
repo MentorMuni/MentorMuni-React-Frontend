@@ -155,6 +155,8 @@ html.mm-new-ui .mm-site-chrome__stack {
 }
 
 html.mm-new-ui .mm-site-chrome__edge {
+  position: relative;
+  z-index: 0;
   height: 6px;
   background: linear-gradient(
     to bottom,
@@ -191,7 +193,6 @@ html.mm-new-ui .mm-sticky-header {
   -webkit-backdrop-filter: none;
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
   color: #18181b;
-  isolation: isolate;
 }
 
 /* Homepage hero — clear focal hierarchy, no light “sheet” bleed-through */

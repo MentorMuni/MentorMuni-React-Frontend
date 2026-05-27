@@ -19,6 +19,7 @@ import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import { isNavActive } from '../utils/navRouteMatch';
 import { PRIMARY_CTA_LABEL, READINESS_TEST_COUPON_BADGE } from '../constants/brandCopy';
 import LimitedRewardLabel from './LimitedRewardLabel';
+import NavDropdownPortal from './navbar/NavDropdownPortal';
 
 /** Secondary links — desktop dropdown to avoid a crowded top bar */
 const MORE_LINKS = [
@@ -85,16 +86,18 @@ const Navbar = () => {
   const [moreOpen, setMoreOpen] = useState(false);
   const toolsRef = useRef(null);
   const moreRef = useRef(null);
+  const toolsPanelRef = useRef(null);
+  const morePanelRef = useRef(null);
   const location = useLocation();
 
   useEffect(() => {
     const handleClickOutside = (e) => {
-      if (toolsRef.current && !toolsRef.current.contains(e.target)) {
-        setToolsOpen(false);
-      }
-      if (moreRef.current && !moreRef.current.contains(e.target)) {
-        setMoreOpen(false);
-      }
+      const inTools =
+        toolsRef.current?.contains(e.target) || toolsPanelRef.current?.contains(e.target);
+      const inMore =
+        moreRef.current?.contains(e.target) || morePanelRef.current?.contains(e.target);
+      if (!inTools) setToolsOpen(false);
+      if (!inMore) setMoreOpen(false);
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -164,8 +167,10 @@ const Navbar = () => {
     }`;
   };
 
+  const navMenuOpen = toolsOpen || moreOpen;
+
   return (
-    <header className="mm-sticky-header">
+    <header className={`mm-sticky-header${navMenuOpen ? ' mm-sticky-header--menu-open' : ''}`}>
       <div className="mm-container">
         <div className="mm-header-bar flex min-h-[4rem] min-w-0 items-center gap-[clamp(0.5rem,2cqi,1.5rem)] py-1">
           <Link
@@ -201,100 +206,111 @@ const Navbar = () => {
               );
             })}
 
-            <div ref={toolsRef} className="relative">
+            <div ref={toolsRef} className="mm-nav-menu relative" data-open={toolsOpen ? 'true' : undefined}>
               <button
                 type="button"
                 onClick={() => setToolsOpen(v => !v)}
                 aria-expanded={toolsOpen}
                 aria-haspopup="true"
-                className={`inline-flex items-center gap-1 text-[0.9375rem] font-medium transition-colors ${
+                className={`relative z-[1] inline-flex items-center gap-1 text-[0.9375rem] font-medium transition-colors ${
                   toolsOpen
                     ? 'text-primary'
                     : 'text-gray-700 hover:text-primary'
                 }`}
               >
                 Tools
-                <ChevronDown size={16} strokeWidth={2} className={`transition-transform duration-200 ${toolsOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={16} strokeWidth={2} className={`shrink-0 transition-transform duration-200 ${toolsOpen ? 'rotate-180' : ''}`} />
               </button>
 
-              {toolsOpen && (
-                <div className="absolute top-full left-0 mt-2 w-[19.5rem] rounded-xl border border-border bg-white shadow-[0_8px_32px_rgba(0,0,0,0.10)] overflow-hidden z-50">
-                  <div className="max-h-[min(70vh,26rem)] overflow-y-auto overscroll-contain p-2">
-                    {TOOLS.map((tool) => {
-                      const Icon = tool.icon;
-                      return (
-                        <Link
-                          key={tool.href}
-                          to={tool.href}
-                          onClick={() => setToolsOpen(false)}
-                          className="flex items-start gap-3 px-3 py-3 rounded-lg hover:bg-secondary transition-colors group"
-                        >
-                          <span className={`mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${tool.bg}`}>
-                            <Icon size={17} className={tool.color} strokeWidth={2} />
-                          </span>
-                          <span>
-                            <span className="block text-[0.9375rem] font-semibold text-foreground group-hover:text-primary transition-colors">{tool.title}</span>
-                            <span className="block text-[13px] text-muted-foreground leading-snug mt-0.5">{tool.desc}</span>
-                          </span>
-                        </Link>
-                      );
-                    })}
-                  </div>
-                  <div className="border-t border-border px-4 py-3 bg-gradient-to-r from-sky-50/90 to-secondary">
-                    <div className="mb-1.5 w-fit">
-                      <LimitedRewardLabel className="text-[8px] px-2 py-0.5 [&_svg]:h-2.5 [&_svg]:w-2.5" />
-                    </div>
-                    <p className="text-[12px] text-muted-foreground leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
-                    <Link
-                      to="/interview-readiness-tools"
-                      onClick={() => setToolsOpen(false)}
-                      className="text-sm font-semibold text-primary hover:text-primary-hover transition-colors"
-                    >
-                      Start with a free readiness check →
-                    </Link>
-                  </div>
+              <NavDropdownPortal
+                open={toolsOpen}
+                anchorRef={toolsRef}
+                panelRef={toolsPanelRef}
+                align="left"
+                className="w-[19.5rem] overflow-hidden"
+              >
+                <div className="max-h-[min(70vh,26rem)] overflow-y-auto overscroll-contain p-2">
+                  {TOOLS.map((tool) => {
+                    const Icon = tool.icon;
+                    return (
+                      <Link
+                        key={tool.href}
+                        to={tool.href}
+                        onClick={() => setToolsOpen(false)}
+                        className="mm-nav-dropdown-item"
+                        role="menuitem"
+                      >
+                        <span className="mm-nav-dropdown-icon mm-nav-dropdown-icon--lg">
+                          <Icon size={17} strokeWidth={2} aria-hidden />
+                        </span>
+                        <span className="min-w-0">
+                          <span className="mm-nav-dropdown-item__title">{tool.title}</span>
+                          <span className="mm-nav-dropdown-item__desc">{tool.desc}</span>
+                        </span>
+                      </Link>
+                    );
+                  })}
                 </div>
-              )}
+                <div className="mm-nav-dropdown-promo">
+                  <div className="mb-1.5 w-fit">
+                    <LimitedRewardLabel className="text-[8px] px-2 py-0.5 [&_svg]:h-2.5 [&_svg]:w-2.5" />
+                  </div>
+                  <p className="mm-nav-dropdown-promo__text">{READINESS_TEST_COUPON_BADGE}</p>
+                  <Link
+                    to="/interview-readiness-tools"
+                    onClick={() => setToolsOpen(false)}
+                    className="mm-nav-dropdown-promo__link"
+                    role="menuitem"
+                  >
+                    Start with a free readiness check →
+                  </Link>
+                </div>
+              </NavDropdownPortal>
             </div>
 
-            <div ref={moreRef} className="relative">
+            <div ref={moreRef} className="mm-nav-menu relative" data-open={moreOpen ? 'true' : undefined}>
               <button
                 type="button"
                 onClick={() => setMoreOpen((v) => !v)}
                 aria-expanded={moreOpen}
                 aria-haspopup="true"
                 aria-label="Colleges, about, and contact"
-                className={`inline-flex items-center gap-1 text-[0.9375rem] font-medium whitespace-nowrap transition-colors ${
+                className={`relative z-[1] inline-flex items-center gap-1 text-[0.9375rem] font-medium whitespace-nowrap transition-colors ${
                   moreOpen || moreMenuActive
                     ? 'text-primary'
                     : 'text-gray-700 hover:text-primary'
                 }`}
               >
                 About/Contact
-                <ChevronDown size={16} strokeWidth={2} className={`transition-transform duration-200 ${moreOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown size={16} strokeWidth={2} className={`shrink-0 transition-transform duration-200 ${moreOpen ? 'rotate-180' : ''}`} />
               </button>
-              {moreOpen && (
-                <div className="absolute right-0 top-full z-50 mt-2 w-[min(calc(100vw-2rem),15.5rem)] rounded-xl border border-border bg-white py-1.5 shadow-[0_8px_32px_rgba(0,0,0,0.10)]">
-                  {MORE_LINKS.map(({ label, path, exact, Icon }) => {
-                    const active = isActive(path, exact);
-                    return (
-                      <Link
-                        key={path}
-                        to={path}
-                        onClick={() => setMoreOpen(false)}
-                        className={`flex items-center gap-3 px-3 py-2.5 text-[0.9375rem] font-semibold transition-colors ${
-                          active ? 'bg-accent-soft text-primary' : 'text-foreground hover:bg-secondary'
-                        }`}
-                      >
-                        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-accent-soft">
-                          <Icon size={16} className="text-[#15799F]" strokeWidth={2} />
-                        </span>
-                        {label}
-                      </Link>
-                    );
-                  })}
-                </div>
-              )}
+              <NavDropdownPortal
+                open={moreOpen}
+                anchorRef={moreRef}
+                panelRef={morePanelRef}
+                align="right"
+                className="w-[min(calc(100vw-2rem),15.5rem)] py-1.5"
+              >
+                {MORE_LINKS.map(({ label, path, exact, Icon }) => {
+                  const active = isActive(path, exact);
+                  return (
+                    <Link
+                      key={path}
+                      to={path}
+                      onClick={() => setMoreOpen(false)}
+                      className={`mm-nav-dropdown-item mm-nav-dropdown-item--row px-3 py-2.5 text-[0.9375rem] font-semibold ${
+                        active ? 'mm-nav-dropdown-item--active' : ''
+                      }`}
+                      role="menuitem"
+                    >
+                      <span className="mm-nav-dropdown-icon mm-nav-dropdown-icon--md">
+                        <Icon size={16} strokeWidth={2} aria-hidden />
+                      </span>
+                      {label}
+                    </Link>
+                  );
+                })}
+              </NavDropdownPortal>
             </div>
           </nav>
 

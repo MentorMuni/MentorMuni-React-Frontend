@@ -56,7 +56,9 @@ body {
   min-width: 0;
   min-height: 100vh;
   min-height: 100dvh;
-  overflow-x: hidden;
+  /* clip horizontal bleed only — hidden would force overflow-y:auto and clip nav menus */
+  overflow-x: clip;
+  overflow-y: visible;
 }
 
 .mm-app-shell > canvas[aria-hidden],
@@ -106,20 +108,53 @@ body {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  overflow-x: hidden;
+  /* visible — overflow-x:hidden forces overflow-y:auto and clips nav dropdowns */
+  overflow: visible;
+  position: relative;
+  z-index: 2;
 }
 
 .mm-sticky-header {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  overflow-x: hidden;
+  overflow: visible;
 }
 
-/* Header: show desktop chrome when the bar has room (container query) */
+/* Desktop nav flyouts (Tools, About/Contact) — above beta bar & page content */
+.mm-nav-menu {
+  position: relative;
+}
+
+.mm-nav-menu[data-open='true'] {
+  z-index: 200;
+}
+
+.mm-nav-menu__panel {
+  position: absolute;
+  z-index: 200;
+}
+
+.mm-site-chrome__stack .mm-beta-switch-bar {
+  position: relative;
+  z-index: 1;
+}
+
+.mm-sticky-header--menu-open {
+  z-index: 250;
+}
+
+/* Header: viewport breakpoints (container-type on bar clipped open flyouts) */
 .mm-header-bar {
-  container-type: inline-size;
-  container-name: header;
+  overflow: visible;
+}
+
+.mm-sticky-header .mm-container {
+  overflow: visible;
+}
+
+.mm-header-bar [data-mm-desktop-nav] {
+  overflow: visible;
 }
 
 .mm-header-bar [data-mm-desktop-nav],
@@ -135,7 +170,7 @@ body {
   display: block;
 }
 
-@container header (min-width: 50rem) {
+@media (min-width: 50rem) {
   .mm-header-bar [data-mm-desktop-nav],
   .mm-header-bar [data-mm-desktop-cta] {
     display: flex !important;
@@ -144,9 +179,7 @@ body {
   .mm-header-bar [data-mm-mobile-nav-toggle] {
     display: none !important;
   }
-}
 
-@container header (min-width: 50rem) {
   .mm-header-bar [data-mm-mobile-nav-panel] {
     display: none !important;
   }
@@ -184,7 +217,7 @@ body {
   display: inline;
 }
 
-@container header (min-width: 58rem) {
+@media (min-width: 58rem) {
   .mm-header-bar [data-mm-cta-full] {
     display: inline;
   }
