@@ -63,6 +63,14 @@ const FreeTutorials = () => {
       color: 'from-orange-600 to-red-600'
     },
     {
+      id: 'cpp-oop',
+      title: 'OOP with C++',
+      icon: null,
+      description: 'Learn Object-Oriented Programming in C++ — classes, inheritance, polymorphism, and STL basics. Ideal for DSA, campus tech rounds, and systems interviews.',
+      route: '/cpp-oop-for-beginners',
+      color: 'from-slate-600 to-blue-700'
+    },
+    {
       id: 'sql',
       title: 'SQL Basics',
       icon: null,

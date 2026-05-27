@@ -38,6 +38,7 @@ const Tools = lazy(() => import("./components/Tools"));
 const Mentors    = lazy(() => import("./components/Mentors"));
 const JavaTutorial = lazy(() => import("./components/javaTutorial"));
 const SqlTutorial = lazy(() => import("./components/sqlTutorial"));
+const CppOopTutorial = lazy(() => import("./components/cppOopTutorial"));
 const PythonTutorial = lazy(() => import("./components/pythonTutorial"));
 const GenerativeAITutorial = lazy(() => import("./components/generativeAITutorial"));
 const PromptEngineeringMasterclass = lazy(() => import("./components/promptEngineeringMasterclass"));
@@ -271,6 +272,8 @@ function App() {
               <Route path="/java-for-beginners" element={<JavaTutorial />} />
               <Route path="/sql-tutorial" element={<SqlTutorial />} />
               <Route path="/sql-for-beginners" element={<SqlTutorial />} />
+              <Route path="/cpp-oop-tutorial" element={<CppOopTutorial />} />
+              <Route path="/cpp-oop-for-beginners" element={<CppOopTutorial />} />
               <Route path="/python-tutorial" element={<PythonTutorial />} />
               <Route path="/python-for-beginners" element={<PythonTutorial />} />
               <Route path="/generative-ai-tutorial" element={<GenerativeAITutorial />} />

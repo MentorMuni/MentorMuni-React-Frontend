@@ -181,8 +181,8 @@ export const ROUTE_SEO = {
   },
   '/free-tutorials': {
     title: 'Free Tutorials for Engineering Students | MentorMuni',
-    description: 'Free tutorials — Java, Python, SQL, Generative AI, and more for placement and interview preparation.',
-    keywords: 'free coding tutorials, Java tutorial placement, Python tutorial beginners',
+    description: 'Free tutorials — Java, Python, C++ OOP, SQL, Generative AI, and more for placement and interview preparation.',
+    keywords: 'free coding tutorials, Java tutorial placement, Python tutorial beginners, C++ OOP tutorial',
   },
   '/leadership-board': {
     title: 'Interview Readiness Leaderboard | MentorMuni',
@@ -270,6 +270,16 @@ export const ROUTE_SEO = {
     title: 'SQL Tutorial for Beginners — Free | MentorMuni',
     description: 'Free SQL tutorial for beginners.',
     keywords: 'SQL beginners',
+  },
+  '/cpp-oop-tutorial': {
+    title: 'OOP with C++ — Free Tutorial | MentorMuni',
+    description: 'Free C++ OOP tutorial — classes, inheritance, polymorphism, and STL for placement and DSA interviews.',
+    keywords: 'C++ OOP tutorial, C++ classes beginners, OOP C++ placement',
+  },
+  '/cpp-oop-for-beginners': {
+    title: 'OOP with C++ for Beginners — Free | MentorMuni',
+    description: 'Learn Object-Oriented Programming in C++ step by step — free tutorial for engineering students.',
+    keywords: 'C++ OOP beginners, learn C++ OOP, campus placement C++',
   },
   '/generative-ai-tutorial': {
     title: 'Generative AI for Beginners — Free Tutorial | MentorMuni',
