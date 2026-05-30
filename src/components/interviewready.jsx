@@ -2549,7 +2549,7 @@ const InterviewReady = () => {
             <div className="mm-surface-chip max-w-full px-3 py-1.5 backdrop-blur sm:px-4">
               <Star size={14} className="shrink-0 text-amber-400" />
               <span className="text-center text-[11px] font-medium text-muted-foreground sm:text-xs">
-                Patterns from 500+ companies · free score
+                Company-style patterns · free score · ~5 min
               </span>
             </div>
           </div>

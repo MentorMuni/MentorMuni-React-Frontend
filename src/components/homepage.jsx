@@ -52,8 +52,11 @@ import {
   PROGRAM_6WEEK_CARD_TITLE,
   PROGRAM_6WEEK_PRICE_MAIN,
   PROGRAM_6WEEK_PRICE_MAIN_SUFFIX,
-  PROGRAM_6WEEK_PRICE_STRIKE,
   PROGRAM_6WEEK_SUMMARY,
+  PROGRAM_6WEEK_INCLUDES,
+  PROGRAM_ENROLL_CTA,
+  PROGRAM_ENROLL_PATH,
+  PROGRAM_PRICING_PATH,
   READINESS_TEST_COUPON_BADGE,
   FINAL_CTA_HEADLINE,
   FINAL_CTA_HEADLINE_ACCENT,
@@ -408,7 +411,7 @@ const STUDENT_SNIPPETS = [
     tag: '4th Year · CSE',
     insight: 'Named the real gap',
     text: 'Seniors kept saying “practice more,” but nobody said what to practice. The readiness breakdown pointed at System Design—not everything at once—so I could prepare with a target instead of a guess.',
-    proofMetric: 'Proof: readiness 42% → 78% after 4 weeks focused on one gap',
+    proofMetric: 'Illustrative: focus one gap area first (e.g. System Design)',
     Icon: Target,
   },
   {
@@ -418,7 +421,7 @@ const STUDENT_SNIPPETS = [
     tag: 'Final Year · IT',
     insight: 'Feedback on how you sound',
     text: 'The mock was blunt: my answers sounded memorised, not understood. I changed how I open and structure answers under pressure—not just the facts inside them.',
-    proofMetric: 'Proof: 12+ full mock rounds before first real onsite',
+    proofMetric: 'Illustrative: mock reps before the real panel',
     Icon: Mic2,
   },
   {
@@ -428,7 +431,7 @@ const STUDENT_SNIPPETS = [
     tag: '3rd Year · CSE',
     insight: 'Specific weak spot',
     text: 'The score split my DSA by pattern and showed strings were the weak link. Random LeetCode never made that obvious; I finally knew what to drill instead of grinding everything.',
-    proofMetric: 'Proof: DSA bucket 38% → 71% in three weeks of targeted drills',
+    proofMetric: 'Illustrative: pattern-level score breakdown',
     Icon: BarChart3,
   },
 ];
@@ -862,7 +865,7 @@ const HomePage = () => {
                           : 'rounded-full border border-violet-200/90 bg-violet-50/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-violet-900'
                       }
                     >
-                      60-day program
+                      5-week program
                     </span>
                   </div>
 
@@ -888,23 +891,16 @@ const HomePage = () => {
                       onClick={scrollToHomepagePricing}
                       className="font-semibold text-[#1A8FC4] underline decoration-[#2AAA8A]/45 underline-offset-[4px] transition hover:text-[#15799F] bg-transparent border-0 p-0 cursor-pointer font-inherit text-inherit"
                     >
-                      60-day placement program
+                      {PROGRAM_6WEEK_CARD_TITLE} · {PROGRAM_6WEEK_PRICE_MAIN}
                     </button>
                     <span className="text-neutral-400"> · </span>
-                    <Link to="/contact" className="font-semibold text-[#1A8FC4] hover:text-[#15799F]">
-                      {SECONDARY_CTA_BOOK_CALL}
+                    <Link to={PROGRAM_PRICING_PATH} className="font-semibold text-[#1A8FC4] hover:text-[#15799F]">
+                      See pricing
                     </Link>
-                    <span className="text-neutral-400"> · </span>
-                    <a
-                      href={CONTACT_WHATSAPP_HREF}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="font-semibold text-[#15803d] hover:underline"
-                    >
-                      {CONTACT_WHATSAPP_LABEL}
-                    </a>
-                    <span className="hidden sm:inline text-neutral-400"> · </span>
-                    <span className="block sm:inline mt-1 sm:mt-0">{HERO_PROOF_ONE_LINER}</span>
+                    <span className="block sm:inline mt-1 sm:mt-0">
+                      <span className="hidden sm:inline text-neutral-400"> · </span>
+                      {HERO_PROOF_ONE_LINER}
+                    </span>
                   </p>
                 </motion.div>
               </div>
@@ -1004,7 +1000,7 @@ const HomePage = () => {
                   <p className="mb-6 text-base leading-relaxed text-muted-foreground md:text-lg">
                     MentorMuni is a <strong className="font-semibold text-foreground">placement mentor</strong> for
                     engineering students: a free 5-minute readiness check, a personalised gap report, then AI mock
-                    interviews, 1:1 mentorship, and a structured 60-day program — built for Indian campus and off-campus
+                    interviews, 1:1 mentorship, and a structured 5-week program ({PROGRAM_6WEEK_PRICE_MAIN}) — built for Indian campus and off-campus
                     hiring (TCS, Infosys, product companies, and more).
                   </p>
                   <div className="flex flex-wrap gap-2">
@@ -1013,7 +1009,7 @@ const HomePage = () => {
                       { label: 'Personalised gap report', color: 'border-teal-200 bg-teal-50 text-teal-900' },
                       { label: 'AI mock interviews', color: 'border-violet-200 bg-violet-50 text-violet-900' },
                       { label: '1:1 mentor sessions', color: 'border-amber-200 bg-amber-50 text-amber-900' },
-                      { label: '60-day program', color: 'border-emerald-200 bg-emerald-50 text-emerald-900' },
+                      { label: `5-week · ${PROGRAM_6WEEK_PRICE_MAIN}`, color: 'border-emerald-200 bg-emerald-50 text-emerald-900' },
                     ].map(({ label, color }) => (
                       <span key={label} className={`inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold ${color}`}>
                         {label}
@@ -1122,7 +1118,7 @@ const HomePage = () => {
 
       <MentorMuniSystemLoop reduceMotion={reduceMotion} />
 
-      {/* ════════════════ 60-DAY PROGRAM — timeline + pricing card (moved up: after system loop) ════════════════ */}
+      {/* ════════════════ 5-WEEK PROGRAM — timeline + pricing card ════════════════ */}
       <section
         id="homepage-pricing"
         className="mm-surface-section border-t py-14 md:py-16 px-5 sm:px-6 lg:px-8"
@@ -1175,51 +1171,49 @@ const HomePage = () => {
             </FadeUp>
             </div>
 
-            {/* Right Column - Get Started Card */}
+            {/* Right Column — free check + paid program */}
             <FadeUp delay={0.1}>
               <div className="relative mm-surface-panel rounded-2xl p-6 shadow-[0_4px_24px_rgba(0,0,0,0.06)] md:p-7">
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-[#1A8FC4] px-4 py-1.5 text-xs font-bold uppercase tracking-wide text-white shadow-sm">
-                    Get Started Today
+                    {PROGRAM_6WEEK_CARD_BADGE}
                   </span>
                 </div>
                 <div className="mt-4 text-center">
-                  <h3 className="text-lg font-bold text-foreground md:text-xl">Your Placement Prep Toolkit</h3>
-                  <p className="mt-3 text-sm text-muted-foreground">
-                    Everything you need to prepare confidently — all in one place.
+                  <h3 className="text-lg font-bold text-foreground md:text-xl">{PROGRAM_6WEEK_CARD_TITLE}</h3>
+                  <p className="mt-2 text-3xl font-black text-[#1A8FC4] md:text-4xl">
+                    {PROGRAM_6WEEK_PRICE_MAIN}
+                    <span className="ml-1 text-sm font-semibold text-muted-foreground">{PROGRAM_6WEEK_PRICE_MAIN_SUFFIX}</span>
                   </p>
+                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{PROGRAM_6WEEK_SUMMARY}</p>
                 </div>
                 <div className="mt-6 border-t border-border pt-6">
-                  <ul className="space-y-3 text-sm text-muted-foreground">
-                    <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 mt-0.5 text-[#2AAA8A] shrink-0" />
-                      <span>Readiness score across DSA, System Design & HR</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 mt-0.5 text-[#2AAA8A] shrink-0" />
-                      <span>Placement roadmap for TCS, Infosys, Wipro & more</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 mt-0.5 text-[#2AAA8A] shrink-0" />
-                      <span>AI mock interviews with instant feedback</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 mt-0.5 text-[#2AAA8A] shrink-0" />
-                      <span>Resume ATS checker</span>
-                    </li>
-                    <li className="flex items-start gap-2">
-                      <Check className="h-4 w-4 mt-0.5 text-[#2AAA8A] shrink-0" />
-                      <span>Topic tutorials & panel-ready framing</span>
-                    </li>
+                  <ul className="space-y-2.5 text-sm text-muted-foreground">
+                    {PROGRAM_6WEEK_INCLUDES.map((item) => (
+                      <li key={item} className="flex items-start gap-2">
+                        <Check className="h-4 w-4 mt-0.5 text-[#2AAA8A] shrink-0" />
+                        <span>{item}</span>
+                      </li>
+                    ))}
                   </ul>
-                  <button
-                    type="button"
-                    onClick={goToStartAssessment}
-                    className="mt-6 w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-6 py-3.5 text-base font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-[#E88600] hover:shadow-[0_6px_20px_rgba(255,149,0,0.35)]"
-                  >
-                    {PRIMARY_CTA_LABEL} <ArrowRight className="h-5 w-5" />
-                  </button>
-                  <p className="mt-3 text-center text-xs text-muted-foreground">No signup required • 5 min readiness check</p>
+                  <div className="mt-6 flex flex-col gap-3">
+                    <button
+                      type="button"
+                      onClick={goToStartAssessment}
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-6 py-3.5 text-base font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-[#E88600]"
+                    >
+                      {PRIMARY_CTA_LABEL} <ArrowRight className="h-5 w-5" aria-hidden />
+                    </button>
+                    <Link
+                      to={PROGRAM_ENROLL_PATH}
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl border-2 border-[#1A8FC4] bg-white px-6 py-3.5 text-base font-bold text-[#15799F] transition-colors hover:bg-sky-50"
+                    >
+                      {PROGRAM_ENROLL_CTA}
+                    </Link>
+                  </div>
+                  <p className="mt-3 text-center text-xs text-muted-foreground">
+                    Start free · <Link to={PROGRAM_PRICING_PATH} className="font-semibold text-[#1A8FC4] hover:underline">Full pricing details</Link>
+                  </p>
                 </div>
               </div>
             </FadeUp>

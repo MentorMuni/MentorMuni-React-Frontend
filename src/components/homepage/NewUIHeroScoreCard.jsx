@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { HERO_SCORE_SAMPLE_LABEL } from '../../constants/brandCopy';
 
 const RING_SIZE = 128;
 const STROKE = 10;
@@ -64,11 +65,11 @@ export function NewUIHeroScoreCard({ className = '', preview }) {
         <div
           className="mm-hero-readiness-card mm-new-ui-readiness-card relative overflow-hidden rounded-[20px] p-4 backdrop-blur-xl sm:p-5"
           role="img"
-          aria-label={`Sample readiness check score preview: ${score} out of 100`}
+          aria-label={`${HERO_SCORE_SAMPLE_LABEL}. Example score: ${score} out of 100`}
         >
           <div className="relative mb-4 flex flex-wrap items-center justify-between gap-2 border-b pb-3 mm-score-widget-divider">
             <span className="text-[10px] font-semibold uppercase tracking-[0.18em] mm-score-widget-eyebrow">
-              Your readiness check
+              {HERO_SCORE_SAMPLE_LABEL}
             </span>
             <span className="mm-score-widget-badge inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[10px] font-semibold">
               <span className="mm-score-widget-badge-dot h-1.5 w-1.5 shrink-0 rounded-full" aria-hidden />

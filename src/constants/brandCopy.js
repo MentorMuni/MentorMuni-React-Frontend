@@ -62,11 +62,11 @@ export const HERO_SOLUTION =
   'A free score, your gaps by topic, and what to fix first—then mocks and mentors when you want more.';
 export const HERO_PROOF_STAT = '~5 min · Free · No signup · Instant score';
 
-/** Homepage hero — trust bullets (numbers + proof) */
+/** Homepage hero — trust bullets (honest; no unverified lift claims) */
 export const HERO_PROOF_BULLETS = [
   'Free · No signup · ~5 min',
-  'Typical focused lift: 40% → 75% readiness',
-  '500+ mock rounds logged on the platform',
+  'Founding batch · limited seats per cohort',
+  'Measure → gap report → structured reps',
 ];
 
 /** Homepage hero — one line under CTAs (scannable; avoid bullet walls) */
@@ -163,7 +163,7 @@ export const HOW_IT_WORKS_HEADLINE =
 
 /** One paragraph under HOW_IT_WORKS_HEADLINE on homepage */
 export const HOW_IT_WORKS_SUB =
-  'Everything else supports that path. Mocks, resume checks, and tutorials are secondary — the conversion engine is: take the readiness check, see your gap, then join the 60-day interview readiness system if you want structured reps.';
+  'Everything else supports that path. Mocks, resume checks, and tutorials are secondary — the conversion engine is: take the readiness check, see your gap, then join the 5-week interview readiness program if you want structured reps.';
 
 /** Homepage — fit block (who it’s for / not for); uses same product name as READINESS_CHECK_PRODUCT_NOUN */
 export const REALITY_CHECK_EYEBROW = 'After your readiness check';
@@ -183,7 +183,7 @@ export const REALITY_CHECK_FOR_ITEMS = [
   "You've prepared but keep getting rejected — and don't know why",
   'You blank under pressure even when you know the answer',
   'You want to know exactly where you stand — not guess',
-  "You're willing to work hard for 60 days to change your outcome",
+  "You're willing to work hard for 5 focused weeks to change your outcome",
   'You want an offer at a company worth joining — not just any job',
 ];
 export const REALITY_CHECK_CTA = PRIMARY_CTA_LABEL;
@@ -211,42 +211,97 @@ export const HR_READINESS_POINTS = [
   },
 ];
 
-/** Homepage — 60-day interview readiness program (timeline + pricing card) */
-export const PROGRAM_6WEEK_EYEBROW = 'The 60-day system';
+/**
+ * Paid program — single public offer (homepage + /pricing).
+ * Legacy export names use PROGRAM_6WEEK_*; duration is 5 weeks.
+ */
+export const PROGRAM_6WEEK_EYEBROW = 'The 5-week system';
 export const PROGRAM_6WEEK_HEADLINE = 'From your score to real interview performance.';
 export const PROGRAM_6WEEK_SUB =
-  'Structured, mentor-guided execution — not a “course” you half-watch. Built around your readiness-check score. Every week has a job to do.';
+  'Structured, mentor-guided execution — not a “course” you half-watch. Built around your readiness-check score. One price, one program — no hidden tiers.';
 export const PROGRAM_6WEEK_PHASES = [
   {
-    title: 'Days 1–15: Gap audit + foundation fix',
-    body:
-      'Deep dive into your lowest-scoring area. Targeted drills, not random problems.',
+    title: 'Week 1: Gap audit + foundation fix',
+    body: 'Deep dive into your lowest-scoring area. Targeted drills, not random problems.',
   },
   {
-    title: 'Days 16–30: Answer structure + daily reps',
-    body:
-      'Frame and deliver answers under time. Mock sessions with rubric scoring — not passive videos.',
+    title: 'Week 2: Answer structure + daily reps',
+    body: 'Frame and deliver answers under time. Mock sessions with rubric scoring — not passive videos.',
   },
   {
-    title: 'Days 31–45: Full mock interview rounds',
-    body:
-      'End-to-end simulations. Scores tracked. Mentor review after every round.',
+    title: 'Week 3: Full mock interview rounds',
+    body: 'End-to-end simulations. Scores tracked. Mentor review after every round.',
   },
   {
-    title: 'Days 46–60: Offer readiness sprint',
-    body:
-      'Company-specific preparation, negotiation basics, and the mindset to close the loop.',
+    title: 'Week 4: Company-specific prep',
+    body: 'Tracks for service MNCs and product roles — aptitude, technical, and HR aligned to your targets.',
+  },
+  {
+    title: 'Week 5: Offer readiness sprint',
+    body: 'Final re-test, negotiation basics, and closing the loop with mentor accountability.',
   },
 ];
 export const PROGRAM_6WEEK_CARD_BADGE = 'Structured program';
-export const PROGRAM_6WEEK_CARD_TITLE = '60-Day Interview Readiness Program';
-/** Public offer shown on homepage pricing card */
-export const PROGRAM_6WEEK_PRICE_MAIN = '₹5,999';
-export const PROGRAM_6WEEK_PRICE_MAIN_SUFFIX = 'one-time';
-export const PROGRAM_6WEEK_PRICE_STRIKE = '₹9,999 — Early bird pricing';
-/** Single line instead of a long checklist on the homepage */
+export const PROGRAM_6WEEK_CARD_TITLE = '5-Week Interview Readiness Program';
+export const PROGRAM_6WEEK_PRICE_MAIN = '₹9,999';
+export const PROGRAM_6WEEK_PRICE_MAIN_SUFFIX = 'one-time · all inclusive';
+/** @deprecated No tiered/strike pricing — kept empty for layout guards */
+export const PROGRAM_6WEEK_PRICE_STRIKE = '';
 export const PROGRAM_6WEEK_SUMMARY =
-  'Includes your roadmap, scored mocks, weekly mentor sessions, answer modules, a final re-test, and a small accountability group across 60 days.';
+  'Roadmap from your score, weekly mentor sessions, unlimited AI mocks, scored mock rounds, resume & HR prep, and mentorship support through your placement journey.';
+export const PROGRAM_6WEEK_INCLUDES = [
+  'Personalised roadmap from your readiness score',
+  'Weekly 1:1 mentor sessions',
+  'Unlimited AI mock interviews',
+  'Scored mock rounds with mentor review',
+  'Resume + HR round preparation',
+  'Support through your placement journey',
+];
+export const PROGRAM_ENROLL_CTA = 'Enroll — ₹9,999 total';
+export const PROGRAM_ENROLL_PATH = '/contact';
+export const PROGRAM_PRICING_PATH = '/pricing';
+
+/** /pricing page — shared with homepage */
+export const PRICING_PAGE_HERO_SUB = 'One paid program. Start free. Upgrade when you have seen your score.';
+export const PRICING_PAID_PLAN_FEATURES = [
+  { yes: true, text: 'Everything in the free readiness check + gap report' },
+  { yes: true, text: '5-week structured roadmap from your score' },
+  { yes: true, text: 'Weekly 1:1 mentor sessions (WhatsApp access)' },
+  { yes: true, text: 'Unlimited AI mock interviews' },
+  { yes: true, text: 'Scored mock rounds + mentor review' },
+  { yes: true, text: 'Resume + LinkedIn review' },
+  { yes: true, text: 'Mentorship support through your placement journey' },
+];
+export const PRICING_VALUE_ROWS = [
+  { label: '5 × weekly 1-on-1 mentor sessions', market: '₹15,000' },
+  { label: 'AI mock interviews (unlimited)', market: '₹6,000' },
+  { label: 'Industry expert mock + review', market: '₹4,000' },
+  { label: 'Resume + LinkedIn review', market: '₹3,000' },
+  { label: 'Placement-track prep (5 weeks)', market: '₹5,000' },
+];
+export const PRICING_MARKET_TOTAL = '₹33,000';
+export const PRICING_FAQ_ITEMS = [
+  {
+    q: 'Is ₹9,999 the total? Any hidden charges?',
+    a: '₹9,999 is the complete 5-week program. No registration fee, no per-session upsells, and no “premium tier” locked behind another payment.',
+  },
+  {
+    q: "What if I don't get placed right away?",
+    a: "We don't guarantee a job or offer refunds for non-placement. Our commitment is sustained mentorship and support through your placement journey — sessions, mocks, and guidance while you are actively preparing and applying.",
+  },
+  {
+    q: 'What makes this different from YouTube + LeetCode?',
+    a: 'YouTube cannot score your readiness or name your gaps. LeetCode does not train HR rounds or live answer delivery. We measure you first, then mentor-led reps close the gap — with mocks that score how you perform under pressure.',
+  },
+  {
+    q: 'Should I take the free check before enrolling?',
+    a: 'Yes — always. The free readiness check (~5 min, no signup) shows where you stand. Enroll in the 5-week program when you want structured mentor support to fix those gaps.',
+  },
+  {
+    q: 'How do I pay?',
+    a: 'Contact us to enroll. We accept UPI, card, and net banking; receipt and onboarding details are shared after payment confirmation.',
+  },
+];
 
 /**
  * Homepage hero — personalized by academic year or experience level.
@@ -451,7 +506,10 @@ export const FINAL_CTA_HEADLINE = 'Know the gap before the panel does.';
 export const FINAL_CTA_HEADLINE_ACCENT =
   'Take the free readiness check — then go deeper only if the gap is real.';
 export const FINAL_CTA_BODY =
-  'One score, one honest gap list, then optional mocks and the 60-day system. No infinite tabs. No pretend progress.';
+  'One score, one honest gap list, then optional mocks and the 5-week program if you want structured mentor support. No infinite tabs. No pretend progress.';
+
+/** Hero score widget — demo only (not the visitor's score) */
+export const HERO_SCORE_SAMPLE_LABEL = 'Sample preview — take the free check for your score';
 
 /** Footer / nav: name of the free assessment product (not “mock interviews”) */
 export const PRODUCT_READINESS_SCORE = 'Readiness check';
@@ -460,12 +518,12 @@ export const PRODUCT_READINESS_SCORE = 'Readiness check';
 export const CONTACT_EMAIL = 'enroll@mentormuni.com';
 export const CONTACT_EMAIL_HREF = 'mailto:enroll@mentormuni.com';
 
-export const CONTACT_PHONE_DISPLAY = '+91 91464 21302';
-export const CONTACT_PHONE_HREF = 'tel:+919146421302';
+export const CONTACT_PHONE_DISPLAY = '+91 90093 55103';
+export const CONTACT_PHONE_HREF = 'tel:+919009355103';
 
 /** WhatsApp (India) — same number as phone; pre-filled message for one tap */
 export const CONTACT_WHATSAPP_HREF =
-  'https://wa.me/919146421302?text=' +
+  'https://wa.me/919009355103?text=' +
   encodeURIComponent('Hi MentorMuni — I have a question about interview preparation.');
 export const CONTACT_WHATSAPP_LABEL = 'WhatsApp us';
 

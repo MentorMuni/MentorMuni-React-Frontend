@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
+import { HERO_SCORE_SAMPLE_LABEL } from '../../constants/brandCopy';
 
 const RING_SIZE = 128;
 const STROKE = 10;
@@ -62,14 +63,14 @@ export function ClassicHeroScoreCard({ className = '', preview }) {
         <div
           className="relative overflow-hidden rounded-[20.5px] border border-white/80 bg-white/95 p-4 backdrop-blur-sm sm:p-5"
           role="img"
-          aria-label={`Sample readiness check score preview: ${score} out of 100`}
+          aria-label={`${HERO_SCORE_SAMPLE_LABEL}. Example score: ${score} out of 100`}
         >
           <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-sky-200/30 blur-3xl" aria-hidden />
           <div className="pointer-events-none absolute -bottom-12 -left-10 h-32 w-32 rounded-full bg-cyan-200/25 blur-3xl" aria-hidden />
 
           <div className="relative mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-neutral-100/90 pb-3">
             <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-              Your readiness check
+              {HERO_SCORE_SAMPLE_LABEL}
             </span>
             <span className="rounded-full bg-gradient-to-r from-sky-50 to-cyan-50 px-3 py-1 text-[10px] font-semibold text-[#15799F] ring-1 ring-sky-200/90 shadow-sm">
               Scored in ~5 min
