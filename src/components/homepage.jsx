@@ -891,16 +891,23 @@ const HomePage = () => {
                       onClick={scrollToHomepagePricing}
                       className="font-semibold text-[#1A8FC4] underline decoration-[#2AAA8A]/45 underline-offset-[4px] transition hover:text-[#15799F] bg-transparent border-0 p-0 cursor-pointer font-inherit text-inherit"
                     >
-                      {PROGRAM_6WEEK_CARD_TITLE} · {PROGRAM_6WEEK_PRICE_MAIN}
+                      60-day placement program
                     </button>
                     <span className="text-neutral-400"> · </span>
-                    <Link to={PROGRAM_PRICING_PATH} className="font-semibold text-[#1A8FC4] hover:text-[#15799F]">
-                      See pricing
+                    <Link to="/contact" className="font-semibold text-[#1A8FC4] hover:text-[#15799F]">
+                      {SECONDARY_CTA_BOOK_CALL}
                     </Link>
-                    <span className="block sm:inline mt-1 sm:mt-0">
-                      <span className="hidden sm:inline text-neutral-400"> · </span>
-                      {HERO_PROOF_ONE_LINER}
-                    </span>
+                    <span className="text-neutral-400"> · </span>
+                    <a
+                      href={CONTACT_WHATSAPP_HREF}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-semibold text-[#15803d] hover:underline"
+                    >
+                      {CONTACT_WHATSAPP_LABEL}
+                    </a>
+                    <span className="hidden sm:inline text-neutral-400"> · </span>
+                    <span className="block sm:inline mt-1 sm:mt-0">{HERO_PROOF_ONE_LINER}</span>
                   </p>
                 </motion.div>
               </div>
