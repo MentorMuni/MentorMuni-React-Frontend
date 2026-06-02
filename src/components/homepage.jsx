@@ -788,7 +788,13 @@ const HomePage = () => {
                   <span className="typo-display block text-neutral-900 leading-[1.06] tracking-tight">
                     {HERO_HEADLINE_LINE1}
                   </span>
-                  <span className="typo-display mt-1 block leading-[1.06] tracking-tight mm-gradient-text-brand">
+                  <span
+                    className={
+                      newUI
+                        ? 'typo-display mt-1 block leading-[1.06] tracking-tight mm-hero-accent-new-ui'
+                        : 'typo-display mt-1 block leading-[1.06] tracking-tight mm-gradient-text-brand'
+                    }
+                  >
                     {HERO_HEADLINE_LINE2}
                   </span>
                   <span className="mt-2 block text-base font-medium text-neutral-600 sm:text-lg">

@@ -202,9 +202,18 @@ html.mm-new-ui .mm-marketing-hero-backdrop {
   background-image: none !important;
 }
 
-html.mm-new-ui .mm-new-ui-hero .typo-display,
+html.mm-new-ui .mm-new-ui-hero .typo-display:not(.mm-gradient-text-brand):not(.mm-hero-accent-new-ui),
 html.mm-new-ui .mm-new-ui-hero .text-neutral-900 {
   color: var(--text-heading) !important;
+}
+
+/* Gradient headline lines — must stay transparent for background-clip: text */
+html.mm-new-ui .mm-gradient-text-brand,
+html.mm-new-ui .mm-new-ui-hero .mm-gradient-text-brand {
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
 }
 
 html.mm-new-ui .mm-new-ui-hero .text-neutral-600,

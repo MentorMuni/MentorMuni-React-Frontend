@@ -381,6 +381,10 @@ html.mm-new-ui .mm-gradient-text-brand {
     #fbbf24 100%
   );
   background-size: 200% auto;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
 }
 
 html.mm-new-ui .mm-trust-pill {
