@@ -20,6 +20,7 @@ import { isNavActive } from '../utils/navRouteMatch';
 import { PRIMARY_CTA_LABEL, READINESS_TEST_COUPON_BADGE } from '../constants/brandCopy';
 import LimitedRewardLabel from './LimitedRewardLabel';
 import NavDropdownPortal from './navbar/NavDropdownPortal';
+import { useScrolledHeader } from '../hooks/useScrolledHeader';
 
 /** Secondary links — desktop dropdown to avoid a crowded top bar */
 const MORE_LINKS = [
@@ -29,6 +30,14 @@ const MORE_LINKS = [
 ];
 
 const TOOLS = [
+  {
+    icon: BookOpen,
+    color: 'text-primary',
+    bg: 'bg-accent-soft',
+    title: 'All free tools',
+    desc: 'Readiness, mocks, ATS, tutorials — one hub',
+    href: '/tools',
+  },
   {
     icon: BarChart2,
     color: 'text-primary',
@@ -168,9 +177,14 @@ const Navbar = () => {
   };
 
   const navMenuOpen = toolsOpen || moreOpen;
+  const headerScrolled = useScrolledHeader();
 
   return (
-    <header className={`mm-sticky-header${navMenuOpen ? ' mm-sticky-header--menu-open' : ''}`}>
+    <header
+      className={`mm-sticky-header${navMenuOpen ? ' mm-sticky-header--menu-open' : ''}${
+        headerScrolled ? ' mm-sticky-header--scrolled' : ''
+      }`}
+    >
       <div className="mm-container">
         <div className="mm-header-bar flex min-h-[4rem] min-w-0 items-center gap-[clamp(0.5rem,2cqi,1.5rem)] py-1">
           <Link
@@ -212,7 +226,7 @@ const Navbar = () => {
                 onClick={() => setToolsOpen(v => !v)}
                 aria-expanded={toolsOpen}
                 aria-haspopup="true"
-                className={`relative z-[1] inline-flex items-center gap-1 text-[0.9375rem] font-medium transition-colors ${
+                className={`mm-nav-trigger relative z-[1] inline-flex items-center gap-1 text-[0.9375rem] font-medium transition-colors ${
                   toolsOpen
                     ? 'text-primary'
                     : 'text-gray-700 hover:text-primary'
@@ -275,7 +289,7 @@ const Navbar = () => {
                 aria-expanded={moreOpen}
                 aria-haspopup="true"
                 aria-label="Colleges, about, and contact"
-                className={`relative z-[1] inline-flex items-center gap-1 text-[0.9375rem] font-medium whitespace-nowrap transition-colors ${
+                className={`mm-nav-trigger relative z-[1] inline-flex items-center gap-1 text-[0.9375rem] font-medium whitespace-nowrap transition-colors ${
                   moreOpen || moreMenuActive
                     ? 'text-primary'
                     : 'text-gray-700 hover:text-primary'
@@ -377,15 +391,21 @@ const Navbar = () => {
               {navItems.map((item) => {
                 const linkActive = isActive(item.path, item.exact);
                 return (
-                  <Link
+                  <motion.div
                     key={item.path}
-                    to={item.path}
-                    onClick={handleNavClick}
-                    className={navLinkClassMobile(item)}
-                    aria-current={linkActive ? 'page' : undefined}
+                    initial={{ opacity: 0, x: -12 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.04, duration: 0.28 }}
                   >
-                    {item.label}
-                  </Link>
+                    <Link
+                      to={item.path}
+                      onClick={handleNavClick}
+                      className={navLinkClassMobile(item)}
+                      aria-current={linkActive ? 'page' : undefined}
+                    >
+                      {item.label}
+                    </Link>
+                  </motion.div>
                 );
               })}
 

@@ -38,7 +38,7 @@ const FadeUp = ({ children, delay = 0, className = '' }) => {
 };
 
 const inputBase =
-  'w-full rounded-xl border border-border bg-white px-3.5 py-2.5 text-[15px] text-foreground shadow-sm transition-[box-shadow,border-color] outline-none placeholder:text-muted-foreground focus:border-[#FFB347] focus:ring-2 focus:ring-[#FF9500]/20';
+  'mm-surface-input w-full rounded-xl border border-border bg-card px-3.5 py-2.5 text-[15px] text-foreground shadow-sm transition-[box-shadow,border-color] outline-none placeholder:text-muted-foreground focus:border-cta-mid focus:ring-2 focus:ring-cta/20';
 
 const AUDIENCES = [
   { id: 'students', param: null, label: 'Students & learners', short: 'Learners', Icon: UserRound },
@@ -200,7 +200,7 @@ const ContactPage = () => {
     }`;
 
   const linkClass =
-    'font-semibold text-[#c2410c] underline decoration-[#FFB347]/55 underline-offset-[3px] transition hover:text-[#E88600]';
+    'font-semibold text-cta underline decoration-cta/40 underline-offset-[3px] transition hover:text-cta-hover';
 
   const selectAudience = (id) => {
     if (id !== audience) {
@@ -337,15 +337,15 @@ const ContactPage = () => {
         <div className="relative z-10 mx-auto max-w-5xl px-5 py-10 sm:px-6 sm:py-12 lg:px-8">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
-              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-cyan-200/80 bg-cyan-50/90 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-cyan-900">
-                <Mail className="h-3.5 w-3.5 text-[#1A8FC4]" aria-hidden />
+              <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-accent-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground">
+                <Mail className="h-3.5 w-3.5 text-primary" aria-hidden />
                 Contact MentorMuni
               </div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#EA580C]">{hero.eyebrow}</p>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-warning-text">{hero.eyebrow}</p>
               <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground sm:text-4xl">
                 {hero.title}
               </h1>
-              <p className="mt-3 text-base leading-relaxed sm:text-[17px]">{hero.subtitle}</p>
+              <p className="mt-3 text-base leading-relaxed text-muted-foreground sm:text-[17px]">{hero.subtitle}</p>
               {audience === 'students' && (
                 <p className="mt-4 text-sm text-muted-foreground">
                   <Link to="/start-assessment" className={linkClass}>
@@ -369,7 +369,7 @@ const ContactPage = () => {
             <div className="w-full max-w-md shrink-0 lg:max-w-sm">
               <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">I am contacting as</p>
               <div
-                className="inline-flex w-full rounded-xl border border-border bg-white/90 p-1 shadow-sm backdrop-blur-sm"
+                className="inline-flex w-full rounded-xl border border-border bg-card/90 p-1 shadow-sm backdrop-blur-sm"
                 role="tablist"
                 aria-label="Contact audience"
               >
@@ -415,16 +415,16 @@ const ContactPage = () => {
                 <div className="mt-6 space-y-3">
                   <a
                     href={CONTACT_EMAIL_HREF}
-                    className="group flex gap-4 rounded-xl border border-border bg-white p-4 transition hover:border-[#FF9500]/40 hover:bg-secondary/50"
+                    className="group flex gap-4 rounded-xl border border-border bg-background p-4 transition hover:border-cta/40 hover:bg-secondary/50"
                   >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-[#15799F] transition group-hover:bg-[#FF9500]/10 group-hover:text-[#EA580C]">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-primary transition group-hover:bg-cta/10 group-hover:text-warning-text">
                       <Mail className="h-4 w-4" strokeWidth={2} aria-hidden />
                     </span>
                     <span className="min-w-0">
                       <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                         Email
                       </span>
-                      <span className="mt-0.5 block text-[15px] font-semibold text-foreground group-hover:text-[#EA580C]">
+                      <span className="mt-0.5 block text-[15px] font-semibold text-foreground group-hover:text-warning-text">
                         {CONTACT_EMAIL}
                       </span>
                       <span className="mt-0.5 block text-xs text-muted-foreground">
@@ -435,16 +435,16 @@ const ContactPage = () => {
 
                   <a
                     href={CONTACT_PHONE_HREF}
-                    className="group flex gap-4 rounded-xl border border-border bg-white p-4 transition hover:border-[#FF9500]/40 hover:bg-secondary/50"
+                    className="group flex gap-4 rounded-xl border border-border bg-background p-4 transition hover:border-cta/40 hover:bg-secondary/50"
                   >
-                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-[#15799F] transition group-hover:bg-[#FF9500]/10 group-hover:text-[#EA580C]">
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-accent-soft text-primary transition group-hover:bg-cta/10 group-hover:text-warning-text">
                       <Phone className="h-4 w-4" strokeWidth={2} aria-hidden />
                     </span>
                     <span className="min-w-0">
                       <span className="block text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                         Phone
                       </span>
-                      <span className="mt-0.5 block text-[15px] font-semibold text-foreground group-hover:text-[#EA580C]">
+                      <span className="mt-0.5 block text-[15px] font-semibold text-foreground group-hover:text-warning-text">
                         {CONTACT_PHONE_DISPLAY}
                       </span>
                       <span className="mt-0.5 block text-xs text-muted-foreground">Mon–Fri · 9am–6pm IST</span>
@@ -456,12 +456,12 @@ const ContactPage = () => {
 
             <FadeUp delay={0.06}>
               <div className="rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)]">
-                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-[#EA580C]">{whyReachOutTitle}</h2>
-                <ul className="mt-5 space-y-3 border-t border-border pt-6 text-sm leading-relaxed">
+                <h2 className="text-xs font-bold uppercase tracking-[0.14em] text-warning-text">{whyReachOutTitle}</h2>
+                <ul className="mt-5 space-y-3 border-t border-border pt-6 text-sm leading-relaxed text-muted-foreground">
                   {whyReachOutLines[audience].map((line, i) => (
                     <li key={line} className="flex gap-2.5">
                       <span
-                        className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${i % 2 === 0 ? 'bg-[#FF9500]' : 'bg-cyan-500'}`}
+                        className={`mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${i % 2 === 0 ? 'bg-cta' : 'bg-primary'}`}
                         aria-hidden
                       />
                       <span>{line}</span>
@@ -474,9 +474,9 @@ const ContactPage = () => {
 
           <FadeUp delay={0.04}>
             <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-[0_8px_32px_rgba(15,23,42,0.06)]">
-              <div className="border-b border-border bg-gradient-to-br from-secondary via-white to-cyan-50/40 px-6 py-4 sm:px-8">
+              <div className="border-b border-border bg-gradient-to-br from-secondary via-background to-accent-soft/40 px-6 py-4 sm:px-8">
                 <h2 className="text-lg font-bold tracking-tight text-foreground">{fc.title}</h2>
-                <p className="mt-1 text-sm leading-relaxed">{fc.description}</p>
+                <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{fc.description}</p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5 px-6 py-6 sm:px-8 sm:py-8">
@@ -581,7 +581,7 @@ const ContactPage = () => {
                   <button
                     type="button"
                     onClick={handleReset}
-                    className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-border bg-white px-5 py-2.5 text-sm font-semibold text-foreground transition hover:border-[#FFB347] hover:bg-secondary"
+                    className="mm-btn-secondary inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl border border-border bg-card px-5 py-2.5 text-sm font-semibold text-foreground transition hover:border-cta-mid hover:bg-secondary"
                   >
                     <RotateCcw className="h-4 w-4" strokeWidth={2} aria-hidden />
                     Clear

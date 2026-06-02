@@ -1,20 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, CheckCircle2, ArrowRight, ChevronDown } from 'lucide-react';
+import { CheckCircle2, ArrowRight } from 'lucide-react';
 import logo from '../assets/logo.png';
 import RoutePageShell from './layout/RoutePageShell';
-
-const NAV_LINKS = [
-  { label: 'Home', to: '/' },
-  { label: 'Interview Readiness', to: '/interview-readiness-tools' },
-  { label: 'Outcomes', to: '/outcomes' },
-  { label: 'Contact', to: '/contact' },
-];
+import TutorialBackLink from './layout/TutorialBackLink';
 
 const CoursesPage = () => {
-  const [isNavOpen, setIsNavOpen] = useState(false);
-  const [isCoursesDropdownOpen, setIsCoursesDropdownOpen] = useState(false);
-
   const courses = [
     {
       title: "Placement Preparation",
@@ -62,81 +53,12 @@ const CoursesPage = () => {
 
   return (
     <RoutePageShell scope="inner" className="text-muted-foreground">
-      <header className="mm-sticky-header px-5 py-2">
-        <div className="max-w-[1200px] mx-auto flex items-center justify-between py-2">
-          <Link to="/">
-            <img src={logo} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain transition-transform hover:scale-105" />
-          </Link>
-
-          <nav className="hidden md:flex items-center gap-7">
-            {NAV_LINKS.map((item) => (
-              <Link
-                key={item.to}
-                to={item.to}
-                className="text-sm font-semibold text-muted-foreground hover:text-[#FF9500] transition-colors"
-              >
-                {item.label}
-              </Link>
-            ))}
-
-            <div className="relative group">
-              <button type="button" className="text-sm font-semibold text-[#FF9500] flex items-center gap-1 hover:text-[#E88600] transition-colors">
-                Courses
-                <ChevronDown size={16} className="group-hover:rotate-180 transition-transform" />
-              </button>
-              <div className="absolute left-0 mt-0 w-48 bg-white border border-border rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                <Link
-                  to="/placement-tracks"
-                  className="block px-4 py-3 text-sm font-semibold text-foreground hover:text-[#FF9500] hover:bg-[#FFF4E0] first:rounded-t-lg transition-colors"
-                >
-                  Placement Tracks
-                </Link>
-                <Link
-                  to="/free-tutorials"
-                  className="block px-4 py-3 text-sm font-semibold text-foreground hover:text-[#FF9500] hover:bg-[#FFF4E0] last:rounded-b-lg transition-colors"
-                >
-                  Free Tutorials
-                </Link>
-              </div>
-            </div>
-          </nav>
-
-          <button type="button" className="md:hidden text-foreground" onClick={() => setIsNavOpen(!isNavOpen)}>
-            {isNavOpen ? <X size={28} /> : <Menu size={28} />}
-          </button>
-        </div>
-
-        {isNavOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-background border-b border-border p-5 flex flex-col gap-4 shadow-2xl">
-            {NAV_LINKS.map((item) => (
-              <Link key={item.to} to={item.to} className="font-bold text-muted-foreground hover:text-[#FF9500]" onClick={() => setIsNavOpen(false)}>
-                {item.label}
-              </Link>
-            ))}
-
-            <div className="border-t border-border pt-4">
-              <button
-                type="button"
-                onClick={() => setIsCoursesDropdownOpen(!isCoursesDropdownOpen)}
-                className="font-bold text-[#FF9500] hover:text-[#E88600] flex items-center gap-2 w-full"
-              >
-                Courses
-                <ChevronDown size={16} className={isCoursesDropdownOpen ? 'rotate-180' : ''} />
-              </button>
-              {isCoursesDropdownOpen && (
-                <div className="pl-4 space-y-2 pt-2">
-                  <Link to="/placement-tracks" className="block text-sm font-semibold text-foreground hover:text-[#FF9500] p-2" onClick={() => setIsNavOpen(false)}>
-                    Placement Tracks
-                  </Link>
-                  <Link to="/free-tutorials" className="block text-sm font-semibold text-foreground hover:text-[#FF9500] p-2" onClick={() => setIsNavOpen(false)}>
-                    Free Tutorials
-                  </Link>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </header>
+      <TutorialBackLink
+        to="/placement-tracks"
+        label="← Back to Placement Tracks"
+        ariaLabel="Courses navigation"
+        className="max-w-[1200px]"
+      />
 
       <main className="max-w-[1200px] mx-auto px-6 py-16 md:py-24">
         <div className="text-center mb-16">

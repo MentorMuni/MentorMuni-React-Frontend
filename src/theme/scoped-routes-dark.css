@@ -96,3 +96,104 @@ html.mm-new-ui .mm-site-theme:not(.mm-marketing-flow):not(.mm-inner-route):not(.
 html.mm-new-ui .mm-roadmap-page .bg-white {
   background-color: rgba(15, 23, 42, 0.72) !important;
 }
+
+/* ── About / Contact: neutral & cyan ink on dark surfaces ─────────────── */
+html.mm-new-ui .mm-marketing-flow .text-neutral-900,
+html.mm-new-ui .mm-marketing-flow .text-neutral-800,
+html.mm-new-ui .mm-inner-route .text-neutral-900,
+html.mm-new-ui .mm-inner-route .text-neutral-800 {
+  color: var(--text-heading) !important;
+}
+
+html.mm-new-ui .mm-marketing-flow [class*='text-cyan-9'],
+html.mm-new-ui .mm-marketing-flow [class*='text-cyan-950'],
+html.mm-new-ui .mm-inner-route [class*='text-cyan-9'] {
+  color: var(--text-body) !important;
+}
+
+html.mm-new-ui .mm-marketing-flow [class*='bg-cyan-50'],
+html.mm-new-ui .mm-marketing-flow [class*='to-cyan-50'],
+html.mm-new-ui .mm-inner-route [class*='bg-cyan-50'] {
+  background-color: rgba(56, 189, 248, 0.1) !important;
+}
+
+html.mm-new-ui .mm-marketing-flow [class*='border-cyan-200'],
+html.mm-new-ui .mm-inner-route [class*='border-cyan-200'] {
+  border-color: rgba(56, 189, 248, 0.28) !important;
+}
+
+/* Brand orange / teal accents — readable on dark */
+html.mm-new-ui .mm-marketing-flow [class*='text-[#EA580C]'],
+html.mm-new-ui .mm-marketing-flow [class*='text-[#CC7000]'],
+html.mm-new-ui .mm-marketing-flow [class*='text-[#c2410c]'],
+html.mm-new-ui .mm-marketing-flow [class*='hover:text-[#EA580C]'],
+html.mm-new-ui .mm-marketing-flow [class*='hover:text-[#E88600]'],
+html.mm-new-ui .mm-inner-route [class*='text-[#EA580C]'],
+html.mm-new-ui .mm-inner-route [class*='text-[#CC7000]'] {
+  color: var(--warning-text) !important;
+}
+
+html.mm-new-ui .mm-marketing-flow [class*='text-[#15799F]'],
+html.mm-new-ui .mm-marketing-flow [class*='text-[#1A8FC4]'],
+html.mm-new-ui .mm-inner-route [class*='text-[#15799F]'],
+html.mm-new-ui .mm-inner-route [class*='text-[#1A8FC4]'] {
+  color: var(--accent) !important;
+}
+
+html.mm-new-ui .mm-marketing-flow [class*='text-[#FF9500]']:not(.text-white),
+html.mm-new-ui .mm-inner-route [class*='text-[#FF9500]']:not(.text-white) {
+  color: var(--warning-text) !important;
+}
+
+/* Warm tint panels (#FFF4E0, #FFFBF5, #FAFAFA) */
+html.mm-new-ui .mm-marketing-flow [class*='bg-[#FFF4E0]'],
+html.mm-new-ui .mm-marketing-flow [class*='from-[#FFF4E0]'],
+html.mm-new-ui .mm-marketing-flow [class*='to-[#FFFBF5]'],
+html.mm-new-ui .mm-marketing-flow [class*='to-[#FFE8C8]'],
+html.mm-new-ui .mm-marketing-flow [class*='bg-[#FAFAFA]'],
+html.mm-new-ui .mm-inner-route [class*='bg-[#FFF4E0]'] {
+  background-color: var(--warning-bg) !important;
+}
+
+html.mm-new-ui .mm-marketing-flow [class*='from-white'],
+html.mm-new-ui .mm-marketing-flow [class*='via-white'],
+html.mm-new-ui .mm-marketing-flow [class*='to-white']:not([class*='text-white']),
+html.mm-new-ui .mm-inner-route [class*='from-white'],
+html.mm-new-ui .mm-inner-route [class*='via-white'] {
+  --tw-gradient-from: rgba(15, 23, 42, 0.9) var(--tw-gradient-from-position) !important;
+  --tw-gradient-via: rgba(17, 28, 48, 0.75) var(--tw-gradient-via-position) !important;
+  --tw-gradient-to: rgba(12, 18, 34, 0.85) var(--tw-gradient-to-position) !important;
+}
+
+html.mm-new-ui .mm-marketing-flow [class*='hover:bg-cyan-50'],
+html.mm-new-ui .mm-inner-route [class*='hover:bg-cyan-50'] {
+  background-color: rgba(56, 189, 248, 0.08) !important;
+}
+
+/* Form status banners */
+html.mm-new-ui .mm-marketing-flow [class*='bg-emerald-50'],
+html.mm-new-ui .mm-inner-route [class*='bg-emerald-50'] {
+  background-color: var(--success-bg) !important;
+  border-color: rgba(34, 197, 94, 0.35) !important;
+}
+
+html.mm-new-ui .mm-marketing-flow [class*='text-emerald-900'],
+html.mm-new-ui .mm-inner-route [class*='text-emerald-900'] {
+  color: var(--success) !important;
+}
+
+html.mm-new-ui .mm-marketing-flow [class*='bg-rose-50'],
+html.mm-new-ui .mm-inner-route [class*='bg-rose-50'] {
+  background-color: rgba(244, 63, 94, 0.12) !important;
+  border-color: rgba(244, 63, 94, 0.35) !important;
+}
+
+html.mm-new-ui .mm-marketing-flow [class*='text-rose-900'],
+html.mm-new-ui .mm-inner-route [class*='text-rose-900'] {
+  color: #fda4af !important;
+}
+
+html.mm-new-ui .mm-marketing-flow [class*='text-rose-600'],
+html.mm-new-ui .mm-inner-route [class*='text-rose-600'] {
+  color: #fb7185 !important;
+}

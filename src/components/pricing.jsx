@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import InnerRouteShell from './new-ui/InnerRouteShell';
+import MarketingHeroMotion from './layout/MarketingHeroMotion';
+import StaggerGrid from './layout/StaggerGrid';
+import FadeUp from './layout/FadeUp';
 import {
   PRIMARY_CTA_LABEL,
   MISSION_TAGLINE,
@@ -62,9 +65,11 @@ const PricingPage = () => {
   return (
     <InnerRouteShell scope="inner" className="mm-site-theme min-h-screen overflow-x-hidden">
 
-      <section className="mm-marketing-hero-backdrop border-b border-border">
-        <div className="relative z-10 mx-auto max-w-3xl px-6 pb-10 pt-20 text-center">
-          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/10 px-4 py-1.5 text-sm font-semibold text-emerald-800">
+      <section className="mm-marketing-hero-backdrop mm-hero-premium border-b border-border">
+        <div className="mm-hero-mesh" aria-hidden />
+        <div className="mm-hero-dot-grid" aria-hidden />
+        <MarketingHeroMotion className="relative z-10 mx-auto max-w-3xl px-6 pb-10 pt-20 text-center">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/10 px-4 py-1.5 text-sm font-semibold text-emerald-800 mm-float-soft">
             <ShieldCheck size={15} className="text-emerald-700" />
             One program · {PROGRAM_6WEEK_PRICE_MAIN} total
           </div>
@@ -76,10 +81,10 @@ const PricingPage = () => {
           </h1>
           <p className="mb-4 text-lg text-muted-foreground">{PRICING_PAGE_HERO_SUB}</p>
           <p className="text-sm text-hint">No hidden fees. No elite tier. No upsells after you join.</p>
-        </div>
+        </MarketingHeroMotion>
       </section>
 
-      <div className="mx-auto mb-8 max-w-3xl px-6 pt-10">
+      <FadeUp className="mx-auto mb-8 max-w-3xl px-6 pt-10">
         <div className="flex items-center justify-center gap-3 rounded-xl border border-amber-600/25 bg-amber-500/10 px-5 py-3">
           <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-amber-500" />
           <p className="text-sm font-medium text-warning-ink-deep">
@@ -90,14 +95,14 @@ const PricingPage = () => {
             </Link>
           </p>
         </div>
-      </div>
+      </FadeUp>
 
       <section className="mx-auto mb-16 max-w-4xl px-6">
-        <div className="grid grid-cols-1 items-start gap-6 md:grid-cols-2">
+        <StaggerGrid className="grid grid-cols-1 items-start gap-6 md:grid-cols-2" stagger={0.12}>
           {plans.map((plan) => (
             <div
               key={plan.id}
-              className={`relative flex h-full flex-col rounded-2xl p-6 transition-all ${
+              className={`mm-animate-card mm-card-premium relative flex h-full flex-col rounded-2xl p-6 ${
                 plan.highlight
                   ? 'border-2 border-cta bg-cta/10 shadow-xl shadow-cta-card'
                   : 'border border-border bg-card'
@@ -142,14 +147,14 @@ const PricingPage = () => {
 
               <Link
                 to={plan.ctaTo}
-                className={`flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold transition-all ${plan.ctaStyle}`}
+                className={`mm-btn-interactive flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold transition-all ${plan.ctaStyle}`}
               >
                 {plan.cta}
-                <ArrowRight size={15} />
+                <ArrowRight size={15} className="mm-icon-wiggle" />
               </Link>
             </div>
           ))}
-        </div>
+        </StaggerGrid>
         <p className="mt-4 text-center text-xs text-muted-foreground">
           All prices in INR · GST applicable where required
         </p>

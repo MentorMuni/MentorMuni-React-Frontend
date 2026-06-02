@@ -90,13 +90,17 @@ function PageFallback() {
 /** Route shell — avoid opacity:0 enter (can look like a blank page if motion fails to run). */
 function AnimatedMain({ children, className = "" }) {
   const { pathname } = useLocation();
+  const reduceMotion =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   return (
     <MotionMain
       key={pathname}
-      initial={false}
+      initial={reduceMotion ? false : { opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-      className={`mm-route-root relative z-0 w-full min-w-0 flex-grow ${className}`}
+      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      className={`mm-route-root mm-route-enter relative z-0 w-full min-w-0 flex-grow ${className}`}
     >
       {children}
     </MotionMain>

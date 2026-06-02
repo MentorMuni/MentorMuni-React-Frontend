@@ -90,8 +90,8 @@ const AboutUs = () => {
                 transition={{ duration: 0.45, ease: easeOut }}
                 className="mb-4 inline-flex flex-wrap items-center gap-2"
               >
-                <span className="inline-flex items-center gap-2 rounded-full border border-cyan-200/80 bg-cyan-50/90 px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-cyan-950">
-                  <Heart className="h-3.5 w-3.5 text-[#FF9500]" aria-hidden />
+                <span className="inline-flex items-center gap-2 rounded-full border border-border bg-accent-soft px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.12em] text-foreground">
+                  <Heart className="h-3.5 w-3.5 text-cta" aria-hidden />
                   {ABOUT_PAGE_EYEBROW}
                 </span>
                 <span className="hidden text-xs font-semibold text-muted-foreground sm:inline">
@@ -113,7 +113,7 @@ const AboutUs = () => {
                   height={64}
                 />
                 <div className="min-w-0 border-l border-border pl-3">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#EA580C]">MentorMuni</p>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-warning-text">MentorMuni</p>
                   <p className="text-xs text-muted-foreground">The story starts here.</p>
                 </div>
               </motion.div>
@@ -125,7 +125,7 @@ const AboutUs = () => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: reduceMotion ? 0 : 0.06, ease: easeOut }}
               >
-                <span className="block text-neutral-900">{ABOUT_PAGE_HERO_LINE1}</span>
+                <span className="block text-foreground">{ABOUT_PAGE_HERO_LINE1}</span>
                 <span className="mt-1 block bg-gradient-to-r from-[#ea580c] via-[#FF9500] to-[#0891b2] bg-clip-text text-transparent">
                   {ABOUT_PAGE_HERO_ACCENT}
                 </span>
@@ -157,14 +157,14 @@ const AboutUs = () => {
               >
                 <Link
                   to="/how-it-works"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-[#FFB347] hover:bg-secondary"
+                  className="mm-btn-secondary inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-cta-mid hover:bg-secondary"
                 >
                   How it works
                   <ChevronRight className="h-4 w-4 opacity-70" aria-hidden />
                 </Link>
                 <Link
                   to="/mentors"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-border bg-white px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-[#FFB347] hover:bg-secondary"
+                  className="mm-btn-secondary inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-4 py-2 text-sm font-semibold text-foreground shadow-sm transition hover:border-cta-mid hover:bg-secondary"
                 >
                   Mentors
                   <ChevronRight className="h-4 w-4 opacity-70" aria-hidden />
@@ -185,8 +185,8 @@ const AboutUs = () => {
               transition={{ duration: 0.55, delay: reduceMotion ? 0 : 0.12, ease: easeOut }}
             >
               <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-[0_12px_40px_-12px_rgba(15,23,42,0.12)]">
-                <div className="border-b border-border bg-gradient-to-br from-secondary via-white to-cyan-50/50 px-5 py-4">
-                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#EA580C]">At a glance</p>
+                <div className="border-b border-border bg-gradient-to-br from-secondary via-background to-accent-soft/50 px-5 py-4">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-warning-text">At a glance</p>
                 </div>
                 <ul className="divide-y divide-border px-5 py-2">
                   {[
@@ -201,7 +201,7 @@ const AboutUs = () => {
                   ))}
                 </ul>
                 <div className="flex items-start gap-2 border-t border-border bg-background px-5 py-4">
-                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#FF9500]" aria-hidden />
+                  <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-cta" aria-hidden />
                   <p className="text-xs leading-relaxed text-muted-foreground">
                     This page is our handshake: who we are, how we think, and how to work with us.
                   </p>
@@ -213,7 +213,7 @@ const AboutUs = () => {
       </section>
 
       {/* —— Beliefs —— */}
-      <section className="border-t border-border bg-white px-5 py-14 sm:px-6 lg:py-16" aria-labelledby="about-beliefs-heading">
+      <section className="border-t border-border bg-background px-5 py-14 sm:px-6 lg:py-16" aria-labelledby="about-beliefs-heading">
         <div className="mx-auto max-w-6xl">
           <FadeUp className="mb-10 max-w-2xl">
             <h2 id="about-beliefs-heading" className="text-2xl font-extrabold tracking-tight text-foreground md:text-3xl">
@@ -227,9 +227,9 @@ const AboutUs = () => {
           <div className="grid gap-5 md:grid-cols-3 lg:gap-6">
             {ABOUT_BELIEFS.map((b, i) => (
               <FadeUp key={b.title} delay={i * 0.07}>
-                <article className="group relative h-full overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-white to-[#FFFBF5] p-6 shadow-[0_4px_24px_rgba(0,0,0,0.04)] transition hover:border-[#FFB347]/60 hover:shadow-[0_12px_36px_-8px_rgba(255,149,0,0.18)] md:p-7">
+                <article className="group relative h-full overflow-hidden rounded-2xl border border-border bg-gradient-to-b from-card to-secondary p-6 shadow-[var(--shadow-card)] transition hover:border-cta-mid/60 hover:shadow-[0_12px_36px_-8px_rgba(255,149,0,0.18)] md:p-7">
                   <span
-                    className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-[#FFF4E0] text-sm font-black text-[#EA580C]"
+                    className="mb-4 inline-flex h-9 w-9 items-center justify-center rounded-xl bg-warning-bg text-sm font-black text-warning-text"
                     aria-hidden
                   >
                     {String(i + 1).padStart(2, '0')}
@@ -248,12 +248,12 @@ const AboutUs = () => {
       </section>
 
       {/* —— Pull quote + story —— */}
-      <section className="border-t border-border bg-gradient-to-b from-background to-white px-5 py-16 sm:px-6 lg:py-20">
+      <section className="border-t border-border bg-gradient-to-b from-background to-secondary px-5 py-16 sm:px-6 lg:py-20">
         <div className="mx-auto max-w-6xl">
           <div className="grid gap-10 lg:grid-cols-[1fr_minmax(0,1.15fr)] lg:gap-14 lg:items-start">
             <FadeUp>
-              <figure className="relative overflow-hidden rounded-2xl border border-[#FF9500]/25 bg-gradient-to-br from-secondary via-white to-cyan-50/30 p-8 shadow-[0_16px_48px_-16px_rgba(234,88,12,0.2)] md:p-10">
-                <Quote className="mb-4 h-8 w-8 text-[#FF9500]/80" aria-hidden />
+              <figure className="relative overflow-hidden rounded-2xl border border-cta/25 bg-gradient-to-br from-secondary via-card to-accent-soft/30 p-8 shadow-[var(--shadow-card)] md:p-10">
+                <Quote className="mb-4 h-8 w-8 text-cta/80" aria-hidden />
                 <blockquote className="text-xl font-semibold leading-snug text-foreground md:text-2xl md:leading-tight">
                   {ABOUT_PULL_QUOTE}
                 </blockquote>
@@ -278,12 +278,12 @@ const AboutUs = () => {
 
       {/* —— System (loops) —— */}
       <section
-        className="border-t border-border bg-white px-5 py-14 sm:px-6 lg:py-16"
+        className="border-t border-border bg-background px-5 py-14 sm:px-6 lg:py-16"
         aria-labelledby="about-system-heading"
       >
         <div className="mx-auto max-w-6xl">
           <FadeUp className="mb-4 max-w-3xl">
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#EA580C]">One spine</p>
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-warning-text">One spine</p>
             <h2
               id="about-system-heading"
               className="mt-2 text-2xl font-extrabold tracking-tight text-foreground md:text-3xl"
@@ -312,9 +312,9 @@ const AboutUs = () => {
                       <div
                         className={`flex flex-1 ${isLeft ? 'md:pr-10 md:text-right' : 'md:pl-10 md:text-left'}`}
                       >
-                        <article className="w-full rounded-2xl border border-border bg-[#FAFAFA]/80 p-6 shadow-sm md:max-w-md md:border-0 md:bg-transparent md:p-0 md:shadow-none">
+                        <article className="w-full rounded-2xl border border-border bg-card/80 p-6 shadow-sm md:max-w-md md:border-0 md:bg-transparent md:p-0 md:shadow-none">
                           <div
-                            className={`mb-3 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-[#FFF4E0] text-[#CC7000] ${
+                            className={`mb-3 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-warning-bg text-warning-ink-deep ${
                               isLeft ? 'md:ml-auto' : ''
                             }`}
                           >
@@ -358,8 +358,8 @@ const AboutUs = () => {
               const Icon = PILLAR_ICONS[i] ?? Sparkles;
               return (
                 <FadeUp key={p.title} delay={i * 0.06}>
-                  <article className="h-full rounded-2xl border border-border bg-white p-6 shadow-[0_4px_20px_rgba(0,0,0,0.05)] transition hover:-translate-y-0.5 hover:border-[#FF9500]/35 hover:shadow-[0_16px_40px_-12px_rgba(255,149,0,0.18)] md:p-7">
-                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#FFF4E0] to-[#FFE8C8] text-[#CC7000] shadow-inner">
+                  <article className="h-full rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)] transition hover:-translate-y-0.5 hover:border-cta/35 hover:shadow-[0_16px_40px_-12px_rgba(255,149,0,0.18)] md:p-7">
+                    <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-warning-bg to-accent-soft text-warning-ink-deep shadow-inner">
                       <Icon size={24} strokeWidth={2} aria-hidden />
                     </div>
                     <h3 className="text-lg font-bold text-foreground md:text-xl">{p.title}</h3>
@@ -373,7 +373,7 @@ const AboutUs = () => {
       </section>
 
       {/* —— Audiences —— */}
-      <section className="border-t border-border bg-white px-5 py-14 sm:px-6 lg:py-16" aria-labelledby="about-audiences-heading">
+      <section className="border-t border-border bg-background px-5 py-14 sm:px-6 lg:py-16" aria-labelledby="about-audiences-heading">
         <div className="mx-auto max-w-6xl">
           <FadeUp className="mb-10">
             <h2 id="about-audiences-heading" className="text-2xl font-extrabold tracking-tight text-foreground md:text-3xl">
@@ -385,15 +385,15 @@ const AboutUs = () => {
               const Icon = AUDIENCE_ICONS[i] ?? Compass;
               return (
                 <FadeUp key={aud.title} delay={i * 0.07}>
-                  <article className="flex h-full flex-col rounded-2xl border border-border p-6 transition hover:border-[#0891b2]/40 hover:bg-cyan-50/20 md:p-7">
-                    <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-cyan-50 text-cyan-900">
+                  <article className="flex h-full flex-col rounded-2xl border border-border p-6 transition hover:border-primary/40 hover:bg-accent-soft/20 md:p-7">
+                    <div className="mb-4 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-accent-soft text-foreground">
                       <Icon size={22} strokeWidth={2} aria-hidden />
                     </div>
                     <h3 className="text-lg font-bold text-foreground">{aud.title}</h3>
                     <p className="mt-2 flex-1 text-sm leading-relaxed text-muted-foreground md:text-[15px]">{aud.body}</p>
                     <Link
                       to={aud.href}
-                      className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-[#FF9500] transition hover:text-[#E88600]"
+                      className="mt-5 inline-flex items-center gap-1 text-sm font-bold text-cta transition hover:text-cta-hover"
                     >
                       {aud.cta}
                       <ArrowRight className="h-4 w-4" aria-hidden />

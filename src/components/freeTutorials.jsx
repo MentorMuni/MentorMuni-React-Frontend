@@ -1,7 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { ArrowRight, BookOpen, Code, Check } from 'lucide-react';
 import RoutePageShell from './layout/RoutePageShell';
+import MarketingHeroMotion from './layout/MarketingHeroMotion';
+import StaggerGrid from './layout/StaggerGrid';
+import FadeUp from './layout/FadeUp';
 
 const FreeTutorials = () => {
   const navigate = useNavigate();
@@ -82,82 +86,89 @@ const FreeTutorials = () => {
 
   return (
     <RoutePageShell scope="marketing" className="text-foreground">
-      <section className="mm-marketing-hero-backdrop border-b border-border">
-        <div className="relative z-10 mx-auto max-w-7xl px-6 pb-16 pt-20 text-center md:pb-20">
-          <div className="mb-4 flex items-center justify-center gap-3">
-            <BookOpen size={40} className="text-cta" aria-hidden />
-            <h1 className="text-5xl font-black text-foreground md:text-6xl">Free Tutorials</h1>
-          </div>
+      <section className="mm-marketing-hero-backdrop mm-hero-premium border-b border-border">
+        <div className="mm-hero-mesh" aria-hidden />
+        <div className="mm-hero-dot-grid" aria-hidden />
+        <MarketingHeroMotion className="relative z-10 mx-auto max-w-7xl px-6 pb-16 pt-20 text-center md:pb-20">
+          <motion.div
+            className="mb-4 flex items-center justify-center gap-3"
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.15, type: 'spring', stiffness: 200 }}
+          >
+            <BookOpen size={40} className="text-cta mm-icon-wiggle" aria-hidden />
+            <h1 className="text-5xl font-black text-foreground md:text-6xl">
+              Free <span className="mm-gradient-text-brand">Tutorials</span>
+            </h1>
+          </motion.div>
           <p className="mx-auto max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
             Self-paced learning modules designed for beginners. Start learning for free and upgrade to advanced courses when you&apos;re ready.
           </p>
-        </div>
+        </MarketingHeroMotion>
       </section>
 
       <div className="mx-auto max-w-7xl px-6 py-16 md:py-20">
-        {/* Tutorials Grid */}
-        <div className="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+        <StaggerGrid className="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3" stagger={0.07}>
           {tutorials.map((tutorial) => (
-            <div 
-              key={tutorial.id} 
-              className="group rounded-3xl border border-border bg-card p-8 transition-all hover:border-cta/40 hover:shadow-lg"
+            <div
+              key={tutorial.id}
+              className="mm-card-premium mm-animate-card group rounded-3xl border border-border bg-card p-8"
             >
-              <div className="mb-6 h-1 w-12 rounded-full bg-gradient-to-r from-cta to-cta-mid" />
-              <h3 className="text-2xl font-bold mb-3 text-foreground">{tutorial.title}</h3>
+              <div className={`mb-6 h-1 w-12 rounded-full bg-gradient-to-r ${tutorial.color}`} />
+              <h3 className="text-2xl font-bold mb-3 text-foreground transition-colors group-hover:text-primary">
+                {tutorial.title}
+              </h3>
               <p className="text-muted-foreground text-sm mb-8 leading-relaxed">{tutorial.description}</p>
               <button
                 type="button"
                 onClick={() => navigate(tutorial.route)}
-                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cta to-cta-hover px-5 py-3 text-sm font-bold text-white shadow-md shadow-button transition-all hover:shadow-lg sm:w-auto sm:justify-start"
+                className="mm-btn-interactive mm-cta-glow inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cta to-cta-hover px-5 py-3 text-sm font-bold text-white shadow-md shadow-button sm:w-auto sm:justify-start"
               >
-                <Code size={18} className="shrink-0" aria-hidden />
+                <Code size={18} className="shrink-0 mm-icon-wiggle" aria-hidden />
                 Start Learning
                 <ArrowRight size={18} className="shrink-0" aria-hidden />
               </button>
             </div>
           ))}
-        </div>
+        </StaggerGrid>
 
-        {/* Additional Resources */}
-        <div className="rounded-3xl border border-border bg-card p-12 shadow-[var(--shadow-card)]">
-          <div className="grid md:grid-cols-2 gap-8">
-            <div>
-              <h3 className="text-2xl font-bold mb-4 text-foreground">Why Our Free Tutorials?</h3>
-              <ul className="space-y-4">
-                <li className="flex gap-3 text-muted-foreground">
-                  <Check size={24} className="text-[#1A8C55] flex-shrink-0 mt-0.5" />
-                  <span>Learn at your own pace with lifetime access</span>
-                </li>
-                <li className="flex gap-3 text-muted-foreground">
-                  <Check size={24} className="text-[#1A8C55] flex-shrink-0 mt-0.5" />
-                  <span>Interactive coding challenges and exercises</span>
-                </li>
-                <li className="flex gap-3 text-muted-foreground">
-                  <Check size={24} className="text-[#1A8C55] flex-shrink-0 mt-0.5" />
-                  <span>Real-world examples and best practices</span>
-                </li>
-                <li className="flex gap-3 text-muted-foreground">
-                  <Check size={24} className="text-[#1A8C55] flex-shrink-0 mt-0.5" />
-                  <span>Community support and peer learning</span>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="text-2xl font-bold mb-4 text-foreground">Next Steps</h3>
-              <p className="text-muted-foreground mb-6">
-                After completing these free tutorials, you'll be prepared to join our comprehensive Placement Tracks where you can specialize and get ready for interviews.
-              </p>
-              <button
-                type="button"
-                onClick={() => navigate('/learning-paths')}
-                className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cta to-cta-hover px-6 py-3 font-bold text-white shadow-button transition-all hover:shadow-lg"
-              >
-                Explore Placement Tracks
-                <ArrowRight size={18} />
-              </button>
+        <FadeUp>
+          <div className="mm-animate-card rounded-3xl border border-border bg-card p-12 shadow-[var(--shadow-card)]">
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <h3 className="text-2xl font-bold mb-4 text-foreground">Why Our Free Tutorials?</h3>
+                <ul className="space-y-4">
+                  <li className="flex gap-3 text-muted-foreground">
+                    <Check size={24} className="text-[#1A8C55] flex-shrink-0 mt-0.5" />
+                    <span>Learn at your own pace with lifetime access</span>
+                  </li>
+                  <li className="flex gap-3 text-muted-foreground">
+                    <Check size={24} className="text-[#1A8C55] flex-shrink-0 mt-0.5" />
+                    <span>Practical examples and real-world applications</span>
+                  </li>
+                  <li className="flex gap-3 text-muted-foreground">
+                    <Check size={24} className="text-[#1A8C55] flex-shrink-0 mt-0.5" />
+                    <span>Community support and mentorship available</span>
+                  </li>
+                </ul>
+              </div>
+              <div className="flex flex-col justify-center">
+                <h3 className="text-2xl font-bold mb-4 text-foreground">Next Steps</h3>
+                <p className="text-muted-foreground mb-6">
+                  After completing these tutorials, explore our advanced courses and mentorship programs to accelerate your career.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => navigate('/placement-tracks')}
+                  className="mm-btn-interactive inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cta to-cta-hover px-6 py-3 text-sm font-bold text-white shadow-md"
+                >
+                  Explore Placement Tracks
+                  <ArrowRight size={18} aria-hidden />
+                </button>
+              </div>
             </div>
           </div>
-        </div>
+        </FadeUp>
       </div>
     </RoutePageShell>
   );

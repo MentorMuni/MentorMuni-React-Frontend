@@ -207,7 +207,25 @@
         var p = new URLSearchParams(window.location.search);
         var classic = p.get('classic') === '1';
         var newui = p.get('newui') === '1';
-        if (!classic && (newui || localStorage.getItem('mm-new-ui') === '1')) {
+        var source = localStorage.getItem('mm-theme-source');
+        var stored = localStorage.getItem('mm-new-ui');
+        var hour = new Date().getHours();
+        var scheduleDark = hour < 7 || hour >= 19;
+        var useDark = false;
+        if (classic) {
+          useDark = false;
+        } else if (newui) {
+          useDark = true;
+        } else if (source === 'manual' && stored !== null) {
+          useDark = stored === '1';
+        } else if (source === 'auto') {
+          useDark = scheduleDark;
+        } else if (stored !== null) {
+          useDark = stored === '1';
+        } else {
+          useDark = scheduleDark;
+        }
+        if (useDark) {
           document.documentElement.classList.add('mm-new-ui');
         }
       } catch (e) {}

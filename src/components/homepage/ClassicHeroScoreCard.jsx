@@ -1,123 +1,104 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { HERO_SCORE_SAMPLE_LABEL } from '../../constants/brandCopy';
+import { getHeroScoreTier, heroRingMetrics } from './heroScoreUtils';
 
-const RING_SIZE = 128;
-const STROKE = 10;
-const R = (RING_SIZE - STROKE) / 2;
-const CIRC = 2 * Math.PI * R;
+const { size: RING_SIZE, stroke: STROKE, r: R, circ: CIRC, cx: CX, cy: CY } = heroRingMetrics();
 
 /**
- * Hero readiness-check preview card — product-style panel: gradient frame, depth, subtle motion.
+ * Hero readiness score card — premium product showcase (Predis-style motion + depth).
  */
 export function ClassicHeroScoreCard({ className = '', preview }) {
   const reduceMotion = useReducedMotion();
   const { score, scoreRatio, skillBars, insightLead, insightRest } = preview;
+  const tier = getHeroScoreTier(score);
 
   return (
     <motion.div
-      className={`relative mx-auto w-full min-w-0 max-w-[min(100%,440px)] ${className}`}
-      initial={reduceMotion ? false : { opacity: 0, y: 20, scale: 0.98 }}
+      className={`mm-hero-score-root mm-hero-score-float ${className}`}
+      initial={reduceMotion ? false : { opacity: 0, y: 24, scale: 0.94 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
-      transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.7, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
       style={{ opacity: 1 }}
     >
       <style>{`
-        @keyframes mm-hero-ring-draw {
+        @keyframes mm-hero-ring-draw-classic {
           from { stroke-dashoffset: ${CIRC}; }
           to { stroke-dashoffset: ${CIRC * (1 - scoreRatio)}; }
         }
-        @keyframes mm-card-shimmer {
-          0%, 100% { opacity: 0.35; transform: translate(0, 0) scale(1); }
-          50% { opacity: 0.55; transform: translate(-4%, 2%) scale(1.03); }
-        }
-        @keyframes mm-border-flow {
-          0% { background-position: 0% 50%; }
-          100% { background-position: 200% 50%; }
-        }
-        .mm-hero-card-border {
-          background: linear-gradient(
-            125deg,
-            rgba(26, 143, 196, 0.95),
-            rgba(42, 170, 138, 0.65),
-            rgba(34, 211, 238, 0.55),
-            rgba(26, 143, 196, 0.9)
-          );
-          background-size: 200% 200%;
-          animation: mm-border-flow 8s ease infinite;
-        }
         @media (prefers-reduced-motion: reduce) {
-          .mm-hero-ring-arc { animation: none !important; stroke-dashoffset: ${CIRC * (1 - scoreRatio)} !important; }
-          .mm-hero-card-glow { animation: none !important; }
-          .mm-hero-card-border { animation: none; background-position: 50% 50%; }
+          .mm-hero-ring-arc-classic { animation: none !important; stroke-dashoffset: ${CIRC * (1 - scoreRatio)} !important; }
         }
       `}</style>
 
-      <div
-        className="mm-hero-card-glow pointer-events-none absolute -inset-3 rounded-[28px] bg-gradient-to-br from-sky-400/25 via-cyan-300/15 to-teal-400/20 blur-2xl"
-        style={{ animation: reduceMotion ? 'none' : 'mm-card-shimmer 6s ease-in-out infinite' }}
-        aria-hidden
-      />
+      <div className="mm-hero-score-aura" aria-hidden />
 
-      <div className="relative rounded-[22px] p-[1.5px] shadow-[0_20px_50px_-12px_rgba(15,23,42,0.15),0_8px_24px_-8px_rgba(26,143,196,0.12)] mm-hero-card-border">
+      <div className="mm-hero-score-border">
         <div
-          className="relative overflow-hidden rounded-[20.5px] border border-white/80 bg-white/95 p-4 backdrop-blur-sm sm:p-5"
+          className="mm-hero-score-panel mm-hero-score-panel--light"
           role="img"
           aria-label={`${HERO_SCORE_SAMPLE_LABEL}. Example score: ${score} out of 100`}
         >
-          <div className="pointer-events-none absolute -right-16 -top-16 h-40 w-40 rounded-full bg-sky-200/30 blur-3xl" aria-hidden />
-          <div className="pointer-events-none absolute -bottom-12 -left-10 h-32 w-32 rounded-full bg-cyan-200/25 blur-3xl" aria-hidden />
+          <div className="pointer-events-none absolute -right-20 -top-20 h-44 w-44 rounded-full bg-sky-300/25 blur-3xl" aria-hidden />
+          <div className="pointer-events-none absolute -bottom-16 -left-12 h-36 w-36 rounded-full bg-teal-300/20 blur-3xl" aria-hidden />
 
-          <div className="relative mb-4 flex flex-wrap items-center justify-between gap-2 border-b border-neutral-100/90 pb-3">
-            <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-              {HERO_SCORE_SAMPLE_LABEL}
-            </span>
-            <span className="rounded-full bg-gradient-to-r from-sky-50 to-cyan-50 px-3 py-1 text-[10px] font-semibold text-[#15799F] ring-1 ring-sky-200/90 shadow-sm">
-              Scored in ~5 min
+          <div className="relative mm-hero-score-header">
+            <span className="mm-hero-score-eyebrow">{HERO_SCORE_SAMPLE_LABEL}</span>
+            <span className="mm-hero-score-live">
+              <span className="mm-hero-score-live-dot" aria-hidden />
+              Live preview
             </span>
           </div>
 
-          <div className="relative flex flex-col items-center gap-5 sm:flex-row sm:items-start sm:gap-5">
-            <div className="relative shrink-0" style={{ width: RING_SIZE, height: RING_SIZE }}>
-              <div className="absolute inset-0 rounded-full bg-sky-400/15 blur-xl" aria-hidden />
+          <span className="mm-hero-score-tier">{tier.label}</span>
+
+          <div className="relative mt-4 flex flex-col items-center gap-5 sm:flex-row sm:items-start sm:gap-6">
+            <div className="mm-hero-score-ring-wrap">
+              <div className="mm-hero-score-ring-halo" aria-hidden />
               <svg
                 width={RING_SIZE}
                 height={RING_SIZE}
-                className="relative rotate-[-90deg] drop-shadow-[0_2px_8px_rgba(26,143,196,0.2)]"
+                className="relative rotate-[-90deg] drop-shadow-[0_4px_16px_rgba(26,143,196,0.25)]"
                 aria-hidden
               >
                 <defs>
-                  <linearGradient id="mm-ring-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <linearGradient id="mm-ring-grad-classic" x1="0%" y1="0%" x2="100%" y2="100%">
                     <stop offset="0%" stopColor="#1A8FC4" />
-                    <stop offset="100%" stopColor="#2AAA8A" />
+                    <stop offset="50%" stopColor="#2AAA8A" />
+                    <stop offset="100%" stopColor="#22d3ee" />
                   </linearGradient>
                 </defs>
-                <circle cx={RING_SIZE / 2} cy={RING_SIZE / 2} r={R} fill="none" stroke="#e5e5e5" strokeWidth={STROKE} />
+                <circle cx={CX} cy={CY} r={R} fill="none" stroke="#e2e8f0" strokeWidth={STROKE} />
                 <circle
-                  className="mm-hero-ring-arc"
-                  cx={RING_SIZE / 2}
-                  cy={RING_SIZE / 2}
+                  className="mm-hero-ring-arc-classic"
+                  cx={CX}
+                  cy={CY}
                   r={R}
                   fill="none"
-                  stroke="url(#mm-ring-grad)"
+                  stroke="url(#mm-ring-grad-classic)"
                   strokeWidth={STROKE}
                   strokeLinecap="round"
                   strokeDasharray={CIRC}
                   strokeDashoffset={CIRC}
                   style={{
-                    animation: reduceMotion ? 'none' : 'mm-hero-ring-draw 1.2s cubic-bezier(0.4, 0, 0.2, 1) forwards',
+                    animation: reduceMotion ? 'none' : 'mm-hero-ring-draw-classic 1.4s cubic-bezier(0.4, 0, 0.2, 1) forwards',
                   }}
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-[2.25rem] font-black tabular-nums leading-none tracking-tight text-neutral-900 sm:text-[2.5rem]">
+                <motion.span
+                  className="mm-hero-score-value"
+                  initial={reduceMotion ? false : { scale: 0.5, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.85, type: 'spring', stiffness: 260, damping: 18 }}
+                >
                   {score}
-                </span>
-                <span className="mt-0.5 text-xs font-medium text-muted-foreground">/ 100</span>
+                </motion.span>
+                <span className="mt-0.5 text-xs font-semibold text-muted-foreground">/ 100</span>
               </div>
             </div>
 
-            <div className="flex w-full min-w-0 flex-1 flex-col gap-3 sm:gap-2.5">
+            <div className="flex w-full min-w-0 flex-1 flex-col gap-3">
               {skillBars.map((b, i) => (
                 <div key={b.label} className="min-w-0">
                   <div className="mb-1 flex items-start justify-between gap-2">
@@ -125,15 +106,22 @@ export function ClassicHeroScoreCard({ className = '', preview }) {
                       <p className="text-[11px] font-semibold leading-snug text-neutral-800 sm:text-xs">{b.label}</p>
                       <p className="mt-0.5 text-[10px] leading-snug text-muted-foreground">{b.hint}</p>
                     </div>
-                    <span className="shrink-0 text-xs font-bold tabular-nums text-neutral-900">{b.pct}</span>
+                    <motion.span
+                      className="shrink-0 text-xs font-bold tabular-nums text-neutral-900"
+                      initial={reduceMotion ? false : { opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ delay: 1 + i * 0.08 }}
+                    >
+                      {b.pct}
+                    </motion.span>
                   </div>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-neutral-100/90 ring-1 ring-neutral-200/60">
+                  <div className="h-2.5 w-full overflow-hidden rounded-full bg-neutral-100 ring-1 ring-neutral-200/70">
                     <motion.div
-                      className="h-full rounded-full shadow-[0_0_8px_rgba(0,0,0,0.08)]"
+                      className="h-full rounded-full shadow-[0_0_12px_rgba(0,0,0,0.08)]"
                       style={{ backgroundColor: b.color }}
                       initial={reduceMotion ? false : { width: 0 }}
                       animate={{ width: `${b.w * 100}%` }}
-                      transition={{ duration: 0.85, delay: 0.3 + i * 0.07, ease: [0.22, 1, 0.36, 1] }}
+                      transition={{ duration: 0.9, delay: 0.45 + i * 0.09, ease: [0.22, 1, 0.36, 1] }}
                     />
                   </div>
                 </div>
@@ -141,20 +129,24 @@ export function ClassicHeroScoreCard({ className = '', preview }) {
             </div>
           </div>
 
-          <div className="relative mt-4 overflow-hidden rounded-xl border border-sky-200/80 bg-gradient-to-br from-sky-50/95 to-cyan-50/80 px-3 py-3 text-sm leading-relaxed text-[#0c4a6e] shadow-inner">
-            <span className="font-bold text-neutral-900">{insightLead}</span>{' '}
-            {insightRest}
-          </div>
+          <motion.div
+            className="mm-hero-score-insight-box"
+            initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.15, duration: 0.45 }}
+          >
+            <span className="font-bold text-neutral-900">{insightLead}</span> {insightRest}
+          </motion.div>
 
-          <div className="relative mt-5 space-y-2 text-center">
+          <div className="relative mt-5 space-y-1.5 text-center">
             <p className="text-base font-semibold leading-snug tracking-tight text-neutral-900 sm:text-lg">
-              <span className="bg-gradient-to-r from-[#15799F] to-[#1A8FC4] bg-clip-text text-transparent">MentorMuni</span>
+              <span className="bg-gradient-to-r from-[#15799F] to-[#1A8FC4] bg-clip-text text-transparent">
+                MentorMuni
+              </span>
               <span className="text-neutral-400"> — </span>
               show up <span className="text-[#15799F]">prepared & confident</span>.
             </p>
-            <p className="text-sm leading-snug text-neutral-600 sm:text-[15px]">
-              Real panels. Honest feedback. No last‑minute cram.
-            </p>
+            <p className="text-sm text-neutral-600">Take the free check for your real score.</p>
           </div>
         </div>
       </div>

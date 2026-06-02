@@ -103,7 +103,9 @@ const Tools = () => {
 
   return (
     <RoutePageShell scope="marketing" className="pb-20">
-      <section className="mm-marketing-hero-backdrop border-b border-border">
+      <section className="mm-marketing-hero-backdrop mm-hero-premium border-b border-border">
+        <div className="mm-hero-mesh" aria-hidden />
+        <div className="mm-hero-dot-grid" aria-hidden />
         <div className="relative z-10 mx-auto max-w-6xl px-6 pb-12 pt-20">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
@@ -115,7 +117,8 @@ const Tools = () => {
               Free tools · Same mission as the rest of MentorMuni
             </p>
             <h1 className="mb-4 text-3xl font-extrabold leading-tight tracking-tight text-foreground md:text-4xl lg:text-5xl">
-              Know your gaps before the shortlist does
+              Know your gaps{' '}
+              <span className="mm-gradient-text-brand">before the shortlist does</span>
             </h1>
             <p className="text-base leading-relaxed text-muted-foreground md:text-lg">
               Measure first, then fix what filters you out—without guessing where to start.
@@ -155,7 +158,7 @@ const Tools = () => {
               >
               <Link
                 to={tool.href}
-                className={`group block h-full rounded-2xl border bg-card p-7 shadow-card transition-all ${c.border} ${c.hover} hover:shadow-lg hover:-translate-y-0.5`}
+                className={`mm-card-premium group block h-full p-7 ${c.border} ${c.hover}`}
               >
                 <div
                   className={`mb-4 flex h-12 w-12 items-center justify-center rounded-xl border ${c.bg} ${c.border}`}

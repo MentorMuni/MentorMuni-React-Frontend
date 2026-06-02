@@ -81,6 +81,9 @@ import { HeroFlagshipVisual } from './homepage/HeroFlagshipVisual';
 import { HeroHeadlineTypewriter } from './homepage/HeroHeadlineTypewriter';
 import { HeroLoopVideo } from './homepage/HeroLoopVideo';
 import { MentorMuniSystemLoop } from './homepage/MentorMuniSystemLoop';
+import { HomepageFreeToolsShowcase } from './homepage/HomepageFreeToolsShowcase';
+import FadeUp from './layout/FadeUp';
+import ScrollReveal from './layout/ScrollReveal';
 
 import {
   ArrowRight, Brain, Target,
@@ -325,25 +328,6 @@ function HeroValueStack({ reduceMotion }) {
     </>
   );
 }
-
-/* ─── Scroll-reveal: content always visible; motion is progressive enhancement ─── */
-const FadeUp = ({ children, delay = 0, className = '' }) => {
-  const reduceMotion = useReducedMotion();
-  if (reduceMotion) {
-    return <div className={className}>{children}</div>;
-  }
-  return (
-    <motion.div
-      className={className}
-      initial={{ opacity: 1, y: 16 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.02, margin: '0px 0px -60px 0px' }}
-      transition={{ duration: 0.48, delay, ease: [0.22, 1, 0.36, 1] }}
-    >
-      {children}
-    </motion.div>
-  );
-};
 
 /** Comparison matrix cell: check / X / orange partial label */
 const ComparisonTableCell = ({ value }) => {
@@ -733,16 +717,15 @@ const HomePage = () => {
       <section
         className={
           newUI
-            ? 'mm-hero-section mm-new-ui-hero mm-marketing-hero-backdrop relative overflow-hidden border-b border-white/[0.06] pb-0 pt-8 md:pt-10 xl:pt-12'
-            : 'mm-hero-section relative overflow-hidden border-b-0 bg-gradient-to-b from-slate-50/90 via-white to-[#fff8f0] pb-0 pt-8 md:pt-10 xl:pt-12'
+            ? 'mm-hero-section mm-new-ui-hero mm-hero-premium mm-marketing-hero-backdrop relative overflow-hidden border-b border-white/[0.06] pb-0 pt-8 md:pt-10 xl:pt-12'
+            : 'mm-hero-section mm-hero-premium mm-marketing-hero-backdrop relative overflow-hidden border-b-0 pb-0 pt-8 md:pt-10 xl:pt-12'
         }
       >
-        {!newUI && (
-          <>
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_70%_-10%,rgba(26,143,196,0.12),transparent)]" aria-hidden />
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_10%_50%,rgba(14,165,233,0.06),transparent)]" aria-hidden />
-          </>
-        )}
+        <div className="mm-hero-mesh" aria-hidden />
+        <div className="mm-hero-dot-grid" aria-hidden />
+        <div className="mm-hero-orb mm-hero-orb--sky" aria-hidden />
+        <div className="mm-hero-orb mm-hero-orb--teal" aria-hidden />
+        <div className="mm-hero-orb mm-hero-orb--cta" aria-hidden />
         <div className="mm-container relative z-10 flex w-full flex-col">
           <div className="mm-hero-layout">
             <div className="flex w-full min-w-0 flex-col gap-4 sm:gap-5 md:gap-6">
@@ -805,7 +788,7 @@ const HomePage = () => {
                   <span className="typo-display block text-neutral-900 leading-[1.06] tracking-tight">
                     {HERO_HEADLINE_LINE1}
                   </span>
-                  <span className="typo-display mt-1 block text-neutral-900 leading-[1.06] tracking-tight">
+                  <span className="typo-display mt-1 block leading-[1.06] tracking-tight mm-gradient-text-brand">
                     {HERO_HEADLINE_LINE2}
                   </span>
                   <span className="mt-2 block text-base font-medium text-neutral-600 sm:text-lg">
@@ -869,11 +852,22 @@ const HomePage = () => {
                     </span>
                   </div>
 
-                  <div className="mm-hero-cta-row mt-6 flex w-full flex-col gap-3 sm:mt-7 sm:flex-row sm:flex-wrap sm:items-center">
+                  <div className="mm-trust-pills mt-5 mb-1 w-full justify-center sm:justify-start">
+                    {['Free · No signup', '~5 min score', 'Mocks & mentors'].map((label) => (
+                      <span key={label} className="mm-trust-pill">
+                        <span className="mm-trust-pill__check" aria-hidden>
+                          ✓
+                        </span>
+                        {label}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="mm-hero-cta-row mt-4 flex w-full flex-col gap-3 sm:mt-5 sm:flex-row sm:flex-wrap sm:items-center">
                     <button
                       type="button"
                       onClick={goToStartAssessment}
-                      className="inline-flex min-h-[48px] w-full touch-manipulation items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-7 py-3.5 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-colors hover:bg-[#E88600] active:bg-[#D97706] sm:w-auto"
+                      className="mm-cta-glow mm-btn-interactive inline-flex min-h-[48px] w-full touch-manipulation items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-7 py-3.5 text-sm font-bold text-white transition-colors hover:bg-[#E88600] active:bg-[#D97706] sm:w-auto"
                     >
                       {PRIMARY_CTA_LABEL} <ArrowRight size={16} aria-hidden />
                     </button>
@@ -913,10 +907,15 @@ const HomePage = () => {
               </div>
             </div>
 
-            <div className="mm-hero-score-slot flex w-full min-w-0 flex-col items-center justify-center gap-3">
+            <motion.div
+              className="mm-hero-score-slot flex w-full min-w-0 flex-col items-center justify-center gap-3"
+              initial={reduceMotion ? false : { opacity: 0, x: 20, scale: 0.96 }}
+              animate={{ opacity: 1, x: 0, scale: 1 }}
+              transition={{ duration: 0.75, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+            >
               <HeroFlagshipVisual className="w-full" />
               <HeroPlayfulClause text={HERO_PLAYFUL_CLAUSE} reduceMotion={reduceMotion} newUI={newUI} />
-            </div>
+            </motion.div>
           </div>
 
         </div>
@@ -928,9 +927,9 @@ const HomePage = () => {
         aria-label={HERO_TRUST_LOGO_ROW_LABEL}
       >
         <div className="mm-container mm-container--narrow">
-          <div className="mb-5 flex flex-wrap items-center justify-center gap-5 sm:gap-8">
-            <div className="text-center">
-              <p className={`text-2xl font-extrabold ${newUI ? 'mm-new-ui-stat-value' : 'text-[#1A8FC4]'}`}>
+          <div className={`mb-5 ${newUI ? 'flex flex-wrap items-center justify-center gap-5 sm:gap-8' : 'mm-stat-strip'}`}>
+            <div className={newUI ? 'text-center' : 'mm-stat-card'}>
+              <p className={newUI ? `text-2xl font-extrabold mm-new-ui-stat-value` : 'mm-stat-card__value'}>
                 {newUI ? (
                   <AnimatedCounter value="200+" className="inline-block tabular-nums" />
                 ) : (
@@ -939,9 +938,15 @@ const HomePage = () => {
               </p>
               <p className="text-[11px] font-semibold text-muted-foreground">readiness scores checked</p>
             </div>
-            <div className="hidden h-8 w-px bg-border sm:block" aria-hidden />
-            <div className="text-center">
-              <p className={`text-2xl font-extrabold ${newUI ? 'mm-new-ui-stat-value--teal' : 'text-[#2AAA8A]'}`}>
+            {newUI && <div className="hidden h-8 w-px bg-border sm:block" aria-hidden />}
+            <div className={newUI ? 'text-center' : 'mm-stat-card'}>
+              <p
+                className={
+                  newUI
+                    ? 'text-2xl font-extrabold mm-new-ui-stat-value--teal'
+                    : 'mm-stat-card__value'
+                }
+              >
                 {newUI ? (
                   <AnimatedCounter value="~5 min" className="inline-block tabular-nums" />
                 ) : (
@@ -950,9 +955,13 @@ const HomePage = () => {
               </p>
               <p className="text-[11px] font-semibold text-muted-foreground">free readiness score</p>
             </div>
-            <div className="hidden h-8 w-px bg-border sm:block" aria-hidden />
-            <div className="text-center">
-              <p className={`text-2xl font-extrabold ${newUI ? 'mm-new-ui-stat-value--cta' : 'text-[#FF9500]'}`}>
+            {newUI && <div className="hidden h-8 w-px bg-border sm:block" aria-hidden />}
+            <div className={newUI ? 'text-center' : 'mm-stat-card'}>
+              <p
+                className={
+                  newUI ? 'text-2xl font-extrabold mm-new-ui-stat-value--cta' : 'mm-stat-card__value mm-stat-card__value--cta'
+                }
+              >
                 No signup
               </p>
               <p className="text-[11px] font-semibold text-muted-foreground">to start the check</p>
@@ -979,8 +988,14 @@ const HomePage = () => {
         </div>
       </section>
 
+      <HomepageFreeToolsShowcase />
+
       {/* ════════════════ Platform depth — below fold (lighter hero, better LCP) ════════════════ */}
-      <section className="border-t border-border bg-gradient-to-b from-white to-secondary/40 py-5 md:py-7 px-5 sm:px-6 lg:px-8" aria-label="Platform overview">
+      <ScrollReveal
+        as="section"
+        className="border-t border-border bg-gradient-to-b from-white to-secondary/40 py-5 md:py-7 px-5 sm:px-6 lg:px-8 mm-scroll-reveal--scale"
+        aria-label="Platform overview"
+      >
         <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-5 md:gap-6">
           <div className="flex w-full max-w-3xl justify-center">
             <HeroLoopVideo />
@@ -988,7 +1003,7 @@ const HomePage = () => {
           <HeroValueStack reduceMotion={reduceMotion} />
           <HeroProblemTicker reduceMotion={reduceMotion} />
         </div>
-      </section>
+      </ScrollReveal>
 
       {/* ════════════════ WHAT IS MENTORMUNI — one clear explainer block ════════════════ */}
       <section className="mm-surface-section border-t py-12 md:py-14 px-5 sm:px-6 lg:px-8" aria-labelledby="what-is-mm-heading">
@@ -1411,7 +1426,7 @@ const HomePage = () => {
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
             {FEATURES.map((f, i) => (
               <FadeUp key={f.title} delay={i * 0.07} className="w-full text-left">
-                <div className="group flex h-full gap-4 mm-surface-panel rounded-2xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.05)] transition-all hover:border-[#2AAA8A]">
+                <div className="mm-animate-card group flex h-full gap-4 mm-surface-panel rounded-2xl p-6 shadow-[0_2px_12px_rgba(0,0,0,0.05)] transition-all hover:border-[#2AAA8A]">
                   <div className="mt-0.5 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-border bg-accent-soft group-hover:bg-secondary">
                     <f.Icon size={18} className="text-[#1A8FC4]" />
                   </div>
@@ -1682,9 +1697,10 @@ const HomePage = () => {
       <HomepageFaqSection />
 
       {/* ════════════════ FINAL CTA (single primary conversion zone for free check — hero also) ════════════════ */}
-      <section
+      <ScrollReveal
+        as="section"
         id="final-cta"
-        className="mm-band border-t border-emerald-100/80 bg-gradient-to-b from-emerald-50/50 via-white to-white mm-scroll-mt-chrome py-14 md:py-16"
+        className="mm-band border-t border-emerald-100/80 bg-gradient-to-b from-emerald-50/50 via-white to-white mm-scroll-mt-chrome py-14 md:py-16 mm-scroll-reveal--scale"
       >
         <div className="mm-container mm-container--prose w-full text-left">
           <FadeUp className="w-full text-left">
@@ -1722,13 +1738,13 @@ const HomePage = () => {
               <button
                 type="button"
                 onClick={goToStartAssessment}
-                className="inline-flex min-h-[48px] w-full touch-manipulation shrink-0 items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-8 py-4 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-[#E88600] active:scale-[0.98] sm:w-auto"
+                className="mm-cta-glow mm-btn-interactive inline-flex min-h-[48px] w-full touch-manipulation shrink-0 items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-8 py-4 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-[#E88600] active:scale-[0.98] sm:w-auto"
               >
                 {PRIMARY_CTA_LABEL} <ArrowRight size={16} aria-hidden />
               </button>
               <Link
                 to="/contact"
-                className="mm-btn-secondary inline-flex min-h-[48px] w-full touch-manipulation shrink-0 items-center justify-center rounded-xl border-2 border-[#1A8FC4]/80 px-6 py-3.5 text-sm font-bold text-[#1A8FC4] transition hover:bg-secondary active:bg-sky-50/50 sm:w-auto"
+                className="mm-btn-secondary mm-btn-interactive inline-flex min-h-[48px] w-full touch-manipulation shrink-0 items-center justify-center rounded-xl border-2 border-[#1A8FC4]/80 px-6 py-3.5 text-sm font-bold text-[#1A8FC4] transition hover:bg-secondary active:bg-sky-50/50 sm:w-auto"
               >
                 {SECONDARY_CTA_BOOK_CALL}
               </Link>
@@ -1742,7 +1758,7 @@ const HomePage = () => {
             <p className="text-left text-sm text-muted-foreground">No signup · ~5 min · instant results</p>
           </FadeUp>
         </div>
-      </section>
+      </ScrollReveal>
 
       {/* ════════════════ FOOTER ════════════════ */}
       <footer className="mm-band border-t border-border bg-secondary py-14">
