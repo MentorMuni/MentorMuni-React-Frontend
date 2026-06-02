@@ -508,8 +508,11 @@ export const FINAL_CTA_HEADLINE_ACCENT =
 export const FINAL_CTA_BODY =
   'One score, one honest gap list, then optional mocks and the 5-week program if you want structured mentor support. No infinite tabs. No pretend progress.';
 
-/** Hero score widget — demo only (not the visitor's score) */
-export const HERO_SCORE_SAMPLE_LABEL = 'Sample preview — take the free check for your score';
+/** Hero score widget — card title + sample hint (demo score, not the visitor's) */
+export const HERO_SCORE_CARD_TITLE = 'Skill readiness check scorecard';
+export const HERO_SCORE_CARD_HINT = 'Sample preview. Take the free check to see your real score.';
+/** @deprecated Use HERO_SCORE_CARD_TITLE + HERO_SCORE_CARD_HINT */
+export const HERO_SCORE_SAMPLE_LABEL = HERO_SCORE_CARD_HINT;
 
 /** Footer / nav: name of the free assessment product (not “mock interviews”) */
 export const PRODUCT_READINESS_SCORE = 'Readiness check';

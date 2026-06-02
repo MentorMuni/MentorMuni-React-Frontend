@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { HERO_SCORE_SAMPLE_LABEL } from '../../constants/brandCopy';
+import { HERO_SCORE_CARD_HINT, HERO_SCORE_CARD_TITLE } from '../../constants/brandCopy';
 import { getHeroScoreTier, heroRingMetrics } from './heroScoreUtils';
 
 const { size: RING_SIZE, stroke: STROKE, r: R, circ: CIRC, cx: CX, cy: CY } = heroRingMetrics();
@@ -35,11 +35,14 @@ export function NewUIHeroScoreCard({ className = '', preview }) {
         <div
           className="mm-hero-score-panel mm-hero-score-panel--dark mm-new-ui-readiness-card"
           role="img"
-          aria-label={`${HERO_SCORE_SAMPLE_LABEL}. Example score: ${score} out of 100`}
+          aria-label={`${HERO_SCORE_CARD_TITLE}. ${HERO_SCORE_CARD_HINT}. Example score: ${score} out of 100`}
         >
           <div className="relative mm-hero-score-header mm-score-widget-divider">
-            <span className="mm-hero-score-eyebrow mm-score-widget-eyebrow">{HERO_SCORE_SAMPLE_LABEL}</span>
-            <span className="mm-hero-score-live mm-score-widget-badge">
+            <div className="mm-hero-score-header__copy">
+              <h2 className="mm-hero-score-title">{HERO_SCORE_CARD_TITLE}</h2>
+              <p className="mm-hero-score-hint">{HERO_SCORE_CARD_HINT}</p>
+            </div>
+            <span className="mm-hero-score-live mm-score-widget-badge shrink-0">
               <span className="mm-hero-score-live-dot mm-score-widget-badge-dot" aria-hidden />
               Live preview
             </span>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
-import { HERO_SCORE_SAMPLE_LABEL } from '../../constants/brandCopy';
+import { HERO_SCORE_CARD_HINT, HERO_SCORE_CARD_TITLE } from '../../constants/brandCopy';
 import { getHeroScoreTier, heroRingMetrics } from './heroScoreUtils';
 
 const { size: RING_SIZE, stroke: STROKE, r: R, circ: CIRC, cx: CX, cy: CY } = heroRingMetrics();
@@ -37,14 +37,17 @@ export function ClassicHeroScoreCard({ className = '', preview }) {
         <div
           className="mm-hero-score-panel mm-hero-score-panel--light"
           role="img"
-          aria-label={`${HERO_SCORE_SAMPLE_LABEL}. Example score: ${score} out of 100`}
+          aria-label={`${HERO_SCORE_CARD_TITLE}. ${HERO_SCORE_CARD_HINT}. Example score: ${score} out of 100`}
         >
           <div className="pointer-events-none absolute -right-20 -top-20 h-44 w-44 rounded-full bg-sky-300/25 blur-3xl" aria-hidden />
           <div className="pointer-events-none absolute -bottom-16 -left-12 h-36 w-36 rounded-full bg-teal-300/20 blur-3xl" aria-hidden />
 
           <div className="relative mm-hero-score-header">
-            <span className="mm-hero-score-eyebrow">{HERO_SCORE_SAMPLE_LABEL}</span>
-            <span className="mm-hero-score-live">
+            <div className="mm-hero-score-header__copy">
+              <h2 className="mm-hero-score-title">{HERO_SCORE_CARD_TITLE}</h2>
+              <p className="mm-hero-score-hint">{HERO_SCORE_CARD_HINT}</p>
+            </div>
+            <span className="mm-hero-score-live shrink-0">
               <span className="mm-hero-score-live-dot" aria-hidden />
               Live preview
             </span>

@@ -174,14 +174,51 @@ html.mm-new-ui .mm-hero-score-panel::before {
 .mm-hero-score-header {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 0.5rem;
+  gap: 0.65rem 0.5rem;
   margin-bottom: 1rem;
   padding-bottom: 0.75rem;
   border-bottom: 1px solid rgba(148, 163, 184, 0.25);
 }
 
+.mm-hero-score-header__copy {
+  min-width: 0;
+  flex: 1 1 12rem;
+}
+
+.mm-hero-score-title {
+  font-size: clamp(1rem, 2.4vw + 0.35rem, 1.25rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  color: var(--text-heading, #0f172a);
+  text-wrap: balance;
+}
+
+.mm-hero-score-hint {
+  margin-top: 0.4rem;
+  font-size: clamp(0.8125rem, 1.5vw + 0.25rem, 0.9375rem);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.45;
+  text-transform: none;
+  color: var(--text-secondary, #475569);
+  max-width: 22rem;
+}
+
+html.mm-new-ui .mm-hero-score-title {
+  color: var(--text-heading);
+}
+
+html.mm-new-ui .mm-hero-score-hint {
+  color: var(--text-secondary) !important;
+  letter-spacing: -0.01em !important;
+  text-transform: none !important;
+  font-weight: 500 !important;
+}
+
+/* Legacy eyebrow class — keep for any stray usage */
 .mm-hero-score-eyebrow {
   font-size: 0.625rem;
   font-weight: 600;
