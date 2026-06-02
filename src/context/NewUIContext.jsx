@@ -62,7 +62,8 @@ function readNewUIFromUrl() {
 }
 
 /**
- * Resolve theme: URL overrides > manual preference > time-of-day schedule.
+ * Resolve theme: URL overrides > explicit manual toggle > time-of-day schedule.
+ * Stale mm-new-ui without mm-theme-source=manual still follows the schedule.
  */
 export function resolveThemePreference() {
   const fromUrl = readNewUIFromUrl();
@@ -70,20 +71,11 @@ export function resolveThemePreference() {
     return { newUI: fromUrl, source: 'manual' };
   }
 
-  const source = readPreferenceSource();
-  const stored = readStoredTheme();
-
-  if (source === 'manual' && stored !== null) {
-    return { newUI: stored, source: 'manual' };
-  }
-
-  if (source === 'auto') {
-    return { newUI: isDarkThemeBySchedule(), source: 'auto' };
-  }
-
-  // Legacy: saved theme before schedule — keep user choice
-  if (stored !== null) {
-    return { newUI: stored, source: 'manual' };
+  if (readPreferenceSource() === 'manual') {
+    const stored = readStoredTheme();
+    if (stored !== null) {
+      return { newUI: stored, source: 'manual' };
+    }
   }
 
   return { newUI: isDarkThemeBySchedule(), source: 'auto' };
@@ -129,6 +121,13 @@ export function NewUIProvider({ children }) {
     applyThemeToDom(newUI);
     syncThemeColorMeta(newUI);
   }, [newUI]);
+
+  /* On load: apply schedule unless user explicitly chose Classic/Dark in the switch */
+  useEffect(() => {
+    if (readPreferenceSource() === 'manual') return;
+    const scheduled = isDarkThemeBySchedule();
+    applyTheme(scheduled, 'auto');
+  }, [applyTheme]);
 
   useEffect(() => {
     const syncSchedule = () => {
