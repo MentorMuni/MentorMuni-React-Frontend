@@ -1,8 +1,8 @@
 import { useNewUI } from '../../context/NewUIContext';
 
 /**
- * Unified top chrome: promo bar + nav + beta switch.
- * In Dark theme, white chrome block (nav + theme toggle) with fade into dark page body.
+ * Theme bar chrome + edge fade (nav is a sibling in App.jsx so sticky spans the full page).
+ * In Dark theme, white chrome block for the theme toggle with fade into dark page body.
  */
 export default function SiteChromeShell({ children }) {
   const { newUI } = useNewUI();

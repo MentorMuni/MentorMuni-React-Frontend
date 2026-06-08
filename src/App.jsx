@@ -221,14 +221,15 @@ function App() {
       <RouteTitle />
       <div className="mm-app-shell mm-site-theme relative text-foreground">
         <ParticleBackground />
-        <SiteChromeShell>
-          <AnnouncementBar />
-          <div className="mm-site-chrome__stack">
-            <Navbar />
-            <NewUIBetaSwitch />
-          </div>
-        </SiteChromeShell>
-        <AnimatedMain className="mm-app-main relative z-[1]">
+        <AnnouncementBar />
+        <div className="mm-app-body">
+          <Navbar />
+          <SiteChromeShell>
+            <div className="mm-site-chrome__stack">
+              <NewUIBetaSwitch />
+            </div>
+          </SiteChromeShell>
+          <AnimatedMain className="mm-app-main relative z-[1]">
           <Suspense fallback={<PageFallback />}>
             <Routes>
               <Route path="/" element={<HomePage />} />
@@ -302,6 +303,7 @@ function App() {
             </Routes>
           </Suspense>
         </AnimatedMain>
+        </div>
         <WelcomeLaunchOverlay />
         <MuniBot />
       </div>

@@ -17,9 +17,9 @@
   --mm-chrome-offset: clamp(4rem, 8vh, 6rem);
 }
 
-/* ── Viewport guards ─────────────────────────────────────────────────── */
+/* ── Viewport guards ─────────────────────────────────────────────────────── */
 html {
-  overflow-x: hidden;
+  /* Do not set overflow-x: hidden on html — it breaks position: sticky sitewide */
   overflow-y: auto;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -35,7 +35,8 @@ html::-webkit-scrollbar {
 }
 
 body {
-  overflow-x: hidden;
+  /* Do not set overflow-x: hidden on body — it breaks position: sticky sitewide */
+  overflow-x: visible;
   overflow-y: visible;
   min-width: 0;
   width: 100%;
@@ -56,9 +57,8 @@ body {
   min-width: 0;
   min-height: 100vh;
   min-height: 100dvh;
-  /* clip horizontal bleed only — hidden would force overflow-y:auto and clip nav menus */
-  overflow-x: clip;
-  overflow-y: visible;
+  /* Do not clip overflow here — clip/hidden on ancestors breaks position: sticky */
+  overflow: visible;
 }
 
 .mm-app-shell > canvas[aria-hidden],
@@ -87,6 +87,17 @@ body {
   min-width: 0;
   max-width: 100%;
   min-height: 0;
+}
+
+/* Flex column that grows with page content — sticky nav needs a tall parent, not a short flex item */
+.mm-app-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .mm-app-main:has(.mm-assessment-flow--quiz) {
@@ -119,6 +130,17 @@ body {
   max-width: 100%;
   min-width: 0;
   overflow: visible;
+}
+
+/* Site nav — sticky for full page scroll (parent .mm-app-body spans nav + main) */
+.mm-app-body > .mm-sticky-header {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  align-self: flex-start;
+  flex-shrink: 0;
+  width: 100%;
 }
 
 /* Desktop nav flyouts (Tools, About/Contact) — above beta bar & page content */

@@ -31,10 +31,13 @@
 }
 
 html.mm-new-ui .mm-sticky-header.mm-sticky-header--scrolled {
-  background-color: rgba(6, 10, 18, 0.88);
+  /* Keep white site chrome on scroll — do not switch to dark body color */
+  background-color: var(--mm-chrome-bg);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   box-shadow:
-    0 8px 32px -8px rgba(0, 0, 0, 0.5),
-    0 1px 0 rgba(125, 211, 252, 0.1);
+    0 4px 24px -4px rgba(15, 23, 42, 0.1),
+    0 1px 0 var(--mm-chrome-border);
 }
 
 .mm-sticky-header .mm-header-bar {
