@@ -16,7 +16,11 @@ import {
 import { useLocation, Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import { isNavActive } from '../utils/navRouteMatch';
-import { PRIMARY_CTA_LABEL, READINESS_TEST_COUPON_BADGE } from '../constants/brandCopy';
+import {
+  PRIMARY_CTA_LABEL,
+  READINESS_TEST_COUPON_BADGE,
+  MENTORMUNI_STORY_NAV_LABEL,
+} from '../constants/brandCopy';
 import LimitedRewardLabel from './LimitedRewardLabel';
 import NavDropdownPortal from './navbar/NavDropdownPortal';
 import MobileNavDrawer from './navbar/MobileNavDrawer';
@@ -130,7 +134,7 @@ const Navbar = () => {
   }, []);
 
   const navItems = [
-    { label: 'How It Works', path: '/how-it-works', exact: false },
+    { label: MENTORMUNI_STORY_NAV_LABEL, path: '/how-it-works', exact: false },
     { label: 'How to Prepare', path: '/roadmap', exact: true, variant: 'roadmap' },
     { label: 'Mentors', path: '/mentors', exact: false },
     { label: 'Outcomes', path: '/outcomes', exact: false },

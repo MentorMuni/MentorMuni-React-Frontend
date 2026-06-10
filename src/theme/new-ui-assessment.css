@@ -311,3 +311,122 @@ html.mm-new-ui .mm-assessment-flow .bg-cyan-400\/10 {
 html.mm-new-ui .mm-assessment-flow .bg-amber-200\/20 {
   opacity: 0.25;
 }
+
+/* Choice cards — professional icon tiles (assessment modes + profile roles) */
+.mm-assessment-mode-icon,
+.mm-profile-role-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border-radius: 0.875rem;
+  border: 1px solid transparent;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+.mm-profile-role-icon {
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.mm-assessment-mode-icon--hero {
+  width: 3.25rem;
+  height: 3.25rem;
+  margin-bottom: 1rem;
+}
+
+.mm-assessment-mode-icon--compact {
+  width: 2.75rem;
+  height: 2.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.mm-assessment-mode-icon--skill {
+  background: linear-gradient(145deg, #e0f2fe 0%, #ecfeff 100%);
+  border-color: rgba(14, 165, 233, 0.22);
+  color: #0369a1;
+}
+
+.mm-assessment-mode-icon--placement {
+  background: linear-gradient(145deg, #fff7ed 0%, #ffedd5 100%);
+  border-color: rgba(234, 88, 12, 0.2);
+  color: #c2410c;
+}
+
+.mm-assessment-mode-icon--aptitude {
+  background: linear-gradient(145deg, #ede9fe 0%, #f5f3ff 100%);
+  border-color: rgba(124, 58, 237, 0.2);
+  color: #6d28d9;
+}
+
+html.mm-new-ui .mm-assessment-mode-icon,
+html.mm-new-ui .mm-profile-role-icon {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+}
+
+.mm-profile-role-icon--student-early {
+  background: linear-gradient(145deg, #dbeafe 0%, #eff6ff 100%);
+  border-color: rgba(37, 99, 235, 0.2);
+  color: #1d4ed8;
+}
+
+.mm-profile-role-icon--student-final {
+  background: linear-gradient(145deg, #fef3c7 0%, #fffbeb 100%);
+  border-color: rgba(217, 119, 6, 0.22);
+  color: #b45309;
+}
+
+.mm-profile-role-icon--graduate {
+  background: linear-gradient(145deg, #d1fae5 0%, #ecfdf5 100%);
+  border-color: rgba(5, 150, 105, 0.22);
+  color: #047857;
+}
+
+.mm-profile-role-icon--professional {
+  background: linear-gradient(145deg, #e2e8f0 0%, #f8fafc 100%);
+  border-color: rgba(71, 85, 105, 0.22);
+  color: #334155;
+}
+
+html.mm-new-ui .mm-profile-role-icon--student-early {
+  background: linear-gradient(145deg, rgba(30, 64, 175, 0.34), rgba(15, 23, 42, 0.5));
+  border-color: rgba(96, 165, 250, 0.32);
+  color: #93c5fd;
+}
+
+html.mm-new-ui .mm-profile-role-icon--student-final {
+  background: linear-gradient(145deg, rgba(180, 83, 9, 0.32), rgba(69, 26, 3, 0.45));
+  border-color: rgba(251, 191, 36, 0.3);
+  color: #fcd34d;
+}
+
+html.mm-new-ui .mm-profile-role-icon--graduate {
+  background: linear-gradient(145deg, rgba(4, 120, 87, 0.32), rgba(6, 78, 59, 0.45));
+  border-color: rgba(52, 211, 153, 0.3);
+  color: #6ee7b7;
+}
+
+html.mm-new-ui .mm-profile-role-icon--professional {
+  background: linear-gradient(145deg, rgba(51, 65, 85, 0.38), rgba(15, 23, 42, 0.55));
+  border-color: rgba(148, 163, 184, 0.3);
+  color: #cbd5e1;
+}
+
+html.mm-new-ui .mm-assessment-mode-icon--skill {
+  background: linear-gradient(145deg, rgba(14, 116, 144, 0.38), rgba(8, 47, 73, 0.55));
+  border-color: rgba(56, 189, 248, 0.32);
+  color: #7dd3fc;
+}
+
+html.mm-new-ui .mm-assessment-mode-icon--placement {
+  background: linear-gradient(145deg, rgba(154, 52, 18, 0.32), rgba(67, 20, 7, 0.45));
+  border-color: rgba(251, 146, 60, 0.3);
+  color: #fdba74;
+}
+
+html.mm-new-ui .mm-assessment-mode-icon--aptitude {
+  background: linear-gradient(145deg, rgba(91, 33, 182, 0.32), rgba(46, 16, 101, 0.48));
+  border-color: rgba(167, 139, 250, 0.3);
+  color: #c4b5fd;
+}

@@ -3,7 +3,8 @@ import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import {
   AlertCircle, CheckCircle, ChevronRight, Lock, Mail, Phone, Check, Zap, ArrowRight, Star,
   TrendingUp, Target, Sparkles, BarChart3, AlertTriangle, CheckCircle2, Lightbulb, Users, Headphones,
-  Share2, Linkedin, Trophy, Building2, Briefcase, Gift, Copy, Printer,
+  Share2, Linkedin, Trophy, Building2, Briefcase, Gift, Copy, Printer, Code2, ClipboardCheck, Brain,
+  GraduationCap, BadgeCheck,
 } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { API_BASE } from '../config';
@@ -743,7 +744,8 @@ function HowItWorksVisual() {
 const ASSESSMENT_MODE_OPTIONS = [
   {
     mode: ASSESSMENT_FOCUS_SKILL,
-    emoji: '💻',
+    Icon: Code2,
+    iconTone: 'skill',
     title: ASSESSMENT_MODE_LABEL[ASSESSMENT_FOCUS_SKILL],
     badge: 'One skill, deep preparation',
     compactHint: 'Drill one stack end-to-end — Java, Python, AI, etc.',
@@ -755,7 +757,8 @@ const ASSESSMENT_MODE_OPTIONS = [
   },
   {
     mode: ASSESSMENT_FOCUS_PLACEMENT,
-    emoji: '🎯',
+    Icon: ClipboardCheck,
+    iconTone: 'placement',
     title: ASSESSMENT_MODE_LABEL[ASSESSMENT_FOCUS_PLACEMENT],
     badge: 'Broad interview check',
     compactHint: 'Typical engineering mix — students & professionals.',
@@ -767,7 +770,8 @@ const ASSESSMENT_MODE_OPTIONS = [
   },
   {
     mode: ASSESSMENT_FOCUS_APTITUDE,
-    emoji: '🧠',
+    Icon: Brain,
+    iconTone: 'aptitude',
     title: ASSESSMENT_MODE_LABEL[ASSESSMENT_FOCUS_APTITUDE],
     badge: 'Engineering aptitude',
     compactHint: 'Quantitative, logical, and verbal reasoning.',
@@ -790,6 +794,7 @@ function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
     <div className={`grid grid-cols-1 ${isHero ? 'md:grid-cols-3 gap-4 md:gap-5' : 'md:grid-cols-3 gap-4'} mb-2`}>
       {ASSESSMENT_MODE_OPTIONS.map((option) => {
         const selected = selectedMode === option.mode;
+        const ModeIcon = option.Icon;
         return (
           <motion.button
             key={option.mode}
@@ -830,11 +835,16 @@ function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
               </div>
             )}
             <div
-              className={`mb-4 flex items-center justify-center rounded-2xl bg-gradient-to-br from-cta/20 to-amber-100/80 ${
-                isHero ? 'h-16 w-16 text-4xl shadow-inner' : 'h-14 w-14 text-3xl'
+              className={`mm-assessment-mode-icon mm-assessment-mode-icon--${option.iconTone} ${
+                isHero ? 'mm-assessment-mode-icon--hero' : 'mm-assessment-mode-icon--compact'
               }`}
             >
-              <span className="leading-none">{option.emoji}</span>
+              <ModeIcon
+                size={isHero ? 26 : 22}
+                strokeWidth={2}
+                className="shrink-0"
+                aria-hidden
+              />
             </div>
             <h3 className={`font-black text-foreground ${isHero ? 'text-base sm:text-lg leading-snug pr-6' : 'text-sm mb-1'}`}>
               {option.title}
@@ -2804,28 +2814,32 @@ const InterviewReady = () => {
     const ROLES = [
       {
         value: '3rd_year',
-        emoji: '🎓',
+        Icon: GraduationCap,
+        iconTone: 'student-early',
         label: '1st–3rd Year Student',
         badge: 'Internship-focused',
         details: ['Building DSA fundamentals', 'Core CS concepts', 'Targeting internships'],
       },
       {
         value: '4th_year',
-        emoji: '🚀',
+        Icon: Trophy,
+        iconTone: 'student-final',
         label: '4th Year Student',
         badge: 'Campus placement season',
         details: ['Full-time job offers', 'System Design basics', 'Cracking tech rounds'],
       },
       {
         value: 'recent_graduate',
-        emoji: '🎯',
+        Icon: BadgeCheck,
+        iconTone: 'graduate',
         label: 'Recent Graduate',
         badge: 'Passout 2023–2026',
         details: ['Off-campus job hunt', 'Competitive placement prep', 'High-stakes interviews'],
       },
       {
         value: 'professional',
-        emoji: '💼',
+        Icon: Briefcase,
+        iconTone: 'professional',
         label: 'Working Professional',
         badge: 'Job switch ready',
         details: ['Senior-level interviews', 'Architecture & design', 'Leadership questions'],
@@ -2875,6 +2889,7 @@ const InterviewReady = () => {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               {ROLES.map(option => {
                 const selected = profile.userCategory === option.value;
+                const RoleIcon = option.Icon;
                 return (
                   <button
                     key={option.value}
@@ -2903,12 +2918,10 @@ const InterviewReady = () => {
                       </div>
                     )}
                     <div
-                      className={`mb-3 text-3xl transition-transform duration-200 ease-out motion-reduce:transition-none ${
-                        selected ? '' : 'group-hover:scale-110 group-hover:rotate-[-4deg] motion-reduce:group-hover:scale-100 motion-reduce:group-hover:rotate-0'
-                      }`}
+                      className={`mm-profile-role-icon mm-profile-role-icon--${option.iconTone}`}
                       aria-hidden
                     >
-                      {option.emoji}
+                      <RoleIcon size={22} strokeWidth={2} className="shrink-0" />
                     </div>
                     <h3 className="font-bold text-foreground text-sm mb-1">{option.label}</h3>
                     <p className={`text-xs font-medium mb-3 ${selected ? 'text-cta' : 'text-muted-foreground'}`}>{option.badge}</p>

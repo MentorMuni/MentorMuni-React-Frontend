@@ -92,7 +92,7 @@ export const MUNIBOT_CHUNKS = [
     keywords: ['how it works', 'workflow', 'steps', 'process'],
     text:
       `Typical flow: **(1)** Free **readiness score** → see gaps · **(2)** Fix basics with AI tools and mocks · **(3)** Join **mentorship / waitlist** for structured support · **(4)** Iterate until interviews feel solid.\n\n` +
-      `See **How It Works** in the nav for the full story.`,
+      `See **Why MentorMuni** in the nav for what we are, why we exist, and how we help.`,
   },
 
   /* Interview basics — engineering */

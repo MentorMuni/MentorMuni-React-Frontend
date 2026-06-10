@@ -11,7 +11,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
-import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
+import { PRIMARY_CTA_LABEL, MENTORMUNI_STORY_EYEBROW } from '../constants/brandCopy';
 import InnerRouteShell from './new-ui/InnerRouteShell';
 
 const PHASES = [
@@ -234,7 +234,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
               <Sparkles size={15} className="text-primary" />
             </motion.span>
             <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-primary sm:text-xs">
-              Our story · your preparation
+              {MENTORMUNI_STORY_EYEBROW}
             </span>
           </motion.div>
         </motion.div>
@@ -311,22 +311,11 @@ function HowItWorksStoryHero({ reduceMotion }) {
               <p className="mb-4 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-hint lg:text-left">
                 The thread we follow
               </p>
-              <div className="relative rounded-2xl border border-border bg-white/90 p-5 shadow-card backdrop-blur-sm md:p-6">
-                <motion.div
-                  className="absolute left-[1.35rem] top-14 bottom-14 w-px bg-gradient-to-b from-primary/60 via-sky-300/70 to-brand-teal/45 md:left-[1.5rem]"
-                  aria-hidden
-                  initial={{ scaleY: reduceMotion ? 1 : 0 }}
-                  animate={{ scaleY: 1 }}
-                  style={{ transformOrigin: 'top center' }}
-                  transition={{
-                    duration: reduceMotion ? 0 : 0.95,
-                    ease: [0.22, 1, 0.36, 1],
-                    delay: reduceMotion ? 0 : 0.35,
-                  }}
-                />
-                <ul className="relative space-y-6">
+              <div className="rounded-2xl border border-border bg-white/90 p-5 shadow-card backdrop-blur-sm md:p-6">
+                <ul className="space-y-6">
                   {STORY_FLOW_RAIL.map((row, i) => {
                     const Icon = row.Icon;
+                    const isLast = i === STORY_FLOW_RAIL.length - 1;
                     return (
                       <motion.li
                         key={row.step}
@@ -341,18 +330,36 @@ function HowItWorksStoryHero({ reduceMotion }) {
                           ease: [0.22, 1, 0.36, 1],
                         }}
                       >
-                        <motion.div
-                          className={`relative flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${row.ring} text-white shadow-lg md:h-12 md:w-12`}
-                          whileHover={reduceMotion ? undefined : { scale: 1.06 }}
-                          transition={{ type: 'spring', stiffness: 450, damping: 22 }}
+                        <div
+                          className={`flex w-11 shrink-0 flex-col items-center md:w-12 ${isLast ? '' : 'pb-6'}`}
                         >
-                          <span
-                            className="absolute inset-0 rounded-xl opacity-40 blur-md"
-                            style={{ background: `radial-gradient(circle, ${row.glow}, transparent 70%)` }}
-                            aria-hidden
-                          />
-                          <Icon className="relative shrink-0 drop-shadow-sm" size={20} strokeWidth={2} />
-                        </motion.div>
+                          <motion.div
+                            className={`relative z-10 flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${row.ring} text-white shadow-lg md:h-12 md:w-12`}
+                            whileHover={reduceMotion ? undefined : { scale: 1.06 }}
+                            transition={{ type: 'spring', stiffness: 450, damping: 22 }}
+                          >
+                            <span
+                              className="absolute inset-0 rounded-xl opacity-40 blur-md"
+                              style={{ background: `radial-gradient(circle, ${row.glow}, transparent 70%)` }}
+                              aria-hidden
+                            />
+                            <Icon className="relative shrink-0 drop-shadow-sm" size={20} strokeWidth={2} />
+                          </motion.div>
+                          {!isLast && (
+                            <motion.span
+                              className="mt-0 w-px flex-1 min-h-6 bg-gradient-to-b from-primary/60 via-sky-300/70 to-brand-teal/45"
+                              aria-hidden
+                              initial={{ scaleY: reduceMotion ? 1 : 0 }}
+                              animate={{ scaleY: 1 }}
+                              style={{ transformOrigin: 'top center' }}
+                              transition={{
+                                duration: reduceMotion ? 0 : 0.55,
+                                ease: [0.22, 1, 0.36, 1],
+                                delay: reduceMotion ? 0 : 0.35 + i * 0.12,
+                              }}
+                            />
+                          )}
+                        </div>
                         <div className="min-w-0 pt-0.5">
                           <p className="text-[10px] font-bold uppercase tracking-wider text-icon-muted">Step {row.step}</p>
                           <p className="mt-0.5 font-bold text-foreground">{row.title}</p>

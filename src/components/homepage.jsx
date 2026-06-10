@@ -62,8 +62,10 @@ import {
   FINAL_CTA_HEADLINE,
   FINAL_CTA_HEADLINE_ACCENT,
   FINAL_CTA_BODY,
-  HOW_IT_WORKS_HEADLINE,
-  HOW_IT_WORKS_SUB,
+  MENTORMUNI_STORY_NAV_LABEL,
+  HOMEPAGE_HELP_EYEBROW,
+  HOMEPAGE_HELP_HEADLINE,
+  HOMEPAGE_HELP_SUB,
   HOMEPAGE_MENTORS_TO_CTA_BRIDGE,
   CONTACT_EMAIL,
   CONTACT_EMAIL_HREF,
@@ -353,7 +355,7 @@ const ComparisonTableCell = ({ value }) => {
   );
 };
 
-/* ─── How it works — feature cards (homepage) ───────────────────────────── */
+/* ─── How we help — feature cards (homepage) ────────────────────────────── */
 const FEATURES = [
   {
     Icon: Brain,
@@ -879,7 +881,7 @@ const HomePage = () => {
                       to="/how-it-works"
                       className="inline-flex min-h-[48px] w-full touch-manipulation items-center justify-center mm-btn-secondary rounded-xl px-7 py-3.5 text-sm font-bold text-foreground shadow-sm transition-colors hover:border-[#1A8FC4] hover:bg-secondary sm:w-auto"
                     >
-                      How it works
+                      {MENTORMUNI_STORY_NAV_LABEL}
                     </Link>
                   </div>
 
@@ -1412,22 +1414,24 @@ const HomePage = () => {
         </div>
       </section>
 
-      {/* ════════════════ HOW IT WORKS — what we give (after the “why”) ════════════════ */}
+      {/* ════════════════ HOW WE HELP — tools & support strip (after proof) ════════════════ */}
       <section className="mm-band mm-marketing-section mm-surface-section border-t">
         <div className="mm-container w-full text-left">
           <FadeUp className="w-full text-left">
-            <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-primary">How it works</span>
+            <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-primary">
+              {HOMEPAGE_HELP_EYEBROW}
+            </span>
             <h2 className="mb-2 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
-              {HOW_IT_WORKS_HEADLINE}
+              {HOMEPAGE_HELP_HEADLINE}
             </h2>
             <p className="mb-4 max-w-3xl text-sm leading-relaxed text-muted-foreground md:text-base">
-              {HOW_IT_WORKS_SUB}
+              {HOMEPAGE_HELP_SUB}
             </p>
             <Link
               to="/how-it-works"
               className="mb-10 inline-flex items-center gap-1 text-sm font-semibold text-[#1A8FC4] transition-colors hover:text-[#15799F]"
             >
-              Full step-by-step walkthrough <ArrowRight size={14} aria-hidden />
+              What MentorMuni is &amp; why we built it <ArrowRight size={14} aria-hidden />
             </Link>
           </FadeUp>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-2">

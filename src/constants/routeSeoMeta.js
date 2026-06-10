@@ -17,10 +17,11 @@ export const ROUTE_SEO = {
       'placement mentor, placement preparation, campus placement, interview readiness, TCS placement, Infosys campus hiring, AI mock interview, MentorMuni',
   },
   '/how-it-works': {
-    title: 'Campus Placement Prep — How MentorMuni Works | MentorMuni',
+    title: 'What Is MentorMuni? Why We Built It & How We Help | MentorMuni',
     description:
-      'See how MentorMuni works as your placement mentor — free readiness check, gap report, AI mocks, and 1:1 mentors for campus and off-campus drives in India.',
-    keywords: 'how placement prep works, campus placement guide, interview readiness process, MentorMuni',
+      'What MentorMuni is, why we built it for engineering students in India, and how the readiness check, AI mocks, and mentors help you get placement-ready.',
+    keywords:
+      'what is MentorMuni, why MentorMuni, placement mentor India, interview readiness, campus placement help',
   },
   '/roadmap': {
     title: 'Placement Preparation Roadmap 2026 | MentorMuni',

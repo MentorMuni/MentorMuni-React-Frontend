@@ -160,13 +160,25 @@ export const COMPARISON_TABLE_ROWS = [
   },
 ];
 
-/** Homepage — “How it works” strip (feature cards under the story section) */
-export const HOW_IT_WORKS_HEADLINE =
+/**
+ * Nav + /how-it-works page — what MentorMuni is, why we built it, how we help (route unchanged for SEO).
+ */
+export const MENTORMUNI_STORY_NAV_LABEL = 'Why MentorMuni';
+export const MENTORMUNI_STORY_EYEBROW = 'What · Why · How';
+
+/** Homepage — tools & support strip (after proof / comparison) */
+export const HOMEPAGE_HELP_EYEBROW = 'How we help you';
+export const HOMEPAGE_HELP_HEADLINE =
   'One spine: measure → expose the gap → train performance.';
 
-/** One paragraph under HOW_IT_WORKS_HEADLINE on homepage */
-export const HOW_IT_WORKS_SUB =
+/** One paragraph under HOMEPAGE_HELP_HEADLINE on homepage */
+export const HOMEPAGE_HELP_SUB =
   'Everything else supports that path. Mocks, resume checks, and tutorials are secondary — the conversion engine is: take the readiness check, see your gap, then join the 5-week interview readiness program if you want structured reps.';
+
+/** @deprecated Use HOMEPAGE_HELP_HEADLINE */
+export const HOW_IT_WORKS_HEADLINE = HOMEPAGE_HELP_HEADLINE;
+/** @deprecated Use HOMEPAGE_HELP_SUB */
+export const HOW_IT_WORKS_SUB = HOMEPAGE_HELP_SUB;
 
 /** Homepage — fit block (who it’s for / not for); uses same product name as READINESS_CHECK_PRODUCT_NOUN */
 export const REALITY_CHECK_EYEBROW = 'After your readiness check';

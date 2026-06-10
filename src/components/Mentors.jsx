@@ -274,19 +274,15 @@ export default function Mentors() {
 
   return (
     <InnerRouteShell scope="inner" className="min-h-screen mm-site-theme overflow-x-hidden">
-      <style>{`
-        @keyframes mentors-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-        @keyframes mentors-amber-pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
-      `}</style>
-
       {/* ══════════════ SECTION 1 — HERO ══════════════ */}
       <section ref={heroRef} style={{ ...REVEAL_STYLE, paddingTop: 80, paddingBottom: 64, textAlign: 'center', padding: '80px 24px 64px' }}>
         <div style={{ maxWidth: 620, margin: '0 auto' }}>
 
-          {/* Pill badge */}
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(255, 149, 0, 0.12)', border: '1px solid rgba(180, 83, 9, 0.35)', borderRadius: 20, padding: '5px 16px', marginBottom: 28 }}>
-            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#ea580c', display: 'inline-block', animation: 'mentors-amber-pulse 1.5s ease-in-out infinite', boxShadow: '0 0 6px rgba(234, 88, 12, 0.6)', flexShrink: 0 }} />
-            <span style={{ fontSize: 12, fontWeight: 600, color: '#9A3412', letterSpacing: '0.01em' }}>Mentor matching · {MENTORSHIP_TRUST_BADGE}</span>
+          <div className="mm-mentors-trust-pill">
+            <span className="mm-mentors-trust-pill__dot" aria-hidden />
+            <span className="mm-mentors-trust-pill__text">
+              Mentor matching · {MENTORSHIP_TRUST_BADGE}
+            </span>
           </div>
 
           {/* H1 */}
@@ -311,7 +307,7 @@ export default function Mentors() {
         style={REVEAL_STYLE}
       >
         <div className="mm-container">
-          <p className="text-center text-[11px] font-bold uppercase tracking-[0.2em] text-[#CC7000]">
+          <p className="mm-mentors-section-eyebrow text-center text-[11px] font-bold uppercase tracking-[0.2em]">
             Know your mentors
           </p>
           <h2 className="mt-2 text-center text-2xl font-bold tracking-tight text-foreground md:text-[1.65rem] md:leading-snug">
@@ -334,7 +330,7 @@ export default function Mentors() {
           </div>
 
           <p className="mx-auto mt-8 max-w-md text-center text-xs leading-relaxed text-muted-foreground">
-            <span className="font-semibold text-[#9A3412]">{MENTORSHIP_FIRST_BATCH_START_LABEL}.</span>{' '}
+            <span className="mm-mentors-highlight">{MENTORSHIP_FIRST_BATCH_START_LABEL}.</span>{' '}
             From first gap analysis to mock panels and offer prep — your mentor&apos;s job is to get you placement-ready, not
             just &ldquo;more studied.&rdquo;
           </p>

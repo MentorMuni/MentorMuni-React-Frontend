@@ -130,7 +130,7 @@ function CTAStrip({ theme, title, subtitle, buttonLabel, to, href, external }) {
 }
 
 /* ——— Year 1 content ——— */
-const Y1_CS_CARDS = [
+const Y1_CARDS = [
   {
     title: 'Academics & CGPA',
     tags: ['Strong CGPA', 'Mathematics', 'Physics/Science Basics', 'All Core Subjects'],
@@ -175,38 +175,8 @@ const Y1_CS_CARDS = [
   },
 ];
 
-const Y1_NONCS_CARDS = [
-  { title: 'Academics & CGPA', tags: ['Strong CGPA', 'Core Branch Subjects', 'Mathematics Focus'] },
-  {
-    title: 'Programming from Zero — C Language',
-    tags: ['Why Programming Matters', 'Variables & Data Types', 'Loops', 'Functions', 'Basic Logic Building'],
-    note: 'Take extra time here — this is your base',
-  },
-  {
-    title: 'Basic C++ Intro',
-    tags: ['What is OOPs', 'Simple Classes', 'Basic Syntax Only'],
-  },
-  {
-    title: 'Computer Awareness',
-    tags: ['How Internet Works', 'What is Software', 'OS Basics', 'Basic Excel/Docs'],
-  },
-  {
-    title: 'Git & GitHub Basics',
-    tags: ['Version Control', 'GitHub Profile', 'First Repository'],
-  },
-  {
-    title: 'Career Awareness',
-    tags: [
-      'IT vs Core Jobs',
-      'What is a Service Company',
-      'What is a Product Company',
-      'LinkedIn Setup',
-    ],
-  },
-];
-
 /* Year 2 */
-const Y2_CS_CARDS = [
+const Y2_CARDS = [
   {
     title: 'DSA — Your Interview Engine',
     tags: [
@@ -267,42 +237,7 @@ const Y2_CS_CARDS = [
   },
 ];
 
-const Y2_NONCS_CARDS = [
-  {
-    title: 'C Programming — Solidify Everything',
-    tags: ['Advanced Loops', 'Pointers Deep Dive', 'Memory Management', '50+ Practice Problems'],
-  },
-  {
-    title: 'Start C++ & OOPs Properly',
-    tags: ['Classes', 'Objects', 'Inheritance', 'Polymorphism', 'Basic Projects'],
-  },
-  {
-    title: 'DSA Introduction',
-    tags: ['Arrays', 'Strings', 'Basic Sorting', 'LeetCode Easy Problems Only', 'Logic First'],
-  },
-  {
-    title: 'Pick One Language — Python Recommended',
-    tags: ['Python Basics to Intermediate', 'Scripting', 'Small Automation Projects'],
-  },
-  {
-    title: 'CS Fundamentals',
-    tags: ['OS Basics', 'Networking Basics', 'What is DBMS', 'Basic SQL Queries'],
-  },
-  {
-    title: 'Resume Building',
-    tags: ['First Resume', 'Projects', 'Skills Honest Listing', 'LinkedIn Active'],
-  },
-  {
-    title: 'Aptitude Prep',
-    tags: ['Quantitative', 'Logical Reasoning', 'Verbal', 'Service Company Test Patterns'],
-  },
-  {
-    title: 'Internship Awareness',
-    tags: ['IT Internship Search Starts', 'Internshala', 'LinkedIn', 'Apply Even Without Full Skills'],
-  },
-];
-
-/* Year 3 — shared list with optional nonCsNote */
+/* Year 3 */
 const Y3_CARDS = [
   {
     title: 'Coding Mastery',
@@ -313,7 +248,6 @@ const Y3_CARDS = [
       '1 Language Expert Level',
       'OOPs Concepts Solid',
     ],
-    nonCsNote: 'Target 75+ LeetCode Easy-Medium',
   },
   {
     title: 'System Design — HLD & LLD',
@@ -324,7 +258,6 @@ const Y3_CARDS = [
       'Gaurav Sen YouTube / AI Guide',
       'Design Common Systems (URL Shortener, Chat App)',
     ],
-    nonCsNote: 'Focus on HLD only for service companies',
   },
   {
     title: 'CS Core — Interview Level',
@@ -457,12 +390,11 @@ const Y4_SPRINT = [
   },
 ];
 
-function Year1Section({ branch, theme }) {
-  const cards = branch === 'cs' ? Y1_CS_CARDS : Y1_NONCS_CARDS;
+function Year1Section({ theme }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:gap-5">
-        {cards.map((c) => (
+        {Y1_CARDS.map((c) => (
           <RoadmapCard key={c.title} title={c.title} tags={c.tags} note={c.note} />
         ))}
       </div>
@@ -487,12 +419,11 @@ function Year1Section({ branch, theme }) {
   );
 }
 
-function Year2Section({ branch, theme }) {
-  const cards = branch === 'cs' ? Y2_CS_CARDS : Y2_NONCS_CARDS;
+function Year2Section({ theme }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:gap-5">
-        {cards.map((c) => (
+        {Y2_CARDS.map((c) => (
           <RoadmapCard key={c.title} title={c.title} tags={c.tags} note={c.note} />
         ))}
       </div>
@@ -505,8 +436,8 @@ function Year2Section({ branch, theme }) {
           <strong className="font-bold text-foreground">Resume Review:</strong> Get your resume reviewed by a mentor
         </MilestoneRow>
         <MilestoneRow icon="star">
-          <strong className="font-bold text-foreground">Goal:</strong> 50+ LeetCode (CS) / 20+ LeetCode (Non-CS) + Internship
-          applied + CS subjects understood + Resume ready
+          <strong className="font-bold text-foreground">Goal:</strong> 50+ LeetCode problems + internship applied + core subjects
+          understood + resume ready
         </MilestoneRow>
       </div>
       <CTAStrip
@@ -520,14 +451,13 @@ function Year2Section({ branch, theme }) {
   );
 }
 
-function Year3Section({ branch, theme }) {
+function Year3Section({ theme }) {
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:gap-5">
-        {Y3_CARDS.map((c) => {
-          const extra = branch === 'noncs' && c.nonCsNote ? c.nonCsNote : c.note;
-          return <RoadmapCard key={c.title} title={c.title} tags={c.tags} note={extra} />;
-        })}
+        {Y3_CARDS.map((c) => (
+          <RoadmapCard key={c.title} title={c.title} tags={c.tags} note={c.note} />
+        ))}
       </div>
       <div className="space-y-3">
         <MilestoneRow icon="check">
@@ -539,8 +469,8 @@ function Year3Section({ branch, theme }) {
           mentor reviewed
         </MilestoneRow>
         <MilestoneRow icon="star">
-          <strong className="font-bold text-foreground">Goal:</strong> AI project live on cloud + 150+ LeetCode (CS) / 75+
-          (Non-CS) + aptitude cleared in mocks + interview-ready
+          <strong className="font-bold text-foreground">Goal:</strong> AI project live on cloud + strong DSA practice + aptitude
+          cleared in mocks + interview-ready
         </MilestoneRow>
       </div>
       <CTAStrip
@@ -624,7 +554,6 @@ function Year4Section({ theme }) {
 }
 
 export default function RoadmapPage() {
-  const [branch, setBranch] = useState('cs');
   const [activeYear, setActiveYear] = useState(1);
   const prefersReducedMotion = useReducedMotion();
 
@@ -691,7 +620,7 @@ export default function RoadmapPage() {
                   </li>
                   <li className="flex gap-2">
                     <span className="text-[#378ADD]">●</span>
-                    CS/IT vs Non-CS tracks where it matters most
+                    One roadmap for every engineering branch
                   </li>
                   <li className="flex gap-2">
                     <span className="text-[#D85A30]">●</span>
@@ -702,34 +631,6 @@ export default function RoadmapPage() {
             </div>
           </div>
 
-          {/* Branch toggle */}
-          <div className="mx-auto mt-12 max-w-3xl lg:mt-16">
-            <p className="mb-3 text-center text-sm font-semibold text-foreground sm:text-left">I am a</p>
-            <div className="flex w-full flex-col gap-2 sm:flex-row sm:justify-center lg:justify-start">
-              <button
-                type="button"
-                onClick={() => setBranch('cs')}
-                className={`min-h-[48px] flex-1 rounded-xl border-2 px-4 py-3 text-sm font-bold transition-all duration-300 ease-out sm:flex-none sm:min-w-[200px] ${
-                  branch === 'cs'
-                    ? 'roadmap-branch-active shadow-sm'
-                    : 'border-border bg-card text-muted-foreground hover:border-[#1D9E75]/40'
-                }`}
-              >
-                CS / IT Student
-              </button>
-              <button
-                type="button"
-                onClick={() => setBranch('noncs')}
-                className={`min-h-[48px] flex-1 rounded-xl border-2 px-4 py-3 text-sm font-bold transition-all duration-300 ease-out sm:flex-none sm:min-w-[260px] ${
-                  branch === 'noncs'
-                    ? 'roadmap-branch-active shadow-sm'
-                    : 'border-border bg-card text-muted-foreground hover:border-[#1D9E75]/40'
-                }`}
-              >
-                Non-CS Student (ECE / Mech / Civil)
-              </button>
-            </div>
-          </div>
         </div>
       </section>
 
@@ -799,7 +700,7 @@ export default function RoadmapPage() {
           >
             <AnimatePresence mode="wait" initial={false}>
               <motion.div
-                key={`${activeYear}-${branch}`}
+                key={activeYear}
                 initial={prefersReducedMotion ? false : { opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={
@@ -819,9 +720,9 @@ export default function RoadmapPage() {
                 </header>
 
                 <div>
-                  {activeYear === 1 && <Year1Section branch={branch} theme={theme} />}
-                  {activeYear === 2 && <Year2Section branch={branch} theme={theme} />}
-                  {activeYear === 3 && <Year3Section branch={branch} theme={theme} />}
+                  {activeYear === 1 && <Year1Section theme={theme} />}
+                  {activeYear === 2 && <Year2Section theme={theme} />}
+                  {activeYear === 3 && <Year3Section theme={theme} />}
                   {activeYear === 4 && <Year4Section theme={theme} />}
                 </div>
               </motion.div>

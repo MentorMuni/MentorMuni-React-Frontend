@@ -240,16 +240,26 @@ body.mm-mobile-nav-open {
   align-items: center;
   justify-content: center;
   border-radius: 0.625rem;
-  border: 2px solid var(--accent-cta);
+  border: 1px solid var(--border);
   font-size: 0.875rem;
   font-weight: 700;
-  color: var(--accent-cta);
-  background: var(--bg-card);
-  transition: background-color 0.15s ease;
+  color: var(--text-primary);
+  background: transparent;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .mm-mobile-nav-cta-waitlist:hover {
-  background: var(--warning-bg);
+  background: var(--accent-faint);
+  border-color: color-mix(in srgb, var(--accent) 35%, var(--border));
+  color: var(--accent);
+}
+
+.mm-mobile-nav-cta-waitlist:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
 }
 
 .mm-mobile-nav-cta-primary {
@@ -259,16 +269,38 @@ body.mm-mobile-nav-open {
   justify-content: center;
   gap: 0.5rem;
   border-radius: 0.625rem;
-  background: var(--accent-cta);
+  border: 1px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  background: var(--accent);
   font-size: 0.875rem;
   font-weight: 700;
   color: #fff;
-  box-shadow: var(--shadow-button-value);
-  transition: background-color 0.15s ease;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 28%, transparent);
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease;
 }
 
 .mm-mobile-nav-cta-primary:hover {
-  background: var(--accent-cta-hover);
+  background: var(--accent-hover);
+  border-color: color-mix(in srgb, var(--accent-hover) 55%, transparent);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 34%, transparent);
+}
+
+.mm-mobile-nav-cta-primary:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.mm-mobile-nav-cta-waitlist:active,
+.mm-mobile-nav-cta-primary:active {
+  transform: scale(0.98);
+}
+
+/* Dark theme — keep primary hover deep enough for white label contrast */
+html.mm-new-ui .mm-mobile-nav-cta-primary:hover {
+  background: #0ea5e9;
+  border-color: rgba(14, 165, 233, 0.5);
 }
 
 @media (min-width: 64rem) {
