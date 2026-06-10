@@ -185,7 +185,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
   return (
     <section
       ref={heroRef}
-      className="relative overflow-hidden border-b border-border bg-gradient-to-b from-background via-background to-secondary/50 px-5 pb-20 pt-24 sm:px-6 md:pb-24 md:pt-28"
+      className="relative overflow-hidden border-b border-border bg-gradient-to-b from-background via-background to-secondary/50 pb-20 pt-24 md:pb-24 md:pt-28"
     >
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.45]"
@@ -215,7 +215,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
       />
 
       <motion.div
-        className="relative mx-auto max-w-6xl"
+        className="mm-container relative"
         variants={container}
         initial="hidden"
         animate={heroInView ? 'visible' : 'hidden'}
@@ -241,7 +241,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
 
         <motion.h1
           variants={item}
-          className="mx-auto max-w-4xl text-center text-2xl font-extrabold leading-snug sm:text-4xl md:text-5xl tracking-tight text-foreground sm:text-4xl md:text-[2.5rem] md:leading-snug"
+          className="mm-prose-measure mm-prose-measure--xl text-center text-2xl font-extrabold leading-snug sm:text-4xl md:text-5xl tracking-tight text-foreground sm:text-4xl md:text-[2.5rem] md:leading-snug"
         >
           Don&apos;t let your{' '}
           <span className="bg-gradient-to-r from-primary via-sky-500 to-brand-teal bg-clip-text text-transparent">
@@ -378,7 +378,8 @@ export default function HowItWorks() {
       <HowItWorksStoryHero reduceMotion={reduceMotion} />
 
       {/* Phases grid */}
-      <section className="mx-auto max-w-5xl px-6 py-16 md:py-20">
+      <section className="mm-band mm-marketing-section">
+        <div className="mm-container">
         <FadeUp>
           <div className="mb-10 max-w-2xl">
             <h2 className="text-xl font-bold text-foreground md:text-2xl">What happens, in order</h2>
@@ -394,11 +395,12 @@ export default function HowItWorks() {
             <PhaseCard key={phase.step} phase={phase} index={i} />
           ))}
         </div>
+        </div>
       </section>
 
       {/* Social proof */}
-      <section className="border-t border-border px-6 py-16 md:py-20">
-        <div className="mx-auto max-w-3xl">
+      <section className="mm-band mm-marketing-section border-t border-border">
+        <div className="mm-container mm-container--narrow">
           <FadeUp>
             <blockquote className="rounded-2xl border border-border bg-card p-8 md:p-10">
               <p className="text-[11px] font-bold uppercase tracking-widest text-primary/90">Student feedback</p>
@@ -420,9 +422,10 @@ export default function HowItWorks() {
       </section>
 
       {/* CTA */}
-      <section className="border-t border-border bg-background px-6 py-16 md:py-20">
+      <section className="mm-band mm-marketing-section border-t border-border bg-background">
+        <div className="mm-container mm-container--tight">
         <FadeUp>
-          <div className="mx-auto max-w-lg text-center">
+          <div className="mm-prose-measure--sm text-center">
             <h2 className="text-2xl font-bold text-foreground">Start with the free readiness check</h2>
             <p className="mt-3 text-sm leading-relaxed text-muted-foreground">
               Get your score and prioritized gaps in minutes—no signup. Stack mocks and mentorship after that so your
@@ -457,6 +460,7 @@ export default function HowItWorks() {
             </p>
           </div>
         </FadeUp>
+        </div>
       </section>
     </InnerRouteShell>
   );

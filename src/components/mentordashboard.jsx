@@ -91,7 +91,7 @@ const MentorDashboard = () => {
       
       {/* HEADER / NAV */}
       <header className="mm-sticky-header">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="mm-container h-16 flex items-center justify-between">
           <div className="flex items-center gap-8">
             <Link to="/" className="flex-shrink-0">
               <img src={logoSrc} alt="MentorMuni" className="h-12 w-12 sm:h-14 sm:w-14 shrink-0 rounded-full object-contain" />
@@ -109,7 +109,7 @@ const MentorDashboard = () => {
         </div>
       </header>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 w-full flex-grow">
+      <div className="mm-container py-10 w-full flex-grow">
         <div className="mb-8">
           <h1 className="text-3xl font-extrabold tracking-tight text-foreground">Mentor Dashboard</h1>
           <p className="text-muted-foreground">Welcome back! Here is what's happening with your students.</p>
@@ -195,7 +195,7 @@ const MentorDashboard = () => {
 
       {/* FOOTER */}
       <footer className="bg-white border-t border-slate-200 pt-16 pb-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mm-container">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
             <div className="col-span-2 md:col-span-1">
               <img src={logoSrc} alt="MentorMuni" className="h-12 w-12 rounded-full object-contain mx-auto mb-6" />

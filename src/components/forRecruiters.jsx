@@ -9,7 +9,7 @@ const ForRecruiters = () => {
   return (
     <RoutePageShell scope="marketing" className="text-foreground">
       <section className="mm-marketing-hero-backdrop border-b border-border">
-        <div className="relative z-10 mx-auto max-w-6xl px-6 pb-14 pt-20 text-center md:pb-16">
+        <div className="mm-container relative z-10 pb-14 pt-20 text-center md:pb-16">
           <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-warning-bg/90 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-warning-text">
             <Building2 size={14} className="text-cta" aria-hidden />
             For Hiring Teams
@@ -17,13 +17,13 @@ const ForRecruiters = () => {
           <h1 className="mb-4 text-3xl font-black tracking-tight text-foreground md:text-5xl">
             Hire <span className="mm-gradient-text-cta">interview-ready</span> engineers
           </h1>
-          <p className="mx-auto max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+          <p className="mm-prose-measure text-base leading-relaxed text-muted-foreground md:text-lg">
             Access pre-vetted engineering talent with verified skills, readiness scores, and structured assessment data.
           </p>
         </div>
       </section>
 
-      <div className="mx-auto max-w-6xl px-6 py-14 md:py-20">
+      <div className="mm-container py-14 md:py-20">
         {/* Features Grid */}
         <div className="mb-14 grid gap-6 md:grid-cols-3">
           <div className="rounded-2xl border border-border bg-card p-7 shadow-[var(--shadow-card)] transition-all hover:border-cta/30 hover:shadow-md">

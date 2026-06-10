@@ -111,7 +111,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
 
   return (
     <div className="min-h-screen mm-site-theme py-12 px-6">
-      <div className="max-w-6xl mx-auto">
+      <div className="mm-container">
         {/* Header */}
         <div className="mb-12">
           <h1 className="text-4xl md:text-5xl font-black text-foreground mb-3">
@@ -341,7 +341,7 @@ const CareerHealthDashboard = ({ userMetrics = {} }) => {
           <h2 className="text-2xl md:text-3xl font-bold mb-4">
             Ready to Improve Your Score?
           </h2>
-          <p className="text-indigo-100 mb-8 max-w-2xl mx-auto">
+          <p className="text-indigo-100 mb-8 mm-prose-measure">
             Use our platform tools to strengthen your profile, learn missing skills, and prepare for interviews.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

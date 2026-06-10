@@ -13,7 +13,7 @@ const MentorCard = ({name, role, company}) => (
 export default function MentorProfiles(){
   return (
     <section className="py-12 bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="mm-container">
         <h3 className="text-2xl font-bold">Mentors</h3>
         <p className="text-muted-foreground mt-2">Find experienced mentors who guide you through interviews and projects.</p>
         <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">

@@ -22,7 +22,7 @@ const HeroSection = () => {
         <div className="animation-delay-4000 absolute bottom-0 left-1/3 h-72 w-72 animate-blob rounded-full bg-primary/15 mix-blend-multiply blur-3xl filter" />
       </div>
 
-      <main className="relative z-10 mx-auto w-full max-w-7xl px-6 py-12 md:py-20">
+      <div className="mm-container relative z-10 w-full py-12 md:py-20">
         <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
           <div className="max-w-xl space-y-8">
             <div className="inline-flex items-center gap-2 rounded-full border border-cta/35 bg-warning-bg/80 px-4 py-2">
@@ -97,7 +97,7 @@ const HeroSection = () => {
             </div>
           </div>
         </div>
-      </main>
+      </div>
     </section>
   );
 };

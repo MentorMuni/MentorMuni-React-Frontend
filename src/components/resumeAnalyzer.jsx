@@ -277,7 +277,7 @@ export default function ResumeAnalyzer() {
           <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[rgba(255,149,0,0.12)] rounded-full blur-[120px]" />
           <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-[rgba(255,179,71,0.1)] rounded-full blur-[100px]" />
         </div>
-        <div className="relative max-w-5xl mx-auto px-6 pt-12 pb-10">
+        <div className="mm-container relative pt-12 pb-10">
           <div className="flex items-center gap-2 mb-4">
             <span className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-pulse" />
             <span className="text-xs font-bold text-pink-400 uppercase tracking-widest">Free Tool</span>
@@ -311,7 +311,7 @@ export default function ResumeAnalyzer() {
       </section>
 
       {/* ── Main ── */}
-      <div className="max-w-5xl mx-auto px-6 py-10">
+      <div className="mm-container py-10">
         <div className="grid lg:grid-cols-[1fr_420px] gap-8 items-start">
 
           {/* ─── LEFT: Form ─── */}
@@ -713,7 +713,7 @@ export default function ResumeAnalyzer() {
 
       {/* ── Why ATS Matters ── */}
       <section className="border-t border-border py-14 px-6">
-        <div className="max-w-5xl mx-auto">
+        <div className="mm-container">
           <span className="text-xs font-bold text-muted-foreground uppercase tracking-widest block mb-3">Why this matters</span>
           <h2 className="text-xl font-black text-foreground mb-6">What ATS filtering means for your application</h2>
           <div className="grid sm:grid-cols-3 gap-4">
@@ -733,7 +733,7 @@ export default function ResumeAnalyzer() {
 
       {/* ── CTA ── */}
       <section className="py-12 px-6 border-t border-border">
-        <div className="max-w-2xl mx-auto text-center">
+        <div className="mm-container mm-container--prose text-center">
           <h2 className="text-xl font-black text-foreground mb-2">Also check your interview readiness</h2>
           <p className="text-muted-foreground text-sm mb-6">A strong resume gets you the interview — preparation gets you the offer.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">

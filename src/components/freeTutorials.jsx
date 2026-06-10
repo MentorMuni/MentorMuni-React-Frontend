@@ -89,7 +89,7 @@ const FreeTutorials = () => {
       <section className="mm-marketing-hero-backdrop mm-hero-premium border-b border-border">
         <div className="mm-hero-mesh" aria-hidden />
         <div className="mm-hero-dot-grid" aria-hidden />
-        <MarketingHeroMotion className="relative z-10 mx-auto max-w-7xl px-6 pb-16 pt-20 text-center md:pb-20">
+        <MarketingHeroMotion className="mm-container relative z-10 pb-16 pt-20 text-center md:pb-20">
           <motion.div
             className="mb-4 flex items-center justify-center gap-3"
             initial={{ opacity: 0, scale: 0.9 }}
@@ -101,13 +101,13 @@ const FreeTutorials = () => {
               Free <span className="mm-gradient-text-brand">Tutorials</span>
             </h1>
           </motion.div>
-          <p className="mx-auto max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+          <p className="mm-prose-measure text-lg leading-relaxed text-muted-foreground sm:text-xl">
             Self-paced learning modules designed for beginners. Start learning for free and upgrade to advanced courses when you&apos;re ready.
           </p>
         </MarketingHeroMotion>
       </section>
 
-      <div className="mx-auto max-w-7xl px-6 py-16 md:py-20">
+      <div className="mm-container py-16 md:py-20">
         <StaggerGrid className="mb-16 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3" stagger={0.07}>
           {tutorials.map((tutorial) => (
             <div

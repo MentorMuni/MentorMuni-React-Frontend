@@ -38,15 +38,15 @@ const Mentorship = () => {
   return (
     <div className="min-h-screen mm-site-theme overflow-x-hidden text-foreground pb-20 pt-20">
       <section className="mm-marketing-hero-backdrop border-b border-border">
-        <div className="relative z-10 mx-auto max-w-6xl px-6 pb-14 pt-6 text-center md:pb-16">
+        <div className="mm-container relative z-10 pb-14 pt-6 text-center md:pb-16">
           <h1 className="mb-4 text-4xl font-black text-foreground md:text-5xl">Learn from Industry Mentors</h1>
-          <p className="mx-auto max-w-3xl text-lg text-muted-foreground md:text-xl">
+          <p className="mm-prose-measure mm-prose-measure--lg text-lg text-muted-foreground md:text-xl">
             Get guidance from experienced engineers and tech leaders who have successfully navigated tech careers
           </p>
         </div>
       </section>
 
-      <div className="mx-auto max-w-6xl px-6 pt-14">
+      <div className="mm-container pt-14">
         <div className="mb-14 grid gap-8 md:grid-cols-2">
           {features.map((feature) => {
             const Icon = feature.icon;

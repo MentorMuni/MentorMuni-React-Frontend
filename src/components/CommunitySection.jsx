@@ -70,13 +70,13 @@ const CommunitySection = () => {
 
   return (
     <section className="py-20 px-6 section-dark">
-      <div className="max-w-7xl mx-auto">
+      <div className="mm-container">
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-black text-on-dark mb-4">
             Join the MentorMuni Community
           </h2>
-          <p className="text-lg text-on-dark-sub max-w-2xl mx-auto mb-6">
+          <p className="text-lg text-on-dark-sub mm-prose-measure mb-6">
             Connect with students, mentors, and professionals preparing for tech careers.
           </p>
           <div className="inline-block px-4 py-2 rounded-full text-primary font-semibold text-sm" style={{ background: 'rgba(99,102,241,0.1)' }}>
@@ -176,7 +176,7 @@ const CommunitySection = () => {
           <h3 className="text-2xl md:text-3xl font-bold text-on-dark mb-4">
             Ready to start your learning journey?
           </h3>
-          <p className="text-on-dark-sub mb-8 max-w-2xl mx-auto">
+          <p className="text-on-dark-sub mb-8 mm-prose-measure">
             Join the community, take our free assessment, and get personalized guidance on your path to a tech job.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

@@ -54,13 +54,13 @@ const ProblemDrivenFeatures = () => {
 
   return (
     <section className="py-16 md:py-24 px-6 bg-gradient-to-b from-slate-900/40 to-transparent">
-      <div className="max-w-6xl mx-auto">
+      <div className="mm-container">
         {/* Section Header */}
         <div className="text-center mb-14">
           <h2 className="text-3xl md:text-4xl font-black text-white mb-4">
             Real Problems. Real Solutions.
           </h2>
-          <p className="text-lg text-slate-300 max-w-2xl mx-auto">
+          <p className="text-lg text-slate-300 mm-prose-measure">
             Every student and fresher faces these challenges. Let's tackle them together.
           </p>
         </div>

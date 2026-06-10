@@ -10,7 +10,7 @@ const designSystem = {
     text: '#1A1A1A',
   },
   spacing: {
-    container: 'max-w-6xl mx-auto px-4 sm:px-6 lg:px-8',
+    container: 'mm-container',
   },
   typography: {
     heading: 'Inter, system-ui, -apple-system',
@@ -249,7 +249,7 @@ export const componentStyles = {
            border-y border-slate-800/50`,
 
   // Max width container
-  container: `max-w-7xl mx-auto`,
+  container: `mm-container`,
 };
 
 // ============================================================

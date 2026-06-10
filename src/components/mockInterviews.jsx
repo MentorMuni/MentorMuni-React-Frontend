@@ -41,7 +41,7 @@ const MockInterviews = () => {
     <RoutePageShell scope="marketing">
       {/* Hero — same cool mesh as homepage / tools (mentorMuniTheme: .mm-marketing-hero-backdrop) */}
       <section className="mm-marketing-hero-backdrop border-b border-border">
-        <div className="relative z-10 mx-auto max-w-5xl px-6 pb-12 pt-20">
+        <div className="mm-container relative z-10 pb-12 pt-20">
             <div className="mb-4 flex items-center gap-2">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-cta-mid" />
               <span className="text-xs font-bold uppercase tracking-widest text-cta">Interview Prep</span>
@@ -80,7 +80,7 @@ const MockInterviews = () => {
       </section>
 
       {/* Feature cards */}
-      <div className="mx-auto max-w-5xl px-6 py-12">
+      <div className="mm-container py-12">
           <div className="mb-12 grid gap-5 md:grid-cols-3">
             {features.map(({ icon: Icon, title, desc, cta, href }) => (
               <div

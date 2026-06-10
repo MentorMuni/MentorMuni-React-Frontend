@@ -81,7 +81,7 @@ const AboutUs = () => {
         className="mm-marketing-hero-backdrop border-b border-border"
         aria-labelledby="about-hero-heading"
       >
-        <div className="relative z-10 mx-auto max-w-6xl px-5 pb-16 pt-14 sm:px-6 sm:pb-20 sm:pt-16 lg:px-8 lg:pb-24 lg:pt-20">
+        <div className="mm-container relative z-10 pb-16 pt-14 sm:pb-20 sm:pt-16 lg:pb-24 lg:pt-20">
           <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between lg:gap-12">
             <div className="min-w-0 flex-1">
               <motion.div
@@ -214,7 +214,7 @@ const AboutUs = () => {
 
       {/* —— Beliefs —— */}
       <section className="border-t border-border bg-background px-5 py-14 sm:px-6 lg:py-16" aria-labelledby="about-beliefs-heading">
-        <div className="mx-auto max-w-6xl">
+        <div className="mm-container">
           <FadeUp className="mb-10 max-w-2xl">
             <h2 id="about-beliefs-heading" className="text-2xl font-extrabold tracking-tight text-foreground md:text-3xl">
               How we think about preparation
@@ -249,7 +249,7 @@ const AboutUs = () => {
 
       {/* —— Pull quote + story —— */}
       <section className="border-t border-border bg-gradient-to-b from-background to-secondary px-5 py-16 sm:px-6 lg:py-20">
-        <div className="mx-auto max-w-6xl">
+        <div className="mm-container">
           <div className="grid gap-10 lg:grid-cols-[1fr_minmax(0,1.15fr)] lg:gap-14 lg:items-start">
             <FadeUp>
               <figure className="relative overflow-hidden rounded-2xl border border-cta/25 bg-gradient-to-br from-secondary via-card to-accent-soft/30 p-8 shadow-[var(--shadow-card)] md:p-10">
@@ -281,7 +281,7 @@ const AboutUs = () => {
         className="border-t border-border bg-background px-5 py-14 sm:px-6 lg:py-16"
         aria-labelledby="about-system-heading"
       >
-        <div className="mx-auto max-w-6xl">
+        <div className="mm-container">
           <FadeUp className="mb-4 max-w-3xl">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-warning-text">One spine</p>
             <h2
@@ -345,7 +345,7 @@ const AboutUs = () => {
         className="border-t border-border bg-background px-5 py-14 sm:px-6 lg:py-16"
         aria-labelledby="about-pillars-heading"
       >
-        <div className="mx-auto max-w-6xl">
+        <div className="mm-container">
           <FadeUp className="mb-10 max-w-2xl">
             <h2 id="about-pillars-heading" className="text-2xl font-extrabold tracking-tight text-foreground md:text-3xl">
               {ABOUT_PILLARS_HEADLINE}
@@ -374,7 +374,7 @@ const AboutUs = () => {
 
       {/* —— Audiences —— */}
       <section className="border-t border-border bg-background px-5 py-14 sm:px-6 lg:py-16" aria-labelledby="about-audiences-heading">
-        <div className="mx-auto max-w-6xl">
+        <div className="mm-container">
           <FadeUp className="mb-10">
             <h2 id="about-audiences-heading" className="text-2xl font-extrabold tracking-tight text-foreground md:text-3xl">
               {ABOUT_AUDIENCES_SECTION_TITLE}
@@ -408,7 +408,7 @@ const AboutUs = () => {
 
       {/* —— CTA —— */}
       <section className="border-t border-border px-5 py-16 sm:px-6 lg:py-20">
-        <div className="mx-auto max-w-6xl">
+        <div className="mm-container">
           <FadeUp>
             <div className="relative overflow-hidden rounded-3xl border border-border bg-gradient-to-br from-[#1a1a1a] via-[#252530] to-[#0f172a] px-6 py-12 text-center shadow-[0_24px_60px_-12px_rgba(0,0,0,0.35)] sm:px-10 md:px-14 md:py-14">
               <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_80%_0%,rgba(255,149,0,0.2),transparent)]" aria-hidden />

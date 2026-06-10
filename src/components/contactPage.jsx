@@ -334,7 +334,7 @@ const ContactPage = () => {
   return (
     <InnerRouteShell scope="marketing" className="min-h-screen mm-site-theme overflow-x-hidden text-muted-foreground">
       <section className="mm-marketing-hero-backdrop border-b border-border">
-        <div className="relative z-10 mx-auto max-w-5xl px-5 py-10 sm:px-6 sm:py-12 lg:px-8">
+        <div className="mm-container relative z-10 py-10 sm:py-12">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-2xl">
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-border bg-accent-soft px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-foreground">
@@ -401,7 +401,7 @@ const ContactPage = () => {
         </div>
       </section>
 
-      <div className="mx-auto max-w-5xl px-5 py-12 sm:px-6 lg:px-8 lg:py-16">
+      <div className="mm-container py-12 lg:py-16">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,280px)_minmax(0,1fr)] lg:gap-14 xl:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
           <div className="space-y-10">
             <FadeUp>

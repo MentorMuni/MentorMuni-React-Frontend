@@ -307,10 +307,10 @@ export default function Mentors() {
       {/* ══════════════ SECTION 2 — MENTOR PROFILES (blurred photos) ══════════════ */}
       <section
         ref={teaserRef}
-        className="border-y border-border bg-gradient-to-b from-accent-soft/30 via-background to-secondary px-5 py-14 sm:px-6 md:py-16"
+        className="mm-band mm-marketing-section border-y border-border bg-gradient-to-b from-accent-soft/30 via-background to-secondary"
         style={REVEAL_STYLE}
       >
-        <div className="mx-auto max-w-5xl">
+        <div className="mm-container">
           <p className="text-center text-[11px] font-bold uppercase tracking-[0.2em] text-[#CC7000]">
             Know your mentors
           </p>

@@ -40,7 +40,7 @@ export default function InterviewReadinessToolsPage() {
   return (
     <InnerRouteShell scope="inner" className="min-h-screen mm-site-theme overflow-x-hidden">
       <section className="mm-marketing-hero-backdrop border-b border-border">
-        <div className="relative z-10 mx-auto max-w-4xl px-6 pb-12 pt-10 md:pb-16 md:pt-14">
+        <div className="mm-container mm-container--narrow relative z-10 pb-12 pt-10 md:pb-16 md:pt-14">
           <nav className="mb-8 flex items-center gap-2 text-xs font-medium">
           <Link to="/tools" className="text-cta transition-colors hover:text-warning-text">
             Tools

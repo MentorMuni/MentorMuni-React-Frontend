@@ -55,18 +55,18 @@ const LearningPaths = () => {
   return (
     <RoutePageShell scope="marketing" className="text-foreground">
       <section className="mm-marketing-hero-backdrop border-b border-border">
-        <div className="relative z-10 mx-auto max-w-6xl px-6 pb-16 pt-20 text-center md:pb-20">
+        <div className="mm-container relative z-10 pb-16 pt-20 text-center md:pb-20">
           <h1 className="mb-4 text-5xl font-black text-foreground md:text-6xl">
             Learning Paths
           </h1>
-          <p className="mx-auto max-w-3xl text-xl text-muted-foreground">
+          <p className="mm-prose-measure mm-prose-measure--lg text-xl text-muted-foreground">
             Choose your perfect learning journey. Whether you're a beginner or advancing your skills,
             we have the right path for you to become interview-ready.
           </p>
         </div>
       </section>
 
-      <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
+      <div className="mm-container py-16 md:py-20">
         {/* Learning Paths Grid */}
         <div className="mb-20 grid gap-8 md:grid-cols-2">
           {pathsData.map((path) => (

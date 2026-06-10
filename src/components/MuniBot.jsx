@@ -5,16 +5,38 @@ import { useNavigate } from 'react-router-dom';
 import { getMuniBotReply } from '../utils/munibotEngine';
 
 const LOGO_SRC = `${import.meta.env.BASE_URL}mentormuni-logo.png`;
-const POSITION_KEY = 'mm-munibot-position';
-const MOBILE_NUDGE_KEY = 'mm-munibot-mobile-nudge-seen';
-const MOBILE_NUDGE_MS = 4500;
-const FAB_SIZE = 56;
-const VIEWPORT_MARGIN = 12;
-const DRAG_THRESHOLD = 6;
-const PANEL_MAX_H = 580;
-const MOBILE_PANEL_MAX_H = 420;
-const MOBILE_PANEL_VH = 0.52;
+const POSITION_KEY = 'mm-munibot-anchor';
 const MOBILE_BREAKPOINT = 640;
+const VIEWPORT_MARGIN = 20;
+const DRAG_THRESHOLD = 8;
+
+function clamp(n, min, max) {
+  return Math.min(max, Math.max(min, n));
+}
+
+function loadAnchor() {
+  try {
+    const raw = localStorage.getItem(POSITION_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw);
+    if (typeof parsed.right === 'number' && typeof parsed.bottom === 'number') {
+      return parsed;
+    }
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
+
+function clampAnchor(anchor, rootEl) {
+  if (typeof window === 'undefined' || !rootEl) return anchor;
+  const w = rootEl.offsetWidth;
+  const h = rootEl.offsetHeight;
+  return {
+    right: clamp(anchor.right, VIEWPORT_MARGIN, window.innerWidth - w - VIEWPORT_MARGIN),
+    bottom: clamp(anchor.bottom, VIEWPORT_MARGIN, window.innerHeight - h - VIEWPORT_MARGIN),
+  };
+}
 
 const GREETING =
   "Hi — I'm **MuniBot**, your MentorMuni assistant.\n\nAsk about our **programme**, **interview readiness**, **AI & LLM topics**, **prompting**, or **where to learn** online.";
@@ -28,10 +50,6 @@ const QUICK_QUESTIONS = [
   'Free learning resources',
   'How do I contact you?',
 ];
-
-function clamp(n, min, max) {
-  return Math.min(max, Math.max(min, n));
-}
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(() => {
@@ -48,62 +66,6 @@ function useIsMobile() {
   }, []);
 
   return isMobile;
-}
-
-function getDefaultFabPosition() {
-  if (typeof window === 'undefined') return { left: 16, top: 400 };
-  const margin = window.innerWidth >= 768 ? 24 : 16;
-  const bottomOffset = window.innerWidth >= 768 ? 24 : 88;
-  return {
-    left: window.innerWidth - margin - FAB_SIZE,
-    top: window.innerHeight - bottomOffset - FAB_SIZE,
-  };
-}
-
-function loadFabPosition() {
-  try {
-    const raw = localStorage.getItem(POSITION_KEY);
-    if (!raw) return getDefaultFabPosition();
-    const parsed = JSON.parse(raw);
-    if (typeof parsed.left !== 'number' || typeof parsed.top !== 'number') {
-      return getDefaultFabPosition();
-    }
-    return parsed;
-  } catch {
-    return getDefaultFabPosition();
-  }
-}
-
-function clampFabPosition(pos) {
-  if (typeof window === 'undefined') return pos;
-  return {
-    left: clamp(pos.left, VIEWPORT_MARGIN, window.innerWidth - FAB_SIZE - VIEWPORT_MARGIN),
-    top: clamp(pos.top, VIEWPORT_MARGIN, window.innerHeight - FAB_SIZE - VIEWPORT_MARGIN),
-  };
-}
-
-function getPanelLayout(fabPos, isMobile) {
-  if (typeof window === 'undefined') {
-    return { left: 12, top: 80, width: 360, maxHeight: MOBILE_PANEL_MAX_H };
-  }
-
-  const width = isMobile
-    ? Math.min(360, window.innerWidth - VIEWPORT_MARGIN * 2)
-    : Math.min(400, window.innerWidth - VIEWPORT_MARGIN * 2);
-  const maxHeight = isMobile
-    ? Math.min(window.innerHeight * MOBILE_PANEL_VH, MOBILE_PANEL_MAX_H)
-    : Math.min(window.innerHeight * 0.8, PANEL_MAX_H);
-
-  let left = fabPos.left + FAB_SIZE / 2 - width / 2;
-  left = clamp(left, VIEWPORT_MARGIN, window.innerWidth - width - VIEWPORT_MARGIN);
-
-  let top = fabPos.top - maxHeight - 12;
-  if (top < VIEWPORT_MARGIN) {
-    top = fabPos.top + FAB_SIZE + 12;
-  }
-  top = clamp(top, VIEWPORT_MARGIN, window.innerHeight - maxHeight - VIEWPORT_MARGIN);
-
-  return { left, top, width, maxHeight };
 }
 
 function TypingIndicator() {
@@ -218,64 +180,29 @@ export default function MuniBot() {
   const isMobile = useIsMobile();
   const dialogTitleId = useId();
   const liveRegionId = useId();
+  const panelId = 'mm-munibot-panel';
 
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState([{ text: GREETING, isBot: true, isMarkdown: true }]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showQuickReplies, setShowQuickReplies] = useState(true);
-  const [fabPos, setFabPos] = useState(loadFabPosition);
-  const [isDragging, setIsDragging] = useState(false);
-  const [panelLayout, setPanelLayout] = useState(() =>
-    getPanelLayout(
-      loadFabPosition(),
-      typeof window !== 'undefined' && window.innerWidth < MOBILE_BREAKPOINT,
-    ),
-  );
-  const [showMobileNudge, setShowMobileNudge] = useState(false);
   const [lastAnnounced, setLastAnnounced] = useState('');
+  const [customAnchor, setCustomAnchor] = useState(loadAnchor);
+  const [isDragging, setIsDragging] = useState(false);
 
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
-  const panelRef = useRef(null);
   const replyTimeoutRef = useRef(null);
+  const rootRef = useRef(null);
   const dragRef = useRef({
     active: false,
     moved: false,
     startX: 0,
     startY: 0,
-    startLeft: 0,
-    startTop: 0,
+    startRight: 0,
+    startBottom: 0,
   });
-
-  const persistPosition = useCallback((pos) => {
-    const clamped = clampFabPosition(pos);
-    try {
-      localStorage.setItem(POSITION_KEY, JSON.stringify(clamped));
-    } catch {
-      /* ignore */
-    }
-    return clamped;
-  }, []);
-
-  const updateFabPos = useCallback((next) => {
-    setFabPos((prev) => {
-      const resolved = typeof next === 'function' ? next(prev) : next;
-      return clampFabPosition(resolved);
-    });
-  }, []);
-
-  useEffect(() => {
-    setPanelLayout(getPanelLayout(fabPos, isMobile));
-  }, [fabPos, isOpen, isMobile]);
-
-  useEffect(() => {
-    const onResize = () => {
-      setFabPos((prev) => persistPosition(prev));
-    };
-    window.addEventListener('resize', onResize);
-    return () => window.removeEventListener('resize', onResize);
-  }, [persistPosition]);
 
   useEffect(() => {
     return () => {
@@ -324,63 +251,55 @@ export default function MuniBot() {
     }
   }, [messages, isTyping]);
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return undefined;
-    const mq = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`);
-    const maybeShow = () => {
-      if (!mq.matches || isOpen) {
-        setShowMobileNudge(false);
-        return;
-      }
-      try {
-        if (sessionStorage.getItem(MOBILE_NUDGE_KEY) === '1') return;
-      } catch {
-        /* ignore */
-      }
-      setShowMobileNudge(true);
-    };
-    maybeShow();
-    mq.addEventListener('change', maybeShow);
-    return () => mq.removeEventListener('change', maybeShow);
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!showMobileNudge) return undefined;
-    const t = window.setTimeout(() => {
-      setShowMobileNudge(false);
-      try {
-        sessionStorage.setItem(MOBILE_NUDGE_KEY, '1');
-      } catch {
-        /* ignore */
-      }
-    }, MOBILE_NUDGE_MS);
-    return () => window.clearTimeout(t);
-  }, [showMobileNudge]);
-
-  const dismissMobileNudge = useCallback(() => {
-    setShowMobileNudge(false);
+  const persistAnchor = useCallback((anchor) => {
+    const clamped = clampAnchor(anchor, rootRef.current);
     try {
-      sessionStorage.setItem(MOBILE_NUDGE_KEY, '1');
+      localStorage.setItem(POSITION_KEY, JSON.stringify(clamped));
     } catch {
       /* ignore */
     }
+    return clamped;
   }, []);
 
-  const onFabPointerDown = (e) => {
-    if (e.button !== 0 || isOpen) return;
+  useEffect(() => {
+    if (!customAnchor) return undefined;
+    const onResize = () => {
+      setCustomAnchor((prev) => (prev ? clampAnchor(prev, rootRef.current) : prev));
+    };
+    window.addEventListener('resize', onResize);
+    return () => window.removeEventListener('resize', onResize);
+  }, [customAnchor]);
+
+  useEffect(() => {
+    if (!rootRef.current) return;
+    setCustomAnchor((prev) => (prev ? clampAnchor(prev, rootRef.current) : prev));
+  }, [isOpen]);
+
+  const getAnchorFromRect = useCallback(() => {
+    const rect = rootRef.current?.getBoundingClientRect();
+    if (!rect) return { right: VIEWPORT_MARGIN, bottom: VIEWPORT_MARGIN };
+    return {
+      right: window.innerWidth - rect.right,
+      bottom: window.innerHeight - rect.bottom,
+    };
+  }, []);
+
+  const onLauncherPointerDown = (e) => {
+    if (e.button !== 0) return;
     e.currentTarget.setPointerCapture(e.pointerId);
+    const anchor = customAnchor ?? getAnchorFromRect();
     dragRef.current = {
       active: true,
       moved: false,
       startX: e.clientX,
       startY: e.clientY,
-      startLeft: fabPos.left,
-      startTop: fabPos.top,
+      startRight: anchor.right,
+      startBottom: anchor.bottom,
     };
     setIsDragging(true);
   };
 
-  const onFabPointerMove = (e) => {
+  const onLauncherPointerMove = (e) => {
     if (!dragRef.current.active) return;
     const dx = e.clientX - dragRef.current.startX;
     const dy = e.clientY - dragRef.current.startY;
@@ -388,14 +307,15 @@ export default function MuniBot() {
       dragRef.current.moved = true;
     }
     if (dragRef.current.moved) {
-      updateFabPos({
-        left: dragRef.current.startLeft + dx,
-        top: dragRef.current.startTop + dy,
-      });
+      const next = {
+        right: dragRef.current.startRight - dx,
+        bottom: dragRef.current.startBottom - dy,
+      };
+      setCustomAnchor(clampAnchor(next, rootRef.current));
     }
   };
 
-  const onFabPointerUp = (e) => {
+  const onLauncherPointerUp = (e) => {
     if (!dragRef.current.active) return;
     const wasDrag = dragRef.current.moved;
     dragRef.current.active = false;
@@ -405,18 +325,20 @@ export default function MuniBot() {
     } catch {
       /* ignore */
     }
-    setFabPos((prev) => persistPosition(prev));
-    if (!wasDrag) {
-      dismissMobileNudge();
-      setIsOpen(true);
+    if (wasDrag) {
+      setCustomAnchor((prev) => (prev ? persistAnchor(prev) : prev));
+    } else {
+      setIsOpen((open) => !open);
     }
   };
 
-  const onFabPointerCancel = () => {
+  const onLauncherPointerCancel = () => {
     dragRef.current.active = false;
     dragRef.current.moved = false;
     setIsDragging(false);
-    setFabPos((prev) => persistPosition(prev));
+    if (customAnchor) {
+      setCustomAnchor((prev) => (prev ? persistAnchor(prev) : prev));
+    }
   };
 
   const resetChat = () => {
@@ -467,113 +389,14 @@ export default function MuniBot() {
     setIsOpen(false);
   };
 
-  const showFab = !isOpen;
-  const showHint = showFab && !isDragging;
-  const showCompactMobileNudge = showHint && showMobileNudge;
   const canSend = input.trim().length > 0 && !isTyping;
   const panelClass = isMobile ? 'mm-munibot-panel mm-munibot-panel--mobile' : 'mm-munibot-panel';
+  const rootStyle = customAnchor
+    ? { right: `${customAnchor.right}px`, bottom: `${customAnchor.bottom}px` }
+    : undefined;
 
   return (
-    <>
-      <AnimatePresence>
-        {isOpen && (
-          <motion.button
-            type="button"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="mm-munibot-backdrop fixed inset-0 z-[9998] cursor-default"
-            aria-label="Close chat"
-            onClick={() => setIsOpen(false)}
-          />
-        )}
-      </AnimatePresence>
-
-      {showFab && (
-        <div
-          className="fixed z-[9998] touch-none select-none"
-          style={{ left: fabPos.left, top: fabPos.top, width: FAB_SIZE, height: FAB_SIZE }}
-        >
-          <AnimatePresence>
-            {showCompactMobileNudge && (
-              <motion.span
-                initial={{ opacity: 0, y: 4, scale: 0.9 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                exit={{ opacity: 0, y: 4, scale: 0.92 }}
-                transition={{ duration: 0.25 }}
-                className="mm-munibot-fab-hint-mobile pointer-events-none absolute bottom-full left-1/2 z-[1] mb-1.5 -translate-x-1/2 whitespace-nowrap rounded-full px-2.5 py-1 text-[10px] font-bold tracking-tight shadow-lg ring-2 ring-white/20 sm:hidden"
-                aria-hidden
-              >
-                Ask MuniBot
-              </motion.span>
-            )}
-          </AnimatePresence>
-
-          {showHint && (
-            <motion.div
-              initial={{ opacity: 0, y: 6, scale: 0.96 }}
-              animate={
-                reduceMotion
-                  ? { opacity: 1, y: 0, scale: 1 }
-                  : { opacity: 1, y: [0, -4, 0], scale: 1 }
-              }
-              transition={
-                reduceMotion
-                  ? { delay: 0.9, duration: 0.45 }
-                  : {
-                      opacity: { delay: 0.9, duration: 0.45 },
-                      scale: { delay: 0.9, duration: 0.45 },
-                      y: { delay: 1.35, duration: 2.8, repeat: Infinity, ease: 'easeInOut' },
-                    }
-              }
-              className="pointer-events-none absolute bottom-full right-0 mb-2 hidden whitespace-nowrap sm:block sm:mb-2.5"
-              aria-hidden
-            >
-              <div className="mm-munibot-fab-hint relative inline-flex items-center gap-2 rounded-full py-1 pl-1 pr-3 backdrop-blur-sm">
-                <span className="mm-munibot-fab-hint__accent relative flex h-6 w-6 shrink-0 items-center justify-center rounded-full shadow-sm">
-                  <Sparkles className="h-3 w-3 text-white" strokeWidth={2.25} aria-hidden />
-                  <span className="absolute -right-px -top-px h-1.5 w-1.5 rounded-full border border-white bg-emerald-400" />
-                </span>
-                <span className="text-xs font-bold tracking-tight">Ask MuniBot</span>
-              </div>
-            </motion.div>
-          )}
-
-          <motion.button
-            type="button"
-            onPointerDown={onFabPointerDown}
-            onPointerMove={onFabPointerMove}
-            onPointerUp={onFabPointerUp}
-            onPointerCancel={onFabPointerCancel}
-            className={`mm-munibot-fab relative flex h-14 w-14 items-center justify-center rounded-2xl text-white ${
-              isDragging ? 'mm-munibot-fab--dragging cursor-grabbing scale-[1.02]' : 'cursor-grab'
-            }`}
-            style={{ touchAction: 'none' }}
-            whileHover={isDragging ? undefined : { scale: 1.05 }}
-            whileTap={isDragging ? undefined : { scale: 0.98 }}
-            aria-label="Open MuniBot chat"
-            aria-expanded={isOpen}
-            aria-haspopup="dialog"
-          >
-            <span className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-2xl">
-              <img
-                src={LOGO_SRC}
-                alt=""
-                className="h-10 w-10 rounded-full object-cover ring-2 ring-white/50"
-                width={40}
-                height={40}
-                draggable={false}
-              />
-            </span>
-            <span className="pointer-events-none absolute -right-0.5 -top-0.5 flex h-4 w-4">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/80 opacity-75" />
-              <span className="relative inline-flex h-4 w-4 rounded-full border-2 border-white bg-emerald-500" />
-            </span>
-          </motion.button>
-        </div>
-      )}
-
+    <div ref={rootRef} className="mm-munibot-root" style={rootStyle}>
       <div id={liveRegionId} className="sr-only" aria-live="polite" aria-atomic="true">
         {isTyping ? 'MuniBot is typing' : lastAnnounced}
       </div>
@@ -581,20 +404,14 @@ export default function MuniBot() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            ref={panelRef}
-            initial={{ opacity: 0, y: 16, scale: 0.96 }}
+            id={panelId}
+            initial={{ opacity: 0, y: 12, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 16, scale: 0.96 }}
+            exit={{ opacity: 0, y: 12, scale: 0.98 }}
             transition={{ type: 'spring', damping: 28, stiffness: 340 }}
-            className={`${panelClass} fixed z-[9999] flex flex-col overflow-hidden`}
-            style={{
-              left: panelLayout.left,
-              top: panelLayout.top,
-              width: panelLayout.width,
-              height: panelLayout.maxHeight,
-            }}
+            className={`${panelClass} mm-munibot-panel--anchored flex flex-col overflow-hidden`}
             role="dialog"
-            aria-modal="true"
+            aria-modal="false"
             aria-labelledby={dialogTitleId}
           >
             <header className="mm-munibot-header flex shrink-0 items-center justify-between gap-2 px-4 py-3">
@@ -743,6 +560,41 @@ export default function MuniBot() {
           </motion.div>
         )}
       </AnimatePresence>
-    </>
+
+      <button
+        type="button"
+        onPointerDown={onLauncherPointerDown}
+        onPointerMove={onLauncherPointerMove}
+        onPointerUp={onLauncherPointerUp}
+        onPointerCancel={onLauncherPointerCancel}
+        className={`mm-munibot-launcher group${isDragging ? ' mm-munibot-launcher--dragging' : ''}`}
+        aria-expanded={isOpen}
+        aria-controls={panelId}
+        aria-haspopup="dialog"
+        aria-label={isOpen ? 'Close MuniBot chat' : 'Open MuniBot chat — drag to move'}
+      >
+        {isOpen ? (
+          <>
+            <X size={20} aria-hidden />
+            Close
+          </>
+        ) : (
+          <>
+            <span className="mm-munibot-launcher__icon" aria-hidden>
+              <img
+                src={LOGO_SRC}
+                alt=""
+                className="h-full w-full rounded-full object-cover"
+                width={24}
+                height={24}
+                draggable={false}
+              />
+            </span>
+            Ask MuniBot
+            <Sparkles size={16} className="mm-munibot-launcher__sparkle" aria-hidden />
+          </>
+        )}
+      </button>
+    </div>
   );
 }

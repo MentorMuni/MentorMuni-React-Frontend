@@ -14,7 +14,8 @@ export default function NotFoundPage() {
   usePageMeta(seo);
 
   return (
-    <RoutePageShell className="flex min-h-[60vh] flex-col items-center justify-center px-6 py-16 text-center">
+    <RoutePageShell className="flex min-h-[60vh] flex-col items-center justify-center py-16 text-center">
+      <div className="mm-container mm-container--narrow flex flex-col items-center">
       <p className="text-sm font-bold uppercase tracking-widest text-[#1A8FC4]">404</p>
       <h1 className="mt-2 text-2xl font-extrabold text-foreground sm:text-3xl">Page not found</h1>
       <p className="mt-3 max-w-md text-muted-foreground">
@@ -30,6 +31,7 @@ export default function NotFoundPage() {
         >
           Free readiness check
         </Link>
+      </div>
       </div>
     </RoutePageShell>
   );

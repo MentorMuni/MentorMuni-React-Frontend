@@ -75,12 +75,12 @@ export default function CareerDiagnostic() {
 
   return (
     <section className="section-dark border-y border-border px-6 py-16 md:py-20">
-      <div className="max-w-4xl mx-auto">
+      <div className="mm-container mm-container--narrow">
         <div className="text-center mb-10">
           <h2 className="text-3xl md:text-4xl font-black text-on-dark">
             AI Career Diagnostic — Guided Journey
           </h2>
-          <p className="mt-3 text-on-dark-sub max-w-2xl mx-auto">
+          <p className="mt-3 text-on-dark-sub mm-prose-measure">
             A step-by-step diagnostic that connects Resume → Skills → Interview → Roadmap. Get a consolidated career snapshot.
           </p>
         </div>

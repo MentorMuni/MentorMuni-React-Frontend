@@ -490,7 +490,7 @@ export default function PrepLoungeSlideFlow({
 
   return (
     <div className="min-h-[calc(100dvh-4rem)] bg-gradient-to-b from-secondary/60 via-background to-background mm-site-theme">
-      <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 lg:py-10">
+      <div className="mm-container py-6 lg:py-10">
         {/* Page header — clear hierarchy */}
         <header className="mb-6 lg:mb-8">
           <div className="flex flex-wrap items-center justify-center gap-2 lg:justify-start">
@@ -515,7 +515,7 @@ export default function PrepLoungeSlideFlow({
             <PlacementInspirationPanel reduceMotion={reduceMotion} phaseIndex={phaseIndex} planLoading={planLoading} />
           </aside>
 
-          <main className="lg:col-span-6">
+          <div className="lg:col-span-6">
             {/* Mobile companies */}
             <div className="mb-4 flex gap-2 overflow-x-auto pb-1 lg:hidden" aria-hidden>
               {PLACEMENT_COMPANIES.map((name) => (
@@ -665,7 +665,7 @@ export default function PrepLoungeSlideFlow({
             >
               Edit assessment answers
             </button>
-          </main>
+          </div>
 
           <aside className="hidden lg:col-span-3 lg:block">
             {showTips ? (

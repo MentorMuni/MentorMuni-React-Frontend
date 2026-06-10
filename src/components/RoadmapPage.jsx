@@ -645,9 +645,9 @@ export default function RoadmapPage() {
       }}
     >
       {/* Hero */}
-      <section className="border-b border-border px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
-        <div className="mx-auto max-w-6xl">
-          <div className="mx-auto max-w-4xl text-center lg:mx-0 lg:max-w-none lg:text-left">
+      <section className="border-b border-border py-12 sm:py-16 lg:py-20">
+        <div className="mm-container">
+          <div className="mm-prose-measure mm-prose-measure--xl text-center lg:mx-0 lg:max-w-none lg:text-left">
             <div className="lg:grid lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-12">
               <div>
                 <h1 className="text-3xl font-black leading-[1.12] tracking-tight text-foreground sm:text-4xl md:text-5xl lg:text-[3.25rem]">
@@ -735,7 +735,7 @@ export default function RoadmapPage() {
 
       {/* Roadmap */}
       <section className="px-4 py-10 sm:px-6 sm:py-14 lg:py-16">
-        <div className="mx-auto max-w-6xl min-w-0">
+        <div className="mm-container min-w-0">
           {/* Year tabs — horizontal scroll on small screens to avoid wrap overflow */}
           <div className="relative -mx-4 min-w-0 sm:mx-0">
             <div

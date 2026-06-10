@@ -53,7 +53,7 @@ const DevOpsRoadmap = () => {
     <RoutePageShell scope="inner" className="text-foreground">
       <TutorialBackLink className="max-w-7xl" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="mm-container py-12">
         {/* Hero Section */}
         <section className="mb-20">
           <h1 className="text-5xl md:text-6xl font-black mb-4 text-foreground">DevOps Roadmap for Beginners</h1>

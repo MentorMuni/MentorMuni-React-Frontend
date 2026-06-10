@@ -70,14 +70,14 @@ const CareerReadinessJourney = () => {
   };
 
   return (
-    <section className="py-16 md:py-24 px-6 section-dark border-y" style={{ borderColor: 'var(--border-color)' }}>
-      <div className="max-w-6xl mx-auto">
+    <section className="mm-band mm-marketing-section section-dark border-y" style={{ borderColor: 'var(--border-color)' }}>
+      <div className="mm-container">
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-4xl font-black text-on-dark mb-4">
             Your Path to Becoming Job Ready
           </h2>
-          <p className="text-lg text-on-dark-sub max-w-2xl mx-auto">
+          <p className="text-lg text-on-dark-sub mm-prose-measure">
             A structured 4-step diagnostic journey designed to transform you into a job-ready tech professional
           </p>
         </div>

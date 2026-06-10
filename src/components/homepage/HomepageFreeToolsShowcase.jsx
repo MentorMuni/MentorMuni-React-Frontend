@@ -91,10 +91,10 @@ export function HomepageFreeToolsShowcase() {
   return (
     <ScrollReveal
       as="section"
-      className="mm-bento-section border-t border-border py-14 md:py-16 px-5 sm:px-6 lg:px-8"
+      className="mm-band mm-marketing-section mm-bento-section border-t border-border"
       aria-labelledby="free-tools-showcase-heading"
     >
-      <div className="mm-container relative z-10 max-w-6xl mx-auto">
+      <div className="mm-container relative z-10">
         <motion.div
           initial={reduceMotion ? false : { opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}

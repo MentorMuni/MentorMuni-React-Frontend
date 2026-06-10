@@ -180,7 +180,7 @@ const QuantumComputingTutorial = () => {
         </aside>
 
         {/* MAIN CONTENT */}
-        <main className="mm-tutorial-layout__main">
+        <div className="mm-tutorial-layout__main">
 
           {/* HERO SECTION */}
           <div className="mb-16">
@@ -912,7 +912,7 @@ for state in ['phi_plus', 'phi_minus', 'psi_plus', 'psi_minus']:
               </button>
             </div>
           </section>
-        </main>
+        </div>
       </div>
 
       <footer className="py-10 text-center text-muted-foreground text-sm border-t border-border mt-16">

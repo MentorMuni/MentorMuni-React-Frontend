@@ -76,13 +76,13 @@ const CareerRoadmap = () => {
 
   return (
     <section className="py-20 px-6 bg-gradient-to-b from-slate-50 to-white">
-      <div className="mm-cq-section max-w-7xl mx-auto">
+      <div className="mm-cq-section mm-container">
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">
             Your Journey to a Tech Job
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground mm-prose-measure">
             Follow a clear roadmap to go from student to job-ready professional.
           </p>
         </div>
@@ -174,7 +174,7 @@ const CareerRoadmap = () => {
 
         {/* CTA Section */}
         <div className="text-center pt-12 border-t border-slate-200">
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+          <p className="text-muted-foreground mb-6 mm-prose-measure">
             Start your transformation today. Our platform guides you through each step with curated content, expert mentorship, and real-world projects.
           </p>
           <button

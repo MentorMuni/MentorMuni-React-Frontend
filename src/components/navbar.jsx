@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
 import {
   Menu,
   X,
@@ -20,7 +19,9 @@ import { isNavActive } from '../utils/navRouteMatch';
 import { PRIMARY_CTA_LABEL, READINESS_TEST_COUPON_BADGE } from '../constants/brandCopy';
 import LimitedRewardLabel from './LimitedRewardLabel';
 import NavDropdownPortal from './navbar/NavDropdownPortal';
+import MobileNavDrawer from './navbar/MobileNavDrawer';
 import { useScrolledHeader } from '../hooks/useScrolledHeader';
+import { NAV_DESKTOP_MQ } from '../constants/layoutBreakpoints';
 
 /** Secondary links — desktop dropdown to avoid a crowded top bar */
 const MORE_LINKS = [
@@ -90,6 +91,7 @@ const TOOLS = [
 
 const Navbar = () => {
   const logoSrc = `${import.meta.env.BASE_URL}mentormuni-logo.png`;
+  const headerRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
@@ -115,7 +117,17 @@ const Navbar = () => {
   useEffect(() => {
     setToolsOpen(false);
     setMoreOpen(false);
+    setIsOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    const mq = window.matchMedia(NAV_DESKTOP_MQ);
+    const closeOnDesktop = (event) => {
+      if (event.matches) setIsOpen(false);
+    };
+    mq.addEventListener('change', closeOnDesktop);
+    return () => mq.removeEventListener('change', closeOnDesktop);
+  }, []);
 
   const navItems = [
     { label: 'How It Works', path: '/how-it-works', exact: false },
@@ -125,10 +137,6 @@ const Navbar = () => {
   ];
 
   const isActive = (path, exact = false) => isNavActive(location.pathname, path, exact);
-
-  const handleNavClick = () => {
-    setIsOpen(false);
-  };
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, left: 0, behavior: "auto" });
@@ -140,7 +148,7 @@ const Navbar = () => {
   };
 
   const defaultNavDesktopClass = (active) =>
-    `text-[0.9375rem] font-medium whitespace-nowrap transition-colors ${
+    `font-medium whitespace-nowrap transition-colors ${
       active
         ? 'text-primary font-semibold'
         : 'text-gray-700 hover:text-primary'
@@ -151,7 +159,7 @@ const Navbar = () => {
   const navLinkClass = (item) => {
     const active = isActive(item.path, item.exact);
     if (item.variant === 'roadmap') {
-      return `text-[0.9375rem] whitespace-nowrap transition-colors ${
+      return `whitespace-nowrap transition-colors ${
         active
           ? 'font-semibold text-success-strong'
           : 'font-medium text-gray-700 hover:text-success-strong'
@@ -160,33 +168,18 @@ const Navbar = () => {
     return defaultNavDesktopClass(active);
   };
 
-  const navLinkClassMobile = (item) => {
-    const active = isActive(item.path, item.exact);
-    if (item.variant === 'roadmap') {
-      return `px-4 py-3.5 text-lg rounded-xl transition-all ${
-        active
-          ? 'font-bold text-success-strong underline decoration-2 decoration-success-strong underline-offset-[6px] bg-emerald-50/90 border border-success-strong/25'
-          : 'font-semibold text-muted-foreground hover:text-success-strong hover:bg-emerald-50/50'
-      }`;
-    }
-    return `px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
-      active
-        ? 'text-primary bg-accent-soft border border-brand-teal/40'
-        : 'text-muted-foreground hover:text-primary hover:bg-accent-faint'
-    }`;
-  };
-
   const navMenuOpen = toolsOpen || moreOpen;
   const headerScrolled = useScrolledHeader();
 
   return (
     <header
+      ref={headerRef}
       className={`mm-sticky-header${navMenuOpen ? ' mm-sticky-header--menu-open' : ''}${
         headerScrolled ? ' mm-sticky-header--scrolled' : ''
-      }`}
+      }${isOpen ? ' mm-sticky-header--mobile-nav-open' : ''}`}
     >
       <div className="mm-container">
-        <div className="mm-header-bar flex min-h-[4rem] min-w-0 items-center gap-[clamp(0.5rem,2cqi,1.5rem)] py-1">
+        <div className="mm-header-bar min-h-[4rem] min-w-0 py-1">
           <Link
             to="/"
             onClick={handleHomeClick}
@@ -195,16 +188,16 @@ const Navbar = () => {
             <img
               src={logoSrc}
               alt="MentorMuni Logo"
-              className="h-[clamp(2.25rem,6cqi,3rem)] w-[clamp(2.25rem,6cqi,3rem)] shrink-0 object-contain transition-all group-hover:opacity-80"
+              className="h-9 w-9 shrink-0 object-contain transition-all group-hover:opacity-80 sm:h-10 sm:w-10"
             />
-            <span className="truncate text-[clamp(1rem,2.5cqi+0.5rem,1.25rem)] font-extrabold tracking-tight text-foreground">
+            <span className="truncate text-base font-extrabold tracking-tight text-foreground sm:text-lg">
               Mentor<span className="text-primary">Muni</span>
             </span>
           </Link>
 
           <nav
             data-mm-desktop-nav
-            className="mm-desktop-nav min-w-0 flex-1 items-center justify-center"
+            className="mm-desktop-nav min-w-0 items-center"
           >
             {navItems.map((item) => {
               const linkActive = isActive(item.path, item.exact);
@@ -226,7 +219,7 @@ const Navbar = () => {
                 onClick={() => setToolsOpen(v => !v)}
                 aria-expanded={toolsOpen}
                 aria-haspopup="true"
-                className={`mm-nav-trigger relative z-[1] inline-flex items-center gap-1 text-[0.9375rem] font-medium transition-colors ${
+                className={`mm-nav-trigger relative z-[1] inline-flex items-center gap-1 font-medium transition-colors ${
                   toolsOpen
                     ? 'text-primary'
                     : 'text-gray-700 hover:text-primary'
@@ -289,7 +282,7 @@ const Navbar = () => {
                 aria-expanded={moreOpen}
                 aria-haspopup="true"
                 aria-label="Colleges, about, and contact"
-                className={`mm-nav-trigger relative z-[1] inline-flex items-center gap-1 text-[0.9375rem] font-medium whitespace-nowrap transition-colors ${
+                className={`mm-nav-trigger relative z-[1] inline-flex items-center gap-1 font-medium whitespace-nowrap transition-colors ${
                   moreOpen || moreMenuActive
                     ? 'text-primary'
                     : 'text-gray-700 hover:text-primary'
@@ -369,129 +362,24 @@ const Navbar = () => {
             type="button"
             data-mm-mobile-nav-toggle
             onClick={() => setIsOpen(!isOpen)}
-            className="ml-auto shrink-0 p-2 text-muted-foreground transition-colors hover:text-primary"
-            aria-label="Toggle mobile menu"
+            className="shrink-0 p-2 text-muted-foreground transition-colors hover:text-primary"
+            aria-label={isOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isOpen}
+            aria-controls="mm-mobile-nav-drawer"
           >
             {isOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
 
-        <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            key="mobile-nav"
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-            data-mm-mobile-nav-panel
-            className="border-t border-border bg-background"
-          >
-            <nav className="flex max-h-[min(70dvh,calc(100dvh-env(safe-area-inset-top)-4rem))] flex-col space-y-2 overflow-y-auto p-4">
-              {navItems.map((item) => {
-                const linkActive = isActive(item.path, item.exact);
-                return (
-                  <motion.div
-                    key={item.path}
-                    initial={{ opacity: 0, x: -12 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.04, duration: 0.28 }}
-                  >
-                    <Link
-                      to={item.path}
-                      onClick={handleNavClick}
-                      className={navLinkClassMobile(item)}
-                      aria-current={linkActive ? 'page' : undefined}
-                    >
-                      {item.label}
-                    </Link>
-                  </motion.div>
-                );
-              })}
-
-              <div className="border-t border-border my-2 pt-2">
-                <p className="px-4 py-1 text-xs font-bold text-hint uppercase tracking-widest">Tools</p>
-                {TOOLS.map((tool) => {
-                  const Icon = tool.icon;
-                  return (
-                    <Link
-                      key={tool.href}
-                      to={tool.href}
-                      onClick={handleNavClick}
-                      className="flex items-center gap-3 px-4 py-2.5 rounded-lg text-muted-foreground hover:text-primary hover:bg-accent-faint transition-all"
-                    >
-                      <span className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-lg ${tool.bg}`}>
-                        <Icon size={13} className={tool.color} />
-                      </span>
-                      <span className="text-base font-semibold">{tool.title}</span>
-                    </Link>
-                  );
-                })}
-                <div className="mx-2 mt-2 rounded-xl border border-sky-200/60 bg-gradient-to-r from-sky-50 to-secondary px-3 py-3">
-                  <div className="mb-1.5 w-fit">
-                    <LimitedRewardLabel className="text-[8px] px-2 py-0.5 [&_svg]:h-2.5 [&_svg]:w-2.5" />
-                  </div>
-                  <p className="text-xs text-muted-foreground leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      handleNavClick();
-                      goToStartAssessment();
-                    }}
-                    className="text-sm font-semibold text-primary hover:text-[#15799F] transition-colors"
-                  >
-                    Take the test →
-                  </button>
-                </div>
-              </div>
-
-              <div className="border-t border-border my-2 pt-2">
-                <p className="px-4 py-1 text-xs font-bold text-hint uppercase tracking-widest">Company</p>
-                {MORE_LINKS.map(({ label, path, exact, Icon }) => {
-                  const active = isActive(path, exact);
-                  return (
-                    <Link
-                      key={path}
-                      to={path}
-                      onClick={handleNavClick}
-                      className={`flex items-center gap-3 px-4 py-3.5 text-lg font-semibold rounded-xl transition-all ${
-                        active
-                          ? 'text-primary bg-accent-soft border border-brand-teal/40'
-                          : 'text-muted-foreground hover:text-primary hover:bg-accent-faint'
-                      }`}
-                    >
-                      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-lg ${active ? 'bg-white/80' : 'bg-accent-soft'}`}>
-                        <Icon size={18} className="text-[#15799F]" strokeWidth={2} />
-                      </span>
-                      {label}
-                    </Link>
-                  );
-                })}
-              </div>
-
-              <div className="border-t border-border my-2"></div>
-
-              <Link
-                to="/waitlist"
-                onClick={handleNavClick}
-                className="px-4 py-3.5 text-lg font-semibold rounded-xl border-2 border-cta text-cta flex items-center justify-center w-full transition-all"
-              >
-                Join Waitlist
-              </Link>
-              <button
-                type="button"
-                onClick={() => {
-                  handleNavClick();
-                  goToStartAssessment();
-                }}
-                className="px-4 py-3.5 text-lg font-bold rounded-xl bg-cta hover:bg-cta-hover text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all flex items-center justify-center gap-2 w-full"
-              >
-                {PRIMARY_CTA_LABEL}
-              </button>
-            </nav>
-          </motion.div>
-        )}
-        </AnimatePresence>
+        <MobileNavDrawer
+          open={isOpen}
+          onClose={() => setIsOpen(false)}
+          anchorRef={headerRef}
+          navItems={navItems}
+          tools={TOOLS}
+          moreLinks={MORE_LINKS}
+          isActive={isActive}
+        />
       </div>
     </header>
   );

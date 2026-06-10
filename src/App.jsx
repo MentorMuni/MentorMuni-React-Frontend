@@ -9,6 +9,7 @@ import { sanitizeBrokenSpaUrl } from "./utils/sanitizeBrokenSpaUrl";
 sanitizeBrokenSpaUrl();
 
 import Navbar from "./components/navbar";
+import SkipToContent from "./components/layout/SkipToContent";
 import HomePage from "./components/homepage";
 import ParticleBackground from "./components/new-ui/ParticleBackground";
 import NewUIBetaSwitch from "./components/new-ui/NewUIBetaSwitch";
@@ -100,7 +101,9 @@ function AnimatedMain({ children, className = "" }) {
       initial={reduceMotion ? false : { opacity: 0, y: 14 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      className={`mm-route-root mm-route-enter relative z-0 w-full min-w-0 flex-grow ${className}`}
+      id="main-content"
+      tabIndex={-1}
+      className={`mm-route-root mm-route-enter relative z-0 w-full min-w-0 flex-grow outline-none ${className}`}
     >
       {children}
     </MotionMain>
@@ -222,6 +225,7 @@ function App() {
       <div className="mm-app-shell mm-site-theme relative text-foreground">
         <ParticleBackground />
         <AnnouncementBar />
+        <SkipToContent />
         <div className="mm-app-body">
           <Navbar />
           <SiteChromeShell>

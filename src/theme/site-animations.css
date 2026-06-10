@@ -48,23 +48,6 @@ html.mm-new-ui .mm-sticky-header.mm-sticky-header--scrolled {
   min-height: 3.5rem;
 }
 
-/* Mobile nav panel */
-[data-mm-mobile-nav-panel] {
-  animation: mm-nav-enter 0.32s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-[data-mm-mobile-nav-panel] a,
-[data-mm-mobile-nav-panel] button {
-  transition:
-    transform 0.2s ease,
-    background-color 0.2s ease,
-    border-color 0.2s ease;
-}
-
-[data-mm-mobile-nav-panel] a:active {
-  transform: scale(0.98);
-}
-
 /* Scroll reveal (JS toggles --visible) */
 .mm-scroll-reveal {
   opacity: 0;
@@ -340,7 +323,4 @@ html.mm-new-ui .mm-sticky-header.mm-sticky-header--scrolled {
     transition: none;
   }
 
-  [data-mm-mobile-nav-panel] {
-    animation: none;
-  }
 }

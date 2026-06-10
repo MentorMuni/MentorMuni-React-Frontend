@@ -60,12 +60,12 @@ const CoursesPage = () => {
         className="max-w-[1200px]"
       />
 
-      <main className="max-w-[1200px] mx-auto px-6 py-16 md:py-24">
+      <div className="mm-container py-16 md:py-24">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-extrabold mb-4 text-foreground">
             Our Placement Courses
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg mm-prose-measure">
             AI-powered training and mentorship for all-round placement prep.
           </p>
         </div>
@@ -109,7 +109,7 @@ const CoursesPage = () => {
             </article>
           ))}
         </div>
-      </main>
+      </div>
 
       <footer className="bg-secondary border-t border-border pt-16 pb-8 px-6">
         <div className="max-w-[1200px] mx-auto grid md:grid-cols-4 gap-12 mb-12">

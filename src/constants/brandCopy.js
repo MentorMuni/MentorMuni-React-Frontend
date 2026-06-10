@@ -35,6 +35,9 @@ export const HERO_HEADLINE_ACCENT = 'Get your score from the free readiness chec
 /** Homepage hero — two-line headline (render as two blocks; avoids awkward 3-line wrap) */
 export const HERO_HEADLINE_LINE1 = 'Are You Actually';
 export const HERO_HEADLINE_LINE2 = 'Interview-Ready?';
+/** One line under the headline — who it's for + what you get (scannable, not keyword-stuffed) */
+export const HERO_TAGLINE =
+  'For engineering students in India — get your placement readiness score, then close gaps with mocks and mentors.';
 /** Light quip under the eyebrow — playful, not the main headline */
 export const HERO_PLAYFUL_CLAUSE = 'From reels to reality — different kind of screen time.';
 /** @deprecated Use HERO_HEADLINE_LINE1 + LINE2 */

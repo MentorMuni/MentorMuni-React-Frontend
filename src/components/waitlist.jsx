@@ -153,7 +153,7 @@ export default function WaitlistPage() {
   return (
     <RoutePageShell scope="marketing">
       <section className="mm-marketing-hero-backdrop border-b border-border">
-        <div className="relative z-10 mx-auto max-w-3xl px-5 pb-12 pt-16">
+        <div className="mm-container mm-container--narrow relative z-10 pb-12 pt-16">
           <div className="mb-10 text-center">
             <div className="mb-7 inline-flex max-w-full flex-wrap items-center justify-center gap-x-2.5 gap-y-2 rounded-full border border-border bg-warning-bg/90 px-4 py-2.5 shadow-[var(--shadow-card)] sm:px-5">
               <span className="h-2 w-2 shrink-0 rounded-full bg-[#1A8C55]" style={{ animation: 'pulse 1.5s ease-in-out infinite', boxShadow: '0 0 6px rgba(26,140,85,0.5)' }} />
@@ -199,7 +199,7 @@ export default function WaitlistPage() {
         </div>
       </section>
 
-      <div className="mx-auto max-w-3xl px-5 pb-24 pt-10">
+      <div className="mm-container mm-container--narrow pb-24 pt-10">
         {/* ── What we'll cover + pricing note ── */}
         <div className="mb-10 rounded-2xl border border-border bg-gradient-to-br from-accent-soft/60 via-background to-secondary p-6 shadow-[var(--shadow-card)] md:p-8">
           <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between sm:gap-4 mb-6">

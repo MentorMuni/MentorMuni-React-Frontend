@@ -107,7 +107,7 @@ const GenerativeAITutorial = () => {
         </aside>
 
         {/* MAIN CONTENT */}
-        <main className="mm-tutorial-layout__main">
+        <div className="mm-tutorial-layout__main">
 
           {/* HERO SECTION */}
           <div className="mb-16">
@@ -880,7 +880,7 @@ and brief answers for each (50-75 words).`}
               </button>
             </div>
           </section>
-        </main>
+        </div>
       </div>
 
       <footer className="py-10 text-center text-muted-foreground text-sm border-t border-border mt-16">

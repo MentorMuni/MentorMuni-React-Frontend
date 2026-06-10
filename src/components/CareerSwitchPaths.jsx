@@ -108,13 +108,13 @@ const CareerSwitchPaths = () => {
 
   return (
     <section className="border-y border-border bg-gradient-to-b from-accent-soft/35 via-background to-secondary/40 py-20 px-6">
-      <div className="max-w-7xl mx-auto">
+      <div className="mm-container">
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">
             Career Switch Paths
           </h2>
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+          <p className="text-lg text-muted-foreground mm-prose-measure mb-8">
             Explore the most popular tech career transitions and start your journey with MentorMuni.
           </p>
 
@@ -183,7 +183,7 @@ const CareerSwitchPaths = () => {
           <h3 className="text-2xl font-bold text-foreground mb-3">
             Not sure which path is right for you?
           </h3>
-          <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+          <p className="text-muted-foreground mb-6 mm-prose-measure">
             Take our free interview readiness assessment to understand your current skills and get personalized career recommendations.
           </p>
           <Link

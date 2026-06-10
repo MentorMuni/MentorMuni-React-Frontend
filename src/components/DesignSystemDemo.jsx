@@ -15,8 +15,8 @@ import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 
 export default function DesignSystemDemo() {
   return (
-    <div className="min-h-screen mm-site-theme overflow-x-hidden px-6 py-20">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen mm-site-theme overflow-x-hidden py-20">
+      <div className="mm-container">
         {/* Header */}
         <div className="mb-20">
           <h1 className="text-5xl md:text-6xl font-black mb-4">

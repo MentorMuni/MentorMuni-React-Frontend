@@ -56,7 +56,7 @@ export default function SoftwareEngineerInterviewQuestionsPage() {
 
   return (
     <div className="mm-site-theme min-h-screen bg-background">
-      <div className="mx-auto max-w-4xl px-5 py-12 sm:px-6 md:py-16">
+      <div className="mm-container mm-container--narrow py-12 md:py-16">
         <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#1A8FC4]">Campus & product roles</p>
         <h1 className="mt-3 text-3xl font-extrabold tracking-tight text-foreground sm:text-4xl md:text-5xl">
           Software engineer interview questions

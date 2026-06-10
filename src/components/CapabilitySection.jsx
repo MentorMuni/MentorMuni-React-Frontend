@@ -50,13 +50,13 @@ const CapabilitySection = () => {
 
   return (
     <section className="py-20 px-6 bg-gradient-to-b from-slate-50 to-white">
-      <div className="max-w-7xl mx-auto">
+      <div className="mm-container">
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-black text-foreground mb-4">
             Build Real-World Job Readiness
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-xl text-muted-foreground mm-prose-measure mm-prose-measure--lg">
             Our AI evaluates your skills, identifies gaps, and helps you prepare for real tech interviews with a complete career preparation ecosystem.
           </p>
         </div>
@@ -225,10 +225,10 @@ const CapabilitySection = () => {
             <h3 className="text-3xl font-black mb-3">
               Ready to Prepare Like Top Tech Candidates?
             </h3>
-            <p className="text-lg text-indigo-100 mb-2 max-w-2xl mx-auto">
+            <p className="text-lg text-indigo-100 mb-2 mm-prose-measure">
               Start building your real-world job readiness today.
             </p>
-            <p className="text-sm text-[#CC7000] mb-8 max-w-2xl mx-auto">
+            <p className="text-sm text-[#CC7000] mb-8 mm-prose-measure">
               Get 3 free analyses. No credit card required.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

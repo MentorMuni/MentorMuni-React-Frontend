@@ -106,7 +106,7 @@ const Tools = () => {
       <section className="mm-marketing-hero-backdrop mm-hero-premium border-b border-border">
         <div className="mm-hero-mesh" aria-hidden />
         <div className="mm-hero-dot-grid" aria-hidden />
-        <div className="relative z-10 mx-auto max-w-6xl px-6 pb-12 pt-20">
+        <div className="mm-container relative z-10 pb-12 pt-20">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -142,7 +142,7 @@ const Tools = () => {
         </div>
       </section>
 
-      <div className="mx-auto max-w-6xl px-6 pt-12">
+      <div className="mm-container pt-12">
         <div className="grid md:grid-cols-2 gap-6">
           {tools.map((tool, idx) => {
             const Icon = tool.icon;

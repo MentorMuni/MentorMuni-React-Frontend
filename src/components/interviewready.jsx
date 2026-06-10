@@ -938,7 +938,7 @@ function PlanGenerationLoader() {
         <div className="absolute bottom-24 right-1/4 h-56 w-56 rounded-full bg-cyan-400/10 blur-3xl" />
       </div>
 
-      <div className="relative z-10 mx-auto flex min-h-screen max-w-lg flex-col justify-center px-4 py-12 sm:max-w-xl sm:px-6">
+      <div className="mm-container mm-container--prose relative z-10 flex min-h-screen flex-col justify-center py-12">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
@@ -1098,7 +1098,8 @@ function PlanGenerationLoader() {
 /** Lighter loader while answers are evaluated (step 5) */
 function EvaluatingAnswersLoader() {
   return (
-    <div className="min-h-screen mm-site-theme px-4 py-12 sm:px-6">
+    <div className="min-h-screen mm-site-theme py-12">
+      <div className="mm-container mm-container--prose">
       <div className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center text-center">
         <div className="mx-auto mb-6 h-16 w-16 rounded-full border-4 border-cta/25 border-t-cta animate-spin" />
         <h2 className="text-xl font-black text-foreground sm:text-2xl">Scoring your readiness</h2>
@@ -1107,6 +1108,7 @@ function EvaluatingAnswersLoader() {
           <span className="font-semibold text-muted-foreground">MentorMuni</span> pairs you with mentors and AI mocks so gaps turn
           into confidence — explore after your score appears.
         </p>
+      </div>
       </div>
     </div>
   );
@@ -2483,8 +2485,8 @@ const InterviewReady = () => {
       return <EvaluatingAnswersLoader />;
     }
     return (
-      <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-2xl">
+      <div className="min-h-screen mm-site-theme py-12">
+        <div className="mm-container mm-container--prose">
           <div className="mm-surface-panel p-10 text-center shadow-xl backdrop-blur animate-in fade-in duration-500">
             <div className="mb-6">
               <div className="mx-auto h-14 w-14 rounded-full border-4 border-cta/25 border-t-cta animate-spin" />
@@ -2500,8 +2502,8 @@ const InterviewReady = () => {
   // ========== STEP 12: ASSESSMENT MODE (tools entry — same picker as landing) ==========
   if (step === 12) {
     return (
-      <div className="min-h-screen mm-site-theme py-10 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-3xl mx-auto">
+      <div className="min-h-screen mm-site-theme py-10">
+        <div className="mm-container mm-container--narrow">
           <div className="mm-surface-panel mm-surface-panel--lg">
             <h2 className="text-3xl md:text-4xl font-black text-foreground mb-2 tracking-tight">Choose what to measure</h2>
             <p className="text-muted-foreground text-sm md:text-base mb-6 leading-relaxed">
@@ -2543,7 +2545,7 @@ const InterviewReady = () => {
           <div className="absolute bottom-0 left-1/2 h-48 w-[min(100%,480px)] -translate-x-1/2 rounded-full bg-amber-200/20 blur-3xl" />
         </div>
 
-        <div className="relative z-10 mx-auto flex min-h-[100dvh] max-w-3xl flex-col px-4 pb-10 pt-4 sm:px-6 sm:pt-5 lg:max-w-5xl lg:px-8">
+        <div className="mm-container mm-container--narrow relative z-10 flex min-h-[100dvh] flex-col pb-10 pt-4 sm:pt-5 lg:max-w-none">
           {/* Credibility — compact */}
           <div className="mb-3 flex justify-center sm:mb-4">
             <div className="mm-surface-chip max-w-full px-3 py-1.5 backdrop-blur sm:px-4">
@@ -2612,7 +2614,7 @@ const InterviewReady = () => {
                   How it works &amp; what you get
                 </h2>
               </div>
-              <p className="mx-auto max-w-lg text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
+              <p className="mm-prose-measure--sm text-sm leading-relaxed text-muted-foreground sm:text-[15px]">
                 A quick check, then a clear read on gaps — with visuals from how we structure prep end to end.
               </p>
             </div>
@@ -2626,8 +2628,8 @@ const InterviewReady = () => {
   // ========== STEP 1: COLLECT CONTACT INFO ==========
   if (step === 1 && !otpSent) {
     return (
-      <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto">
+      <div className="min-h-screen mm-site-theme py-12">
+        <div className="mm-container mm-container--prose">
           <div className="mm-surface-panel mm-surface-panel--md backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-4">
@@ -2733,8 +2735,8 @@ const InterviewReady = () => {
   // ========== STEP 1B: VERIFY OTP ==========
   if (step === 1 && otpSent && !otpVerified) {
     return (
-      <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto">
+      <div className="min-h-screen mm-site-theme py-12">
+        <div className="mm-container mm-container--prose">
           <div className="mm-surface-panel mm-surface-panel--md backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-8">
               <div className="flex items-center gap-3 mb-4">
@@ -2834,8 +2836,8 @@ const InterviewReady = () => {
     const currentStepIndex = 1;
 
     return (
-      <div className="min-h-screen mm-site-theme py-10 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
+      <div className="min-h-screen mm-site-theme py-10">
+        <div className="mm-container mm-container--narrow">
           <div className="mm-surface-panel mm-surface-panel--lg">
 
             {/* Progress bar only — no step numbers or labels */}
@@ -2965,8 +2967,8 @@ const InterviewReady = () => {
       profile.userCategory.replace(/_/g, ' ');
 
     return (
-      <div className="min-h-screen mm-site-theme py-10 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
+      <div className="min-h-screen mm-site-theme py-10">
+        <div className="mm-container mm-container--narrow">
           <div className="mm-surface-panel mm-surface-panel--lg animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-6">
               <div
@@ -3112,8 +3114,8 @@ const InterviewReady = () => {
       profile.userCategory.replace(/_/g, ' ');
 
     return (
-      <div className="min-h-screen mm-site-theme py-10 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
+      <div className="min-h-screen mm-site-theme py-10">
+        <div className="mm-container mm-container--narrow">
           <div className="mm-surface-panel mm-surface-panel--lg animate-in slide-in-from-bottom-4 duration-500">
             {/* Progress — matches role step */}
             <div className="mb-6">
@@ -3298,8 +3300,8 @@ const InterviewReady = () => {
       profile.userCategory.replace(/_/g, ' ');
 
     return (
-      <div className="min-h-screen mm-site-theme py-10 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
+      <div className="min-h-screen mm-site-theme py-10">
+        <div className="mm-container mm-container--narrow">
           <div className="mm-surface-panel mm-surface-panel--lg animate-in slide-in-from-bottom-4 duration-500">
             <div className="mb-6">
               <div
@@ -3782,8 +3784,8 @@ const InterviewReady = () => {
     const peerDims = peerDimensionsFromResult(pct, strengthSignal, gapPressure);
 
     return (
-      <div className="min-h-screen mm-site-theme py-8 px-4 sm:px-6 lg:px-8">
-        <div className="mx-auto max-w-3xl space-y-6">
+      <div className="min-h-screen mm-site-theme py-8">
+        <div className="mm-container mm-container--narrow space-y-6">
           <div>
             <h1 className="text-xl font-bold tracking-tight text-foreground sm:text-2xl">Your readiness score</h1>
             <p className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-muted-foreground">
@@ -4364,8 +4366,8 @@ const InterviewReady = () => {
   // ========== STEP 7: AUTHENTICATION CHECK ==========
   if (step === 7) {
     return (
-      <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-2xl mx-auto">
+      <div className="min-h-screen mm-site-theme py-12">
+        <div className="mm-container mm-container--prose">
           <div className="mm-surface-panel mm-surface-panel--lg border-cta/25 text-center animate-in zoom-in duration-500">
             <div className="mb-8">
               <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-cta/20 border border-cta/45 mb-6">
@@ -4415,7 +4417,7 @@ const InterviewReady = () => {
   if (step === 8) {
     if (authMode === 'signin') {
       return (
-        <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen mm-site-theme py-12">
           <div className="max-w-md mx-auto">
             <div className="mm-surface-panel mm-surface-panel--md backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
               <h2 className="text-3xl font-black text-foreground mb-2">Sign In</h2>
@@ -4477,7 +4479,7 @@ const InterviewReady = () => {
 
     // SIGNUP
     return (
-      <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen mm-site-theme py-12">
         <div className="max-w-md mx-auto">
           <div className="mm-surface-panel mm-surface-panel--md backdrop-blur animate-in slide-in-from-bottom-4 duration-500">
             <h2 className="text-3xl font-black text-foreground mb-2">Create Account</h2>
@@ -4629,13 +4631,13 @@ const InterviewReady = () => {
     ];
 
     return (
-      <div className="min-h-screen mm-site-theme py-12 px-4 sm:px-6 lg:px-8">
-        <div className="max-w-6xl mx-auto">
+      <div className="min-h-screen mm-site-theme py-12">
+        <div className="mm-container">
           <div className="text-center mb-16">
             <h1 className="text-4xl md:text-5xl font-black text-white mb-4">
               AI Mock Interview Plans
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-xl text-muted-foreground mm-prose-measure">
               Choose the perfect plan to ace your interviews with AI-powered simulations
             </p>
           </div>
@@ -4740,14 +4742,14 @@ const InterviewReady = () => {
   // OTP verified → step 2 in same update; rare fallthrough while step is still 1
   if (step === 1 && otpSent && otpVerified) {
     return (
-      <div className="min-h-screen mm-site-theme flex items-center justify-center px-4">
+      <div className="min-h-screen mm-site-theme flex items-center justify-center">
         <div className="w-12 h-12 border-4 border-cta/35 border-t-cta rounded-full animate-spin" aria-hidden />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen mm-site-theme flex flex-col items-center justify-center gap-4 px-4 py-12">
+    <div className="min-h-screen mm-site-theme flex flex-col items-center justify-center gap-4 py-12">
       <p className="text-muted-foreground text-center max-w-md">Something went wrong loading this screen.</p>
       <button
         type="button"

@@ -21,8 +21,8 @@ const FreeTrialBanner = () => {
   ];
 
   return (
-    <section className="border-y border-border bg-gradient-to-r from-accent-soft/50 via-background to-secondary px-6 py-12 md:py-16">
-      <div className="mx-auto max-w-6xl">
+    <section className="mm-band mm-marketing-section border-y border-border bg-gradient-to-r from-accent-soft/50 via-background to-secondary">
+      <div className="mm-container">
         <div className="mb-12 flex items-center justify-center gap-3">
           <Zap className="h-6 w-6 text-cta" aria-hidden />
           <h2 className="text-2xl font-black text-foreground md:text-3xl">Start for Free</h2>

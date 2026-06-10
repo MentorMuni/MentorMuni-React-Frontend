@@ -66,11 +66,11 @@ const MentorSection = () => {
   ];
 
   return (
-    <section className="border-y border-border bg-gradient-to-b from-accent-soft/35 via-background to-secondary/40 px-6 py-16 md:py-24">
-      <div className="mx-auto max-w-6xl">
+    <section className="mm-band mm-marketing-section border-y border-border bg-gradient-to-b from-accent-soft/35 via-background to-secondary/40">
+      <div className="mm-container">
         <div className="mb-16 text-center">
           <h2 className="mb-4 text-3xl font-black text-foreground md:text-4xl">Learn from Industry Mentors</h2>
-          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+          <p className="mm-prose-measure text-lg text-muted-foreground">
             Get guidance from experienced engineers and tech leaders who have cracked top tech companies
           </p>
         </div>

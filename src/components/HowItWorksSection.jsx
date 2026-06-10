@@ -36,11 +36,11 @@ export default function HowItWorksSection() {
   ];
 
   return (
-    <section className="border-y border-border bg-secondary/30 px-6 py-20">
-      <div className="mx-auto max-w-6xl">
+    <section className="mm-band mm-marketing-section border-y border-border bg-secondary/30">
+      <div className="mm-container">
         <div className="mb-16 text-center">
           <h2 className="mb-4 text-4xl font-black text-foreground md:text-5xl">How MentorMuni Works</h2>
-          <p className="mx-auto max-w-2xl text-lg text-muted-foreground">
+          <p className="mm-prose-measure text-lg text-muted-foreground">
             Follow a simple 3-step process to become interview ready and land your dream tech job.
           </p>
         </div>

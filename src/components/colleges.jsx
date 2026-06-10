@@ -64,9 +64,9 @@ const Colleges = () => {
   return (
     <RoutePageShell scope="marketing" className="text-muted-foreground">
       <section className="mm-marketing-hero-backdrop border-b border-border">
-        <div className="relative z-10 mx-auto max-w-6xl px-5 pb-14 pt-14 sm:px-6 sm:pt-16 sm:pb-16">
+        <div className="mm-container relative z-10 pb-14 pt-14 sm:pt-16 sm:pb-16">
         <motion.header
-          className="mx-auto max-w-3xl text-center"
+          className="mm-prose-measure mm-prose-measure--lg text-center"
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -111,7 +111,7 @@ const Colleges = () => {
         </div>
       </section>
 
-      <div className="mx-auto max-w-6xl px-5 pb-20 pt-10 sm:px-6 md:pb-28">
+      <div className="mm-container pb-20 pt-10 md:pb-28">
         <motion.section
           className="relative mx-auto mt-2 max-w-5xl"
           initial={{ opacity: 0, y: 24 }}

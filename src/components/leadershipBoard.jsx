@@ -140,7 +140,7 @@ export default function LeadershipBoard() {
   return (
     <RoutePageShell scope="marketing" className="pb-16 text-foreground pt-[4.75rem]">
       <section className="mm-marketing-hero-backdrop border-b border-border">
-        <div className="relative z-10 mx-auto max-w-4xl px-4 pb-12 pt-8 text-center sm:px-6 sm:pt-12 sm:pb-14">
+        <div className="mm-container mm-container--narrow relative z-10 pb-12 pt-8 text-center sm:pt-12 sm:pb-14">
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
@@ -167,7 +167,7 @@ export default function LeadershipBoard() {
         </div>
       </section>
 
-      <div className="relative z-10 mx-auto max-w-4xl px-4 sm:px-6">
+      <div className="mm-container mm-container--narrow relative z-10">
         {/* mode toggle */}
         <div className="mt-8 flex flex-col items-stretch gap-4 sm:flex-row sm:items-center sm:justify-center sm:gap-4">
           <div className="flex rounded-2xl border border-border bg-card p-1 shadow-sm">

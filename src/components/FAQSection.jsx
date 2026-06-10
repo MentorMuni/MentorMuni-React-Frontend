@@ -50,7 +50,7 @@ const FAQSection = () => {
 
   return (
     <section id="faq" className="py-20 px-6 section-dark">
-      <div className="max-w-4xl mx-auto">
+      <div className="mm-container mm-container--narrow">
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-on-dark font-semibold text-sm mb-6" style={{ background: 'rgba(99,102,241,0.06)' }}>
@@ -58,7 +58,7 @@ const FAQSection = () => {
             Common Questions
           </div>
           <h2 className="text-4xl md:text-5xl font-black text-on-dark mb-4">Frequently Asked Questions</h2>
-          <p className="text-lg text-on-dark-sub max-w-2xl mx-auto">Everything you need to know about MentorMuni and how we help you prepare for your next tech job.</p>
+          <p className="text-lg text-on-dark-sub mm-prose-measure">Everything you need to know about MentorMuni and how we help you prepare for your next tech job.</p>
         </div>
 
         {/* FAQ Accordion */}

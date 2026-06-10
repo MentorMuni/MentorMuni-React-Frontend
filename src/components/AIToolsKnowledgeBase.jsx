@@ -172,7 +172,7 @@ export default function AIToolsKnowledgeBase() {
 
       {/* ── Hero ── */}
       <section className="mm-marketing-hero-backdrop border-b border-border">
-        <div className="relative z-10 mx-auto max-w-5xl px-6 pb-12 pt-20">
+        <div className="mm-container relative z-10 pb-12 pt-20">
           <div className="flex items-center gap-2 mb-5">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
             <span className="text-xs font-bold text-amber-400 uppercase tracking-widest">Free Resource</span>
@@ -200,7 +200,7 @@ export default function AIToolsKnowledgeBase() {
 
       {/* ── What is an LLM ── */}
       <section className="py-14 px-6 border-b border-border">
-        <div className="max-w-5xl mx-auto">
+        <div className="mm-container">
           <div className="grid lg:grid-cols-2 gap-10 items-start">
             <div>
               <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest block mb-3">Foundation</span>
@@ -240,7 +240,7 @@ export default function AIToolsKnowledgeBase() {
 
       {/* ── LLM Comparison ── */}
       <section className="py-14 px-6 border-b border-border">
-        <div className="max-w-5xl mx-auto">
+        <div className="mm-container">
           <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest block mb-3">AI tools landscape</span>
           <h2 className="text-2xl md:text-3xl font-black mb-2 leading-tight">Major LLMs compared</h2>
           <p className="text-muted-foreground text-sm mb-8 max-w-xl">There are 1,000+ LLMs publicly available. Here are the 8 you actually need to know.</p>
@@ -294,7 +294,7 @@ export default function AIToolsKnowledgeBase() {
 
       {/* ── MentorMuni Interview Tools ── */}
       <section className="py-14 px-6 border-b border-border">
-        <div className="max-w-5xl mx-auto">
+        <div className="mm-container">
           <div className="flex items-center gap-2 mb-2">
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
             <span className="text-xs font-bold text-green-400 uppercase tracking-widest">MentorMuni · Free</span>
@@ -337,7 +337,7 @@ export default function AIToolsKnowledgeBase() {
 
       {/* ── Coding Tools ── */}
       <section className="py-14 px-6 border-b border-border">
-        <div className="max-w-5xl mx-auto">
+        <div className="mm-container">
           <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest block mb-3">For Developers</span>
           <h2 className="text-2xl font-black mb-2 leading-tight">Coding & Development AI Tools</h2>
           <p className="text-muted-foreground text-sm mb-6 max-w-xl">
@@ -394,7 +394,7 @@ export default function AIToolsKnowledgeBase() {
 
       {/* ── Free vs Paid ── */}
       <section className="py-14 px-6 border-b border-border">
-        <div className="max-w-5xl mx-auto">
+        <div className="mm-container">
           <span className="text-xs font-bold text-amber-400 uppercase tracking-widest block mb-3">Quick Reference</span>
           <h2 className="text-2xl font-black mb-8 leading-tight">Free vs Paid — what students actually need</h2>
           <div className="grid md:grid-cols-2 gap-6">
@@ -456,7 +456,7 @@ export default function AIToolsKnowledgeBase() {
 
       {/* ── FAQs ── */}
       <section className="py-14 px-6 border-b border-border">
-        <div className="max-w-3xl mx-auto">
+        <div className="mm-container mm-container--narrow">
           <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest block mb-3">Common Questions</span>
           <h2 className="text-2xl font-black mb-8">Frequently asked</h2>
           <div className="flex flex-col gap-3">
@@ -467,7 +467,7 @@ export default function AIToolsKnowledgeBase() {
 
       {/* ── CTA ── */}
       <section className="py-16 px-6">
-        <div className="max-w-2xl mx-auto text-center">
+        <div className="mm-container mm-container--prose text-center">
           <h2 className="text-2xl md:text-3xl font-black mb-3">Ready to put AI to work for your placement?</h2>
           <p className="text-muted-foreground text-sm mb-8 leading-relaxed">
             Check your interview readiness score in 5 minutes — free. Get a personalised gap analysis and a study plan built specifically around your strengths and timeline.

@@ -93,7 +93,7 @@ export function MentorMuniSystemLoop({ reduceMotion: reduceMotionProp }) {
   return (
     <section
       ref={containerRef}
-      className="relative overflow-hidden bg-gradient-to-b from-slate-50 via-white to-sky-50/30 py-20 md:py-28"
+      className="mm-band mm-marketing-section relative overflow-hidden bg-gradient-to-b from-slate-50 via-white to-sky-50/30"
       aria-labelledby="system-heading"
     >
       {/* Background Elements */}
@@ -104,14 +104,14 @@ export function MentorMuniSystemLoop({ reduceMotion: reduceMotionProp }) {
         </>
       )}
 
-      <div className="relative mx-auto max-w-7xl px-5 sm:px-6 lg:px-8">
+      <div className="mm-container relative">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mx-auto max-w-3xl text-center"
+          className="mm-prose-measure mm-prose-measure--lg text-center"
         >
           <span className="inline-flex items-center gap-2 rounded-full bg-sky-100 px-4 py-1.5 text-sm font-semibold text-sky-800">
             <span className="h-2 w-2 rounded-full bg-sky-500 animate-pulse" />
@@ -136,7 +136,7 @@ export function MentorMuniSystemLoop({ reduceMotion: reduceMotionProp }) {
         {/* Steps Timeline - Desktop */}
         <div className="mt-16 hidden lg:block">
           {/* Progress Line */}
-          <div className="relative mx-auto max-w-5xl">
+          <div className="relative w-full">
             <div className="absolute left-0 right-0 top-8 h-1 bg-gray-200 rounded-full" />
             <motion.div
               className="absolute left-0 top-8 h-1 bg-gradient-to-r from-sky-500 via-violet-500 to-teal-500 rounded-full"

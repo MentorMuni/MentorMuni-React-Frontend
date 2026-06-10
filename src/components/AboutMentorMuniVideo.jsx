@@ -52,7 +52,7 @@ export default function AboutMentorMuniVideo() {
 
   return (
     <section className="py-16 md:py-24 px-6 bg-gradient-to-b from-secondary to-background">
-      <div className="max-w-4xl mx-auto">
+      <div className="mm-container mm-container--narrow">
         {/* Header */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#FF9500]/20 border border-[#FFB347]/40 text-[#CC7000] text-sm font-medium mb-4">
@@ -62,7 +62,7 @@ export default function AboutMentorMuniVideo() {
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-3">
             Meet MentorMuni — Our Story in a Video
           </h2>
-          <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          <p className="text-muted-foreground text-lg mm-prose-measure">
             Our motto, what we offer students, and how we help you crack placements. Watch the short video below.
           </p>
         </div>

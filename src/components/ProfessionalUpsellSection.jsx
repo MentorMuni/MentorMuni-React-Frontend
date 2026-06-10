@@ -98,7 +98,7 @@ const ProfessionalUpsellSection = ({ atsScore = 70, targetRole = 'Backend Develo
         <h2 className={`text-3xl md:text-4xl font-black mb-3 ${heading.color}`}>
           {heading.title}
         </h2>
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+        <p className="text-muted-foreground text-lg mm-prose-measure">
           {heading.subtitle}
         </p>
 

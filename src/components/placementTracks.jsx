@@ -117,7 +117,7 @@ const PlacementTracks = () => {
       {!showCurriculum ? (
         <>
           <section className="mm-marketing-hero-backdrop border-b border-border">
-            <div className="relative z-10 mx-auto max-w-6xl px-6 pb-14 pt-20 text-center md:pb-16">
+            <div className="mm-container relative z-10 pb-14 pt-20 text-center md:pb-16">
               <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-border bg-warning-bg/90 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-warning-text">
                 <Target size={14} className="text-cta" aria-hidden />
                 Career Tracks
@@ -125,13 +125,13 @@ const PlacementTracks = () => {
               <h1 className="mb-4 text-3xl font-black tracking-tight text-foreground md:text-5xl">
                 Placement <span className="mm-gradient-text-cta">Tracks</span>
               </h1>
-              <p className="mx-auto max-w-2xl text-base text-muted-foreground md:text-lg">
+              <p className="mm-prose-measure text-base text-muted-foreground md:text-lg">
                 Choose your career path and master the skills that companies actually test in interviews
               </p>
             </div>
           </section>
 
-          <div className="mx-auto max-w-6xl px-6 py-12 md:py-16">
+          <div className="mm-container py-12 md:py-16">
             {/* 6 Tiles Grid */}
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
               {placementTracks.map((track) => (
@@ -175,7 +175,7 @@ const PlacementTracks = () => {
           </div>
         </>
       ) : (
-        <div className="mx-auto max-w-6xl px-6 py-16 md:py-20">
+        <div className="mm-container py-16 md:py-20">
             {/* Curriculum View */}
             <button 
               onClick={() => {

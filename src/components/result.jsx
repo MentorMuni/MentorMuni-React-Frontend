@@ -289,7 +289,7 @@ export default function ResultPage() {
 
   return (
     <RoutePageShell scope="tool" className="px-4 py-10 sm:py-12">
-      <div className="mx-auto max-w-2xl space-y-6">
+      <div className="mm-container mm-container--prose space-y-6">
         <div className="mm-card-elevated p-6 text-center sm:p-8">
           <p className="mb-5 text-xs font-medium uppercase tracking-wider text-muted-foreground">
             Your Interview Readiness Score

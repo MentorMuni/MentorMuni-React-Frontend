@@ -43,7 +43,7 @@ const CareerTransformationSection = () => {
 
   return (
     <section className="py-20 px-6 section-dark">
-      <div className="mm-cq-section max-w-7xl mx-auto">
+      <div className="mm-cq-section mm-container">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full text-on-dark font-semibold text-sm mb-6" style={{ background: 'rgba(99,102,241,0.06)' }}>
             <Sparkles className="w-4 h-4 text-primary" />
@@ -52,7 +52,7 @@ const CareerTransformationSection = () => {
 
           <h2 className="text-4xl md:text-5xl font-black text-on-dark mb-6">Transform Your Career Into Tech</h2>
 
-          <p className="text-xl text-on-dark-sub max-w-3xl mx-auto">
+          <p className="text-xl text-on-dark-sub mm-prose-measure mm-prose-measure--lg">
             MentorMuni doesn't just give you tools—it transforms you from uncertain to job-ready through AI diagnosis and personalized guidance.
           </p>
         </div>
@@ -160,7 +160,7 @@ const CareerTransformationSection = () => {
 
         <div className="text-center">
           <h3 className="text-3xl font-black text-on-dark mb-4">Ready to Begin Your Transformation?</h3>
-          <p className="text-on-dark-sub mb-8 max-w-2xl mx-auto text-lg">Start with our free AI assessment and discover exactly where you stand and what you need to reach your dream tech job.</p>
+          <p className="text-on-dark-sub mb-8 mm-prose-measure text-lg">Start with our free AI assessment and discover exactly where you stand and what you need to reach your dream tech job.</p>
 
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/resume-analyzer" className="btn-primary inline-flex items-center gap-2 px-8 py-4 rounded-lg font-bold">

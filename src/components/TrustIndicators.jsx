@@ -58,7 +58,7 @@ const TrustIndicators = () => {
 
   return (
     <section ref={containerRef} className="py-8 section-dark">
-      <div className="max-w-6xl mx-auto px-4">
+      <div className="mm-container">
         <div className="text-center mb-6">
           <h2 className="text-2xl sm:text-3xl font-extrabold text-on-dark">Trusted by Aspiring Tech Professionals</h2>
           <p className="mt-2 text-sm text-on-dark-sub">Helping students and career switchers prepare for real tech interviews.</p>

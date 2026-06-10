@@ -109,13 +109,13 @@ const JobRolesSection = () => {
 
   return (
     <section className="py-20 px-6 section-dark">
-      <div className="max-w-7xl mx-auto">
+      <div className="mm-container">
         {/* Header */}
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-black text-on-dark mb-4">
             Prepare for These Roles
           </h2>
-          <p className="text-lg text-on-dark-sub max-w-2xl mx-auto">
+          <p className="text-lg text-on-dark-sub mm-prose-measure">
             Choose a career path and start preparing for in-demand tech jobs.
           </p>
         </div>
@@ -168,7 +168,7 @@ const JobRolesSection = () => {
 
         {/* Bottom CTA Section */}
         <div className="text-center pt-12" style={{ borderTop: '1px solid var(--border-color)' }}>
-          <p className="text-on-dark-sub mb-8 max-w-2xl mx-auto">
+          <p className="text-on-dark-sub mb-8 mm-prose-measure">
             Not sure which role is right for you? Use our free tools to assess your current skills and discover the best career path.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">

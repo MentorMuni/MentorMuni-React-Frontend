@@ -224,7 +224,7 @@ const SkillGapAnalyzer = () => {
   // ==================== UI: Intro Section ====================
   const IntroSection = () => (
     <div className="min-h-screen mm-site-theme text-foreground">
-      <div className="max-w-6xl mx-auto px-6 py-20">
+      <div className="mm-container py-20">
 
 
         <div className="text-center mb-16">
@@ -285,7 +285,7 @@ const SkillGapAnalyzer = () => {
   // ==================== UI: FORM SECTION ====================
   const FormSection = () => (
     <div className="min-h-screen mm-site-theme text-foreground py-12">
-      <div className="max-w-2xl mx-auto px-6">
+      <div className="mm-container mm-container--prose">
         <button
           onClick={() => setFormStep(0)}
           className="text-[#FF9500] hover:text-[#E88600] font-semibold mb-8 flex items-center gap-2"
@@ -532,7 +532,7 @@ const SkillGapAnalyzer = () => {
   // ==================== UI: Results Section ====================
   const ResultsSection = () => (
     <div className="min-h-screen mm-site-theme text-foreground py-12">
-      <div className="max-w-6xl mx-auto px-6">
+      <div className="mm-container">
         <button
           onClick={() => {
             setFormStep(0);

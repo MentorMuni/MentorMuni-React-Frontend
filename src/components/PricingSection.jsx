@@ -31,7 +31,7 @@ const Plan = ({ title, price, bullets, cta, href, primary }) => (
 export default function PricingSection() {
   return (
     <section className="border-t border-border bg-gradient-to-b from-accent-soft/30 via-background to-secondary/35 py-16 md:py-20 px-6">
-      <div className="max-w-6xl mx-auto">
+      <div className="mm-container">
         <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-black text-on-dark">Pricing</h2>
           <p className="mt-2 text-on-dark-sub max-w-xl mx-auto">

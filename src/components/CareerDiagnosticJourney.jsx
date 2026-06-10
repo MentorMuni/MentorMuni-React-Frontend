@@ -120,7 +120,7 @@ const CareerDiagnosticJourney = () => {
 
   return (
     <section className="py-20 px-6 bg-gradient-to-b from-white via-secondary/20 to-white">
-      <div className="mm-cq-section max-w-7xl mx-auto">
+      <div className="mm-cq-section mm-container">
         {/* Header */}
         <div className="text-center mb-20">
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FFF4E0] rounded-full text-[#CC7000] font-semibold text-sm mb-6">
@@ -130,10 +130,10 @@ const CareerDiagnosticJourney = () => {
           <h2 className="text-4xl md:text-5xl font-black text-foreground mb-6">
             Your AI Career Diagnostic
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-4">
+          <p className="text-xl text-muted-foreground mm-prose-measure mm-prose-measure--lg mb-4">
             A guided 4-step journey to identify exactly what you need to land your next tech job.
           </p>
-          <p className="text-muted-foreground max-w-2xl mx-auto">
+          <p className="text-muted-foreground mm-prose-measure">
             From resume optimization through interview mastery—let our AI diagnose your current state and create a personalized action plan.
           </p>
         </div>
@@ -288,10 +288,10 @@ const CareerDiagnosticJourney = () => {
             <h3 className="text-3xl md:text-4xl font-black mb-4">
               Ready to Begin Your Career Diagnosis?
             </h3>
-            <p className="text-lg text-indigo-100 mb-2 max-w-2xl mx-auto">
+            <p className="text-lg text-indigo-100 mb-2 mm-prose-measure">
               Start your AI-powered career diagnostic journey today.
             </p>
-            <p className="text-sm text-white/90 mb-8 max-w-2xl mx-auto">
+            <p className="text-sm text-white/90 mb-8 mm-prose-measure">
               Get 3 free analyses. No credit card required. Takes just 15 minutes to complete.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">

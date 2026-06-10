@@ -11,6 +11,7 @@ import {
   HERO_YEAR_COPY,
   HERO_HEADLINE_LINE1,
   HERO_HEADLINE_LINE2,
+  HERO_TAGLINE,
   HERO_PLAYFUL_CLAUSE,
   HERO_TYPEWRITER_PHRASES,
   HERO_PROOF_ONE_LINER,
@@ -208,7 +209,7 @@ function HeroValueStack({ reduceMotion }) {
         className="relative mt-0 w-full"
         aria-label="What MentorMuni offers"
       >
-        <div className="relative mx-auto max-w-5xl">
+        <div className="mm-container relative">
           <div
             className="pointer-events-none absolute -left-24 top-1/4 h-80 w-80 rounded-full bg-sky-400/10 blur-[120px]"
             aria-hidden
@@ -218,7 +219,7 @@ function HeroValueStack({ reduceMotion }) {
             aria-hidden
           />
 
-          <div className="relative px-4 pt-2 pb-6 sm:px-7 sm:pt-3 sm:pb-8 lg:px-10">
+          <div className="relative pt-2 pb-6 sm:pt-3 sm:pb-8">
             <motion.div
               initial={{ y: 12 }}
               whileInView={{ y: 0 }}
@@ -263,7 +264,7 @@ function HeroValueStack({ reduceMotion }) {
                   },
                 },
               }}
-              className="grid grid-cols-2 gap-3 sm:grid-cols-2 lg:grid-cols-4"
+              className="grid grid-cols-1 gap-3 min-[400px]:grid-cols-2 lg:grid-cols-4"
             >
               {HERO_PLATFORM_HIGHLIGHTS.map((item, idx) => {
                 const Icon = HERO_PLATFORM_HIGHLIGHT_ICONS[idx] ?? Sparkles;
@@ -439,11 +440,8 @@ const studentStoryCard = {
 
 /** Hero — avatar stack + qualitative social proof (no inflated counts) */
 function HeroSocialProof({ ariaLabel, reduceMotion }) {
-  const rings = [
-    { className: 'bg-gradient-to-br from-[#1A8FC4] to-[#2AAA8A]' },
-    { className: 'bg-gradient-to-br from-[#0891b2] to-[#0e7490]' },
-    { className: 'bg-gradient-to-br from-[#2AAA8A] to-[#1A8FC4]' },
-  ];
+  const { newUI } = useNewUI();
+  const avatarStack = STUDENT_SNIPPETS.slice(0, 3);
 
   return (
     <motion.div
@@ -455,9 +453,9 @@ function HeroSocialProof({ ariaLabel, reduceMotion }) {
       aria-label={ariaLabel}
     >
       <div className="flex shrink-0 items-center pl-0.5" aria-hidden>
-        {rings.map((ring, i) => (
+        {avatarStack.map((student, i) => (
           <motion.span
-            key={i}
+            key={student.avatar}
             initial={false}
             animate={{ scale: 1, x: 0 }}
             transition={{
@@ -467,8 +465,13 @@ function HeroSocialProof({ ariaLabel, reduceMotion }) {
               stiffness: 380,
               damping: 24,
             }}
-            className={`relative h-9 w-9 rounded-full border-[3px] border-white shadow-[0_2px_8px_rgba(15,23,42,0.12)] sm:h-10 sm:w-10 ${ring.className} ${i > 0 ? '-ml-3 sm:-ml-3.5' : ''}`}
-          />
+            title={`${student.tag} — ${student.insight}`}
+            className={`mm-hero-avatar-stack__item mm-hero-avatar-stack__item--${student.avatar.toLowerCase()} relative flex h-9 w-9 items-center justify-center rounded-full border-[3px] border-white bg-gradient-to-br shadow-[0_2px_8px_rgba(15,23,42,0.14)] sm:h-10 sm:w-10 ${newUI ? '' : student.gradient} ${i > 0 ? '-ml-3 sm:-ml-3.5' : ''}`}
+          >
+            <span className="mm-hero-avatar-stack__initial text-xs font-bold leading-none text-white sm:text-sm">
+              {student.avatar}
+            </span>
+          </motion.span>
         ))}
       </div>
       <p className="max-w-[24rem] text-center text-sm font-semibold leading-snug text-neutral-800 sm:max-w-none sm:text-left">
@@ -610,10 +613,10 @@ function HeroPlayfulClause({ text, reduceMotion, newUI = false }) {
 function HomepageFaqSection() {
   return (
     <section
-      className="mm-surface-section border-t py-14 md:py-16 px-5 sm:px-6 lg:px-8"
+      className="mm-band mm-marketing-section mm-surface-section border-t"
       aria-labelledby="homepage-faq-heading"
     >
-      <div className="mx-auto max-w-3xl">
+      <div className="mm-container mm-container--narrow">
         <FadeUp>
           <h2 id="homepage-faq-heading" className="text-2xl font-bold tracking-tight text-foreground md:text-3xl">
             Placement prep — common questions
@@ -678,13 +681,8 @@ const HomePage = () => {
 
   return (
     <InnerRouteShell scope="marketing">
-    <main className="mm-marketing-flow mm-site-theme relative z-[1] overflow-x-hidden">
+    <div className="mm-homepage-root mm-site-theme relative z-[1] overflow-x-hidden">
       <style>{`
-        :focus-visible {
-          outline: 2px solid #1A8FC4;
-          outline-offset: 3px;
-          border-radius: 6px;
-        }
         .mm-hero-accent {
           background-size: 200% 200%;
           animation: mm-hero-accent 10s ease-in-out infinite;
@@ -783,7 +781,7 @@ const HomePage = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                   style={{ opacity: 1 }}
-                  className="mx-auto max-w-[44rem]"
+                  className="mm-prose-measure--hero"
                 >
                   <span className="typo-display block text-neutral-900 leading-[1.06] tracking-tight">
                     {HERO_HEADLINE_LINE1}
@@ -797,8 +795,8 @@ const HomePage = () => {
                   >
                     {HERO_HEADLINE_LINE2}
                   </span>
-                  <span className="mt-2 block text-base font-medium text-neutral-600 sm:text-lg">
-                    Campus placement mentor &amp; interview readiness for engineering students in India
+                  <span className="typo-hero-tagline mm-hero-tagline mt-2 block">
+                    {HERO_TAGLINE}
                   </span>
                   <span className="mt-2 block w-full sm:mt-3">
                     <HeroHeadlineTypewriter
@@ -999,10 +997,10 @@ const HomePage = () => {
       {/* ════════════════ Platform depth — below fold (lighter hero, better LCP) ════════════════ */}
       <ScrollReveal
         as="section"
-        className="border-t border-border bg-gradient-to-b from-white to-secondary/40 py-5 md:py-7 px-5 sm:px-6 lg:px-8 mm-scroll-reveal--scale"
+        className="mm-band mm-marketing-section--sm border-t border-border bg-gradient-to-b from-white to-secondary/40 mm-scroll-reveal--scale"
         aria-label="Platform overview"
       >
-        <div className="mx-auto flex w-full max-w-7xl flex-col items-center gap-5 md:gap-6">
+        <div className="mm-container flex w-full flex-col items-center gap-5 md:gap-6">
           <div className="flex w-full max-w-3xl justify-center">
             <HeroLoopVideo />
           </div>
@@ -1012,8 +1010,8 @@ const HomePage = () => {
       </ScrollReveal>
 
       {/* ════════════════ WHAT IS MENTORMUNI — one clear explainer block ════════════════ */}
-      <section className="mm-surface-section border-t py-12 md:py-14 px-5 sm:px-6 lg:px-8" aria-labelledby="what-is-mm-heading">
-        <div className="mx-auto max-w-5xl">
+      <section className="mm-band mm-marketing-section mm-surface-section border-t" aria-labelledby="what-is-mm-heading">
+        <div className="mm-container">
           <FadeUp>
             <div className="rounded-2xl border border-sky-200/70 bg-gradient-to-br from-sky-50/80 via-white to-emerald-50/40 p-7 md:p-10 shadow-[0_4px_28px_rgba(26,143,196,0.08)]">
               <div className="grid gap-8 lg:grid-cols-[1fr_auto] lg:gap-12 lg:items-center">
@@ -1070,10 +1068,10 @@ const HomePage = () => {
 
       {/* ════════════════ HR READINESS — interview fear, communication, Hindi-medium inclusive ════════════════ */}
       <section
-        className="border-t border-border bg-gradient-to-b from-violet-50/80 via-white to-sky-50/40 py-14 md:py-16 px-5 sm:px-6 lg:px-8"
+        className="mm-band mm-marketing-section border-t border-border bg-gradient-to-b from-violet-50/80 via-white to-sky-50/40"
         aria-labelledby="hr-readiness-heading"
       >
-        <div className="mx-auto max-w-5xl">
+        <div className="mm-container">
           <FadeUp>
             <header className="mb-10 text-center md:mb-12 md:text-left">
               <p className="mb-3 text-xs font-bold uppercase tracking-[0.2em] text-violet-700 sm:text-sm">
@@ -1081,7 +1079,7 @@ const HomePage = () => {
               </p>
               <h2
                 id="hr-readiness-heading"
-                className="mx-auto max-w-[44rem] text-balance text-3xl font-bold leading-[1.12] tracking-tight text-foreground sm:text-4xl md:mx-0 md:text-[2.5rem] md:leading-[1.08]"
+                className="mm-prose-measure--hero text-balance text-3xl font-bold leading-[1.12] tracking-tight text-foreground sm:text-4xl md:mx-0 md:text-[2.5rem] md:leading-[1.08]"
               >
                 {HR_READINESS_HEADLINE}
               </h2>
@@ -1149,10 +1147,10 @@ const HomePage = () => {
       {/* ════════════════ 5-WEEK PROGRAM — timeline + pricing card ════════════════ */}
       <section
         id="homepage-pricing"
-        className="mm-surface-section border-t py-14 md:py-16 px-5 sm:px-6 lg:px-8"
+        className="mm-band mm-marketing-section mm-surface-section border-t"
         aria-labelledby="program-6week-heading"
       >
-        <div className="mx-auto max-w-5xl">
+        <div className="mm-container">
           <div className="grid items-start gap-8 lg:grid-cols-[1fr_minmax(280px,380px)] lg:gap-12 xl:grid-cols-[1fr_400px]">
             {/* Left Column - Header + Timeline */}
             <div>
@@ -1163,7 +1161,7 @@ const HomePage = () => {
                   </p>
                   <h2
                     id="program-6week-heading"
-                    className="mx-auto max-w-[40rem] text-balance text-3xl font-bold leading-[1.12] tracking-tight text-foreground sm:text-4xl md:mx-0 md:text-[2.5rem] md:leading-[1.08]"
+                    className="mm-prose-measure--md text-balance text-3xl font-bold leading-[1.12] tracking-tight text-foreground sm:text-4xl md:mx-0 md:text-[2.5rem] md:leading-[1.08]"
                   >
                     {PROGRAM_6WEEK_HEADLINE}
                   </h2>
@@ -1251,14 +1249,14 @@ const HomePage = () => {
 
       {/* ════════════════ PROOF — problem + fit + comparison (single scroll) ════════════════ */}
       <section
-        className="relative overflow-hidden border-t border-sky-200/50 bg-gradient-to-b from-sky-50/95 via-white to-slate-50/80 py-14 md:py-16 px-5 sm:px-6 lg:px-8"
+        className="mm-band mm-marketing-section relative overflow-hidden border-t border-sky-200/50 bg-gradient-to-b from-sky-50/95 via-white to-slate-50/80"
         aria-labelledby="homepage-proof-heading"
       >
         <div
           className="pointer-events-none absolute -left-24 top-1/4 h-72 w-72 rounded-full bg-sky-300/15 blur-[100px]"
           aria-hidden
         />
-        <div className="relative z-10 mx-auto max-w-5xl">
+        <div className="mm-container relative z-10">
           <FadeUp>
             <header className="mb-8 text-center md:mb-10 md:text-left">
               <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-[#1A8FC4] sm:text-sm sm:tracking-[0.2em]">
@@ -1266,7 +1264,7 @@ const HomePage = () => {
               </p>
               <h2
                 id="homepage-proof-heading"
-                className="mx-auto max-w-[40rem] text-balance text-3xl font-bold leading-[1.12] tracking-tight text-foreground sm:text-4xl md:mx-0 md:text-[2.5rem] md:leading-[1.08]"
+                className="mm-prose-measure--md text-balance text-3xl font-bold leading-[1.12] tracking-tight text-foreground sm:text-4xl md:mx-0 md:text-[2.5rem] md:leading-[1.08]"
               >
                 {COMPARISON_TABLE_HEADLINE}
               </h2>
@@ -1342,9 +1340,12 @@ const HomePage = () => {
           </FadeUp>
 
           <FadeUp delay={0.08}>
+            <p className="mb-3 text-center text-xs text-muted-foreground md:hidden">
+              Swipe horizontally to compare all columns
+            </p>
             <div className="overflow-hidden rounded-xl border border-border shadow-[0_2px_12px_rgba(0,0,0,0.04)]">
-              <div className="overflow-x-auto overscroll-x-contain [-webkit-overflow-scrolling:touch]">
-                <table className="w-full min-w-[720px] border-collapse text-sm">
+              <div className="mm-scroll-x overscroll-x-contain">
+                <table className="w-full min-w-[640px] border-collapse text-sm sm:min-w-[720px]">
                   <thead>
                     <tr className="border-b border-border bg-neutral-50/90">
                       <th
@@ -1412,8 +1413,8 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ HOW IT WORKS — what we give (after the “why”) ════════════════ */}
-      <section className="mm-surface-section border-t py-14 md:py-16 px-5 sm:px-6 lg:px-8">
-        <div className="mx-auto w-full max-w-5xl text-left">
+      <section className="mm-band mm-marketing-section mm-surface-section border-t">
+        <div className="mm-container w-full text-left">
           <FadeUp className="w-full text-left">
             <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-primary">How it works</span>
             <h2 className="mb-2 text-2xl font-bold tracking-tight text-foreground md:text-3xl">
@@ -1475,11 +1476,11 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ STUDENT STORIES — animated cards ════════════════ */}
-      <section className="relative overflow-hidden border-t border-border bg-gradient-to-b from-background via-sky-50/80 to-secondary py-14 md:py-16 px-5 sm:px-6 lg:px-8">
+      <section className="mm-band mm-marketing-section relative overflow-hidden border-t border-border bg-gradient-to-b from-background via-sky-50/80 to-secondary">
         <div className="pointer-events-none absolute -left-32 top-1/4 h-72 w-72 rounded-full bg-[rgba(26,143,196,0.15)] blur-[100px]" aria-hidden />
         <div className="pointer-events-none absolute -right-24 bottom-0 h-64 w-64 rounded-full bg-[rgba(8,145,178,0.1)] blur-[90px]" aria-hidden />
 
-        <div className="relative mx-auto w-full max-w-5xl">
+        <div className="mm-container relative w-full">
           <motion.div
             initial={{ y: 14 }}
             whileInView={{ y: 0 }}
@@ -1581,8 +1582,8 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ MENTORS — Expert Mentorship (two columns) ════════════════ */}
-      <section className="border-t border-border bg-neutral-50 py-14 md:py-20 px-5 sm:px-6 lg:px-8">
-        <div className="mx-auto w-full max-w-5xl">
+      <section className="mm-band mm-marketing-section border-t border-border bg-neutral-50">
+        <div className="mm-container w-full">
           <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-20">
             <FadeUp className="w-full text-left">
               <span className="mb-3 block text-[10px] font-bold uppercase tracking-[0.2em] text-[#15799F] md:text-xs">
@@ -1706,7 +1707,7 @@ const HomePage = () => {
       <ScrollReveal
         as="section"
         id="final-cta"
-        className="mm-band border-t border-emerald-100/80 bg-gradient-to-b from-emerald-50/50 via-white to-white mm-scroll-mt-chrome py-14 md:py-16 mm-scroll-reveal--scale"
+        className="mm-band mm-marketing-section border-t border-emerald-100/80 bg-gradient-to-b from-emerald-50/50 via-white to-white mm-scroll-mt-chrome mm-scroll-reveal--scale"
       >
         <div className="mm-container mm-container--prose w-full text-left">
           <FadeUp className="w-full text-left">
@@ -1767,7 +1768,7 @@ const HomePage = () => {
       </ScrollReveal>
 
       {/* ════════════════ FOOTER ════════════════ */}
-      <footer className="mm-band border-t border-border bg-secondary py-14">
+      <footer className="mm-band mm-marketing-section border-t border-border bg-secondary">
         <div className="mm-container mm-container--wide w-full">
           <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-8 mb-10">
             <div className="md:col-span-2">
@@ -1854,7 +1855,7 @@ const HomePage = () => {
         </div>
       </footer>
 
-    </main>
+    </div>
     </InnerRouteShell>
   );
 };

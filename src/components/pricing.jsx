@@ -68,7 +68,7 @@ const PricingPage = () => {
       <section className="mm-marketing-hero-backdrop mm-hero-premium border-b border-border">
         <div className="mm-hero-mesh" aria-hidden />
         <div className="mm-hero-dot-grid" aria-hidden />
-        <MarketingHeroMotion className="relative z-10 mx-auto max-w-3xl px-6 pb-10 pt-20 text-center">
+        <MarketingHeroMotion className="mm-container mm-container--narrow relative z-10 pb-10 pt-20 text-center">
           <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-emerald-600/25 bg-emerald-500/10 px-4 py-1.5 text-sm font-semibold text-emerald-800 mm-float-soft">
             <ShieldCheck size={15} className="text-emerald-700" />
             One program · {PROGRAM_6WEEK_PRICE_MAIN} total
@@ -84,7 +84,7 @@ const PricingPage = () => {
         </MarketingHeroMotion>
       </section>
 
-      <FadeUp className="mx-auto mb-8 max-w-3xl px-6 pt-10">
+      <FadeUp className="mm-container mm-container--narrow mb-8 pt-10">
         <div className="flex items-center justify-center gap-3 rounded-xl border border-amber-600/25 bg-amber-500/10 px-5 py-3">
           <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-amber-500" />
           <p className="text-sm font-medium text-warning-ink-deep">
@@ -245,7 +245,8 @@ const PricingPage = () => {
         </div>
       </section>
 
-      <section className="mx-auto max-w-xl px-6 pb-20 text-center">
+      <section className="mm-band pb-20 text-center">
+        <div className="mm-container mm-container--tight">
         <div className="rounded-2xl border border-cta/35 bg-warning-bg/90 p-8">
           <p className="mb-2 text-xs font-medium uppercase tracking-wider text-warning-text">Recommended path</p>
           <h3 className="mb-2 text-2xl font-bold text-foreground">Free check first. Enroll when the gap is real.</h3>
@@ -268,10 +269,11 @@ const PricingPage = () => {
             </Link>
           </div>
         </div>
+        </div>
       </section>
 
-      <footer className="border-t border-border bg-secondary px-6 py-14">
-        <div className="mx-auto max-w-6xl">
+      <footer className="mm-band border-t border-border bg-secondary py-14">
+        <div className="mm-container">
           <div className="mb-10 grid gap-8 sm:grid-cols-2 md:grid-cols-4">
             <div className="md:col-span-1">
               <h3 className="mb-2 font-bold text-foreground">MentorMuni</h3>

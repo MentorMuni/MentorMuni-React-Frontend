@@ -166,7 +166,7 @@ const CppOopTutorial = () => {
           </div>
         </aside>
 
-        <main className="mm-tutorial-layout__main">
+        <div className="mm-tutorial-layout__main">
           <div className="mb-16">
             <h1 className="mb-6 bg-gradient-to-r from-sky-600 to-indigo-600 bg-clip-text text-5xl font-black text-transparent md:text-6xl">
               OOP with C++
@@ -876,7 +876,7 @@ int main() {
               </Link>
             </div>
           </section>
-        </main>
+        </div>
       </div>
 
       <footer className="mt-16 border-t border-border py-10 text-center text-sm text-muted-foreground">

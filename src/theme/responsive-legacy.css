@@ -66,34 +66,29 @@
   }
 }
 
-/* ── Fluid section wrappers (replaces scattered max-w-* + px-*) ─────── */
+/* ── Legacy aliases — prefer .mm-container in new code (keep in sync) ─ */
 .mm-page-section {
   box-sizing: border-box;
   width: 100%;
   max-width: var(--mm-container-max);
   margin-inline: auto;
-  padding-inline: var(--mm-gutter);
+  padding-inline: max(var(--mm-gutter), env(safe-area-inset-left, 0px))
+    max(var(--mm-gutter), env(safe-area-inset-right, 0px));
   min-width: 0;
 }
 
-.mm-page-section--narrow {
-  max-width: var(--mm-container-narrow);
-}
+.mm-page-section--narrow { max-width: var(--mm-container-narrow); }
+.mm-page-section--prose { max-width: var(--mm-container-prose); }
 
-.mm-page-section--prose {
-  max-width: min(var(--mm-container-prose), 100%);
-}
-
-/* Auto-fluid common legacy centering wrappers inside routes */
-.mm-route-root .mx-auto.max-w-5xl,
-.mm-route-root .mx-auto.max-w-6xl,
-.mm-route-root .mx-auto.max-w-7xl,
-.mm-inner-route .mx-auto.max-w-5xl,
-.mm-marketing-flow .mx-auto.max-w-5xl {
+/* Straggler legacy wrappers — align gutters until migrated to mm-container */
+.mm-route-root :is(.mx-auto.max-w-5xl, .mx-auto.max-w-6xl, .mx-auto.max-w-7xl),
+.mm-inner-route :is(.mx-auto.max-w-5xl, .mx-auto.max-w-6xl),
+.mm-marketing-flow :is(.mx-auto.max-w-5xl, .mx-auto.max-w-6xl) {
   box-sizing: border-box;
   width: 100%;
   max-width: min(var(--mm-container-max), 100%);
-  padding-inline: max(var(--mm-gutter), 1rem);
+  padding-inline: max(var(--mm-gutter), env(safe-area-inset-left, 0px))
+    max(var(--mm-gutter), env(safe-area-inset-right, 0px));
 }
 
 /* Legacy two-column grids → wrap when narrow */
