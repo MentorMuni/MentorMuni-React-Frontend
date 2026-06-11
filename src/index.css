@@ -210,14 +210,14 @@ body {
   text-wrap: balance;
 }
 
-/* Hero tagline — Inter for fast scanning under display headlines */
+/* Hero tagline — supporting subline under display headlines */
 .typo-hero-tagline {
   font-family: var(--font-readable);
-  font-size: clamp(1.0625rem, 1.15vw + 0.82rem, 1.375rem);
-  font-weight: 600;
-  line-height: 1.5;
-  letter-spacing: -0.006em;
-  color: #27272a;
+  font-size: clamp(0.875rem, 0.45vw + 0.72rem, 1.0625rem);
+  font-weight: 500;
+  line-height: 1.55;
+  letter-spacing: 0;
+  color: #52525b;
   text-wrap: balance;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -225,8 +225,8 @@ body {
 
 @media (min-width: 640px) {
   .typo-hero-tagline {
-    font-weight: 700;
-    line-height: 1.45;
+    font-weight: 500;
+    line-height: 1.5;
   }
 }
 

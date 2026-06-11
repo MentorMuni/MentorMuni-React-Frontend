@@ -4,7 +4,7 @@ import { X, Send, Sparkles, RotateCcw } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getMuniBotReply } from '../utils/munibotEngine';
 
-const LOGO_SRC = `${import.meta.env.BASE_URL}mentormuni-logo.png`;
+const LOGO_SRC = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
 const POSITION_KEY = 'mm-munibot-anchor';
 const MOBILE_BREAKPOINT = 640;
 const VIEWPORT_MARGIN = 20;
@@ -157,7 +157,7 @@ function MessageBubble({ text, isBot, isMarkdown, animate }) {
           <img
             src={LOGO_SRC}
             alt="MuniBot"
-            className="h-full w-full object-cover"
+            className="h-full w-full object-contain"
             width={32}
             height={32}
           />
@@ -584,7 +584,7 @@ export default function MuniBot() {
               <img
                 src={LOGO_SRC}
                 alt=""
-                className="h-full w-full rounded-full object-cover"
+                className="h-full w-full rounded-full object-contain"
                 width={24}
                 height={24}
                 draggable={false}

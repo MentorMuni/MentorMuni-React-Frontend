@@ -35,7 +35,14 @@
   --accent-secondary: #2aaa8a;
   --accent-faint: rgba(26, 143, 196, 0.06);
 
-  /* CTA orange scale — one place to retune marketing buttons & accents */
+  /* Primary action button — brand gradient (blue → teal); orange is accent only */
+  --btn-primary-from: #1a8fc4;
+  --btn-primary-mid: #15799f;
+  --btn-primary-to: #2aaa8a;
+  --btn-primary-border: color-mix(in srgb, #1a8fc4 42%, transparent);
+  --btn-primary-accent: rgba(255, 149, 0, 0.24);
+
+  /* CTA orange scale — badges, urgency pills, logo ring (not full primary fills) */
   --accent-cta: #ff9500;
   --accent-cta-hover: #e88600;
   --accent-cta-mid: #ffb347;
@@ -88,9 +95,9 @@
   --overlay-warm: rgba(26, 143, 196, 0.08);
   --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.05);
   --shadow-nav: 0 1px 20px rgba(0, 0, 0, 0.06);
-  /* CTA / primary action button glow (orange) */
-  --shadow-button-value: 0 4px 14px rgba(255, 149, 0, 0.25);
-  --shadow-button-strong-value: 0 4px 14px rgba(255, 149, 0, 0.3);
+  /* Primary action button glow (brand blue) */
+  --shadow-button-value: 0 4px 16px rgba(26, 143, 196, 0.28);
+  --shadow-button-strong-value: 0 8px 24px rgba(26, 143, 196, 0.34);
   --shadow-cta-card-value: 0 2px 12px rgba(255, 149, 0, 0.15);
   /* Card lift on CTA selection (assessment mode picker) */
   --shadow-cta-hover-lift: 0 24px 48px -12px rgba(255, 149, 0, 0.35);
@@ -180,8 +187,6 @@
   z-index: 100;
   border-bottom: 1px solid var(--border);
   background-color: var(--sticky-header-bg);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
 }
 
@@ -241,14 +246,30 @@
   border-radius: 16px;
 }
 
-.btn-primary {
-  background-color: var(--accent-cta);
+.btn-primary,
+.mm-btn-primary {
   color: #ffffff;
-  box-shadow: var(--shadow-button);
+  border: 1px solid var(--btn-primary-border);
+  background: linear-gradient(
+    135deg,
+    var(--btn-primary-from) 0%,
+    var(--btn-primary-mid) 52%,
+    var(--btn-primary-to) 100%
+  );
+  box-shadow:
+    var(--shadow-button),
+    inset 0 -2px 0 var(--btn-primary-accent);
+  transition:
+    filter 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.1s ease;
 }
-.btn-primary:hover {
-  background-color: var(--accent-cta-hover);
-  filter: none;
+.btn-primary:hover,
+.mm-btn-primary:hover {
+  filter: brightness(1.06);
+  box-shadow:
+    0 8px 24px rgba(26, 143, 196, 0.36),
+    inset 0 -2px 0 var(--btn-primary-accent);
 }
 .btn-secondary {
   border: 1px solid var(--accent);

@@ -111,8 +111,17 @@ html.mm-new-ui [class*="bg-[#FF9500]"] .text-foreground,
 html.mm-new-ui [class*="bg-cta"] .text-foreground,
 html.mm-new-ui .bg-cta .text-foreground,
 html.mm-new-ui .btn-primary,
-html.mm-new-ui .btn-primary .text-foreground {
+html.mm-new-ui .mm-btn-primary,
+html.mm-new-ui .btn-primary .text-foreground,
+html.mm-new-ui .mm-btn-primary .text-foreground {
   color: #ffffff;
+}
+
+html.mm-new-ui .btn-primary:hover,
+html.mm-new-ui .mm-btn-primary:hover {
+  box-shadow:
+    0 8px 26px rgba(14, 165, 233, 0.42),
+    inset 0 -2px 0 var(--btn-primary-accent);
 }
 
 html.mm-new-ui [class*="bg-[#FF9500]"] .text-muted-foreground,
@@ -145,13 +154,13 @@ html.mm-new-ui .card-dark:hover {
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-/* ── Site chrome shell — white header + theme bar, dark body below ─────── */
+/* ── Site chrome shell — theme toggle bar below navy header ─────────────── */
 html.mm-new-ui .mm-site-chrome__stack {
-  background-color: var(--mm-chrome-bg);
+  background-color: rgba(11, 18, 32, 0.94);
   box-shadow:
-    0 1px 0 rgba(0, 0, 0, 0.04),
-    0 12px 40px -8px rgba(0, 0, 0, 0.18);
-  color: #18181b;
+    0 1px 0 rgba(148, 163, 184, 0.12),
+    0 12px 40px -8px rgba(0, 0, 0, 0.35);
+  color: #e2e8f0;
 }
 
 html.mm-new-ui .mm-site-chrome__edge {
@@ -167,32 +176,21 @@ html.mm-new-ui .mm-site-chrome__edge {
   pointer-events: none;
 }
 
-html.mm-new-ui .mm-site-chrome .mm-sticky-header,
 html.mm-new-ui .mm-site-chrome .mm-beta-switch-bar {
   background-color: transparent;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
-  box-shadow: none;
-  color: #18181b;
-}
-
-html.mm-new-ui .mm-site-chrome .mm-sticky-header {
-  border-bottom-color: var(--mm-chrome-border);
-}
-
-html.mm-new-ui .mm-site-chrome .mm-beta-switch-bar {
-  border-top: 1px solid var(--mm-chrome-border);
+  border-top: 1px solid rgba(148, 163, 184, 0.18);
   border-bottom: none;
+  color: #cbd5e1;
 }
 
-/* In-page headers (tutorials) — white chrome in Dark theme too */
+/* Site header — dark navy chrome in Dark theme (see header-nav.css for scroll states) */
 html.mm-new-ui .mm-sticky-header {
-  background-color: var(--mm-chrome-bg);
-  border-bottom-color: var(--mm-chrome-border);
+  background-color: rgba(11, 18, 32, 0.9);
+  border-bottom-color: rgba(148, 163, 184, 0.18);
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
-  color: #18181b;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+  color: #e2e8f0;
 }
 
 /* Homepage hero — clear focal hierarchy, no light “sheet” bleed-through */
@@ -408,8 +406,8 @@ html.mm-new-ui .text-neutral-400 {
 html.mm-new-ui .mm-hero-subline,
 html.mm-new-ui .mm-hero-tagline,
 html.mm-new-ui .typo-hero-tagline {
-  color: #dce4ef !important;
-  font-weight: 600;
+  color: #a8b8cc !important;
+  font-weight: 500;
 }
 
 /* Hero social proof — muted stacks (avoid neon light-theme gradients on dark navy) */
@@ -659,12 +657,12 @@ html.mm-new-ui footer {
   color: var(--text-heading);
 }
 
-/* Nav legibility on white header (Dark theme) */
+/* Nav legibility on dark navy header (Dark theme) */
 html.mm-new-ui .mm-sticky-header .text-foreground,
 html.mm-new-ui .mm-sticky-header h1,
 html.mm-new-ui .mm-sticky-header h2,
 html.mm-new-ui .mm-sticky-header h3 {
-  color: #18181b !important;
+  color: #f1f5f9 !important;
 }
 
 html.mm-new-ui .mm-sticky-header .text-muted-foreground,
@@ -674,27 +672,27 @@ html.mm-new-ui .mm-sticky-header .text-slate-600,
 html.mm-new-ui .mm-sticky-header .text-slate-700,
 html.mm-new-ui .mm-sticky-header .text-neutral-800,
 html.mm-new-ui .mm-sticky-header .text-neutral-900 {
-  color: #52525b !important;
+  color: #94a3b8 !important;
 }
 
 html.mm-new-ui .mm-sticky-header .text-hint {
-  color: #a1a1aa !important;
+  color: #94a3b8 !important;
 }
 
 html.mm-new-ui .mm-sticky-header .text-primary,
 html.mm-new-ui .mm-sticky-header [class*="text-[#1A8FC4]"],
 html.mm-new-ui .mm-sticky-header [class*="text-[#15799F]"],
 html.mm-new-ui .mm-sticky-header [class*="text-[#0c4a6e]"] {
-  color: #1a8fc4 !important;
+  color: #7dd3fc !important;
 }
 
 html.mm-new-ui .mm-sticky-header a:hover,
-html.mm-new-ui .mm-sticky-header button:hover:not([class*="bg-cta"]):not([class*="bg-[#FF9500]"]) {
-  color: #15799f !important;
+html.mm-new-ui .mm-sticky-header button:hover:not([class*="bg-cta"]):not([class*="bg-[#FF9500]"]):not(.mm-header-cta__primary) {
+  color: #7dd3fc !important;
 }
 
 html.mm-new-ui .mm-sticky-header [class*="border-border"] {
-  border-color: #dbe8f2 !important;
+  border-color: rgba(148, 163, 184, 0.22) !important;
 }
 
 html.mm-new-ui .mm-sticky-header .border-t.border-border.bg-background,

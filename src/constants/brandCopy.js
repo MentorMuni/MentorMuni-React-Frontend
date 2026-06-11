@@ -37,7 +37,7 @@ export const HERO_HEADLINE_LINE1 = 'Are You Actually';
 export const HERO_HEADLINE_LINE2 = 'Interview-Ready?';
 /** One line under the headline — who it's for + what you get (scannable, not keyword-stuffed) */
 export const HERO_TAGLINE =
-  'For engineering students in India — get your placement readiness score, then close gaps with mocks and mentors.';
+  "Placements on your mind? You've done the grind — now see if you're actually interview-ready. Free score in 5 minutes.";
 /** Light quip under the eyebrow — playful, not the main headline */
 export const HERO_PLAYFUL_CLAUSE = 'From reels to reality — different kind of screen time.';
 /** @deprecated Use HERO_HEADLINE_LINE1 + LINE2 */

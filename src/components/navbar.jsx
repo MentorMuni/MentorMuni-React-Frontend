@@ -12,6 +12,7 @@ import {
   Building2,
   Info,
   Mail,
+  TrendingUp,
 } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
@@ -24,6 +25,7 @@ import {
 import LimitedRewardLabel from './LimitedRewardLabel';
 import NavDropdownPortal from './navbar/NavDropdownPortal';
 import MobileNavDrawer from './navbar/MobileNavDrawer';
+import HeaderThemeToggle from './navbar/HeaderThemeToggle';
 import { useScrolledHeader } from '../hooks/useScrolledHeader';
 import { NAV_DESKTOP_MQ } from '../constants/layoutBreakpoints';
 
@@ -94,7 +96,7 @@ const TOOLS = [
 ];
 
 const Navbar = () => {
-  const logoSrc = `${import.meta.env.BASE_URL}mentormuni-logo.png`;
+  const logoSrc = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
   const headerRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
@@ -135,9 +137,8 @@ const Navbar = () => {
 
   const navItems = [
     { label: MENTORMUNI_STORY_NAV_LABEL, path: '/how-it-works', exact: false },
-    { label: 'How to Prepare', path: '/roadmap', exact: true, variant: 'roadmap' },
+    { label: 'Roadmap', path: '/roadmap', exact: true, variant: 'roadmap' },
     { label: 'Mentors', path: '/mentors', exact: false },
-    { label: 'Outcomes', path: '/outcomes', exact: false },
   ];
 
   const isActive = (path, exact = false) => isNavActive(location.pathname, path, exact);
@@ -151,50 +152,45 @@ const Navbar = () => {
     setIsOpen(false);
   };
 
-  const defaultNavDesktopClass = (active) =>
-    `font-medium whitespace-nowrap transition-colors ${
-      active
-        ? 'text-primary font-semibold'
-        : 'text-gray-700 hover:text-primary'
-    }`;
-
   const moreMenuActive = MORE_LINKS.some((l) => isActive(l.path, l.exact));
 
   const navLinkClass = (item) => {
     const active = isActive(item.path, item.exact);
+    const base = 'mm-nav-link';
     if (item.variant === 'roadmap') {
-      return `whitespace-nowrap transition-colors ${
-        active
-          ? 'font-semibold text-success-strong'
-          : 'font-medium text-gray-700 hover:text-success-strong'
-      }`;
+      return `${base} mm-nav-link--roadmap${active ? ' mm-nav-link--active' : ''}`;
     }
-    return defaultNavDesktopClass(active);
+    return `${base}${active ? ' mm-nav-link--active' : ''}`;
   };
 
   const navMenuOpen = toolsOpen || moreOpen;
-  const headerScrolled = useScrolledHeader();
+  const isHomePage = location.pathname === '/';
+  const headerScrolled = useScrolledHeader(
+    isHomePage ? { enter: 80, exit: 32 } : { enter: 48, exit: 16 },
+  );
 
   return (
     <header
       ref={headerRef}
-      className={`mm-sticky-header${navMenuOpen ? ' mm-sticky-header--menu-open' : ''}${
-        headerScrolled ? ' mm-sticky-header--scrolled' : ''
-      }${isOpen ? ' mm-sticky-header--mobile-nav-open' : ''}`}
+      className={`mm-sticky-header${isHomePage ? ' mm-sticky-header--home' : ''}${
+        headerScrolled ? ' mm-sticky-header--scrolled' : ' mm-sticky-header--at-top'
+      }${navMenuOpen ? ' mm-sticky-header--menu-open' : ''}${
+        isOpen ? ' mm-sticky-header--mobile-nav-open' : ''
+      }`}
     >
-      <div className="mm-container">
-        <div className="mm-header-bar min-h-[4rem] min-w-0 py-1">
+      <div className="mm-container mm-container--chrome">
+        <div className="mm-header-bar min-w-0">
           <Link
             to="/"
             onClick={handleHomeClick}
-            className="group flex min-w-0 shrink-0 items-center gap-1.5 sm:gap-2"
+            className="mm-header-brand-lockup group flex min-w-0 shrink-0 items-center gap-2 sm:gap-2.5"
           >
             <img
               src={logoSrc}
               alt="MentorMuni Logo"
-              className="h-9 w-9 shrink-0 object-contain transition-all group-hover:opacity-80 sm:h-10 sm:w-10"
+              className="mm-header-logo shrink-0 object-contain transition-opacity group-hover:opacity-85"
             />
-            <span className="truncate text-base font-extrabold tracking-tight text-foreground sm:text-lg">
+            <span className="mm-header-brand truncate text-foreground">
               Mentor<span className="text-primary">Muni</span>
             </span>
           </Link>
@@ -223,10 +219,8 @@ const Navbar = () => {
                 onClick={() => setToolsOpen(v => !v)}
                 aria-expanded={toolsOpen}
                 aria-haspopup="true"
-                className={`mm-nav-trigger relative z-[1] inline-flex items-center gap-1 font-medium transition-colors ${
-                  toolsOpen
-                    ? 'text-primary'
-                    : 'text-gray-700 hover:text-primary'
+                className={`mm-nav-link mm-nav-trigger relative z-[1]${
+                  toolsOpen ? ' mm-nav-link--active' : ''
                 }`}
               >
                 Tools
@@ -285,14 +279,12 @@ const Navbar = () => {
                 onClick={() => setMoreOpen((v) => !v)}
                 aria-expanded={moreOpen}
                 aria-haspopup="true"
-                aria-label="Colleges, about, and contact"
-                className={`mm-nav-trigger relative z-[1] inline-flex items-center gap-1 font-medium whitespace-nowrap transition-colors ${
-                  moreOpen || moreMenuActive
-                    ? 'text-primary'
-                    : 'text-gray-700 hover:text-primary'
+                aria-label="Outcomes, colleges, about, and contact"
+                className={`mm-nav-link mm-nav-trigger relative z-[1]${
+                  moreOpen || moreMenuActive ? ' mm-nav-link--active' : ''
                 }`}
               >
-                About/Contact
+                More
                 <ChevronDown size={16} strokeWidth={2} className={`shrink-0 transition-transform duration-200 ${moreOpen ? 'rotate-180' : ''}`} />
               </button>
               <NavDropdownPortal
@@ -325,54 +317,38 @@ const Navbar = () => {
             </div>
           </nav>
 
-          <div data-mm-desktop-cta className="flex shrink-0 items-center">
-            <style>{`
-              @keyframes nb-shimmer {
-                0%   { transform: translateX(-100%) skewX(-15deg); }
-                100% { transform: translateX(220%) skewX(-15deg); }
-              }
-              @keyframes nb-ring {
-                0%,100% { box-shadow: 0 0 0 0 rgba(255,149,0,0.45), 0 4px 14px rgba(255,149,0,0.25); }
-                50%      { box-shadow: 0 0 0 5px rgba(255,149,0,0), 0 4px 20px rgba(255,149,0,0.35); }
-              }
-              .nb-cta { animation: nb-ring 2s ease-in-out infinite; }
-              .nb-cta:hover .nb-shine { animation: nb-shimmer 0.55s ease forwards; }
-            `}</style>
-            <Link
-              to="/waitlist"
-              className="inline-flex items-center justify-center rounded-lg border-2 border-cta font-semibold text-cta transition-all hover:bg-warning-bg active:scale-[0.98]"
-            >
-              Waitlist
-            </Link>
+          <div className="mm-header-end shrink-0">
+            <div data-mm-desktop-cta className="mm-header-cta">
+              <Link to="/waitlist" className="mm-header-cta__secondary">
+                Waitlist
+              </Link>
+              <button
+                type="button"
+                onClick={goToStartAssessment}
+                data-mm-primary-cta
+                className="mm-header-cta__primary relative overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--focus-ring)]"
+              >
+                <span className="relative truncate leading-tight">
+                  <span data-mm-cta-short>Free check</span>
+                  <span data-mm-cta-full>{PRIMARY_CTA_LABEL}</span>
+                </span>
+              </button>
+            </div>
+
+            <HeaderThemeToggle />
+
             <button
               type="button"
-              onClick={goToStartAssessment}
-              data-mm-primary-cta
-              className="nb-cta relative inline-flex items-center justify-center gap-1.5 overflow-hidden rounded-lg bg-cta font-semibold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-cta-hover active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta"
+              data-mm-mobile-nav-toggle
+              onClick={() => setIsOpen(!isOpen)}
+              className="shrink-0 p-2 text-muted-foreground transition-colors hover:text-primary"
+              aria-label={isOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={isOpen}
+              aria-controls="mm-mobile-nav-drawer"
             >
-              <span className="nb-shine pointer-events-none absolute inset-0 w-1/3 bg-white/25 blur-sm" style={{ transform: 'translateX(-100%) skewX(-15deg)' }} />
-              <span className="relative flex h-2 w-2 shrink-0">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-live opacity-75" />
-                <span className="relative inline-flex h-2 w-2 rounded-full bg-live" />
-              </span>
-              <span className="relative truncate leading-tight">
-                <span data-mm-cta-short>Free check</span>
-                <span data-mm-cta-full>{PRIMARY_CTA_LABEL}</span>
-              </span>
+              {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
-
-          <button
-            type="button"
-            data-mm-mobile-nav-toggle
-            onClick={() => setIsOpen(!isOpen)}
-            className="shrink-0 p-2 text-muted-foreground transition-colors hover:text-primary"
-            aria-label={isOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={isOpen}
-            aria-controls="mm-mobile-nav-drawer"
-          >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
-          </button>
         </div>
 
         <MobileNavDrawer

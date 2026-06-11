@@ -726,7 +726,7 @@ const HomePage = () => {
         <div className="mm-hero-orb mm-hero-orb--sky" aria-hidden />
         <div className="mm-hero-orb mm-hero-orb--teal" aria-hidden />
         <div className="mm-hero-orb mm-hero-orb--cta" aria-hidden />
-        <div className="mm-container relative z-10 flex w-full flex-col">
+        <div className="mm-container mm-container--chrome relative z-10 flex w-full flex-col">
           <div className="mm-hero-layout">
             <div className="flex w-full min-w-0 flex-col gap-4 sm:gap-5 md:gap-6">
               <motion.div
@@ -797,7 +797,7 @@ const HomePage = () => {
                   >
                     {HERO_HEADLINE_LINE2}
                   </span>
-                  <span className="typo-hero-tagline mm-hero-tagline mt-2 block">
+                  <span className="typo-hero-tagline mm-hero-tagline mx-auto mt-2 block max-w-prose-marketing">
                     {HERO_TAGLINE}
                   </span>
                   <span className="mt-2 block w-full sm:mt-3">
@@ -873,7 +873,7 @@ const HomePage = () => {
                     <button
                       type="button"
                       onClick={goToStartAssessment}
-                      className="mm-cta-glow mm-btn-interactive inline-flex min-h-[48px] w-full touch-manipulation items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-7 py-3.5 text-sm font-bold text-white transition-colors hover:bg-[#E88600] active:bg-[#D97706] sm:w-auto"
+                      className="mm-cta-glow mm-btn-interactive mm-btn-primary inline-flex min-h-[48px] w-full touch-manipulation items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-sm font-bold text-white sm:w-auto"
                     >
                       {PRIMARY_CTA_LABEL} <ArrowRight size={16} aria-hidden />
                     </button>
@@ -1057,7 +1057,7 @@ const HomePage = () => {
                   <button
                     type="button"
                     onClick={goToStartAssessment}
-                    className="inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-6 py-3 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.3)] transition-colors hover:bg-[#E88600]"
+                    className="mm-btn-primary mm-cta-glow inline-flex min-h-[48px] w-full items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold text-white"
                   >
                     {PRIMARY_CTA_LABEL} <ArrowRight size={15} aria-hidden />
                   </button>
@@ -1108,7 +1108,7 @@ const HomePage = () => {
                   <button
                     type="button"
                     onClick={goToStartAssessment}
-                    className="inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-6 py-3 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-colors hover:bg-[#E88600]"
+                    className="mm-btn-primary mm-cta-glow inline-flex min-h-[44px] items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold text-white"
                   >
                     {PRIMARY_CTA_LABEL} <ArrowRight size={16} aria-hidden />
                   </button>
@@ -1228,7 +1228,7 @@ const HomePage = () => {
                     <button
                       type="button"
                       onClick={goToStartAssessment}
-                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-6 py-3.5 text-base font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-[#E88600]"
+                      className="mm-btn-primary mm-cta-glow w-full inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3.5 text-base font-bold text-white"
                     >
                       {PRIMARY_CTA_LABEL} <ArrowRight className="h-5 w-5" aria-hidden />
                     </button>
@@ -1749,7 +1749,7 @@ const HomePage = () => {
               <button
                 type="button"
                 onClick={goToStartAssessment}
-                className="mm-cta-glow mm-btn-interactive inline-flex min-h-[48px] w-full touch-manipulation shrink-0 items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-8 py-4 text-sm font-bold text-white shadow-[0_4px_14px_rgba(255,149,0,0.25)] transition-all hover:bg-[#E88600] active:scale-[0.98] sm:w-auto"
+                className="mm-cta-glow mm-btn-interactive mm-btn-primary inline-flex min-h-[48px] w-full touch-manipulation shrink-0 items-center justify-center gap-2 rounded-xl px-8 py-4 text-sm font-bold text-white active:scale-[0.98] sm:w-auto"
               >
                 {PRIMARY_CTA_LABEL} <ArrowRight size={16} aria-hidden />
               </button>

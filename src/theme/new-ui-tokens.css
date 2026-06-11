@@ -31,6 +31,12 @@ html.mm-new-ui {
   --accent-secondary: #34d399;
   --accent-faint: rgba(56, 189, 248, 0.08);
 
+  --btn-primary-from: #0ea5e9;
+  --btn-primary-mid: #0891b2;
+  --btn-primary-to: #14b8a6;
+  --btn-primary-border: rgba(56, 189, 248, 0.38);
+  --btn-primary-accent: rgba(251, 191, 36, 0.28);
+
   --accent-cta: #f59e0b;
   --accent-cta-hover: #d97706;
   --accent-cta-mid: #fbbf24;
@@ -75,8 +81,8 @@ html.mm-new-ui {
   --overlay-warm: rgba(56, 189, 248, 0.1);
   --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
   --shadow-nav: 0 4px 24px rgba(0, 0, 0, 0.5);
-  --shadow-button-value: 0 4px 20px rgba(245, 158, 11, 0.35);
-  --shadow-button-strong-value: 0 8px 28px rgba(245, 158, 11, 0.4);
+  --shadow-button-value: 0 4px 18px rgba(14, 165, 233, 0.38);
+  --shadow-button-strong-value: 0 8px 28px rgba(14, 165, 233, 0.45);
   --shadow-cta-card-value: 0 4px 24px rgba(245, 158, 11, 0.2);
   --shadow-cta-hover-lift: 0 24px 48px -12px rgba(99, 102, 241, 0.35);
 
@@ -87,9 +93,10 @@ html.mm-new-ui {
   --shell-card-cream: rgba(15, 23, 42, 0.55);
   --shell-card-neutral: rgba(30, 41, 59, 0.6);
 
-  /* Dark theme: white header chrome (Classic parity), dark page body */
-  --mm-chrome-bg: #f8fbff;
-  --mm-chrome-border: #dbe8f2;
+  /* Dark theme: navy header chrome + dark page body */
+  --mm-chrome-bg: rgba(11, 18, 32, 0.94);
+  --mm-chrome-border: rgba(148, 163, 184, 0.2);
+  --nav-ink: #cbd5e1;
   --sticky-header-bg: var(--mm-chrome-bg);
   --surface-track: rgba(51, 65, 85, 0.5);
   --surface-muted: rgba(15, 23, 42, 0.6);

@@ -13,39 +13,29 @@
   }
 }
 
-/* Sticky header — scroll state */
+/* Sticky header — surface only (no height / blur animation — avoids layout jank) */
 .mm-sticky-header {
   transition:
-    box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 0.35s ease,
-    backdrop-filter 0.35s ease;
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
 
-.mm-sticky-header.mm-sticky-header--scrolled {
-  box-shadow:
-    0 4px 24px -4px rgba(15, 23, 42, 0.1),
-    0 1px 0 rgba(26, 143, 196, 0.08);
-  background-color: rgba(255, 255, 255, 0.92);
-  -webkit-backdrop-filter: blur(16px) saturate(1.2);
-  backdrop-filter: blur(16px) saturate(1.2);
-}
-
-html.mm-new-ui .mm-sticky-header.mm-sticky-header--scrolled {
-  /* Keep white site chrome on scroll — do not switch to dark body color */
+.mm-sticky-header:not(.mm-sticky-header--home) {
   background-color: var(--mm-chrome-bg);
+  border-bottom: 1px solid var(--mm-chrome-border);
   -webkit-backdrop-filter: none;
   backdrop-filter: none;
+}
+
+.mm-sticky-header:not(.mm-sticky-header--home).mm-sticky-header--at-top {
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.04);
+}
+
+.mm-sticky-header:not(.mm-sticky-header--home).mm-sticky-header--scrolled {
   box-shadow:
-    0 4px 24px -4px rgba(15, 23, 42, 0.1),
+    0 4px 20px -10px rgba(15, 23, 42, 0.1),
     0 1px 0 var(--mm-chrome-border);
-}
-
-.mm-sticky-header .mm-header-bar {
-  transition: min-height 0.3s ease, padding 0.3s ease;
-}
-
-.mm-sticky-header.mm-sticky-header--scrolled .mm-header-bar {
-  min-height: 3.5rem;
 }
 
 /* Scroll reveal (JS toggles --visible) */
@@ -260,29 +250,31 @@ html.mm-new-ui .mm-sticky-header.mm-sticky-header--scrolled {
   animation-delay: 1s;
 }
 
-/* Nav desktop links */
-.mm-desktop-nav a,
-.mm-desktop-nav button {
+/* Nav desktop links — underline inside padded hit area */
+.mm-nav-link {
   position: relative;
-  transition: color 0.2s ease;
 }
 
-.mm-desktop-nav a::after,
-.mm-desktop-nav button.mm-nav-trigger::after {
+.mm-nav-link::after {
   content: '';
   position: absolute;
   left: 0;
   right: 0;
-  bottom: -4px;
+  bottom: 0.25rem;
   height: 2px;
+  border-radius: 1px;
   background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
   transform: scaleX(0);
   transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-.mm-desktop-nav a:hover::after,
-.mm-desktop-nav button.mm-nav-trigger:hover::after {
+.mm-nav-link:hover::after,
+.mm-nav-link.mm-nav-link--active::after {
   transform: scaleX(1);
+}
+
+.mm-nav-link--roadmap::after {
+  background: linear-gradient(90deg, var(--success-link), var(--accent-secondary));
 }
 
 @media (prefers-reduced-motion: reduce) {

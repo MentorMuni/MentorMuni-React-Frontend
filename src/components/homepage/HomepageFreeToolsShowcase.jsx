@@ -196,7 +196,7 @@ export function HomepageFreeToolsShowcase() {
           <button
             type="button"
             onClick={goToStartAssessment}
-            className="mm-cta-glow mm-btn-interactive inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-[#FF9500] px-8 py-3.5 text-sm font-bold text-white"
+            className="mm-cta-glow mm-btn-interactive mm-btn-primary inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl px-8 py-3.5 text-sm font-bold text-white"
           >
             {PRIMARY_CTA_LABEL}
             <ArrowRight className="h-4 w-4" aria-hidden />

@@ -12,8 +12,6 @@ import Navbar from "./components/navbar";
 import SkipToContent from "./components/layout/SkipToContent";
 import HomePage from "./components/homepage";
 import ParticleBackground from "./components/new-ui/ParticleBackground";
-import NewUIBetaSwitch from "./components/new-ui/NewUIBetaSwitch";
-import SiteChromeShell from "./components/new-ui/SiteChromeShell";
 import MuniBot from "./components/MuniBot";
 import WelcomeLaunchOverlay from "./components/WelcomeLaunchOverlay";
 import RouteErrorBoundary from "./components/RouteErrorBoundary";
@@ -228,11 +226,6 @@ function App() {
         <SkipToContent />
         <div className="mm-app-body">
           <Navbar />
-          <SiteChromeShell>
-            <div className="mm-site-chrome__stack">
-              <NewUIBetaSwitch />
-            </div>
-          </SiteChromeShell>
           <AnimatedMain className="mm-app-main relative z-[1]">
           <Suspense fallback={<PageFallback />}>
             <Routes>
