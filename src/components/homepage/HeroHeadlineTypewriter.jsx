@@ -60,17 +60,17 @@ export function HeroHeadlineTypewriter({
   const displayed = reducedMotion ? currentPhrase : currentPhrase.slice(0, charIndex);
 
   return (
-    <span className={`grid w-full ${className}`}>
-      {/* Locks height to the tallest wrap (e.g. two lines on mobile) so typing does not shift layout */}
-      <span className="invisible col-start-1 row-start-1 select-none whitespace-normal" aria-hidden>
+    <span className="mm-hero-typewriter-inner" aria-live="polite">
+      {/* Locks height to the tallest phrase so typing does not shift layout */}
+      <span className={`${className} mm-hero-typewriter-line--reserve`} aria-hidden>
         {reservePhrase}
       </span>
-      <span className="col-start-1 row-start-1 inline-flex min-w-0 items-end">
-        <span>{displayed}</span>
+      <span className={`${className} mm-hero-typewriter-line--active`}>
+        <span className="mm-hero-typewriter-text">{displayed}</span>
         <span
-          className={`ml-0.5 inline-block h-[0.92em] w-[2px] shrink-0 translate-y-[0.08em] align-[-0.12em] ${cursorClassName} ${
+          className={`mm-hero-typewriter-cursor ${cursorClassName} ${
             showCursor ? 'opacity-100' : 'opacity-30'
-          } transition-opacity duration-200`}
+          }`}
           aria-hidden
         />
       </span>

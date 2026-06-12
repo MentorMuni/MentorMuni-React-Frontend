@@ -407,27 +407,118 @@ body {
   }
 }
 
+/* Hero copy column — one alignment axis for eyebrow + headline + tagline */
+.mm-hero-copy-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1rem, 3cqi, 1.5rem);
+  width: 100%;
+  min-width: 0;
+  text-align: center;
+}
+
+.mm-hero-eyebrow-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem 0.625rem;
+  width: 100%;
+  max-width: 44rem;
+}
+
+.mm-hero-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  max-width: 44rem;
+  text-align: center;
+}
+
+.mm-hero-copy > * {
+  width: 100%;
+  min-width: 0;
+}
+
+.mm-hero-copy .mm-prose-measure--hero,
+.mm-hero-copy .mm-hero-tagline {
+  max-width: 44rem;
+}
+
+.mm-hero-copy .mm-hero-trust-micro {
+  text-align: center;
+}
+
+.mm-hero-copy .mm-hero-trust-row {
+  justify-content: center;
+}
+
+.mm-hero-inline-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.mm-hero-copy .mm-trust-pills {
+  justify-content: center;
+}
+
+.mm-hero-copy .mm-hero-trust {
+  text-align: center;
+}
+
 @container hero (min-width: 48rem) {
-  .mm-hero-layout .mm-hero-copy {
+  .mm-hero-copy-column {
+    align-items: flex-start;
     text-align: start;
   }
 
-  .mm-hero-layout .mm-prose-measure--hero {
+  .mm-hero-eyebrow-row {
+    justify-content: flex-start;
     max-width: none;
   }
 
-  .mm-hero-layout .mm-hero-tagline {
-    margin-inline: 0;
-  }
-
-  .mm-hero-layout .mm-hero-sub-block,
-  .mm-hero-layout .mm-hero-cta-row,
-  .mm-hero-layout .mm-hero-trust {
-    margin-inline: 0;
+  .mm-hero-copy {
+    align-items: flex-start;
+    max-width: none;
     text-align: start;
   }
 
-  .mm-hero-layout .mm-hero-cta-row {
+  .mm-hero-copy .mm-prose-measure--hero,
+  .mm-hero-copy .mm-hero-tagline {
+    max-width: none;
+  }
+
+  .mm-hero-copy .mm-hero-trust-micro {
+    text-align: start;
+  }
+
+  .mm-hero-copy .mm-hero-trust-row {
+    justify-content: flex-start;
+  }
+
+  .mm-hero-copy .mm-hero-actions {
+    align-items: flex-start;
+    align-self: stretch;
+  }
+
+  .mm-hero-cta-row {
+    justify-content: flex-start;
+    margin-inline: 0;
+  }
+
+  .mm-hero-cta {
+    flex: 0 1 auto;
+    padding: 0.875rem 1.75rem;
+  }
+
+  .mm-hero-inline-row,
+  .mm-hero-copy .mm-trust-pills {
     justify-content: flex-start;
   }
 
@@ -602,26 +693,52 @@ body {
       align-items: center;
     }
 
-    .mm-hero-layout .mm-hero-copy {
+    .mm-hero-copy-column {
+      align-items: flex-start;
       text-align: start;
     }
 
-    .mm-hero-layout .mm-prose-measure--hero {
+    .mm-hero-eyebrow-row {
+      justify-content: flex-start;
       max-width: none;
     }
 
-    .mm-hero-layout .mm-hero-tagline {
-      margin-inline: 0;
-    }
-
-    .mm-hero-layout .mm-hero-sub-block,
-    .mm-hero-layout .mm-hero-cta-row,
-    .mm-hero-layout .mm-hero-trust {
-      margin-inline: 0;
+    .mm-hero-copy {
+      align-items: flex-start;
+      max-width: none;
       text-align: start;
     }
 
-    .mm-hero-layout .mm-hero-cta-row {
+    .mm-hero-copy .mm-prose-measure--hero,
+    .mm-hero-copy .mm-hero-tagline {
+      max-width: none;
+    }
+
+    .mm-hero-copy .mm-hero-trust-micro {
+      text-align: start;
+    }
+
+    .mm-hero-copy .mm-hero-trust-row {
+      justify-content: flex-start;
+    }
+
+    .mm-hero-copy .mm-hero-actions {
+      align-items: flex-start;
+      align-self: stretch;
+    }
+
+    .mm-hero-cta-row {
+      justify-content: flex-start;
+      margin-inline: 0;
+    }
+
+    .mm-hero-cta {
+      flex: 0 1 auto;
+      padding: 0.875rem 1.75rem;
+    }
+
+    .mm-hero-inline-row,
+    .mm-hero-copy .mm-trust-pills {
       justify-content: flex-start;
     }
 

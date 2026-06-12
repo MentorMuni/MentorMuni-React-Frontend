@@ -1,73 +1,152 @@
-/** Skill rows shown on the homepage hero score preview card */
-export const HERO_SKILL_DEFINITIONS = [
+import { HERO_SCORE_GAMIFICATION_INSIGHTS } from '../constants/brandCopy';
+
+/** Biggest-gap labels — cycles in the hero scorecard */
+export const HERO_GAP_OPTIONS = [
   {
-    shortLabel: 'Data structures & algorithms',
-    label: 'Data structures & algorithms',
-    hint: 'Coding / problem-solving rounds',
-    color: '#ef4444',
-    glow: 'rgba(239, 68, 68, 0.45)',
+    id: 'hr',
+    displayName: 'HR & Communication',
+    shortName: 'HR',
+    focusTopics: ['STAR stories', 'Clarity', 'Confidence'],
   },
   {
-    shortLabel: 'System Design',
-    label: 'System design',
-    hint: 'Architecture & trade-offs',
-    color: '#ea580c',
-    glow: 'rgba(249, 115, 22, 0.45)',
+    id: 'oops',
+    displayName: 'OOPS Concepts',
+    shortName: 'OOPS',
+    focusTopics: ['Inheritance', 'Polymorphism', 'Abstraction'],
   },
   {
-    shortLabel: 'HR & communication',
-    label: 'HR & communication',
-    hint: 'Behavioral & clarity',
-    color: '#16a34a',
-    glow: 'rgba(34, 197, 94, 0.4)',
+    id: 'ai',
+    displayName: 'AI Knowledge',
+    shortName: 'AI',
+    focusTopics: ['LLMs', 'Prompting', 'RAG basics'],
   },
   {
-    shortLabel: 'Projects & depth',
-    label: 'Projects & depth',
-    hint: 'What you built & why',
-    color: '#9333ea',
-    glow: 'rgba(167, 139, 250, 0.4)',
+    id: 'projects',
+    displayName: 'Project Understanding',
+    shortName: 'Projects',
+    focusTopics: ['Impact metrics', 'Tech choices', 'Trade-offs'],
+  },
+  {
+    id: 'logic',
+    displayName: 'Logical Reasoning',
+    shortName: 'Logic',
+    focusTopics: ['Patterns', 'Puzzles', 'Speed & accuracy'],
+  },
+  {
+    id: 'database',
+    displayName: 'Database',
+    shortName: 'DB',
+    focusTopics: ['SQL joins', 'Indexing', 'Normalization'],
   },
 ];
+
+/** @deprecated Used only for legacy preview helpers */
+export const HERO_SKILL_DEFINITIONS = HERO_GAP_OPTIONS.map((gap) => ({
+  ...gap,
+  shortLabel: gap.displayName,
+  label: gap.displayName,
+  hint: gap.focusTopics[0],
+  color: '#ef4444',
+  glow: 'rgba(239, 68, 68, 0.45)',
+}));
+
+export const HERO_TARGET_COMPANY_ROWS = [
+  [
+    { id: 'tcs', name: 'TCS' },
+    { id: 'infosys', name: 'Infosys' },
+    { id: 'microsoft', name: 'Microsoft' },
+  ],
+  [
+    { id: 'nagarro', name: 'Nagarro' },
+    { id: 'persistent', name: 'Persistent' },
+  ],
+];
+
+/** @deprecated Use HERO_TARGET_COMPANY_ROWS */
+export const HERO_TARGET_COMPANIES = HERO_TARGET_COMPANY_ROWS.flat();
+
+export const HERO_UNLOCK_COMPANIES = ['Amazon', 'Microsoft', 'Google', 'Flipkart'];
+
+/** Hero rank pool — starts at 500, grows on page refresh and user clicks */
+export const HERO_STUDENT_POOL_BASE = 500;
+const HERO_STUDENT_POOL_KEY = 'mm_hero_student_pool';
 
 function randomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
-/**
- * One sample readiness score for the hero card — stable for the page visit (call once on mount).
- * Overall score 60–80; category bars vary with a clear weakest area.
- */
-export function generateHeroScorePreview() {
-  const score = randomInt(60, 80);
-  const gapIndex = randomInt(0, HERO_SKILL_DEFINITIONS.length - 1);
-  const percents = new Array(HERO_SKILL_DEFINITIONS.length);
+export function calculateHeroRank(totalStudents, percentileAhead) {
+  return Math.max(
+    8,
+    Math.min(totalStudents - 1, Math.round(totalStudents * (1 - percentileAhead / 100))),
+  );
+}
 
-  const gapPct = randomInt(Math.max(38, score - 22), Math.max(42, score - 8));
-  percents[gapIndex] = gapPct;
-
-  for (let i = 0; i < HERO_SKILL_DEFINITIONS.length; i++) {
-    if (i === gapIndex) continue;
-    const floor = Math.min(gapPct + 6, score);
-    const ceil = Math.min(92, score + randomInt(8, 16));
-    percents[i] = randomInt(Math.max(floor, score - 2), Math.max(floor + 1, ceil));
+/** Bump pool on each page load — persists in sessionStorage */
+export function initHeroStudentPool() {
+  try {
+    const stored = sessionStorage.getItem(HERO_STUDENT_POOL_KEY);
+    let total = stored ? parseInt(stored, 10) : HERO_STUDENT_POOL_BASE;
+    if (!Number.isFinite(total) || total < HERO_STUDENT_POOL_BASE) {
+      total = HERO_STUDENT_POOL_BASE;
+    }
+    total += randomInt(1, 4);
+    sessionStorage.setItem(HERO_STUDENT_POOL_KEY, String(total));
+    return total;
+  } catch {
+    return HERO_STUDENT_POOL_BASE + randomInt(1, 4);
   }
+}
 
-  const skillBars = HERO_SKILL_DEFINITIONS.map((def, i) => ({
-    ...def,
-    w: percents[i] / 100,
-    pct: percents[i],
-  }));
+/** +1 on interactive click within the scorecard */
+export function bumpHeroStudentPool(current) {
+  const next = Math.max(HERO_STUDENT_POOL_BASE, current + 1);
+  try {
+    sessionStorage.setItem(HERO_STUDENT_POOL_KEY, String(next));
+  } catch {
+    /* ignore */
+  }
+  return next;
+}
 
-  const improvement = randomInt(16, 24);
+function estimateWeeks(score) {
+  if (score >= 76) return randomInt(2, 4);
+  if (score >= 68) return randomInt(3, 5);
+  return randomInt(4, 8);
+}
+
+/**
+ * One sample readiness score for the hero card.
+ * @param {number} totalStudents — pool size (default 500+)
+ */
+export function generateHeroScorePreview(totalStudents = HERO_STUDENT_POOL_BASE) {
+  const score = randomInt(60, 80);
+  const gapIndex = randomInt(0, HERO_GAP_OPTIONS.length - 1);
+  const gapSkill = HERO_GAP_OPTIONS[gapIndex];
+  const improvePct = randomInt(15, 25);
+  const percentileAhead = Math.min(88, Math.max(55, score - randomInt(-4, 6)));
+  const pool = Math.max(HERO_STUDENT_POOL_BASE, totalStudents);
+  const rank = calculateHeroRank(pool, percentileAhead);
+  const estimatedWeeks = estimateWeeks(score);
+  const unlockNames = HERO_UNLOCK_COMPANIES.slice(0, 2).join(', ');
+
+  const insight =
+    HERO_SCORE_GAMIFICATION_INSIGHTS[
+      randomInt(0, HERO_SCORE_GAMIFICATION_INSIGHTS.length - 1)
+    ];
 
   return {
     score,
     scoreRatio: score / 100,
-    skillBars,
-    gapLabel: HERO_SKILL_DEFINITIONS[gapIndex].shortLabel,
-    improvement,
-    insightLead: `${HERO_SKILL_DEFINITIONS[gapIndex].shortLabel} is your biggest gap.`,
-    insightRest: `Most students with this profile improve +${improvement} pts in 3 weeks with focused practice.`,
+    gapSkill,
+    gapIndex,
+    improvePct,
+    percentileAhead,
+    rank,
+    totalStudents: pool,
+    estimatedWeeks,
+    unlockNames,
+    insightLead: insight.lead,
+    insightRest: insight.rest,
   };
 }

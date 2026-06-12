@@ -405,8 +405,9 @@ html.mm-new-ui .text-neutral-400 {
 
 html.mm-new-ui .mm-hero-subline,
 html.mm-new-ui .mm-hero-tagline,
-html.mm-new-ui .typo-hero-tagline {
-  color: #a8b8cc !important;
+html.mm-new-ui .typo-hero-tagline,
+html.mm-new-ui .mm-hero-copy .mm-hero-tagline {
+  color: #c5d0de !important;
   font-weight: 500;
 }
 

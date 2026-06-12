@@ -148,18 +148,46 @@
 /* Primary CTAs — subtle pulse ring */
 @keyframes mm-cta-pulse-ring {
   0% {
-    box-shadow: 0 0 0 0 rgba(255, 149, 0, 0.45);
+    box-shadow:
+      0 4px 16px rgba(26, 143, 196, 0.28),
+      0 0 0 0 rgba(26, 143, 196, 0.35);
   }
   70% {
-    box-shadow: 0 0 0 10px rgba(255, 149, 0, 0);
+    box-shadow:
+      0 4px 16px rgba(26, 143, 196, 0.28),
+      0 0 0 12px rgba(26, 143, 196, 0);
   }
   100% {
-    box-shadow: 0 0 0 0 rgba(255, 149, 0, 0);
+    box-shadow:
+      0 4px 16px rgba(26, 143, 196, 0.28),
+      0 0 0 0 rgba(26, 143, 196, 0);
   }
 }
 
 .mm-cta-glow.mm-btn-interactive {
-  animation: mm-cta-pulse-ring 2.8s ease-out infinite;
+  animation: mm-cta-pulse-ring 3.2s ease-out infinite;
+}
+
+html.mm-new-ui .mm-cta-glow.mm-btn-interactive {
+  animation-name: mm-cta-pulse-ring-dark;
+}
+
+@keyframes mm-cta-pulse-ring-dark {
+  0% {
+    box-shadow:
+      0 4px 18px rgba(14, 165, 233, 0.38),
+      0 0 0 0 rgba(56, 189, 248, 0.4);
+  }
+  70% {
+    box-shadow:
+      0 4px 18px rgba(14, 165, 233, 0.38),
+      0 0 0 12px rgba(56, 189, 248, 0);
+  }
+  100% {
+    box-shadow:
+      0 4px 18px rgba(14, 165, 233, 0.38),
+      0 0 0 0 rgba(56, 189, 248, 0);
+  }
 }
 
 /* Floating accent (decor) */

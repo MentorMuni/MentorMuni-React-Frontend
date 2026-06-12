@@ -7,16 +7,11 @@ import {
   SECONDARY_CTA_BOOK_CALL,
   HERO_EYEBROW,
   HERO_EARLY_BIRD_STICKER,
-  HERO_GENZ_STICKER,
-  HERO_YEAR_COPY,
   HERO_HEADLINE_LINE1,
   HERO_HEADLINE_LINE2,
   HERO_TAGLINE,
-  HERO_PLAYFUL_CLAUSE,
   HERO_TYPEWRITER_PHRASES,
-  HERO_PROOF_ONE_LINER,
-  HERO_SOCIAL_PROOF_ARIA,
-  HERO_SOCIAL_PROOF_VISIBLE_LINE,
+  HERO_PROOF_STAT,
   HERO_TRUST_LOGO_ROW_LABEL,
   HERO_TRUST_LOGO_ROW_ITEMS,
   HERO_PLATFORM_HIGHLIGHTS,
@@ -82,6 +77,15 @@ import InnerRouteShell from './new-ui/InnerRouteShell';
 import AnimatedCounter from './new-ui/AnimatedCounter';
 import { HeroFlagshipVisual } from './homepage/HeroFlagshipVisual';
 import { HeroHeadlineTypewriter } from './homepage/HeroHeadlineTypewriter';
+import { HeroScoreTilt } from './homepage/HeroScoreTilt';
+import { HeroAwarenessLoop } from './homepage/HeroAwarenessLoop';
+import {
+  heroHeadlineLine,
+  heroReveal,
+  heroScoreEnter,
+  heroStaggerContainer,
+  HERO_EASE,
+} from './homepage/heroMotion';
 import { HeroLoopVideo } from './homepage/HeroLoopVideo';
 import { MentorMuniSystemLoop } from './homepage/MentorMuniSystemLoop';
 import { HomepageFreeToolsShowcase } from './homepage/HomepageFreeToolsShowcase';
@@ -440,49 +444,6 @@ const studentStoryCard = {
   },
 };
 
-/** Hero — avatar stack + qualitative social proof (no inflated counts) */
-function HeroSocialProof({ ariaLabel, reduceMotion }) {
-  const { newUI } = useNewUI();
-  const avatarStack = STUDENT_SNIPPETS.slice(0, 3);
-
-  return (
-    <motion.div
-      className="mt-3 flex flex-col items-center gap-3.5 sm:flex-row sm:items-center sm:justify-start sm:gap-4"
-      initial={false}
-      animate={{ y: [6, 0] }}
-      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-      style={{ opacity: 1 }}
-      aria-label={ariaLabel}
-    >
-      <div className="flex shrink-0 items-center pl-0.5" aria-hidden>
-        {avatarStack.map((student, i) => (
-          <motion.span
-            key={student.avatar}
-            initial={false}
-            animate={{ scale: 1, x: 0 }}
-            transition={{
-              delay: reduceMotion ? 0 : 0.08 + i * 0.08,
-              duration: 0.4,
-              type: 'spring',
-              stiffness: 380,
-              damping: 24,
-            }}
-            title={`${student.tag} — ${student.insight}`}
-            className={`mm-hero-avatar-stack__item mm-hero-avatar-stack__item--${student.avatar.toLowerCase()} relative flex h-9 w-9 items-center justify-center rounded-full border-[3px] border-white bg-gradient-to-br shadow-[0_2px_8px_rgba(15,23,42,0.14)] sm:h-10 sm:w-10 ${newUI ? '' : student.gradient} ${i > 0 ? '-ml-3 sm:-ml-3.5' : ''}`}
-          >
-            <span className="mm-hero-avatar-stack__initial text-xs font-bold leading-none text-white sm:text-sm">
-              {student.avatar}
-            </span>
-          </motion.span>
-        ))}
-      </div>
-      <p className="max-w-[24rem] text-center text-sm font-semibold leading-snug text-neutral-800 sm:max-w-none sm:text-left">
-        {HERO_SOCIAL_PROOF_VISIBLE_LINE}
-      </p>
-    </motion.div>
-  );
-}
-
 function HeroProblemTicker({ reduceMotion }) {
   const tickerItems = [...HERO_PROBLEM_TICKER, ...HERO_PROBLEM_TICKER];
   return (
@@ -507,104 +468,6 @@ function HeroProblemTicker({ reduceMotion }) {
         ))}
       </div>
     </section>
-  );
-}
-
-/** Quip below hero score card — shimmer + sparkles (respects reduced motion). */
-function HeroPlayfulClause({ text, reduceMotion, newUI = false }) {
-  return (
-    <motion.div
-      className="relative mb-6 w-full max-w-[min(100%,440px)] sm:mb-8 lg:mb-0"
-      initial={reduceMotion ? false : { opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.42, ease: [0.22, 1, 0.36, 1] }}
-      style={{ opacity: 1 }}
-    >
-      <div className="flex justify-center lg:justify-end">
-        <div
-          className={
-            newUI
-              ? 'mm-hero-playful-clause-new-ui inline-flex max-w-full items-start gap-2 rounded-xl border px-3.5 py-2.5 text-left'
-              : `inline-flex max-w-full items-start gap-2 rounded-xl px-3.5 py-2.5 text-left ${
-                  reduceMotion
-                    ? 'border border-sky-100/90 bg-sky-50/50'
-                    : 'border border-sky-200/70 bg-gradient-to-br from-sky-50/95 via-white to-cyan-50/40 shadow-[0_6px_24px_-10px_rgba(26,143,196,0.35),0_0_0_1px_rgba(26,143,196,0.08)]'
-                }`
-          }
-        >
-        <motion.span
-          className="mt-0.5 shrink-0 text-[#1A8FC4] drop-shadow-[0_0_10px_rgba(26,143,196,0.45)]"
-          aria-hidden
-          animate={
-            reduceMotion
-              ? undefined
-              : {
-                  scale: [1, 1.12, 1],
-                  rotate: [0, -6, 6, 0],
-                }
-          }
-          transition={
-            reduceMotion
-              ? undefined
-              : { duration: 2.4, repeat: Infinity, repeatDelay: 0.8, ease: 'easeInOut' }
-          }
-        >
-          <Sparkles className="h-4 w-4" strokeWidth={2.25} />
-        </motion.span>
-        <p
-          className={`text-[13px] italic leading-snug ${
-            newUI
-              ? 'mm-hero-playful-new-ui'
-              : reduceMotion
-                ? 'text-neutral-600'
-                : 'mm-hero-playful-shimmer'
-          }`}
-        >
-          {text}
-        </p>
-        </div>
-      </div>
-      {!reduceMotion && (
-        <style>{`
-          @keyframes mm-hero-playful-shimmer {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-          }
-          @keyframes mm-hero-playful-glow {
-            0%, 100% { filter: drop-shadow(0 0 0px rgba(234, 88, 12, 0)); }
-            50% { filter: drop-shadow(0 0 6px rgba(234, 88, 12, 0.35)); }
-          }
-          .mm-hero-playful-shimmer {
-            background: linear-gradient(
-              105deg,
-              #525252 0%,
-              #525252 28%,
-              #ea580c 42%,
-              #f97316 48%,
-              #0891b2 54%,
-              #525252 62%,
-              #525252 100%
-            );
-            background-size: 240% 100%;
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            animation:
-              mm-hero-playful-shimmer 3.2s ease-in-out infinite,
-              mm-hero-playful-glow 3.2s ease-in-out infinite;
-          }
-          @media (prefers-reduced-motion: reduce) {
-            .mm-hero-playful-shimmer {
-              animation: none;
-              background: none;
-              color: #525252;
-              -webkit-background-clip: unset;
-              background-clip: unset;
-            }
-          }
-        `}</style>
-      )}
-    </motion.div>
   );
 }
 
@@ -663,19 +526,9 @@ const HomePage = () => {
     description: HOMEPAGE_META_DESCRIPTION,
     keywords: HOMEPAGE_META_KEYWORDS,
   });
-  const heroCopy = HERO_YEAR_COPY.y4;
-  const heroLeadCopy = heroCopy.subShort || heroCopy.sub;
-
   /** Same-page scroll to the conversion block — use scrollIntoView, not hash links. */
   const scrollToFinalCta = () => {
     document.getElementById('final-cta')?.scrollIntoView({
-      behavior: reduceMotion ? 'auto' : 'smooth',
-      block: 'start',
-    });
-  };
-
-  const scrollToHomepagePricing = () => {
-    document.getElementById('homepage-pricing')?.scrollIntoView({
       behavior: reduceMotion ? 'auto' : 'smooth',
       block: 'start',
     });
@@ -697,12 +550,6 @@ const HomePage = () => {
           width: max-content;
           animation: mm-problem-track 60s linear infinite;
         }
-        .mm-hero-typewriter-line {
-          font-size: clamp(1.25rem, 2.8vw + 0.5rem, 2.5rem);
-          font-weight: 700;
-          line-height: 1.2;
-          letter-spacing: -0.025em;
-        }
         @keyframes mm-hero-accent {
           0%, 100% { background-position: 0% 50%; }
           50% { background-position: 100% 50%; }
@@ -717,8 +564,8 @@ const HomePage = () => {
       <section
         className={
           newUI
-            ? 'mm-hero-section mm-new-ui-hero mm-hero-premium mm-marketing-hero-backdrop relative overflow-hidden border-b border-white/[0.06] pb-0 pt-8 md:pt-10 xl:pt-12'
-            : 'mm-hero-section mm-hero-premium mm-marketing-hero-backdrop relative overflow-hidden border-b-0 pb-0 pt-8 md:pt-10 xl:pt-12'
+            ? 'mm-hero-section mm-new-ui-hero mm-hero-premium mm-marketing-hero-backdrop relative overflow-hidden border-b border-white/[0.06] pb-10 pt-8 md:pb-12 md:pt-10 xl:pt-12'
+            : 'mm-hero-section mm-hero-premium mm-marketing-hero-backdrop relative overflow-hidden border-b-0 pb-10 pt-8 md:pb-12 md:pt-10 xl:pt-12'
         }
       >
         <div className="mm-hero-mesh" aria-hidden />
@@ -728,67 +575,41 @@ const HomePage = () => {
         <div className="mm-hero-orb mm-hero-orb--cta" aria-hidden />
         <div className="mm-container mm-container--chrome relative z-10 flex w-full flex-col">
           <div className="mm-hero-layout">
-            <div className="flex w-full min-w-0 flex-col gap-4 sm:gap-5 md:gap-6">
-              <motion.div
-                initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-                style={{ opacity: 1 }}
-                className="flex flex-wrap items-center justify-center gap-2 sm:gap-2.5"
-              >
-                <span
-                  className={
-                    newUI
-                      ? 'mm-new-ui-chip mm-new-ui-chip--eyebrow max-w-full px-3 py-1.5 text-left text-[11px] leading-snug sm:text-xs'
-                      : 'inline-flex max-w-full items-center gap-2 rounded-full border border-sky-200/90 bg-sky-50/90 px-3 py-1.5 text-left text-[11px] font-medium leading-snug text-[#0c4a6e] sm:text-xs'
-                  }
-                >
+            <motion.div
+              className="mm-hero-copy-column"
+              variants={heroStaggerContainer}
+              initial={reduceMotion ? false : 'hidden'}
+              animate="visible"
+            >
+              <motion.div className="mm-hero-eyebrow-row" variants={heroReveal}>
+                <span className="mm-hero-eyebrow-chip">
                   <span
-                    className={`h-2 w-2 shrink-0 rounded-full shadow-[0_0_0_2px_rgba(16,185,129,0.25)] ${
+                    className={`h-1.5 w-1.5 shrink-0 rounded-full ${
                       newUI ? 'bg-emerald-400' : 'bg-emerald-500'
                     }`}
                     aria-hidden
                   />
                   <span className="min-w-0">{HERO_EYEBROW}</span>
                 </span>
-                {newUI ? (
-                  <span
-                    className="mm-new-ui-chip mm-new-ui-chip--promo px-2.5 py-1 sm:text-[11px]"
-                    title="Limited early-bird offer · Skills-first placement prep"
-                  >
-                    {HERO_EARLY_BIRD_STICKER} · {HERO_GENZ_STICKER}
-                  </span>
-                ) : (
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span
-                      className="inline-flex rotate-[-2.5deg] items-center rounded-md border-2 border-[#1A8FC4] bg-gradient-to-br from-sky-100 to-sky-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.14em] text-[#0e5e85] shadow-[2px_3px_0_0_rgba(26,143,196,0.35)] sm:text-[11px]"
-                      title="Limited early-bird offer"
-                    >
-                      {HERO_EARLY_BIRD_STICKER}
-                    </span>
-                    <span
-                      className="inline-flex rotate-[2deg] items-center rounded-md border-2 border-cyan-600/75 bg-gradient-to-br from-cyan-50 to-sky-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.12em] text-cyan-950 shadow-[2px_3px_0_0_rgba(8,145,178,0.35)] sm:text-[11px]"
-                      title="Skills-first interview preparation for students and early-career engineers"
-                    >
-                      {HERO_GENZ_STICKER}
-                    </span>
-                  </div>
-                )}
+                <span className="mm-hero-eyebrow-promo" title="Limited early-bird offer">
+                  {HERO_EARLY_BIRD_STICKER}
+                </span>
               </motion.div>
 
-              <div className="mm-hero-copy w-full min-w-0 text-center">
+              <motion.div className="mm-hero-copy" variants={heroReveal}>
                 <motion.h1
-                  key="hero-headline"
-                  initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                  style={{ opacity: 1 }}
                   className="mm-prose-measure--hero"
+                  variants={heroStaggerContainer}
+                  initial={false}
                 >
-                  <span className="typo-display block text-neutral-900 leading-[1.06] tracking-tight">
+                  <motion.span
+                    variants={heroHeadlineLine}
+                    className="typo-display block text-neutral-950 leading-[1.06] tracking-tight"
+                  >
                     {HERO_HEADLINE_LINE1}
-                  </span>
-                  <span
+                  </motion.span>
+                  <motion.span
+                    variants={heroHeadlineLine}
                     className={
                       newUI
                         ? 'typo-display mt-1 block leading-[1.06] tracking-tight mm-hero-accent-new-ui'
@@ -796,131 +617,84 @@ const HomePage = () => {
                     }
                   >
                     {HERO_HEADLINE_LINE2}
-                  </span>
-                  <span className="typo-hero-tagline mm-hero-tagline mx-auto mt-2 block max-w-prose-marketing">
-                    {HERO_TAGLINE}
-                  </span>
-                  <span className="mt-2 block w-full sm:mt-3">
-                    <HeroHeadlineTypewriter
-                      phrases={HERO_TYPEWRITER_PHRASES}
-                      reducedMotion={reduceMotion}
-                      cursorClassName={newUI ? 'bg-[#38bdf8]' : 'bg-[#1A8FC4]'}
-                      className={
-                        newUI
-                          ? 'mm-hero-typewriter-line mm-hero-accent-new-ui block'
-                          : 'mm-hero-typewriter-line mm-hero-accent bg-gradient-to-r from-[#15799F] via-[#1A8FC4] to-[#2AAA8A] bg-clip-text text-transparent'
-                      }
-                    />
-                  </span>
+                  </motion.span>
                 </motion.h1>
 
+                <motion.div className="mm-hero-typewriter" variants={heroReveal}>
+                  <HeroHeadlineTypewriter
+                    phrases={HERO_TYPEWRITER_PHRASES}
+                    reducedMotion={reduceMotion}
+                    cursorClassName={newUI ? 'bg-[#38bdf8]' : 'bg-[#1A8FC4]'}
+                    className="mm-hero-typewriter-line mm-hero-typewriter-line--hook"
+                  />
+                </motion.div>
+
+                <motion.p className="typo-hero-tagline mm-hero-tagline" variants={heroReveal}>
+                  {HERO_TAGLINE}
+                </motion.p>
+
                 <motion.div
-                  key="hero-sub"
-                  initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.38, delay: 0.04 }}
-                  style={{ opacity: 1 }}
-                  className="mm-hero-sub-block mx-auto mt-4 max-w-prose-marketing px-0 sm:mt-5"
+                  className="mm-hero-awareness-wrap"
+                  initial={reduceMotion ? false : { opacity: 0, y: 14, filter: 'blur(8px)' }}
+                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                  transition={{ delay: 0.72, duration: 0.55, ease: HERO_EASE }}
                 >
-                  <p className="text-base font-semibold leading-snug text-neutral-800 sm:text-lg">{heroLeadCopy}</p>
-                  <HeroSocialProof ariaLabel={HERO_SOCIAL_PROOF_ARIA} reduceMotion={reduceMotion} />
-                  <div
-                    className="mt-4 flex flex-wrap items-center justify-center gap-2 sm:justify-start"
-                    role="region"
-                    aria-label="What MentorMuni offers"
-                  >
-                    <span
-                      className={
-                        newUI
-                          ? 'mm-new-ui-chip mm-new-ui-chip--emerald px-2.5 py-1 text-[10px] uppercase tracking-[0.1em]'
-                          : 'rounded-full border border-emerald-200/90 bg-emerald-50/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-emerald-900'
-                      }
-                    >
-                      Mocks → Mentor → Repeat
-                    </span>
-                    <span
-                      className={
-                        newUI
-                          ? 'mm-new-ui-chip mm-new-ui-chip--sky px-2.5 py-1 text-[10px] uppercase tracking-[0.1em]'
-                          : 'rounded-full border border-sky-200/90 bg-sky-50/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-sky-900'
-                      }
-                    >
-                      Your score
-                    </span>
-                    <span
-                      className={
-                        newUI
-                          ? 'mm-new-ui-chip mm-new-ui-chip--violet px-2.5 py-1 text-[10px] uppercase tracking-[0.1em]'
-                          : 'rounded-full border border-violet-200/90 bg-violet-50/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.1em] text-violet-900'
-                      }
-                    >
-                      5-week program
-                    </span>
-                  </div>
+                  <HeroAwarenessLoop newUI={newUI} />
+                </motion.div>
 
-                  <div className="mm-trust-pills mt-5 mb-1 w-full justify-center sm:justify-start">
-                    {['Free · No signup', '~5 min score', 'Mocks & mentors'].map((label) => (
-                      <span key={label} className="mm-trust-pill">
-                        <span className="mm-trust-pill__check" aria-hidden>
-                          ✓
-                        </span>
-                        {label}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="mm-hero-cta-row mt-4 flex w-full flex-col gap-3 sm:mt-5 sm:flex-row sm:flex-wrap sm:items-center">
+                <motion.div className="mm-hero-actions" variants={heroReveal}>
+                  <div className="mm-hero-cta-row">
                     <button
                       type="button"
                       onClick={goToStartAssessment}
-                      className="mm-cta-glow mm-btn-interactive mm-btn-primary inline-flex min-h-[48px] w-full touch-manipulation items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-sm font-bold text-white sm:w-auto"
+                      className="mm-hero-cta mm-cta-glow mm-btn-interactive mm-btn-primary mm-btn-shimmer touch-manipulation text-white"
                     >
-                      {PRIMARY_CTA_LABEL} <ArrowRight size={16} aria-hidden />
+                      <span className="mm-hero-cta__full">{PRIMARY_CTA_LABEL}</span>
+                      <span className="mm-hero-cta__short">Free check</span>
+                      <ArrowRight size={16} className="mm-hero-cta-arrow" aria-hidden />
                     </button>
                     <Link
                       to="/how-it-works"
-                      className="inline-flex min-h-[48px] w-full touch-manipulation items-center justify-center mm-btn-secondary rounded-xl px-7 py-3.5 text-sm font-bold text-foreground shadow-sm transition-colors hover:border-[#1A8FC4] hover:bg-secondary sm:w-auto"
+                      className="mm-hero-cta mm-hero-cta--secondary mm-btn-secondary touch-manipulation text-foreground shadow-sm transition-colors hover:border-[#1A8FC4] hover:bg-secondary"
                     >
                       {MENTORMUNI_STORY_NAV_LABEL}
                     </Link>
                   </div>
-
-                  <p className="mm-hero-trust mt-3 mb-8 text-center text-xs leading-relaxed text-neutral-600 sm:mb-10">
-                    <button
-                      type="button"
-                      onClick={scrollToHomepagePricing}
-                      className="font-semibold text-[#1A8FC4] underline decoration-[#2AAA8A]/45 underline-offset-[4px] transition hover:text-[#15799F] bg-transparent border-0 p-0 cursor-pointer font-inherit text-inherit"
-                    >
-                      60-day placement program
-                    </button>
-                    <span className="text-neutral-400"> · </span>
-                    <Link to="/contact" className="font-semibold text-[#1A8FC4] hover:text-[#15799F]">
+                  <div className="mm-hero-trust-row">
+                    <span className="mm-hero-trust-micro">{HERO_PROOF_STAT}</span>
+                    <span className="mm-hero-trust-row__dot" aria-hidden>
+                      ·
+                    </span>
+                    <Link to="/contact" className="mm-hero-helper-link">
+                      <Phone size={13} strokeWidth={2.25} aria-hidden />
                       {SECONDARY_CTA_BOOK_CALL}
                     </Link>
-                    <span className="text-neutral-400"> · </span>
+                    <span className="mm-hero-trust-row__dot" aria-hidden>
+                      ·
+                    </span>
                     <a
                       href={CONTACT_WHATSAPP_HREF}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="font-semibold text-[#15803d] hover:underline"
+                      className="mm-hero-helper-link"
                     >
+                      <MessageCircle size={13} strokeWidth={2.25} aria-hidden />
                       {CONTACT_WHATSAPP_LABEL}
                     </a>
-                    <span className="hidden sm:inline text-neutral-400"> · </span>
-                    <span className="block sm:inline mt-1 sm:mt-0">{HERO_PROOF_ONE_LINER}</span>
-                  </p>
+                  </div>
                 </motion.div>
-              </div>
-            </div>
+              </motion.div>
+            </motion.div>
 
             <motion.div
               className="mm-hero-score-slot flex w-full min-w-0 flex-col items-center justify-center gap-3"
-              initial={reduceMotion ? false : { opacity: 0, x: 20, scale: 0.96 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              transition={{ duration: 0.75, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
+              variants={heroScoreEnter}
+              initial={reduceMotion ? false : 'hidden'}
+              animate="visible"
             >
-              <HeroFlagshipVisual className="w-full" />
-              <HeroPlayfulClause text={HERO_PLAYFUL_CLAUSE} reduceMotion={reduceMotion} newUI={newUI} />
+              <HeroScoreTilt>
+                <HeroFlagshipVisual className="w-full" />
+              </HeroScoreTilt>
             </motion.div>
           </div>
 

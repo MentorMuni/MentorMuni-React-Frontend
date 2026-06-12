@@ -21,8 +21,7 @@ export const PAIN_HOOK =
   "Most students don't discover their real interview gaps until after a rejection. We show you where you stand in minutes—then what to fix first.";
 
 /** Homepage hero — chips (split on ·). Keep concrete; avoid “platform” jargon */
-export const HERO_EYEBROW =
-  'Interview readiness system · Built for engineering students';
+export const HERO_EYEBROW = 'AI powered placement readiness';
 /** Early-bird coupon card ribbon (homepage hero) */
 export const HERO_EARLY_BIRD_RIBBON = 'Early bird';
 /** Small hero sticker (limited slots — keep short) */
@@ -35,18 +34,39 @@ export const HERO_HEADLINE_ACCENT = 'Get your score from the free readiness chec
 /** Homepage hero — two-line headline (render as two blocks; avoids awkward 3-line wrap) */
 export const HERO_HEADLINE_LINE1 = 'Are You Actually';
 export const HERO_HEADLINE_LINE2 = 'Interview-Ready?';
-/** One line under the headline — who it's for + what you get (scannable, not keyword-stuffed) */
-export const HERO_TAGLINE =
-  "Placements on your mind? You've done the grind — now see if you're actually interview-ready. Free score in 5 minutes.";
+/** One line under the typewriter — supporting copy (free/5 min lives in awareness strip + trust row) */
+export const HERO_TAGLINE = 'See where you stand before placement drives.';
 /** Light quip under the eyebrow — playful, not the main headline */
 export const HERO_PLAYFUL_CLAUSE = 'From reels to reality — different kind of screen time.';
 /** @deprecated Use HERO_HEADLINE_LINE1 + LINE2 */
 export const HERO_HEADLINE_FIXED = `${HERO_HEADLINE_LINE1}\n${HERO_HEADLINE_LINE2}`;
 /** Homepage hero — typewriter rotates these lines under the fixed headline */
 export const HERO_TYPEWRITER_PHRASES = [
-  "We don't teach. We make you perform.",
-  'You won’t crack interviews without practicing them.',
+  "We don't teach — we prepare you for interviews.",
+  'Not a course — a placement prep system.',
 ];
+
+/** Hero awareness loop — what MentorMuni is / does in ~5 seconds (icons + one line each) */
+export const HERO_AWARENESS_STEPS = [
+  {
+    id: 'score',
+    label: 'Free score',
+    hint: '~5 min readiness check · no signup',
+  },
+  {
+    id: 'gaps',
+    label: 'Gap report',
+    hint: 'See DSA, HR & role gaps before drives',
+  },
+  {
+    id: 'practice',
+    label: 'Mocks & mentors',
+    hint: 'AI mocks + 1:1 reps until you’re ready',
+  },
+];
+
+export const HERO_AWARENESS_ARIA =
+  'MentorMuni helps engineering students: free readiness score, gap report, then mocks and mentors.';
 /** Homepage hero — body copy under the typewriter (single paragraph; no read-more) */
 export const HERO_HOME_SUB =
   'Most students think they are prepared. They fail when it matters. A free readiness check shows where you stand vs what panels actually test — then you close gaps with reps, not hope.';
@@ -82,7 +102,7 @@ export const HERO_SOCIAL_PROOF_ARIA =
 
 /** Visible hero social line (no inflated counts — qualitative trust) */
 export const HERO_SOCIAL_PROOF_VISIBLE_LINE =
-  'Engineering students across India — taking the free readiness check first.';
+  'Students across India start with the free check';
 
 /** Homepage hero — quick clarity about what we offer */
 export const HERO_PLATFORM_HIGHLIGHTS = [
@@ -523,11 +543,34 @@ export const FINAL_CTA_HEADLINE_ACCENT =
 export const FINAL_CTA_BODY =
   'One score, one honest gap list, then optional mocks and the 5-week program if you want structured mentor support. No infinite tabs. No pretend progress.';
 
-/** Hero score widget — card title + sample hint (demo score, not the visitor's) */
-export const HERO_SCORE_CARD_TITLE = 'Skill readiness check scorecard';
+/** Hero score widget — placement readiness card (hero preview) */
+export const HERO_SCORE_CARD_TITLE = 'Your Placement Readiness';
 export const HERO_SCORE_CARD_HINT = 'Sample preview. Take the free check to see your real score.';
 /** @deprecated Use HERO_SCORE_CARD_TITLE + HERO_SCORE_CARD_HINT */
 export const HERO_SCORE_SAMPLE_LABEL = HERO_SCORE_CARD_HINT;
+
+/** Hero scorecard insight box — gamification tone (not gap shaming) */
+export const HERO_SCORE_GAMIFICATION_INSIGHTS = [
+  {
+    lead: 'Your readiness run starts here.',
+    rest: 'Free check unlocks your badge, skill map & next mock quests.',
+  },
+  {
+    lead: 'Quest mode: interview prep.',
+    rest: 'Score → spot gaps → stack reps with AI mocks & mentors.',
+  },
+  {
+    lead: 'Beat your score on the real check.',
+    rest: 'Earn streaks, level up, and unlock mentor power-ups.',
+  },
+];
+
+/** Hero scorecard live badge (header) */
+export const HERO_SCORE_LIVE_BADGE = 'Live Update';
+
+/** Hero scorecard footer under insight (gamification CTA) */
+export const HERO_SCORE_CARD_FOOTER_SUB =
+  'Start your run — free check unlocks your real profile.';
 
 /** Footer / nav: name of the free assessment product (not “mock interviews”) */
 export const PRODUCT_READINESS_SCORE = 'Readiness check';
