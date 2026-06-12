@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
+  LogIn,
   Menu,
   X,
   ChevronDown,
@@ -319,6 +320,10 @@ const Navbar = () => {
 
           <div className="mm-header-end shrink-0">
             <div data-mm-desktop-cta className="mm-header-cta">
+              <Link to="/login" className="mm-header-cta__login">
+                <LogIn size={16} strokeWidth={2.25} aria-hidden />
+                Login
+              </Link>
               <Link to="/waitlist" className="mm-header-cta__secondary">
                 Waitlist
               </Link>

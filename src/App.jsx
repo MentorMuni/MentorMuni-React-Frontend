@@ -52,6 +52,8 @@ const LearningPaths = lazy(() => import("./components/learningPaths"));
 const PlacementTracks = lazy(() => import("./components/placementTracks"));
 const FreeTutorials = lazy(() => import("./components/freeTutorials"));
 const ResumeAnalyzer = lazy(() => import("./components/resumeAnalyzer"));
+const LoginPage = lazy(() => import("./components/login/LoginPage"));
+const StudentDashboard = lazy(() => import("./components/student/StudentDashboard"));
 const ContactPage = lazy(() => import("./components/contactPage"));
 const AboutUs = lazy(() => import("./components/aboutUs"));
 const DesignSystemDemo = lazy(() => import("./components/DesignSystemDemo"));
@@ -266,6 +268,8 @@ function App() {
               <Route path="/for-recruiters" element={<ForRecruiters />} />
               <Route path="/colleges" element={<Colleges />} />
               <Route path="/about" element={<AboutUs />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/student/dashboard" element={<StudentDashboard />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/terms" element={<ContactPage />} />
               <Route path="/privacy" element={<ContactPage />} />

@@ -206,6 +206,18 @@ export const ROUTE_SEO = {
       'About MentorMuni — a placement mentor platform helping engineering students in India prepare for campus hiring with measurable readiness.',
     keywords: 'about MentorMuni, placement mentor platform, interview readiness India',
   },
+  '/login': {
+    title: 'Student Login | MentorMuni — AI Placement Prep Portal',
+    description:
+      'Sign in to MentorMuni — your 24×7 AI mentor for interview prep, HR rounds, skill gaps, and instant communication feedback.',
+    keywords: 'MentorMuni login, student portal, AI interview prep login, placement mentorship',
+  },
+  '/student/dashboard': {
+    title: 'Student Dashboard | MentorMuni',
+    description:
+      'Your MentorMuni student portal — track mentorship sessions, mock interviews, doubt clearing, and mentor feedback threads.',
+    keywords: 'student dashboard, placement progress, mentorship sessions, mock interview tracker',
+  },
   '/contact': {
     title: 'Contact MentorMuni — Placement Mentorship Enquiries',
     description:
