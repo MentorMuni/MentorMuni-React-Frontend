@@ -344,6 +344,56 @@ export const ROUTE_SEO = {
     description: 'MentorMuni internal design system reference.',
     keywords: 'MentorMuni design system',
   },
+  '/blog': {
+    title: 'Interview Prep Guides & Placement Tips | MentorMuni Blog',
+    description: 'Expert guides on campus placement preparation, company-specific interview tips, mock interview strategies, and placement success stories from MentorMuni.',
+    keywords: 'interview preparation blog, placement coaching tips, campus placement guide, TCS Infosys Wipro interview preparation, MentorMuni blog',
+  },
+  '/blog/mentormuni-vs-leetcode-interview-prep': {
+    title: 'MentorMuni vs LeetCode: Which is Better for Placement Preparation?',
+    description: 'Compare MentorMuni vs LeetCode for placement prep. Learn why scored readiness beats endless problem-solving for campus interviews.',
+    keywords: 'MentorMuni vs LeetCode, interview prep platform, placement coaching, mock interviews, readiness assessment',
+  },
+  '/blog/mentormuni-vs-interviewbit': {
+    title: 'MentorMuni vs InterviewBit: Best Platform for Campus Placement',
+    description: 'Compare MentorMuni vs InterviewBit for campus placement. Assessment + mentorship beats content-heavy platforms.',
+    keywords: 'MentorMuni vs InterviewBit, interview preparation, placement platform, campus placement',
+  },
+  '/blog/scaler-vs-mentormuni-interview-coaching': {
+    title: 'Scaler vs MentorMuni: Which Placement Coaching is Best?',
+    description: 'Compare Scaler vs MentorMuni. Full-stack learning vs focused interview readiness - which is better for campus placement?',
+    keywords: 'Scaler vs MentorMuni, placement coaching, interview preparation, campus hiring',
+  },
+  '/blog/why-interview-readiness-score-matters': {
+    title: 'Why Your Interview Readiness Score Matters More Than You Think',
+    description: 'The metric that predicts your placement success. Learn why interview readiness scoring matters for campus placements.',
+    keywords: 'interview readiness score, readiness assessment, interview preparation, placement success',
+  },
+  '/blog/how-to-prepare-for-tcs-placement-2024': {
+    title: 'Complete Guide to TCS Placement Preparation in 2024',
+    description: 'TCS NQT vs Digital interview guide. Different tests, different strategies. Everything you need to know for TCS campus hiring.',
+    keywords: 'TCS placement preparation, TCS NQT, TCS Digital interview, TCS campus hiring, TCS interview questions',
+  },
+  '/blog/infosys-campus-hiring-complete-guide': {
+    title: 'Infosys Campus Hiring: Complete Interview Guide 2024',
+    description: 'SP vs DSP interview preparation guide for Infosys campus hiring. Know the difference and prepare accordingly.',
+    keywords: 'Infosys campus hiring, Infosys SP DSP, Infosys interview preparation, Infosys placement guide',
+  },
+  '/blog/wipro-placement-complete-interview-preparation': {
+    title: 'Wipro Campus Placement Interview Guide 2024',
+    description: 'ELITE vs General program interview guide for Wipro campus placements. Complete preparation strategy.',
+    keywords: 'Wipro placement preparation, Wipro interview guide, Wipro campus hiring, Wipro ELITE program',
+  },
+  '/blog/common-hr-interview-mistakes-students-make': {
+    title: '10 HR Interview Mistakes That Kill Your Placement',
+    description: 'How to avoid the HR interview mistakes that cost students job offers. Learn what to do instead.',
+    keywords: 'HR interview tips, HR interview mistakes, campus placement HR round, interview communication',
+  },
+  '/blog/system-design-interviews-for-campus-placements': {
+    title: 'System Design Questions: A Campus Student\'s Guide',
+    description: 'System design interview guide for campus placements. Framework, examples, and how to practice.',
+    keywords: 'system design interview, campus placement system design, technical interview preparation',
+  },
 };
 
 export function getRouteSeo(pathname) {

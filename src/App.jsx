@@ -32,6 +32,11 @@ const Pricing   = lazy(() => import("./components/pricing"));
 const Waitlist  = lazy(() => import("./components/waitlist"));
 const ResultPage = lazy(() => import("./components/result"));
 const MentorDashboard = lazy(() => import("./components/mentordashboard"));
+const AdminDashboard = lazy(() => import("./components/admin/AdminDashboard"));
+const AdminDashboardNew = lazy(() => import("./components/admin/AdminDashboardNew"));
+const MentorDashboardNew = lazy(() => import("./components/mentor/MentorDashboardNew"));
+const MentorDashboardRefactored = lazy(() => import("./components/mentor/MentorDashboardRefactored"));
+const MentorProfile = lazy(() => import("./components/mentor/MentorProfile"));
 const HowItWorks = lazy(() => import("./components/HowItWorks"));
 const Tools = lazy(() => import("./components/Tools"));
 const Mentors    = lazy(() => import("./components/Mentors"));
@@ -54,6 +59,7 @@ const FreeTutorials = lazy(() => import("./components/freeTutorials"));
 const ResumeAnalyzer = lazy(() => import("./components/resumeAnalyzer"));
 const LoginPage = lazy(() => import("./components/login/LoginPage"));
 const StudentDashboard = lazy(() => import("./components/student/StudentDashboard"));
+const StudentDashboardRefactored = lazy(() => import("./components/student/StudentDashboardRefactored"));
 const ContactPage = lazy(() => import("./components/contactPage"));
 const AboutUs = lazy(() => import("./components/aboutUs"));
 const DesignSystemDemo = lazy(() => import("./components/DesignSystemDemo"));
@@ -66,6 +72,8 @@ const AIToolsKnowledgeBase = lazy(() => import("./components/AIToolsKnowledgeBas
 const InterviewReadinessToolsPage = lazy(() => import("./components/InterviewReadinessToolsPage"));
 const LeadershipBoard = lazy(() => import("./components/leadershipBoard"));
 const RoadmapPage = lazy(() => import("./components/RoadmapPage"));
+const BlogList = lazy(() => import("./components/Blog/BlogList"));
+const BlogPost = lazy(() => import("./components/Blog/BlogPost"));
 
 function PageFallback() {
   const { pathname } = useLocation();
@@ -234,6 +242,8 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/roadmap" element={<RoadmapPage />} />
+              <Route path="/blog" element={<BlogList />} />
+              <Route path="/blog/:slug" element={<BlogPost />} />
               {/* SEO landing URLs — same tools, keyword-focused paths for search */}
               <Route path="/placement-roadmap" element={<RoadmapPage />} />
               <Route path="/dsa-roadmap" element={<LearningPaths />} />
@@ -269,10 +279,13 @@ function App() {
               <Route path="/colleges" element={<Colleges />} />
               <Route path="/about" element={<AboutUs />} />
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/student/dashboard" element={<StudentDashboard />} />
+              <Route path="/student/dashboard" element={<StudentDashboardRefactored />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/terms" element={<ContactPage />} />
               <Route path="/privacy" element={<ContactPage />} />
+              <Route path="/admin/dashboard" element={<AdminDashboardNew />} />
+              <Route path="/mentor/dashboard" element={<MentorDashboardRefactored />} />
+              <Route path="/mentor/profile" element={<MentorProfile />} />
               <Route path="/dashboard" element={<MentorDashboard />} />
               <Route path="/java-tutorial" element={<JavaTutorial />} />
               <Route path="/java-for-beginners" element={<JavaTutorial />} />

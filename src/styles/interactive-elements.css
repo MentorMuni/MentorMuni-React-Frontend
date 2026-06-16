@@ -1,0 +1,280 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   INTERACTIVE ELEMENTS - GLOBAL CURSOR & HOVER STYLES
+   Ensures all clickable elements feel responsive and intuitive
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ─────────────────────────────────────────────────────────────────────────
+   BASE INTERACTIVE ELEMENTS
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* All buttons get pointer cursor */
+button:not([disabled]),
+input[type="button"]:not([disabled]),
+input[type="submit"]:not([disabled]),
+input[type="reset"]:not([disabled]) {
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* All links get pointer cursor */
+a:not([role="presentation"]),
+[role="button"]:not([aria-disabled="true"]),
+[role="link"]:not([aria-disabled="true"]) {
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Disabled elements - not-allowed cursor */
+button[disabled],
+input[type="button"][disabled],
+input[type="submit"][disabled],
+[role="button"][aria-disabled="true"],
+[role="link"][aria-disabled="true"],
+.cursor-not-allowed {
+  cursor: not-allowed;
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   BUTTON HOVER EFFECTS
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Primary buttons - color change + lift */
+button:not([disabled]):hover,
+input[type="button"]:not([disabled]):hover,
+input[type="submit"]:not([disabled]):hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+
+/* Active/Pressed state */
+button:not([disabled]):active,
+input[type="button"]:not([disabled]):active,
+input[type="submit"]:not([disabled]):active {
+  transform: translateY(0);
+}
+
+/* Focus state - keyboard navigation */
+button:not([disabled]):focus-visible,
+input[type="button"]:not([disabled]):focus-visible,
+input[type="submit"]:not([disabled]):focus-visible,
+a:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid #FF9500;
+  outline-offset: 2px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   LINK STYLES
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Text links - cursor pointer, no underline */
+a:not([class*="no-underline"]):not([class*="btn"]):not([class*="button"]):not([class*="px-"]) {
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  text-decoration: none;
+}
+
+a:not([class*="no-underline"]):not([class*="btn"]):not([class*="button"]):not([class*="px-"]):hover {
+  filter: brightness(1.05);
+}
+
+/* Links with specific classes */
+a[class*="text-"]:hover,
+a[class*="font-"]:hover {
+  opacity: 0.85;
+  filter: brightness(1.02);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   NAVIGATION & SIDEBAR ITEMS
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Navigation buttons in sidebar/header */
+nav button:not([disabled]),
+nav a:not([disabled]) {
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+nav button:not([disabled]):hover,
+nav a:hover {
+  transform: translateX(2px);
+  filter: brightness(1.05);
+}
+
+nav button:not([disabled]):active,
+nav a:active {
+  transform: translateX(0);
+}
+
+/* Active nav item */
+nav button[aria-current="page"],
+nav a[aria-current="page"],
+nav button[class*="active"],
+nav a[class*="active"] {
+  cursor: pointer;
+  filter: brightness(1.1);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   CARD & CLICKABLE CONTAINERS
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Clickable cards - subtle shadow & lift */
+.cursor-pointer,
+[role="button"],
+[onclick]:not([onclick=""]) {
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cursor-pointer:hover,
+[role="button"]:hover,
+[onclick]:not([onclick=""]):hover {
+  transform: translateY(-2px);
+  filter: brightness(1.03);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   TAB & SEGMENTED CONTROL ITEMS
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Tab buttons */
+[role="tab"],
+[role="tablist"] button {
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[role="tab"]:hover,
+[role="tablist"] button:hover {
+  opacity: 0.9;
+  filter: brightness(1.05);
+}
+
+[role="tab"][aria-selected="true"],
+[role="tablist"] button[aria-selected="true"] {
+  cursor: pointer;
+  filter: brightness(1.1);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   FORM ELEMENTS
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Checkbox, radio, select - pointer cursor */
+input[type="checkbox"],
+input[type="radio"],
+select:not([disabled]) {
+  cursor: pointer;
+}
+
+/* Input focus states */
+input:not([disabled]):focus,
+select:not([disabled]):focus,
+textarea:not([disabled]):focus {
+  outline: 2px solid #FF9500;
+  outline-offset: 1px;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   UTILITY CLASSES
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* Explicit hover effects */
+.hover-lift:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.hover-scale:hover {
+  transform: scale(1.03);
+}
+
+.hover-grow:hover {
+  transform: scale(1.05);
+}
+
+.hover-brighten:hover {
+  filter: brightness(1.08);
+}
+
+.hover-dim:hover {
+  filter: brightness(0.95);
+}
+
+.hover-slide-right:hover {
+  transform: translateX(4px);
+}
+
+.hover-slide-left:hover {
+  transform: translateX(-4px);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   ACCESSIBILITY - REDUCED MOTION
+   ───────────────────────────────────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  button,
+  a,
+  [role="button"],
+  [role="link"],
+  nav button,
+  nav a,
+  [role="tab"],
+  .cursor-pointer,
+  .hover-lift,
+  .hover-scale,
+  .hover-grow,
+  .hover-brighten,
+  .hover-dim,
+  .hover-slide-right,
+  .hover-slide-left {
+    transition: none;
+  }
+
+  button:hover,
+  a:hover,
+  [role="button"]:hover,
+  [role="link"]:hover,
+  nav button:hover,
+  nav a:hover,
+  .hover-lift:hover,
+  .hover-scale:hover,
+  .hover-grow:hover {
+    transform: none;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   LIGHT MODE ADJUSTMENTS
+   ───────────────────────────────────────────────────────────────────────── */
+
+:root {
+  /* Light mode - subtle hover effects */
+  --hover-brightness-light: 0.98;
+  --hover-brightness-dark: 1.08;
+}
+
+/* Light mode - slightly different hover */
+:root {
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: light) {
+  button:not([disabled]):hover,
+  a:not([class*="no-underline"]):hover {
+    background-color: rgba(0, 0, 0, 0.04);
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  button:not([disabled]):hover,
+  a:not([class*="no-underline"]):hover {
+    background-color: rgba(255, 255, 255, 0.08);
+  }
+}

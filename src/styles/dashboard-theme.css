@@ -1,0 +1,115 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   DASHBOARD THEME VARIABLES
+   Supports both light and dark modes
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Light Mode (Default) */
+:root {
+  --dashboard-bg: #f8f9fa;
+  --dashboard-bg-secondary: #f0f1f3;
+  --dashboard-bg-tertiary: #e8eaee;
+  --dashboard-text: #1a1a1a;
+  --dashboard-text-secondary: #404040;
+  --dashboard-text-tertiary: #666666;
+  --dashboard-border: rgba(0, 0, 0, 0.15);
+  --dashboard-border-light: rgba(0, 0, 0, 0.08);
+  --dashboard-card-bg: #ffffff;
+  --dashboard-card-hover: #f5f6f8;
+}
+
+/* Dark Mode */
+html.mm-new-ui {
+  --dashboard-bg: #0a0a0f;
+  --dashboard-bg-secondary: #1a1a24;
+  --dashboard-bg-tertiary: #252533;
+  --dashboard-text: #ffffff;
+  --dashboard-text-secondary: #e0e0e0;
+  --dashboard-text-tertiary: #999999;
+  --dashboard-border: rgba(255, 255, 255, 0.1);
+  --dashboard-border-light: rgba(255, 255, 255, 0.05);
+  --dashboard-card-bg: #131318;
+  --dashboard-card-hover: #1a1a21;
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   INTERACTIVE ELEMENTS - CURSOR & HIGHLIGHTING
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* All clickable buttons and links */
+button,
+a,
+[role="button"],
+[role="link"],
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* Button hover effects */
+button:not(:disabled):hover,
+a:hover,
+[role="button"]:not(:disabled):hover,
+[role="link"]:hover {
+  transition: all 0.2s ease;
+}
+
+/* Sidebar navigation items */
+nav button {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+nav button:not(:disabled):hover {
+  background-color: rgba(255, 149, 0, 0.08);
+  transform: translateX(2px);
+}
+
+/* Tab buttons */
+[role="tablist"] button {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+[role="tablist"] button:hover {
+  opacity: 0.9;
+}
+
+/* Card buttons and interactive elements */
+.rounded-lg:is(button, a):hover,
+.rounded-xl:is(button, a):hover,
+.rounded-2xl:is(button, a):hover {
+  filter: brightness(1.05);
+  transition: all 0.2s ease;
+}
+
+/* Action buttons with specific colors */
+button[class*="bg-emerald"],
+button[class*="bg-cyan"],
+button[class*="bg-violet"],
+button[class*="bg-amber"],
+button[class*="bg-[#FF9500]"] {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button[class*="bg-emerald"]:hover,
+button[class*="bg-cyan"]:hover,
+button[class*="bg-violet"]:hover,
+button[class*="bg-amber"]:hover,
+button[class*="bg-[#FF9500]"]:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Links and text buttons */
+a:not([class*="no-highlight"]) {
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+/* Disabled state */
+button:disabled,
+a[aria-disabled="true"],
+[role="button"][aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.6;
+}

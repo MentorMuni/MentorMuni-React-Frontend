@@ -32,6 +32,7 @@ import { NAV_DESKTOP_MQ } from '../constants/layoutBreakpoints';
 
 /** Secondary links — desktop dropdown to avoid a crowded top bar */
 const MORE_LINKS = [
+  { label: 'Blog', path: '/blog', exact: true, Icon: BookOpen },
   { label: 'For colleges', path: '/colleges', exact: true, Icon: Building2 },
   { label: 'About us', path: '/about', exact: true, Icon: Info },
   { label: 'Contact us', path: '/contact', exact: true, Icon: Mail },
