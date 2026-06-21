@@ -1,0 +1,921 @@
+/**
+ * Resume ATS checker — Gen Z glass/bento layout (Classic + html.mm-new-ui dark).
+ * Scope: .mm-resume-ats-page inside .mm-tool-flow
+ */
+
+.mm-resume-ats-page {
+  --mm-ats-glow-cyan: color-mix(in srgb, var(--accent) 22%, transparent);
+  --mm-ats-glow-amber: var(--accent-cta-glow-soft);
+  --mm-ats-ring-track: color-mix(in srgb, var(--border) 65%, transparent);
+  --mm-ats-gradient-border: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 55%, transparent),
+    color-mix(in srgb, var(--accent-cta) 45%, transparent),
+    color-mix(in srgb, var(--accent-secondary) 40%, transparent)
+  );
+}
+
+/* ── Hero ─────────────────────────────────────────────────────────────── */
+.mm-resume-ats-hero {
+  border-bottom: 1px solid var(--border);
+}
+
+.mm-resume-ats-hero__orb--1 {
+  position: absolute;
+  top: -8rem;
+  right: -6rem;
+  width: 28rem;
+  height: 28rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, var(--mm-ats-glow-amber) 0%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+}
+
+.mm-resume-ats-hero__orb--2 {
+  position: absolute;
+  bottom: -6rem;
+  left: -4rem;
+  width: 20rem;
+  height: 20rem;
+  border-radius: 9999px;
+  background: radial-gradient(circle, var(--mm-ats-glow-cyan) 0%, transparent 70%);
+  filter: blur(50px);
+  pointer-events: none;
+}
+
+.mm-resume-ats-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.85rem;
+  border-radius: 9999px;
+  border: 1px solid color-mix(in srgb, var(--accent-cta) 35%, var(--border));
+  background: color-mix(in srgb, var(--accent-cta-faint) 80%, var(--bg-card));
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-cta-deep);
+}
+
+html.mm-new-ui .mm-resume-ats-eyebrow {
+  color: var(--accent-cta-mid);
+}
+
+.mm-resume-ats-hero__title-accent {
+  background: linear-gradient(105deg, var(--warning-text), var(--accent-cta), var(--accent-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.mm-resume-ats-stat-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg-card) 88%, transparent);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+/* ── Step rail ────────────────────────────────────────────────────────── */
+.mm-resume-ats-steps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.75rem;
+}
+
+.mm-resume-ats-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.85rem;
+  border-radius: 9999px;
+  border: 1px dashed var(--border);
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-hint);
+  transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.mm-resume-ats-step--active {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--accent-cta) 45%, var(--border));
+  background: var(--accent-cta-faint);
+  color: var(--text-heading);
+}
+
+.mm-resume-ats-step--done {
+  border-style: solid;
+  border-color: color-mix(in srgb, var(--success) 35%, var(--border));
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.mm-resume-ats-step__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 9999px;
+  background: var(--bg-secondary);
+  font-size: 0.625rem;
+  font-weight: 800;
+}
+
+.mm-resume-ats-step--active .mm-resume-ats-step__num {
+  background: var(--accent-cta);
+  color: #fff;
+}
+
+.mm-resume-ats-step--done .mm-resume-ats-step__num {
+  background: var(--success);
+  color: #fff;
+}
+
+/* ── Form bento ───────────────────────────────────────────────────────── */
+.mm-resume-ats-form-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+
+@media (min-width: 1024px) {
+  .mm-resume-ats-form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mm-resume-ats-form-grid__upload {
+    grid-column: 1 / -1;
+  }
+
+  .mm-resume-ats-form-grid__cta {
+    grid-column: 1 / -1;
+  }
+}
+
+.mm-resume-ats-card {
+  border-radius: 1.25rem;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg-card) 94%, transparent);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+}
+
+html.mm-new-ui .mm-resume-ats-card {
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.mm-resume-ats-card__head {
+  padding: 1.15rem 1.25rem 0.85rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.mm-resume-ats-card__body {
+  padding: 1.25rem;
+}
+
+.mm-resume-ats-card__title {
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: var(--text-heading);
+  letter-spacing: -0.02em;
+}
+
+.mm-resume-ats-card__sub {
+  margin-top: 0.2rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+/* Upload dropzone */
+.mm-resume-ats-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2.75rem 1.5rem;
+  border-radius: 1rem;
+  border: 2px dashed var(--border);
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+}
+
+.mm-resume-ats-dropzone:hover,
+.mm-resume-ats-dropzone--drag {
+  border-color: color-mix(in srgb, var(--accent-cta) 55%, var(--border));
+  background: var(--accent-cta-faint);
+  box-shadow: 0 0 0 4px var(--accent-cta-glow-soft);
+}
+
+.mm-resume-ats-dropzone__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.75rem;
+  height: 3.75rem;
+  border-radius: 1.15rem;
+  border: 1px solid color-mix(in srgb, var(--accent-cta) 30%, var(--border));
+  background: var(--accent-cta-faint);
+  color: var(--accent-cta-deep);
+}
+
+html.mm-new-ui .mm-resume-ats-dropzone__icon {
+  color: var(--accent-cta-mid);
+}
+
+.mm-resume-ats-file-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  border-radius: 1rem;
+  border: 1px solid color-mix(in srgb, var(--accent-cta) 35%, var(--border));
+  background: var(--accent-cta-faint);
+}
+
+.mm-resume-ats-role-chip {
+  padding: 0.45rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+.mm-resume-ats-role-chip--on {
+  border: 1px solid var(--accent-cta);
+  background: linear-gradient(135deg, var(--accent-cta), var(--accent-cta-hover));
+  color: #fff;
+  box-shadow: var(--shadow-cta-card-value);
+}
+
+.mm-resume-ats-role-chip--off {
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
+}
+
+.mm-resume-ats-role-chip--off:hover {
+  border-color: color-mix(in srgb, var(--accent-cta-mid) 50%, var(--border));
+  color: var(--text-heading);
+}
+
+.mm-resume-ats-input,
+.mm-resume-ats-select,
+.mm-resume-ats-textarea {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-heading);
+  padding: 0.625rem 0.875rem;
+  font-size: 0.875rem;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.mm-resume-ats-input:focus,
+.mm-resume-ats-select:focus,
+.mm-resume-ats-textarea:focus {
+  outline: none;
+  border-color: var(--focus-ring);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--focus-ring) 25%, transparent);
+}
+
+.mm-resume-ats-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.625rem;
+  width: 100%;
+  padding: 1rem 1.5rem;
+  border-radius: 1rem;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  transition: transform 0.12s ease, filter 0.15s ease, box-shadow 0.15s ease;
+}
+
+.mm-resume-ats-cta--on {
+  border: 1px solid var(--btn-primary-border);
+  background: linear-gradient(135deg, var(--btn-primary-from), var(--btn-primary-mid), var(--btn-primary-to));
+  color: #fff;
+  box-shadow: var(--shadow-button-value), inset 0 -2px 0 var(--btn-primary-accent);
+}
+
+.mm-resume-ats-cta--on:hover {
+  filter: brightness(1.06);
+  transform: translateY(-1px);
+}
+
+.mm-resume-ats-cta--off {
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  color: var(--text-hint);
+  cursor: not-allowed;
+}
+
+/* ── Empty / loader ───────────────────────────────────────────────────── */
+.mm-resume-ats-empty {
+  margin-top: 2.5rem;
+  padding: 3rem 1.5rem;
+  border-radius: 1.5rem;
+  border: 1px dashed var(--border);
+  background: color-mix(in srgb, var(--bg-card) 50%, transparent);
+  text-align: center;
+}
+
+.mm-resume-ats-loader {
+  margin-top: 2.5rem;
+  padding: 2.5rem 1.5rem;
+  border-radius: 1.5rem;
+  border: 1px solid color-mix(in srgb, var(--accent-cta) 25%, var(--border));
+  background: color-mix(in srgb, var(--accent-cta-faint) 60%, var(--bg-card));
+}
+
+.mm-resume-ats-loader__ring {
+  position: relative;
+  width: 4.5rem;
+  height: 4.5rem;
+}
+
+.mm-resume-ats-loader__ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid color-mix(in srgb, var(--accent-cta) 20%, transparent);
+}
+
+.mm-resume-ats-loader__ring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  border-top-color: var(--accent-cta);
+  animation: mm-ats-spin 0.9s linear infinite;
+}
+
+@keyframes mm-ats-spin {
+  to { transform: rotate(360deg); }
+}
+
+.mm-resume-ats-loader__dot {
+  height: 0.375rem;
+  border-radius: 9999px;
+  background: var(--accent-cta);
+  transition: width 0.3s ease, opacity 0.3s ease;
+}
+
+.mm-resume-ats-loader__dot--idle {
+  width: 0.375rem;
+  opacity: 0.35;
+}
+
+.mm-resume-ats-loader__dot--active {
+  width: 1.5rem;
+  opacity: 1;
+}
+
+/* ── Results ──────────────────────────────────────────────────────────── */
+.mm-resume-ats-results {
+  margin-top: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.mm-resume-ats-score-hero {
+  position: relative;
+  padding: 1px;
+  border-radius: 1.5rem;
+  background: var(--mm-ats-gradient-border);
+}
+
+.mm-resume-ats-score-hero__inner {
+  border-radius: calc(1.5rem - 1px);
+  padding: 1.5rem;
+  background: var(--bg-card);
+}
+
+@media (min-width: 640px) {
+  .mm-resume-ats-score-hero__inner {
+    padding: 2rem;
+  }
+}
+
+.mm-resume-ats-disclaimer {
+  font-size: 0.6875rem;
+  line-height: 1.55;
+  font-style: italic;
+  color: var(--text-hint);
+}
+
+.mm-resume-ats-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border: 1px solid transparent;
+}
+
+.mm-resume-ats-badge--strong {
+  color: var(--success);
+  background: var(--success-bg);
+  border-color: color-mix(in srgb, var(--success) 35%, transparent);
+}
+
+.mm-resume-ats-badge--moderate {
+  color: var(--warning-text);
+  background: var(--warning-bg);
+  border-color: color-mix(in srgb, var(--warning-text) 35%, transparent);
+}
+
+.mm-resume-ats-badge--low {
+  color: #ef4444;
+  background: color-mix(in srgb, #ef4444 12%, var(--bg-card));
+  border-color: color-mix(in srgb, #ef4444 35%, transparent);
+}
+
+html.mm-new-ui .mm-resume-ats-badge--low {
+  color: #f87171;
+}
+
+.mm-resume-ats-ring__track {
+  stroke: var(--mm-ats-ring-track);
+}
+
+.mm-resume-ats-ring__score {
+  fill: var(--text-heading);
+}
+
+.mm-resume-ats-ring__sub {
+  fill: var(--text-secondary);
+}
+
+.mm-resume-ats-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  padding: 0.35rem;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg-secondary) 80%, var(--bg-card));
+}
+
+.mm-resume-ats-tab {
+  flex: 1 1 auto;
+  min-width: 7rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid transparent;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  color: var(--text-secondary);
+  transition: all 0.15s ease;
+}
+
+.mm-resume-ats-tab:hover {
+  color: var(--text-heading);
+  background: color-mix(in srgb, var(--bg-card) 60%, transparent);
+}
+
+.mm-resume-ats-tab--active {
+  color: var(--text-heading);
+  background: transparent;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.mm-resume-ats-panel {
+  border-radius: 1.25rem;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  padding: 1.25rem;
+  box-shadow: var(--shadow-card);
+}
+
+.mm-resume-ats-bar-track {
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: var(--surface-track);
+  overflow: hidden;
+}
+
+.mm-resume-ats-bar-fill {
+  height: 100%;
+  border-radius: 9999px;
+  transition: width 0.7s ease;
+}
+
+.mm-resume-ats-bar-fill--brand {
+  background: linear-gradient(90deg, var(--btn-primary-from), var(--accent-cta));
+}
+
+.mm-resume-ats-bar-fill--cyan {
+  background: linear-gradient(90deg, var(--accent), var(--accent-secondary));
+}
+
+.mm-resume-ats-bar-fill--violet {
+  background: linear-gradient(90deg, #6366f1, #a855f7);
+}
+
+.mm-resume-ats-bar-fill--impact {
+  background: linear-gradient(90deg, var(--accent-cta-mid), #ef4444);
+}
+
+.mm-resume-ats-alert {
+  display: flex;
+  gap: 0.625rem;
+  padding: 0.875rem 1rem;
+  border-radius: 0.875rem;
+  font-size: 0.75rem;
+  line-height: 1.55;
+}
+
+.mm-resume-ats-alert--fail {
+  border: 1px solid color-mix(in srgb, #ef4444 35%, var(--border));
+  background: color-mix(in srgb, #ef4444 10%, var(--bg-card));
+  color: var(--text-body);
+}
+
+.mm-resume-ats-alert--warn {
+  border: 1px solid color-mix(in srgb, var(--warning-text) 35%, var(--border));
+  background: var(--warning-bg);
+  color: var(--text-body);
+}
+
+.mm-resume-ats-naukri {
+  border-radius: 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 28%, var(--border));
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--info-bg) 70%, var(--bg-card)),
+    var(--bg-card)
+  );
+  padding: 1.25rem;
+}
+
+.mm-resume-ats-naukri__stat {
+  border-radius: 0.875rem;
+  border: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg-card) 85%, transparent);
+  padding: 1rem;
+}
+
+.mm-resume-ats-chip {
+  display: inline-flex;
+  padding: 0.35rem 0.65rem;
+  border-radius: 9999px;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.mm-resume-ats-chip--match {
+  color: var(--success);
+  background: var(--success-bg);
+  border-color: color-mix(in srgb, var(--success) 30%, transparent);
+}
+
+.mm-resume-ats-chip--miss {
+  color: #ef4444;
+  background: color-mix(in srgb, #ef4444 10%, var(--bg-card));
+  border-color: color-mix(in srgb, #ef4444 28%, transparent);
+}
+
+html.mm-new-ui .mm-resume-ats-chip--miss {
+  color: #fca5a5;
+}
+
+.mm-resume-ats-chip--gap {
+  color: var(--warning-text);
+  background: var(--warning-bg);
+  border-color: color-mix(in srgb, var(--warning-text) 28%, transparent);
+}
+
+.mm-resume-ats-block--fix {
+  border-radius: 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--warning-text) 25%, var(--border));
+  background: var(--warning-bg);
+  padding: 1.25rem;
+}
+
+.mm-resume-ats-block--risk {
+  border-radius: 1.25rem;
+  border: 1px solid color-mix(in srgb, #ef4444 25%, var(--border));
+  background: color-mix(in srgb, #ef4444 8%, var(--bg-card));
+  padding: 1.25rem;
+}
+
+.mm-resume-ats-block--win {
+  border-radius: 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--success) 25%, var(--border));
+  background: var(--success-bg);
+  padding: 1.25rem;
+}
+
+.mm-resume-ats-block--plan {
+  border-radius: 1.25rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--border));
+  background: var(--info-bg);
+  padding: 1.25rem;
+}
+
+.mm-resume-ats-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.65rem;
+  border-radius: 0.5rem;
+  border: 1px solid var(--border);
+  background: var(--bg-secondary);
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: var(--text-secondary);
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.mm-resume-ats-copy-btn:hover {
+  border-color: color-mix(in srgb, var(--accent-cta) 40%, var(--border));
+  color: var(--text-heading);
+}
+
+.mm-resume-ats-stat-card {
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  padding: 1.25rem;
+  background: color-mix(in srgb, var(--bg-card) 90%, transparent);
+}
+
+.mm-resume-ats-stat-card__num {
+  font-size: 1.875rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.mm-resume-ats-stat-card__num--hot {
+  color: var(--accent-cta-deep);
+}
+
+html.mm-new-ui .mm-resume-ats-stat-card__num--hot {
+  color: var(--accent-cta-mid);
+}
+
+.mm-resume-ats-stat-card__num--cool {
+  color: var(--accent);
+}
+
+.mm-resume-ats-stat-card__num--go {
+  color: var(--success);
+}
+
+/* ── Motion & micro-interactions ─────────────────────────────────────────── */
+
+@keyframes mm-ats-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(12px, -18px) scale(1.04); }
+  66% { transform: translate(-8px, 10px) scale(0.98); }
+}
+
+@keyframes mm-ats-shimmer {
+  0% { background-position: 200% center; }
+  100% { background-position: -200% center; }
+}
+
+@keyframes mm-ats-sparkle {
+  0%, 100% { opacity: 1; transform: rotate(0deg) scale(1); }
+  50% { opacity: 0.65; transform: rotate(12deg) scale(1.15); }
+}
+
+@keyframes mm-ats-pulse-ring {
+  0% { transform: scale(0.85); opacity: 0.55; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+
+@keyframes mm-ats-scan-sweep {
+  0% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
+
+@keyframes mm-ats-bar-shine {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+@keyframes mm-ats-celebrate {
+  0%, 100% { filter: drop-shadow(0 0 0 transparent); }
+  50% { filter: drop-shadow(0 0 14px color-mix(in srgb, var(--success) 45%, transparent)); }
+}
+
+@keyframes mm-ats-empty-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes mm-ats-cta-glow {
+  0%, 100% { box-shadow: var(--shadow-button-value), inset 0 -2px 0 var(--btn-primary-accent); }
+  50% { box-shadow: 0 8px 28px color-mix(in srgb, var(--accent-cta) 35%, transparent), inset 0 -2px 0 var(--btn-primary-accent); }
+}
+
+.mm-resume-ats-hero__orb--animate {
+  animation: mm-ats-float 14s ease-in-out infinite;
+}
+
+.mm-resume-ats-hero__orb--2.mm-resume-ats-hero__orb--animate {
+  animation-duration: 18s;
+  animation-delay: -4s;
+}
+
+.mm-resume-ats-hero__title-accent--shimmer {
+  background-size: 200% auto;
+  animation: mm-ats-shimmer 5s linear infinite;
+}
+
+.mm-resume-ats-sparkle-icon {
+  animation: mm-ats-sparkle 2.5s ease-in-out infinite;
+}
+
+.mm-resume-ats-card--hover {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.mm-resume-ats-card--hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px -14px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.mm-resume-ats-score-hero--shimmer {
+  position: relative;
+  overflow: hidden;
+}
+
+.mm-resume-ats-score-hero--shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    105deg,
+    transparent 40%,
+    color-mix(in srgb, white 12%, transparent) 50%,
+    transparent 60%
+  );
+  background-size: 200% 100%;
+  animation: mm-ats-shimmer 4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.mm-resume-ats-ring-wrap--celebrate {
+  animation: mm-ats-celebrate 2.5s ease-in-out 1.2s 2;
+}
+
+.mm-resume-ats-bar-fill--shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.mm-resume-ats-bar-fill--shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  animation: mm-ats-bar-shine 2.2s ease-in-out infinite;
+  animation-delay: 0.8s;
+}
+
+.mm-resume-ats-tab {
+  position: relative;
+  overflow: hidden;
+}
+
+.mm-resume-ats-tab__indicator {
+  position: absolute;
+  inset: 0;
+  border-radius: 0.75rem;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  z-index: 0;
+}
+
+html.mm-new-ui .mm-resume-ats-tab__indicator {
+  background: color-mix(in srgb, var(--accent) 12%, var(--bg-card));
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+}
+
+.mm-resume-ats-loader--scanning {
+  position: relative;
+  overflow: hidden;
+}
+
+.mm-resume-ats-loader--scanning::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, var(--accent-cta) 12%, transparent),
+    transparent
+  );
+  animation: mm-ats-scan-sweep 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.mm-resume-ats-loader__pulse {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 9999px;
+  border: 2px solid color-mix(in srgb, var(--accent-cta) 35%, transparent);
+  animation: mm-ats-pulse-ring 1.8s ease-out infinite;
+}
+
+.mm-resume-ats-loader__pulse--2 {
+  animation-delay: 0.6s;
+}
+
+.mm-resume-ats-loader__icon {
+  animation: mm-ats-sparkle 1.8s ease-in-out infinite;
+}
+
+.mm-resume-ats-empty--float .mm-resume-ats-empty__icon {
+  animation: mm-ats-empty-bob 3s ease-in-out infinite;
+}
+
+.mm-resume-ats-cta--pulse {
+  animation: mm-ats-cta-glow 2.4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mm-resume-ats-hero__orb--animate,
+  .mm-resume-ats-hero__title-accent--shimmer,
+  .mm-resume-ats-sparkle-icon,
+  .mm-resume-ats-score-hero--shimmer::after,
+  .mm-resume-ats-ring-wrap--celebrate,
+  .mm-resume-ats-bar-fill--shine::after,
+  .mm-resume-ats-loader--scanning::before,
+  .mm-resume-ats-loader__pulse,
+  .mm-resume-ats-loader__icon,
+  .mm-resume-ats-empty--float .mm-resume-ats-empty__icon,
+  .mm-resume-ats-cta--pulse {
+    animation: none !important;
+  }
+
+  .mm-resume-ats-loader__ring::after {
+    animation: none;
+  }
+
+  .mm-resume-ats-bar-fill,
+  .mm-resume-ats-cta--on {
+    transition: none;
+  }
+
+  .mm-resume-ats-card--hover:hover {
+    transform: none;
+  }
+}
+
+/* ── Dark mode (html.mm-new-ui) ─────────────────────────────────────────── */
+html.mm-new-ui .mm-resume-ats-page .mm-marketing-hero-backdrop {
+  background-color: var(--bg-primary);
+  background-image:
+    radial-gradient(ellipse 70% 55% at 85% -5%, rgba(245, 158, 11, 0.14), transparent),
+    radial-gradient(ellipse 50% 45% at 5% 45%, rgba(56, 189, 248, 0.1), transparent),
+    linear-gradient(180deg, rgba(6, 10, 18, 0.95) 0%, rgba(11, 18, 32, 0.92) 100%);
+}
+
+html.mm-new-ui .mm-resume-ats-card,
+html.mm-new-ui .mm-resume-ats-panel,
+html.mm-new-ui .mm-resume-ats-score-hero__inner,
+html.mm-new-ui .mm-resume-ats-stat-card,
+html.mm-new-ui .mm-resume-ats-naukri__stat {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+html.mm-new-ui .mm-resume-ats-tab--active {
+  box-shadow: 0 0 20px -6px rgba(56, 189, 248, 0.35);
+}
