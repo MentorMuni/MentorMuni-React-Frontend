@@ -62,6 +62,10 @@ const StudentDashboard = lazy(() => import("./components/student/StudentDashboar
 const StudentDashboardRefactored = lazy(() => import("./components/student/StudentDashboardRefactored"));
 const ContactPage = lazy(() => import("./components/contactPage"));
 const AboutUs = lazy(() => import("./components/aboutUs"));
+const TermsPage = lazy(() => import("./components/legal/TermsPage"));
+const PrivacyPage = lazy(() => import("./components/legal/PrivacyPage"));
+const CookiesPage = lazy(() => import("./components/legal/CookiesPage"));
+const CareersPage = lazy(() => import("./components/legal/CareersPage"));
 const DesignSystemDemo = lazy(() => import("./components/DesignSystemDemo"));
 const CareerHealthDashboard = lazy(() => import("./components/CareerHealthDashboard"));
 const SoftwareEngineerInterviewQuestionsPage = lazy(
@@ -281,8 +285,10 @@ function App() {
               <Route path="/login" element={<LoginPage />} />
               <Route path="/student/dashboard" element={<StudentDashboardRefactored />} />
               <Route path="/contact" element={<ContactPage />} />
-              <Route path="/terms" element={<ContactPage />} />
-              <Route path="/privacy" element={<ContactPage />} />
+              <Route path="/terms" element={<TermsPage />} />
+              <Route path="/privacy" element={<PrivacyPage />} />
+              <Route path="/cookies" element={<CookiesPage />} />
+              <Route path="/careers" element={<CareersPage />} />
               <Route path="/admin/dashboard" element={<AdminDashboardNew />} />
               <Route path="/mentor/dashboard" element={<MentorDashboardRefactored />} />
               <Route path="/mentor/profile" element={<MentorProfile />} />
@@ -312,7 +318,6 @@ function App() {
               <Route path="/design-system" element={<DesignSystemDemo />} />
               {/* Legacy / marketing URLs → canonical routes */}
               <Route path="/courses" element={<Navigate to="/placement-tracks" replace />} />
-              <Route path="/careers" element={<Navigate to="/contact" replace />} />
               <Route path="*" element={<NotFoundPage />} />
             </Routes>
           </Suspense>

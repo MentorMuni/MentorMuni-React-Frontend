@@ -23,6 +23,8 @@ import TestCountdownTimer from './interviewready/TestCountdownTimer';
 import SkillValidationModal from './SkillValidationModal';
 import { fetchWithDeduplication } from '../utils/apiOptimization';
 import { toAppAbsoluteUrl } from '../utils/appPaths';
+import { getInterviewReadinessShareUrl, buildWhatsAppChallengeMessage } from '../utils/readinessShare';
+import ReadinessSharePanel from './readiness/ReadinessSharePanel';
 
 const FREE_TIER_LIMIT = 3;
 
@@ -653,22 +655,6 @@ function peerDimensionsFromResult(pct, strengthSignal, gapPressure) {
       hint: 'Blend of score, strengths, and gaps — directional only.',
     },
   ];
-}
-
-/** Public link to start the same assessment (BrowserRouter + Vite base). */
-function getInterviewReadinessShareUrl() {
-  return toAppAbsoluteUrl('/start-assessment');
-}
-
-function buildWhatsAppChallengeMessage(pct, readinessLabel, modeLabel) {
-  const url = getInterviewReadinessShareUrl();
-  const product = modeLabel || 'Interview Readiness';
-  return (
-    `I scored ${pct}% on MentorMuni ${product} (${readinessLabel}).\n\n` +
-    `Think you can beat me? Same free 5-minute quiz — no signup.\n\n` +
-    `Challenge your batchmates:\n${url}\n\n` +
-    `Interview preparation · Students & professionals`
-  );
 }
 
 /** Poster art under `public/MentorMuni-React-Frontend/images/poster-carousel/` */
@@ -3795,6 +3781,12 @@ const InterviewReady = () => {
     const areaShort = result.techStack || '—';
     const nextSteps = nextStepsForScoreBand(pct);
     const peerDims = peerDimensionsFromResult(pct, strengthSignal, gapPressure);
+    const leaderboardSegment =
+      profile.userCategory === '3rd_year'
+        ? 'prefinal'
+        : profile.userCategory === 'professional'
+          ? 'professional'
+          : 'final_year';
 
     return (
       <div className="min-h-screen mm-site-theme py-8">
@@ -3885,6 +3877,23 @@ const InterviewReady = () => {
                 </p>
               </div>
             </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.08 }}
+            className="mm-surface-panel mm-surface-panel--section"
+          >
+            <ReadinessSharePanel
+              score={pct}
+              readinessLabel={result.readiness_label}
+              modeLabel={modeLabel}
+              roleLabel={roleShort || 'Student'}
+              college={profile.collegeName || ''}
+              branch={areaShort !== '—' ? areaShort : ''}
+              segment={leaderboardSegment}
+            />
           </motion.div>
 
           {result.attemptExport && (

@@ -234,6 +234,16 @@ export const ROUTE_SEO = {
     description: 'MentorMuni privacy policy — how we handle student data and assessments.',
     keywords: 'MentorMuni privacy',
   },
+  '/cookies': {
+    title: 'Cookie Policy | MentorMuni',
+    description: 'How MentorMuni uses cookies and browser storage for the readiness check and site features.',
+    keywords: 'MentorMuni cookies',
+  },
+  '/careers': {
+    title: 'Careers at MentorMuni',
+    description: 'Join the MentorMuni founding team — interview readiness for Indian engineering students.',
+    keywords: 'MentorMuni careers, edtech jobs India',
+  },
   '/career-health': {
     title: 'Career Health Dashboard | MentorMuni',
     description: 'Track your career readiness health — skills, gaps, and placement prep progress in one view.',

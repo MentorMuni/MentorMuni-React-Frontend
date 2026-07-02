@@ -110,261 +110,44 @@
   animation: mm-hero-ring-glow 3.2s ease-in-out infinite;
 }
 
-/* ── 5-second awareness loop (Score → Gaps → Practice) ─────────────────── */
-.mm-hero-awareness-wrap {
+/* ── Hero placement line (typographic — no card) ─────────────────────── */
+.mm-hero-placement-wrap {
   width: 100%;
-  margin-top: clamp(0.875rem, 2cqi, 1.25rem);
+  margin-top: clamp(0.625rem, 1.5cqi, 0.875rem);
 }
 
-.mm-hero-awareness {
-  position: relative;
-  width: 100%;
-  padding: 0.875rem 0.75rem 0.75rem;
-  border-radius: 1rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--border));
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--accent-soft) 92%, var(--bg-card)) 0%,
-    color-mix(in srgb, var(--bg-card) 96%, white) 45%,
-    color-mix(in srgb, var(--accent-secondary) 14%, var(--bg-card)) 100%
-  );
-  box-shadow:
-    0 14px 40px -16px color-mix(in srgb, var(--accent) 42%, transparent),
-    inset 0 1px 0 rgba(255, 255, 255, 0.72);
-}
-
-.mm-hero-awareness--dark {
-  border-color: rgba(56, 189, 248, 0.32);
-  background: linear-gradient(
-    135deg,
-    rgba(56, 189, 248, 0.1) 0%,
-    rgba(255, 255, 255, 0.05) 48%,
-    rgba(52, 211, 153, 0.08) 100%
-  );
-  box-shadow:
-    0 16px 44px -18px rgba(0, 0, 0, 0.65),
-    inset 0 1px 0 rgba(255, 255, 255, 0.08);
-}
-
-.mm-hero-awareness__steps {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0;
+.mm-hero-placement-line {
   margin: 0;
-  padding: 0;
-  list-style: none;
   width: 100%;
+  max-width: 28rem;
+  font-family: var(--font-readable);
+  font-size: clamp(1rem, 0.5vw + 0.9rem, 1.1875rem);
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: #475569;
+  text-wrap: balance;
+  -webkit-font-smoothing: antialiased;
 }
 
-.mm-hero-awareness__step {
-  position: relative;
-  display: flex;
-  flex: 1 1 0;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.4375rem;
-  min-width: 0;
-  padding: 0.25rem 0.125rem;
-  opacity: 0.88;
-  transform: scale(0.98);
-  transition:
-    opacity 0.35s ease,
-    transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.mm-hero-awareness__step.is-past {
-  opacity: 0.92;
-}
-
-.mm-hero-awareness__step.is-active {
-  opacity: 1;
-  transform: scale(1.02);
-}
-
-.mm-hero-awareness__icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.375rem;
-  height: 2.375rem;
-  border-radius: 0.75rem;
-  border: 1px solid color-mix(in srgb, var(--accent) 38%, var(--border));
-  background: color-mix(in srgb, var(--accent) 14%, var(--bg-card));
-  color: var(--accent-hover);
-  transition:
-    box-shadow 0.35s ease,
-    border-color 0.35s ease,
-    background-color 0.35s ease,
-    color 0.35s ease,
-    transform 0.35s ease;
-}
-
-.mm-hero-awareness__step.is-past .mm-hero-awareness__icon {
-  border-color: color-mix(in srgb, var(--accent-secondary) 42%, var(--border));
-  background: color-mix(in srgb, var(--accent-secondary) 16%, var(--bg-card));
-  color: var(--accent-secondary);
-}
-
-.mm-hero-awareness__step.is-active .mm-hero-awareness__icon {
-  border-color: transparent;
-  color: #fff;
-  transform: translateY(-1px);
-  box-shadow:
-    0 6px 18px color-mix(in srgb, var(--accent) 42%, transparent),
-    0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
-  animation: mm-awareness-icon-pulse 2.2s ease-in-out infinite;
-}
-
-.mm-hero-awareness__step.is-active[data-step='score'] .mm-hero-awareness__icon {
-  background: linear-gradient(145deg, var(--accent-hover), var(--accent));
-}
-
-.mm-hero-awareness__step.is-active[data-step='gaps'] .mm-hero-awareness__icon {
-  background: linear-gradient(145deg, var(--accent-cta-mid), var(--accent-cta-deep));
-  box-shadow:
-    0 6px 18px color-mix(in srgb, var(--accent-cta) 45%, transparent),
-    0 0 0 3px color-mix(in srgb, var(--accent-cta) 24%, transparent);
-}
-
-.mm-hero-awareness__step.is-active[data-step='practice'] .mm-hero-awareness__icon {
-  background: linear-gradient(145deg, var(--accent-secondary), var(--accent));
-}
-
-.mm-hero-awareness--dark .mm-hero-awareness__icon {
-  border-color: rgba(125, 211, 252, 0.35);
-  background: rgba(56, 189, 248, 0.14);
-  color: #bae6fd;
-}
-
-.mm-hero-awareness--dark .mm-hero-awareness__step.is-past .mm-hero-awareness__icon {
-  border-color: rgba(52, 211, 153, 0.38);
-  background: rgba(52, 211, 153, 0.16);
-  color: #6ee7b7;
-}
-
-.mm-hero-awareness--dark .mm-hero-awareness__step.is-active .mm-hero-awareness__icon {
-  border-color: transparent;
-  color: #fff;
-  box-shadow:
-    0 6px 20px rgba(56, 189, 248, 0.38),
-    0 0 0 3px rgba(56, 189, 248, 0.2);
-}
-
-.mm-hero-awareness--dark .mm-hero-awareness__step.is-active[data-step='gaps'] .mm-hero-awareness__icon {
-  background: linear-gradient(145deg, #fbbf24, #f59e0b);
-  box-shadow:
-    0 6px 20px rgba(245, 158, 11, 0.42),
-    0 0 0 3px rgba(245, 158, 11, 0.22);
-}
-
-.mm-hero-awareness--dark .mm-hero-awareness__step.is-active[data-step='score'] .mm-hero-awareness__icon {
-  background: linear-gradient(145deg, #7dd3fc, #0ea5e9);
-}
-
-.mm-hero-awareness--dark .mm-hero-awareness__step.is-active[data-step='practice'] .mm-hero-awareness__icon {
-  background: linear-gradient(145deg, #6ee7b7, #10b981);
-  box-shadow:
-    0 6px 20px rgba(52, 211, 153, 0.38),
-    0 0 0 3px rgba(52, 211, 153, 0.2);
-}
-
-@keyframes mm-awareness-icon-pulse {
-  0%,
-  100% {
-    filter: brightness(1);
-  }
-  50% {
-    filter: brightness(1.08);
-  }
-}
-
-.mm-hero-awareness__label {
-  font-size: 0.6875rem;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  text-align: center;
-  line-height: 1.25;
-  color: color-mix(in srgb, var(--accent) 52%, var(--text-primary));
-}
-
-.mm-hero-awareness__step.is-past .mm-hero-awareness__label {
-  color: color-mix(in srgb, var(--accent-secondary) 72%, var(--text-primary));
-}
-
-.mm-hero-awareness__step.is-active .mm-hero-awareness__label {
-  font-size: 0.75rem;
-  color: var(--accent-hover);
-}
-
-.mm-hero-awareness__step.is-active[data-step='gaps'] .mm-hero-awareness__label {
-  color: var(--accent-cta-deep);
-}
-
-.mm-hero-awareness--dark .mm-hero-awareness__label {
-  color: #cbd5e1;
-}
-
-.mm-hero-awareness--dark .mm-hero-awareness__step.is-past .mm-hero-awareness__label {
-  color: #6ee7b7;
-}
-
-.mm-hero-awareness--dark .mm-hero-awareness__step.is-active .mm-hero-awareness__label {
-  color: #e0f2fe;
-}
-
-.mm-hero-awareness--dark .mm-hero-awareness__step.is-active[data-step='gaps'] .mm-hero-awareness__label {
-  color: #fcd34d;
-}
-
-.mm-hero-awareness__rail {
-  margin-top: 0.75rem;
-  height: 3px;
-  width: 100%;
-  border-radius: 9999px;
-  background: color-mix(in srgb, var(--accent) 18%, var(--border));
-  overflow: hidden;
-}
-
-.mm-hero-awareness__rail-fill {
-  display: block;
-  height: 100%;
-  border-radius: inherit;
-  background: linear-gradient(90deg, var(--accent-hover), var(--accent), var(--accent-secondary));
-  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 55%, transparent);
-}
-
-.mm-hero-awareness--dark .mm-hero-awareness__rail {
-  background: rgba(148, 163, 184, 0.22);
-}
-
-.mm-hero-awareness--dark .mm-hero-awareness__rail-fill {
-  background: linear-gradient(90deg, #38bdf8, #22d3ee, #34d399);
-  box-shadow: 0 0 14px rgba(56, 189, 248, 0.45);
-}
-
-.mm-hero-awareness__hint-wrap {
-  min-height: 1.375rem;
-  margin-top: 0.5625rem;
-}
-
-.mm-hero-awareness__hint {
-  margin: 0;
-  font-size: 0.8125rem;
+.mm-hero-placement-line__accent {
   font-weight: 600;
-  line-height: 1.35;
-  text-align: center;
-  color: color-mix(in srgb, var(--accent) 38%, var(--text-primary));
+  color: #15799f;
 }
 
-.mm-hero-awareness--dark .mm-hero-awareness__hint {
-  color: #e2e8f0;
+.mm-hero-placement-line--dark {
+  color: #94a3b8;
+}
+
+.mm-hero-placement-line--dark .mm-hero-placement-line__accent {
+  color: #7dd3fc;
+  font-weight: 600;
 }
 
 @container hero (min-width: 48rem) {
-  .mm-hero-awareness__hint {
-    text-align: start;
+  .mm-hero-placement-line {
+    max-width: none;
+    font-size: clamp(1.0625rem, 0.35vw + 0.95rem, 1.25rem);
   }
 }
 
@@ -378,13 +161,7 @@
   .mm-hero-eyebrow-chip,
   .mm-hero-eyebrow-promo,
   .mm-hero-score-live-dot,
-  .mm-hero-score-ring-halo,
-  .mm-hero-awareness__step.is-active .mm-hero-awareness__icon {
+  .mm-hero-score-ring-halo {
     animation: none !important;
-  }
-
-  .mm-hero-awareness__step {
-    opacity: 1;
-    transform: none;
   }
 }

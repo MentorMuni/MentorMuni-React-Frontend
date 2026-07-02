@@ -43,6 +43,7 @@ import {
   ABOUT_PILLARS_HEADLINE,
   ABOUT_PILLARS_SUB,
   ABOUT_PILLARS,
+  FOUNDER_PROFILE,
 } from '../constants/brandCopy';
 import RoutePageShell from './layout/RoutePageShell';
 
@@ -273,6 +274,40 @@ const AboutUs = () => {
               </div>
             </FadeUp>
           </div>
+        </div>
+      </section>
+
+      {/* —— Founder —— */}
+      <section
+        className="border-t border-border bg-background px-5 py-14 sm:px-6 lg:py-16"
+        aria-labelledby="about-founder-heading"
+      >
+        <div className="mm-container">
+          <FadeUp className="mb-10 max-w-2xl">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-warning-text">Who built this</p>
+            <h2 id="about-founder-heading" className="mt-2 text-2xl font-extrabold tracking-tight text-foreground md:text-3xl">
+              Meet the founder
+            </h2>
+          </FadeUp>
+          <FadeUp delay={0.06}>
+            <article className="flex flex-col gap-8 rounded-2xl border border-border bg-card p-6 shadow-[var(--shadow-card)] md:flex-row md:items-start md:p-8">
+              <div className="mx-auto flex h-32 w-32 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-accent-soft to-secondary p-4 md:mx-0 md:h-36 md:w-36">
+                <img
+                  src={FOUNDER_PROFILE.photoUrl || logoSrc}
+                  alt="MentorMuni"
+                  className="h-full w-full object-contain"
+                />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-cta">{FOUNDER_PROFILE.title}</p>
+                <div className="mt-5 space-y-4 text-sm leading-relaxed text-muted-foreground md:text-[15px]">
+                  {FOUNDER_PROFILE.story.map((para) => (
+                    <p key={para.slice(0, 24)}>{para}</p>
+                  ))}
+                </div>
+              </div>
+            </article>
+          </FadeUp>
         </div>
       </section>
 

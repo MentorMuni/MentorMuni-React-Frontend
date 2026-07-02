@@ -9,7 +9,6 @@ import {
   HERO_EARLY_BIRD_STICKER,
   HERO_HEADLINE_LINE1,
   HERO_HEADLINE_LINE2,
-  HERO_TAGLINE,
   HERO_TYPEWRITER_PHRASES,
   HERO_PROOF_STAT,
   HERO_TRUST_LOGO_ROW_LABEL,
@@ -73,12 +72,13 @@ import {
 } from '../constants/homepageSeo';
 import { usePageMeta } from '../hooks/usePageMeta';
 import { useNewUI } from '../context/NewUIContext';
+import SiteFooter from './layout/SiteFooter';
 import InnerRouteShell from './new-ui/InnerRouteShell';
 import AnimatedCounter from './new-ui/AnimatedCounter';
 import { HeroFlagshipVisual } from './homepage/HeroFlagshipVisual';
 import { HeroHeadlineTypewriter } from './homepage/HeroHeadlineTypewriter';
 import { HeroScoreTilt } from './homepage/HeroScoreTilt';
-import { HeroAwarenessLoop } from './homepage/HeroAwarenessLoop';
+import { HeroPlacementPromise } from './homepage/HeroPlacementPromise';
 import {
   heroHeadlineLine,
   heroReveal,
@@ -629,17 +629,8 @@ const HomePage = () => {
                   />
                 </motion.div>
 
-                <motion.p className="typo-hero-tagline mm-hero-tagline" variants={heroReveal}>
-                  {HERO_TAGLINE}
-                </motion.p>
-
-                <motion.div
-                  className="mm-hero-awareness-wrap"
-                  initial={reduceMotion ? false : { opacity: 0, y: 14, filter: 'blur(8px)' }}
-                  animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                  transition={{ delay: 0.72, duration: 0.55, ease: HERO_EASE }}
-                >
-                  <HeroAwarenessLoop newUI={newUI} />
+                <motion.div className="mm-hero-placement-wrap" variants={heroReveal}>
+                  <HeroPlacementPromise newUI={newUI} />
                 </motion.div>
 
                 <motion.div className="mm-hero-actions" variants={heroReveal}>
@@ -1545,93 +1536,7 @@ const HomePage = () => {
         </div>
       </ScrollReveal>
 
-      {/* ════════════════ FOOTER ════════════════ */}
-      <footer className="mm-band mm-marketing-section border-t border-border bg-secondary">
-        <div className="mm-container mm-container--wide w-full">
-          <div className="grid sm:grid-cols-2 md:grid-cols-5 gap-8 mb-10">
-            <div className="md:col-span-2">
-              <h3 className="font-bold text-foreground mb-2">Mentor<span className="text-[#1A8FC4]">Muni</span></h3>
-              <p className="text-muted-foreground text-sm leading-relaxed mb-4 max-w-xs">
-                {MISSION_TAGLINE}
-              </p>
-              <div className="mb-4 mm-surface-panel max-w-sm rounded-xl px-3 py-3 shadow-sm">
-                <div className="flex gap-2.5">
-                  <Gift className="h-4 w-4 shrink-0 text-[#15799F] mt-0.5" aria-hidden />
-                  <div>
-                    <p className="mb-1 text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">Limited offer</p>
-                    <p className="text-xs text-muted-foreground leading-snug mb-2">{READINESS_TEST_COUPON_BADGE}</p>
-                    <button
-                      type="button"
-                      onClick={scrollToFinalCta}
-                      className="-mx-1 inline-flex min-h-[40px] items-center rounded-md px-1 py-2 text-left text-xs font-semibold text-[#1A8FC4] transition-colors hover:text-[#15799F] active:text-[#0d5f7f] bg-transparent border-0 cursor-pointer font-inherit"
-                    >
-                      {PRIMARY_CTA_LABEL} →
-                    </button>
-                  </div>
-                </div>
-              </div>
-              <div className="space-y-1.5 text-sm text-muted-foreground">
-                <a href={CONTACT_EMAIL_HREF} className="flex items-center gap-2 hover:text-[#1A8FC4] transition-colors">
-                  <Mail size={13} /> {CONTACT_EMAIL}
-                </a>
-                <a href={CONTACT_PHONE_HREF} className="flex items-center gap-2 hover:text-[#1A8FC4] transition-colors">
-                  <Phone size={13} /> {CONTACT_PHONE_DISPLAY}
-                </a>
-                <a
-                  href={CONTACT_WHATSAPP_HREF}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 hover:text-[#1A8FC4] transition-colors"
-                >
-                  <MessageCircle size={13} /> {CONTACT_WHATSAPP_LABEL}
-                </a>
-              </div>
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-hint mb-3">Tools</p>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>
-                  <Link
-                    to="/interview-readiness-tools"
-                    className="hover:text-[#1A8FC4] transition-colors"
-                  >
-                    {PRODUCT_READINESS_SCORE}
-                  </Link>
-                </li>
-                <li><Link to="/mock-interviews" className="hover:text-[#1A8FC4] transition-colors">Mock Interviews</Link></li>
-                <li><Link to="/resume-analyzer" className="hover:text-[#1A8FC4] transition-colors">Resume Analyzer</Link></li>
-                <li><Link to="/placement-tracks" className="hover:text-[#1A8FC4] transition-colors">Placement Tracks</Link></li>
-                <li><Link to="/free-tutorials" className="hover:text-[#1A8FC4] transition-colors">Free Tutorials</Link></li>
-              </ul>
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-hint mb-3">Learn</p>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/learning-paths" className="hover:text-[#1A8FC4] transition-colors">Learning Paths</Link></li>
-                <li><Link to="/outcomes" className="hover:text-[#1A8FC4] transition-colors">Outcomes</Link></li>
-                <li><Link to="/leadership-board" className="hover:text-[#1A8FC4] transition-colors">Leadership Board</Link></li>
-              </ul>
-            </div>
-            <div>
-              <p className="text-xs font-semibold text-hint mb-3">Company</p>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><Link to="/about" className="hover:text-[#1A8FC4] transition-colors">About us</Link></li>
-                <li><Link to="/contact" className="hover:text-[#1A8FC4] transition-colors">Contact</Link></li>
-                <li><Link to="/mentors" className="hover:text-[#1A8FC4] transition-colors">Mentorship</Link></li>
-                <li><Link to="/colleges" className="hover:text-[#1A8FC4] transition-colors">For Colleges</Link></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-border pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs text-muted-foreground">
-            <p>© {new Date().getFullYear()} MentorMuni. All rights reserved.</p>
-            <div className="flex gap-5">
-              <Link to="/terms" className="hover:text-[#1A8FC4] transition-colors">Terms</Link>
-              <Link to="/privacy" className="hover:text-[#1A8FC4] transition-colors">Privacy</Link>
-              <Link to="/contact" className="hover:text-[#1A8FC4] transition-colors">Contact</Link>
-            </div>
-          </div>
-        </div>
-      </footer>
+      <SiteFooter onReadinessCtaClick={scrollToFinalCta} />
 
     </div>
     </InnerRouteShell>

@@ -34,8 +34,8 @@ export const HERO_HEADLINE_ACCENT = 'Get your score from the free readiness chec
 /** Homepage hero — two-line headline (render as two blocks; avoids awkward 3-line wrap) */
 export const HERO_HEADLINE_LINE1 = 'Are You Actually';
 export const HERO_HEADLINE_LINE2 = 'Interview-Ready?';
-/** One line under the typewriter — supporting copy (free/5 min lives in awareness strip + trust row) */
-export const HERO_TAGLINE = 'See where you stand before placement drives.';
+/** @deprecated Use HERO_PLACEMENT_PROMISE_LINE — kept for imports that still reference tagline */
+export const HERO_TAGLINE = 'We prepare you for campus placement.';
 /** Light quip under the eyebrow — playful, not the main headline */
 export const HERO_PLAYFUL_CLAUSE = 'From reels to reality — different kind of screen time.';
 /** @deprecated Use HERO_HEADLINE_LINE1 + LINE2 */
@@ -46,27 +46,19 @@ export const HERO_TYPEWRITER_PHRASES = [
   'Not a course — a placement prep system.',
 ];
 
-/** Hero awareness loop — what MentorMuni is / does in ~5 seconds (icons + one line each) */
-export const HERO_AWARENESS_STEPS = [
-  {
-    id: 'score',
-    label: 'Free score',
-    hint: '~5 min readiness check · no signup',
-  },
-  {
-    id: 'gaps',
-    label: 'Gap report',
-    hint: 'See DSA, HR & role gaps before drives',
-  },
-  {
-    id: 'practice',
-    label: 'Mocks & mentors',
-    hint: 'AI mocks + 1:1 reps until you’re ready',
-  },
-];
+/** Hero — single placement-prep line (under typewriter; trust row handles free/no signup) */
+export const HERO_PLACEMENT_PROMISE_LINE = 'We prepare you for campus placement.';
+export const HERO_PLACEMENT_PROMISE_HIGHLIGHT = 'campus placement';
+export const HERO_PLACEMENT_PROMISE_ARIA =
+  'MentorMuni prepares engineering students for campus placement.';
+/** @deprecated Card eyebrow removed — use HERO_PLACEMENT_PROMISE_LINE only */
+export const HERO_PLACEMENT_PROMISE_EYEBROW = 'Placement preparation';
+/** @deprecated Support line removed — see HERO_PROOF_STAT under CTAs */
+export const HERO_PLACEMENT_PROMISE_SUPPORT = '';
 
-export const HERO_AWARENESS_ARIA =
-  'MentorMuni helps engineering students: free readiness score, gap report, then mocks and mentors.';
+/** @deprecated Replaced by HERO_PLACEMENT_PROMISE_* — steps loop removed from hero */
+export const HERO_AWARENESS_STEPS = [];
+export const HERO_AWARENESS_ARIA = HERO_PLACEMENT_PROMISE_ARIA;
 /** Homepage hero — body copy under the typewriter (single paragraph; no read-more) */
 export const HERO_HOME_SUB =
   'Most students think they are prepared. They fail when it matters. A free readiness check shows where you stand vs what panels actually test — then you close gaps with reps, not hope.';
@@ -89,7 +81,7 @@ export const HERO_PROOF_STAT = '~5 min · Free · No signup · Instant score';
 export const HERO_PROOF_BULLETS = [
   'Free · No signup · ~5 min',
   'Founding batch · limited seats per cohort',
-  'Measure → gap report → structured reps',
+  'Measure → gaps → practice',
 ];
 
 /** Homepage hero — one line under CTAs (scannable; avoid bullet walls) */
@@ -452,6 +444,21 @@ export const ABOUT_BELIEFS = [
     body: 'Mocks, AI sessions, and mentor feedback stack so you train performance — not just consumption.',
   },
 ];
+
+/**
+ * About page — founder block. Name withheld by choice.
+ * Photo falls back to the MentorMuni logo (see aboutUs.jsx). Story is editable copy.
+ */
+export const FOUNDER_PROFILE = {
+  // Name intentionally withheld — not revealed publicly.
+  title: 'From the founder, MentorMuni',
+  photoUrl: null,
+  story: [
+    'MentorMuni exists because campus hiring tests performance under pressure — not how many tutorials you watched.',
+    'We built a system for Indian engineering students: a free readiness score, an honest gap list, then mocks and mentors when you want structured reps.',
+    'If you are preparing for placements and tired of guessing whether you are ready, that is who we are for.',
+  ],
+};
 
 export const ABOUT_STORY_TITLE = 'Why MentorMuni exists';
 export const ABOUT_STORY_PARAGRAPHS = [

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { CONTACT_EMAIL } from '../constants/brandCopy';
+import { CONTACT_EMAIL, CONTACT_PHONE_DISPLAY, CONTACT_PHONE_HREF } from '../constants/brandCopy';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import { 
   Calendar, 
@@ -212,14 +212,14 @@ const MentorDashboard = () => {
               <h4 className="font-bold text-foreground mb-4">Company</h4>
               <div className="flex flex-col gap-2 text-sm text-muted-foreground">
                 <Link to="/about" className="hover:text-[#FF9500]">About Us</Link>
-                <Link to="/contact" className="hover:text-[#FF9500]">Careers</Link>
+                <Link to="/careers" className="hover:text-[#FF9500]">Careers</Link>
               </div>
             </div>
             <div>
               <h4 className="font-bold text-foreground mb-4">Contact</h4>
               <div className="text-sm text-muted-foreground space-y-1">
                 <p>{CONTACT_EMAIL}</p>
-                <p>+91 98765 43210</p>
+                <a href={CONTACT_PHONE_HREF} className="hover:text-[#FF9500]">{CONTACT_PHONE_DISPLAY}</a>
               </div>
             </div>
           </div>

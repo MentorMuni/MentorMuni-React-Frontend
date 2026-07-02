@@ -4,6 +4,7 @@ import { CheckCircle2, ArrowRight } from 'lucide-react';
 import logo from '../assets/logo.png';
 import RoutePageShell from './layout/RoutePageShell';
 import TutorialBackLink from './layout/TutorialBackLink';
+import { CONTACT_PHONE_DISPLAY, CONTACT_PHONE_HREF } from '../constants/brandCopy';
 
 const CoursesPage = () => {
   const courses = [
@@ -132,7 +133,9 @@ const CoursesPage = () => {
           <div>
             <h4 className="font-bold mb-4 text-foreground">Support</h4>
             <p className="text-muted-foreground text-sm mb-2">enroll@mentormuni.com</p>
-            <p className="text-muted-foreground text-sm">+91 91464 21302</p>
+            <a href={CONTACT_PHONE_HREF} className="text-muted-foreground text-sm hover:text-[#FF9500] transition-colors">
+              {CONTACT_PHONE_DISPLAY}
+            </a>
           </div>
         </div>
         <div className="text-center text-muted-foreground text-xs pt-8 border-t border-border">

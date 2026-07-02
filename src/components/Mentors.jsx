@@ -6,6 +6,8 @@ import {
   MENTORSHIP_TRUST_BADGE,
   MENTORSHIP_FIRST_BATCH_START_LABEL,
 } from '../constants/brandCopy';
+import { MENTOR_PROFILES } from '../data/mentorProfiles';
+import { Linkedin } from 'lucide-react';
 
 /* ─── Scroll-reveal hook ───────────────────────────────────── */
 function useReveal(threshold = 0.12) {
@@ -110,27 +112,46 @@ function TimelineStep({ step, index, isLast }) {
   );
 }
 
-/* ─── Mentor profile card — circular blurred portrait + pills ─ */
-function MentorProfileCard({ name, experience, companies, tag, gradient }) {
+/* ─── Mentor profile card — photo + LinkedIn when available ─ */
+function MentorProfileCard({ name, experience, companies, tag, gradient, photoUrl, linkedInUrl }) {
   return (
     <article className="flex h-full flex-col rounded-2xl border border-border bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#FFB347]/45 hover:shadow-[0_14px_40px_rgba(255,149,0,0.12)]">
       <div className="flex gap-4">
         <div
           className="relative h-[5.25rem] w-[5.25rem] shrink-0 overflow-hidden rounded-full ring-[3px] ring-accent-soft shadow-[0_4px_14px_rgba(0,0,0,0.08)]"
-          aria-hidden
         >
-          <div
-            className="absolute -inset-8 scale-125"
-            style={{ background: gradient, filter: 'blur(16px)' }}
-            aria-hidden
-          />
-          <div
-            className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-neutral-900/25"
-            aria-hidden
-          />
+          {photoUrl ? (
+            <img src={photoUrl} alt="" className="h-full w-full object-cover" />
+          ) : (
+            <>
+              {/* TODO(content): Add real mentor headshot — photoUrl is null in mentorProfiles.js */}
+              <div
+                className="absolute -inset-8 scale-125"
+                style={{ background: gradient, filter: 'blur(16px)' }}
+                aria-hidden
+              />
+              <div
+                className="absolute inset-0 bg-gradient-to-br from-white/30 via-transparent to-neutral-900/25"
+                aria-hidden
+              />
+            </>
+          )}
         </div>
         <div className="min-w-0 flex-1 pt-0.5">
-          <h3 className="text-[1.0625rem] font-bold leading-tight tracking-tight text-foreground">{name}</h3>
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="text-[1.0625rem] font-bold leading-tight tracking-tight text-foreground">{name}</h3>
+            {linkedInUrl ? (
+              <a
+                href={linkedInUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-border bg-secondary text-[#0A66C2] transition hover:border-[#0A66C2]/40 hover:bg-blue-50"
+                aria-label={`${name} on LinkedIn`}
+              >
+                <Linkedin className="h-3.5 w-3.5" aria-hidden />
+              </a>
+            ) : null}
+          </div>
           <p className="mt-1 text-sm font-semibold text-[#C2410C]">{experience} experience</p>
           <p className="mt-2 text-[11px] font-medium uppercase tracking-[0.12em] text-muted-foreground">
             Previously at
@@ -205,31 +226,6 @@ const TIMELINE_STEPS = [
       'Week-by-week roadmap built in session one',
       'WhatsApp access throughout — not just session time',
     ],
-  },
-];
-
-/** Representative profiles — soft gradients behind blur (no harsh rainbow strips) */
-const MENTOR_PROFILES = [
-  {
-    name: 'Mohit J',
-    experience: '14 years',
-    companies: ['Nagarro', 'Persistent'],
-    tag: 'Enterprise delivery and engineering leadership — deep MNC services experience.',
-    gradient: 'linear-gradient(145deg, #94a3b8 0%, #64748b 40%, #475569 100%)',
-  },
-  {
-    name: 'Ananya K',
-    experience: '12 years',
-    companies: ['Infosys', 'Razorpay'],
-    tag: 'Scaled systems at a large IT major, then product engineering at a fintech.',
-    gradient: 'linear-gradient(150deg, #5eead4 0%, #2dd4bf 45%, #0d9488 100%)',
-  },
-  {
-    name: 'Rohan S',
-    experience: '15 years',
-    companies: ['Accenture', 'Swiggy'],
-    tag: 'Consulting and delivery backgrounds, then high-pace consumer product teams.',
-    gradient: 'linear-gradient(145deg, #fdba74 0%, #fb923c 42%, #ea580c 100%)',
   },
 ];
 

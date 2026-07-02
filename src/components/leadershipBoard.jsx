@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
 import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 import RoutePageShell from './layout/RoutePageShell';
+import { getLeaderboardOptIns, averageScoreByCollege } from '../utils/leaderboardStorage';
 import { motion } from 'framer-motion';
 import {
   Trophy,
@@ -49,8 +50,18 @@ function segmentChipClass(id) {
   return 'border-emerald-500/40 bg-emerald-500/10 text-emerald-700';
 }
 
-/** Populated from API / SQL later — empty until real opt-ins exist. */
-const MOCK_LEADERS = [];
+/** Live rows from opt-in localStorage — empty until students opt in on results screen. */
+function optInsToLeaderRows() {
+  return getLeaderboardOptIns().map((e) => ({
+    id: e.id,
+    name: e.branch ? `${e.college}` : e.college,
+    handle: e.branch ? e.branch : 'Opted-in student',
+    segment: e.segment || 'final_year',
+    college: e.college,
+    readinessScore: e.readinessScore,
+    streak: 0,
+  }));
+}
 
 function rankBadgeMeta(globalRank) {
   if (globalRank === 1) return { label: '1st', className: 'from-amber-400 via-yellow-300 to-amber-500 text-amber-950 shadow-amber-500/40', icon: Crown };
@@ -95,7 +106,7 @@ export default function LeadershipBoard() {
   );
 
   const filtered = useMemo(() => {
-    let list = [...MOCK_LEADERS];
+    let list = [...optInsToLeaderRows()];
     if (effectiveAudience !== 'all') {
       list = list.filter((r) => r.segment === effectiveAudience);
     }
@@ -114,6 +125,9 @@ export default function LeadershipBoard() {
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE) || 1);
   const safePage = Math.min(page, totalPages);
   const pageSlice = filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+
+  const collegeAverage =
+    mode === 'college' && collegeQuery.trim() ? averageScoreByCollege(collegeQuery) : null;
 
   const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
   const shareText =
@@ -317,6 +331,14 @@ export default function LeadershipBoard() {
             )}
           </div>
 
+          {collegeAverage != null && filtered.length > 0 && (
+            <div className="border-b border-border bg-accent-soft/40 px-4 py-3 text-center text-sm text-muted-foreground sm:px-5">
+              Average readiness score at matching colleges:{' '}
+              <span className="font-bold tabular-nums text-foreground">{collegeAverage} / 100</span>
+              <span className="text-xs"> · {filtered.length} opted-in student{filtered.length === 1 ? '' : 's'}</span>
+            </div>
+          )}
+
           {mode === 'college' && !collegeQuery.trim() && (
             <div className="px-6 py-16 text-center">
               <Sparkles className="mx-auto h-10 w-10 text-fuchsia-500" aria-hidden />
@@ -454,7 +476,7 @@ export default function LeadershipBoard() {
         </div>
 
         <p className="mt-8 text-center text-[11px] text-muted-foreground">
-          Showing preview rows until enough students opt in — then this becomes your live board.
+          Rankings show only students who opted in on their results screen — off by default.
         </p>
 
         <div className="mt-10 text-center">

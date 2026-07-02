@@ -6,6 +6,8 @@ import {
   SITE_SHARE_ASSESSMENT_URL,
   BRAND_MEME_LINE,
 } from '../constants/brandCopy';
+import { percentileAheadFromScore } from '../utils/readinessPercentile';
+import ReadinessShareCard from './readiness/ReadinessShareCard';
 import RoutePageShell from './layout/RoutePageShell';
 
 /* ─── Helpers — light theme, WCAG-friendly contrast ───────────────── */
@@ -100,48 +102,14 @@ function ScoreBar({ label, value, delay }) {
   );
 }
 
-/* ─── Share card (rendered as DOM for html2canvas) ─────────── */
-const ShareCard = React.forwardRef(({ score, role }, ref) => (
-  <div
+/* ─── Share card (rendered as DOM for html2canvas) — legacy /result route ─── */
+const ShareCard = React.forwardRef(({ score, role, percentileAhead }, ref) => (
+  <ReadinessShareCard
     ref={ref}
-    style={{
-      background: '#f8fbff',
-      border: '1px solid #ff9500',
-      borderRadius: 16,
-      padding: 32,
-      width: 480,
-      fontFamily: 'sans-serif',
-    }}
-  >
-    <p style={{ color: '#ea580c', fontSize: 12, fontWeight: 700, letterSpacing: 2, marginBottom: 8 }}>
-      MENTORMUNI · INTERVIEW READINESS
-    </p>
-    <div style={{ display: 'flex', alignItems: 'center', gap: 24, marginBottom: 16 }}>
-      <div
-        style={{
-          width: 96,
-          height: 96,
-          borderRadius: '50%',
-          border: `4px solid ${scoreColor(score)}`,
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <span style={{ fontSize: 36, fontWeight: 900, color: scoreColor(score) }}>{score}</span>
-        <span style={{ fontSize: 10, color: '#64748b' }}>/100</span>
-      </div>
-      <div>
-        <p style={{ color: '#18181b', fontSize: 20, fontWeight: 900, margin: 0 }}>{getVerdict(score).label}</p>
-        <p style={{ color: '#64748b', fontSize: 13, margin: '4px 0 0' }}>Role: {role}</p>
-      </div>
-    </div>
-    <p style={{ color: '#64748b', fontSize: 11 }}>
-      {BRAND_MEME_LINE} ·{' '}
-      <strong style={{ color: '#ea580c' }}>mentormuni.com</strong>
-    </p>
-  </div>
+    score={score}
+    percentileAhead={percentileAhead}
+    roleLabel={role}
+  />
 ));
 ShareCard.displayName = 'ShareCard';
 
@@ -197,6 +165,7 @@ export default function ResultPage() {
   const { totalScore = 0, breakdown = {}, role = 'Student', gaps = [] } = data;
   const { dsa = 0, systemDesign = 0, communication = 0, projects = 0 } = breakdown;
   const verdict = getVerdict(totalScore);
+  const percentileAhead = percentileAheadFromScore(totalScore);
 
   const BARS = [
     { label: 'DSA & Problem Solving', value: dsa },
@@ -269,7 +238,7 @@ export default function ResultPage() {
           document.head.appendChild(s);
         });
       }
-      const canvas = await window.html2canvas(shareRef.current, { backgroundColor: '#f8fbff', scale: 2 });
+      const canvas = await window.html2canvas(shareRef.current, { backgroundColor: '#0f172a', scale: 1, width: 1080, height: 1920 });
       const link = document.createElement('a');
       link.download = `mentormuni-score-${totalScore}.png`;
       link.href = canvas.toDataURL();
@@ -302,6 +271,9 @@ export default function ResultPage() {
           </div>
           <p className="typo-body mx-auto mt-2 max-w-sm text-muted-foreground">
             {getVerdictText(totalScore)}
+          </p>
+          <p className="mt-4 text-lg font-bold text-foreground">
+            Ahead of <span className="text-[#FF9500]">{percentileAhead}%</span> of students
           </p>
           <p className="typo-caption mt-3 text-muted-foreground">Role assessed: {role}</p>
         </div>
@@ -388,7 +360,7 @@ export default function ResultPage() {
             className="overflow-hidden"
             style={{ height: 0, pointerEvents: 'none', position: 'absolute', left: -9999 }}
           >
-            <ShareCard ref={shareRef} score={totalScore} role={role} />
+            <ShareCard ref={shareRef} score={totalScore} role={role} percentileAhead={percentileAhead} />
           </div>
 
           <div className="flex flex-wrap gap-3">

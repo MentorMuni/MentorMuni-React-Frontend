@@ -444,7 +444,8 @@ body {
 }
 
 .mm-hero-copy .mm-prose-measure--hero,
-.mm-hero-copy .mm-hero-tagline {
+.mm-hero-copy .mm-hero-tagline,
+.mm-hero-copy .mm-hero-placement-line {
   max-width: 44rem;
 }
 
@@ -490,7 +491,8 @@ body {
   }
 
   .mm-hero-copy .mm-prose-measure--hero,
-  .mm-hero-copy .mm-hero-tagline {
+  .mm-hero-copy .mm-hero-tagline,
+  .mm-hero-copy .mm-hero-placement-line {
     max-width: none;
   }
 
