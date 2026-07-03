@@ -777,7 +777,7 @@ function AssessmentModeGrid({ selectedMode, onPick, variant = 'default' }) {
   const isHero = variant === 'hero';
 
     return (
-    <div className={`grid grid-cols-1 ${isHero ? 'md:grid-cols-3 gap-4 md:gap-5' : 'md:grid-cols-3 gap-4'} mb-2`}>
+    <div className={`grid grid-cols-1 ${isHero ? 'md:grid-cols-3 gap-4 md:gap-5 lg:gap-6 xl:gap-7' : 'md:grid-cols-3 gap-4'} mb-2`}>
       {ASSESSMENT_MODE_OPTIONS.map((option) => {
         const selected = selectedMode === option.mode;
         const ModeIcon = option.Icon;
@@ -2499,7 +2499,7 @@ const InterviewReady = () => {
   if (step === 12) {
     return (
       <div className="min-h-screen mm-site-theme py-10">
-        <div className="mm-container mm-container--narrow">
+        <div className="mm-container mm-container--wide">
           <div className="mm-surface-panel mm-surface-panel--lg">
             <h2 className="text-3xl md:text-4xl font-black text-foreground mb-2 tracking-tight">Choose what to measure</h2>
             <p className="text-muted-foreground text-sm md:text-base mb-6 leading-relaxed">
@@ -2541,7 +2541,7 @@ const InterviewReady = () => {
           <div className="absolute bottom-0 left-1/2 h-48 w-[min(100%,480px)] -translate-x-1/2 rounded-full bg-amber-200/20 blur-3xl" />
         </div>
 
-        <div className="mm-container mm-container--narrow relative z-10 flex min-h-[100dvh] flex-col pb-10 pt-4 sm:pt-5 lg:max-w-none">
+        <div className="mm-container mm-container--wide relative z-10 flex min-h-[100dvh] flex-col pb-10 pt-4 sm:pt-5">
           {/* Credibility — compact */}
           <div className="mb-3 flex justify-center sm:mb-4">
             <div className="mm-surface-chip max-w-full px-3 py-1.5 backdrop-blur sm:px-4">
@@ -2566,7 +2566,7 @@ const InterviewReady = () => {
           </div>
 
           {/* Primary action — three test tiles first */}
-          <div className="mx-auto w-full max-w-3xl flex-1">
+          <div className="mx-auto w-full max-w-2xl flex-1 md:max-w-4xl lg:max-w-5xl xl:max-w-6xl">
             <AssessmentModeGrid
               variant="hero"
               selectedMode={profile.assessmentMode}
