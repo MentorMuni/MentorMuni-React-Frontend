@@ -1,9 +1,9 @@
 import React, { Suspense, lazy, useEffect, useState } from "react";
-import { BrowserRouter, Routes, Route, useLocation, useNavigate, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate, Navigate, Link } from "react-router-dom";
 import { getRouterBasename } from "./utils/appPaths";
 import { motion } from "framer-motion";
 import { getRouteSeo } from "./constants/routeSeoMeta";
-import { goToStartAssessment } from "./utils/startAssessmentNavigation";
+import { SNAP_ANNOUNCEMENT_SHORT } from "./constants/snapTestCopy";
 import { sanitizeBrokenSpaUrl } from "./utils/sanitizeBrokenSpaUrl";
 
 sanitizeBrokenSpaUrl();
@@ -75,6 +75,7 @@ const NotFoundPage = lazy(() => import("./components/NotFoundPage"));
 const AIToolsKnowledgeBase = lazy(() => import("./components/AIToolsKnowledgeBase"));
 const InterviewReadinessToolsPage = lazy(() => import("./components/InterviewReadinessToolsPage"));
 const LeadershipBoard = lazy(() => import("./components/leadershipBoard"));
+const SnapReadinessTest = lazy(() => import("./components/snapTest/SnapReadinessTest"));
 const RoadmapPage = lazy(() => import("./components/RoadmapPage"));
 const BlogList = lazy(() => import("./components/Blog/BlogList"));
 const BlogPost = lazy(() => import("./components/Blog/BlogPost"));
@@ -156,19 +157,18 @@ function AnnouncementBar() {
       <span aria-hidden className="shrink-0 text-sm">🎁</span>
       <span className="mm-announcement-bar__text min-w-0">
         <span className="sm:hidden">
-          <strong>Early bird:</strong> free mentor + AI mock — 5-min test
+          <strong>Early bird:</strong> {SNAP_ANNOUNCEMENT_SHORT}
         </span>
         <span className="hidden sm:inline">
-          <strong>Early Bird:</strong> 1 free 1:1 mentorship + 1 AI mock — take the free 5-min readiness test to claim.
+          <strong>Early Bird:</strong> {SNAP_ANNOUNCEMENT_SHORT} — then claim free mentor + AI mock.
         </span>
       </span>
-      <button
-        type="button"
-        onClick={goToStartAssessment}
+      <Link
+        to="/snap-test"
         className="shrink-0 rounded-full bg-white/25 px-2.5 py-0.5 text-[10px] font-bold transition hover:bg-white/35 sm:text-[11px] md:text-xs"
       >
-        Claim →
-      </button>
+        Snap test →
+      </Link>
       <button
         type="button"
         aria-label="Dismiss announcement"
@@ -264,6 +264,9 @@ function App() {
               <Route path="/interview-readiness-tools" element={<InterviewReadinessToolsPage />} />
               <Route path="/tools" element={<Tools />} />
               <Route path="/mentors" element={<Mentors />} />
+              <Route path="/snap-test" element={<SnapReadinessTest />} />
+              <Route path="/5-sec-test" element={<SnapReadinessTest />} />
+              <Route path="/readiness-snap" element={<SnapReadinessTest />} />
               <Route path="/start-assessment" element={<AssessmentRoute><InterviewReady /></AssessmentRoute>} />
               <Route path="/readiness" element={<AssessmentRoute><InterviewReady /></AssessmentRoute>} />
               <Route path="/interview-ready" element={<AssessmentRoute><InterviewReady /></AssessmentRoute>} />

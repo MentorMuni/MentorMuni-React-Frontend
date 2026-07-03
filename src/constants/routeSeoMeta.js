@@ -86,6 +86,27 @@ export const ROUTE_SEO = {
     keywords:
       'software engineer interview questions, coding interview questions, campus technical interview, DSA interview questions, HR interview questions engineering',
   },
+  '/snap-test': {
+    title: '5-Second Interview Readiness Snap Test — Free | MentorMuni',
+    description:
+      'Six taps in under 7 seconds — see where you stand vs 100 students, your selection chance, and gaps before campus drives. Then take the free full readiness check.',
+    keywords:
+      'interview readiness test, 5 second placement test, campus placement readiness, 4th year engineering student, interview preparation India, MentorMuni',
+  },
+  '/5-sec-test': {
+    title: '5-Second Interview Readiness Snap Test — Free | MentorMuni',
+    description:
+      'Six taps in under 7 seconds — see where you stand vs 100 students, your selection chance, and gaps before campus drives. Then take the free full readiness check.',
+    keywords:
+      '5 sec interview test, placement readiness snap test, engineering student interview prep, MentorMuni',
+  },
+  '/readiness-snap': {
+    title: '5-Second Interview Readiness Snap Test — Free | MentorMuni',
+    description:
+      'Six taps in under 7 seconds — see where you stand vs 100 students, your selection chance, and gaps before campus drives. Then take the free full readiness check.',
+    keywords:
+      'readiness snap test, quick interview readiness check, campus placement India, MentorMuni',
+  },
   '/start-assessment': {
     title: 'Free Placement Readiness Check — 5 Minutes | MentorMuni',
     description:

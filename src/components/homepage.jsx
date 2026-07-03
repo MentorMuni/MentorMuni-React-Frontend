@@ -2,6 +2,7 @@ import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
+import { SNAP_HOMEPAGE_LINK } from '../constants/snapTestCopy';
 import {
   PRIMARY_CTA_LABEL,
   SECONDARY_CTA_BOOK_CALL,
@@ -653,6 +654,12 @@ const HomePage = () => {
                   </div>
                   <div className="mm-hero-trust-row">
                     <span className="mm-hero-trust-micro">{HERO_PROOF_STAT}</span>
+                    <span className="mm-hero-trust-row__dot" aria-hidden>
+                      ·
+                    </span>
+                    <Link to="/snap-test" className="mm-hero-helper-link font-semibold text-cta">
+                      {SNAP_HOMEPAGE_LINK}
+                    </Link>
                     <span className="mm-hero-trust-row__dot" aria-hidden>
                       ·
                     </span>

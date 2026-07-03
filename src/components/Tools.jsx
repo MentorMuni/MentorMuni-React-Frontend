@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FileText, Brain, ClipboardCheck, TrendingUp, ArrowRight, Gift, GraduationCap, BookOpen } from 'lucide-react';
+import { FileText, Brain, ClipboardCheck, TrendingUp, ArrowRight, Gift, GraduationCap, BookOpen, Zap } from 'lucide-react';
 import {
   READINESS_TEST_COUPON_BADGE,
   READINESS_TEST_COUPON_OFFER_HEADLINE,
@@ -12,6 +12,17 @@ import RoutePageShell from './layout/RoutePageShell';
 
 const Tools = () => {
   const tools = [
+    {
+      id: 0,
+      title: '5-second snap readiness test',
+      description:
+        'Six taps in under 7 seconds — see your pulse score, selection chance vs 100 students, and top gaps. Then unlock the full readiness check.',
+      icon: Zap,
+      color: 'purple',
+      href: '/snap-test',
+      highlights: ['~5–7 sec', 'No signup', 'Instant pulse'],
+      featured: true,
+    },
     {
       id: 1,
       title: 'Resume ATS checker',
