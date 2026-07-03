@@ -2837,7 +2837,7 @@ const InterviewReady = () => {
 
     return (
       <div className="min-h-screen mm-site-theme py-10">
-        <div className="mm-container mm-container--narrow">
+        <div className="mm-container">
           <div className="mm-surface-panel mm-surface-panel--lg">
 
             {/* Progress bar only — no step numbers or labels */}
@@ -2872,7 +2872,7 @@ const InterviewReady = () => {
               Choose the option that best reflects your current stage. We’ll tailor questions to your context.
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div className="grid grid-cols-1 gap-4 mb-8 sm:grid-cols-2 lg:grid-cols-4 lg:gap-5">
               {ROLES.map(option => {
                 const selected = profile.userCategory === option.value;
                 const RoleIcon = option.Icon;
@@ -2892,7 +2892,7 @@ const InterviewReady = () => {
                       });
                       setValidationErrors({ ...validationErrors, userCategory: '' });
                     }}
-                    className={`p-5 rounded-2xl text-left border-2 group relative cursor-pointer transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out motion-reduce:transition-none ${
+                    className={`flex h-full flex-col p-5 rounded-2xl text-left border-2 group relative cursor-pointer transition-[transform,box-shadow,border-color,background-color] duration-200 ease-out motion-reduce:transition-none ${
                       selected
                         ? 'border-cta bg-cta/15 shadow-lg shadow-cta-card mm-choice-tile--selected'
                         : 'mm-choice-tile mm-choice-tile--role hover:border-cta-mid hover:-translate-y-1 motion-reduce:hover:translate-y-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta'
@@ -2909,9 +2909,9 @@ const InterviewReady = () => {
                     >
                       <RoleIcon size={22} strokeWidth={2} className="shrink-0" />
                     </div>
-                    <h3 className="font-bold text-foreground text-sm mb-1">{option.label}</h3>
+                    <h3 className="font-bold text-foreground text-sm mb-1 min-h-[2.5rem]">{option.label}</h3>
                     <p className={`text-xs font-medium mb-3 ${selected ? 'text-cta' : 'text-muted-foreground'}`}>{option.badge}</p>
-                    <div className="space-y-1.5">
+                    <div className="mt-auto space-y-1.5">
                       {option.details.map((d) => (
                         <div key={d} className="flex items-start gap-1.5 text-xs text-muted-foreground">
                           <Check size={11} className={`mt-0.5 shrink-0 ${selected ? 'text-cta' : 'text-muted-foreground'}`} />

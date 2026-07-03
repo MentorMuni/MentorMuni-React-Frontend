@@ -121,10 +121,10 @@
 
 @keyframes mm-welcome-ring-draw {
   from {
-    stroke-dashoffset: 305;
+    stroke-dashoffset: 330;
   }
   to {
-    stroke-dashoffset: 85;
+    stroke-dashoffset: var(--mm-ring-offset, 85);
   }
 }
 
@@ -196,6 +196,39 @@
   letter-spacing: 0.16em;
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.62);
+}
+
+.mm-welcome__moat {
+  position: relative;
+  z-index: 1;
+  margin-top: 0.5rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3125rem;
+  padding: 0.3125rem 0.6875rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.mm-welcome__moat-icon {
+  color: #ffd27d;
+}
+
+.mm-welcome__ring-flame {
+  color: #ffb347;
+}
+
+.mm-welcome__ring-cap {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
 }
 
 .mm-welcome__journey {
@@ -314,8 +347,50 @@
   flex-shrink: 0;
 }
 
-.mm-welcome__social {
+.mm-welcome__streak {
+  position: absolute;
+  top: 0.875rem;
+  left: 0.875rem;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3125rem;
+  padding: 0.3125rem 0.625rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.mm-welcome__streak-flame {
+  color: #ffb347;
+}
+
+.mm-welcome__focus {
   margin-top: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.mm-welcome__focus-label {
+  font-weight: 800;
+  color: var(--accent, #1a8fc4);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.mm-welcome__social {
+  margin-top: 0.5rem;
   font-size: 0.6875rem;
   line-height: 1.45;
   color: #64748b;
