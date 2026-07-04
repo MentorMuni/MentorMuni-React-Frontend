@@ -79,6 +79,7 @@ const SnapReadinessTest = lazy(() => import("./components/snapTest/SnapReadiness
 const RoadmapPage = lazy(() => import("./components/RoadmapPage"));
 const BlogList = lazy(() => import("./components/Blog/BlogList"));
 const BlogPost = lazy(() => import("./components/Blog/BlogPost"));
+const GamifiedPlacementPrep = lazy(() => import("./components/GamifiedPlacementPrep"));
 
 function PageFallback() {
   const { pathname } = useLocation();
@@ -246,6 +247,7 @@ function App() {
               <Route path="/" element={<HomePage />} />
               <Route path="/how-it-works" element={<HowItWorks />} />
               <Route path="/roadmap" element={<RoadmapPage />} />
+              <Route path="/gamified-placement-prep" element={<GamifiedPlacementPrep />} />
               <Route path="/blog" element={<BlogList />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               {/* SEO landing URLs — same tools, keyword-focused paths for search */}

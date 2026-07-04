@@ -264,6 +264,98 @@ html.mm-new-ui .mm-new-ui-hero .mm-hero-typewriter-line--hook {
   background: color-mix(in srgb, var(--accent-soft) 55%, white) !important;
 }
 
+/* Secondary hero CTA — 5-Sec Test (low-friction entry, paired with primary) */
+.mm-hero-cta--snap {
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1.5px solid color-mix(in srgb, #f59e0b 45%, var(--border)) !important;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #fffbeb 92%, white) 0%,
+    color-mix(in srgb, #fff7ed 88%, white) 100%
+  ) !important;
+  color: #92400e !important;
+  box-shadow: 0 2px 14px color-mix(in srgb, #f59e0b 14%, transparent);
+  text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.mm-hero-cta--snap:hover {
+  border-color: color-mix(in srgb, #f59e0b 65%, var(--border)) !important;
+  box-shadow: 0 6px 22px color-mix(in srgb, #f59e0b 22%, transparent);
+  transform: translateY(-1px);
+}
+
+.mm-hero-cta--snap__icon {
+  color: #d97706;
+}
+
+.mm-hero-cta--snap__stack {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.0625rem;
+  text-align: start;
+  line-height: 1.15;
+}
+
+.mm-hero-cta--snap__label {
+  font-size: clamp(0.6875rem, 2.4vw, 0.875rem);
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: inherit;
+}
+
+.mm-hero-cta--snap__meta {
+  font-size: clamp(0.5625rem, 2vw, 0.6875rem);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: color-mix(in srgb, #92400e 72%, #64748b);
+}
+
+/* Tertiary discovery links — below the decision row (Apple-style bridge) */
+.mm-hero-cta-bridge {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem 0.5rem;
+  width: 100%;
+  margin-top: -0.125rem;
+}
+
+.mm-hero-cta-bridge__link {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--text-muted, #64748b);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.mm-hero-cta-bridge__link:hover {
+  color: var(--accent, #1a8fc4);
+}
+
+.mm-hero-cta-bridge__dot {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-muted, #64748b);
+  opacity: 0.55;
+  user-select: none;
+}
+
+@container hero (min-width: 48rem) {
+  .mm-hero-cta-bridge {
+    justify-content: flex-start;
+  }
+}
+
 html.mm-new-ui .mm-hero-cta--secondary {
   border-color: rgba(56, 189, 248, 0.35) !important;
   background: rgba(56, 189, 248, 0.08) !important;
@@ -359,6 +451,85 @@ html.mm-new-ui .mm-hero-eyebrow-promo {
 
 html.mm-new-ui .mm-hero-trust-micro {
   color: #94a3b8;
+}
+
+html.mm-new-ui .mm-hero-cta--snap {
+  border-color: rgba(245, 158, 11, 0.42) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(69, 45, 10, 0.55) 0%,
+    rgba(15, 23, 42, 0.88) 100%
+  ) !important;
+  color: #fde68a !important;
+  box-shadow: 0 2px 16px rgba(245, 158, 11, 0.2) !important;
+}
+
+html.mm-new-ui .mm-hero-cta--snap:hover {
+  border-color: rgba(251, 191, 36, 0.55) !important;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.28) !important;
+}
+
+html.mm-new-ui .mm-hero-cta--snap__icon {
+  color: #fbbf24;
+}
+
+html.mm-new-ui .mm-hero-cta--snap__meta {
+  color: #fcd34d !important;
+  opacity: 0.85;
+}
+
+html.mm-new-ui .mm-hero-cta-bridge__link {
+  color: #94a3b8;
+}
+
+html.mm-new-ui .mm-hero-cta-bridge__link:hover {
+  color: #7dd3fc;
+}
+
+html.mm-new-ui .mm-hero-cta-bridge__dot {
+  color: #64748b;
+}
+
+html.mm-new-ui .mm-hero-quest-cta {
+  border-color: rgba(167, 139, 250, 0.42) !important;
+  background: linear-gradient(
+    135deg,
+    rgba(76, 29, 149, 0.45) 0%,
+    rgba(15, 23, 42, 0.9) 42%,
+    rgba(8, 47, 73, 0.45) 100%
+  ) !important;
+  box-shadow: 0 10px 32px -20px rgba(139, 92, 246, 0.5) !important;
+}
+
+html.mm-new-ui .mm-hero-quest-cta:hover {
+  border-color: rgba(192, 132, 252, 0.55) !important;
+  box-shadow: 0 16px 42px -22px rgba(139, 92, 246, 0.65) !important;
+}
+
+html.mm-new-ui .mm-hero-quest-cta__eyebrow {
+  color: #c4b5fd !important;
+}
+
+html.mm-new-ui .mm-hero-quest-cta__badge {
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  background: rgba(245, 158, 11, 0.12) !important;
+  color: #fde68a !important;
+}
+
+html.mm-new-ui .mm-hero-quest-cta__title {
+  color: var(--text-heading) !important;
+}
+
+html.mm-new-ui .mm-hero-quest-cta__meta {
+  color: var(--text-secondary) !important;
+}
+
+html.mm-new-ui .mm-hero-quest-cta__link {
+  color: #a78bfa !important;
+}
+
+html.mm-new-ui .mm-hero-quest-cta:hover .mm-hero-quest-cta__link {
+  color: #c4b5fd !important;
 }
 
 .mm-hero-premium .mm-hero-mesh {

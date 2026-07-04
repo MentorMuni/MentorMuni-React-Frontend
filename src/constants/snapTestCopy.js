@@ -34,3 +34,11 @@ export const SNAP_RESULT_MENTOR_LINE =
 
 export const SNAP_HOMEPAGE_LINK = 'Try 5-sec snap test first →';
 export const SNAP_ANNOUNCEMENT_SHORT = 'New: 5-sec snap test — then claim your free mentor';
+
+/** Short, brandable name + hero highlight copy for the snap test quick action */
+export const SNAP_QUICK_NAME = '5-Sec Test';
+export const SNAP_QUICK_BADGE = '~7 sec';
+export const SNAP_QUICK_PROMPT = 'Not ready for the 5-min check?';
+export const SNAP_QUICK_TAGLINE = '6 taps · no signup · instant readiness pulse';
+/** Compact meta line for hero secondary CTA */
+export const SNAP_HERO_CTA_META = '~7 sec · free · no signup';

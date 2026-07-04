@@ -552,7 +552,8 @@ export const FINAL_CTA_BODY =
 
 /** Hero score widget — placement readiness card (hero preview) */
 export const HERO_SCORE_CARD_TITLE = 'Your Placement Readiness';
-export const HERO_SCORE_CARD_HINT = 'Sample preview. Take the free check to see your real score.';
+export const HERO_SCORE_CARD_HINT =
+  'Most students score 30–45 before they prep. Get your real score and top gaps in ~5 min — free.';
 /** @deprecated Use HERO_SCORE_CARD_TITLE + HERO_SCORE_CARD_HINT */
 export const HERO_SCORE_SAMPLE_LABEL = HERO_SCORE_CARD_HINT;
 
@@ -578,6 +579,24 @@ export const HERO_SCORE_LIVE_BADGE = 'Live Update';
 /** Hero scorecard footer under insight (gamification CTA) */
 export const HERO_SCORE_CARD_FOOTER_SUB =
   'Start your run — free check unlocks your real profile.';
+
+/** Hero before/after readiness compare (reference: profile score transformation UX) */
+export const HERO_COMPARE_TAGLINE = 'See the difference a check can make';
+export const HERO_COMPARE_BEFORE_LABEL = 'Before';
+export const HERO_COMPARE_AFTER_LABEL = 'After';
+export const HERO_COMPARE_BEFORE_SCORE = 34;
+export const HERO_COMPARE_AFTER_SCORE = 82;
+export const HERO_COMPARE_BEFORE_STATUS = 'Needs improvement';
+export const HERO_COMPARE_AFTER_STATUS = 'Interview-ready';
+export const HERO_COMPARE_BEFORE_GAPS = [
+  'No mock interview baseline',
+  'Weak HR & project answers',
+];
+export const HERO_COMPARE_AFTER_WINS = [
+  'Scored readiness + gap map',
+  'Mock reps + mentor feedback',
+];
+export const HERO_COMPARE_CTA = 'Get your real score — free';
 
 /** Footer / nav: name of the free assessment product (not “mock interviews”) */
 export const PRODUCT_READINESS_SCORE = 'Readiness check';

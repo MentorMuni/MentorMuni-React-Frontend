@@ -22,12 +22,12 @@ export default function BlogPost() {
       document.title = post.title + ' | MentorMuni Blog';
 
       const metaDescription = document.querySelector('meta[name="description"]');
-      if (metaDescription) {
-        metaDescription.setAttribute('content', post.metaDescription);
+      if (metaDescription && (post.metaDescription || post.subtitle)) {
+        metaDescription.setAttribute('content', post.metaDescription || post.subtitle);
       }
 
       const metaKeywords = document.querySelector('meta[name="keywords"]');
-      if (metaKeywords) {
+      if (metaKeywords && Array.isArray(post.seoKeywords)) {
         metaKeywords.setAttribute('content', post.seoKeywords.join(', '));
       }
     }
@@ -48,7 +48,7 @@ export default function BlogPost() {
     '@context': 'https://schema.org',
     '@type': 'BlogPosting',
     headline: post.title,
-    description: post.metaDescription,
+    description: post.metaDescription || post.subtitle,
     image: 'https://www.mentormuni.com/mentormuni-brand-banner-new.png',
     datePublished: post.date,
     author: {
@@ -82,35 +82,75 @@ export default function BlogPost() {
     }
   };
 
-  // Parse markdown-like content and render
+  const renderInline = (text) => {
+    const parts = String(text).split(/(\*\*[^*]+\*\*)/g);
+    return parts.map((part, index) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        return (
+          <strong key={`${part}-${index}`} className="font-bold text-foreground">
+            {part.slice(2, -2)}
+          </strong>
+        );
+      }
+      return part;
+    });
+  };
+
+  // Parse markdown-like content and render with a human-readable article layout.
   const renderContent = (content) => {
     return content.split('\n').map((line, idx) => {
+      const trimmed = line.trim();
       if (line.startsWith('## ')) {
-        return <h2 key={idx} className="text-2xl font-bold mt-8 mb-4">{line.slice(3)}</h2>;
+        return <h2 key={idx} className="text-2xl font-bold mt-8 mb-4">{renderInline(line.slice(3))}</h2>;
       }
       if (line.startsWith('### ')) {
-        return <h3 key={idx} className="text-xl font-bold mt-6 mb-3">{line.slice(4)}</h3>;
+        return <h3 key={idx} className="text-xl font-bold mt-6 mb-3">{renderInline(line.slice(4))}</h3>;
+      }
+      if (line.startsWith('#### ')) {
+        return <h4 key={idx} className="text-lg font-bold mt-5 mb-2">{renderInline(line.slice(5))}</h4>;
       }
       if (line.startsWith('- ')) {
-        return <li key={idx} className="list-disc list-inside ml-2 mb-2">{line.slice(2)}</li>;
+        return <li key={idx} className="list-disc list-inside ml-2 mb-2">{renderInline(line.slice(2))}</li>;
       }
-      if (line.startsWith('| ')) {
-        // Table row - skip for now, just show as text
-        return <p key={idx} className="text-sm font-mono mb-1">{line}</p>;
+      if (/^\d+\.\s/.test(trimmed)) {
+        return <p key={idx} className="text-base leading-relaxed mb-2">{renderInline(trimmed)}</p>;
+      }
+      if (/^\|[-\s|:]+\|$/.test(trimmed)) {
+        return null;
+      }
+      if (trimmed.startsWith('|')) {
+        const cells = trimmed
+          .split('|')
+          .map((cell) => cell.trim())
+          .filter(Boolean);
+        if (cells.length < 2) return null;
+        return (
+          <div key={idx} className="grid grid-cols-1 gap-2 rounded-xl border border-border bg-card/50 p-3 text-sm sm:grid-cols-3">
+            {cells.map((cell, cellIdx) => (
+              <span
+                key={`${cell}-${cellIdx}`}
+                className={cellIdx === 0 ? 'font-semibold text-foreground' : 'text-muted-foreground'}
+              >
+                {renderInline(cell)}
+              </span>
+            ))}
+          </div>
+        );
       }
       if (line.trim() === '') {
         return <div key={idx} className="mb-4"></div>;
       }
-      return <p key={idx} className="text-base leading-relaxed mb-3">{line}</p>;
+      return <p key={idx} className="text-base leading-relaxed mb-3">{renderInline(line)}</p>;
     });
   };
 
   return (
     <>
       {/* Schema.org markup */}
-      <script type="application/ld+json">
-        {JSON.stringify(schemaMarkup)}
-      </script>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(schemaMarkup) }}
+      />
 
       <div className="bg-background min-h-screen py-8 sm:py-12 md:py-16">
         <article className="mm-container mm-container--narrow space-y-8 sm:space-y-12">

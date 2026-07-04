@@ -2,7 +2,10 @@ import React from 'react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { goToStartAssessment } from '../utils/startAssessmentNavigation';
-import { SNAP_HOMEPAGE_LINK } from '../constants/snapTestCopy';
+import {
+  SNAP_QUICK_NAME,
+  SNAP_HERO_CTA_META,
+} from '../constants/snapTestCopy';
 import {
   PRIMARY_CTA_LABEL,
   SECONDARY_CTA_BOOK_CALL,
@@ -102,6 +105,10 @@ import {
   Gift, Clock, TrendingUp,
   Handshake,
   Languages,
+  Gamepad2,
+  Trophy,
+  Flame,
+  Zap,
 } from 'lucide-react';
 
 /** Icons aligned with HERO_PLATFORM_HIGHLIGHTS order (homepage value grid) */
@@ -646,20 +653,55 @@ const HomePage = () => {
                       <ArrowRight size={16} className="mm-hero-cta-arrow" aria-hidden />
                     </button>
                     <Link
-                      to="/how-it-works"
-                      className="mm-hero-cta mm-hero-cta--secondary mm-btn-secondary touch-manipulation text-foreground shadow-sm transition-colors hover:border-[#1A8FC4] hover:bg-secondary"
+                      to="/snap-test"
+                      className="mm-hero-cta mm-hero-cta--snap touch-manipulation"
+                      aria-label="Take the 5-Sec Test — instant readiness pulse in about 7 seconds, free, no signup"
                     >
-                      {MENTORMUNI_STORY_NAV_LABEL}
+                      <Zap size={16} strokeWidth={2.4} className="mm-hero-cta--snap__icon shrink-0" aria-hidden />
+                      <span className="mm-hero-cta--snap__stack min-w-0">
+                        <span className="mm-hero-cta--snap__label">{SNAP_QUICK_NAME}</span>
+                        <span className="mm-hero-cta--snap__meta">{SNAP_HERO_CTA_META}</span>
+                      </span>
                     </Link>
                   </div>
+                  <nav className="mm-hero-cta-bridge" aria-label="More ways to explore MentorMuni">
+                    <Link to="/how-it-works" className="mm-hero-cta-bridge__link">
+                      {MENTORMUNI_STORY_NAV_LABEL}
+                    </Link>
+                  </nav>
+                  <Link
+                    to="/gamified-placement-prep"
+                    className="mm-hero-quest-cta group mt-1 flex w-full max-w-xl flex-col gap-3 rounded-2xl border border-violet-200/80 bg-gradient-to-br from-violet-50 via-white to-cyan-50/80 p-4 text-left shadow-[0_10px_32px_-20px_rgba(79,70,229,0.45)] transition hover:-translate-y-0.5 hover:border-violet-300 hover:shadow-[0_16px_42px_-22px_rgba(79,70,229,0.55)] sm:flex-row sm:items-center"
+                    aria-label="Explore MentorMuni Quest, the gamified placement preparation platform"
+                  >
+                    <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 via-fuchsia-500 to-cyan-500 text-white shadow-lg shadow-violet-500/25">
+                      <Gamepad2 size={23} strokeWidth={2.2} aria-hidden />
+                    </span>
+                    <span className="min-w-0 flex-1">
+                      <span className="mm-hero-quest-cta__eyebrow mb-1 flex flex-wrap items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-violet-700">
+                        New Gen Z mode
+                        <span className="mm-hero-quest-cta__badge rounded-full bg-amber-100 px-2 py-0.5 text-[10px] tracking-normal text-amber-800">
+                          XP + streaks
+                        </span>
+                      </span>
+                      <span className="mm-hero-quest-cta__title block text-sm font-extrabold leading-snug text-foreground sm:text-base">
+                        Play Placement Quest for 3rd &amp; 4th year students
+                      </span>
+                      <span className="mm-hero-quest-cta__meta mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold text-muted-foreground">
+                        <span className="inline-flex items-center gap-1">
+                          <Trophy size={13} aria-hidden /> Leaderboards
+                        </span>
+                        <span className="inline-flex items-center gap-1">
+                          <Flame size={13} aria-hidden /> Daily battles
+                        </span>
+                        <span className="mm-hero-quest-cta__link inline-flex items-center gap-1 text-violet-700">
+                          Explore game mode <ArrowRight size={13} className="transition group-hover:translate-x-0.5" aria-hidden />
+                        </span>
+                      </span>
+                    </span>
+                  </Link>
                   <div className="mm-hero-trust-row">
                     <span className="mm-hero-trust-micro">{HERO_PROOF_STAT}</span>
-                    <span className="mm-hero-trust-row__dot" aria-hidden>
-                      ·
-                    </span>
-                    <Link to="/snap-test" className="mm-hero-helper-link font-semibold text-cta">
-                      {SNAP_HOMEPAGE_LINK}
-                    </Link>
                     <span className="mm-hero-trust-row__dot" aria-hidden>
                       ·
                     </span>
