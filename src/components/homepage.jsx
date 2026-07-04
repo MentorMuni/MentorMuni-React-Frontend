@@ -612,7 +612,7 @@ const HomePage = () => {
                 >
                   <motion.span
                     variants={heroHeadlineLine}
-                    className="typo-display block text-neutral-950 leading-[1.06] tracking-tight"
+                    className="mm-hero-headline block text-neutral-950"
                   >
                     {HERO_HEADLINE_LINE1}
                   </motion.span>
@@ -620,8 +620,8 @@ const HomePage = () => {
                     variants={heroHeadlineLine}
                     className={
                       newUI
-                        ? 'typo-display mt-1 block leading-[1.06] tracking-tight mm-hero-accent-new-ui'
-                        : 'typo-display mt-1 block leading-[1.06] tracking-tight mm-gradient-text-brand'
+                        ? 'mm-hero-headline mt-1 block mm-hero-accent-new-ui'
+                        : 'mm-hero-headline mt-1 block mm-gradient-text-brand'
                     }
                   >
                     {HERO_HEADLINE_LINE2}
