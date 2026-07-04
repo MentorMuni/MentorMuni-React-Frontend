@@ -10,7 +10,7 @@ import {
   PRIMARY_CTA_LABEL,
   SECONDARY_CTA_BOOK_CALL,
   HERO_EYEBROW,
-  HERO_EARLY_BIRD_STICKER,
+  HERO_EYEBROW_STUDENT_BADGE,
   HERO_HEADLINE_LINE1,
   HERO_HEADLINE_LINE2,
   HERO_TYPEWRITER_PHRASES,
@@ -599,8 +599,8 @@ const HomePage = () => {
                   />
                   <span className="min-w-0">{HERO_EYEBROW}</span>
                 </span>
-                <span className="mm-hero-eyebrow-promo" title="Limited early-bird offer">
-                  {HERO_EARLY_BIRD_STICKER}
+                <span className="mm-hero-eyebrow-audience" title="Built for engineering students in campus placement season">
+                  {HERO_EYEBROW_STUDENT_BADGE}
                 </span>
               </motion.div>
 

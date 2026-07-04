@@ -33,7 +33,9 @@ export const SNAP_RESULT_MENTOR_LINE =
   'We pair AI-assisted prep with real mentors — so you fix gaps before an interviewer finds them, not after a rejection.';
 
 export const SNAP_HOMEPAGE_LINK = 'Try 5-sec snap test first →';
-export const SNAP_ANNOUNCEMENT_SHORT = 'New: 5-sec snap test — then claim your free mentor';
+/** Top announcement bar — one line, product-led (no stacked promo labels) */
+export const SNAP_ANNOUNCEMENT_BAR =
+  'Try the 5-Sec Test — free readiness pulse in ~7 sec · no signup';
 
 /** Short, brandable name + hero highlight copy for the snap test quick action */
 export const SNAP_QUICK_NAME = '5-Sec Test';

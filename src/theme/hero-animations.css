@@ -72,7 +72,8 @@
   animation: mm-hero-chip-pop 0.55s cubic-bezier(0.22, 1, 0.36, 1) backwards;
 }
 
-.mm-hero-eyebrow-promo {
+.mm-hero-eyebrow-promo,
+.mm-hero-eyebrow-audience {
   animation: mm-hero-chip-pop 0.55s cubic-bezier(0.22, 1, 0.36, 1) 0.08s backwards;
 }
 
@@ -160,6 +161,7 @@
   .mm-btn-shimmer::after,
   .mm-hero-eyebrow-chip,
   .mm-hero-eyebrow-promo,
+  .mm-hero-eyebrow-audience,
   .mm-hero-score-live-dot,
   .mm-hero-score-ring-halo {
     animation: none !important;

@@ -24,8 +24,10 @@ export const PAIN_HOOK =
 export const HERO_EYEBROW = 'AI powered placement readiness';
 /** Early-bird coupon card ribbon (homepage hero) */
 export const HERO_EARLY_BIRD_RIBBON = 'Early bird';
-/** Small hero sticker (limited slots — keep short) */
-export const HERO_EARLY_BIRD_STICKER = 'Early bird · First 50';
+/** Hero eyebrow — audience badge (professional, not scarcity promo) */
+export const HERO_EYEBROW_STUDENT_BADGE = '3rd & 4th year · Campus prep';
+/** @deprecated Use HERO_EYEBROW_STUDENT_BADGE */
+export const HERO_EARLY_BIRD_STICKER = HERO_EYEBROW_STUDENT_BADGE;
 /** Second hero sticker — early-career / Gen Z audience (keep short; professional) */
 export const HERO_GENZ_STICKER = 'Not a course — a system';
 export const HERO_HEADLINE = "You can't fix what you don't measure.";

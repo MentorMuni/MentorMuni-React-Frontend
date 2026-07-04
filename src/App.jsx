@@ -3,7 +3,7 @@ import { BrowserRouter, Routes, Route, useLocation, useNavigate, Navigate, Link 
 import { getRouterBasename } from "./utils/appPaths";
 import { motion } from "framer-motion";
 import { getRouteSeo } from "./constants/routeSeoMeta";
-import { SNAP_ANNOUNCEMENT_SHORT } from "./constants/snapTestCopy";
+import { SNAP_ANNOUNCEMENT_BAR } from "./constants/snapTestCopy";
 import { sanitizeBrokenSpaUrl } from "./utils/sanitizeBrokenSpaUrl";
 
 sanitizeBrokenSpaUrl();
@@ -152,23 +152,15 @@ function AnnouncementBar() {
   return (
     <div
       role="banner"
-      aria-label="Early bird promotional offer"
+      aria-label="5-Sec Test announcement"
       className="mm-announcement-bar relative flex flex-wrap items-center justify-center gap-x-2 gap-y-1 bg-gradient-to-r from-[#15799F] via-[#1A8FC4] to-[#2AAA8A] px-11 py-2 text-center text-[10px] font-semibold leading-snug text-white sm:gap-2 sm:px-12 sm:text-[11px] md:text-xs"
     >
-      <span aria-hidden className="shrink-0 text-sm">🎁</span>
-      <span className="mm-announcement-bar__text min-w-0">
-        <span className="sm:hidden">
-          <strong>Early bird:</strong> {SNAP_ANNOUNCEMENT_SHORT}
-        </span>
-        <span className="hidden sm:inline">
-          <strong>Early Bird:</strong> {SNAP_ANNOUNCEMENT_SHORT} — then claim free mentor + AI mock.
-        </span>
-      </span>
+      <span className="mm-announcement-bar__text min-w-0">{SNAP_ANNOUNCEMENT_BAR}</span>
       <Link
         to="/snap-test"
         className="shrink-0 rounded-full bg-white/25 px-2.5 py-0.5 text-[10px] font-bold transition hover:bg-white/35 sm:text-[11px] md:text-xs"
       >
-        Snap test →
+        5-Sec Test →
       </Link>
       <button
         type="button"
