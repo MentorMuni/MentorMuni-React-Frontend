@@ -1,4 +1,12 @@
-import { motion, useReducedMotion } from 'framer-motion';
+import { useEffect, useRef, useState } from 'react';
+import {
+  motion,
+  useInView,
+  useMotionValue,
+  useMotionValueEvent,
+  useReducedMotion,
+  useSpring,
+} from 'framer-motion';
 import { ArrowRight, Check, ChevronRight, Info, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
@@ -24,7 +32,9 @@ const GAUGE_SEGMENTS = [
   { label: 'Excellent', color: '#16a34a' },
 ];
 
-/** Upward semicircle — pivot at bottom center, score sits under pivot (reference layout) */
+const GAUGE_LOOP_MS = 11_000;
+
+/** Upward semicircle — pivot at bottom center, score sits under pivot */
 const GAUGE = {
   width: 148,
   height: 96,
@@ -54,8 +64,55 @@ function needleTip(score) {
   };
 }
 
-function SegmentedGauge({ score, variant, reduceMotion }) {
-  const { x: tipX, y: tipY } = needleTip(score);
+function useGaugeAnimation(target, { reduceMotion, delaySec = 0, enabled = true }) {
+  const motionVal = useMotionValue(reduceMotion ? target : 0);
+  const spring = useSpring(motionVal, { stiffness: 52, damping: 22, mass: 0.85 });
+  const [displayScore, setDisplayScore] = useState(reduceMotion ? target : 0);
+  const [tip, setTip] = useState(() => needleTip(reduceMotion ? target : 0));
+
+  useMotionValueEvent(spring, 'change', (v) => {
+    const clamped = Math.min(100, Math.max(0, v));
+    setDisplayScore(Math.round(clamped));
+    setTip(needleTip(clamped));
+  });
+
+  useEffect(() => {
+    if (!enabled) return undefined;
+
+    if (reduceMotion) {
+      motionVal.set(target);
+      return undefined;
+    }
+
+    let resetTimeout;
+    let loopId;
+
+    const animateUp = () => {
+      motionVal.set(0);
+      resetTimeout = window.setTimeout(() => motionVal.set(target), 60);
+    };
+
+    const startId = window.setTimeout(() => {
+      animateUp();
+      loopId = window.setInterval(animateUp, GAUGE_LOOP_MS);
+    }, delaySec * 1000);
+
+    return () => {
+      window.clearTimeout(startId);
+      window.clearTimeout(resetTimeout);
+      window.clearInterval(loopId);
+    };
+  }, [enabled, reduceMotion, target, delaySec, motionVal]);
+
+  return { displayScore, tip };
+}
+
+function SegmentedGauge({ score, variant, reduceMotion, animDelay = 0, inView }) {
+  const { displayScore, tip } = useGaugeAnimation(score, {
+    reduceMotion,
+    delaySec: animDelay,
+    enabled: inView,
+  });
   const needleColor = variant === 'dark' ? '#e2e8f0' : '#334155';
   const scoreColor = variant === 'dark' ? '#f8fafc' : '#0f172a';
   const denomColor = variant === 'dark' ? '#94a3b8' : '#64748b';
@@ -83,14 +140,17 @@ function SegmentedGauge({ score, variant, reduceMotion }) {
         <motion.line
           x1={GAUGE.cx}
           y1={GAUGE.cy}
-          x2={tipX}
-          y2={tipY}
+          initial={false}
+          animate={{ x2: tip.x, y2: tip.y }}
+          transition={
+            reduceMotion
+              ? { duration: 0 }
+              : { type: 'spring', stiffness: 52, damping: 22, mass: 0.85 }
+          }
           stroke={needleColor}
           strokeWidth="2.25"
           strokeLinecap="round"
-          initial={reduceMotion ? false : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.35, duration: 0.35 }}
+          style={{ opacity: displayScore === 0 && !reduceMotion ? 0.35 : 1 }}
         />
         <circle cx={GAUGE.cx} cy={GAUGE.cy} r="4" fill={needleColor} />
         <text
@@ -100,17 +160,33 @@ function SegmentedGauge({ score, variant, reduceMotion }) {
           dominantBaseline="middle"
           fill={scoreColor}
         >
-          <tspan className="mm-hero-compare-gauge__score-svg">{score}</tspan>
+          <tspan className="mm-hero-compare-gauge__score-svg mm-hero-compare-gauge__score-svg--live">
+            {displayScore}
+          </tspan>
           <tspan className="mm-hero-compare-gauge__denom-svg" fill={denomColor}>
             {' '}/ 100
           </tspan>
         </text>
       </svg>
+      {/* Screen-reader live region for animated score */}
+      <span className="sr-only" aria-live="polite">
+        Score {displayScore} out of 100
+      </span>
     </div>
   );
 }
 
-function ComparePanel({ type, score, status, items, variant, reduceMotion, delay = 0 }) {
+function ComparePanel({
+  type,
+  score,
+  status,
+  items,
+  variant,
+  reduceMotion,
+  delay = 0,
+  animDelay = 0,
+  inView,
+}) {
   const isBefore = type === 'before';
   const badgeClass = isBefore ? 'mm-hero-compare-panel__badge--before' : 'mm-hero-compare-panel__badge--after';
   const statusClass = isBefore ? 'mm-hero-compare-panel__status--before' : 'mm-hero-compare-panel__status--after';
@@ -126,7 +202,13 @@ function ComparePanel({ type, score, status, items, variant, reduceMotion, delay
       <span className={`mm-hero-compare-panel__badge ${badgeClass}`}>
         {isBefore ? HERO_COMPARE_BEFORE_LABEL : HERO_COMPARE_AFTER_LABEL}
       </span>
-      <SegmentedGauge score={score} variant={variant} reduceMotion={reduceMotion} />
+      <SegmentedGauge
+        score={score}
+        variant={variant}
+        reduceMotion={reduceMotion}
+        animDelay={animDelay}
+        inView={inView}
+      />
       <p className={`mm-hero-compare-panel__status ${statusClass}`}>{status}</p>
       <ul className="mm-hero-compare-panel__list">
         {items.map((item) => (
@@ -144,14 +226,17 @@ function ComparePanel({ type, score, status, items, variant, reduceMotion, delay
 
 /**
  * Before / after placement readiness score — hero proof visual.
- * Adapted from profile-score transformation UX; framed as illustrative sample.
+ * Gauges count up from 0 and replay on a gentle loop when in view.
  */
 export function HeroReadinessCompare({ variant = 'light', className = '' }) {
   const reduceMotion = useReducedMotion();
   const panelVariant = variant === 'dark' ? 'dark' : 'light';
+  const compareRef = useRef(null);
+  const inView = useInView(compareRef, { once: false, amount: 0.35, margin: '-40px' });
 
   return (
     <motion.div
+      ref={compareRef}
       className={`mm-hero-score-root mm-hero-score-float mm-hero-compare-root ${className}`}
       initial={reduceMotion ? false : { opacity: 0, y: 24, scale: 0.96 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -189,6 +274,8 @@ export function HeroReadinessCompare({ variant = 'light', className = '' }) {
               variant={panelVariant}
               reduceMotion={reduceMotion}
               delay={0.15}
+              animDelay={0.35}
+              inView={inView}
             />
             <div className="mm-hero-compare-arrow" aria-hidden>
               <ChevronRight size={22} className="mm-hero-compare-arrow__icon mm-hero-compare-arrow__icon--h" />
@@ -202,6 +289,8 @@ export function HeroReadinessCompare({ variant = 'light', className = '' }) {
               variant={panelVariant}
               reduceMotion={reduceMotion}
               delay={0.28}
+              animDelay={0.65}
+              inView={inView}
             />
           </div>
 

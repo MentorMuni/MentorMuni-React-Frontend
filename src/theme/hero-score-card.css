@@ -1046,6 +1046,10 @@ html.mm-new-ui .mm-hero-compare-panel__badge--after {
   letter-spacing: -0.03em;
 }
 
+.mm-hero-compare-gauge__score-svg--live {
+  font-variant-numeric: tabular-nums;
+}
+
 .mm-hero-compare-gauge__denom-svg {
   font-size: 0.625rem;
   font-weight: 600;

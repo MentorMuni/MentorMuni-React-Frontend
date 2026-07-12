@@ -679,23 +679,23 @@ const HomePage = () => {
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className="mm-hero-quest-cta__eyebrow mb-1 flex flex-wrap items-center gap-2 text-[11px] font-extrabold uppercase tracking-[0.16em] text-violet-700">
-                        New Gen Z mode
+                        Practice mode
                         <span className="mm-hero-quest-cta__badge rounded-full bg-amber-100 px-2 py-0.5 text-[10px] tracking-normal text-amber-800">
-                          XP + streaks
+                          Points + daily wins
                         </span>
                       </span>
                       <span className="mm-hero-quest-cta__title block text-sm font-extrabold leading-snug text-foreground sm:text-base">
-                        Play Placement Quest for 3rd &amp; 4th year students
+                        Game-style placement prep for 3rd &amp; 4th year students
                       </span>
                       <span className="mm-hero-quest-cta__meta mt-1 flex flex-wrap gap-x-3 gap-y-1 text-xs font-semibold text-muted-foreground">
                         <span className="inline-flex items-center gap-1">
-                          <Trophy size={13} aria-hidden /> Leaderboards
+                          <Trophy size={13} aria-hidden /> Batch ranking
                         </span>
                         <span className="inline-flex items-center gap-1">
-                          <Flame size={13} aria-hidden /> Daily battles
+                          <Flame size={13} aria-hidden /> Daily practice
                         </span>
                         <span className="mm-hero-quest-cta__link inline-flex items-center gap-1 text-violet-700">
-                          Explore game mode <ArrowRight size={13} className="transition group-hover:translate-x-0.5" aria-hidden />
+                          See how it works <ArrowRight size={13} className="transition group-hover:translate-x-0.5" aria-hidden />
                         </span>
                       </span>
                     </span>
