@@ -6,6 +6,7 @@ import {
   ChevronDown,
   BarChart2,
   Mic,
+  Headphones,
   FileSearch,
   Cpu,
   GraduationCap,
@@ -54,6 +55,14 @@ const TOOLS = [
     title: 'Readiness check',
     desc: 'DSA, SD & HR score — finish the check for a coupon (1:1 mentorship + AI mock)',
     href: '/interview-readiness-tools',
+  },
+  {
+    icon: Headphones,
+    color: 'text-primary',
+    bg: 'bg-accent-soft',
+    title: 'AI 24×7 Voice Placement Coach',
+    desc: 'India’s first — live, any skill, or project interview + study plan',
+    href: '/voice-interview-coach',
   },
   {
     icon: Mic,

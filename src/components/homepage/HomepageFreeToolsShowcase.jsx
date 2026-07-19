@@ -3,6 +3,7 @@ import { motion, useReducedMotion } from 'framer-motion';
 import {
   BarChart2,
   Mic,
+  Headphones,
   FileSearch,
   Brain,
   GraduationCap,
@@ -25,6 +26,13 @@ const FREE_TOOLS = [
     accent: 'from-sky-500 to-cyan-500',
     span: 2,
     featured: true,
+  },
+  {
+    title: 'AI 24×7 Voice Placement Coach',
+    desc: 'Any skill · live · project + study plan',
+    href: '/voice-interview-coach',
+    icon: Headphones,
+    accent: 'from-sky-500 to-teal-500',
   },
   {
     title: 'AI mock interviews',

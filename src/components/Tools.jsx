@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { FileText, Brain, ClipboardCheck, TrendingUp, ArrowRight, Gift, GraduationCap, BookOpen, Zap } from 'lucide-react';
+import { FileText, Brain, ClipboardCheck, TrendingUp, ArrowRight, Gift, GraduationCap, BookOpen, Zap, Mic } from 'lucide-react';
 import {
   READINESS_TEST_COUPON_BADGE,
   READINESS_TEST_COUPON_OFFER_HEADLINE,
@@ -45,6 +45,17 @@ const Tools = () => {
     },
     {
       id: 3,
+      title: 'AI 24×7 Voice Placement Coach',
+      description:
+        "India’s first always-on AI placement coach. Run a full live interview, any skill round, or a project deep-dive — then get scores and a study plan.",
+      icon: Mic,
+      color: 'emerald',
+      href: '/voice-interview-coach',
+      highlights: ['24×7', 'Any skill / project / live', 'Score + study plan'],
+      featured: true,
+    },
+    {
+      id: 4,
       title: 'Interview readiness score',
       description:
         'A short assessment across DSA, system design, and HR. One score out of 100 plus concrete gaps—so you know what to fix first.',
@@ -54,7 +65,7 @@ const Tools = () => {
       highlights: ['~5 minutes', 'No signup', 'Instant breakdown'],
     },
     {
-      id: 4,
+      id: 5,
       title: 'Mentor guidance',
       description:
         '1:1 support from people who have cleared the same rounds you are preparing for—aligned to your stack and timeline.',
@@ -64,7 +75,7 @@ const Tools = () => {
       highlights: ['1:1 sessions', 'Roadmap', 'Placement focus'],
     },
     {
-      id: 5,
+      id: 6,
       title: 'Placement tracks',
       description:
         'Company-specific prep paths—what each tier tests, patterns to expect, and how to structure your practice before the drive.',
@@ -74,7 +85,7 @@ const Tools = () => {
       highlights: ['TCS · Infosys · Wipro', 'Pattern maps', 'Drive-ready'],
     },
     {
-      id: 6,
+      id: 7,
       title: 'Free tutorials',
       description:
         'Short topic refreshers and interview-style framing—so you can sharpen skills without committing to a full course first.',

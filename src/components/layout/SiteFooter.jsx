@@ -81,6 +81,11 @@ export default function SiteFooter({ onReadinessCtaClick }) {
                 </Link>
               </li>
               <li>
+                <Link to="/voice-interview-coach" className="transition-colors hover:text-[#1A8FC4]">
+                  AI 24×7 Placement Coach
+                </Link>
+              </li>
+              <li>
                 <Link to="/mock-interviews" className="transition-colors hover:text-[#1A8FC4]">
                   Mock Interviews
                 </Link>

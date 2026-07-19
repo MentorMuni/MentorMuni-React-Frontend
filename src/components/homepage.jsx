@@ -93,6 +93,7 @@ import {
 import { HeroLoopVideo } from './homepage/HeroLoopVideo';
 import { MentorMuniSystemLoop } from './homepage/MentorMuniSystemLoop';
 import { HomepageFreeToolsShowcase } from './homepage/HomepageFreeToolsShowcase';
+import { HomepagePlacementCoachSpotlight } from './homepage/HomepagePlacementCoachSpotlight';
 import FadeUp from './layout/FadeUp';
 import ScrollReveal from './layout/ScrollReveal';
 
@@ -740,6 +741,8 @@ const HomePage = () => {
 
         </div>
       </section>
+
+      <HomepagePlacementCoachSpotlight />
 
       {/* ════════════════ TRUST — campus types + stats ════════════════ */}
       <section

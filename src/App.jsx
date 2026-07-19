@@ -74,6 +74,7 @@ const SoftwareEngineerInterviewQuestionsPage = lazy(
 const NotFoundPage = lazy(() => import("./components/NotFoundPage"));
 const AIToolsKnowledgeBase = lazy(() => import("./components/AIToolsKnowledgeBase"));
 const InterviewReadinessToolsPage = lazy(() => import("./components/InterviewReadinessToolsPage"));
+const VoiceInterviewCoach = lazy(() => import("./components/voiceInterview/VoiceInterviewCoach"));
 const LeadershipBoard = lazy(() => import("./components/leadershipBoard"));
 const SnapReadinessTest = lazy(() => import("./components/snapTest/SnapReadinessTest"));
 const RoadmapPage = lazy(() => import("./components/RoadmapPage"));
@@ -256,6 +257,8 @@ function App() {
               {/* Specific /tools/* routes must be listed before /tools so they match first */}
               <Route path="/tools/interview-readiness" element={<InterviewReadinessToolsPage />} />
               <Route path="/interview-readiness-tools" element={<InterviewReadinessToolsPage />} />
+              <Route path="/tools/voice-interview" element={<VoiceInterviewCoach />} />
+              <Route path="/voice-interview-coach" element={<VoiceInterviewCoach />} />
               <Route path="/tools" element={<Tools />} />
               <Route path="/mentors" element={<Mentors />} />
               <Route path="/snap-test" element={<SnapReadinessTest />} />

@@ -65,6 +65,19 @@ export const ROUTE_SEO = {
     keywords:
       'mock interviews, AI interview practice, placement mock test, HR mock interview, coding interview practice',
   },
+  '/voice-interview-coach': {
+    title: 'AI 24×7 Voice Placement Coach — India’s First | MentorMuni',
+    description:
+      'India’s first 24×7 AI placement coach — practise a full live interview, any skill round, or project deep-dive, then get scores and a study plan.',
+    keywords:
+      'AI placement coach, 24x7 AI interview, voice placement coach India, any skill mock interview, project interview AI, campus placement coach',
+  },
+  '/tools/voice-interview': {
+    title: 'AI 24×7 Voice Placement Coach Tool | MentorMuni',
+    description:
+      'Always-on AI placement coach — start a live technical, skill, or project interview and end with scored feedback and next steps.',
+    keywords: 'voice interview tool, AI interview coach India, placement voice practice 24x7',
+  },
   '/ai-interview-preparation': {
     title: 'AI Interview Preparation for Engineering Students | MentorMuni',
     description:
