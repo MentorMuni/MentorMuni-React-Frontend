@@ -29,14 +29,63 @@
 
 .mm-voice-home__grid {
   display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
   align-items: center;
-  gap: clamp(1.75rem, 4vw, 3rem);
+  gap: clamp(1rem, 3.5vw, 3.5rem);
 }
 
-@media (min-width: 900px) {
+@media (max-width: 639px) {
+  .mm-voice-home__grid {
+    grid-template-columns: minmax(0, 1.05fr) minmax(9.5rem, 0.75fr);
+    gap: 0.85rem;
+  }
+
+  .mm-voice-home__title {
+    font-size: clamp(1.55rem, 7vw, 2rem);
+    max-width: none;
+  }
+
+  .mm-voice-home__lede {
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+
+  .mm-voice-home__modes {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.35rem;
+  }
+
+  .mm-voice-home__cta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.65rem;
+  }
+
+  .mm-voice-home__btn {
+    padding: 0.7rem 1rem;
+    font-size: 0.8125rem;
+  }
+
+  .mm-voice-home__stage {
+    min-height: 180px;
+    padding: 1.15rem 0.65rem 1rem;
+  }
+
+  .mm-voice-home__orb {
+    width: min(112px, 28vw);
+    height: min(112px, 28vw);
+  }
+
+  .mm-voice-home__stage-label {
+    font-size: 0.625rem;
+    letter-spacing: 0.04em;
+  }
+}
+
+@media (min-width: 640px) {
   .mm-voice-home__grid {
     grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-    gap: clamp(2rem, 5vw, 4rem);
   }
 }
 
@@ -253,6 +302,8 @@
   font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.06em;
+  line-height: 1.45;
+  text-align: center;
   text-transform: uppercase;
   color: var(--text-muted);
 }

@@ -346,25 +346,27 @@
 }
 
 .mm-voice-skill__btn {
-  border: 1px solid var(--vi-line);
+  border: 1.5px solid var(--vi-line);
   border-radius: 0.55rem;
   background: var(--bg-primary);
   padding: 0.45rem 0.85rem;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--vi-muted);
-  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+  color: var(--text-secondary);
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
 }
 
 .mm-voice-skill__btn:hover {
-  border-color: color-mix(in srgb, var(--vi-accent) 35%, var(--vi-line));
-  color: var(--vi-ink);
+  border-color: color-mix(in srgb, var(--vi-accent) 40%, var(--vi-line));
+  color: var(--text-heading);
 }
 
 .mm-voice-skill__btn.is-active {
-  border-color: color-mix(in srgb, var(--vi-accent) 45%, transparent);
-  background: color-mix(in srgb, var(--vi-accent) 12%, var(--bg-card));
-  color: var(--vi-accent);
+  border-color: color-mix(in srgb, var(--vi-accent) 70%, transparent);
+  background: color-mix(in srgb, var(--vi-accent) 16%, var(--bg-card));
+  color: var(--accent-hover, var(--vi-accent));
+  font-weight: 700;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--vi-accent) 22%, transparent);
 }
 
 .mm-voice-field {
@@ -1060,6 +1062,23 @@ html.mm-new-ui .mm-voice-skill__btn {
   background: rgba(11, 18, 32, 0.9);
   border-color: rgba(148, 163, 184, 0.22);
   color: var(--text-heading);
+}
+
+html.mm-new-ui .mm-voice-mode__btn.is-active {
+  border-color: rgba(56, 189, 248, 0.55);
+  background: linear-gradient(
+    145deg,
+    rgba(56, 189, 248, 0.18),
+    rgba(45, 212, 191, 0.1)
+  );
+  color: #f8fafc;
+}
+
+html.mm-new-ui .mm-voice-skill__btn.is-active {
+  border-color: rgba(56, 189, 248, 0.65);
+  background: rgba(56, 189, 248, 0.18);
+  color: #7dd3fc;
+  box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.28);
 }
 
 html.mm-new-ui .mm-voice-ctrl--secondary {

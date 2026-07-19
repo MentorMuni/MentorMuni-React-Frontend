@@ -448,6 +448,7 @@ export default function VoiceInterviewCoach() {
                                 key={skill.id}
                                 type="button"
                                 onClick={() => setSkillId(skill.id)}
+                                aria-pressed={active}
                                 className={`mm-voice-skill__btn ${active ? 'is-active' : ''}`}
                               >
                                 {skill.label}

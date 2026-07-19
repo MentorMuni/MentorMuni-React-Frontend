@@ -80,7 +80,11 @@ export function HomepagePlacementCoachSpotlight() {
                 <span />
               </div>
             </div>
-            <p className="mm-voice-home__stage-label">Live coaching · scores on end</p>
+            <p className="mm-voice-home__stage-label">
+              Live Mock interview
+              <br />
+              instant feedback
+            </p>
           </motion.div>
         </div>
       </div>
