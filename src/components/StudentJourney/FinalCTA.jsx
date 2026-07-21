@@ -55,10 +55,10 @@ export default function FinalCTA({ reduceMotion }) {
           {/* Headline */}
           <motion.div variants={itemVariants} className="space-y-4">
             <h2 className="text-4xl font-extrabold leading-tight text-foreground sm:text-5xl md:text-6xl">
-              Your Next Batch Deserves Better Than{' '}
-              <span className="bg-gradient-to-r from-primary via-cyan-500 to-brand-teal bg-clip-text text-transparent">
-                Luck
-              </span>
+            Your Next Interview<br/>
+            <span className="bg-gradient-to-r from-primary via-cyan-500 to-brand-teal bg-clip-text text-transparent">
+              Starts Here
+            </span>
             </h2>
           </motion.div>
 
@@ -67,8 +67,7 @@ export default function FinalCTA({ reduceMotion }) {
             variants={itemVariants}
             className="text-lg leading-relaxed text-muted-foreground sm:text-xl"
           >
-            One structured spine: measure → expose gaps → train performance. Then watch your
-            placement rate change.
+            Stop guessing. Get your score, see your gaps, practice under real pressure. Walk in confident.
           </motion.p>
 
           {/* Primary CTA */}
@@ -77,7 +76,7 @@ export default function FinalCTA({ reduceMotion }) {
               type="button"
               className="inline-flex items-center justify-center gap-3 rounded-xl bg-gradient-to-r from-primary to-cyan-500 px-10 py-4 text-lg font-bold text-white shadow-xl shadow-[0_20px_60px_rgba(26,143,196,0.3)] transition-all hover:shadow-2xl hover:shadow-[0_24px_72px_rgba(26,143,196,0.4)] hover:-translate-y-1"
             >
-              Schedule a College Demo
+              Take the Free Readiness Check Now
               <ArrowRight size={20} />
             </button>
           </motion.div>

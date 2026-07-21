@@ -65,7 +65,7 @@ export default function StudentJourneyHero({ reduceMotion }) {
               className="h-2 w-2 rounded-full bg-gradient-to-r from-primary to-cyan-400"
             />
             <span className="text-xs font-bold uppercase tracking-widest text-primary">
-              For College Partners
+              Your Interview Journey
             </span>
           </motion.div>
 
@@ -175,14 +175,14 @@ export default function StudentJourneyHero({ reduceMotion }) {
               type="button"
               className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-cyan-500 px-8 py-4 text-base font-bold text-white shadow-lg shadow-[0_12px_40px_rgba(26,143,196,0.25)] transition-all hover:shadow-xl hover:shadow-[0_16px_48px_rgba(26,143,196,0.3)] sm:w-auto"
             >
-              Schedule a College Demo
+              Start Free Readiness Check
               <ArrowRight size={18} />
             </button>
             <button
               type="button"
               className="inline-flex w-full items-center justify-center rounded-xl border border-border bg-white px-8 py-4 text-base font-semibold text-foreground transition-colors hover:bg-secondary sm:w-auto"
             >
-              Download Success Metrics
+              See Your Roadmap
             </button>
           </motion.div>
 
@@ -193,15 +193,15 @@ export default function StudentJourneyHero({ reduceMotion }) {
           >
             <div className="flex items-center gap-2">
               <Check size={16} className="text-emerald-500" />
-              50+ engineering colleges
+              5,000+ students
             </div>
             <div className="flex items-center gap-2">
               <Check size={16} className="text-emerald-500" />
-              5,000+ students prepared
+              Free to start
             </div>
             <div className="flex items-center gap-2">
               <Check size={16} className="text-emerald-500" />
-              2025–2026 placement season
+              No signup needed
             </div>
           </motion.div>
         </motion.div>
