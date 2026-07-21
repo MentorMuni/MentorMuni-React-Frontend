@@ -202,26 +202,26 @@ export const BENEFITS = [
 
 export const COLLEGE_SUCCESS_STORIES = [
   {
-    id: 'nit-warangal',
-    collegeName: 'NIT Warangal',
-    location: 'Telangana',
+    id: 'partner-college',
+    collegeName: 'Partner Engineering College',
+    location: 'India',
     year: '2025–2026',
     batchSize: 18,
     challenge:
-      'Last year: 60% placement. This year, we needed to do better. Students weren\'t confident in interviews.',
+      'Previous year: 60% placement. This year, we needed to do better. Students weren\'t confident in interviews.',
     whatHappened:
-      'Introduced MentorMuni readiness baseline in May. Built 5-week prep program around score gaps. Monthly TPO dashboards tracked cohort progress.',
+      'Introduced MentorMuni readiness baseline in May. Built 5-week prep program around score gaps. Monthly dashboards tracked cohort progress.',
     metrics: [
       { label: 'Avg readiness score', before: '38', after: '72', change: '+89%' },
       { label: 'Placement rate', before: '60%', after: '78%', change: '+30%' },
       { label: 'Avg CTC', before: '₹7.2L', after: '₹8.4L', change: '+17%' },
-      { label: 'Students placed in top companies', value: '8', note: 'TCS, Infosys, Amazon' },
+      { label: 'Students placed in top companies', value: '14/18', note: 'Multiple MNCs & startups' },
     ],
     quote:
-      'Finally, we could predict outcomes and guide with confidence. MentorMuni gave us the visibility we never had.',
-    tpoName: 'Dr. Rajesh Kumar',
-    tpoTitle: 'Placement Head',
-    isAnonymous: false,
+      'Finally, we could predict outcomes and guide with confidence. MentorMuni gave us the visibility we needed to support our students better.',
+    tpoName: 'Placement Head',
+    tpoTitle: 'Engineering College, India',
+    isAnonymous: true,
   },
 ];
 

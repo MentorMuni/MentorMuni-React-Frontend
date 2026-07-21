@@ -69,13 +69,13 @@ export default function StudentJourneyPage() {
               className="mb-12 text-center"
             >
               <p className="text-xs font-bold uppercase tracking-widest text-primary/90">
-                Proven Results
+                Real Results
               </p>
               <h2 className="mt-4 text-3xl font-extrabold text-foreground md:text-4xl">
-                College Success Stories
+                How Partner Colleges See Results
               </h2>
               <p className="mt-3 text-lg text-muted-foreground">
-                See how partner colleges transformed their placement outcomes
+                Real metrics from colleges using MentorMuni's 7-stage system
               </p>
             </motion.div>
 
