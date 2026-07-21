@@ -1,5 +1,5 @@
-import React, { Suspense, useReducedMotion } from 'react';
-import { motion } from 'framer-motion';
+import React, { Suspense } from 'react';
+import { motion, useReducedMotion } from 'framer-motion';
 import { PRIMARY_CTA_LABEL, SECONDARY_CTA_BOOK_CALL } from '../constants/brandCopy';
 import InnerRouteShell from './new-ui/InnerRouteShell';
 import StudentJourneyHero from './StudentJourney/HeroSection';
