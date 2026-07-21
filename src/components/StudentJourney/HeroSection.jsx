@@ -1,0 +1,140 @@
+import React, { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
+import { ArrowRight, Check } from 'lucide-react';
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.08,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
+  },
+};
+
+export default function StudentJourneyHero({ reduceMotion }) {
+  const heroRef = useRef(null);
+  const heroInView = useInView(heroRef, { once: true, amount: 0.12 });
+
+  return (
+    <section
+      ref={heroRef}
+      className="relative overflow-hidden border-b border-border bg-gradient-to-br from-background via-background to-primary/8 pb-24 pt-32 md:pb-32 md:pt-40"
+    >
+      {/* Animated background elements */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute -left-32 top-1/4 h-96 w-96 rounded-full bg-[rgba(26,143,196,0.08)] blur-[120px]"
+        animate={reduceMotion ? undefined : { x: [0, 24, 0], y: [0, 16, 0] }}
+        transition={{ duration: 20, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute -right-24 bottom-1/3 h-80 w-80 rounded-full bg-cyan-400/8 blur-[100px]"
+        animate={reduceMotion ? undefined : { x: [0, -20, 0] }}
+        transition={{ duration: 24, repeat: Infinity, ease: 'easeInOut' }}
+      />
+
+      <div className="mm-container relative z-10">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate={heroInView ? 'visible' : 'hidden'}
+          className="flex flex-col items-center text-center"
+        >
+          {/* Eyebrow Badge */}
+          <motion.div
+            variants={itemVariants}
+            className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-white/85 px-4 py-2 shadow-lg shadow-[0_8px_30px_-12px_rgba(26,143,196,0.12)] backdrop-blur-sm"
+            whileHover={reduceMotion ? undefined : { scale: 1.03, y: -2 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 24 }}
+          >
+            <span className="h-2 w-2 rounded-full bg-gradient-to-r from-primary to-cyan-400" />
+            <span className="text-xs font-bold uppercase tracking-widest text-primary">
+              For College Partners
+            </span>
+          </motion.div>
+
+          {/* Main Headline */}
+          <motion.h1
+            variants={itemVariants}
+            className="mt-8 max-w-4xl text-4xl font-extrabold leading-tight sm:text-5xl md:text-6xl tracking-tight"
+          >
+            The 7-Stage System That Turns Students Into{' '}
+            <span className="bg-gradient-to-r from-primary via-cyan-500 to-brand-teal bg-clip-text text-transparent">
+              Placement Performers
+            </span>
+          </motion.h1>
+
+          {/* Subheading */}
+          <motion.p
+            variants={itemVariants}
+            className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl"
+          >
+            From resume validation to final offer readiness. One structured spine. Predictable outcomes.
+          </motion.p>
+
+          {/* Key Stat */}
+          <motion.div
+            variants={itemVariants}
+            className="mt-8 rounded-2xl border border-primary/15 bg-gradient-to-br from-white/60 to-primary/5 px-8 py-6 backdrop-blur-sm"
+          >
+            <p className="text-xs font-bold uppercase tracking-widest text-primary">Results</p>
+            <p className="mt-3 text-2xl font-black text-foreground sm:text-3xl">
+              42% avg score improvement · 85% placement rate
+            </p>
+          </motion.div>
+
+          {/* CTAs */}
+          <motion.div
+            variants={itemVariants}
+            className="mt-10 flex flex-col items-center gap-4 sm:flex-row sm:justify-center"
+          >
+            <button
+              type="button"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-primary to-cyan-500 px-8 py-4 text-base font-bold text-white shadow-lg shadow-[0_12px_40px_rgba(26,143,196,0.25)] transition-all hover:shadow-xl hover:shadow-[0_16px_48px_rgba(26,143,196,0.3)] sm:w-auto"
+            >
+              Schedule a College Demo
+              <ArrowRight size={18} />
+            </button>
+            <button
+              type="button"
+              className="inline-flex w-full items-center justify-center rounded-xl border border-border bg-white px-8 py-4 text-base font-semibold text-foreground transition-colors hover:bg-secondary sm:w-auto"
+            >
+              Download Success Metrics
+            </button>
+          </motion.div>
+
+          {/* Trust Markers */}
+          <motion.div
+            variants={itemVariants}
+            className="mt-12 flex flex-wrap items-center justify-center gap-6 border-t border-border pt-8 text-sm text-muted-foreground"
+          >
+            <div className="flex items-center gap-2">
+              <Check size={16} className="text-emerald-500" />
+              50+ engineering colleges
+            </div>
+            <div className="flex items-center gap-2">
+              <Check size={16} className="text-emerald-500" />
+              5,000+ students prepared
+            </div>
+            <div className="flex items-center gap-2">
+              <Check size={16} className="text-emerald-500" />
+              2025–2026 placement season
+            </div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </section>
+  );
+}

@@ -35,7 +35,9 @@ const MentorDashboard = lazy(() => import("./components/mentordashboard"));
 const AdminDashboardNew = lazy(() => import("./components/admin/AdminDashboardNew"));
 const MentorDashboardRefactored = lazy(() => import("./components/mentor/MentorDashboardRefactored"));
 const MentorProfile = lazy(() => import("./components/mentor/MentorProfile"));
+const StudentJourneyPage = lazy(() => import("./components/StudentJourneyPage"));
 const HowItWorks = lazy(() => import("./components/HowItWorks"));
+const CollegesPage = lazy(() => import("./components/CollegesPage"));
 const Tools = lazy(() => import("./components/Tools"));
 const Mentors    = lazy(() => import("./components/Mentors"));
 const JavaTutorial = lazy(() => import("./components/javaTutorial"));
@@ -235,7 +237,7 @@ function App() {
           <Suspense fallback={<PageFallback />}>
             <Routes>
               <Route path="/" element={<HomePage />} />
-              <Route path="/how-it-works" element={<HowItWorks />} />
+              <Route path="/how-it-works" element={<StudentJourneyPage />} />
               <Route path="/roadmap" element={<RoadmapPage />} />
               <Route path="/gamified-placement-prep" element={<GamifiedPlacementPrep />} />
               <Route path="/blog" element={<BlogList />} />
@@ -277,7 +279,7 @@ function App() {
               <Route path="/waitlist" element={<Waitlist />} />
               <Route path="/result" element={<ResultPage />} />
               <Route path="/for-recruiters" element={<ForRecruiters />} />
-              <Route path="/colleges" element={<Colleges />} />
+              <Route path="/colleges" element={<CollegesPage />} />
               <Route path="/about" element={<AboutUs />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/student/dashboard" element={<StudentDashboardRefactored />} />

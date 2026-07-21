@@ -1,0 +1,347 @@
+/**
+ * Student Journey Page - Animations & Custom Styles
+ * Scroll-triggered animations, hover effects, and responsive optimizations
+ */
+
+/* ============================================
+   TIMELINE CONNECTING LINE
+   ============================================ */
+
+.student-journey-timeline {
+  position: relative;
+}
+
+.timeline-svg-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  transform: translateX(-50%);
+  pointer-events: none;
+}
+
+/* ============================================
+   STAGE CARD ANIMATIONS
+   ============================================ */
+
+.stage-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.stage-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.stage-card:hover::before {
+  opacity: 1;
+}
+
+/* Icon rotation on hover */
+.stage-card-icon {
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.stage-card:hover .stage-card-icon {
+  transform: scale(1.08) rotate(5deg);
+}
+
+/* ============================================
+   SUPPORT SYSTEM CARDS
+   ============================================ */
+
+.support-card {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.support-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 60px -12px rgba(0, 0, 0, 0.15);
+}
+
+/* ============================================
+   BENEFIT CARDS
+   ============================================ */
+
+.benefit-card-icon {
+  transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.benefit-card:hover .benefit-card-icon {
+  transform: scale(1.12) rotate(-5deg);
+}
+
+/* ============================================
+   CASE STUDY METRICS
+   ============================================ */
+
+.metric-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, rgba(26, 143, 196, 0.05) 100%);
+  border: 1px solid rgba(26, 143, 196, 0.1);
+  transition: all 0.3s ease;
+}
+
+.metric-card:hover {
+  box-shadow: 0 10px 40px -15px rgba(26, 143, 196, 0.2);
+  border-color: rgba(26, 143, 196, 0.2);
+}
+
+.metric-change {
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+/* ============================================
+   SCROLL PROGRESS INDICATOR
+   ============================================ */
+
+@keyframes scaleIn {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  0% {
+    transform: translateX(-30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    transform: translateX(30px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes countUp {
+  from {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ============================================
+   GRADIENT TEXT
+   ============================================ */
+
+.gradient-text {
+  background: linear-gradient(135deg, var(--color-primary), var(--color-cyan), var(--color-teal));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ============================================
+   BUTTON HOVER EFFECTS
+   ============================================ */
+
+.btn-primary {
+  position: relative;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: left 0.5s ease;
+}
+
+.btn-primary:hover::after {
+  left: 100%;
+}
+
+/* ============================================
+   RESPONSIVE ADJUSTMENTS
+   ============================================ */
+
+@media (max-width: 768px) {
+  /* Hide SVG line on mobile */
+  .timeline-svg-line {
+    display: none;
+  }
+
+  /* Stack cards in single column */
+  .stage-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Reduce icon size on mobile */
+  .stage-card-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  /* Simplify card hover on mobile */
+  .stage-card:hover {
+    transform: none;
+  }
+
+  /* Reduce gap between cards */
+  .stage-grid {
+    gap: 1.5rem !important;
+  }
+
+  /* Smaller padding for mobile */
+  .stage-card {
+    padding: 1rem !important;
+  }
+
+  /* Reduce text size on mobile */
+  .stage-card h3 {
+    font-size: 1rem !important;
+  }
+
+  .stage-card p {
+    font-size: 0.875rem !important;
+  }
+}
+
+/* ============================================
+   ACCESSIBILITY - PREFERS REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .stage-card:hover {
+    transform: none;
+  }
+
+  .support-card:hover {
+    transform: none;
+  }
+
+  .benefit-card:hover .benefit-card-icon {
+    transform: none;
+  }
+
+  .stage-card-icon {
+    transition: none;
+  }
+
+  .metric-card {
+    transition: none;
+  }
+}
+
+/* ============================================
+   DARK MODE SUPPORT (if using dark theme)
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+  .stage-card,
+  .support-card,
+  .benefit-card {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .stage-card:hover,
+  .support-card:hover,
+  .benefit-card:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(26, 143, 196, 0.3);
+  }
+
+  .stage-card::before {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.05) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+  }
+}
+
+/* ============================================
+   CUSTOM SCROLLBAR (Optional)
+   ============================================ */
+
+.student-journey-page::-webkit-scrollbar {
+  width: 8px;
+}
+
+.student-journey-page::-webkit-scrollbar-track {
+  background: rgba(26, 143, 196, 0.05);
+}
+
+.student-journey-page::-webkit-scrollbar-thumb {
+  background: rgba(26, 143, 196, 0.3);
+  border-radius: 4px;
+}
+
+.student-journey-page::-webkit-scrollbar-thumb:hover {
+  background: rgba(26, 143, 196, 0.5);
+}
+
+/* ============================================
+   LOADING SKELETON
+   ============================================ */
+
+@keyframes skeleton-loading {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+.skeleton {
+  animation: skeleton-loading 1.5s infinite;
+  background: linear-gradient(90deg, rgba(200, 200, 200, 0.2) 25%, rgba(200, 200, 200, 0.3) 50%, rgba(200, 200, 200, 0.2) 75%);
+  background-size: 200% 100%;
+}
