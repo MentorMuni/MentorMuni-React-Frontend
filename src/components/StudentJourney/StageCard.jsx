@@ -70,7 +70,7 @@ export default function StageCard({ stage, index }) {
           </p>
 
           {/* PAIN POINT */}
-          <div className="flex items-start gap-3 rounded-lg bg-red-50/60 border border-red-200/50 p-3.5 md:p-4">
+          <div className="pain-point-box flex items-start gap-3 rounded-lg border border-red-200/50 p-3.5 md:p-4">
             <div className="text-red-600 font-bold text-lg mt-0.5">❌</div>
             <div>
               <p className="text-xs font-bold uppercase tracking-wide text-red-700">The Pain</p>
@@ -79,7 +79,7 @@ export default function StageCard({ stage, index }) {
           </div>
 
           {/* SOLUTION */}
-          <div className="flex items-start gap-3 rounded-lg bg-green-50/60 border border-green-200/50 p-3.5 md:p-4">
+          <div className="solution-box flex items-start gap-3 rounded-lg border border-green-200/50 p-3.5 md:p-4">
             <div className="text-green-600 font-bold text-lg mt-0.5">✅</div>
             <div>
               <p className="text-xs font-bold uppercase tracking-wide text-green-700">How We Solve It</p>
@@ -88,7 +88,7 @@ export default function StageCard({ stage, index }) {
           </div>
 
           {/* Primary Outcome */}
-          <div className="flex items-start gap-3 rounded-lg bg-white/40 p-3.5 backdrop-blur-sm md:p-4">
+          <div className="outcome-box flex items-start gap-3 rounded-lg bg-white/40 p-3.5 backdrop-blur-sm md:p-4">
             <div className="mt-0.5 h-5 w-5 flex-shrink-0">
               <div className="h-full w-full rounded-full bg-gradient-to-br from-primary to-cyan-400" />
             </div>

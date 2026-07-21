@@ -59,7 +59,11 @@ export default function StudentJourneyHero({ reduceMotion }) {
             whileHover={reduceMotion ? undefined : { scale: 1.03, y: -2 }}
             transition={{ type: 'spring', stiffness: 400, damping: 24 }}
           >
-            <span className="h-2 w-2 rounded-full bg-gradient-to-r from-primary to-cyan-400" />
+            <motion.span
+              animate={reduceMotion ? undefined : { scale: [1, 1.2, 1], rotate: [0, 360, 0] }}
+              transition={{ duration: 3, repeat: Infinity }}
+              className="h-2 w-2 rounded-full bg-gradient-to-r from-primary to-cyan-400"
+            />
             <span className="text-xs font-bold uppercase tracking-widest text-primary">
               For College Partners
             </span>
@@ -70,10 +74,24 @@ export default function StudentJourneyHero({ reduceMotion }) {
             variants={itemVariants}
             className="mt-8 max-w-4xl text-4xl font-extrabold leading-tight sm:text-5xl md:text-6xl tracking-tight"
           >
-            The 7-Stage System That Turns Students Into{' '}
-            <span className="bg-gradient-to-r from-primary via-cyan-500 to-brand-teal bg-clip-text text-transparent">
-              Placement Performers
-            </span>
+            <motion.span
+              className="block"
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              The 7-Stage System
+            </motion.span>
+            <motion.span
+              className="block bg-gradient-to-r from-primary via-cyan-500 to-brand-teal bg-clip-text text-transparent mt-2"
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              viewport={{ once: true }}
+            >
+              That Transforms Lost Students Into Confident Performers
+            </motion.span>
           </motion.h1>
 
           {/* Subheading */}
@@ -81,18 +99,71 @@ export default function StudentJourneyHero({ reduceMotion }) {
             variants={itemVariants}
             className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl"
           >
-            From resume validation to final offer readiness. One structured spine. Predictable outcomes.
+            From anxiety & confusion → clarity & confidence → real offers.
+            <motion.span
+              className="block text-base mt-3 font-semibold text-primary"
+              animate={reduceMotion ? undefined : { opacity: [0.6, 1, 0.6] }}
+              transition={{ duration: 2.5, repeat: Infinity }}
+            >
+              ✨ Structured, measurable, proven.
+            </motion.span>
           </motion.p>
 
-          {/* Key Stat */}
+          {/* Key Stat - Enhanced */}
           <motion.div
             variants={itemVariants}
-            className="mt-8 rounded-2xl border border-primary/15 bg-gradient-to-br from-white/60 to-primary/5 px-8 py-6 backdrop-blur-sm"
+            className="mt-8 rounded-2xl border border-primary/20 bg-gradient-to-br from-white/60 to-primary/5 backdrop-blur-sm overflow-hidden"
           >
-            <p className="text-xs font-bold uppercase tracking-widest text-primary">Results</p>
-            <p className="mt-3 text-2xl font-black text-foreground sm:text-3xl">
-              42% avg score improvement · 85% placement rate
-            </p>
+            <div className="px-8 py-6 md:py-8">
+              <motion.div
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                transition={{ duration: 0.5, delay: 0.3 }}
+                viewport={{ once: true }}
+              >
+                <p className="text-xs font-bold uppercase tracking-widest text-primary/90 mb-3">
+                  Proven Impact
+                </p>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                    viewport={{ once: true }}
+                  >
+                    <p className="text-3xl font-black text-primary">42%</p>
+                    <p className="text-xs text-muted-foreground mt-1">Avg Score Improvement</p>
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                    viewport={{ once: true }}
+                  >
+                    <p className="text-3xl font-black text-cyan-600">85%</p>
+                    <p className="text-xs text-muted-foreground mt-1">Placement Rate</p>
+                  </motion.div>
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: 0.6 }}
+                    viewport={{ once: true }}
+                  >
+                    <p className="text-3xl font-black text-brand-teal">7</p>
+                    <p className="text-xs text-muted-foreground mt-1">Structured Stages</p>
+                  </motion.div>
+                </div>
+              </motion.div>
+            </div>
+            {/* Animated border */}
+            <motion.div
+              className="h-1 bg-gradient-to-r from-primary via-cyan-500 to-brand-teal"
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              style={{ transformOrigin: 'left' }}
+              viewport={{ once: true }}
+            />
           </motion.div>
 
           {/* CTAs */}
