@@ -234,10 +234,8 @@ export default function DesignSystemDemo() {
         <div className="border-t border-border pt-12">
           <p className="text-sm text-muted-foreground">
             <strong className="text-foreground">How to use this:</strong> Keep this page open in another tab while developing.
-            Reference the patterns above when creating new components. Import from
-            <code className="ml-2 rounded bg-secondary px-2 py-1 text-xs text-foreground">designSystem.js</code>
-            and
-            <code className="ml-2 rounded bg-secondary px-2 py-1 text-xs text-foreground">DesignSystemComponents.jsx</code>
+            Reference the patterns above when creating new components. Use Tailwind CSS classes and design tokens from
+            <code className="ml-2 rounded bg-secondary px-2 py-1 text-xs text-foreground">styles/design-tokens.css</code>
             for consistent styling.
           </p>
         </div>
