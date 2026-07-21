@@ -69,6 +69,24 @@ export default function StageCard({ stage, index }) {
             {stage.description}
           </p>
 
+          {/* PAIN POINT */}
+          <div className="flex items-start gap-3 rounded-lg bg-red-50/60 border border-red-200/50 p-3.5 md:p-4">
+            <div className="text-red-600 font-bold text-lg mt-0.5">❌</div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wide text-red-700">The Pain</p>
+              <p className="mt-1 text-sm leading-snug text-red-900">{stage.painPoint}</p>
+            </div>
+          </div>
+
+          {/* SOLUTION */}
+          <div className="flex items-start gap-3 rounded-lg bg-green-50/60 border border-green-200/50 p-3.5 md:p-4">
+            <div className="text-green-600 font-bold text-lg mt-0.5">✅</div>
+            <div>
+              <p className="text-xs font-bold uppercase tracking-wide text-green-700">How We Solve It</p>
+              <p className="mt-1 text-sm leading-snug text-green-900">{stage.solution}</p>
+            </div>
+          </div>
+
           {/* Primary Outcome */}
           <div className="flex items-start gap-3 rounded-lg bg-white/40 p-3.5 backdrop-blur-sm md:p-4">
             <div className="mt-0.5 h-5 w-5 flex-shrink-0">
