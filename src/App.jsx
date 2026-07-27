@@ -31,10 +31,6 @@ const OutcomesPage = lazy(() => import("./components/outcomes"));
 const Pricing   = lazy(() => import("./components/pricing"));
 const Waitlist  = lazy(() => import("./components/waitlist"));
 const ResultPage = lazy(() => import("./components/result"));
-const MentorDashboard = lazy(() => import("./components/mentordashboard"));
-const AdminDashboardNew = lazy(() => import("./components/admin/AdminDashboardNew"));
-const MentorDashboardRefactored = lazy(() => import("./components/mentor/MentorDashboardRefactored"));
-const MentorProfile = lazy(() => import("./components/mentor/MentorProfile"));
 const StudentJourneyPage = lazy(() => import("./components/StudentJourneyPage"));
 const HowItWorks = lazy(() => import("./components/HowItWorks"));
 const CollegesPage = lazy(() => import("./components/CollegesPage"));
@@ -58,7 +54,6 @@ const PlacementTracks = lazy(() => import("./components/placementTracks"));
 const FreeTutorials = lazy(() => import("./components/freeTutorials"));
 const ResumeAnalyzer = lazy(() => import("./components/resumeAnalyzer"));
 const LoginPage = lazy(() => import("./components/login/LoginPage"));
-const StudentDashboardRefactored = lazy(() => import("./components/student/StudentDashboardRefactored"));
 const ContactPage = lazy(() => import("./components/contactPage"));
 const AboutUs = lazy(() => import("./components/aboutUs"));
 const TermsPage = lazy(() => import("./components/legal/TermsPage"));
@@ -66,7 +61,6 @@ const PrivacyPage = lazy(() => import("./components/legal/PrivacyPage"));
 const CookiesPage = lazy(() => import("./components/legal/CookiesPage"));
 const CareersPage = lazy(() => import("./components/legal/CareersPage"));
 const DesignSystemDemo = lazy(() => import("./components/DesignSystemDemo"));
-const CareerHealthDashboard = lazy(() => import("./components/CareerHealthDashboard"));
 const SoftwareEngineerInterviewQuestionsPage = lazy(
   () => import("./components/SoftwareEngineerInterviewQuestionsPage")
 );
@@ -282,16 +276,11 @@ function App() {
               <Route path="/colleges" element={<CollegesPage />} />
               <Route path="/about" element={<AboutUs />} />
               <Route path="/login" element={<LoginPage />} />
-              <Route path="/student/dashboard" element={<StudentDashboardRefactored />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />
               <Route path="/cookies" element={<CookiesPage />} />
               <Route path="/careers" element={<CareersPage />} />
-              <Route path="/admin/dashboard" element={<AdminDashboardNew />} />
-              <Route path="/mentor/dashboard" element={<MentorDashboardRefactored />} />
-              <Route path="/mentor/profile" element={<MentorProfile />} />
-              <Route path="/dashboard" element={<MentorDashboard />} />
               <Route path="/java-tutorial" element={<JavaTutorial />} />
               <Route path="/java-for-beginners" element={<JavaTutorial />} />
               <Route path="/sql-tutorial" element={<SqlTutorial />} />
@@ -309,9 +298,6 @@ function App() {
               <Route path="/quantum-computing" element={<QuantumComputingTutorial />} />
               <Route path="/courses/quantum-computing" element={<QuantumComputingTutorial />} />
               <Route path="/courses/devops-roadmap-for-beginners" element={<DevOpsRoadmap />} />
-              {/* User Dashboard Routes */}
-              <Route path="/career-health" element={<CareerHealthDashboard />} />
-              <Route path="/dashboard/health" element={<CareerHealthDashboard />} />
               <Route path="/ai-tools" element={<AIToolsKnowledgeBase />} />
               {/* Design System Demo - For Development Only */}
               <Route path="/design-system" element={<DesignSystemDemo />} />
