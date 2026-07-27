@@ -470,7 +470,7 @@ function HeroProblemTicker({ reduceMotion }) {
         {tickerItems.map((item, idx) => (
           <span
             key={`${item}-${idx}`}
-            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-slate-200/90 bg-slate-50 px-3 py-1 text-[11px] font-semibold text-slate-700"
+            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-slate-200/90 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 px-3 py-1 text-[11px] font-semibold text-slate-700 dark:text-slate-300"
           >
             <span className="h-1.5 w-1.5 rounded-full bg-[#1A8FC4]" aria-hidden />
             {item}
@@ -608,7 +608,7 @@ const HomePage = () => {
 
               <motion.div className="mm-hero-copy" variants={heroReveal}>
                 <motion.h1
-                  className="w-full text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight text-neutral-950 mb-6"
+                  className="w-full text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight text-foreground mb-6"
                   variants={heroHeadlineLine}
                   initial={reduceMotion ? false : 'hidden'}
                   animate="visible"
@@ -785,7 +785,7 @@ const HomePage = () => {
                 className={
                   newUI
                     ? 'mm-new-ui-chip mm-new-ui-chip--trust px-3 py-1.5 text-[11px] sm:text-xs'
-                    : 'inline-flex items-center gap-1.5 rounded-full border border-slate-200/90 bg-slate-50/90 px-3 py-1.5 text-[11px] font-semibold text-slate-700 sm:text-xs'
+                    : 'inline-flex items-center gap-1.5 rounded-full border border-slate-200/90 dark:border-slate-700 bg-slate-50/90 dark:bg-slate-800 px-3 py-1.5 text-[11px] font-semibold text-slate-700 dark:text-slate-300 sm:text-xs'
                 }
               >
                 <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" aria-hidden />
@@ -1036,7 +1036,7 @@ const HomePage = () => {
                     </button>
                     <Link
                       to={PROGRAM_ENROLL_PATH}
-                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl border-2 border-[#1A8FC4] bg-white px-6 py-3.5 text-base font-bold text-[#15799F] transition-colors hover:bg-sky-50"
+                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl border-2 border-[#1A8FC4] bg-white dark:bg-slate-800 px-6 py-3.5 text-base font-bold text-[#15799F] dark:text-sky-400 transition-colors hover:bg-sky-50 dark:hover:bg-slate-700"
                     >
                       {PROGRAM_ENROLL_CTA}
                     </Link>
@@ -1099,7 +1099,7 @@ const HomePage = () => {
           </div>
 
           <FadeUp delay={0.06}>
-            <div className="mb-10 rounded-2xl border border-slate-200/90 bg-slate-50/80 p-5 md:p-6">
+            <div className="mb-10 rounded-2xl border border-slate-200/90 dark:border-slate-700/50 bg-slate-50/80 dark:bg-slate-800/50 p-5 md:p-6">
               <p className="mb-5 text-center text-sm font-semibold text-foreground md:text-left">
                 {REALITY_CHECK_EYEBROW}
               </p>
@@ -1108,7 +1108,7 @@ const HomePage = () => {
               </p>
               <div className="grid gap-6 md:grid-cols-2 md:gap-8">
                 <div>
-                  <h3 className="mb-3 text-xs font-bold uppercase tracking-[0.12em] text-rose-700">
+                  <h3 className="mb-3 text-xs font-bold uppercase tracking-[0.12em] text-rose-700 dark:text-rose-400">
                     {REALITY_CHECK_NOT_TITLE}
                   </h3>
                   <ul className="space-y-2.5">
@@ -1124,7 +1124,7 @@ const HomePage = () => {
                   </ul>
                 </div>
                 <div>
-                  <h3 className="mb-3 text-xs font-bold uppercase tracking-[0.12em] text-emerald-700">
+                  <h3 className="mb-3 text-xs font-bold uppercase tracking-[0.12em] text-emerald-700 dark:text-emerald-400">
                     {REALITY_CHECK_FOR_TITLE}
                   </h3>
                   <ul className="space-y-2.5">
@@ -1151,7 +1151,7 @@ const HomePage = () => {
               <div className="mm-scroll-x overscroll-x-contain">
                 <table className="w-full min-w-[640px] border-collapse text-sm sm:min-w-[720px]">
                   <thead>
-                    <tr className="border-b border-border bg-neutral-50/90">
+                    <tr className="border-b border-border bg-neutral-50/90 dark:bg-slate-800/50">
                       <th
                         scope="col"
                         className="rounded-tl-xl px-4 py-4 text-left text-xs font-bold text-foreground sm:px-5 sm:text-sm"
@@ -1166,7 +1166,7 @@ const HomePage = () => {
                             scope="col"
                             className={`px-3 py-4 text-center text-xs font-bold sm:px-4 sm:text-sm ${
                               isMM
-                                ? 'rounded-tr-xl bg-[#FFF4E6] text-[#1A8FC4]'
+                                ? 'rounded-tr-xl bg-[#FFF4E6] dark:bg-sky-900/30 text-[#1A8FC4] dark:text-sky-400'
                                 : 'text-foreground'
                             }`}
                           >
@@ -1388,7 +1388,7 @@ const HomePage = () => {
       </section>
 
       {/* ════════════════ MENTORS — Expert Mentorship (two columns) ════════════════ */}
-      <section className="mm-band mm-marketing-section border-t border-border bg-neutral-50">
+      <section className="mm-band mm-marketing-section border-t border-border bg-neutral-50 dark:bg-slate-900/30">
         <div className="mm-container w-full">
           <div className="grid items-start gap-12 lg:grid-cols-2 lg:gap-20">
             <FadeUp className="w-full text-left">

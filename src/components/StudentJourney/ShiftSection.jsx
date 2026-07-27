@@ -42,7 +42,7 @@ export default function ShiftSection({ reduceMotion }) {
             initial={reduceMotion ? false : { opacity: 0, y: 24 }}
             animate={inView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: 0.5, delay: 0.08, ease }}
-            className="rounded-2xl border border-border/80 bg-white/60 p-7 backdrop-blur-sm md:p-8"
+            className="why-mm-surface rounded-2xl border border-border/80 p-7 backdrop-blur-sm md:p-8"
           >
             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-muted-foreground">
               {SHIFT_SECTION.before.label}
@@ -64,7 +64,7 @@ export default function ShiftSection({ reduceMotion }) {
             initial={reduceMotion ? false : { opacity: 0, y: 24 }}
             animate={inView ? { opacity: 1, y: 0 } : undefined}
             transition={{ duration: 0.5, delay: 0.16, ease }}
-            className="rounded-2xl border border-primary/25 bg-gradient-to-br from-white to-accent-soft/60 p-7 shadow-[0_20px_50px_-28px_rgba(26,143,196,0.35)] md:p-8"
+            className="why-mm-surface rounded-2xl border border-primary/25 p-7 shadow-[0_20px_50px_-28px_rgba(26,143,196,0.35)] md:p-8"
           >
             <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-brand-teal">
               {SHIFT_SECTION.after.label}

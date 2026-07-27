@@ -98,7 +98,7 @@ export default function StudentJourneyHero({ reduceMotion }) {
               {WHY_PAGE.flow.map((step, index) => (
                 <motion.li
                   key={step.step}
-                  className="relative rounded-2xl border border-border/80 bg-white/70 p-4 backdrop-blur-sm md:p-5"
+                  className="why-mm-surface relative rounded-2xl border border-border/80 p-4 backdrop-blur-sm md:p-5"
                   initial={reduceMotion ? false : { opacity: 0, y: 16 }}
                   animate={heroInView ? { opacity: 1, y: 0 } : undefined}
                   transition={{ duration: 0.45, delay: reduceMotion ? 0 : 0.2 + index * 0.08, ease }}

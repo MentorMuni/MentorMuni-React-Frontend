@@ -19,7 +19,7 @@ export default function StudentJourneyTimeline({ reduceMotion }) {
   const inView = useInView(ref, { once: true, margin: '-80px' });
 
   return (
-    <section ref={ref} className="relative overflow-hidden bg-white py-20 md:py-28">
+    <section ref={ref} className="relative overflow-hidden bg-background py-20 md:py-28">
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.035]"
         style={{

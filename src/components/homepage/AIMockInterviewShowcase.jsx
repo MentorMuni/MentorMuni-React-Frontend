@@ -176,7 +176,7 @@ export const AIMockInterviewShowcase = ({ isHeroSection = true }) => {
                       key={feature.title}
                       custom={i}
                       variants={featureVariants}
-                      className="flex gap-3 rounded-lg border border-sky-200/40 bg-white/50 backdrop-blur-sm p-3 hover:bg-white/70 transition-colors"
+                      className="flex gap-3 rounded-lg border border-sky-200/40 dark:border-sky-700/40 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm p-3 hover:bg-white/70 dark:hover:bg-slate-700/50 transition-colors"
                     >
                       <motion.div
                         className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-sky-400 to-cyan-500 text-white"

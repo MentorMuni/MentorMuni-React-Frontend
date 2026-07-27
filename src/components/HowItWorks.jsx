@@ -126,7 +126,7 @@ function PhaseCard({ phase, index }) {
   return (
     <FadeUp delay={index * 0.06}>
       <article
-        className={`relative h-full overflow-hidden rounded-2xl border border-border bg-white p-6 shadow-card transition-colors hover:border-primary/35 ${phase.borderAccent} border-t-2`}
+        className={`relative h-full overflow-hidden rounded-2xl border border-border bg-white dark:bg-slate-800 p-6 shadow-card transition-colors hover:border-primary/35 ${phase.borderAccent} border-t-2`}
       >
         <div
           className={`pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full bg-gradient-to-br ${phase.accent} opacity-[0.07] blur-2xl`}
@@ -185,7 +185,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
   return (
     <section
       ref={heroRef}
-      className="relative overflow-hidden border-b border-border bg-gradient-to-b from-background via-background to-secondary/50 pb-20 pt-24 md:pb-24 md:pt-28"
+      className="relative overflow-hidden border-b border-border bg-gradient-to-b from-background via-background to-secondary/50 dark:to-slate-900/50 pb-20 pt-24 md:pb-24 md:pt-28"
     >
       <div
         className="pointer-events-none absolute inset-0 opacity-[0.45]"
@@ -222,7 +222,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
       >
         <motion.div variants={item} className="mb-6 flex flex-col items-center text-center sm:mb-8">
           <motion.div
-            className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-white/85 px-4 py-2 shadow-[0_8px_30px_-12px_rgba(26,143,196,0.12)] backdrop-blur-sm"
+            className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-white/85 dark:bg-slate-800/85 px-4 py-2 shadow-[0_8px_30px_-12px_rgba(26,143,196,0.12)] backdrop-blur-sm"
             whileHover={reduceMotion ? undefined : { scale: 1.02, y: -1 }}
             transition={{ type: 'spring', stiffness: 400, damping: 24 }}
           >
@@ -253,7 +253,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
         <div className="mt-10 grid gap-10 lg:grid-cols-12 lg:items-start lg:gap-12">
           <motion.div variants={item} className="space-y-5 lg:col-span-7">
             <motion.article
-              className="relative overflow-hidden rounded-[1.35rem] border border-red-200/40 bg-gradient-to-br from-white via-white to-red-50/30 p-6 shadow-[0_20px_50px_-28px_rgba(220,38,38,0.12)] md:p-7"
+              className="relative overflow-hidden rounded-[1.35rem] border border-red-200/40 dark:border-red-900/40 bg-gradient-to-br from-white via-white to-red-50/30 dark:from-slate-800 dark:via-slate-800 dark:to-red-950/30 p-6 shadow-[0_20px_50px_-28px_rgba(220,38,38,0.12)] md:p-7"
               whileHover={reduceMotion ? undefined : { y: -3 }}
               transition={{ type: 'spring', stiffness: 380, damping: 28 }}
             >
@@ -261,7 +261,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
                 className="pointer-events-none absolute -right-16 top-0 h-40 w-40 rounded-full bg-red-500/[0.06] blur-3xl"
                 aria-hidden
               />
-              <span className="relative inline-flex rounded-md bg-red-500/[0.08] px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-red-800">
+              <span className="relative inline-flex rounded-md bg-red-500/[0.08] dark:bg-red-900/30 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide text-red-800 dark:text-red-300">
                 The problem
               </span>
               <h2 className="relative mt-4 text-xl font-black leading-[1.25] tracking-tight text-foreground md:text-2xl md:leading-[1.2]">
@@ -275,7 +275,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
             </motion.article>
 
             <motion.article
-              className="relative overflow-hidden rounded-[1.35rem] border border-primary/25 bg-gradient-to-br from-background via-white to-accent-soft/50 p-6 shadow-[0_24px_60px_-28px_rgba(26,143,196,0.14)] md:p-7"
+              className="relative overflow-hidden rounded-[1.35rem] border border-primary/25 dark:border-primary/40 bg-gradient-to-br from-background via-white to-accent-soft/50 dark:from-slate-800 dark:via-slate-800 dark:to-accent-soft/30 p-6 shadow-[0_24px_60px_-28px_rgba(26,143,196,0.14)] md:p-7"
               whileHover={reduceMotion ? undefined : { y: -3 }}
               transition={{ type: 'spring', stiffness: 380, damping: 28 }}
             >
@@ -311,7 +311,7 @@ function HowItWorksStoryHero({ reduceMotion }) {
               <p className="mb-4 text-center text-[10px] font-bold uppercase tracking-[0.2em] text-hint lg:text-left">
                 The thread we follow
               </p>
-              <div className="rounded-2xl border border-border bg-white/90 p-5 shadow-card backdrop-blur-sm md:p-6">
+              <div className="rounded-2xl border border-border bg-white/90 dark:bg-slate-800/90 p-5 shadow-card backdrop-blur-sm md:p-6">
                 <ul className="space-y-6">
                   {STORY_FLOW_RAIL.map((row, i) => {
                     const Icon = row.Icon;

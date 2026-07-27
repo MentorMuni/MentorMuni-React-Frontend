@@ -6,6 +6,17 @@
   --why-hero-from: #f0f7fc;
   --why-hero-via: #e8f4fa;
   --why-hero-to: #f8fbff;
+  --why-final-from: #f8fbff;
+  --why-final-to: #eef6fb;
+}
+
+/* Dark theme (html.mm-new-ui) — match site navy surfaces */
+html.mm-new-ui .why-mm-page {
+  --why-hero-from: #060a12;
+  --why-hero-via: #0b1220;
+  --why-hero-to: #0c1424;
+  --why-final-from: #060a12;
+  --why-final-to: #0b1220;
 }
 
 .why-mm-page h1,
@@ -23,10 +34,37 @@
     linear-gradient(165deg, var(--why-hero-from) 0%, var(--why-hero-via) 45%, var(--why-hero-to) 100%);
 }
 
+html.mm-new-ui .why-mm-hero__bg {
+  background:
+    radial-gradient(ellipse 80% 60% at 50% -10%, rgba(56, 189, 248, 0.14), transparent 55%),
+    radial-gradient(ellipse 50% 40% at 90% 70%, rgba(52, 211, 153, 0.08), transparent 50%),
+    linear-gradient(165deg, var(--why-hero-from) 0%, var(--why-hero-via) 45%, var(--why-hero-to) 100%);
+}
+
 .why-mm-final__bg {
   background:
     radial-gradient(ellipse 70% 50% at 50% 0%, rgba(26, 143, 196, 0.12), transparent 55%),
-    linear-gradient(180deg, #f8fbff 0%, #eef6fb 100%);
+    linear-gradient(180deg, var(--why-final-from) 0%, var(--why-final-to) 100%);
+}
+
+html.mm-new-ui .why-mm-final__bg {
+  background:
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(56, 189, 248, 0.1), transparent 55%),
+    linear-gradient(180deg, var(--why-final-from) 0%, var(--why-final-to) 100%);
+}
+
+/* Cards / panels on this page — light glass in Classic, dark glass in New UI */
+.why-mm-page .why-mm-surface {
+  background-color: rgba(255, 255, 255, 0.7);
+}
+
+html.mm-new-ui .why-mm-page .why-mm-surface {
+  background-color: rgba(17, 28, 48, 0.85);
+  border-color: rgba(148, 163, 184, 0.22);
+}
+
+html.mm-new-ui .why-mm-page .why-mm-surface:hover {
+  background-color: rgba(24, 36, 58, 0.92);
 }
 
 .why-mm-recog-item {
@@ -36,6 +74,21 @@
 .why-mm-recog-panel {
   min-height: 280px;
   box-shadow: 0 24px 60px -32px rgba(26, 143, 196, 0.28);
+}
+
+html.mm-new-ui .why-mm-recog-panel {
+  background-color: rgba(17, 28, 48, 0.9) !important;
+  box-shadow: 0 24px 60px -32px rgba(0, 0, 0, 0.55);
+}
+
+/* Catch leftover light surfaces on this marketing page in dark mode */
+html.mm-new-ui .why-mm-page [class*="bg-white"],
+html.mm-new-ui .why-mm-page [class*="bg-white/"] {
+  background-color: rgba(17, 28, 48, 0.85) !important;
+}
+
+html.mm-new-ui .why-mm-page [class*="from-white"] {
+  --tw-gradient-from: rgba(17, 28, 48, 0.95) !important;
 }
 
 @media (prefers-reduced-motion: reduce) {

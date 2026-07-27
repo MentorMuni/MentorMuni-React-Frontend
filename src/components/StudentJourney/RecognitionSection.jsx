@@ -49,10 +49,10 @@ export default function RecognitionSection({ reduceMotion }) {
                     type="button"
                     onClick={() => setActiveId(stage.id)}
                     onMouseEnter={() => !reduceMotion && setActiveId(stage.id)}
-                    className={`why-mm-recog-item w-full rounded-xl px-4 py-3.5 text-left transition-all duration-300 ${
+                    className={`why-mm-recog-item why-mm-surface w-full rounded-xl px-4 py-3.5 text-left transition-all duration-300 ${
                       isActive
-                        ? 'bg-white shadow-[0_12px_36px_-18px_rgba(26,143,196,0.35)] ring-1 ring-primary/25'
-                        : 'hover:bg-white/70'
+                        ? 'shadow-[0_12px_36px_-18px_rgba(26,143,196,0.35)] ring-1 ring-primary/25'
+                        : 'opacity-90'
                     }`}
                     aria-pressed={isActive}
                   >
@@ -89,7 +89,7 @@ export default function RecognitionSection({ reduceMotion }) {
             animate={inView ? { opacity: 1, x: 0 } : undefined}
             transition={{ duration: 0.5, delay: 0.12, ease }}
           >
-            <div className="why-mm-recog-panel sticky top-28 overflow-hidden rounded-2xl border border-border bg-white p-7 md:p-9">
+            <div className="why-mm-recog-panel why-mm-surface sticky top-28 overflow-hidden rounded-2xl border border-border p-7 md:p-9">
               <div
                 className="pointer-events-none absolute -right-16 -top-16 h-48 w-48 rounded-full bg-primary/10 blur-3xl"
                 aria-hidden

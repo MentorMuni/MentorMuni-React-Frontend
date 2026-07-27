@@ -90,7 +90,7 @@ export default function FinalCTA({ reduceMotion }) {
             <div className="mt-6 flex flex-col items-stretch justify-center gap-3 sm:flex-row sm:items-center sm:gap-4">
               <a
                 href="mailto:enroll@mentormuni.com"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-white/70 px-5 py-3 text-sm font-semibold text-foreground backdrop-blur-sm transition-colors hover:border-primary/30 hover:bg-white"
+                className="why-mm-surface inline-flex items-center justify-center gap-2 rounded-xl border border-border px-5 py-3 text-sm font-semibold text-foreground backdrop-blur-sm transition-colors hover:border-primary/30"
               >
                 <Mail size={16} className="text-primary" aria-hidden />
                 enroll@mentormuni.com
@@ -99,14 +99,14 @@ export default function FinalCTA({ reduceMotion }) {
                 href="https://wa.me/919009355103?text=Hi%20MentorMuni%20%E2%80%94%20I%20am%20a%20student%20and%20want%20help%20getting%20interview-ready."
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-white/70 px-5 py-3 text-sm font-semibold text-foreground backdrop-blur-sm transition-colors hover:border-brand-teal/40 hover:bg-white"
+                className="why-mm-surface inline-flex items-center justify-center gap-2 rounded-xl border border-border px-5 py-3 text-sm font-semibold text-foreground backdrop-blur-sm transition-colors hover:border-brand-teal/40"
               >
                 <MessageCircle size={16} className="text-brand-teal" aria-hidden />
                 WhatsApp
               </a>
               <a
                 href="tel:+919009355103"
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-white/70 px-5 py-3 text-sm font-semibold text-foreground backdrop-blur-sm transition-colors hover:border-primary/30 hover:bg-white"
+                className="why-mm-surface inline-flex items-center justify-center gap-2 rounded-xl border border-border px-5 py-3 text-sm font-semibold text-foreground backdrop-blur-sm transition-colors hover:border-primary/30"
               >
                 <Phone size={16} className="text-primary" aria-hidden />
                 +91 90093 55103
