@@ -1,266 +1,169 @@
 /**
- * Student Journey - 7-Stage Pipeline
- * Central source of truth for all stage data, messaging, and configuration.
- * Update here to sync across all components.
+ * Why MentorMuni (/how-it-works) — student-only messaging.
+ * Frame every block as a student anxiety → how that anxiety gets resolved.
+ * Avoid product feature showcases; speak in the student's voice.
  */
 
+export const WHY_PAGE = {
+  brand: 'MentorMuni',
+  eyebrow: 'For students who are tired of guessing',
+  headline: 'You lose offers in silence — not because you never studied.',
+  sub:
+    'The gap is not knowledge. It is knowing how you perform when someone is watching. MentorMuni closes that gap before a real panel does.',
+  primaryCta: 'Take the free readiness check',
+  flowLabel: 'How help shows up for you',
+  flow: [
+    {
+      step: '01',
+      title: 'Name the freeze',
+      help: 'See exactly where you blank — resume, speed, aptitude, or speaking under pressure.',
+    },
+    {
+      step: '02',
+      title: 'Fix that gap',
+      help: 'Practice the weak spot in a safe room until the panic stops owning the round.',
+    },
+    {
+      step: '03',
+      title: 'Walk in with proof',
+      help: 'Enter the real panel knowing what improved — not hoping it somehow goes better.',
+    },
+  ],
+};
+
+export const RECOGNITION = {
+  eyebrow: 'Sound familiar?',
+  headline: 'If any of these hit, you are the student this page is for.',
+  sub: 'Most placement anxiety is not laziness. It is practicing alone until the first panel feels like the first real test.',
+};
+
+export const RELIEF_SECTION = {
+  eyebrow: 'What actually changes',
+  headline: 'Each worry gets a clear next move — not another playlist.',
+  sub: 'You do not need more content. You need proof of where you break, then safe reps until you do not.',
+};
+
+export const SHIFT_SECTION = {
+  eyebrow: 'The shift',
+  headline: 'Walk in knowing your gaps — not hoping they stay hidden.',
+  before: {
+    label: 'How it usually feels',
+    lines: [
+      'Revision loops with no score that means anything',
+      'Blanking on answers you knew the night before',
+      'Hoping the panel asks something you practiced',
+      'No idea if you are ready until the result email',
+    ],
+  },
+  after: {
+    label: 'How it feels after',
+    lines: [
+      'A baseline that names your weak spots',
+      'Pressure practice before the stakes are real',
+      'Feedback you can act on this week',
+      'Confidence from proof, not vibes',
+    ],
+  },
+};
+
+export const FINAL_CTA = {
+  headline: 'Stop hoping the next round goes better.',
+  sub: 'Take five minutes. See where you actually stand. Then decide what to fix.',
+  primaryCta: 'Take the free readiness check',
+  note: 'No payment. No lecture. Just a scored snapshot of your interview readiness.',
+  contactPrompt: 'Stuck or unsure where to start?',
+};
+
+/** Student anxieties → how that anxiety gets resolved (not feature names as headlines). */
 export const STUDENT_JOURNEY_STAGES = [
   {
     id: 'resume-ats',
     step: 1,
-    title: 'Resume ATS Check',
-    description: 'Parse your resume like hiring systems do. Know your format & keyword gaps.',
-    shortDescription: 'Resume screening like hiring systems see it',
-    painPoint: 'Your perfect resume gets rejected by the system before a human sees it',
-    solution: 'We show you exactly what ATS systems see—and how to fix it in 3 minutes',
-    outcomes: ['Resume Score', 'Keyword Gaps', 'Formatting Tips'],
-    primaryOutcome: 'Your Resume Score + Fixes',
+    title: 'Your resume never reaches a human',
+    studentVoice: 'I keep applying. Nothing comes back.',
+    painPoint: 'A strong resume still dies in the ATS before a recruiter opens it.',
+    solution: 'See what screening systems actually parse — then fix format and keywords in minutes.',
+    primaryOutcome: 'A clear resume score and the exact fixes to make',
     duration: '3 min',
     icon: 'FileText',
-    color: 'from-sky-400 to-blue-500',
-    borderColor: 'border-sky-200',
-    bgGradient: 'from-sky-50/50 to-blue-50/30',
-    iconBg: 'bg-sky-100/60 text-sky-600',
-    details:
-      'Stages 1–4: Build your baseline. Understand exactly where you stand across all interview dimensions.',
+    accent: 'sky',
   },
   {
     id: '5-sec-test',
     step: 2,
-    title: '5-Sec Quick Test',
-    description: 'Speed matters. Benchmark your aptitude reflexes before high-stakes OAs.',
-    shortDescription: 'Quick aptitude baseline test',
-    painPoint: 'You blank under pressure even though you know the answer at home',
-    solution: 'Test your speed & reflexes now—before it costs you an offer',
-    outcomes: ['Speed Baseline', 'Weak Areas', 'Improvement Tips'],
-    primaryOutcome: 'Speed Baseline + Weak Areas',
+    title: 'You blank under the clock',
+    studentVoice: 'I know this at home. In the OA, my mind freezes.',
+    painPoint: 'Speed and composure collapse the moment a timer starts.',
+    solution: 'Benchmark your reflexes before a high-stakes online assessment costs you a shortlist.',
+    primaryOutcome: 'A speed baseline and the topics that slow you down',
     duration: '5 min',
     icon: 'Zap',
-    color: 'from-amber-400 to-orange-500',
-    borderColor: 'border-amber-200',
-    bgGradient: 'from-amber-50/50 to-orange-50/30',
-    iconBg: 'bg-amber-100/60 text-amber-600',
-    details:
-      'Under pressure, speed and confidence collapse for most students. This baseline shows where your reflexes are.',
+    accent: 'amber',
   },
   {
     id: 'aptitude-readiness',
     step: 3,
-    title: 'Aptitude Readiness Test',
-    description: 'Full assessment: quant, logic, verbal. Benchmark vs college cohort. Real interview topics.',
-    shortDescription: 'Comprehensive aptitude assessment',
-    painPoint: 'You don\'t know if your aptitude is the weak link holding you back',
-    solution: 'See exactly where you rank—quant, logic, verbal—by topic, not guesswork',
-    outcomes: ['Aptitude Gaps', 'Category Breakdown', 'Practice Drills'],
-    primaryOutcome: 'Aptitude Gaps by Category',
+    title: 'You do not know what is actually weak',
+    studentVoice: 'Is it quant? Logic? Verbal? I am just grinding randomly.',
+    painPoint: 'Aptitude feels like the silent filter — and you cannot name your gap.',
+    solution: 'Get ranked by topic (quant, logic, verbal) so practice stops being guesswork.',
+    primaryOutcome: 'Category-level gaps you can drill this week',
     duration: '20 min',
     icon: 'Brain',
-    color: 'from-purple-400 to-indigo-500',
-    borderColor: 'border-purple-200',
-    bgGradient: 'from-purple-50/50 to-indigo-50/30',
-    iconBg: 'bg-purple-100/60 text-purple-600',
-    details:
-      'Quantitative + logical reasoning + verbal comprehension. The panel tests all three. You need baseline across all.',
+    accent: 'teal',
   },
   {
     id: 'skill-readiness',
     step: 4,
-    title: 'Skill Readiness Test',
-    description: 'DSA, system design, coding fundamentals. What panels actually test.',
-    shortDescription: 'Technical skills assessment',
-    painPoint: 'You\'ve solved 500 LeetCode problems but panic when asked to explain under pressure',
-    solution: 'Know if DSA, system design, or communication is actually holding you back',
-    outcomes: ['Technical Gaps', 'DSA Assessment', 'System Design Level'],
-    primaryOutcome: 'Technical Gaps Map',
+    title: 'LeetCode streaks do not equal panel calm',
+    studentVoice: 'I have solved hundreds of problems. Why do I still panic explaining?',
+    painPoint: 'Solving alone is not the same as defending an approach under scrutiny.',
+    solution: 'Find whether DSA depth, system design, or explanation is the real blocker.',
+    primaryOutcome: 'A technical gaps map tied to how panels actually quiz',
     duration: '25 min',
     icon: 'Code2',
-    color: 'from-emerald-400 to-teal-500',
-    borderColor: 'border-emerald-200',
-    bgGradient: 'from-emerald-50/50 to-teal-50/30',
-    iconBg: 'bg-emerald-100/60 text-emerald-600',
-    details: 'DSA breadth (trees, graphs, DP), system design thinking, and coding fundamentals. This is what companies actually quiz.',
+    accent: 'emerald',
   },
   {
     id: 'ai-mock-skill',
     step: 5,
-    title: 'AI Mock Interview - Skill',
-    description: 'Live mock. Real pressure. Interview-style Q&As with scoring.',
-    shortDescription: 'Technical mock interview simulation',
-    painPoint: 'You\'ve never actually practiced explaining your answers out loud under scrutiny',
-    solution: 'Feel real interview pressure in a safe space (with AI, not a real interviewer)',
-    outcomes: ['Technical Score', 'Live Feedback', 'Weak Spots Named'],
-    primaryOutcome: 'Technical Interview Score + Feedback',
+    title: 'You have never practiced out loud under pressure',
+    studentVoice: 'My first real technical round was also my first mock.',
+    painPoint: 'Knowing the answer and performing it while being evaluated are different skills.',
+    solution: 'Rehearse technical interviews in a safe pressure room — before a hiring panel.',
+    primaryOutcome: 'A scored technical mock with weak spots named',
     duration: '45 min',
     icon: 'Mic2',
-    color: 'from-rose-400 to-pink-500',
-    borderColor: 'border-rose-200',
-    bgGradient: 'from-rose-50/50 to-pink-50/30',
-    iconBg: 'bg-rose-100/60 text-rose-600',
-    details:
-      'Stages 5–6: High-pressure rehearsal. The gap between knowing and explaining under scrutiny is huge. This closes it.',
+    accent: 'rose',
   },
   {
     id: 'ai-mock-hr',
     step: 6,
-    title: 'AI Mock Interview - HR',
-    description: 'Conversational HR round. Tell me about yourself, projects, challenges.',
-    shortDescription: 'HR communication mock interview',
-    painPoint: 'You worry: "Am I articulate enough? Will I freeze? Do I sound confident?"',
-    solution: 'Practice talking out loud. Get scored on clarity, presence, confidence. No judgment.',
-    outcomes: ['HR Score', 'Communication Notes', 'Confidence Feedback'],
-    primaryOutcome: 'HR Round Score + Communication Coaching',
+    title: 'You freeze when they say “tell me about yourself”',
+    studentVoice: 'Will I sound confident? Or like I am reading a script?',
+    painPoint: 'HR rounds punish unclear stories and shaky presence — not missing syntax.',
+    solution: 'Practice speaking out loud. Get scored on clarity, presence, and confidence — without judgment.',
+    primaryOutcome: 'HR round feedback you can rehearse until it feels natural',
     duration: '30 min',
     icon: 'Users',
-    color: 'from-cyan-400 to-blue-600',
-    borderColor: 'border-cyan-200',
-    bgGradient: 'from-cyan-50/50 to-blue-50/30',
-    iconBg: 'bg-cyan-100/60 text-cyan-600',
-    details:
-      'Communication under pressure is a skill, not a personality trait. Practice it out loud. Get coached on presence, clarity, pace.',
+    accent: 'cyan',
   },
   {
     id: 'offer-prep-sprint',
     step: 7,
-    title: 'Offer Prep Sprint',
-    description: 'Final validation. Compare your score from Stage 1. Track your improvement. Ready for offers.',
-    shortDescription: 'Final readiness validation',
-    painPoint: 'You don\'t know if you\'re actually ready or just hoping for the best',
-    solution: 'See the proof: your score improved 42%. You\'re ready. Walk in confident.',
-    outcomes: ['Final Score', 'Progress Report', 'Next Steps'],
-    primaryOutcome: 'Final Readiness Score + Progress Report',
+    title: 'You cannot tell if you are ready or just hoping',
+    studentVoice: 'Everyone says “you will be fine.” I need proof.',
+    painPoint: 'Without a before/after score, readiness is a feeling — and feelings lie.',
+    solution: 'Validate improvement against your starting baseline so you walk in with evidence.',
+    primaryOutcome: 'A final readiness score and a clear “what next” plan',
     duration: '20 min',
     icon: 'Trophy',
-    color: 'from-amber-500 to-yellow-500',
-    borderColor: 'border-amber-300',
-    bgGradient: 'from-amber-50/50 to-yellow-50/30',
-    iconBg: 'bg-amber-100/60 text-amber-600',
-    details:
-      'Stage 7: Validate improvement. See the delta from where you started. Prove the system works. Ready for real panels.',
+    accent: 'amber',
   },
 ];
 
-export const SUPPORT_SYSTEMS = [
-  {
-    id: 'ai-buddy',
-    title: 'AI Buddy',
-    subtitle: 'Never Feel Stuck. Ever.',
-    icon: 'Sparkles',
-    benefits: [
-      'Instant concept review at 2 AM',
-      'Mock answer feedback on demand',
-      '24/7 preparation support',
-    ],
-    pricingNote: 'Included in all plans',
-    color: 'from-violet-400 to-purple-500',
-    bgColor: 'bg-violet-50/40',
-    borderColor: 'border-violet-200/50',
-    iconColor: 'text-violet-600',
-  },
-  {
-    id: 'student-dashboard',
-    title: 'Your Progress Dashboard',
-    subtitle: 'See Your Growth. Own Your Path.',
-    icon: 'BarChart3',
-    benefits: [
-      'All 7 stages in one visual',
-      'Spot weak areas, celebrate wins',
-      'Stay accountable to your goals',
-    ],
-    pricingNote: 'Real-time updates',
-    color: 'from-green-400 to-emerald-500',
-    bgColor: 'bg-green-50/40',
-    borderColor: 'border-green-200/50',
-    iconColor: 'text-green-600',
-  },
-  {
-    id: 'tpo-dashboard',
-    title: 'Cohort Readiness Dashboard',
-    subtitle: 'Predict Placement Outcomes.',
-    icon: 'Building2',
-    benefits: [
-      'Batch performance at a glance',
-      'Intervene early with at-risk students',
-      'Plan placement strategy smarter',
-    ],
-    pricingNote: 'College partners only',
-    color: 'from-blue-400 to-cyan-500',
-    bgColor: 'bg-blue-50/40',
-    borderColor: 'border-blue-200/50',
-    iconColor: 'text-blue-600',
-  },
-];
-
-export const BENEFITS = [
-  {
-    id: 'comprehensive-coverage',
-    icon: 'CheckCircle',
-    headline: 'Every Interview Type Covered',
-    body: 'Resume → aptitude → technical → HR. Nothing left to chance. Panels test all four dimensions. So do we.',
-    color: 'from-emerald-500 to-teal-500',
-  },
-  {
-    id: 'improvement-loop',
-    icon: 'RotateCw',
-    headline: 'Score → Gap → Practice → Re-Test',
-    body: 'Not a one-time assessment. Real improvement happens through cycles. Each stage builds on the last. Measurable progress.',
-    color: 'from-sky-500 to-blue-500',
-  },
-  {
-    id: 'real-time-feedback',
-    icon: 'Zap',
-    headline: 'Feedback That Actually Changes Behavior',
-    body: 'Mocks scored instantly. Mentor notes within 24h. AI coaching on every answer. Real-time feedback = real improvement.',
-    color: 'from-rose-500 to-pink-500',
-  },
-];
-
-export const COLLEGE_SUCCESS_STORIES = [
-  {
-    id: 'partner-college',
-    collegeName: 'Partner Engineering College',
-    location: 'India',
-    year: '2025–2026',
-    batchSize: 18,
-    challenge:
-      'Previous year: 60% placement. This year, we needed to do better. Students weren\'t confident in interviews.',
-    whatHappened:
-      'Introduced MentorMuni readiness baseline in May. Built 5-week prep program around score gaps. Monthly dashboards tracked cohort progress.',
-    metrics: [
-      { label: 'Avg readiness score', before: '38', after: '72', change: '+89%' },
-      { label: 'Placement rate', before: '60%', after: '78%', change: '+30%' },
-      { label: 'Avg CTC', before: '₹7.2L', after: '₹8.4L', change: '+17%' },
-      { label: 'Students placed in top companies', value: '14/18', note: 'Multiple MNCs & startups' },
-    ],
-    quote:
-      'Finally, we could predict outcomes and guide with confidence. MentorMuni gave us the visibility we needed to support our students better.',
-    tpoName: 'Placement Head',
-    tpoTitle: 'Engineering College, India',
-    isAnonymous: true,
-  },
-];
-
-export const PEDAGOGICAL_NOTE = {
-  title: 'Why This Sequence Matters',
-  sections: [
-    {
-      stage: 'Stages 1–4',
-      label: 'Build Your Baseline',
-      description: 'What\'s your current state across resume, speed, aptitude, and technical skills?',
-    },
-    {
-      stage: 'Stages 5–6',
-      label: 'High-Pressure Rehearsal',
-      description: 'Practice how you\'ll actually perform under scrutiny. Mocks + coaching close the knowing-vs-performing gap.',
-    },
-    {
-      stage: 'Stage 7',
-      label: 'Validate Improvement',
-      description: 'Compare your final score to Stage 1. See the delta. Prove the system works.',
-    },
-  ],
-  advancedPath: {
-    title: 'Advanced Path (Optional)',
-    description:
-      'For students confident in fundamentals: Skip Stage 3 aptitude → Start mocks earlier. Flexibility built in.',
-  },
-};
+/** @deprecated Kept for any residual imports — prefer WHY_PAGE / STUDENT_JOURNEY_STAGES. */
+export const SUPPORT_SYSTEMS = [];
+export const BENEFITS = [];
+export const COLLEGE_SUCCESS_STORIES = [];
+export const PEDAGOGICAL_NOTE = null;

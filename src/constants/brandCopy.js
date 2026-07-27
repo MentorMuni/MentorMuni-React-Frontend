@@ -175,11 +175,10 @@ export const COMPARISON_TABLE_ROWS = [
 ];
 
 /**
- * Nav + /how-it-works page — what MentorMuni is, why we built it, how we help (route unchanged for SEO).
+ * Nav + /how-it-works page — student pain → relief story (route unchanged for SEO).
  */
 export const MENTORMUNI_STORY_NAV_LABEL = 'Why MentorMuni';
-export const MENTORMUNI_STORY_EYEBROW = 'What · Why · How';
-
+export const MENTORMUNI_STORY_EYEBROW = 'For students who are tired of guessing';
 /** Homepage — tools & support strip (after proof / comparison) */
 export const HOMEPAGE_HELP_EYEBROW = 'How we help you';
 export const HOMEPAGE_HELP_HEADLINE =

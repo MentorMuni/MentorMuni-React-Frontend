@@ -5,7 +5,6 @@ import {
   Mic,
   Headphones,
   FileSearch,
-  Brain,
   GraduationCap,
   BookOpen,
   Cpu,
@@ -47,13 +46,6 @@ const FREE_TOOLS = [
     href: '/resume-analyzer',
     icon: FileSearch,
     accent: 'from-orange-500 to-amber-500',
-  },
-  {
-    title: 'Skill gap analyzer',
-    desc: 'Role benchmark vs your skills',
-    href: '/skill-gap-analyzer',
-    icon: Brain,
-    accent: 'from-cyan-600 to-teal-500',
   },
   {
     title: 'Placement tracks',

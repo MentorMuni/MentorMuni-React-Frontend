@@ -94,6 +94,7 @@ import { HeroLoopVideo } from './homepage/HeroLoopVideo';
 import { MentorMuniSystemLoop } from './homepage/MentorMuniSystemLoop';
 import { HomepageFreeToolsShowcase } from './homepage/HomepageFreeToolsShowcase';
 import { HomepagePlacementCoachSpotlight } from './homepage/HomepagePlacementCoachSpotlight';
+import { AIMockInterviewShowcase } from './homepage/AIMockInterviewShowcase';
 import FadeUp from './layout/FadeUp';
 import ScrollReveal from './layout/ScrollReveal';
 
@@ -607,26 +608,12 @@ const HomePage = () => {
 
               <motion.div className="mm-hero-copy" variants={heroReveal}>
                 <motion.h1
-                  className="mm-prose-measure--hero"
-                  variants={heroStaggerContainer}
-                  initial={false}
+                  className="w-full text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-tight tracking-tight text-neutral-950 mb-6"
+                  variants={heroHeadlineLine}
+                  initial={reduceMotion ? false : 'hidden'}
+                  animate="visible"
                 >
-                  <motion.span
-                    variants={heroHeadlineLine}
-                    className="mm-hero-headline block text-neutral-950"
-                  >
-                    {HERO_HEADLINE_LINE1}
-                  </motion.span>
-                  <motion.span
-                    variants={heroHeadlineLine}
-                    className={
-                      newUI
-                        ? 'mm-hero-headline mt-1 block mm-hero-accent-new-ui'
-                        : 'mm-hero-headline mt-1 block mm-gradient-text-brand'
-                    }
-                  >
-                    {HERO_HEADLINE_LINE2}
-                  </motion.span>
+                  {HERO_HEADLINE_LINE1} {HERO_HEADLINE_LINE2}
                 </motion.h1>
 
                 <motion.div className="mm-hero-typewriter" variants={heroReveal}>
@@ -733,9 +720,7 @@ const HomePage = () => {
               initial={reduceMotion ? false : 'hidden'}
               animate="visible"
             >
-              <HeroScoreTilt>
-                <HeroFlagshipVisual className="w-full" />
-              </HeroScoreTilt>
+              <AIMockInterviewShowcase isHeroSection={true} />
             </motion.div>
           </div>
 
