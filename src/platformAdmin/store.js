@@ -21,7 +21,7 @@ function asArray(payload, preferredKeys = []) {
     if (Array.isArray(payload[key])) return payload[key];
   }
 
-  for (const key of ['items', 'data', 'results', 'rows', 'organizations', 'subscriptions', 'users', 'features', 'plans']) {
+  for (const key of ['items', 'data', 'results', 'rows', 'organizations', 'subscriptions', 'users', 'features', 'plans', 'tpos', 'org_admins']) {
     if (Array.isArray(payload[key])) return payload[key];
   }
 
@@ -176,16 +176,92 @@ export async function saveOrgFeatures(organizationId, enabledMap) {
   return row;
 }
 
+function normalizeTpo(row, organizationId, orgName) {
+  if (!row || typeof row !== 'object') return null;
+  const orgId = row.organization_id ?? row.org_id ?? organizationId;
+  const status =
+    row.activation_status ||
+    row.status ||
+    (row.activation_token ? 'PENDING' : 'ACTIVE');
+  const nameParts = String(row.name || '').trim().split(/\s+/).filter(Boolean);
+
+  return {
+    id: row.id ?? `org-${orgId}-tpo`,
+    organization_id: orgId,
+    organization_name:
+      row.organization_name ||
+      row.organization?.name ||
+      row.org_name ||
+      orgName ||
+      '',
+    organization_code:
+      row.organization_code ||
+      row.organization?.code ||
+      row.org_code ||
+      '',
+    first_name: row.first_name || nameParts[0] || '',
+    last_name: row.last_name || nameParts.slice(1).join(' ') || '',
+    email: row.email || '',
+    username: row.username || '',
+    mobile: row.mobile || row.phone || '',
+    activation_status: String(status).toUpperCase(),
+    activation_token: row.activation_token || '',
+    activation_expires_at: row.activation_expires_at || '',
+    message: row.message || '',
+  };
+}
+
 export async function getOrgAdmins() {
-  // Backend does not expose org users list in current checklist.
-  // Return empty until endpoint is available.
-  return [];
+  const payload = await platformApi.get('/platform/tpo');
+  const rows = asArray(payload, ['tpos', 'users', 'org_admins', 'items', 'data']);
+  let orgById = {};
+  try {
+    const orgs = await getOrganizations();
+    orgById = Object.fromEntries(orgs.map((o) => [String(o.id), o]));
+  } catch {
+    // list still usable without org name enrichment
+  }
+
+  return rows
+    .map((row) => {
+      const normalized = normalizeTpo(row);
+      if (!normalized) return null;
+      const org = orgById[String(normalized.organization_id)];
+      return {
+        ...normalized,
+        organization_name: normalized.organization_name || org?.name || '',
+        organization_code: normalized.organization_code || org?.code || '',
+      };
+    })
+    .filter(Boolean)
+    .sort((a, b) => Number(b.organization_id) - Number(a.organization_id));
+}
+
+export async function getOrganizationTpo(organizationId) {
+  try {
+    const row = await platformApi.get(`/platform/organizations/${organizationId}/tpo`);
+    if (!row || typeof row !== 'object') return null;
+    if (!row.id && !row.email && !row.username && !row.first_name) return null;
+    return normalizeTpo(row, organizationId);
+  } catch (err) {
+    const message = String(err?.message || '');
+    if (/404|not found|no tpo|does not have|no org_admin/i.test(message)) {
+      return null;
+    }
+    throw err;
+  }
 }
 
 export async function createTpo(organizationId, payload) {
   const row = await platformApi.post(`/platform/organizations/${organizationId}/tpo`, payload);
   emitUpdate();
-  return row;
+  return normalizeTpo({ ...payload, ...row }, organizationId) || row;
+}
+
+export async function reinviteTpo(organizationId) {
+  const row = await platformApi.post(`/platform/organizations/${organizationId}/tpo/reinvite`);
+  emitUpdate();
+  return normalizeTpo(row, organizationId) || row;
 }
 
 export async function getPlatformUsers() {

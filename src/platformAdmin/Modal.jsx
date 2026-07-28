@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import { getStoredPlatformTheme } from './usePlatformTheme';
 
 /**
  * Centered responsive modal for Platform Admin.
@@ -25,7 +26,8 @@ export default function Modal({ open, title, sub, onClose, children, wide }) {
   if (typeof document === 'undefined') return null;
 
   const root = document.querySelector('.mm-pa-root');
-  const isLight = Boolean(root?.classList.contains('mm-pa-light'));
+  const isLight =
+    Boolean(root?.classList.contains('mm-pa-light')) || getStoredPlatformTheme() === 'light';
 
   return createPortal(
     <AnimatePresence>

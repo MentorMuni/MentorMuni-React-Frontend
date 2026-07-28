@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getOrgAdmins } from '../store';
+import { getOrgAdmins, reinviteTpo } from '../store';
 
 export default function SettingsPage() {
   const [msg, setMsg] = useState('');
   const [tpos, setTpos] = useState([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const [reinvitingId, setReinvitingId] = useState(null);
 
   useEffect(() => {
     const load = async () => {
@@ -21,6 +22,8 @@ export default function SettingsPage() {
       }
     };
     load();
+    window.addEventListener('mm-platform-db-updated', load);
+    return () => window.removeEventListener('mm-platform-db-updated', load);
   }, []);
 
   useEffect(() => {
@@ -28,6 +31,26 @@ export default function SettingsPage() {
     const timer = window.setTimeout(() => setError(''), 3500);
     return () => window.clearTimeout(timer);
   }, [error]);
+
+  useEffect(() => {
+    if (!msg) return undefined;
+    const timer = window.setTimeout(() => setMsg(''), 3500);
+    return () => window.clearTimeout(timer);
+  }, [msg]);
+
+  const onReinvite = async (tpo) => {
+    if (!tpo?.organization_id) return;
+    setReinvitingId(tpo.organization_id);
+    try {
+      await reinviteTpo(tpo.organization_id);
+      setMsg(`Fresh activation queued for ${tpo.email || tpo.username || 'TPO'}.`);
+      setTpos(await getOrgAdmins());
+    } catch (e) {
+      setError(e.message || 'Failed to reinvite TPO.');
+    } finally {
+      setReinvitingId(null);
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -48,39 +71,68 @@ export default function SettingsPage() {
       </section>
 
       <section className="mm-pa-panel">
-        <h2 className="mb-3 text-sm font-extrabold">ORG_ADMIN accounts created</h2>
+        <h2 className="mb-2 text-sm font-extrabold">ORG_ADMIN accounts</h2>
+        <p className="mb-4 text-sm text-slate-400">
+          Loaded from <code className="mm-pa-code">GET /platform/tpo</code>. One ORG_ADMIN per organization —
+          use Reinvite for a fresh activation link instead of creating again.
+        </p>
         <div className="overflow-x-auto">
-          <table className="mm-pa-table min-w-[700px]">
+          <table className="mm-pa-table min-w-[820px]">
             <thead>
               <tr>
                 <th>Name</th>
                 <th>Email</th>
                 <th>Username</th>
-                <th>Org ID</th>
-                <th>Activation</th>
+                <th>Org</th>
+                <th>Status</th>
+                <th />
               </tr>
             </thead>
             <tbody>
               {(loading ? Array.from({ length: 4 }, (_, i) => ({ id: `loading-tpo-${i}` })) : tpos).map((u) => (
-                <tr key={u.id}>
+                <tr key={u.id || `${u.organization_id}-${u.email || u.username}`}>
                   {loading ? (
                     <>
                       <td><div className="mm-pa-skeleton h-5 w-32" /></td>
                       <td><div className="mm-pa-skeleton h-5 w-40" /></td>
                       <td><div className="mm-pa-skeleton h-5 w-28" /></td>
-                      <td><div className="mm-pa-skeleton h-5 w-16" /></td>
+                      <td><div className="mm-pa-skeleton h-5 w-24" /></td>
                       <td><div className="mm-pa-skeleton h-6 w-24" /></td>
+                      <td><div className="mm-pa-skeleton h-8 w-24" /></td>
                     </>
                   ) : (
                     <>
-                      <td className="font-semibold">{u.first_name} {u.last_name}</td>
-                      <td>{u.email}</td>
-                      <td className="font-mono text-xs">{u.username}</td>
-                      <td>{u.organization_id}</td>
+                      <td className="font-semibold">
+                        {[u.first_name, u.last_name].filter(Boolean).join(' ') || 'ORG_ADMIN'}
+                      </td>
+                      <td>{u.email || '—'}</td>
+                      <td className="font-mono text-xs">{u.username || '—'}</td>
                       <td>
-                        <span className={`mm-pa-badge ${u.activation_status === 'PENDING' ? 'mm-pa-badge--pending' : 'mm-pa-badge--active'}`}>
+                        <span className="mm-pa-table__title">
+                          {u.organization_name || u.organization_code || `Org #${u.organization_id}`}
+                        </span>
+                        <span className="mm-pa-table__meta block">ID {u.organization_id}</span>
+                      </td>
+                      <td>
+                        <span
+                          className={`mm-pa-badge ${
+                            u.activation_status === 'PENDING' || u.activation_status === 'INVITED'
+                              ? 'mm-pa-badge--pending'
+                              : 'mm-pa-badge--active'
+                          }`}
+                        >
                           {u.activation_status || 'ACTIVE'}
                         </span>
+                      </td>
+                      <td>
+                        <button
+                          type="button"
+                          className="mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs"
+                          disabled={reinvitingId === u.organization_id}
+                          onClick={() => onReinvite(u)}
+                        >
+                          {reinvitingId === u.organization_id ? 'Sending…' : 'Reinvite'}
+                        </button>
                       </td>
                     </>
                   )}
@@ -88,7 +140,11 @@ export default function SettingsPage() {
               ))}
             </tbody>
           </table>
-          {!loading && !tpos.length && <div className="mm-pa-empty">No TPO accounts yet.</div>}
+          {!loading && !tpos.length && (
+            <div className="mm-pa-empty">
+              No TPO accounts yet. Create one from Organizations → TPO.
+            </div>
+          )}
         </div>
       </section>
 

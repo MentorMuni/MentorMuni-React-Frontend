@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Plus, Search, Building2, UserPlus, CreditCard, ToggleLeft } from 'lucide-react';
+import { Plus, Search, Building2, UserPlus, UserCheck, CreditCard, ToggleLeft } from 'lucide-react';
 import {
   getOrganizations,
   createOrganization,
@@ -9,6 +9,9 @@ import {
   getOrgFeatures,
   saveOrgFeatures,
   createTpo,
+  getOrganizationTpo,
+  getOrgAdmins,
+  reinviteTpo,
   getFeatureCatalog,
   getSubscriptionPlans,
   PLANS,
@@ -60,15 +63,29 @@ export default function OrganizationsPage() {
     username: '',
   });
   const [activationInfo, setActivationInfo] = useState(null);
+  const [tpoLoading, setTpoLoading] = useState(false);
+  const [tpoBusy, setTpoBusy] = useState(false);
+  const [tpoJustCreated, setTpoJustCreated] = useState(false);
   const [subsByOrg, setSubsByOrg] = useState({});
+  const [tpoByOrg, setTpoByOrg] = useState({});
   const [loading, setLoading] = useState(true);
   const [apiToast, setApiToast] = useState('');
 
   const refresh = async () => {
     try {
       setLoading(true);
-      const rows = await getOrganizations();
+      const [rows, tpos] = await Promise.all([
+        getOrganizations(),
+        getOrgAdmins().catch(() => []),
+      ]);
       setOrgs(rows);
+      setTpoByOrg(
+        Object.fromEntries(
+          (tpos || [])
+            .filter((t) => t?.organization_id != null)
+            .map((t) => [String(t.organization_id), t])
+        )
+      );
       const subPairs = await Promise.all(
         rows.map(async (o) => [o.id, await getSubscriptionForOrg(o.id)])
       );
@@ -203,30 +220,94 @@ export default function OrganizationsPage() {
     }
   };
 
-  const openTpo = (org) => {
+  const openTpo = async (org) => {
+    const orgKey = String(org.id);
+    const known = tpoByOrg[orgKey] || null;
     setSelected(org);
     setTpoForm({
       first_name: '',
       last_name: '',
       email: org.contact_email || '',
       mobile: org.contact_phone || '',
-      username: `${org.code.toLowerCase()}.tpo`,
+      username: `${String(org.code || '').toLowerCase()}.tpo`,
     });
-    setActivationInfo(null);
+    setActivationInfo(known);
     setError('');
+    setTpoJustCreated(false);
     setTpoOpen(true);
+    setTpoLoading(!known);
+    try {
+      const existing = await getOrganizationTpo(org.id);
+      setActivationInfo(existing);
+      if (existing) {
+        setTpoByOrg((prev) => ({ ...prev, [orgKey]: existing }));
+      } else {
+        setTpoByOrg((prev) => {
+          const next = { ...prev };
+          delete next[orgKey];
+          return next;
+        });
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to load TPO for this organization.');
+    } finally {
+      setTpoLoading(false);
+    }
   };
 
   const submitTpo = async (e) => {
     e.preventDefault();
+    const orgKey = String(selected?.id);
+    if (tpoByOrg[orgKey] || activationInfo) {
+      setError('This organization already has an ORG_ADMIN (TPO). Use Reinvite instead.');
+      return;
+    }
     setError('');
+    setTpoBusy(true);
     try {
       const user = await createTpo(selected.id, tpoForm);
       setActivationInfo(user);
+      setTpoJustCreated(true);
+      setTpoByOrg((prev) => ({ ...prev, [orgKey]: user }));
       setSuccess(`TPO profile created. Activation email queued for ${user.email}.`);
     } catch (err) {
-      setError(err.message);
-      setApiToast(err.message || 'Failed to create TPO.');
+      const message = err.message || 'Failed to create TPO.';
+      setError(message);
+      setApiToast(message);
+      if (/already has an ORG_ADMIN/i.test(message)) {
+        try {
+          const existing = await getOrganizationTpo(selected.id);
+          if (existing) {
+            setActivationInfo(existing);
+            setTpoJustCreated(false);
+            setTpoByOrg((prev) => ({ ...prev, [orgKey]: existing }));
+          }
+        } catch {
+          // keep create error visible
+        }
+      }
+    } finally {
+      setTpoBusy(false);
+    }
+  };
+
+  const submitReinvite = async () => {
+    if (!selected) return;
+    const orgKey = String(selected.id);
+    setError('');
+    setTpoBusy(true);
+    try {
+      const user = await reinviteTpo(selected.id);
+      setActivationInfo(user);
+      setTpoJustCreated(false);
+      setTpoByOrg((prev) => ({ ...prev, [orgKey]: user }));
+      setSuccess(`Fresh activation link queued for ${user.email || selected.name}.`);
+    } catch (err) {
+      const message = err.message || 'Failed to reinvite TPO.';
+      setError(message);
+      setApiToast(message);
+    } finally {
+      setTpoBusy(false);
     }
   };
 
@@ -288,6 +369,7 @@ export default function OrganizationsPage() {
                 );
               }
               const sub = subsByOrg[org.id];
+              const hasTpo = Boolean(tpoByOrg[String(org.id)]);
               return (
                 <tr key={org.id}>
                   <td>
@@ -300,6 +382,7 @@ export default function OrganizationsPage() {
                         <p className="mm-pa-table__meta">
                           {org.code} · ID {org.id}
                           {sub ? ` · ${sub.plan_name}` : ' · No plan'}
+                          {hasTpo ? ' · TPO assigned' : ''}
                         </p>
                       </div>
                     </div>
@@ -329,8 +412,14 @@ export default function OrganizationsPage() {
                       <button type="button" className="mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs" onClick={() => openFeatures(org)}>
                         <ToggleLeft size={13} /> Features
                       </button>
-                      <button type="button" className="mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs" onClick={() => openTpo(org)}>
-                        <UserPlus size={13} /> TPO
+                      <button
+                        type="button"
+                        className={`mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs ${hasTpo ? 'mm-pa-btn--tpo-assigned' : ''}`}
+                        onClick={() => openTpo(org)}
+                        title={hasTpo ? 'View existing TPO / reinvite' : 'Create TPO'}
+                      >
+                        {hasTpo ? <UserCheck size={13} /> : <UserPlus size={13} />}
+                        {hasTpo ? 'View TPO' : 'Add TPO'}
                       </button>
                     </div>
                   </td>
@@ -520,14 +609,26 @@ export default function OrganizationsPage() {
         </div>
       </Modal>
 
-      {/* Create TPO */}
+      {/* Create / manage TPO */}
       <Modal
         open={tpoOpen}
         onClose={() => setTpoOpen(false)}
-        title="Create TPO (ORG_ADMIN)"
-        sub={selected ? `First organization admin for ${selected.name}` : ''}
+        title={activationInfo ? 'ORG_ADMIN (TPO)' : 'Create TPO (ORG_ADMIN)'}
+        sub={
+          selected
+            ? activationInfo
+              ? `Organization admin for ${selected.name}`
+              : `First organization admin for ${selected.name}`
+            : ''
+        }
       >
-        {!activationInfo ? (
+        {tpoLoading ? (
+          <div className="space-y-3 py-2">
+            <div className="mm-pa-skeleton h-10 w-full" />
+            <div className="mm-pa-skeleton h-24 w-full" />
+            <div className="mm-pa-skeleton ml-auto h-10 w-40" />
+          </div>
+        ) : !activationInfo ? (
           <form onSubmit={submitTpo} className="space-y-3">
             {error && <div className="mm-pa-error">{error}</div>}
             <div className="mm-pa-callout mm-pa-callout--amber">
@@ -561,24 +662,37 @@ export default function OrganizationsPage() {
             </div>
             <div className="mt-4 flex justify-end gap-2">
               <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={() => setTpoOpen(false)}>Cancel</button>
-              <button type="submit" className="mm-pa-btn mm-pa-btn--primary">Create & Send Activation</button>
+              <button type="submit" className="mm-pa-btn mm-pa-btn--primary" disabled={tpoBusy}>
+                {tpoBusy ? 'Creating…' : 'Create & Send Activation'}
+              </button>
             </div>
           </form>
         ) : (
           <div className="space-y-4">
+            {error && <div className="mm-pa-error">{error}</div>}
             <div className="mm-pa-success">
-              TPO created. Activation token generated. Credentials are not shared — TPO sets password on first login.
+              {tpoJustCreated
+                ? 'TPO created. Activation token generated. Credentials are not shared — TPO sets password on first login.'
+                : 'This organization already has an ORG_ADMIN (TPO). Create is blocked — use Reinvite for a fresh activation link.'}
+            </div>
+            <div className="mm-pa-callout mm-pa-callout--amber">
+              No temporary password. Backend generates a one-time activation token and emails the TPO to set their own password.
             </div>
             <div className="mm-pa-detail-card">
-              <p><span className="mm-pa-detail-card__label">User:</span> {activationInfo.first_name} {activationInfo.last_name}</p>
-              <p className="mt-1"><span className="mm-pa-detail-card__label">Email:</span> {activationInfo.email}</p>
-              <p className="mt-1"><span className="mm-pa-detail-card__label">Username:</span> {activationInfo.username}</p>
+              <p><span className="mm-pa-detail-card__label">User:</span> {[activationInfo.first_name, activationInfo.last_name].filter(Boolean).join(' ') || '—'}</p>
+              <p className="mt-1"><span className="mm-pa-detail-card__label">Email:</span> {activationInfo.email || '—'}</p>
+              <p className="mt-1"><span className="mm-pa-detail-card__label">Username:</span> {activationInfo.username || '—'}</p>
               <p className="mt-1"><span className="mm-pa-detail-card__label">Role:</span> ORG_ADMIN</p>
-              <p className="mt-1 break-all"><span className="mm-pa-detail-card__label">Activation token:</span> {activationInfo.activation_token}</p>
-              <p className="mt-1"><span className="mm-pa-detail-card__label">Status:</span> {activationInfo.activation_status}</p>
+              {activationInfo.activation_token ? (
+                <p className="mt-1 break-all"><span className="mm-pa-detail-card__label">Activation token:</span> {activationInfo.activation_token}</p>
+              ) : null}
+              <p className="mt-1"><span className="mm-pa-detail-card__label">Status:</span> {activationInfo.activation_status || 'ACTIVE'}</p>
             </div>
-            <div className="flex justify-end">
-              <button type="button" className="mm-pa-btn mm-pa-btn--primary" onClick={() => setTpoOpen(false)}>Done</button>
+            <div className="flex flex-wrap justify-end gap-2">
+              <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={() => setTpoOpen(false)}>Done</button>
+              <button type="button" className="mm-pa-btn mm-pa-btn--primary" onClick={submitReinvite} disabled={tpoBusy}>
+                {tpoBusy ? 'Sending…' : 'Reinvite / Fresh Activation'}
+              </button>
             </div>
           </div>
         )}
