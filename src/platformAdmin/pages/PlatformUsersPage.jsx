@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Plus, X } from 'lucide-react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { Plus } from 'lucide-react';
 import {
   getPlatformUsers,
   createPlatformUser,
   updatePlatformUserStatus,
   PLATFORM_ROLES,
 } from '../store';
+import Modal from '../Modal';
 
 export default function PlatformUsersPage() {
   const [users, setUsers] = useState([]);
@@ -62,7 +62,7 @@ export default function PlatformUsersPage() {
       </div>
 
       <div className="mm-pa-panel overflow-x-auto">
-        {error && <div className="mm-pa-inline-toast mm-pa-inline-toast--error">{error}</div>}
+        {error && !open && <div className="mm-pa-inline-toast mm-pa-inline-toast--error">{error}</div>}
         <p className="mb-4 text-sm text-slate-400">
           MentorMuni employees only. Separate from organization users. Roles: Platform Admin, Support, Sales, Operations.
         </p>
@@ -132,69 +132,46 @@ export default function PlatformUsersPage() {
         </table>
       </div>
 
-      <AnimatePresence>
-        {open && (
-          <>
-            <motion.button
-              type="button"
-              className="mm-pa-modal-backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setOpen(false)}
+      <Modal
+        open={open}
+        onClose={() => setOpen(false)}
+        title="Add Platform User"
+        sub="Creates a MentorMuni employee account for the platform portal."
+      >
+        <form onSubmit={submit} className="space-y-3">
+          {error && <div className="mm-pa-error">{error}</div>}
+          <div>
+            <label className="mm-pa-label">Name *</label>
+            <input className="mm-pa-input" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+          </div>
+          <div>
+            <label className="mm-pa-label">Email *</label>
+            <input type="email" className="mm-pa-input" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
+          </div>
+          <div>
+            <label className="mm-pa-label">Role</label>
+            <select className="mm-pa-select" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
+              {PLATFORM_ROLES.map((r) => (
+                <option key={r} value={r}>{r}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label className="mm-pa-label">Password *</label>
+            <input
+              type="password"
+              className="mm-pa-input"
+              required
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
             />
-            <motion.div
-              className="mm-pa-modal"
-              initial={{ opacity: 0, y: 20, scale: 0.97 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10 }}
-            >
-              <div className="mb-4 flex items-start justify-between">
-                <div>
-                  <h2 className="mm-pa-modal__title">Add Platform User</h2>
-                  <p className="mm-pa-modal__sub">Inserts into platform_users</p>
-                </div>
-                <button type="button" className="mm-pa-btn mm-pa-btn--ghost !px-2 !py-2" onClick={() => setOpen(false)}>
-                  <X size={16} />
-                </button>
-              </div>
-              <form onSubmit={submit} className="space-y-3">
-                {error && <div className="mm-pa-error">{error}</div>}
-                <div>
-                  <label className="mm-pa-label">Name *</label>
-                  <input className="mm-pa-input" required value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-                </div>
-                <div>
-                  <label className="mm-pa-label">Email *</label>
-                  <input type="email" className="mm-pa-input" required value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-                </div>
-                <div>
-                  <label className="mm-pa-label">Role</label>
-                  <select className="mm-pa-select" value={form.role} onChange={(e) => setForm({ ...form, role: e.target.value })}>
-                    {PLATFORM_ROLES.map((r) => (
-                      <option key={r} value={r}>{r}</option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label className="mm-pa-label">Password *</label>
-                  <input
-                    type="password"
-                    className="mm-pa-input"
-                    required
-                    value={form.password}
-                    onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  />
-                </div>
-                <div className="flex justify-end gap-2 pt-2">
-                  <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={() => setOpen(false)}>Cancel</button>
-                  <button type="submit" className="mm-pa-btn mm-pa-btn--primary">Create User</button>
-                </div>
-              </form>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+          </div>
+          <div className="flex justify-end gap-2 pt-2">
+            <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={() => setOpen(false)}>Cancel</button>
+            <button type="submit" className="mm-pa-btn mm-pa-btn--primary">Create User</button>
+          </div>
+        </form>
+      </Modal>
     </div>
   );
 }

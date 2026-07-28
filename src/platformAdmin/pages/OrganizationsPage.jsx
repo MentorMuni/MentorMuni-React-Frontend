@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Plus, Search, X, Building2, UserPlus, CreditCard, ToggleLeft } from 'lucide-react';
+import { Plus, Search, Building2, UserPlus, CreditCard, ToggleLeft } from 'lucide-react';
 import {
   getOrganizations,
   createOrganization,
@@ -14,6 +13,7 @@ import {
   getSubscriptionPlans,
   PLANS,
 } from '../store';
+import Modal from '../Modal';
 
 const emptyOrg = {
   name: '',
@@ -28,43 +28,6 @@ const emptyOrg = {
   state: '',
   country: 'India',
 };
-
-function Modal({ open, title, sub, onClose, children, wide }) {
-  if (!open) return null;
-  return (
-    <AnimatePresence>
-      <motion.button
-        type="button"
-        className="mm-pa-modal-backdrop"
-        aria-label="Close"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onClose}
-      />
-      <motion.div
-        role="dialog"
-        aria-modal="true"
-        className="mm-pa-modal"
-        style={wide ? { width: 'min(820px, calc(100vw - 32px))' } : undefined}
-        initial={{ opacity: 0, y: 24, scale: 0.97 }}
-        animate={{ opacity: 1, y: 0, scale: 1 }}
-        exit={{ opacity: 0, y: 10, scale: 0.98 }}
-      >
-        <div className="mb-5 flex items-start justify-between gap-3">
-          <div>
-            <h2 className="mm-pa-modal__title">{title}</h2>
-            {sub && <p className="mm-pa-modal__sub">{sub}</p>}
-          </div>
-          <button type="button" className="mm-pa-btn mm-pa-btn--ghost !px-2 !py-2" onClick={onClose}>
-            <X size={16} />
-          </button>
-        </div>
-        {children}
-      </motion.div>
-    </AnimatePresence>
-  );
-}
 
 export default function OrganizationsPage() {
   const [orgs, setOrgs] = useState([]);
