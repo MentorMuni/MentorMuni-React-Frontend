@@ -12,6 +12,8 @@ import {
   getFeatureCatalog,
   getSubscriptionPlans,
   PLANS,
+  statusLabel,
+  isActiveStatus,
 } from '../store';
 import Modal from '../Modal';
 
@@ -231,7 +233,7 @@ export default function OrganizationsPage() {
   const toggleStatus = async (org) => {
     try {
       await updateOrganization(org.id, {
-        status: String(org.status || '').toUpperCase() === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE',
+        status: isActiveStatus(org.status) ? 'INACTIVE' : 'ACTIVE',
       });
       await refresh();
     } catch (err) {
@@ -246,9 +248,9 @@ export default function OrganizationsPage() {
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative w-full max-w-md">
-          <Search size={15} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+          <Search size={15} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
           <input
-            className="mm-pa-input pl-9"
+            className="mm-pa-input mm-pa-input--icon-left"
             placeholder="Search by name, code, or city…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
@@ -314,8 +316,8 @@ export default function OrganizationsPage() {
                   </td>
                   <td>
                     <button type="button" onClick={() => toggleStatus(org)}>
-                      <span className={`mm-pa-badge ${String(org.status || '').toUpperCase() === 'ACTIVE' ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
-                        {String(org.status || '').toUpperCase()}
+                      <span className={`mm-pa-badge ${isActiveStatus(org.status) ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
+                        {statusLabel(org.status)}
                       </span>
                     </button>
                   </td>
@@ -377,7 +379,7 @@ export default function OrganizationsPage() {
               <label className="mm-pa-label">Status</label>
               <select className="mm-pa-select" value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
                 <option value="Active">Active</option>
-                <option value="Suspended">Suspended</option>
+                <option value="Inactive">Inactive</option>
               </select>
             </div>
           </div>
@@ -498,8 +500,8 @@ export default function OrganizationsPage() {
           {featureCatalog.map((feature) => (
             <div key={feature.id} className="mm-pa-feature-row">
               <div>
-                <p className="text-sm font-bold text-slate-100">{feature.feature_name}</p>
-                <p className="text-[11px] text-slate-500">{feature.feature_code} · {feature.category}</p>
+                <p className="mm-pa-feature-row__title">{feature.feature_name}</p>
+                <p className="mm-pa-feature-row__meta">{feature.feature_code} · {feature.category}</p>
               </div>
               <button
                 type="button"
@@ -528,7 +530,7 @@ export default function OrganizationsPage() {
         {!activationInfo ? (
           <form onSubmit={submitTpo} className="space-y-3">
             {error && <div className="mm-pa-error">{error}</div>}
-            <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 px-3 py-3 text-xs text-amber-100">
+            <div className="mm-pa-callout mm-pa-callout--amber">
               No temporary password. Backend generates a one-time activation token and emails the TPO to set their own password.
             </div>
             <div className="mm-pa-grid-2">
@@ -567,13 +569,13 @@ export default function OrganizationsPage() {
             <div className="mm-pa-success">
               TPO created. Activation token generated. Credentials are not shared — TPO sets password on first login.
             </div>
-            <div className="rounded-xl border border-white/10 bg-black/20 p-4 text-sm">
-              <p><span className="text-slate-500">User:</span> {activationInfo.first_name} {activationInfo.last_name}</p>
-              <p className="mt-1"><span className="text-slate-500">Email:</span> {activationInfo.email}</p>
-              <p className="mt-1"><span className="text-slate-500">Username:</span> {activationInfo.username}</p>
-              <p className="mt-1"><span className="text-slate-500">Role:</span> ORG_ADMIN</p>
-              <p className="mt-1 break-all"><span className="text-slate-500">Activation token:</span> {activationInfo.activation_token}</p>
-              <p className="mt-1"><span className="text-slate-500">Status:</span> {activationInfo.activation_status}</p>
+            <div className="mm-pa-detail-card">
+              <p><span className="mm-pa-detail-card__label">User:</span> {activationInfo.first_name} {activationInfo.last_name}</p>
+              <p className="mt-1"><span className="mm-pa-detail-card__label">Email:</span> {activationInfo.email}</p>
+              <p className="mt-1"><span className="mm-pa-detail-card__label">Username:</span> {activationInfo.username}</p>
+              <p className="mt-1"><span className="mm-pa-detail-card__label">Role:</span> ORG_ADMIN</p>
+              <p className="mt-1 break-all"><span className="mm-pa-detail-card__label">Activation token:</span> {activationInfo.activation_token}</p>
+              <p className="mt-1"><span className="mm-pa-detail-card__label">Status:</span> {activationInfo.activation_status}</p>
             </div>
             <div className="flex justify-end">
               <button type="button" className="mm-pa-btn mm-pa-btn--primary" onClick={() => setTpoOpen(false)}>Done</button>

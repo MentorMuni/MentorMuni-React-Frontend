@@ -105,11 +105,11 @@ export default function FeatureManagementPage() {
               ) : (
                 <>
                   <div>
-                    <p className="text-sm font-bold text-slate-100">{feature.feature_name}</p>
-                    <p className="text-[11px] text-slate-500">
+                    <p className="mm-pa-feature-row__title">{feature.feature_name}</p>
+                    <p className="mm-pa-feature-row__meta">
                       {feature.feature_code} · {feature.category}
                     </p>
-                    <p className="mt-1 text-xs text-slate-400">{feature.description}</p>
+                    <p className="mm-pa-feature-row__desc">{feature.description}</p>
                   </div>
                   <button
                     type="button"
@@ -132,7 +132,7 @@ export default function FeatureManagementPage() {
         <h2 className="mb-2 text-sm font-extrabold">feature_catalog</h2>
         <p className="mb-4 text-xs text-slate-400">
           Master list of platform capabilities. Rarely changes. Toggle state is stored in{' '}
-          <code className="rounded bg-white/5 px-1">organization_features</code>.
+          <code className="mm-pa-code">organization_features</code>.
         </p>
         <div className="overflow-x-auto">
           <table className="mm-pa-table min-w-[640px]">

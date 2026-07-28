@@ -50,7 +50,7 @@ export default function SubscriptionsPage() {
       <div className="mm-pa-panel">
         {error && <div className="mm-pa-inline-toast mm-pa-inline-toast--error">{error}</div>}
         <p className="mb-4 text-sm text-slate-400">
-          Don’t create or renew plans here. Use <strong className="text-slate-200">Organizations → Plan</strong> to
+          Don’t create or renew plans here. Use <strong className="mm-pa-strong">Organizations → Plan</strong> to
           assign or renew a subscription. This page is only the history of plans already assigned, and shows how
           many student seats are filled versus the seat limit.
         </p>

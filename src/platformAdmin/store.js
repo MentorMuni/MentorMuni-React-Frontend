@@ -38,13 +38,25 @@ function apiOrgType(value) {
 
 function uiStatus(value) {
   const v = String(value || '').toUpperCase();
-  return v === 'SUSPENDED' ? 'Suspended' : 'Active';
+  return v === 'SUSPENDED' || v === 'INACTIVE' ? 'Inactive' : 'Active';
 }
 
 function apiStatus(value) {
-  return String(value || '').toUpperCase() === 'SUSPENDED' || value === 'Suspended'
+  const v = String(value || '').toUpperCase();
+  return v === 'SUSPENDED' || v === 'INACTIVE' || value === 'Suspended' || value === 'Inactive'
     ? 'SUSPENDED'
     : 'ACTIVE';
+}
+
+export function statusLabel(value) {
+  const v = String(value || '').toUpperCase();
+  return v === 'SUSPENDED' || v === 'INACTIVE' || value === 'Inactive' || value === 'Suspended'
+    ? 'INACTIVE'
+    : 'ACTIVE';
+}
+
+export function isActiveStatus(value) {
+  return statusLabel(value) === 'ACTIVE';
 }
 
 function normalizeOrganization(row) {

@@ -11,7 +11,7 @@ import {
   Sparkles,
   Rocket,
 } from 'lucide-react';
-import { getDashboardMetrics } from '../store';
+import { getDashboardMetrics, statusLabel, isActiveStatus } from '../store';
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -183,7 +183,7 @@ export default function DashboardPage() {
             {(loading ? Array.from({ length: 4 }, (_, i) => ({ feature_code: `loading-${i}`, feature_name: '', orgs_enabled: 0, pct: 0 })) : metrics.featureUsage).map((f, i) => (
               <div key={f.feature_code}>
                 <div className="mb-1.5 flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-200">{loading ? 'Loading feature...' : f.feature_name}</span>
+                  <span className="mm-pa-feature-row__title">{loading ? 'Loading feature...' : f.feature_name}</span>
                   <span className="text-slate-400">{loading ? '...' : `${f.orgs_enabled} orgs · ${f.pct}%`}</span>
                 </div>
                 <div className="mm-pa-progress">
@@ -221,11 +221,11 @@ export default function DashboardPage() {
                 transition={{ delay: 0.22 + i * 0.05 }}
               >
                 <div>
-                  <p className="text-sm font-bold text-slate-100">{loading ? 'Loading organization...' : org.name}</p>
+                  <p className="mm-pa-table__title">{loading ? 'Loading organization...' : org.name}</p>
                   <p className="text-[11px] text-slate-500">{loading ? 'Loading...' : `${org.code} · ${String(org.organization_type || '').toUpperCase()}`}</p>
                 </div>
-                <span className={`mm-pa-badge ${String(org.status || '').toUpperCase() === 'ACTIVE' ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
-                  {loading ? '...' : String(org.status || '').toUpperCase()}
+                <span className={`mm-pa-badge ${isActiveStatus(org.status) ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
+                  {loading ? '...' : statusLabel(org.status)}
                 </span>
               </motion.li>
             ))}
@@ -266,7 +266,7 @@ export default function DashboardPage() {
               <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-sky-300">
                 Step {String(i + 1).padStart(2, '0')}
               </p>
-              <p className="mt-2 text-sm font-bold text-slate-100">{step}</p>
+              <p className="mt-2 text-sm font-bold mm-pa-strong">{step}</p>
             </motion.li>
           ))}
         </ol>

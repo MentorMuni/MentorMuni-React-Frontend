@@ -93,10 +93,10 @@ export default function SettingsPage() {
       </section>
 
       <section className="mm-pa-panel">
-        <h2 className="text-sm font-extrabold text-rose-300">Environment</h2>
+        <h2 className="mm-pa-heading-warn">Environment</h2>
         <p className="mt-2 text-sm text-slate-400">
-          This portal is connected to backend APIs using <code className="mx-1 rounded bg-white/5 px-1.5 py-0.5 text-[11px]">VITE_API_KEY</code> and
-          <code className="mx-1 rounded bg-white/5 px-1.5 py-0.5 text-[11px]">VITE_PLATFORM_API_BASE_URL</code>.
+          This portal is connected to backend APIs using <code className="mm-pa-code">VITE_API_KEY</code> and
+          <code className="mm-pa-code">VITE_API_URL</code>.
         </p>
       </section>
     </div>
