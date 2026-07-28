@@ -74,6 +74,11 @@ const RoadmapPage = lazy(() => import("./components/RoadmapPage"));
 const BlogList = lazy(() => import("./components/Blog/BlogList"));
 const BlogPost = lazy(() => import("./components/Blog/BlogPost"));
 const GamifiedPlacementPrep = lazy(() => import("./components/GamifiedPlacementPrep"));
+const PlatformAdminApp = lazy(() => import("./platformAdmin/PlatformAdminApp"));
+
+function isPlatformAdminPath(pathname) {
+  return pathname === "/mentormuniplatformadmin" || pathname.startsWith("/mentormuniplatformadmin/");
+}
 
 function PageFallback() {
   const { pathname } = useLocation();
@@ -215,21 +220,44 @@ function RouteTitle() {
   return null;
 }
 
+function AppChrome({ children }) {
+  const { pathname } = useLocation();
+  const platformAdmin = isPlatformAdminPath(pathname);
+
+  if (platformAdmin) {
+    return (
+      <div className="relative min-h-screen">
+        <Suspense fallback={<PageFallback />}>{children}</Suspense>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mm-app-shell mm-site-theme relative text-foreground">
+      <ParticleBackground />
+      <AnnouncementBar />
+      <SkipToContent />
+      <div className="mm-app-body">
+        <Navbar />
+        <AnimatedMain className="mm-app-main relative z-[1]">
+          <Suspense fallback={<PageFallback />}>{children}</Suspense>
+        </AnimatedMain>
+      </div>
+      <WelcomeLaunchOverlay />
+      <MuniBot />
+    </div>
+  );
+}
+
 function App() {
   return (
     <BrowserRouter basename={getRouterBasename()}>
       <HashLegacyRedirect />
       <ScrollToTop />
       <RouteTitle />
-      <div className="mm-app-shell mm-site-theme relative text-foreground">
-        <ParticleBackground />
-        <AnnouncementBar />
-        <SkipToContent />
-        <div className="mm-app-body">
-          <Navbar />
-          <AnimatedMain className="mm-app-main relative z-[1]">
-          <Suspense fallback={<PageFallback />}>
-            <Routes>
+      <AppChrome>
+        <Routes>
+              <Route path="/mentormuniplatformadmin/*" element={<PlatformAdminApp />} />
               <Route path="/" element={<HomePage />} />
               <Route path="/how-it-works" element={<StudentJourneyPage />} />
               <Route path="/roadmap" element={<RoadmapPage />} />
@@ -304,13 +332,8 @@ function App() {
               {/* Legacy / marketing URLs → canonical routes */}
               <Route path="/courses" element={<Navigate to="/placement-tracks" replace />} />
               <Route path="*" element={<NotFoundPage />} />
-            </Routes>
-          </Suspense>
-        </AnimatedMain>
-        </div>
-        <WelcomeLaunchOverlay />
-        <MuniBot />
-      </div>
+        </Routes>
+      </AppChrome>
     </BrowserRouter>
   );
 }

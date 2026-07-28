@@ -1,0 +1,250 @@
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import {
+  Building2,
+  Users,
+  UserCheck,
+  CreditCard,
+  AlertTriangle,
+  ArrowRight,
+  Sparkles,
+  Rocket,
+} from 'lucide-react';
+import { getDashboardMetrics } from '../store';
+
+const EASE = [0.22, 1, 0.36, 1];
+
+function formatNumber(n) {
+  return new Intl.NumberFormat('en-IN').format(n);
+}
+
+export default function DashboardPage() {
+  const [metrics, setMetrics] = useState(() => getDashboardMetrics());
+
+  useEffect(() => {
+    const refresh = () => setMetrics(getDashboardMetrics());
+    window.addEventListener('mm-platform-db-updated', refresh);
+    return () => window.removeEventListener('mm-platform-db-updated', refresh);
+  }, []);
+
+  const cards = [
+    { label: 'Organizations', value: metrics.organizations, icon: Building2 },
+    { label: 'Students Purchased', value: metrics.studentsPurchased, icon: Users },
+    { label: 'Students Registered', value: metrics.studentsRegistered, icon: UserCheck },
+    { label: 'Active Plans', value: metrics.activePlans, icon: CreditCard },
+    { label: 'Expiring This Month', value: metrics.expiringThisMonth, icon: AlertTriangle },
+  ];
+
+  return (
+    <div className="space-y-6">
+      <div className="mm-pa-hero-strip">
+        <motion.div
+          className="mm-pa-hero-card"
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, ease: EASE }}
+        >
+          <span className="mm-pa-pill">
+            <Sparkles size={12} /> Control plane
+          </span>
+          <h2>
+            Spin up campuses.
+            <span className="block text-sky-300">Hand off in minutes.</span>
+          </h2>
+          <p className="max-w-lg text-sm leading-relaxed text-slate-300">
+            Create organization → assign subscription → enable features → invite TPO.
+            MentorMuni Platform stops where the Organization Portal begins.
+          </p>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <Link to="/mentormuniplatformadmin/organizations" className="mm-pa-btn mm-pa-btn--primary">
+              <Rocket size={15} /> Create Organization
+            </Link>
+            <Link to="/mentormuniplatformadmin/subscriptions" className="mm-pa-btn mm-pa-btn--ghost">
+              View subscriptions
+            </Link>
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="mm-pa-panel flex flex-col justify-between"
+          initial={{ opacity: 0, y: 18 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.08, duration: 0.5, ease: EASE }}
+        >
+          <div>
+            <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-amber-300">
+              This month pulse
+            </p>
+            <p className="mt-3 text-4xl font-black tracking-tight text-white">
+              {metrics.expiringThisMonth}
+              <span className="ml-2 text-base font-bold text-slate-400">plans expiring</span>
+            </p>
+            <p className="mt-2 text-sm text-slate-400">
+              {formatNumber(metrics.studentsRegistered)} of{' '}
+              {formatNumber(metrics.studentsPurchased)} purchased seats filled.
+            </p>
+          </div>
+          <div className="mt-6">
+            <div className="mb-2 flex justify-between text-xs text-slate-400">
+              <span>Seat utilization</span>
+              <span>
+                {metrics.studentsPurchased
+                  ? Math.round((metrics.studentsRegistered / metrics.studentsPurchased) * 100)
+                  : 0}
+                %
+              </span>
+            </div>
+            <div className="mm-pa-progress">
+              <motion.div
+                className="mm-pa-progress__bar"
+                initial={{ width: 0 }}
+                animate={{
+                  width: `${
+                    metrics.studentsPurchased
+                      ? Math.min(
+                          100,
+                          Math.round((metrics.studentsRegistered / metrics.studentsPurchased) * 100)
+                        )
+                      : 0
+                  }%`,
+                }}
+                transition={{ duration: 0.9, ease: EASE }}
+              />
+            </div>
+          </div>
+        </motion.div>
+      </div>
+
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+        {cards.map((card, i) => {
+          const Icon = card.icon;
+          return (
+            <motion.div
+              key={card.label}
+              className="mm-pa-stat"
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.05 * i, duration: 0.4, ease: EASE }}
+              whileHover={{ y: -4 }}
+            >
+              <div className="relative z-10 flex items-start justify-between">
+                <p className="mm-pa-stat__label">{card.label}</p>
+                <Icon size={16} className="text-sky-300" />
+              </div>
+              <p className="mm-pa-stat__value relative z-10">{formatNumber(card.value)}</p>
+            </motion.div>
+          );
+        })}
+      </div>
+
+      <div className="grid gap-5 lg:grid-cols-5">
+        <motion.section
+          className="mm-pa-panel lg:col-span-3"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15, duration: 0.4, ease: EASE }}
+        >
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-sm font-extrabold tracking-tight">Feature Usage</h2>
+            <Link to="/mentormuniplatformadmin/features" className="text-xs font-bold text-sky-400 hover:text-sky-300">
+              Manage features →
+            </Link>
+          </div>
+          <div className="space-y-4">
+            {metrics.featureUsage.map((f, i) => (
+              <div key={f.feature_code}>
+                <div className="mb-1.5 flex items-center justify-between text-xs">
+                  <span className="font-semibold text-slate-200">{f.feature_name}</span>
+                  <span className="text-slate-400">
+                    {f.orgs_enabled} orgs · {f.pct}%
+                  </span>
+                </div>
+                <div className="mm-pa-progress">
+                  <motion.div
+                    className="mm-pa-progress__bar"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${f.pct}%` }}
+                    transition={{ duration: 0.7, delay: 0.05 * i, ease: EASE }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.section>
+
+        <motion.section
+          className="mm-pa-panel lg:col-span-2"
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2, duration: 0.4, ease: EASE }}
+        >
+          <div className="mb-4 flex items-center justify-between">
+            <h2 className="text-sm font-extrabold tracking-tight">Recent Organizations</h2>
+            <Link to="/mentormuniplatformadmin/organizations" className="text-xs font-bold text-sky-400">
+              View all
+            </Link>
+          </div>
+          <ul className="space-y-3">
+            {metrics.recentOrgs.map((org, i) => (
+              <motion.li
+                key={org.id}
+                className="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.03] px-3 py-3"
+                initial={{ opacity: 0, x: 8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.22 + i * 0.05 }}
+              >
+                <div>
+                  <p className="text-sm font-bold text-slate-100">{org.name}</p>
+                  <p className="text-[11px] text-slate-500">{org.code} · {org.organization_type}</p>
+                </div>
+                <span className={`mm-pa-badge ${org.status === 'Active' ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
+                  {org.status}
+                </span>
+              </motion.li>
+            ))}
+          </ul>
+
+          <Link
+            to="/mentormuniplatformadmin/organizations"
+            className="mm-pa-btn mm-pa-btn--primary mt-5 w-full"
+          >
+            Create Organization <ArrowRight size={15} />
+          </Link>
+        </motion.section>
+      </div>
+
+      <motion.section
+        className="mm-pa-panel"
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.25, duration: 0.4, ease: EASE }}
+      >
+        <h2 className="mb-3 text-sm font-extrabold">Complete provisioning flow</h2>
+        <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+          {[
+            'Create Organization',
+            'Assign Subscription',
+            'Enable Features',
+            'Create TPO',
+            'Send Activation',
+          ].map((step, i) => (
+            <motion.li
+              key={step}
+              className="rounded-2xl border border-sky-400/15 bg-gradient-to-br from-sky-500/15 via-transparent to-amber-400/10 px-3 py-4"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.28 + i * 0.05 }}
+              whileHover={{ y: -3, scale: 1.01 }}
+            >
+              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-sky-300">
+                Step {String(i + 1).padStart(2, '0')}
+              </p>
+              <p className="mt-2 text-sm font-bold text-slate-100">{step}</p>
+            </motion.li>
+          ))}
+        </ol>
+      </motion.section>
+    </div>
+  );
+}
