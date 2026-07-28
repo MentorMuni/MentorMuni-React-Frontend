@@ -8,6 +8,7 @@ import SubscriptionsPage from './pages/SubscriptionsPage';
 import FeatureManagementPage from './pages/FeatureManagementPage';
 import PlatformUsersPage from './pages/PlatformUsersPage';
 import SettingsPage from './pages/SettingsPage';
+import ChangePasswordPage from './pages/ChangePasswordPage';
 
 function RequirePlatformAuth({ children }) {
   if (!isPlatformAuthenticated()) {
@@ -46,6 +47,7 @@ export default function PlatformAdminApp() {
         <Route path="features" element={<FeatureManagementPage />} />
         <Route path="platform-users" element={<PlatformUsersPage />} />
         <Route path="settings" element={<SettingsPage />} />
+        <Route path="change-password" element={<ChangePasswordPage />} />
       </Route>
       <Route path="*" element={<Navigate to="/mentormuniplatformadmin" replace />} />
     </Routes>

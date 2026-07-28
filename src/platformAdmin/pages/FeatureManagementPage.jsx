@@ -7,48 +7,70 @@ import {
 } from '../store';
 
 export default function FeatureManagementPage() {
-  const [orgs, setOrgs] = useState(() => getOrganizations());
-  const [orgId, setOrgId] = useState(() => getOrganizations()[0]?.id || '');
+  const [orgs, setOrgs] = useState([]);
+  const [orgId, setOrgId] = useState('');
   const [featureMap, setFeatureMap] = useState({});
-  const [catalog] = useState(() => getFeatureCatalog());
+  const [catalog, setCatalog] = useState([]);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  const loadFeatures = (id) => {
+  const loadFeatures = async (id) => {
     if (!id) return;
-    const rows = getOrgFeatures(id);
+    const rows = await getOrgFeatures(id);
     const map = {};
     rows.forEach((r) => {
-      map[r.id] = r.enabled;
+      map[r.feature_id ?? r.id] = r.enabled;
     });
     setFeatureMap(map);
   };
 
   useEffect(() => {
-    const refresh = () => {
-      const list = getOrganizations();
+    const refresh = async () => {
+      setLoading(true);
+      const list = await getOrganizations();
       setOrgs(list);
+      if (!catalog.length) {
+        setCatalog(await getFeatureCatalog());
+      }
       if (!list.find((o) => o.id === Number(orgId)) && list[0]) {
         setOrgId(list[0].id);
-        loadFeatures(list[0].id);
+        await loadFeatures(list[0].id);
       }
+      setLoading(false);
     };
+    refresh().catch((e) => {
+      setError(e.message || 'Failed to load feature management data.');
+      setLoading(false);
+    });
     window.addEventListener('mm-platform-db-updated', refresh);
     return () => window.removeEventListener('mm-platform-db-updated', refresh);
+  }, [orgId, catalog.length]);
+
+  useEffect(() => {
+    loadFeatures(orgId).catch((e) => setError(e.message || 'Failed to load organization features.'));
   }, [orgId]);
 
   useEffect(() => {
-    loadFeatures(orgId);
-  }, [orgId]);
+    if (!error) return undefined;
+    const timer = window.setTimeout(() => setError(''), 3500);
+    return () => window.clearTimeout(timer);
+  }, [error]);
 
-  const save = () => {
-    saveOrgFeatures(orgId, featureMap);
-    setSaved(true);
-    window.setTimeout(() => setSaved(false), 2200);
+  const save = async () => {
+    try {
+      await saveOrgFeatures(orgId, featureMap);
+      setSaved(true);
+      window.setTimeout(() => setSaved(false), 2200);
+    } catch (e) {
+      setError(e.message || 'Failed to save organization features.');
+    }
   };
 
   return (
     <div className="space-y-5">
       <div className="mm-pa-panel">
+        {error && <div className="mm-pa-inline-toast mm-pa-inline-toast--error">{error}</div>}
         <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div className="w-full max-w-sm">
             <label className="mm-pa-label">Organization</label>
@@ -72,25 +94,35 @@ export default function FeatureManagementPage() {
         {saved && <div className="mm-pa-success">organization_features updated for this tenant.</div>}
 
         <div className="grid gap-3 md:grid-cols-2">
-          {catalog.map((feature) => (
+          {(loading ? Array.from({ length: 6 }, (_, i) => ({ id: `loading-feature-${i}` })) : catalog).map((feature) => (
             <div key={feature.id} className="mm-pa-feature-row">
-              <div>
-                <p className="text-sm font-bold text-slate-100">{feature.feature_name}</p>
-                <p className="text-[11px] text-slate-500">
-                  {feature.feature_code} · {feature.category}
-                </p>
-                <p className="mt-1 text-xs text-slate-400">{feature.description}</p>
-              </div>
-              <button
-                type="button"
-                className={`mm-pa-toggle ${featureMap[feature.id] ? 'mm-pa-toggle--on' : ''}`}
-                aria-pressed={Boolean(featureMap[feature.id])}
-                onClick={() =>
-                  setFeatureMap((m) => ({ ...m, [feature.id]: !m[feature.id] }))
-                }
-              >
-                <span className="mm-pa-toggle__knob" />
-              </button>
+              {loading ? (
+                <div className="w-full space-y-2">
+                  <div className="mm-pa-skeleton h-4 w-1/2" />
+                  <div className="mm-pa-skeleton h-3 w-2/3" />
+                  <div className="mm-pa-skeleton h-3 w-full" />
+                </div>
+              ) : (
+                <>
+                  <div>
+                    <p className="text-sm font-bold text-slate-100">{feature.feature_name}</p>
+                    <p className="text-[11px] text-slate-500">
+                      {feature.feature_code} · {feature.category}
+                    </p>
+                    <p className="mt-1 text-xs text-slate-400">{feature.description}</p>
+                  </div>
+                  <button
+                    type="button"
+                    className={`mm-pa-toggle ${featureMap[feature.id] ? 'mm-pa-toggle--on' : ''}`}
+                    aria-pressed={Boolean(featureMap[feature.id])}
+                    onClick={() =>
+                      setFeatureMap((m) => ({ ...m, [feature.id]: !m[feature.id] }))
+                    }
+                  >
+                    <span className="mm-pa-toggle__knob" />
+                  </button>
+                </>
+              )}
             </div>
           ))}
         </div>
@@ -114,15 +146,29 @@ export default function FeatureManagementPage() {
               </tr>
             </thead>
             <tbody>
-              {catalog.map((f) => (
+              {(loading ? Array.from({ length: 5 }, (_, i) => ({ id: `loading-catalog-${i}` })) : catalog).map((f) => (
                 <tr key={f.id}>
-                  <td>{f.id}</td>
-                  <td className="font-mono text-xs text-sky-300">{f.feature_code}</td>
-                  <td className="font-semibold">{f.feature_name}</td>
-                  <td>{f.category}</td>
-                  <td>
-                    <span className="mm-pa-badge mm-pa-badge--active">{f.status}</span>
-                  </td>
+                  {loading ? (
+                    <>
+                      <td><div className="mm-pa-skeleton h-4 w-12" /></td>
+                      <td><div className="mm-pa-skeleton h-4 w-24" /></td>
+                      <td><div className="mm-pa-skeleton h-4 w-32" /></td>
+                      <td><div className="mm-pa-skeleton h-4 w-24" /></td>
+                      <td><div className="mm-pa-skeleton h-6 w-24" /></td>
+                    </>
+                  ) : (
+                    <>
+                      <td>{f.id}</td>
+                      <td className="font-mono text-xs text-sky-300">{f.feature_code}</td>
+                      <td className="font-semibold">{f.feature_name}</td>
+                      <td>{f.category}</td>
+                      <td>
+                        <span className={`mm-pa-badge ${String(f.status || '').toUpperCase() === 'ACTIVE' ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
+                          {String(f.status || '').toUpperCase() || 'ACTIVE'}
+                        </span>
+                      </td>
+                    </>
+                  )}
                 </tr>
               ))}
             </tbody>

@@ -20,13 +20,41 @@ function formatNumber(n) {
 }
 
 export default function DashboardPage() {
-  const [metrics, setMetrics] = useState(() => getDashboardMetrics());
+  const [metrics, setMetrics] = useState({
+    organizations: 0,
+    studentsPurchased: 0,
+    studentsRegistered: 0,
+    activePlans: 0,
+    expiringThisMonth: 0,
+    featureUsage: [],
+    recentOrgs: [],
+  });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const refresh = () => setMetrics(getDashboardMetrics());
+    const refresh = async () => {
+      try {
+        setLoading(true);
+        const result = await getDashboardMetrics();
+        setMetrics(result);
+        setError('');
+      } catch (e) {
+        setError(e.message || 'Failed to load dashboard metrics.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    refresh();
     window.addEventListener('mm-platform-db-updated', refresh);
     return () => window.removeEventListener('mm-platform-db-updated', refresh);
   }, []);
+
+  useEffect(() => {
+    if (!error) return undefined;
+    const timer = window.setTimeout(() => setError(''), 3500);
+    return () => window.clearTimeout(timer);
+  }, [error]);
 
   const cards = [
     { label: 'Organizations', value: metrics.organizations, icon: Building2 },
@@ -38,6 +66,7 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-6">
+      {error && <div className="mm-pa-inline-toast mm-pa-inline-toast--error">{error}</div>}
       <div className="mm-pa-hero-strip">
         <motion.div
           className="mm-pa-hero-card"
@@ -77,12 +106,11 @@ export default function DashboardPage() {
               This month pulse
             </p>
             <p className="mt-3 text-4xl font-black tracking-tight text-white">
-              {metrics.expiringThisMonth}
+              {loading ? '...' : metrics.expiringThisMonth}
               <span className="ml-2 text-base font-bold text-slate-400">plans expiring</span>
             </p>
             <p className="mt-2 text-sm text-slate-400">
-              {formatNumber(metrics.studentsRegistered)} of{' '}
-              {formatNumber(metrics.studentsPurchased)} purchased seats filled.
+              {loading ? 'Loading utilization...' : `${formatNumber(metrics.studentsRegistered)} of ${formatNumber(metrics.studentsPurchased)} purchased seats filled.`}
             </p>
           </div>
           <div className="mt-6">
@@ -132,7 +160,7 @@ export default function DashboardPage() {
                 <p className="mm-pa-stat__label">{card.label}</p>
                 <Icon size={16} className="text-sky-300" />
               </div>
-              <p className="mm-pa-stat__value relative z-10">{formatNumber(card.value)}</p>
+              <p className="mm-pa-stat__value relative z-10">{loading ? '...' : formatNumber(card.value)}</p>
             </motion.div>
           );
         })}
@@ -152,19 +180,17 @@ export default function DashboardPage() {
             </Link>
           </div>
           <div className="space-y-4">
-            {metrics.featureUsage.map((f, i) => (
+            {(loading ? Array.from({ length: 4 }, (_, i) => ({ feature_code: `loading-${i}`, feature_name: '', orgs_enabled: 0, pct: 0 })) : metrics.featureUsage).map((f, i) => (
               <div key={f.feature_code}>
                 <div className="mb-1.5 flex items-center justify-between text-xs">
-                  <span className="font-semibold text-slate-200">{f.feature_name}</span>
-                  <span className="text-slate-400">
-                    {f.orgs_enabled} orgs · {f.pct}%
-                  </span>
+                  <span className="font-semibold text-slate-200">{loading ? 'Loading feature...' : f.feature_name}</span>
+                  <span className="text-slate-400">{loading ? '...' : `${f.orgs_enabled} orgs · ${f.pct}%`}</span>
                 </div>
                 <div className="mm-pa-progress">
                   <motion.div
                     className="mm-pa-progress__bar"
                     initial={{ width: 0 }}
-                    animate={{ width: `${f.pct}%` }}
+                    animate={{ width: `${loading ? 42 : f.pct}%` }}
                     transition={{ duration: 0.7, delay: 0.05 * i, ease: EASE }}
                   />
                 </div>
@@ -186,7 +212,7 @@ export default function DashboardPage() {
             </Link>
           </div>
           <ul className="space-y-3">
-            {metrics.recentOrgs.map((org, i) => (
+            {(loading ? Array.from({ length: 5 }, (_, i) => ({ id: `loading-org-${i}` })) : metrics.recentOrgs).map((org, i) => (
               <motion.li
                 key={org.id}
                 className="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.03] px-3 py-3"
@@ -195,11 +221,11 @@ export default function DashboardPage() {
                 transition={{ delay: 0.22 + i * 0.05 }}
               >
                 <div>
-                  <p className="text-sm font-bold text-slate-100">{org.name}</p>
-                  <p className="text-[11px] text-slate-500">{org.code} · {org.organization_type}</p>
+                  <p className="text-sm font-bold text-slate-100">{loading ? 'Loading organization...' : org.name}</p>
+                  <p className="text-[11px] text-slate-500">{loading ? 'Loading...' : `${org.code} · ${String(org.organization_type || '').toUpperCase()}`}</p>
                 </div>
-                <span className={`mm-pa-badge ${org.status === 'Active' ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
-                  {org.status}
+                <span className={`mm-pa-badge ${String(org.status || '').toUpperCase() === 'ACTIVE' ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
+                  {loading ? '...' : String(org.status || '').toUpperCase()}
                 </span>
               </motion.li>
             ))}

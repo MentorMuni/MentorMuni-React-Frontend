@@ -725,6 +725,41 @@
   margin-bottom: 12px;
 }
 
+.mm-pa-inline-toast {
+  position: sticky;
+  top: 78px;
+  z-index: 25;
+  margin-bottom: 12px;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 13px;
+  font-weight: 650;
+  backdrop-filter: blur(8px);
+}
+
+.mm-pa-inline-toast--error {
+  background: rgba(251, 113, 133, 0.14);
+  border: 1px solid rgba(251, 113, 133, 0.34);
+  color: #fecdd3;
+}
+
+.mm-pa-skeleton {
+  border-radius: 12px;
+  background: linear-gradient(
+    90deg,
+    rgba(148, 163, 184, 0.14) 0%,
+    rgba(148, 163, 184, 0.24) 50%,
+    rgba(148, 163, 184, 0.14) 100%
+  );
+  background-size: 200% 100%;
+  animation: mm-pa-skeleton-shimmer 1.3s ease-in-out infinite;
+}
+
+@keyframes mm-pa-skeleton-shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
 .mm-pa-hero-strip {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
@@ -1085,6 +1120,12 @@
   background: rgba(42, 170, 138, 0.1);
   border-color: rgba(42, 170, 138, 0.28);
   color: #047857;
+}
+
+.mm-pa-root.mm-pa-light .mm-pa-inline-toast--error {
+  background: rgba(225, 29, 72, 0.08);
+  border-color: rgba(225, 29, 72, 0.24);
+  color: #9f1239;
 }
 
 .mm-pa-root.mm-pa-light .mm-pa-hero-card {

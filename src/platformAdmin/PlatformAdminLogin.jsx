@@ -37,20 +37,28 @@ export default function PlatformAdminLogin() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
-    window.setTimeout(() => {
-      const result = authenticatePlatformAdmin(email, password);
+    try {
+      const result = await authenticatePlatformAdmin(email, password);
       setLoading(false);
       if (!result.ok) {
         setError(result.error);
         return;
       }
       setPlatformSession(result.user);
-      navigate('/mentormuniplatformadmin/dashboard', { replace: true });
-    }, 550);
+      navigate(
+        result.user?.mustChangePassword
+          ? '/mentormuniplatformadmin/change-password'
+          : '/mentormuniplatformadmin/dashboard',
+        { replace: true }
+      );
+    } catch (err) {
+      setLoading(false);
+      setError(err.message || 'Unable to sign in.');
+    }
   };
 
   return (
@@ -172,7 +180,7 @@ export default function PlatformAdminLogin() {
                     required
                     autoComplete="username"
                     className="mm-pa-input mm-pa-input--icon-left"
-                    placeholder="mentormuniteam@gmail.com"
+                    placeholder="admin@mentormuni.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
@@ -235,6 +243,10 @@ export default function PlatformAdminLogin() {
                 <p className="text-[10px] text-slate-500">TPO activation link</p>
               </div>
             </div>
+
+            <p className="mt-4 text-[11px] text-slate-500">
+              Seeded admin: <span className="font-semibold text-slate-300">admin@mentormuni.com</span>
+            </p>
 
             <div className="mt-5 flex items-start gap-2 rounded-xl border border-sky-500/20 bg-sky-500/10 px-3 py-3 text-xs text-sky-100">
               <ShieldCheck size={16} className="mt-0.5 shrink-0" />

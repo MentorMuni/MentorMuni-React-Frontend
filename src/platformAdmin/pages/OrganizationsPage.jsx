@@ -10,6 +10,8 @@ import {
   getOrgFeatures,
   saveOrgFeatures,
   createTpo,
+  getFeatureCatalog,
+  getSubscriptionPlans,
   PLANS,
 } from '../store';
 
@@ -65,7 +67,9 @@ function Modal({ open, title, sub, onClose, children, wide }) {
 }
 
 export default function OrganizationsPage() {
-  const [orgs, setOrgs] = useState(() => getOrganizations());
+  const [orgs, setOrgs] = useState([]);
+  const [plans, setPlans] = useState(PLANS);
+  const [featureCatalog, setFeatureCatalog] = useState([]);
   const [query, setQuery] = useState('');
   const [createOpen, setCreateOpen] = useState(false);
   const [form, setForm] = useState(emptyOrg);
@@ -91,14 +95,58 @@ export default function OrganizationsPage() {
     username: '',
   });
   const [activationInfo, setActivationInfo] = useState(null);
+  const [subsByOrg, setSubsByOrg] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [apiToast, setApiToast] = useState('');
 
-  const refresh = () => setOrgs(getOrganizations());
+  const refresh = async () => {
+    try {
+      setLoading(true);
+      const rows = await getOrganizations();
+      setOrgs(rows);
+      const subPairs = await Promise.all(
+        rows.map(async (o) => [o.id, await getSubscriptionForOrg(o.id)])
+      );
+      setSubsByOrg(Object.fromEntries(subPairs));
+      setApiToast('');
+    } catch (e) {
+      setApiToast(e.message || 'Failed to fetch organizations.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const onUpdate = () => refresh();
+    let mounted = true;
+    const boot = async () => {
+      try {
+        const [plansResult, featureResult] = await Promise.all([
+          getSubscriptionPlans().catch(() => PLANS),
+          getFeatureCatalog().catch(() => []),
+        ]);
+        if (!mounted) return;
+        setPlans(plansResult?.length ? plansResult : PLANS);
+        setFeatureCatalog(featureResult || []);
+        await refresh();
+      } catch (e) {
+        setError(e.message || 'Failed to load organizations.');
+        setApiToast(e.message || 'Failed to load organizations.');
+      }
+    };
+    boot();
+    const onUpdate = async () => refresh();
     window.addEventListener('mm-platform-db-updated', onUpdate);
-    return () => window.removeEventListener('mm-platform-db-updated', onUpdate);
+    return () => {
+      mounted = false;
+      window.removeEventListener('mm-platform-db-updated', onUpdate);
+    };
   }, []);
+
+  useEffect(() => {
+    if (!apiToast) return undefined;
+    const timer = window.setTimeout(() => setApiToast(''), 3500);
+    return () => window.clearTimeout(timer);
+  }, [apiToast]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -118,61 +166,76 @@ export default function OrganizationsPage() {
     setCreateOpen(true);
   };
 
-  const submitOrg = (e) => {
+  const submitOrg = async (e) => {
     e.preventDefault();
     setError('');
     try {
-      const row = createOrganization(form);
+      const row = await createOrganization(form);
       setSuccess(`Organization created · ID ${row.id} · Code ${row.code}`);
       setCreateOpen(false);
       setSelected(row);
-      refresh();
+      await refresh();
     } catch (err) {
       setError(err.message || 'Failed to create organization.');
+      setApiToast(err.message || 'Failed to create organization.');
     }
   };
 
-  const openSubscription = (org) => {
-    setSelected(org);
-    const existing = getSubscriptionForOrg(org.id);
-    const plan = PLANS.find((p) => p.name === existing?.plan_name) || PLANS[2];
-    setSubForm({
-      plan_name: existing?.plan_name || plan.name,
-      student_limit: existing?.student_limit || plan.defaultLimit,
-      start_date: existing?.start_date || new Date().toISOString().slice(0, 10),
-      end_date: existing?.end_date || `${new Date().getFullYear()}-12-31`,
-      status: 'ACTIVE',
-    });
-    setError('');
-    setSubOpen(true);
+  const openSubscription = async (org) => {
+    try {
+      setSelected(org);
+      const existing = await getSubscriptionForOrg(org.id);
+      const plan = plans.find((p) => p.name === existing?.plan_name) || plans[0] || PLANS[0];
+      setSubForm({
+        plan_name: existing?.plan_name || plan.name,
+        student_limit: existing?.student_limit || plan.defaultLimit,
+        start_date: existing?.start_date || new Date().toISOString().slice(0, 10),
+        end_date: existing?.end_date || `${new Date().getFullYear()}-12-31`,
+        status: 'ACTIVE',
+      });
+      setError('');
+      setSubOpen(true);
+    } catch (err) {
+      setApiToast(err.message || 'Failed to load subscription data.');
+    }
   };
 
-  const submitSub = (e) => {
+  const submitSub = async (e) => {
     e.preventDefault();
     try {
-      assignSubscription({ ...subForm, organization_id: selected.id });
+      await assignSubscription({ ...subForm, organization_id: selected.id });
       setSuccess(`Subscription assigned to ${selected.name}`);
       setSubOpen(false);
+      await refresh();
     } catch (err) {
       setError(err.message);
+      setApiToast(err.message || 'Failed to assign subscription.');
     }
   };
 
-  const openFeatures = (org) => {
-    setSelected(org);
-    const rows = getOrgFeatures(org.id);
-    const map = {};
-    rows.forEach((r) => {
-      map[r.id] = r.enabled;
-    });
-    setFeatureMap(map);
-    setFeatOpen(true);
+  const openFeatures = async (org) => {
+    try {
+      setSelected(org);
+      const rows = await getOrgFeatures(org.id);
+      const map = {};
+      rows.forEach((r) => {
+        map[r.feature_id ?? r.id] = r.enabled;
+      });
+      setFeatureMap(map);
+      setFeatOpen(true);
+    } catch (err) {
+      setApiToast(err.message || 'Failed to load feature data.');
+    }
   };
 
-  const submitFeatures = () => {
-    saveOrgFeatures(selected.id, featureMap);
-    setSuccess(`Features updated for ${selected.name}`);
-    setFeatOpen(false);
+  const submitFeatures = async () => {
+    try {
+      await saveOrgFeatures(selected.id, featureMap);
+      setSuccess(`Features updated for ${selected.name}`);
+      setFeatOpen(false);
+    } catch (err) {
+      setApiToast(err.message || 'Failed to save features.');
+    }
   };
 
   const openTpo = (org) => {
@@ -189,28 +252,34 @@ export default function OrganizationsPage() {
     setTpoOpen(true);
   };
 
-  const submitTpo = (e) => {
+  const submitTpo = async (e) => {
     e.preventDefault();
     setError('');
     try {
-      const user = createTpo({ ...tpoForm, organization_id: selected.id });
+      const user = await createTpo(selected.id, tpoForm);
       setActivationInfo(user);
       setSuccess(`TPO profile created. Activation email queued for ${user.email}.`);
     } catch (err) {
       setError(err.message);
+      setApiToast(err.message || 'Failed to create TPO.');
     }
   };
 
-  const toggleStatus = (org) => {
-    updateOrganization(org.id, {
-      status: org.status === 'Active' ? 'Suspended' : 'Active',
-    });
-    refresh();
+  const toggleStatus = async (org) => {
+    try {
+      await updateOrganization(org.id, {
+        status: String(org.status || '').toUpperCase() === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE',
+      });
+      await refresh();
+    } catch (err) {
+      setApiToast(err.message || 'Failed to update organization status.');
+    }
   };
 
   return (
     <div className="space-y-5">
       {success && <div className="mm-pa-success">{success}</div>}
+      {apiToast && <div className="mm-pa-inline-toast mm-pa-inline-toast--error">{apiToast}</div>}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div className="relative w-full max-w-md">
@@ -240,8 +309,20 @@ export default function OrganizationsPage() {
             </tr>
           </thead>
           <tbody>
-            {filtered.map((org) => {
-              const sub = getSubscriptionForOrg(org.id);
+            {(loading ? Array.from({ length: 5 }, (_, i) => ({ id: `loading-org-${i}` })) : filtered).map((org) => {
+              if (loading) {
+                return (
+                  <tr key={org.id}>
+                    <td><div className="mm-pa-skeleton h-10 w-56" /></td>
+                    <td><div className="mm-pa-skeleton h-6 w-24" /></td>
+                    <td><div className="mm-pa-skeleton h-10 w-44" /></td>
+                    <td><div className="mm-pa-skeleton h-6 w-28" /></td>
+                    <td><div className="mm-pa-skeleton h-6 w-24" /></td>
+                    <td><div className="mm-pa-skeleton h-8 w-44" /></td>
+                  </tr>
+                );
+              }
+              const sub = subsByOrg[org.id];
               return (
                 <tr key={org.id}>
                   <td>
@@ -259,7 +340,7 @@ export default function OrganizationsPage() {
                     </div>
                   </td>
                   <td>
-                    <span className="mm-pa-badge mm-pa-badge--neutral">{org.organization_type}</span>
+                    <span className="mm-pa-badge mm-pa-badge--neutral">{String(org.organization_type || '').toUpperCase()}</span>
                   </td>
                   <td>
                     <p className="font-medium text-slate-200">{org.contact_person || '—'}</p>
@@ -270,8 +351,8 @@ export default function OrganizationsPage() {
                   </td>
                   <td>
                     <button type="button" onClick={() => toggleStatus(org)}>
-                      <span className={`mm-pa-badge ${org.status === 'Active' ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
-                        {org.status}
+                      <span className={`mm-pa-badge ${String(org.status || '').toUpperCase() === 'ACTIVE' ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
+                        {String(org.status || '').toUpperCase()}
                       </span>
                     </button>
                   </td>
@@ -293,7 +374,7 @@ export default function OrganizationsPage() {
             })}
           </tbody>
         </table>
-        {!filtered.length && <div className="mm-pa-empty">No organizations found.</div>}
+        {!loading && !filtered.length && <div className="mm-pa-empty">No organizations found.</div>}
       </div>
 
       {/* Create Organization */}
@@ -396,7 +477,7 @@ export default function OrganizationsPage() {
                 className="mm-pa-select"
                 value={subForm.plan_name}
                 onChange={(e) => {
-                  const plan = PLANS.find((p) => p.name === e.target.value);
+                  const plan = plans.find((p) => p.name === e.target.value);
                   setSubForm({
                     ...subForm,
                     plan_name: e.target.value,
@@ -404,7 +485,7 @@ export default function OrganizationsPage() {
                   });
                 }}
               >
-                {PLANS.map((p) => (
+                {plans.map((p) => (
                   <option key={p.id} value={p.name}>{p.name}</option>
                 ))}
               </select>
@@ -451,7 +532,7 @@ export default function OrganizationsPage() {
         sub={selected ? `Enable capabilities for ${selected.name}` : ''}
       >
         <div className="space-y-2">
-          {getOrgFeatures(selected?.id || 0).map((feature) => (
+          {featureCatalog.map((feature) => (
             <div key={feature.id} className="mm-pa-feature-row">
               <div>
                 <p className="text-sm font-bold text-slate-100">{feature.feature_name}</p>

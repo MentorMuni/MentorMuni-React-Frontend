@@ -9,29 +9,45 @@ import {
 } from '../store';
 
 export default function PlatformUsersPage() {
-  const [users, setUsers] = useState(() => getPlatformUsers());
+  const [users, setUsers] = useState([]);
   const [open, setOpen] = useState(false);
   const [error, setError] = useState('');
   const [form, setForm] = useState({
     name: '',
     email: '',
-    role: 'Support',
+    password: '',
+    role: 'SUPPORT',
     status: 'ACTIVE',
   });
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const refresh = () => setUsers(getPlatformUsers());
+    const refresh = async () => {
+      setLoading(true);
+      setUsers(await getPlatformUsers());
+      setLoading(false);
+    };
+    refresh().catch((e) => {
+      setError(e.message || 'Failed to load platform users.');
+      setLoading(false);
+    });
     window.addEventListener('mm-platform-db-updated', refresh);
     return () => window.removeEventListener('mm-platform-db-updated', refresh);
   }, []);
 
-  const submit = (e) => {
+  useEffect(() => {
+    if (!error) return undefined;
+    const timer = window.setTimeout(() => setError(''), 3500);
+    return () => window.clearTimeout(timer);
+  }, [error]);
+
+  const submit = async (e) => {
     e.preventDefault();
     setError('');
     try {
-      createPlatformUser(form);
+      await createPlatformUser(form);
       setOpen(false);
-      setForm({ name: '', email: '', role: 'Support', status: 'ACTIVE' });
+      setForm({ name: '', email: '', password: '', role: 'SUPPORT', status: 'ACTIVE' });
     } catch (err) {
       setError(err.message);
     }
@@ -46,6 +62,7 @@ export default function PlatformUsersPage() {
       </div>
 
       <div className="mm-pa-panel overflow-x-auto">
+        {error && <div className="mm-pa-inline-toast mm-pa-inline-toast--error">{error}</div>}
         <p className="mb-4 text-sm text-slate-400">
           MentorMuni employees only. Separate from organization users. Roles: Platform Admin, Support, Sales, Operations.
         </p>
@@ -61,37 +78,54 @@ export default function PlatformUsersPage() {
             </tr>
           </thead>
           <tbody>
-            {users.map((u) => (
+            {(loading ? Array.from({ length: 5 }, (_, i) => ({ id: `loading-user-${i}` })) : users).map((u) => (
               <tr key={u.id}>
-                <td className="font-bold text-slate-100">{u.name}</td>
-                <td className="text-slate-300">{u.email}</td>
-                <td>
-                  <span className="mm-pa-badge mm-pa-badge--neutral">{u.role}</span>
-                </td>
-                <td>
-                  <span className={`mm-pa-badge ${u.status === 'ACTIVE' ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
-                    {u.status}
-                  </span>
-                </td>
-                <td className="text-slate-400">
-                  {new Date(u.created_at).toLocaleDateString('en-IN')}
-                </td>
-                <td>
-                  {u.email !== 'mentormuniteam@gmail.com' && (
-                    <button
-                      type="button"
-                      className="mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs"
-                      onClick={() =>
-                        updatePlatformUserStatus(
-                          u.id,
-                          u.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE'
-                        )
-                      }
-                    >
-                      {u.status === 'ACTIVE' ? 'Suspend' : 'Activate'}
-                    </button>
-                  )}
-                </td>
+                {loading ? (
+                  <>
+                    <td><div className="mm-pa-skeleton h-5 w-32" /></td>
+                    <td><div className="mm-pa-skeleton h-5 w-48" /></td>
+                    <td><div className="mm-pa-skeleton h-6 w-24" /></td>
+                    <td><div className="mm-pa-skeleton h-6 w-24" /></td>
+                    <td><div className="mm-pa-skeleton h-5 w-24" /></td>
+                    <td><div className="mm-pa-skeleton h-8 w-24" /></td>
+                  </>
+                ) : (
+                  <>
+                    <td className="font-bold text-slate-100">{u.name}</td>
+                    <td className="text-slate-300">{u.email}</td>
+                    <td>
+                      <span className="mm-pa-badge mm-pa-badge--neutral">{u.role}</span>
+                    </td>
+                    <td>
+                      <span className={`mm-pa-badge ${u.status === 'ACTIVE' ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
+                        {u.status}
+                      </span>
+                    </td>
+                    <td className="text-slate-400">
+                      {new Date(u.created_at).toLocaleDateString('en-IN')}
+                    </td>
+                    <td>
+                      {u.email !== 'mentormuniteam@gmail.com' && (
+                        <button
+                          type="button"
+                          className="mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs"
+                          onClick={async () => {
+                            try {
+                              await updatePlatformUserStatus(
+                                u.id,
+                                u.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE'
+                              );
+                            } catch (err) {
+                              setError(err.message || 'Failed to update platform user status.');
+                            }
+                          }}
+                        >
+                          {u.status === 'ACTIVE' ? 'Suspend' : 'Activate'}
+                        </button>
+                      )}
+                    </td>
+                  </>
+                )}
               </tr>
             ))}
           </tbody>
@@ -141,6 +175,16 @@ export default function PlatformUsersPage() {
                       <option key={r} value={r}>{r}</option>
                     ))}
                   </select>
+                </div>
+                <div>
+                  <label className="mm-pa-label">Password *</label>
+                  <input
+                    type="password"
+                    className="mm-pa-input"
+                    required
+                    value={form.password}
+                    onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  />
                 </div>
                 <div className="flex justify-end gap-2 pt-2">
                   <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={() => setOpen(false)}>Cancel</button>

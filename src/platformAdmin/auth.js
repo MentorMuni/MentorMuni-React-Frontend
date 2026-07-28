@@ -1,12 +1,4 @@
-/**
- * MentorMuni Platform Admin — auth credentials & session
- * Demo login only; replace with real API later.
- */
-
-export const PLATFORM_ADMIN_CREDENTIALS = {
-  email: 'mentormuniteam@gmail.com',
-  password: 'MentorMuni@1234',
-};
+import { platformApi } from './platformApi';
 
 const SESSION_KEY = 'mm-platform-admin-session';
 
@@ -27,6 +19,7 @@ export function setPlatformSession(user) {
       name: user.name,
       email: user.email,
       role: user.role,
+      mustChangePassword: Boolean(user.mustChangePassword),
       loggedInAt: new Date().toISOString(),
     })
   );
@@ -34,28 +27,59 @@ export function setPlatformSession(user) {
 
 export function clearPlatformSession() {
   localStorage.removeItem(SESSION_KEY);
+  platformApi.clearToken();
 }
 
 export function isPlatformAuthenticated() {
   return Boolean(getPlatformSession());
 }
 
-export function authenticatePlatformAdmin(email, password) {
-  const normalized = String(email || '').trim().toLowerCase();
-  if (
-    normalized === PLATFORM_ADMIN_CREDENTIALS.email.toLowerCase() &&
-    password === PLATFORM_ADMIN_CREDENTIALS.password
-  ) {
+function normalizeUser(mePayload) {
+  return {
+    id: mePayload?.id,
+    name: mePayload?.name || 'Platform User',
+    email: mePayload?.email || '',
+    role: mePayload?.role || 'PLATFORM_ADMIN',
+    status: mePayload?.status || 'ACTIVE',
+    mustChangePassword: Boolean(
+      mePayload?.must_change_password ||
+      mePayload?.password_change_required ||
+      mePayload?.force_password_change
+    ),
+  };
+}
+
+export async function authenticatePlatformAdmin(email, password) {
+  try {
+    const login = await platformApi.post(
+      '/platform/auth/login',
+      {
+        email: String(email || '').trim().toLowerCase(),
+        password,
+      },
+      { auth: false }
+    );
+    if (!login?.access_token) {
+      return { ok: false, error: 'Login succeeded but access token is missing.' };
+    }
+
+    platformApi.setToken(login.access_token);
+    const me = await platformApi.get('/platform/auth/me');
+    const user = normalizeUser(me);
     return {
       ok: true,
-      user: {
-        id: 1,
-        name: 'MentorMuni Super Admin',
-        email: PLATFORM_ADMIN_CREDENTIALS.email,
-        role: 'Platform Admin',
-        status: 'ACTIVE',
-      },
+      user,
+      token_type: login.token_type || 'bearer',
+      expires_in_minutes: login.expires_in_minutes,
     };
+  } catch (error) {
+    return { ok: false, error: error.message || 'Unable to login.' };
   }
-  return { ok: false, error: 'Invalid login ID or password.' };
+}
+
+export async function changePlatformPassword(currentPassword, newPassword) {
+  return platformApi.post('/platform/auth/change-password', {
+    current_password: currentPassword,
+    new_password: newPassword,
+  });
 }

@@ -32,6 +32,7 @@ const TITLES = {
   features: ['Feature Management', 'Enable capabilities per organization.'],
   'platform-users': ['Platform Users', 'MentorMuni employees with portal access.'],
   settings: ['Settings', 'Platform preferences and data tools.'],
+  'change-password': ['Change Password', 'Update platform admin credentials securely.'],
 };
 
 function Atmosphere() {
