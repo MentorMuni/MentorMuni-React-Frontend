@@ -28,7 +28,7 @@ const NAV = [
 const TITLES = {
   dashboard: ['Dashboard', 'SaaS metrics across tenants — no student operations.'],
   organizations: ['Organizations', 'Provision and manage college / public tenants.'],
-  subscriptions: ['Subscriptions', 'Assign plans, student limits, and validity windows.'],
+  subscriptions: ['Subscriptions', 'History of assigned plans, seat limits, and seats used.'],
   features: ['Feature Management', 'Enable capabilities per organization.'],
   'platform-users': ['Platform Users', 'MentorMuni employees with portal access.'],
   settings: ['Settings', 'Platform preferences and data tools.'],

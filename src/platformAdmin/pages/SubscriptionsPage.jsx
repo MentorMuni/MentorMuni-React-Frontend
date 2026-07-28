@@ -50,9 +50,9 @@ export default function SubscriptionsPage() {
       <div className="mm-pa-panel">
         {error && <div className="mm-pa-inline-toast mm-pa-inline-toast--error">{error}</div>}
         <p className="mb-4 text-sm text-slate-400">
-          Assign or renew plans from the Organizations module. This page is the ledger of all subscription rows
-          (<code className="mx-1 rounded bg-white/5 px-1.5 py-0.5 text-[11px]">subscriptions</code>
-          including <strong className="text-slate-200">used_students</strong> for seat enforcement.
+          Don’t create or renew plans here. Use <strong className="text-slate-200">Organizations → Plan</strong> to
+          assign or renew a subscription. This page is only the history of plans already assigned, and shows how
+          many student seats are filled versus the seat limit.
         </p>
 
         <div className="overflow-x-auto">
@@ -61,8 +61,9 @@ export default function SubscriptionsPage() {
               <tr>
                 <th>Organization</th>
                 <th>Plan</th>
-                <th>Student Limit</th>
-                <th>Used</th>
+                <th>Seat Limit</th>
+                <th>Seats Used</th>
+                <th>Seats Left</th>
                 <th>Utilization</th>
                 <th>Start</th>
                 <th>End</th>
@@ -78,6 +79,7 @@ export default function SubscriptionsPage() {
                       <td><div className="mm-pa-skeleton h-6 w-24" /></td>
                       <td><div className="mm-pa-skeleton h-6 w-24" /></td>
                       <td><div className="mm-pa-skeleton h-6 w-20" /></td>
+                      <td><div className="mm-pa-skeleton h-6 w-20" /></td>
                       <td><div className="mm-pa-skeleton h-8 w-36" /></td>
                       <td><div className="mm-pa-skeleton h-6 w-24" /></td>
                       <td><div className="mm-pa-skeleton h-6 w-24" /></td>
@@ -86,20 +88,24 @@ export default function SubscriptionsPage() {
                   );
                 }
                 const org = orgs[s.organization_id];
-                const pct = s.student_limit
-                  ? Math.min(100, Math.round((s.used_students / s.student_limit) * 100))
+                const seatLimit = Number(s.student_limit || 0);
+                const seatsUsed = Number(s.used_students || 0);
+                const seatsLeft = Math.max(0, seatLimit - seatsUsed);
+                const pct = seatLimit
+                  ? Math.min(100, Math.round((seatsUsed / seatLimit) * 100))
                   : 0;
                 return (
                   <tr key={s.id}>
                     <td>
-                      <p className="font-bold text-slate-100">{org?.name || `Org #${s.organization_id}`}</p>
-                      <p className="text-[11px] text-slate-500">{org?.code || '—'}</p>
+                      <p className="mm-pa-table__title">{org?.name || `Org #${s.organization_id}`}</p>
+                      <p className="mm-pa-table__meta">{org?.code || '—'}</p>
                     </td>
                     <td className="font-semibold text-sky-300">{s.plan_name}</td>
-                    <td>{s.student_limit.toLocaleString('en-IN')}</td>
-                    <td>{s.used_students.toLocaleString('en-IN')}</td>
+                    <td>{seatLimit.toLocaleString('en-IN')}</td>
+                    <td>{seatsUsed.toLocaleString('en-IN')}</td>
+                    <td>{seatsLeft.toLocaleString('en-IN')}</td>
                     <td className="min-w-[140px]">
-                      <div className="mb-1 text-[11px] text-slate-400">{pct}%</div>
+                      <div className="mb-1 mm-pa-table__meta">{pct}%</div>
                       <div className="mm-pa-progress">
                         <div className="mm-pa-progress__bar" style={{ width: `${pct}%` }} />
                       </div>

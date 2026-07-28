@@ -91,8 +91,8 @@ export default function PlatformUsersPage() {
                   </>
                 ) : (
                   <>
-                    <td className="font-bold text-slate-100">{u.name}</td>
-                    <td className="text-slate-300">{u.email}</td>
+                    <td className="mm-pa-table__title">{u.name}</td>
+                    <td className="mm-pa-table__meta">{u.email}</td>
                     <td>
                       <span className="mm-pa-badge mm-pa-badge--neutral">{u.role}</span>
                     </td>

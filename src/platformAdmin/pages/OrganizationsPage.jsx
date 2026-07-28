@@ -327,12 +327,12 @@ export default function OrganizationsPage() {
                 <tr key={org.id}>
                   <td>
                     <div className="flex items-center gap-3">
-                      <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-sky-500/15 text-sky-300">
+                      <div className="mm-pa-table__avatar">
                         <Building2 size={16} />
                       </div>
                       <div>
-                        <p className="font-bold text-slate-100">{org.name}</p>
-                        <p className="text-[11px] text-slate-500">
+                        <p className="mm-pa-table__title">{org.name}</p>
+                        <p className="mm-pa-table__meta">
                           {org.code} · ID {org.id}
                           {sub ? ` · ${sub.plan_name}` : ' · No plan'}
                         </p>
@@ -343,10 +343,10 @@ export default function OrganizationsPage() {
                     <span className="mm-pa-badge mm-pa-badge--neutral">{String(org.organization_type || '').toUpperCase()}</span>
                   </td>
                   <td>
-                    <p className="font-medium text-slate-200">{org.contact_person || '—'}</p>
-                    <p className="text-[11px] text-slate-500">{org.contact_email || '—'}</p>
+                    <p className="mm-pa-table__title">{org.contact_person || '—'}</p>
+                    <p className="mm-pa-table__meta">{org.contact_email || '—'}</p>
                   </td>
-                  <td className="text-slate-300">
+                  <td className="mm-pa-table__meta">
                     {[org.city, org.state].filter(Boolean).join(', ') || '—'}
                   </td>
                   <td>
@@ -491,7 +491,7 @@ export default function OrganizationsPage() {
               </select>
             </div>
             <div>
-              <label className="mm-pa-label">Student Limit</label>
+              <label className="mm-pa-label">Seat Limit</label>
               <input
                 type="number"
                 min="1"
