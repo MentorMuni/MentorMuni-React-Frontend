@@ -12,6 +12,22 @@ function emitUpdate() {
   window.dispatchEvent(new CustomEvent('mm-platform-db-updated'));
 }
 
+/** Backend list endpoints may return a bare array or a wrapped object. */
+function asArray(payload, preferredKeys = []) {
+  if (Array.isArray(payload)) return payload;
+  if (!payload || typeof payload !== 'object') return [];
+
+  for (const key of preferredKeys) {
+    if (Array.isArray(payload[key])) return payload[key];
+  }
+
+  for (const key of ['items', 'data', 'results', 'rows', 'organizations', 'subscriptions', 'users', 'features', 'plans']) {
+    if (Array.isArray(payload[key])) return payload[key];
+  }
+
+  return [];
+}
+
 function uiOrgType(value) {
   return String(value || '').toUpperCase() === 'PUBLIC' ? 'Public' : 'College';
 }
@@ -40,8 +56,8 @@ function normalizeOrganization(row) {
 }
 
 export async function getOrganizations() {
-  const rows = await platformApi.get('/platform/organizations');
-  return (rows || []).map(normalizeOrganization).sort((a, b) => b.id - a.id);
+  const rows = asArray(await platformApi.get('/platform/organizations'), ['organizations']);
+  return rows.map(normalizeOrganization).sort((a, b) => b.id - a.id);
 }
 
 export async function getOrganizationById(id) {
@@ -71,8 +87,8 @@ export async function updateOrganization(id, patch) {
 }
 
 export async function getSubscriptionPlans() {
-  const rows = await platformApi.get('/subscription-plans', { auth: false });
-  return (rows || []).map((p) => ({
+  const rows = asArray(await platformApi.get('/subscription-plans', { auth: false }), ['plans']);
+  return rows.map((p) => ({
     id: p.id,
     name: p.name || p.plan_name,
     defaultLimit: p.default_student_limit || p.student_limit || 100,
@@ -86,8 +102,7 @@ export async function getSubscriptions(filters = {}) {
     if (v !== undefined && v !== null && v !== '') query.set(k, String(v));
   });
   const suffix = query.toString() ? `?${query.toString()}` : '';
-  const rows = await platformApi.get(`/platform/subscriptions${suffix}`);
-  return rows || [];
+  return asArray(await platformApi.get(`/platform/subscriptions${suffix}`), ['subscriptions']);
 }
 
 export async function getSubscriptionForOrg(organizationId) {
@@ -123,13 +138,15 @@ export async function updateSubscription(id, patch) {
 }
 
 export async function getFeatureCatalog() {
-  const rows = await platformApi.get('/platform/feature-catalog');
-  return rows || [];
+  return asArray(await platformApi.get('/platform/feature-catalog'), ['features', 'catalog']);
 }
 
 export async function getOrgFeatures(organizationId) {
-  const rows = await platformApi.get(`/platform/organizations/${organizationId}/features`);
-  return (rows || []).map((r) => ({
+  const rows = asArray(
+    await platformApi.get(`/platform/organizations/${organizationId}/features`),
+    ['features', 'organization_features']
+  );
+  return rows.map((r) => ({
     ...r,
     enabled: Boolean(r.enabled),
   }));
@@ -160,8 +177,7 @@ export async function createTpo(organizationId, payload) {
 }
 
 export async function getPlatformUsers() {
-  const rows = await platformApi.get('/platform/users');
-  return rows || [];
+  return asArray(await platformApi.get('/platform/users'), ['users', 'platform_users']);
 }
 
 export async function createPlatformUser(payload) {
@@ -183,22 +199,31 @@ export async function updatePlatformUserStatus(id, status) {
 export async function getDashboardMetrics() {
   const data = await platformApi.get('/platform/dashboard');
   const organizationsList = await getOrganizations();
-  const totalOrgs = data?.organizations || organizationsList.length || 1;
+  const orgCount =
+    typeof data?.organizations === 'number'
+      ? data.organizations
+      : organizationsList.length;
+  const totalOrgs = orgCount || 1;
 
-  const featureUsage = (data?.feature_usage || []).map((f) => ({
-    feature_name: f.feature_name,
-    feature_code: f.feature_code,
-    orgs_enabled: f.enabled_org_count || 0,
-    pct: Math.round(((f.enabled_org_count || 0) / totalOrgs) * 100),
+  const featureUsageRaw = asArray(data?.feature_usage, ['items', 'data', 'features']);
+  const featureUsage = featureUsageRaw.map((f) => ({
+    feature_name: f.feature_name || f.name || f.feature_code || 'Feature',
+    feature_code: f.feature_code || f.code || String(f.feature_id || f.id || ''),
+    orgs_enabled: f.enabled_org_count || f.orgs_enabled || 0,
+    pct: Math.round(((f.enabled_org_count || f.orgs_enabled || 0) / totalOrgs) * 100),
   }));
 
+  const recentFromDashboard = asArray(data?.recent_organizations || data?.recent_orgs, [
+    'organizations',
+  ]).map(normalizeOrganization);
+
   return {
-    organizations: data?.organizations || 0,
+    organizations: orgCount,
     studentsPurchased: data?.students_purchased || 0,
     studentsRegistered: data?.students_registered || 0,
     activePlans: data?.active_plans || 0,
     expiringThisMonth: data?.expiring_this_month || 0,
     featureUsage,
-    recentOrgs: organizationsList.slice(0, 5),
+    recentOrgs: (recentFromDashboard.length ? recentFromDashboard : organizationsList).slice(0, 5),
   };
 }

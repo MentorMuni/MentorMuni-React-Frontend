@@ -159,7 +159,7 @@ export default function PlatformAdminLogin() {
             <h2 className="mb-1 text-2xl font-extrabold tracking-tight text-white">
               Sign in to Platform
             </h2>
-            <p className="mb-6 text-sm leading-relaxed text-slate-400">
+            <p className="mm-pa-login-sub">
               Restricted operator access. No student dashboards here — tenants only.
             </p>
 
@@ -203,7 +203,7 @@ export default function PlatformAdminLogin() {
                   />
                   <button
                     type="button"
-                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
+                    className="mm-pa-login-eye"
                     onClick={() => setShowPassword((v) => !v)}
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
@@ -232,23 +232,23 @@ export default function PlatformAdminLogin() {
             </form>
 
             <div className="mt-5 grid grid-cols-2 gap-2">
-              <div className="rounded-xl border border-white/5 bg-white/[0.03] px-3 py-3">
-                <Building2 size={14} className="mb-1 text-sky-400" />
-                <p className="text-[11px] font-bold text-slate-200">Tenant Ops</p>
-                <p className="text-[10px] text-slate-500">Org · Plan · Features</p>
+              <div className="mm-pa-login-tile">
+                <Building2 size={14} className="mm-pa-login-tile__icon mm-pa-login-tile__icon--sky" />
+                <p className="mm-pa-login-tile__title">Tenant Ops</p>
+                <p className="mm-pa-login-tile__sub">Org · Plan · Features</p>
               </div>
-              <div className="rounded-xl border border-white/5 bg-white/[0.03] px-3 py-3">
-                <Zap size={14} className="mb-1 text-amber-300" />
-                <p className="text-[11px] font-bold text-slate-200">Fast Handoff</p>
-                <p className="text-[10px] text-slate-500">TPO activation link</p>
+              <div className="mm-pa-login-tile">
+                <Zap size={14} className="mm-pa-login-tile__icon mm-pa-login-tile__icon--amber" />
+                <p className="mm-pa-login-tile__title">Fast Handoff</p>
+                <p className="mm-pa-login-tile__sub">TPO activation link</p>
               </div>
             </div>
 
-            <p className="mt-4 text-[11px] text-slate-500">
-              Seeded admin: <span className="font-semibold text-slate-300">admin@mentormuni.com</span>
+            <p className="mm-pa-login-hint">
+              Seeded admin: <span>admin@mentormuni.com</span>
             </p>
 
-            <div className="mt-5 flex items-start gap-2 rounded-xl border border-sky-500/20 bg-sky-500/10 px-3 py-3 text-xs text-sky-100">
+            <div className="mm-pa-login-note">
               <ShieldCheck size={16} className="mt-0.5 shrink-0" />
               <span>MentorMuni platform operators only. Student data lives in the Organization Portal.</span>
             </div>
