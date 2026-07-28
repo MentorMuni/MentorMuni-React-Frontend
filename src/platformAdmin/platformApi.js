@@ -1,8 +1,6 @@
-const BASE_URL =
-  import.meta.env.VITE_API_BASE_URL ||
-  import.meta.env.VITE_BACKEND_BASE_URL ||
-  import.meta.env.VITE_API_URL ||
-  '';
+import { API_BASE } from '../config';
+
+const BASE_URL = API_BASE;
 
 const API_KEY = import.meta.env.VITE_API_KEY || '';
 const TOKEN_KEY = 'mm-platform-admin-token';
