@@ -258,6 +258,12 @@ export async function createTpo(organizationId, payload) {
   return normalizeTpo({ ...payload, ...row }, organizationId) || row;
 }
 
+export async function updateTpo(organizationId, payload) {
+  const row = await platformApi.put(`/platform/organizations/${organizationId}/tpo`, payload);
+  emitUpdate();
+  return normalizeTpo({ ...payload, ...row }, organizationId) || row;
+}
+
 export async function reinviteTpo(organizationId) {
   const row = await platformApi.post(`/platform/organizations/${organizationId}/tpo/reinvite`);
   emitUpdate();

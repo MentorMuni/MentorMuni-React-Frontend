@@ -9,6 +9,7 @@ import {
   getOrgFeatures,
   saveOrgFeatures,
   createTpo,
+  updateTpo,
   getOrganizationTpo,
   getOrgAdmins,
   reinviteTpo,
@@ -63,6 +64,7 @@ export default function OrganizationsPage() {
     username: '',
   });
   const [activationInfo, setActivationInfo] = useState(null);
+  const [tpoMode, setTpoMode] = useState('create'); // create | view | edit
   const [tpoLoading, setTpoLoading] = useState(false);
   const [tpoBusy, setTpoBusy] = useState(false);
   const [tpoJustCreated, setTpoJustCreated] = useState(false);
@@ -70,6 +72,22 @@ export default function OrganizationsPage() {
   const [tpoByOrg, setTpoByOrg] = useState({});
   const [loading, setLoading] = useState(true);
   const [apiToast, setApiToast] = useState('');
+
+  const fillTpoForm = (tpo, org) => ({
+    first_name: tpo?.first_name || '',
+    last_name: tpo?.last_name || '',
+    email: tpo?.email || org?.contact_email || '',
+    mobile: tpo?.mobile || org?.contact_phone || '',
+    username: tpo?.username || `${String(org?.code || '').toLowerCase()}.tpo`,
+  });
+
+  const closeTpoModal = () => {
+    setTpoOpen(false);
+    setError('');
+    setTpoMode('create');
+    setTpoJustCreated(false);
+    // Keep tpoByOrg intact so View TPO stays View TPO after close/cancel.
+  };
 
   const refresh = async () => {
     try {
@@ -224,42 +242,71 @@ export default function OrganizationsPage() {
     const orgKey = String(org.id);
     const known = tpoByOrg[orgKey] || null;
     setSelected(org);
-    setTpoForm({
-      first_name: '',
-      last_name: '',
-      email: org.contact_email || '',
-      mobile: org.contact_phone || '',
-      username: `${String(org.code || '').toLowerCase()}.tpo`,
-    });
-    setActivationInfo(known);
     setError('');
     setTpoJustCreated(false);
     setTpoOpen(true);
-    setTpoLoading(!known);
+
+    if (known) {
+      setActivationInfo(known);
+      setTpoForm(fillTpoForm(known, org));
+      setTpoMode('view');
+      setTpoLoading(true);
+    } else {
+      setActivationInfo(null);
+      setTpoForm(fillTpoForm(null, org));
+      setTpoMode('create');
+      setTpoLoading(true);
+    }
+
     try {
       const existing = await getOrganizationTpo(org.id);
-      setActivationInfo(existing);
       if (existing) {
+        setActivationInfo(existing);
+        setTpoForm(fillTpoForm(existing, org));
+        setTpoMode('view');
         setTpoByOrg((prev) => ({ ...prev, [orgKey]: existing }));
+      } else if (known) {
+        // List API said TPO exists; keep view mode even if detail GET is empty/404.
+        setActivationInfo(known);
+        setTpoForm(fillTpoForm(known, org));
+        setTpoMode('view');
       } else {
-        setTpoByOrg((prev) => {
-          const next = { ...prev };
-          delete next[orgKey];
-          return next;
-        });
+        setActivationInfo(null);
+        setTpoForm(fillTpoForm(null, org));
+        setTpoMode('create');
       }
     } catch (err) {
-      setError(err.message || 'Failed to load TPO for this organization.');
+      if (known) {
+        setActivationInfo(known);
+        setTpoForm(fillTpoForm(known, org));
+        setTpoMode('view');
+      } else {
+        setError(err.message || 'Failed to load TPO for this organization.');
+      }
     } finally {
       setTpoLoading(false);
     }
+  };
+
+  const startEditTpo = () => {
+    if (!activationInfo) return;
+    setError('');
+    setTpoForm(fillTpoForm(activationInfo, selected));
+    setTpoMode('edit');
+  };
+
+  const cancelEditTpo = () => {
+    setError('');
+    setTpoForm(fillTpoForm(activationInfo, selected));
+    setTpoMode('view');
   };
 
   const submitTpo = async (e) => {
     e.preventDefault();
     const orgKey = String(selected?.id);
     if (tpoByOrg[orgKey] || activationInfo) {
-      setError('This organization already has an ORG_ADMIN (TPO). Use Reinvite instead.');
+      setError('This organization already has an ORG_ADMIN (TPO). Open View TPO to manage it.');
+      setTpoMode('view');
       return;
     }
     setError('');
@@ -268,6 +315,7 @@ export default function OrganizationsPage() {
       const user = await createTpo(selected.id, tpoForm);
       setActivationInfo(user);
       setTpoJustCreated(true);
+      setTpoMode('view');
       setTpoByOrg((prev) => ({ ...prev, [orgKey]: user }));
       setSuccess(`TPO profile created. Activation email queued for ${user.email}.`);
     } catch (err) {
@@ -279,13 +327,40 @@ export default function OrganizationsPage() {
           const existing = await getOrganizationTpo(selected.id);
           if (existing) {
             setActivationInfo(existing);
+            setTpoForm(fillTpoForm(existing, selected));
             setTpoJustCreated(false);
+            setTpoMode('view');
             setTpoByOrg((prev) => ({ ...prev, [orgKey]: existing }));
           }
         } catch {
           // keep create error visible
         }
       }
+    } finally {
+      setTpoBusy(false);
+    }
+  };
+
+  const submitEditTpo = async (e) => {
+    e.preventDefault();
+    if (!selected) return;
+    const orgKey = String(selected.id);
+    setError('');
+    setTpoBusy(true);
+    try {
+      const user = await updateTpo(selected.id, {
+        first_name: tpoForm.first_name,
+        last_name: tpoForm.last_name,
+        email: tpoForm.email,
+        mobile: tpoForm.mobile,
+        username: tpoForm.username,
+      });
+      setActivationInfo(user);
+      setTpoByOrg((prev) => ({ ...prev, [orgKey]: user }));
+      setTpoMode('view');
+      setSuccess(`TPO details updated for ${user.email || selected.name}.`);
+    } catch (err) {
+      setError(err.message || 'Failed to update TPO.');
     } finally {
       setTpoBusy(false);
     }
@@ -298,10 +373,19 @@ export default function OrganizationsPage() {
     setTpoBusy(true);
     try {
       const user = await reinviteTpo(selected.id);
-      setActivationInfo(user);
+      const merged = {
+        ...(activationInfo || {}),
+        ...user,
+        email: user.email || activationInfo?.email,
+        username: user.username || activationInfo?.username,
+        first_name: user.first_name || activationInfo?.first_name,
+        last_name: user.last_name || activationInfo?.last_name,
+      };
+      setActivationInfo(merged);
       setTpoJustCreated(false);
-      setTpoByOrg((prev) => ({ ...prev, [orgKey]: user }));
-      setSuccess(`Fresh activation link queued for ${user.email || selected.name}.`);
+      setTpoMode('view');
+      setTpoByOrg((prev) => ({ ...prev, [orgKey]: merged }));
+      setSuccess(`Fresh activation link queued for ${merged.email || selected.name}.`);
     } catch (err) {
       const message = err.message || 'Failed to reinvite TPO.';
       setError(message);
@@ -609,16 +693,22 @@ export default function OrganizationsPage() {
         </div>
       </Modal>
 
-      {/* Create / manage TPO */}
+      {/* Create / view / edit TPO */}
       <Modal
         open={tpoOpen}
-        onClose={() => setTpoOpen(false)}
-        title={activationInfo ? 'ORG_ADMIN (TPO)' : 'Create TPO (ORG_ADMIN)'}
+        onClose={closeTpoModal}
+        title={
+          tpoMode === 'view'
+            ? 'View TPO'
+            : tpoMode === 'edit'
+              ? 'Edit TPO'
+              : 'Add TPO (ORG_ADMIN)'
+        }
         sub={
           selected
-            ? activationInfo
-              ? `Organization admin for ${selected.name}`
-              : `First organization admin for ${selected.name}`
+            ? tpoMode === 'create'
+              ? `First organization admin for ${selected.name}`
+              : `ORG_ADMIN for ${selected.name}`
             : ''
         }
       >
@@ -628,7 +718,7 @@ export default function OrganizationsPage() {
             <div className="mm-pa-skeleton h-24 w-full" />
             <div className="mm-pa-skeleton ml-auto h-10 w-40" />
           </div>
-        ) : !activationInfo ? (
+        ) : tpoMode === 'create' ? (
           <form onSubmit={submitTpo} className="space-y-3">
             {error && <div className="mm-pa-error">{error}</div>}
             <div className="mm-pa-callout mm-pa-callout--amber">
@@ -661,37 +751,84 @@ export default function OrganizationsPage() {
               </div>
             </div>
             <div className="mt-4 flex justify-end gap-2">
-              <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={() => setTpoOpen(false)}>Cancel</button>
+              <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={closeTpoModal}>Cancel</button>
               <button type="submit" className="mm-pa-btn mm-pa-btn--primary" disabled={tpoBusy}>
                 {tpoBusy ? 'Creating…' : 'Create & Send Activation'}
+              </button>
+            </div>
+          </form>
+        ) : tpoMode === 'edit' ? (
+          <form onSubmit={submitEditTpo} className="space-y-3">
+            {error && <div className="mm-pa-error">{error}</div>}
+            <div className="mm-pa-grid-2">
+              <div>
+                <label className="mm-pa-label">First Name *</label>
+                <input className="mm-pa-input" required value={tpoForm.first_name} onChange={(e) => setTpoForm({ ...tpoForm, first_name: e.target.value })} />
+              </div>
+              <div>
+                <label className="mm-pa-label">Last Name *</label>
+                <input className="mm-pa-input" required value={tpoForm.last_name} onChange={(e) => setTpoForm({ ...tpoForm, last_name: e.target.value })} />
+              </div>
+              <div>
+                <label className="mm-pa-label">Email *</label>
+                <input type="email" className="mm-pa-input" required value={tpoForm.email} onChange={(e) => setTpoForm({ ...tpoForm, email: e.target.value })} />
+              </div>
+              <div>
+                <label className="mm-pa-label">Mobile</label>
+                <input className="mm-pa-input" value={tpoForm.mobile} onChange={(e) => setTpoForm({ ...tpoForm, mobile: e.target.value })} />
+              </div>
+              <div>
+                <label className="mm-pa-label">Username</label>
+                <input className="mm-pa-input" value={tpoForm.username} disabled />
+              </div>
+              <div>
+                <label className="mm-pa-label">Role</label>
+                <input className="mm-pa-input" value="ORG_ADMIN" disabled />
+              </div>
+            </div>
+            <div className="mt-4 flex flex-wrap justify-end gap-2">
+              <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={cancelEditTpo}>Cancel</button>
+              <button type="submit" className="mm-pa-btn mm-pa-btn--primary" disabled={tpoBusy}>
+                {tpoBusy ? 'Saving…' : 'Save Changes'}
               </button>
             </div>
           </form>
         ) : (
           <div className="space-y-4">
             {error && <div className="mm-pa-error">{error}</div>}
-            <div className="mm-pa-success">
-              {tpoJustCreated
-                ? 'TPO created. Activation token generated. Credentials are not shared — TPO sets password on first login.'
-                : 'This organization already has an ORG_ADMIN (TPO). Create is blocked — use Reinvite for a fresh activation link.'}
-            </div>
-            <div className="mm-pa-callout mm-pa-callout--amber">
-              No temporary password. Backend generates a one-time activation token and emails the TPO to set their own password.
-            </div>
+            {tpoJustCreated && (
+              <div className="mm-pa-success">
+                TPO created. Activation token generated. Credentials are not shared — TPO sets password on first login.
+              </div>
+            )}
             <div className="mm-pa-detail-card">
-              <p><span className="mm-pa-detail-card__label">User:</span> {[activationInfo.first_name, activationInfo.last_name].filter(Boolean).join(' ') || '—'}</p>
-              <p className="mt-1"><span className="mm-pa-detail-card__label">Email:</span> {activationInfo.email || '—'}</p>
-              <p className="mt-1"><span className="mm-pa-detail-card__label">Username:</span> {activationInfo.username || '—'}</p>
+              <p><span className="mm-pa-detail-card__label">User:</span> {[activationInfo?.first_name, activationInfo?.last_name].filter(Boolean).join(' ') || '—'}</p>
+              <p className="mt-1"><span className="mm-pa-detail-card__label">Email:</span> {activationInfo?.email || '—'}</p>
+              <p className="mt-1"><span className="mm-pa-detail-card__label">Username:</span> {activationInfo?.username || '—'}</p>
+              <p className="mt-1"><span className="mm-pa-detail-card__label">Mobile:</span> {activationInfo?.mobile || '—'}</p>
               <p className="mt-1"><span className="mm-pa-detail-card__label">Role:</span> ORG_ADMIN</p>
-              {activationInfo.activation_token ? (
+              {activationInfo?.activation_token ? (
                 <p className="mt-1 break-all"><span className="mm-pa-detail-card__label">Activation token:</span> {activationInfo.activation_token}</p>
               ) : null}
-              <p className="mt-1"><span className="mm-pa-detail-card__label">Status:</span> {activationInfo.activation_status || 'ACTIVE'}</p>
+              <p className="mt-1">
+                <span className="mm-pa-detail-card__label">Status:</span>{' '}
+                <span className={`mm-pa-badge ${
+                  activationInfo?.activation_status === 'PENDING' || activationInfo?.activation_status === 'INVITED'
+                    ? 'mm-pa-badge--pending'
+                    : 'mm-pa-badge--active'
+                }`}>
+                  {activationInfo?.activation_status || 'ACTIVE'}
+                </span>
+              </p>
+            </div>
+            <div className="mm-pa-callout mm-pa-callout--amber">
+              One ORG_ADMIN per organization. Use Edit to update details, or Reinvite to send a fresh activation link.
             </div>
             <div className="flex flex-wrap justify-end gap-2">
-              <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={() => setTpoOpen(false)}>Done</button>
+              <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={closeTpoModal}>Close</button>
+              <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={startEditTpo}>Edit</button>
               <button type="button" className="mm-pa-btn mm-pa-btn--primary" onClick={submitReinvite} disabled={tpoBusy}>
-                {tpoBusy ? 'Sending…' : 'Reinvite / Fresh Activation'}
+                {tpoBusy ? 'Sending…' : 'Reinvite'}
               </button>
             </div>
           </div>
