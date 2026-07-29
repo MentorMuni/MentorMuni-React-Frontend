@@ -48,6 +48,9 @@ export default function OrganizationsPage() {
   const [subOpen, setSubOpen] = useState(false);
   const [featOpen, setFeatOpen] = useState(false);
   const [tpoOpen, setTpoOpen] = useState(false);
+  const [statusConfirmOpen, setStatusConfirmOpen] = useState(false);
+  const [statusTarget, setStatusTarget] = useState(null);
+  const [statusBusy, setStatusBusy] = useState(false);
   const [subForm, setSubForm] = useState({
     plan_name: 'Enterprise',
     student_limit: 1500,
@@ -395,14 +398,37 @@ export default function OrganizationsPage() {
     }
   };
 
-  const toggleStatus = async (org) => {
+  const openStatusConfirm = (org) => {
+    setStatusTarget(org);
+    setStatusConfirmOpen(true);
+  };
+
+  const closeStatusConfirm = () => {
+    if (statusBusy) return;
+    setStatusConfirmOpen(false);
+    setStatusTarget(null);
+  };
+
+  const confirmStatusChange = async () => {
+    if (!statusTarget) return;
+    const makingInactive = isActiveStatus(statusTarget.status);
+    setStatusBusy(true);
     try {
-      await updateOrganization(org.id, {
-        status: isActiveStatus(org.status) ? 'INACTIVE' : 'ACTIVE',
+      await updateOrganization(statusTarget.id, {
+        status: makingInactive ? 'INACTIVE' : 'ACTIVE',
       });
+      setSuccess(
+        makingInactive
+          ? `${statusTarget.name} is now SUSPENDED. TPO/HOD/students cannot log in, existing sessions fail on the next API call, and college registration is blocked.`
+          : `${statusTarget.name} is now ACTIVE. Organization portal access and registration are restored.`
+      );
+      setStatusConfirmOpen(false);
+      setStatusTarget(null);
       await refresh();
     } catch (err) {
       setApiToast(err.message || 'Failed to update organization status.');
+    } finally {
+      setStatusBusy(false);
     }
   };
 
@@ -482,7 +508,7 @@ export default function OrganizationsPage() {
                     {[org.city, org.state].filter(Boolean).join(', ') || '—'}
                   </td>
                   <td>
-                    <button type="button" onClick={() => toggleStatus(org)}>
+                    <button type="button" onClick={() => openStatusConfirm(org)} title="Change organization status">
                       <span className={`mm-pa-badge ${isActiveStatus(org.status) ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
                         {statusLabel(org.status)}
                       </span>
@@ -829,6 +855,77 @@ export default function OrganizationsPage() {
               <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={startEditTpo}>Edit</button>
               <button type="button" className="mm-pa-btn mm-pa-btn--primary" onClick={submitReinvite} disabled={tpoBusy}>
                 {tpoBusy ? 'Sending…' : 'Reinvite'}
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
+      {/* Confirm Active / Inactive */}
+      <Modal
+        open={statusConfirmOpen}
+        onClose={closeStatusConfirm}
+        title={
+          statusTarget && isActiveStatus(statusTarget.status)
+            ? 'Make organization INACTIVE?'
+            : 'Make organization ACTIVE?'
+        }
+        sub={statusTarget ? statusTarget.name : ''}
+      >
+        {statusTarget && (
+          <div className="space-y-4">
+            {isActiveStatus(statusTarget.status) ? (
+              <>
+                <div className="mm-pa-callout mm-pa-callout--amber">
+                  This suspends the college tenant. TPO, HOD, and students will be blocked from logging in, and existing sessions fail on the next API call. New student registration into this college is disabled. Public / individual users and other colleges are not affected.
+                </div>
+                <div className="mm-pa-detail-card">
+                  <p className="font-semibold">If you continue, for <span className="mm-pa-strong">{statusTarget.name}</span>:</p>
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
+                    <li>Student login returns: “Your organization&apos;s access has ended. Please contact your TPO.”</li>
+                    <li>TPO / HOD login returns: “This organization is suspended. Contact MentorMuni support.”</li>
+                    <li>In-session users are logged out on the next authenticated API call (403)</li>
+                    <li>College registration / signup into this org is blocked</li>
+                    <li>You can reverse this later by setting status back to ACTIVE</li>
+                  </ul>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="mm-pa-callout mm-pa-callout--amber">
+                  Activating restores Organization Portal access for this tenant.
+                </div>
+                <div className="mm-pa-detail-card">
+                  <p className="font-semibold">If you continue, for <span className="mm-pa-strong">{statusTarget.name}</span>:</p>
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm">
+                    <li>TPO / HOD / students can sign in again</li>
+                    <li>Authenticated org APIs accept sessions again</li>
+                    <li>Student registration into this college is allowed again</li>
+                    <li>Status will change from SUSPENDED / INACTIVE → ACTIVE</li>
+                  </ul>
+                </div>
+              </>
+            )}
+            <div className="flex flex-wrap justify-end gap-2">
+              <button
+                type="button"
+                className="mm-pa-btn mm-pa-btn--ghost"
+                onClick={closeStatusConfirm}
+                disabled={statusBusy}
+              >
+                No, cancel
+              </button>
+              <button
+                type="button"
+                className={`mm-pa-btn ${isActiveStatus(statusTarget.status) ? 'mm-pa-btn--danger' : 'mm-pa-btn--primary'}`}
+                onClick={confirmStatusChange}
+                disabled={statusBusy}
+              >
+                {statusBusy
+                  ? 'Updating…'
+                  : isActiveStatus(statusTarget.status)
+                    ? 'Yes, make INACTIVE'
+                    : 'Yes, make ACTIVE'}
               </button>
             </div>
           </div>

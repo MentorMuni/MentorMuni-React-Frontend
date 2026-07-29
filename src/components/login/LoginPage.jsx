@@ -1,8 +1,14 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Eye, EyeOff, Loader2, Lock, UserRound } from 'lucide-react';
 import RoutePageShell from '../layout/RoutePageShell';
+import {
+  consumeOrgAuthFlash,
+  loginOrgUser,
+  isOrgAuthenticated,
+  getOrgSession,
+} from '../../orgPortal';
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -14,18 +20,64 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [errorKind, setErrorKind] = useState(''); // '' | credentials | suspended
+  const [cta, setCta] = useState('');
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    const flash = consumeOrgAuthFlash();
+    if (flash?.message) {
+      setError(flash.message);
+      setErrorKind('suspended');
+      setCta(flash.cta || '');
+    } else if (isOrgAuthenticated()) {
+      // Already signed in — stay on login until org dashboards are routed;
+      // keep session available for future portal pages.
+      const session = getOrgSession();
+      if (session?.role) {
+        // no-op for now
+      }
+    }
+  }, []);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!userId.trim() || !password) return;
     setError('');
+    setErrorKind('');
+    setCta('');
     setLoading(true);
-    
-    // TODO: Implement authentication logic
-    window.setTimeout(() => {
+
+    try {
+      const result = await loginOrgUser(userId, password);
+      if (!result.ok) {
+        if (result.code === 'ORG_SUSPENDED' || result.status === 403) {
+          setError(result.error);
+          setErrorKind('suspended');
+          setCta(result.ux?.cta || 'Contact MentorMuni support');
+        } else if (result.code === 'INVALID_CREDENTIALS' || result.status === 401) {
+          setError(result.error || 'Invalid credentials.');
+          setErrorKind('credentials');
+        } else {
+          setError(result.error || 'Unable to sign in.');
+          setErrorKind('credentials');
+        }
+        return;
+      }
+
+      // Org dashboards are not mounted in this marketing app yet.
+      // Keep token/session for the org portal client and confirm sign-in.
+      const role = String(result.user?.role || '').toUpperCase();
+      if (role.includes('STUDENT')) {
+        navigate('/', { replace: true });
+      } else {
+        navigate('/', { replace: true });
+      }
+    } catch (err) {
+      setError(err.message || 'Unable to sign in.');
+      setErrorKind('credentials');
+    } finally {
       setLoading(false);
-      setError('Authentication not implemented yet');
-    }, 650);
+    }
   };
 
   return (
@@ -37,9 +89,12 @@ export default function LoginPage() {
         <div className="mm-login-vibe__blob mm-login-vibe__blob--3" aria-hidden />
 
         <div className="mm-container mm-login-vibe__stage">
-          <motion.header className="mm-login-vibe__hero"
+          <motion.header
+            className="mm-login-vibe__hero"
             initial={reduceMotion ? false : { opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.55, ease: EASE }}>
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.55, ease: EASE }}
+          >
             <h1 id="login-vibe-heading" className="mm-login-vibe__headline">
               <span className="mm-login-vibe__headline-line">Log in.</span>
               <span className="mm-login-vibe__headline-line mm-login-vibe__headline-grad">Get placement-ready.</span>
@@ -48,10 +103,12 @@ export default function LoginPage() {
 
           <div className="mm-login-vibe__layout">
             <div className="mm-login-vibe__main">
-              <motion.div className="mm-login-vibe__card-shell"
+              <motion.div
+                className="mm-login-vibe__card-shell"
                 initial={reduceMotion ? false : { opacity: 0, y: 24, scale: 0.98 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ duration: 0.6, ease: EASE, delay: 0.08 }}>
+                transition={{ duration: 0.6, ease: EASE, delay: 0.08 }}
+              >
                 <div className="mm-login-vibe__card-glow" aria-hidden />
                 <div className="mm-login-vibe__card">
                   <div className="mm-login-vibe__card-top">
@@ -66,65 +123,79 @@ export default function LoginPage() {
 
                   <form className="mm-login-vibe-form" onSubmit={handleSubmit} noValidate>
                     {error && (
-                      <motion.p className="mm-login-vibe-form__error" role="alert"
+                      <motion.div
+                        className={`mm-login-vibe-form__error ${
+                          errorKind === 'suspended' ? 'mm-login-vibe-form__error--suspended' : ''
+                        }`}
+                        role="alert"
                         initial={reduceMotion ? false : { opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}>
-                        {error}
-                      </motion.p>
+                        animate={{ opacity: 1, height: 'auto' }}
+                      >
+                        <p className="mm-login-vibe-form__error-text">{error}</p>
+                        {errorKind === 'suspended' && cta ? (
+                          <p className="mm-login-vibe-form__error-cta">{cta}</p>
+                        ) : null}
+                      </motion.div>
                     )}
 
-                    <label className="mm-login-vibe-label" htmlFor="login-user-id">User ID</label>
+                    <label className="mm-login-vibe-label" htmlFor="login-user-id">
+                      User ID / Email
+                    </label>
                     <div className="mm-login-vibe-input-wrap">
                       <span className="mm-login-vibe-input-wrap__leading" aria-hidden>
                         <UserRound size={18} strokeWidth={2.25} />
                       </span>
-                      <input 
-                        id="login-user-id" 
-                        type="text" 
-                        name="userId" 
-                        autoComplete="username" 
+                      <input
+                        id="login-user-id"
+                        type="text"
+                        name="userId"
+                        autoComplete="username"
                         required
-                        placeholder="Enter your user ID"
-                        value={userId} 
-                        onChange={(e) => setUserId(e.target.value)} 
-                        className="mm-login-vibe-input" 
+                        placeholder="Username or email"
+                        value={userId}
+                        onChange={(e) => setUserId(e.target.value)}
+                        className="mm-login-vibe-input"
                       />
                     </div>
 
                     <div className="mm-login-vibe-label-row">
-                      <label className="mm-login-vibe-label" htmlFor="login-password">Password</label>
+                      <label className="mm-login-vibe-label" htmlFor="login-password">
+                        Password
+                      </label>
                     </div>
                     <div className="mm-login-vibe-input-wrap">
                       <span className="mm-login-vibe-input-wrap__leading" aria-hidden>
                         <Lock size={18} strokeWidth={2.25} />
                       </span>
-                      <input 
-                        id="login-password" 
-                        type={showPassword ? 'text' : 'password'} 
-                        name="password" 
+                      <input
+                        id="login-password"
+                        type={showPassword ? 'text' : 'password'}
+                        name="password"
                         autoComplete="current-password"
-                        required 
+                        required
                         placeholder="Enter your password"
-                        value={password} 
+                        value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        className="mm-login-vibe-input" 
+                        className="mm-login-vibe-input"
                       />
-                      <button 
-                        type="button" 
+                      <button
+                        type="button"
                         className="mm-login-vibe-input-wrap__trailing"
-                        onClick={() => setShowPassword(!showPassword)} 
-                        aria-label={showPassword ? 'Hide password' : 'Show password'}>
+                        onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      >
                         {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                       </button>
                     </div>
 
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       disabled={loading || !userId || !password}
-                      className="mm-login-vibe-btn mm-login-vibe-btn--full">
+                      className="mm-login-vibe-btn mm-login-vibe-btn--full"
+                    >
                       {loading ? (
                         <>
-                          <Loader2 className="animate-spin" size={18} aria-hidden /> 
+                          <Loader2 className="animate-spin" size={18} aria-hidden />
                           Logging in...
                         </>
                       ) : (
