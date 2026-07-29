@@ -448,6 +448,12 @@
   color: #9a3412;
 }
 
+.mm-login-vibe-form__error--success {
+  border-color: color-mix(in srgb, #059669 35%, var(--border));
+  background: color-mix(in srgb, #10b981 10%, var(--bg-card));
+  color: #047857;
+}
+
 .mm-login-vibe-label {
   font-size: 0.6875rem;
   font-weight: 700;

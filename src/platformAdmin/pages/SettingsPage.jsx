@@ -74,7 +74,7 @@ export default function SettingsPage() {
         <h2 className="mb-2 text-sm font-extrabold">ORG_ADMIN accounts</h2>
         <p className="mb-4 text-sm text-slate-400">
           Loaded from <code className="mm-pa-code">GET /platform/tpo</code>. One ORG_ADMIN per organization —
-          use Reinvite for a fresh activation link instead of creating again.
+          use <strong>Edit</strong> (with password reset) for handover, or <strong>Reinvite</strong> if the same person forgot their password.
         </p>
         <div className="overflow-x-auto">
           <table className="mm-pa-table min-w-[820px]">

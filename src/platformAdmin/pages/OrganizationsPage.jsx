@@ -71,6 +71,7 @@ export default function OrganizationsPage() {
   const [tpoLoading, setTpoLoading] = useState(false);
   const [tpoBusy, setTpoBusy] = useState(false);
   const [tpoJustCreated, setTpoJustCreated] = useState(false);
+  const [resetPasswordOnEdit, setResetPasswordOnEdit] = useState(true);
   const [subsByOrg, setSubsByOrg] = useState({});
   const [tpoByOrg, setTpoByOrg] = useState({});
   const [loading, setLoading] = useState(true);
@@ -84,11 +85,62 @@ export default function OrganizationsPage() {
     username: tpo?.username || `${String(org?.code || '').toLowerCase()}.tpo`,
   });
 
+  const tpoActivationLink = (info) => {
+    if (!info) return '';
+    if (info.activation_url) return info.activation_url;
+    if (!info.activation_token || typeof window === 'undefined') return '';
+    return `${window.location.origin}/activate-tpo?token=${encodeURIComponent(info.activation_token)}`;
+  };
+
+  const copyText = async (value) => {
+    try {
+      await navigator.clipboard.writeText(value);
+      setSuccess('Copied to clipboard.');
+    } catch {
+      setApiToast('Unable to copy. Select and copy manually.');
+    }
+  };
+
+  const tpoEmailBanner = (info) => {
+    if (!info) return null;
+    if (info.email_sent === true) {
+      return (
+        <div className="mm-pa-success">
+          {info.message || 'Activation email sent. TPO can open the link and set their password.'}
+        </div>
+      );
+    }
+    if (info.email_skipped) {
+      return (
+        <div className="mm-pa-callout mm-pa-callout--amber">
+          Email skipped (disabled in environment). Share the activation link manually below.
+          {info.email_detail ? ` ${info.email_detail}` : ''}
+        </div>
+      );
+    }
+    if (info.email_sent === false) {
+      return (
+        <div className="mm-pa-callout mm-pa-callout--amber">
+          Email failed{info.email_detail ? `: ${info.email_detail}` : '.'} Share the activation link or token manually.
+        </div>
+      );
+    }
+    if (tpoJustCreated || info.activation_token) {
+      return (
+        <div className="mm-pa-success">
+          {info.message || 'TPO saved. If email was sent, they can activate from the invite link.'}
+        </div>
+      );
+    }
+    return null;
+  };
+
   const closeTpoModal = () => {
     setTpoOpen(false);
     setError('');
     setTpoMode('create');
     setTpoJustCreated(false);
+    setResetPasswordOnEdit(true);
     // Keep tpoByOrg intact so View TPO stays View TPO after close/cancel.
   };
 
@@ -295,12 +347,14 @@ export default function OrganizationsPage() {
     if (!activationInfo) return;
     setError('');
     setTpoForm(fillTpoForm(activationInfo, selected));
+    setResetPasswordOnEdit(true);
     setTpoMode('edit');
   };
 
   const cancelEditTpo = () => {
     setError('');
     setTpoForm(fillTpoForm(activationInfo, selected));
+    setResetPasswordOnEdit(true);
     setTpoMode('view');
   };
 
@@ -320,7 +374,13 @@ export default function OrganizationsPage() {
       setTpoJustCreated(true);
       setTpoMode('view');
       setTpoByOrg((prev) => ({ ...prev, [orgKey]: user }));
-      setSuccess(`TPO profile created. Activation email queued for ${user.email}.`);
+      if (user.email_sent === true) {
+        setSuccess(`Activation email sent to ${user.email}.`);
+      } else if (user.email_sent === false || user.email_skipped) {
+        setSuccess(`TPO created for ${user.email}. Share the activation link manually.`);
+      } else {
+        setSuccess(user.message || `TPO profile created for ${user.email}.`);
+      }
     } catch (err) {
       const message = err.message || 'Failed to create TPO.';
       setError(message);
@@ -357,11 +417,25 @@ export default function OrganizationsPage() {
         email: tpoForm.email,
         mobile: tpoForm.mobile,
         username: tpoForm.username,
+        ...(resetPasswordOnEdit
+          ? { reset_password: true, activation_hours: 72 }
+          : { reset_password: false }),
       });
       setActivationInfo(user);
       setTpoByOrg((prev) => ({ ...prev, [orgKey]: user }));
+      setTpoJustCreated(Boolean(resetPasswordOnEdit));
       setTpoMode('view');
-      setSuccess(`TPO details updated for ${user.email || selected.name}.`);
+      if (resetPasswordOnEdit) {
+        if (user.email_sent === true) {
+          setSuccess(`TPO updated. Old password cleared. Activation email sent to ${user.email}.`);
+        } else if (user.email_sent === false || user.email_skipped) {
+          setSuccess('TPO updated. Old password cleared. Share the activation link manually.');
+        } else {
+          setSuccess(user.message || `TPO updated for ${user.email || selected.name}. Password reset — new person must activate.`);
+        }
+      } else {
+        setSuccess(`TPO details updated for ${user.email || selected.name}. Password unchanged.`);
+      }
     } catch (err) {
       setError(err.message || 'Failed to update TPO.');
     } finally {
@@ -385,10 +459,16 @@ export default function OrganizationsPage() {
         last_name: user.last_name || activationInfo?.last_name,
       };
       setActivationInfo(merged);
-      setTpoJustCreated(false);
+      setTpoJustCreated(true);
       setTpoMode('view');
       setTpoByOrg((prev) => ({ ...prev, [orgKey]: merged }));
-      setSuccess(`Fresh activation link queued for ${merged.email || selected.name}.`);
+      if (merged.email_sent === true) {
+        setSuccess(`Fresh activation email sent to ${merged.email || selected.name}.`);
+      } else if (merged.email_sent === false || merged.email_skipped) {
+        setSuccess('Reinvite created. Share the activation link manually.');
+      } else {
+        setSuccess(`Fresh activation link queued for ${merged.email || selected.name}.`);
+      }
     } catch (err) {
       const message = err.message || 'Failed to reinvite TPO.';
       setError(message);
@@ -734,7 +814,7 @@ export default function OrganizationsPage() {
           selected
             ? tpoMode === 'create'
               ? `First organization admin for ${selected.name}`
-              : `ORG_ADMIN for ${selected.name}`
+              : `Same ORG_ADMIN account for ${selected.name} — org dashboards stay unchanged`
             : ''
         }
       >
@@ -786,6 +866,9 @@ export default function OrganizationsPage() {
         ) : tpoMode === 'edit' ? (
           <form onSubmit={submitEditTpo} className="space-y-3">
             {error && <div className="mm-pa-error">{error}</div>}
+            <div className="mm-pa-callout mm-pa-callout--amber">
+              Edits the same ORG_ADMIN row in place. Organization, HODs, students, plans, and dashboards stay unchanged.
+            </div>
             <div className="mm-pa-grid-2">
               <div>
                 <label className="mm-pa-label">First Name *</label>
@@ -804,38 +887,54 @@ export default function OrganizationsPage() {
                 <input className="mm-pa-input" value={tpoForm.mobile} onChange={(e) => setTpoForm({ ...tpoForm, mobile: e.target.value })} />
               </div>
               <div>
-                <label className="mm-pa-label">Username</label>
-                <input className="mm-pa-input" value={tpoForm.username} disabled />
+                <label className="mm-pa-label">Username *</label>
+                <input className="mm-pa-input" required value={tpoForm.username} onChange={(e) => setTpoForm({ ...tpoForm, username: e.target.value })} />
               </div>
               <div>
                 <label className="mm-pa-label">Role</label>
                 <input className="mm-pa-input" value="ORG_ADMIN" disabled />
               </div>
             </div>
+
+            <label className="mm-pa-feature-row" style={{ cursor: 'pointer' }}>
+              <div>
+                <p className="mm-pa-feature-row__title">Reset password &amp; send activation (TPO handover)</p>
+                <p className="mm-pa-feature-row__desc">
+                  Clears the old password immediately. Status becomes INVITED until the new person sets a password via the activation link.
+                  Leave off only if you are fixing name/contact details for the same person and they should keep their password.
+                </p>
+              </div>
+              <input
+                type="checkbox"
+                checked={resetPasswordOnEdit}
+                onChange={(e) => setResetPasswordOnEdit(e.target.checked)}
+                aria-label="Reset password and send activation"
+              />
+            </label>
+
+            {resetPasswordOnEdit ? (
+              <div className="mm-pa-callout mm-pa-callout--amber">
+                Old TPO login stops working now. New email receives the activation link (72 hours). Same flow as first-time invite: open link → set password → /login.
+              </div>
+            ) : null}
+
             <div className="mt-4 flex flex-wrap justify-end gap-2">
               <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={cancelEditTpo}>Cancel</button>
               <button type="submit" className="mm-pa-btn mm-pa-btn--primary" disabled={tpoBusy}>
-                {tpoBusy ? 'Saving…' : 'Save Changes'}
+                {tpoBusy ? 'Saving…' : resetPasswordOnEdit ? 'Save & Send Activation' : 'Save Details'}
               </button>
             </div>
           </form>
         ) : (
           <div className="space-y-4">
             {error && <div className="mm-pa-error">{error}</div>}
-            {tpoJustCreated && (
-              <div className="mm-pa-success">
-                TPO created. Activation token generated. Credentials are not shared — TPO sets password on first login.
-              </div>
-            )}
+            {tpoEmailBanner(activationInfo)}
             <div className="mm-pa-detail-card">
               <p><span className="mm-pa-detail-card__label">User:</span> {[activationInfo?.first_name, activationInfo?.last_name].filter(Boolean).join(' ') || '—'}</p>
               <p className="mt-1"><span className="mm-pa-detail-card__label">Email:</span> {activationInfo?.email || '—'}</p>
               <p className="mt-1"><span className="mm-pa-detail-card__label">Username:</span> {activationInfo?.username || '—'}</p>
               <p className="mt-1"><span className="mm-pa-detail-card__label">Mobile:</span> {activationInfo?.mobile || '—'}</p>
               <p className="mt-1"><span className="mm-pa-detail-card__label">Role:</span> ORG_ADMIN</p>
-              {activationInfo?.activation_token ? (
-                <p className="mt-1 break-all"><span className="mm-pa-detail-card__label">Activation token:</span> {activationInfo.activation_token}</p>
-              ) : null}
               <p className="mt-1">
                 <span className="mm-pa-detail-card__label">Status:</span>{' '}
                 <span className={`mm-pa-badge ${
@@ -846,9 +945,64 @@ export default function OrganizationsPage() {
                   {activationInfo?.activation_status || 'ACTIVE'}
                 </span>
               </p>
+              {activationInfo?.activation_expires_at ? (
+                <p className="mt-1">
+                  <span className="mm-pa-detail-card__label">Link expires:</span>{' '}
+                  {new Date(activationInfo.activation_expires_at).toLocaleString('en-IN')}
+                </p>
+              ) : null}
+              {activationInfo?.email_sent === true ? (
+                <p className="mt-1"><span className="mm-pa-detail-card__label">Email:</span> Sent</p>
+              ) : null}
+              {activationInfo?.email_sent === false ? (
+                <p className="mt-1"><span className="mm-pa-detail-card__label">Email:</span> Failed{activationInfo.email_detail ? ` — ${activationInfo.email_detail}` : ''}</p>
+              ) : null}
+              {activationInfo?.email_skipped ? (
+                <p className="mt-1"><span className="mm-pa-detail-card__label">Email:</span> Skipped</p>
+              ) : null}
             </div>
+
+            {(activationInfo?.email_sent === false || activationInfo?.email_skipped || (tpoJustCreated && (activationInfo?.activation_token || activationInfo?.activation_url))) && (activationInfo?.activation_token || activationInfo?.activation_url) ? (
+              <div className="mm-pa-detail-card">
+                <p className="font-semibold">Share manually</p>
+                <p className="mt-1 text-sm">If email did not go out, copy the activation link or token and share with the TPO.</p>
+                {tpoActivationLink(activationInfo) ? (
+                  <p className="mt-2 break-all text-xs">
+                    <span className="mm-pa-detail-card__label">Link:</span>{' '}
+                    {tpoActivationLink(activationInfo)}
+                  </p>
+                ) : null}
+                {activationInfo.activation_token ? (
+                  <p className="mt-1 break-all text-xs">
+                    <span className="mm-pa-detail-card__label">Token:</span> {activationInfo.activation_token}
+                  </p>
+                ) : null}
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {tpoActivationLink(activationInfo) ? (
+                    <button
+                      type="button"
+                      className="mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs"
+                      onClick={() => copyText(tpoActivationLink(activationInfo))}
+                    >
+                      Copy link
+                    </button>
+                  ) : null}
+                  {activationInfo.activation_token ? (
+                    <button
+                      type="button"
+                      className="mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs"
+                      onClick={() => copyText(activationInfo.activation_token)}
+                    >
+                      Copy token
+                    </button>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+
             <div className="mm-pa-callout mm-pa-callout--amber">
-              One ORG_ADMIN per organization. Use Edit to update details, or Reinvite to send a fresh activation link.
+              <strong>Edit</strong> = change person/details (same account id; use reset password for handover).{' '}
+              <strong>Reinvite</strong> = same person forgot password only.
             </div>
             <div className="flex flex-wrap justify-end gap-2">
               <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={closeTpoModal}>Close</button>

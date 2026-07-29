@@ -206,7 +206,11 @@ function normalizeTpo(row, organizationId, orgName) {
     mobile: row.mobile || row.phone || '',
     activation_status: String(status).toUpperCase(),
     activation_token: row.activation_token || '',
+    activation_url: row.activation_url || '',
     activation_expires_at: row.activation_expires_at || '',
+    email_sent: row.email_sent,
+    email_skipped: Boolean(row.email_skipped),
+    email_detail: row.email_detail || '',
     message: row.message || '',
   };
 }

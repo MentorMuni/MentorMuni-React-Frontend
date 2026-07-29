@@ -8,6 +8,7 @@ export {
   isOrgAuthenticated,
   consumeOrgAuthFlash,
   getRegistrationErrorMessage,
+  activateTpoAccount,
 } from './auth';
 export {
   SUSPENDED_DETAIL,

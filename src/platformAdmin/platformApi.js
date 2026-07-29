@@ -41,8 +41,18 @@ async function parseResponse(res) {
   }
 
   if (!res.ok) {
-    const message = data?.detail || data?.message || text || `Request failed (${res.status})`;
-    throw new Error(message);
+    const detail = data?.detail ?? data?.message ?? text;
+    let message = '';
+    if (typeof detail === 'string') message = detail;
+    else if (Array.isArray(detail)) {
+      message = detail
+        .map((item) => (typeof item === 'string' ? item : item?.msg || item?.message || ''))
+        .filter(Boolean)
+        .join(' ');
+    } else if (detail && typeof detail === 'object') {
+      message = detail.msg || detail.message || '';
+    }
+    throw new Error(message || text || `Request failed (${res.status})`);
   }
   return data;
 }

@@ -54,6 +54,7 @@ const PlacementTracks = lazy(() => import("./components/placementTracks"));
 const FreeTutorials = lazy(() => import("./components/freeTutorials"));
 const ResumeAnalyzer = lazy(() => import("./components/resumeAnalyzer"));
 const LoginPage = lazy(() => import("./components/login/LoginPage"));
+const ActivateTpoPage = lazy(() => import("./components/login/ActivateTpoPage"));
 const ContactPage = lazy(() => import("./components/contactPage"));
 const AboutUs = lazy(() => import("./components/aboutUs"));
 const TermsPage = lazy(() => import("./components/legal/TermsPage"));
@@ -304,6 +305,7 @@ function App() {
               <Route path="/colleges" element={<CollegesPage />} />
               <Route path="/about" element={<AboutUs />} />
               <Route path="/login" element={<LoginPage />} />
+              <Route path="/activate-tpo" element={<ActivateTpoPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />

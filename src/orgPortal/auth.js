@@ -61,15 +61,16 @@ export function consumeOrgAuthFlash() {
   }
 }
 
-function buildLoginBody(userId, password) {
+function buildLoginBody(userId, password, organizationCode = '') {
   const id = String(userId || '').trim();
   const payload = { password };
   if (id.includes('@')) {
     payload.email = id.toLowerCase();
-    payload.username = id.toLowerCase();
   } else {
     payload.username = id;
   }
+  const code = String(organizationCode || '').trim().toUpperCase();
+  if (code) payload.organization_code = code;
   return payload;
 }
 
@@ -78,11 +79,11 @@ function buildLoginBody(userId, password) {
  * - 401 → invalid credentials
  * - 403 + suspended detail → show API detail (not wrong-password UX)
  */
-export async function loginOrgUser(userId, password) {
+export async function loginOrgUser(userId, password, organizationCode = '') {
   try {
     const login = await orgApi.post(
       '/auth/login',
-      buildLoginBody(userId, password),
+      buildLoginBody(userId, password, organizationCode),
       { auth: false }
     );
 
@@ -185,6 +186,38 @@ export function getRegistrationErrorMessage(err) {
   }
   if (typeof err === 'string') return err;
   return err?.message || 'Registration failed.';
+}
+
+/**
+ * POST /platform/auth/activate-tpo
+ * API key only — no platform JWT. Used by /activate-tpo?token=...
+ */
+export async function activateTpoAccount(token, newPassword) {
+  try {
+    const data = await orgApi.post(
+      '/platform/auth/activate-tpo',
+      {
+        token: String(token || '').trim(),
+        new_password: newPassword,
+      },
+      { auth: false }
+    );
+    return {
+      ok: true,
+      message: data?.message || 'Password set. You can log in to the Organization Portal.',
+      data,
+    };
+  } catch (err) {
+    if (err instanceof OrgApiError) {
+      return {
+        ok: false,
+        error: err.message || 'Unable to activate account.',
+        status: err.status,
+        isSuspended: err.isSuspended,
+      };
+    }
+    return { ok: false, error: err?.message || 'Unable to activate account.' };
+  }
 }
 
 export { OrgApiError, isOrgSuspendedDetail, getSuspendedUx };

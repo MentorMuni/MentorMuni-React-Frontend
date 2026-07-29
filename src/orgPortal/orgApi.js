@@ -109,6 +109,7 @@ async function parseResponse(res, { auth = true } = {}) {
       res.status === 403 && isRegistrationDisabledDetail(detail);
 
     // Authenticated org calls: suspended org → hard logout + login redirect.
+    // Skip force-logout for activate-tpo (unauthenticated platform path).
     if (auth && suspended) {
       forceLogoutForSuspension(detail);
     }

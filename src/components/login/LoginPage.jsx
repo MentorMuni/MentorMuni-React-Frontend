@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
-import { ArrowRight, Eye, EyeOff, Loader2, Lock, UserRound } from 'lucide-react';
+import { ArrowRight, Building2, Eye, EyeOff, Loader2, Lock, UserRound } from 'lucide-react';
 import RoutePageShell from '../layout/RoutePageShell';
 import {
   consumeOrgAuthFlash,
@@ -14,30 +14,39 @@ const EASE = [0.22, 1, 0.36, 1];
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const reduceMotion = useReducedMotion();
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
+  const [organizationCode, setOrganizationCode] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [errorKind, setErrorKind] = useState(''); // '' | credentials | suspended
+  const [errorKind, setErrorKind] = useState(''); // '' | credentials | suspended | success
   const [cta, setCta] = useState('');
+  const [success, setSuccess] = useState('');
 
   useEffect(() => {
     const flash = consumeOrgAuthFlash();
     if (flash?.message) {
       setError(flash.message);
-      setErrorKind('suspended');
+      setErrorKind(flash.kind === 'success' ? 'success' : 'suspended');
       setCta(flash.cta || '');
-    } else if (isOrgAuthenticated()) {
-      // Already signed in — stay on login until org dashboards are routed;
-      // keep session available for future portal pages.
+    }
+
+    const activateSuccess = location.state?.activateSuccess;
+    if (activateSuccess) {
+      setSuccess(activateSuccess);
+      navigate(location.pathname, { replace: true, state: {} });
+    }
+
+    if (isOrgAuthenticated()) {
       const session = getOrgSession();
       if (session?.role) {
-        // no-op for now
+        // Session kept for future org portal routes.
       }
     }
-  }, []);
+  }, [location.pathname, location.state, navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,10 +54,11 @@ export default function LoginPage() {
     setError('');
     setErrorKind('');
     setCta('');
+    setSuccess('');
     setLoading(true);
 
     try {
-      const result = await loginOrgUser(userId, password);
+      const result = await loginOrgUser(userId, password, organizationCode);
       if (!result.ok) {
         if (result.code === 'ORG_SUSPENDED' || result.status === 403) {
           setError(result.error);
@@ -65,13 +75,7 @@ export default function LoginPage() {
       }
 
       // Org dashboards are not mounted in this marketing app yet.
-      // Keep token/session for the org portal client and confirm sign-in.
-      const role = String(result.user?.role || '').toUpperCase();
-      if (role.includes('STUDENT')) {
-        navigate('/', { replace: true });
-      } else {
-        navigate('/', { replace: true });
-      }
+      navigate('/', { replace: true });
     } catch (err) {
       setError(err.message || 'Unable to sign in.');
       setErrorKind('credentials');
@@ -116,12 +120,18 @@ export default function LoginPage() {
                       <UserRound size={22} />
                     </div>
                     <div>
-                      <p className="mm-login-vibe__card-eyebrow">Login Portal</p>
+                      <p className="mm-login-vibe__card-eyebrow">Organization Portal</p>
                       <h2 className="mm-login-vibe__card-title">Welcome Back</h2>
                     </div>
                   </div>
 
                   <form className="mm-login-vibe-form" onSubmit={handleSubmit} noValidate>
+                    {success && (
+                      <div className="mm-login-vibe-form__error mm-login-vibe-form__error--success" role="status">
+                        <p className="mm-login-vibe-form__error-text">{success}</p>
+                      </div>
+                    )}
+
                     {error && (
                       <motion.div
                         className={`mm-login-vibe-form__error ${
@@ -139,7 +149,7 @@ export default function LoginPage() {
                     )}
 
                     <label className="mm-login-vibe-label" htmlFor="login-user-id">
-                      User ID / Email
+                      Email / Username
                     </label>
                     <div className="mm-login-vibe-input-wrap">
                       <span className="mm-login-vibe-input-wrap__leading" aria-hidden>
@@ -151,10 +161,29 @@ export default function LoginPage() {
                         name="userId"
                         autoComplete="username"
                         required
-                        placeholder="Username or email"
+                        placeholder="tpo@college.edu or username"
                         value={userId}
                         onChange={(e) => setUserId(e.target.value)}
                         className="mm-login-vibe-input"
+                      />
+                    </div>
+
+                    <label className="mm-login-vibe-label" htmlFor="login-org-code">
+                      Organization code <span style={{ fontWeight: 500, textTransform: 'none' }}>(optional)</span>
+                    </label>
+                    <div className="mm-login-vibe-input-wrap">
+                      <span className="mm-login-vibe-input-wrap__leading" aria-hidden>
+                        <Building2 size={18} strokeWidth={2.25} />
+                      </span>
+                      <input
+                        id="login-org-code"
+                        type="text"
+                        name="organizationCode"
+                        autoComplete="organization"
+                        placeholder="e.g. MEDICAPS"
+                        value={organizationCode}
+                        onChange={(e) => setOrganizationCode(e.target.value.toUpperCase())}
+                        className="mm-login-vibe-input uppercase"
                       />
                     </div>
 
