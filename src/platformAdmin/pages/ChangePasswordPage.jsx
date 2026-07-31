@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { KeyRound, Loader2 } from 'lucide-react';
 import { changePlatformPassword, getPlatformSession, setPlatformSession } from '../auth';
+import { platformAdminPaths } from '../paths';
 
 export default function ChangePasswordPage() {
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ export default function ChangePasswordPage() {
       setPlatformSession({ ...session, mustChangePassword: false });
       setSuccess('Password updated successfully. Redirecting to dashboard...');
       window.setTimeout(() => {
-        navigate('/mentormuniplatformadmin/dashboard', { replace: true });
+        navigate(platformAdminPaths.dashboard, { replace: true });
       }, 900);
     } catch (err) {
       setError(err.message || 'Failed to change password.');
@@ -97,7 +98,7 @@ export default function ChangePasswordPage() {
             <button
               type="button"
               className="mm-pa-btn mm-pa-btn--ghost"
-              onClick={() => navigate('/mentormuniplatformadmin/dashboard')}
+              onClick={() => navigate(platformAdminPaths.dashboard)}
             >
               Skip for now
             </button>

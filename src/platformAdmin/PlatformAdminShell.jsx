@@ -10,6 +10,7 @@ import {
   LogOut,
 } from 'lucide-react';
 import { clearPlatformSession, getPlatformSession } from './auth';
+import { platformAdminPaths } from './paths';
 import { usePlatformTheme } from './usePlatformTheme';
 import PlatformThemeToggle from './PlatformThemeToggle';
 import './platform-admin.css';
@@ -17,12 +18,12 @@ import './platform-admin.css';
 const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
 
 const NAV = [
-  { to: '/mentormuniplatformadmin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { to: '/mentormuniplatformadmin/organizations', label: 'Organizations', icon: Building2 },
-  { to: '/mentormuniplatformadmin/subscriptions', label: 'Subscriptions', icon: CreditCard },
-  { to: '/mentormuniplatformadmin/features', label: 'Feature Management', icon: ToggleLeft },
-  { to: '/mentormuniplatformadmin/platform-users', label: 'Platform Users', icon: Users },
-  { to: '/mentormuniplatformadmin/settings', label: 'Settings', icon: Settings },
+  { to: platformAdminPaths.dashboard, label: 'Dashboard', icon: LayoutDashboard },
+  { to: platformAdminPaths.organizations, label: 'Organizations', icon: Building2 },
+  { to: platformAdminPaths.subscriptions, label: 'Subscriptions', icon: CreditCard },
+  { to: platformAdminPaths.features, label: 'Feature Management', icon: ToggleLeft },
+  { to: platformAdminPaths.platformUsers, label: 'Platform Users', icon: Users },
+  { to: platformAdminPaths.settings, label: 'Settings', icon: Settings },
 ];
 
 const TITLES = {
@@ -56,7 +57,7 @@ export default function PlatformAdminShell() {
 
   const logout = () => {
     clearPlatformSession();
-    navigate('/mentormuniplatformadmin', { replace: true });
+    navigate(platformAdminPaths.login, { replace: true });
   };
 
   return (

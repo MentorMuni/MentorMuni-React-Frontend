@@ -206,7 +206,7 @@ export default function MobileNavDrawer({
             </div>
 
             <div className="mm-mobile-nav-panel__footer">
-              <Link to="/login" onClick={handleNav} className="mm-mobile-nav-cta-login">
+              <Link to="/Organization/login" onClick={handleNav} className="mm-mobile-nav-cta-login">
                 <LogIn size={16} aria-hidden />
                 Login
               </Link>

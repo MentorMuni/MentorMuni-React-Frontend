@@ -247,11 +247,32 @@ export const ROUTE_SEO = {
       'About MentorMuni — a placement mentor platform helping engineering students in India prepare for campus hiring with measurable readiness.',
     keywords: 'about MentorMuni, placement mentor platform, interview readiness India',
   },
-  '/login': {
-    title: 'Student Login | MentorMuni — AI Placement Prep Portal',
+  '/Organization/login': {
+    title: 'College Login | MentorMuni Organization Portal',
     description:
-      'Sign in to MentorMuni — your 24×7 AI mentor for interview prep, HR rounds, skill gaps, and instant communication feedback.',
-    keywords: 'MentorMuni login, student portal, AI interview prep login, placement mentorship',
+      'Sign in to your college placement portal — pick your college, then Student, HOD, or TPO.',
+    keywords: 'college login, organization portal, TPO login, HOD login, student placement portal',
+  },
+  '/studentportal/login': {
+    title: 'Student Login | MentorMuni Student Portal',
+    description:
+      'Sign in to your MentorMuni student portal — select your college, then use college ID or email.',
+    keywords: 'student login, college ID login, campus placement portal, MentorMuni student',
+  },
+  '/studentportal/home': {
+    title: 'Student Home | MentorMuni',
+    description: 'Your campus placement prep workspace — assessments, mocks, and readiness.',
+    keywords: 'student portal, placement prep, MentorMuni',
+  },
+  '/Organization/dashboard': {
+    title: 'Organization Dashboard | MentorMuni',
+    description: 'College organization portal dashboard for placement operations and preparation.',
+    keywords: 'organization dashboard, TPO dashboard, college placement',
+  },
+  '/login': {
+    title: 'Organization Login | MentorMuni',
+    description: 'Redirects to the MentorMuni college organization portal login.',
+    keywords: 'MentorMuni login',
   },
   '/student/dashboard': {
     title: 'Student Dashboard | MentorMuni',

@@ -9,7 +9,16 @@ export {
   consumeOrgAuthFlash,
   getRegistrationErrorMessage,
   activateTpoAccount,
+  activateHodAccount,
+  changeOrgPassword,
 } from './auth';
+export {
+  fetchLoginColleges,
+  normalizeCollege,
+  pickInitialCollege,
+  getSavedCollegeCode,
+  saveCollegeCode,
+} from './colleges';
 export {
   SUSPENDED_DETAIL,
   isOrgSuspendedDetail,

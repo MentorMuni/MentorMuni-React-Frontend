@@ -1,0 +1,719 @@
+import { useEffect, useMemo, useState } from 'react';
+import {
+  Check,
+  Copy,
+  FileUp,
+  Link2,
+  Plus,
+  UserPlus,
+  X,
+} from 'lucide-react';
+import { getOrgSession } from '../../orgPortal';
+import { getHodWorkspaceSnapshot, resolveHodDepartment } from '../hodScope';
+import { fetchDepartments } from '../departmentsApi';
+import { subscribeOrgDb } from '../store';
+import {
+  addStudentManualApi,
+  approveStudentInvite,
+  fetchStudentInvites,
+  fetchStudents,
+  getRegistrationLink,
+  importStudentsApi,
+  inviteStudentsApi,
+  patchStudent,
+  rejectStudentInvite,
+  resendStudentSetupLink,
+} from '../studentsApi';
+import AssignToStudentModal from './AssignToStudentModal';
+
+const CSV_TEMPLATE = `email,name,college_id,batch_year
+rahul.sharma@college.edu,Rahul Sharma,CSE2024A01,2025
+priya.nair@college.edu,Priya Nair,CSE2024A02,2025
+`;
+
+function sourceLabel(source) {
+  if (source === 'csv') return 'CSV';
+  if (source === 'manual') return 'Manual';
+  if (source === 'self_register') return 'Self-register';
+  return 'Invite';
+}
+
+export default function HodStudentsPage() {
+  const session = getOrgSession();
+  const [snap, setSnap] = useState(() => getHodWorkspaceSnapshot(session));
+  const [students, setStudents] = useState([]);
+  const [pending, setPending] = useState([]);
+  const [dataSource, setDataSource] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [scopeReady, setScopeReady] = useState(Boolean(snap.departmentId));
+  const [msg, setMsg] = useState('');
+  const [err, setErr] = useState('');
+  const [tab, setTab] = useState('add');
+  const [addMode, setAddMode] = useState('manual');
+  const [assignStudent, setAssignStudent] = useState(null);
+  const [lastSetupUrl, setLastSetupUrl] = useState('');
+  const [manual, setManual] = useState({
+    name: '',
+    email: '',
+    collegeId: '',
+    batchYear: '',
+  });
+  const [emails, setEmails] = useState('');
+  const [csvText, setCsvText] = useState('');
+
+  const canInvite = snap.access?.canInviteStudents !== false;
+  const dept = snap.department;
+  const deptId = dept?.id || snap.departmentId || '';
+
+  const registerUrl = useMemo(
+    () => (deptId ? getRegistrationLink(deptId) : ''),
+    [deptId]
+  );
+
+  const reload = async () => {
+    if (!deptId) {
+      setStudents([]);
+      setPending([]);
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    const [roster, queue] = await Promise.all([
+      fetchStudents({ departmentId: deptId }),
+      fetchStudentInvites({ status: 'pending', departmentId: deptId }),
+    ]);
+    setStudents(roster.students || []);
+    setPending(queue.invitations || []);
+    setDataSource(roster.source || queue.source || '');
+    if (!roster.ok && roster.error) setErr(roster.error);
+    else if (!queue.ok && queue.error) setErr(queue.error);
+    setLoading(false);
+  };
+
+  // Hydrate HOD scope from API departments + session.department_id
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const res = await fetchDepartments();
+      if (cancelled) return;
+      const list = (res.departments || []).map((d) => ({
+        id: d.id,
+        name: d.name,
+        code: d.code || '',
+        hodEmail: d.hod_email || d.hodEmail || '',
+      }));
+      const next = getHodWorkspaceSnapshot(getOrgSession(), list);
+      setSnap(next);
+      setScopeReady(true);
+      if (!next.departmentId) {
+        setErr(
+          'No department linked to this HOD account. Ask your TPO to assign you, then sign in again.'
+        );
+        setLoading(false);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(
+    () =>
+      subscribeOrgDb(() => {
+        const s = getOrgSession();
+        const deptFromSession = resolveHodDepartment(s);
+        setSnap(getHodWorkspaceSnapshot(s, deptFromSession ? [deptFromSession] : undefined));
+      }),
+    []
+  );
+
+  useEffect(() => {
+    let cancelled = false;
+    if (!scopeReady || !deptId) return undefined;
+    Promise.all([
+      fetchStudents({ departmentId: deptId }),
+      fetchStudentInvites({ status: 'pending', departmentId: deptId }),
+    ]).then(([roster, queue]) => {
+      if (cancelled) return;
+      setStudents(roster.students || []);
+      setPending(queue.invitations || []);
+      setDataSource(roster.source || queue.source || '');
+      if (!roster.ok && roster.error) setErr(roster.error);
+      else if (!queue.ok && queue.error) setErr(queue.error);
+      setLoading(false);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [deptId, scopeReady]);
+
+  const flash = (ok, text, setupUrl = '') => {
+    setErr(ok ? '' : text);
+    setMsg(ok ? text : '');
+    if (setupUrl) setLastSetupUrl(setupUrl);
+  };
+
+  const copyText = async (text) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setMsg('Copied to clipboard.');
+    } catch {
+      setErr('Could not copy — select the link manually.');
+    }
+  };
+
+  const onManual = async (e) => {
+    e.preventDefault();
+    if (!canInvite || !dept?.id) return;
+    const res = await addStudentManualApi({ ...manual, departmentId: dept.id });
+    if (!res.ok) {
+      flash(false, res.error);
+      return;
+    }
+    setManual({ name: '', email: '', collegeId: '', batchYear: '' });
+    flash(true, res.message || 'Student queued for approval.');
+    setTab('queue');
+    await reload();
+  };
+
+  const onCsv = async (e) => {
+    e.preventDefault();
+    if (!canInvite || !dept?.id) return;
+    const res = await importStudentsApi({
+      csvText,
+      departmentId: dept.id,
+      sendInviteEmail: true,
+    });
+    if (!res.ok) {
+      flash(false, res.error);
+      return;
+    }
+    const errN = res.errors?.length || 0;
+    flash(
+      true,
+      `Imported ${res.added} student(s)${res.skipped ? `, skipped ${res.skipped}` : ''}${
+        errN ? `, ${errN} row error(s)` : ''
+      }.`
+    );
+    setCsvText('');
+    setTab('queue');
+    await reload();
+  };
+
+  const onCsvFile = async (file) => {
+    if (!file) return;
+    setCsvText(await file.text());
+  };
+
+  const onEmails = async (e) => {
+    e.preventDefault();
+    if (!canInvite || !dept?.id) return;
+    if (!emails.trim()) {
+      flash(false, 'Add at least one student email.');
+      return;
+    }
+    const res = await inviteStudentsApi({ emails, departmentId: dept.id });
+    if (!res.ok) {
+      flash(false, res.error);
+      return;
+    }
+    setEmails('');
+    flash(true, `${res.added || 0} invite(s) queued.`);
+    setTab('queue');
+    await reload();
+  };
+
+  const onDecide = async (id, decision) => {
+    const res =
+      decision === 'approve' ? await approveStudentInvite(id) : await rejectStudentInvite(id);
+    if (!res.ok) {
+      flash(false, res.error);
+      return;
+    }
+    if (decision === 'approve') {
+      flash(
+        true,
+        res.message ||
+          'Approved. Set-password email sent when mail works — link shown if returned.',
+        res.setupUrl || ''
+      );
+    } else {
+      flash(true, res.message || 'Registration rejected.');
+    }
+    await reload();
+  };
+
+  const onResendSetup = async (student) => {
+    const res = await resendStudentSetupLink(student.id);
+    if (!res.ok) {
+      flash(false, res.error);
+      return;
+    }
+    flash(
+      true,
+      res.message || `Set-password link ready for ${student.email}.`,
+      res.setupUrl || ''
+    );
+  };
+
+  if (!scopeReady) {
+    return (
+      <div className="mm-org-panel">
+        <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+          Loading branch scope…
+        </p>
+      </div>
+    );
+  }
+
+  if (!dept) {
+    return (
+      <div className="mm-org-panel">
+        <h2 className="mm-org-panel__title">Branch not linked</h2>
+        <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+          Ask your TPO to create the department and invite you as HOD. Your account needs a
+          department_id from login. After that, sign in again to see this roster.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-5">
+      <div className="mm-org-toolbar">
+        <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+          {dept.name} ({dept.code || '—'}) · {students.length} enrolled · {pending.length} pending
+          {dataSource ? ` · ${dataSource}` : ''}
+          {loading ? ' · loading…' : ''}
+        </p>
+        <div className="flex flex-wrap gap-2">
+          {[
+            ['add', 'Add students'],
+            ['queue', `Queue (${pending.length})`],
+            ['roster', 'Roster'],
+          ].map(([id, label]) => (
+            <button
+              key={id}
+              type="button"
+              className={`mm-org-btn mm-org-btn--sm ${tab === id ? 'mm-org-btn--primary' : 'mm-org-btn--ghost'}`}
+              onClick={() => setTab(id)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {err ? <div className="mm-org-alert mm-org-alert--error">{err}</div> : null}
+      {msg ? <div className="mm-org-alert mm-org-alert--success">{msg}</div> : null}
+      {lastSetupUrl ? (
+        <div className="mm-org-panel" style={{ padding: 14 }}>
+          <p className="mm-org-panel__meta m-0 mb-2">Set-password link (share if email did not send)</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <code className="text-xs break-all" style={{ flex: 1, color: 'var(--org-ink)' }}>
+              {lastSetupUrl}
+            </code>
+            <button
+              type="button"
+              className="mm-org-btn mm-org-btn--sm mm-org-btn--ghost"
+              onClick={() => copyText(lastSetupUrl)}
+            >
+              <Copy size={14} /> Copy
+            </button>
+          </div>
+        </div>
+      ) : null}
+
+      {!canInvite ? (
+        <div className="mm-org-alert mm-org-alert--error">
+          Student invites are disabled for HODs. Ask TPO to enable “Invite students to department”.
+        </div>
+      ) : null}
+
+      {tab === 'add' && canInvite ? (
+        <section className="mm-org-panel">
+          <div className="mm-org-panel__head">
+            <div>
+              <h2 className="mm-org-panel__title">Add students to {dept.name}</h2>
+              <p className="mm-org-panel__meta">
+                Manual · CSV · email paste · or share a self-registration link. All go to approve /
+                deny first.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap gap-2 mb-4">
+            {[
+              ['manual', 'Manual'],
+              ['csv', 'CSV upload'],
+              ['emails', 'Email list'],
+              ['link', 'Registration link'],
+            ].map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                className={`mm-org-btn mm-org-btn--sm ${
+                  addMode === id ? 'mm-org-btn--primary' : 'mm-org-btn--ghost'
+                }`}
+                onClick={() => setAddMode(id)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {addMode === 'manual' ? (
+            <form onSubmit={onManual} className="mm-org-form-grid">
+              <div>
+                <label className="mm-org-label" htmlFor="hod-stu-name">
+                  Full name
+                </label>
+                <input
+                  id="hod-stu-name"
+                  className="mm-org-input"
+                  value={manual.name}
+                  onChange={(e) => setManual((m) => ({ ...m, name: e.target.value }))}
+                  required
+                />
+              </div>
+              <div>
+                <label className="mm-org-label" htmlFor="hod-stu-email">
+                  Email
+                </label>
+                <input
+                  id="hod-stu-email"
+                  type="email"
+                  className="mm-org-input"
+                  value={manual.email}
+                  onChange={(e) => setManual((m) => ({ ...m, email: e.target.value }))}
+                  required
+                />
+              </div>
+              <div>
+                <label className="mm-org-label" htmlFor="hod-stu-roll">
+                  College ID / roll
+                </label>
+                <input
+                  id="hod-stu-roll"
+                  className="mm-org-input"
+                  value={manual.collegeId}
+                  onChange={(e) => setManual((m) => ({ ...m, collegeId: e.target.value }))}
+                  placeholder="CSE2024A01"
+                />
+              </div>
+              <div>
+                <label className="mm-org-label" htmlFor="hod-stu-batch">
+                  Batch year
+                </label>
+                <input
+                  id="hod-stu-batch"
+                  className="mm-org-input"
+                  value={manual.batchYear}
+                  onChange={(e) => setManual((m) => ({ ...m, batchYear: e.target.value }))}
+                  placeholder="2025"
+                />
+              </div>
+              <div className="mm-org-form-actions" style={{ gridColumn: '1 / -1' }}>
+                <button type="submit" className="mm-org-btn mm-org-btn--primary">
+                  <UserPlus size={15} /> Queue for approval
+                </button>
+              </div>
+            </form>
+          ) : null}
+
+          {addMode === 'csv' ? (
+            <form onSubmit={onCsv}>
+              <p className="mm-org-panel__meta mb-3">
+                Columns: <code>email,name,college_id,batch_year</code>
+              </p>
+              <div className="flex flex-wrap gap-2 mb-3">
+                <label className="mm-org-btn mm-org-btn--sm mm-org-btn--ghost" style={{ cursor: 'pointer' }}>
+                  <FileUp size={14} /> Choose CSV
+                  <input
+                    type="file"
+                    accept=".csv,text/csv"
+                    hidden
+                    onChange={(e) => onCsvFile(e.target.files?.[0])}
+                  />
+                </label>
+                <button
+                  type="button"
+                  className="mm-org-btn mm-org-btn--sm mm-org-btn--ghost"
+                  onClick={() => setCsvText(CSV_TEMPLATE)}
+                >
+                  Load template
+                </button>
+              </div>
+              <textarea
+                className="mm-org-textarea"
+                rows={8}
+                placeholder={CSV_TEMPLATE}
+                value={csvText}
+                onChange={(e) => setCsvText(e.target.value)}
+              />
+              <div className="mm-org-form-actions">
+                <button type="submit" className="mm-org-btn mm-org-btn--primary" disabled={!csvText.trim()}>
+                  <FileUp size={15} /> Import to queue
+                </button>
+              </div>
+            </form>
+          ) : null}
+
+          {addMode === 'emails' ? (
+            <form onSubmit={onEmails}>
+              <label className="mm-org-label" htmlFor="hod-stu-emails">
+                Student emails
+              </label>
+              <textarea
+                id="hod-stu-emails"
+                className="mm-org-textarea"
+                placeholder={'student1@college.edu\nstudent2@college.edu'}
+                value={emails}
+                onChange={(e) => setEmails(e.target.value)}
+              />
+              <div className="mm-org-form-actions">
+                <button type="submit" className="mm-org-btn mm-org-btn--primary">
+                  <UserPlus size={15} /> Queue invites
+                </button>
+              </div>
+            </form>
+          ) : null}
+
+          {addMode === 'link' ? (
+            <div>
+              <p className="mm-org-panel__meta mb-3">
+                Share this link with your branch. Students register; you approve or deny in the
+                queue.
+              </p>
+              <div className="flex flex-wrap items-center gap-2 mb-3">
+                <code className="text-xs break-all" style={{ flex: 1 }}>
+                  {registerUrl}
+                </code>
+                <button
+                  type="button"
+                  className="mm-org-btn mm-org-btn--sm mm-org-btn--primary"
+                  onClick={() => copyText(registerUrl)}
+                >
+                  <Copy size={14} /> Copy link
+                </button>
+                <a
+                  className="mm-org-btn mm-org-btn--sm mm-org-btn--ghost"
+                  href={registerUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Link2 size={14} /> Open
+                </a>
+              </div>
+            </div>
+          ) : null}
+        </section>
+      ) : null}
+
+      {tab === 'queue' ? (
+        <section className="mm-org-panel">
+          <div className="mm-org-panel__head">
+            <div>
+              <h2 className="mm-org-panel__title">Pending approvals</h2>
+              <p className="mm-org-panel__meta">
+                Approve → set-password email → student activates → login
+              </p>
+            </div>
+          </div>
+          {pending.length ? (
+            <div className="mm-org-table-wrap">
+              <table className="mm-org-table">
+                <thead>
+                  <tr>
+                    <th>Student</th>
+                    <th>Source</th>
+                    <th>Queued</th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {pending.map((inv) => (
+                    <tr key={inv.id}>
+                      <td>
+                        <p className="mm-org-table__title">{inv.name || inv.email}</p>
+                        <p className="mm-org-table__meta">
+                          {inv.email}
+                          {inv.collegeId ? ` · ${inv.collegeId}` : ''}
+                          {inv.phone ? ` · ${inv.phone}` : ''}
+                        </p>
+                      </td>
+                      <td>
+                        <span className="mm-org-badge mm-org-badge--pending">
+                          {sourceLabel(inv.source)}
+                        </span>
+                      </td>
+                      <td style={{ color: 'var(--org-muted)' }}>
+                        {inv.createdAt ? new Date(inv.createdAt).toLocaleDateString() : '—'}
+                      </td>
+                      <td>
+                        <div className="flex gap-2 justify-end">
+                          <button
+                            type="button"
+                            className="mm-org-btn mm-org-btn--primary mm-org-btn--sm"
+                            onClick={() => onDecide(inv.id, 'approve')}
+                          >
+                            <Check size={14} /> Approve
+                          </button>
+                          <button
+                            type="button"
+                            className="mm-org-btn mm-org-btn--danger mm-org-btn--sm"
+                            onClick={() => onDecide(inv.id, 'reject')}
+                          >
+                            <X size={14} /> Deny
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="mm-org-empty">
+              {loading ? 'Loading…' : 'No pending invites for your branch.'}
+            </div>
+          )}
+        </section>
+      ) : null}
+
+      {tab === 'roster' ? (
+        <section className="mm-org-panel">
+          <div className="mm-org-panel__head">
+            <div>
+              <h2 className="mm-org-panel__title">Branch roster</h2>
+              <p className="mm-org-panel__meta">Live from API when available</p>
+            </div>
+          </div>
+          {students.length ? (
+            <div className="mm-org-table-wrap">
+              <table className="mm-org-table">
+                <thead>
+                  <tr>
+                    <th>Student</th>
+                    <th>Login</th>
+                    <th>Readiness</th>
+                    <th>Mock</th>
+                    <th />
+                  </tr>
+                </thead>
+                <tbody>
+                  {students
+                    .slice()
+                    .sort((a, b) => (b.readiness || 0) - (a.readiness || 0))
+                    .map((s) => (
+                      <tr key={s.id}>
+                        <td>
+                          <p className="mm-org-table__title">{s.name}</p>
+                          <p className="mm-org-table__meta">
+                            {s.email}
+                            {s.collegeId ? ` · ${s.collegeId}` : ''}
+                          </p>
+                        </td>
+                        <td>
+                          <span
+                            className={`mm-org-badge ${
+                              s.authStatus === 'needs_password' || s.authStatus === 'pending'
+                                ? 'mm-org-badge--pending'
+                                : s.authStatus === 'disabled' || s.authStatus === 'blocked'
+                                  ? 'mm-org-badge--danger'
+                                  : 'mm-org-badge--active'
+                            }`}
+                          >
+                            {s.authStatus === 'needs_password'
+                              ? 'Set password'
+                              : s.authStatus === 'pending'
+                                ? 'Pending'
+                                : s.authStatus === 'blocked'
+                                  ? 'Blocked'
+                                  : s.authStatus === 'disabled'
+                                    ? 'Disabled'
+                                    : 'Ready'}
+                          </span>
+                        </td>
+                        <td>
+                          <span
+                            className={`mm-org-badge ${
+                              s.readiness >= 75
+                                ? 'mm-org-badge--active'
+                                : s.readiness < 50
+                                  ? 'mm-org-badge--danger'
+                                  : 'mm-org-badge--pending'
+                            }`}
+                          >
+                            {s.readiness}%
+                          </span>
+                        </td>
+                        <td>{s.mockScore}</td>
+                        <td>
+                          <div className="flex gap-2 justify-end">
+                            {s.authStatus === 'needs_password' ||
+                            s.authStatus === 'ready' ||
+                            s.authStatus === 'blocked' ||
+                            s.setupUrl ? (
+                              <button
+                                type="button"
+                                className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+                                onClick={() => onResendSetup(s)}
+                              >
+                                <Link2 size={14} /> Resend link
+                              </button>
+                            ) : null}
+                            {s.authStatus !== 'disabled' && s.authStatus !== 'blocked' ? (
+                              <button
+                                type="button"
+                                className="mm-org-btn mm-org-btn--danger mm-org-btn--sm"
+                                onClick={async () => {
+                                  const res = await patchStudent(s.id, { status: 'DISABLED' });
+                                  if (!res.ok) flash(false, res.error);
+                                  else {
+                                    flash(true, 'Student disabled.');
+                                    await reload();
+                                  }
+                                }}
+                              >
+                                Disable
+                              </button>
+                            ) : null}
+                            <button
+                              type="button"
+                              className="mm-org-btn mm-org-btn--primary mm-org-btn--sm"
+                              onClick={() => setAssignStudent(s)}
+                              disabled={snap.access?.canAssignPrograms === false}
+                            >
+                              <Plus size={14} /> Assign
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="mm-org-empty">
+              {loading
+                ? 'Loading roster…'
+                : dataSource === 'api'
+                  ? 'No students in this department yet. Add via CSV / manual / link, then approve.'
+                  : 'No students enrolled yet. Add via CSV / manual / link, then approve.'}
+            </div>
+          )}
+        </section>
+      ) : null}
+
+      {assignStudent ? (
+        <AssignToStudentModal
+          student={assignStudent}
+          departmentId={dept.id}
+          onClose={() => setAssignStudent(null)}
+          onAssigned={(title) => setMsg(`Assigned “${title}” to ${assignStudent.name}.`)}
+        />
+      ) : null}
+    </div>
+  );
+}

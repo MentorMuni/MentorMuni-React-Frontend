@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Eye, EyeOff, Loader2, Lock, ShieldCheck, Mail, Sparkles, Building2, Zap } from 'lucide-react';
 import { authenticatePlatformAdmin, setPlatformSession } from './auth';
+import { platformAdminPaths } from './paths';
 import { usePlatformTheme } from './usePlatformTheme';
 import PlatformThemeToggle from './PlatformThemeToggle';
 import './platform-admin.css';
@@ -51,8 +52,8 @@ export default function PlatformAdminLogin() {
       setPlatformSession(result.user);
       navigate(
         result.user?.mustChangePassword
-          ? '/mentormuniplatformadmin/change-password'
-          : '/mentormuniplatformadmin/dashboard',
+          ? platformAdminPaths.changePassword
+          : platformAdminPaths.dashboard,
         { replace: true }
       );
     } catch (err) {

@@ -53,8 +53,9 @@ const LearningPaths = lazy(() => import("./components/learningPaths"));
 const PlacementTracks = lazy(() => import("./components/placementTracks"));
 const FreeTutorials = lazy(() => import("./components/freeTutorials"));
 const ResumeAnalyzer = lazy(() => import("./components/resumeAnalyzer"));
-const LoginPage = lazy(() => import("./components/login/LoginPage"));
 const ActivateTpoPage = lazy(() => import("./components/login/ActivateTpoPage"));
+const ActivateHodPage = lazy(() => import("./components/login/ActivateHodPage"));
+const OrganizationPortalApp = lazy(() => import("./organizationPortal/OrganizationPortalApp"));
 const ContactPage = lazy(() => import("./components/contactPage"));
 const AboutUs = lazy(() => import("./components/aboutUs"));
 const TermsPage = lazy(() => import("./components/legal/TermsPage"));
@@ -76,9 +77,40 @@ const BlogList = lazy(() => import("./components/Blog/BlogList"));
 const BlogPost = lazy(() => import("./components/Blog/BlogPost"));
 const GamifiedPlacementPrep = lazy(() => import("./components/GamifiedPlacementPrep"));
 const PlatformAdminApp = lazy(() => import("./platformAdmin/PlatformAdminApp"));
+const StudentPortalApp = lazy(() => import("./studentPortal/StudentPortalApp"));
 
 function isPlatformAdminPath(pathname) {
-  return pathname === "/mentormuniplatformadmin" || pathname.startsWith("/mentormuniplatformadmin/");
+  return (
+    pathname === "/platform/admin" ||
+    pathname.startsWith("/platform/admin/") ||
+    pathname === "/mentormuniplatformadmin" ||
+    pathname.startsWith("/mentormuniplatformadmin/")
+  );
+}
+
+/** Old /mentormuniplatformadmin/* → /platform/admin/* (login was the index). */
+function LegacyPlatformAdminRedirect() {
+  const { pathname, search } = useLocation();
+  const rest = pathname.replace(/^\/mentormuniplatformadmin\/?/, "");
+  const target = rest ? `/platform/admin/${rest}` : "/platform/admin/login";
+  return <Navigate to={`${target}${search || ""}`} replace />;
+}
+
+function isOrganizationPortalPath(pathname) {
+  return pathname === "/Organization" || pathname.startsWith("/Organization/");
+}
+
+function isStudentPortalPath(pathname) {
+  const p = String(pathname || "").toLowerCase();
+  return p === "/studentportal" || p.startsWith("/studentportal/");
+}
+
+function isChromeLessPath(pathname) {
+  return (
+    isPlatformAdminPath(pathname) ||
+    isOrganizationPortalPath(pathname) ||
+    isStudentPortalPath(pathname)
+  );
 }
 
 function PageFallback() {
@@ -223,9 +255,8 @@ function RouteTitle() {
 
 function AppChrome({ children }) {
   const { pathname } = useLocation();
-  const platformAdmin = isPlatformAdminPath(pathname);
 
-  if (platformAdmin) {
+  if (isChromeLessPath(pathname)) {
     return (
       <div className="relative min-h-screen">
         <Suspense fallback={<PageFallback />}>{children}</Suspense>
@@ -258,7 +289,12 @@ function App() {
       <RouteTitle />
       <AppChrome>
         <Routes>
-              <Route path="/mentormuniplatformadmin/*" element={<PlatformAdminApp />} />
+              <Route path="/platform/admin/*" element={<PlatformAdminApp />} />
+              <Route path="/mentormuniplatformadmin" element={<LegacyPlatformAdminRedirect />} />
+              <Route path="/mentormuniplatformadmin/*" element={<LegacyPlatformAdminRedirect />} />
+              <Route path="/Organization/*" element={<OrganizationPortalApp />} />
+              <Route path="/studentportal/*" element={<StudentPortalApp />} />
+              <Route path="/StudentPortal/*" element={<StudentPortalApp />} />
               <Route path="/" element={<HomePage />} />
               <Route path="/how-it-works" element={<StudentJourneyPage />} />
               <Route path="/roadmap" element={<RoadmapPage />} />
@@ -304,8 +340,9 @@ function App() {
               <Route path="/for-recruiters" element={<ForRecruiters />} />
               <Route path="/colleges" element={<CollegesPage />} />
               <Route path="/about" element={<AboutUs />} />
-              <Route path="/login" element={<LoginPage />} />
+              <Route path="/login" element={<Navigate to="/Organization/login" replace />} />
               <Route path="/activate-tpo" element={<ActivateTpoPage />} />
+              <Route path="/activate-hod" element={<ActivateHodPage />} />
               <Route path="/contact" element={<ContactPage />} />
               <Route path="/terms" element={<TermsPage />} />
               <Route path="/privacy" element={<PrivacyPage />} />

@@ -12,6 +12,7 @@ import {
   Rocket,
 } from 'lucide-react';
 import { getDashboardMetrics, statusLabel, isActiveStatus } from '../store';
+import { platformAdminPaths } from '../paths';
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -86,10 +87,10 @@ export default function DashboardPage() {
             MentorMuni Platform stops where the Organization Portal begins.
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
-            <Link to="/mentormuniplatformadmin/organizations" className="mm-pa-btn mm-pa-btn--primary">
+            <Link to={platformAdminPaths.organizations} className="mm-pa-btn mm-pa-btn--primary">
               <Rocket size={15} /> Create Organization
             </Link>
-            <Link to="/mentormuniplatformadmin/subscriptions" className="mm-pa-btn mm-pa-btn--ghost">
+            <Link to={platformAdminPaths.subscriptions} className="mm-pa-btn mm-pa-btn--ghost">
               View subscriptions
             </Link>
           </div>
@@ -175,7 +176,7 @@ export default function DashboardPage() {
         >
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-sm font-extrabold tracking-tight">Feature Usage</h2>
-            <Link to="/mentormuniplatformadmin/features" className="text-xs font-bold text-sky-400 hover:text-sky-300">
+            <Link to={platformAdminPaths.features} className="text-xs font-bold text-sky-400 hover:text-sky-300">
               Manage features →
             </Link>
           </div>
@@ -207,7 +208,7 @@ export default function DashboardPage() {
         >
           <div className="mb-4 flex items-center justify-between">
             <h2 className="text-sm font-extrabold tracking-tight">Recent Organizations</h2>
-            <Link to="/mentormuniplatformadmin/organizations" className="text-xs font-bold text-sky-400">
+            <Link to={platformAdminPaths.organizations} className="text-xs font-bold text-sky-400">
               View all
             </Link>
           </div>
@@ -232,7 +233,7 @@ export default function DashboardPage() {
           </ul>
 
           <Link
-            to="/mentormuniplatformadmin/organizations"
+            to={platformAdminPaths.organizations}
             className="mm-pa-btn mm-pa-btn--primary mt-5 w-full"
           >
             Create Organization <ArrowRight size={15} />

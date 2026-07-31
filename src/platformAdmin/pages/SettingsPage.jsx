@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getOrgAdmins, reinviteTpo } from '../store';
+import { platformAdminPaths } from '../paths';
 
 export default function SettingsPage() {
   const [msg, setMsg] = useState('');
@@ -64,7 +65,7 @@ export default function SettingsPage() {
           work moves to the Organization Portal. No student, HOD, assessment, or college dashboard tools live here.
         </p>
         <div className="mt-4">
-          <Link to="/mentormuniplatformadmin/change-password" className="mm-pa-btn mm-pa-btn--ghost">
+          <Link to={platformAdminPaths.changePassword} className="mm-pa-btn mm-pa-btn--ghost">
             Change Password
           </Link>
         </div>

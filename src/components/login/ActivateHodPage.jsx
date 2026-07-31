@@ -3,15 +3,17 @@ import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Eye, EyeOff, KeyRound, Loader2, Lock } from 'lucide-react';
 import RoutePageShell from '../layout/RoutePageShell';
-import { activateTpoAccount } from '../../orgPortal';
+import { activateHodAccount } from '../../orgPortal';
+import { peekHodInvite } from '../../organizationPortal/store';
 
 const EASE = [0.22, 1, 0.36, 1];
 
-export default function ActivateTpoPage() {
+export default function ActivateHodPage() {
   const navigate = useNavigate();
   const reduceMotion = useReducedMotion();
   const [params] = useSearchParams();
   const token = useMemo(() => String(params.get('token') || '').trim(), [params]);
+  const invitePreview = useMemo(() => (token ? peekHodInvite(token) : null), [token]);
 
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -25,7 +27,7 @@ export default function ActivateTpoPage() {
     setError('');
 
     if (!token) {
-      setError('Activation token is missing. Open the link from your invite email.');
+      setError('Activation token is missing. Open the link from your TPO invite.');
       return;
     }
     if (password.length < 8) {
@@ -39,7 +41,7 @@ export default function ActivateTpoPage() {
 
     setLoading(true);
     try {
-      const result = await activateTpoAccount(token, password);
+      const result = await activateHodAccount(token, password);
       if (!result.ok) {
         setError(result.error || 'Unable to activate account.');
         return;
@@ -48,7 +50,8 @@ export default function ActivateTpoPage() {
         replace: true,
         state: {
           activateSuccess:
-            result.message || 'Password set. You can log in to the Organization Portal.',
+            result.message || 'Password set. Sign in as HOD for your department.',
+          preferredRole: 'hod',
         },
       });
     } catch (err) {
@@ -60,7 +63,7 @@ export default function ActivateTpoPage() {
 
   return (
     <RoutePageShell scope="marketing" className="mm-login-vibe-root">
-      <section className="mm-login-vibe mm-marketing-hero-backdrop" aria-labelledby="activate-tpo-heading">
+      <section className="mm-login-vibe mm-marketing-hero-backdrop" aria-labelledby="activate-hod-heading">
         <div className="mm-login-vibe__noise" aria-hidden />
         <div className="mm-login-vibe__blob mm-login-vibe__blob--1" aria-hidden />
         <div className="mm-login-vibe__blob mm-login-vibe__blob--2" aria-hidden />
@@ -72,9 +75,11 @@ export default function ActivateTpoPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.55, ease: EASE }}
           >
-            <h1 id="activate-tpo-heading" className="mm-login-vibe__headline">
-              <span className="mm-login-vibe__headline-line">Activate TPO account</span>
-              <span className="mm-login-vibe__headline-line mm-login-vibe__headline-grad">Set your password.</span>
+            <h1 id="activate-hod-heading" className="mm-login-vibe__headline">
+              <span className="mm-login-vibe__headline-line">Activate HOD account</span>
+              <span className="mm-login-vibe__headline-line mm-login-vibe__headline-grad">
+                Set your password.
+              </span>
             </h1>
           </motion.header>
 
@@ -93,18 +98,27 @@ export default function ActivateTpoPage() {
                       <KeyRound size={22} />
                     </div>
                     <div>
-                      <p className="mm-login-vibe__card-eyebrow">Organization Portal</p>
+                      <p className="mm-login-vibe__card-eyebrow">Department mentor</p>
                       <h2 className="mm-login-vibe__card-title">Create your password</h2>
+                      {invitePreview ? (
+                        <p className="mm-login-hint" style={{ marginTop: 6 }}>
+                          {invitePreview.name ? `${invitePreview.name} · ` : ''}
+                          {invitePreview.email}
+                          {invitePreview.departmentName
+                            ? ` · ${invitePreview.departmentName}`
+                            : ''}
+                        </p>
+                      ) : null}
                     </div>
                   </div>
 
                   {!token ? (
                     <div className="mm-login-vibe-form__note" role="status">
                       <p className="mm-login-vibe-form__error-text">
-                        Activation only works from your MentorMuni invite email.
+                        Activation only works from the invite link your TPO shared.
                       </p>
                       <p className="mm-login-vibe-form__error-cta" style={{ marginTop: 8 }}>
-                        Open the link in that email. If you don’t have it, ask your Platform Admin to reinvite you.
+                        Open that link, or ask your TPO to reinvite you from Departments.
                       </p>
                       <p className="mm-login-vibe-form__error-cta" style={{ marginTop: 12 }}>
                         <Link to="/Organization/login">Back to login</Link>
@@ -118,7 +132,7 @@ export default function ActivateTpoPage() {
                         </div>
                       )}
 
-                      <label className="mm-login-vibe-label" htmlFor="activate-password">
+                      <label className="mm-login-vibe-label" htmlFor="hod-activate-password">
                         New password
                       </label>
                       <div className="mm-login-vibe-input-wrap">
@@ -126,7 +140,7 @@ export default function ActivateTpoPage() {
                           <Lock size={18} strokeWidth={2.25} />
                         </span>
                         <input
-                          id="activate-password"
+                          id="hod-activate-password"
                           type={showPassword ? 'text' : 'password'}
                           autoComplete="new-password"
                           required
@@ -146,7 +160,7 @@ export default function ActivateTpoPage() {
                         </button>
                       </div>
 
-                      <label className="mm-login-vibe-label" htmlFor="activate-confirm">
+                      <label className="mm-login-vibe-label" htmlFor="hod-activate-confirm">
                         Confirm password
                       </label>
                       <div className="mm-login-vibe-input-wrap">
@@ -154,7 +168,7 @@ export default function ActivateTpoPage() {
                           <Lock size={18} strokeWidth={2.25} />
                         </span>
                         <input
-                          id="activate-confirm"
+                          id="hod-activate-confirm"
                           type={showConfirm ? 'text' : 'password'}
                           autoComplete="new-password"
                           required

@@ -1,0 +1,685 @@
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import {
+  ArrowRight,
+  Building2,
+  ClipboardCheck,
+  Eye,
+  EyeOff,
+  Loader2,
+  Lock,
+  Mail,
+  MapPin,
+  Search,
+  ShieldCheck,
+  Users,
+  Zap,
+} from 'lucide-react';
+import {
+  consumeOrgAuthFlash,
+  fetchLoginColleges,
+  getOrgSession,
+  isOrgAuthenticated,
+  loginOrgUser,
+  pickInitialCollege,
+  saveCollegeCode,
+} from '../../orgPortal';
+import { getOrgHomePath } from '../../organizationPortal/roles';
+import { DEMO_ORG, DEMO_USERS, matchDemoUser } from '../../organizationPortal/demoAuth';
+import { useOrgTheme } from '../../organizationPortal/useOrgTheme';
+import OrgThemeToggle from '../../organizationPortal/OrgThemeToggle';
+import './organization-login.css';
+
+const EASE = [0.22, 1, 0.36, 1];
+const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
+
+const ROLES = [
+  {
+    id: 'tpo',
+    label: 'TPO',
+    icon: ShieldCheck,
+    eyebrow: 'Training & Placement Officer',
+    headline: 'Manage your college placement portal',
+    accent: 'Students, departments, and season ops — together.',
+    body: (college) =>
+      college
+        ? `Sign in as TPO for ${college.name} to run placement operations securely.`
+        : 'Sign in as TPO to run your college placement operations securely.',
+    highlights: [
+      { icon: ShieldCheck, title: 'College admin access', text: 'ORG_ADMIN controls for your campus' },
+      { icon: Zap, title: 'Season coordination', text: 'Keep HODs and students on one system' },
+      { icon: Building2, title: 'Safe handovers', text: 'Transfer access without data mix-ups' },
+    ],
+    fieldUser: 'TPO email or username',
+    fieldUserHint: 'From your MentorMuni activation invite',
+    fieldPass: 'Password',
+    cta: 'Continue as TPO',
+    placeholder: 'tpo@college.edu',
+  },
+  {
+    id: 'hod',
+    label: 'HOD',
+    icon: Users,
+    eyebrow: 'Head of Department',
+    headline: 'Track your department’s placement readiness',
+    accent: 'See who needs support — before drive week.',
+    body: (college) =>
+      college
+        ? `Sign in as HOD for ${college.name} to monitor batch readiness and act early.`
+        : 'Sign in as HOD to monitor batch readiness and act early.',
+    highlights: [
+      { icon: Users, title: 'Batch overview', text: 'See readiness across your department' },
+      { icon: ClipboardCheck, title: 'Early alerts', text: 'Spot students who need help sooner' },
+      { icon: Building2, title: 'Aligned with TPO', text: 'Same data your placement office uses' },
+    ],
+    fieldUser: 'HOD email or username',
+    fieldUserHint: 'Use your department account',
+    fieldPass: 'Password',
+    cta: 'Continue as HOD',
+    placeholder: 'hod@college.edu',
+  },
+];
+
+function postLoginPath(user) {
+  if (user?.mustChangePassword || user?.must_change_password) {
+    return '/Organization/change-password';
+  }
+  return getOrgHomePath();
+}
+
+/** Never surface API-key / infra errors on the login UI. */
+function safeLoginError(message, fallback = 'Unable to sign in. Please try again.') {
+  const text = String(message || '').trim();
+  if (!text) return fallback;
+  if (/api key|x-api-key|missing api|invalid or missing/i.test(text)) return fallback;
+  return text;
+}
+
+export default function OrganizationLoginPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const reduceMotion = useReducedMotion();
+  const { theme, toggleTheme } = useOrgTheme();
+
+  const [step, setStep] = useState('college'); // college | login
+  const [roleId, setRoleId] = useState('tpo');
+  const [colleges, setColleges] = useState([]);
+  const [college, setCollege] = useState(null);
+  const [collegesLoading, setCollegesLoading] = useState(true);
+  const [collegeQuery, setCollegeQuery] = useState('');
+  const [userId, setUserId] = useState('');
+  const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const [errorKind, setErrorKind] = useState('');
+  const [cta, setCta] = useState('');
+  const [success, setSuccess] = useState('');
+
+  const activeRole = ROLES.find((r) => r.id === roleId) || ROLES[0];
+  const RoleIcon = activeRole.icon;
+  const orgCode = String(college?.code || '').trim().toUpperCase();
+
+  const filteredColleges = useMemo(() => {
+    const q = collegeQuery.trim().toLowerCase();
+    if (!q) return colleges;
+    return colleges.filter(
+      (c) =>
+        c.name.toLowerCase().includes(q) ||
+        c.code.toLowerCase().includes(q) ||
+        `${c.city} ${c.state}`.toLowerCase().includes(q)
+    );
+  }, [colleges, collegeQuery]);
+
+  const selectColleges = useMemo(() => {
+    if (!college?.code) return filteredColleges;
+    if (filteredColleges.some((c) => c.code === college.code)) return filteredColleges;
+    return [college, ...filteredColleges];
+  }, [filteredColleges, college]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      setCollegesLoading(true);
+      const result = await fetchLoginColleges();
+      if (cancelled) return;
+      setCollegesLoading(false);
+      if (!result.ok) {
+        setColleges([]);
+        return;
+      }
+      setColleges(result.colleges);
+      setCollege((prev) => prev || pickInitialCollege(result.colleges, searchParams));
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [searchParams]);
+
+  useEffect(() => {
+    const flash = consumeOrgAuthFlash();
+    if (flash?.message) {
+      const isSuccess = flash.kind === 'success';
+      if (isSuccess) {
+        setSuccess(flash.message);
+        setError('');
+        setErrorKind('');
+        setCta('');
+      } else {
+        setError(flash.message);
+        setErrorKind(flash.kind === 'suspended' ? 'suspended' : 'credentials');
+        setCta(flash.cta || '');
+        setSuccess('');
+      }
+      setStep('login');
+    }
+
+    const activateSuccess = location.state?.activateSuccess;
+    if (activateSuccess) {
+      setSuccess(activateSuccess);
+      setError('');
+      setErrorKind('');
+      const preferred = String(location.state?.preferredRole || 'tpo').toLowerCase();
+      setRoleId(preferred === 'hod' ? 'hod' : 'tpo');
+      setStep('login');
+      navigate(location.pathname + location.search, { replace: true, state: {} });
+    }
+
+    if (isOrgAuthenticated()) {
+      navigate(postLoginPath(getOrgSession()), { replace: true });
+    }
+  }, [location.pathname, location.search, location.state, navigate]);
+
+  // Login step requires a college — send users back to the gate if missing.
+  useEffect(() => {
+    if (step === 'login' && !collegesLoading && !college?.code && colleges.length) {
+      const initial = pickInitialCollege(colleges, searchParams);
+      if (initial) {
+        setCollege(initial);
+        return;
+      }
+    }
+    if (step === 'login' && !collegesLoading && !college?.code && !colleges.length) {
+      setStep('college');
+    }
+  }, [step, college, colleges, collegesLoading, searchParams]);
+
+  const confirmCollege = () => {
+    if (!college?.code) return;
+    saveCollegeCode(college.code);
+    setError('');
+    setErrorKind('');
+    setStep('login');
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!userId.trim() || !password) return;
+    const demoMatch = matchDemoUser(userId, password);
+    if (!demoMatch && !orgCode) return;
+    setError('');
+    setErrorKind('');
+    setCta('');
+    setSuccess('');
+    setLoading(true);
+    try {
+      const code = demoMatch ? DEMO_ORG.code : orgCode;
+      const result = await loginOrgUser(userId, password, code);
+      if (!result.ok) {
+        if (result.code === 'ORG_SUSPENDED' || result.status === 403) {
+          setError(result.error);
+          setErrorKind('suspended');
+          setCta(result.ux?.cta || 'Please contact MentorMuni support.');
+        } else if (result.code === 'INVALID_CREDENTIALS' || result.status === 401) {
+          setError(safeLoginError(result.error, 'Incorrect email/username or password.'));
+          setErrorKind('credentials');
+        } else {
+          setError(safeLoginError(result.error, 'Unable to sign in. Please try again.'));
+          setErrorKind('credentials');
+        }
+        return;
+      }
+      saveCollegeCode(code);
+      navigate(postLoginPath(result.user), { replace: true });
+    } catch (err) {
+      setError(safeLoginError(err?.message, 'Unable to sign in. Please try again.'));
+      setErrorKind('credentials');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className={`mm-org-root-login mm-org-root-login--${roleId} ${theme === 'light' ? 'is-light' : 'is-dark'}`}>
+      <div className={`mm-org-atm ${theme === 'light' ? 'mm-org-atm--light' : ''}`} aria-hidden>
+        <div className="mm-org-atm__grid" />
+        <div className="mm-org-atm__orb mm-org-atm__orb--1" />
+        <div className="mm-org-atm__orb mm-org-atm__orb--2" />
+        <div className="mm-org-atm__orb mm-org-atm__orb--3" />
+      </div>
+
+      <OrgThemeToggle
+        theme={theme}
+        onToggle={toggleTheme}
+        className="mm-org-theme-toggle--floating"
+      />
+
+      <AnimatePresence mode="wait">
+        {step === 'college' ? (
+          <motion.div
+            key="college-gate"
+            className="mm-org-gate"
+            initial={reduceMotion ? false : { opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={reduceMotion ? undefined : { opacity: 0 }}
+            transition={{ duration: 0.3, ease: EASE }}
+          >
+            <section className="mm-org-gate__stage">
+              <div className="mm-org-gate__stage-inner">
+                <Link to="/" className="mm-org-gate__brand-link">
+                  <img src={LOGO} alt="MentorMuni" className="mm-org-gate__brand-logo" />
+                  <span>MentorMuni</span>
+                </Link>
+
+                <p className="mm-org-gate__kicker">For colleges</p>
+                <h1 className="mm-org-gate__headline">
+                  Campus placement,
+                  <br />
+                  run with clarity
+                </h1>
+                <p className="mm-org-gate__lede">
+                  One system for placement officers and department heads — shared readiness data, cleaner handoffs, and seasons that stay on track.
+                </p>
+
+                <ul className="mm-org-gate__value" aria-label="Why colleges use MentorMuni">
+                  <li>
+                    <ShieldCheck size={18} aria-hidden />
+                    <div>
+                      <strong>Placement office control</strong>
+                      <em>Season ops, access, and campus-wide follow-through in one workspace.</em>
+                    </div>
+                  </li>
+                  <li>
+                    <Users size={18} aria-hidden />
+                    <div>
+                      <strong>Department visibility</strong>
+                      <em>HODs see who needs support early — before drive week pressure hits.</em>
+                    </div>
+                  </li>
+                  <li>
+                    <ClipboardCheck size={18} aria-hidden />
+                    <div>
+                      <strong>Readiness that compounds</strong>
+                      <em>Skill gaps, practice, and feedback that raise offer outcomes over time.</em>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+            </section>
+
+            <motion.aside
+              className="mm-org-gate__panel"
+              initial={reduceMotion ? false : { opacity: 0, x: 16 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, ease: EASE }}
+            >
+              <div className="mm-org-gate__panel-inner">
+                <div className="mm-org-gate__progress" aria-hidden>
+                  <span className="is-active" />
+                  <span />
+                </div>
+                <p className="mm-org-gate__eyebrow">Step 1 of 2</p>
+                <h2 className="mm-org-gate__title">Select your college</h2>
+                <p className="mm-org-gate__sub">
+                  Confirm your institution to continue to secure sign-in.
+                </p>
+
+                <div className="mm-org-gate__form-block">
+                  <label className="mm-org-gate__label" htmlFor="college-select">
+                    Institution
+                  </label>
+
+                  {collegesLoading ? (
+                    <div className="mm-org-gate__select-shell is-loading">
+                      <Loader2 className="mm-org-login__spin" size={18} />
+                      Loading institutions…
+                    </div>
+                  ) : colleges.length ? (
+                    <>
+                      {colleges.length > 8 ? (
+                        <div className="mm-org-gate__field">
+                          <Search size={16} aria-hidden />
+                          <input
+                            type="search"
+                            placeholder="Filter by name"
+                            value={collegeQuery}
+                            onChange={(e) => setCollegeQuery(e.target.value)}
+                            aria-label="Filter colleges"
+                          />
+                        </div>
+                      ) : null}
+
+                      <div className="mm-org-gate__select-wrap">
+                        <Building2 size={16} className="mm-org-gate__select-icon" aria-hidden />
+                        <select
+                          id="college-select"
+                          className="mm-org-gate__select"
+                          value={college?.code || ''}
+                          onChange={(e) => {
+                            const next = colleges.find((c) => c.code === e.target.value) || null;
+                            setCollege(next);
+                          }}
+                        >
+                          <option value="" disabled>
+                            Select your college
+                          </option>
+                          {selectColleges.map((c) => (
+                            <option key={c.code} value={c.code}>
+                              {c.name}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {!filteredColleges.length && collegeQuery.trim() ? (
+                        <p className="mm-org-gate__hint">No institutions match that filter.</p>
+                      ) : null}
+                    </>
+                  ) : (
+                    <div className="mm-org-gate__empty-card">
+                      <p>Institution list is temporarily unavailable.</p>
+                      <button
+                        type="button"
+                        className="mm-org-gate__retry"
+                        onClick={() => {
+                          setCollegesLoading(true);
+                          fetchLoginColleges().then((result) => {
+                            setCollegesLoading(false);
+                            setColleges(result.ok ? result.colleges : []);
+                            if (result.ok) {
+                              const initial = pickInitialCollege(result.colleges, searchParams);
+                              if (initial) setCollege(initial);
+                            }
+                          });
+                        }}
+                      >
+                        Try again
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  type="button"
+                  className="mm-org-gate__cta"
+                  disabled={!college?.code}
+                  onClick={confirmCollege}
+                >
+                  Continue
+                  <ArrowRight size={16} aria-hidden />
+                </button>
+
+                <p className="mm-org-gate__footnote">
+                  TPO and HOD access only. Secure campus credentials required.
+                </p>
+              </div>
+            </motion.aside>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="login"
+            className="mm-org-login"
+            initial={reduceMotion ? false : { opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.4, ease: EASE }}
+          >
+            <section className="mm-org-login__showcase">
+              <div className="mm-org-login__showcase-inner">
+                <Link to="/" className="mm-org-login__brand">
+                  <img src={LOGO} alt="MentorMuni" className="mm-org-login__logo mm-org-login__logo--lg" />
+                  <span className="mm-org-login__brand-name">MentorMuni</span>
+                </Link>
+
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`${roleId}-${college?.code}`}
+                    initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
+                    transition={{ duration: 0.3, ease: EASE }}
+                  >
+                    <button
+                      type="button"
+                      className="mm-org-login__campus-chip is-button"
+                      onClick={() => setStep('college')}
+                    >
+                      <MapPin size={13} aria-hidden />
+                      <span className="mm-org-login__campus-copy">
+                        <strong>{college?.name || 'College'}</strong>
+                        {college?.code ? <em>{college.code}</em> : null}
+                      </span>
+                      <span className="mm-org-login__change">Change</span>
+                    </button>
+
+                    <p className="mm-org-login__pill">
+                      <RoleIcon size={13} aria-hidden />
+                      <span>{activeRole.eyebrow}</span>
+                    </p>
+                    <h1 className="mm-org-login__headline">{activeRole.headline}</h1>
+                    <p className="mm-org-login__accent">{activeRole.accent}</p>
+                    <p className="mm-org-login__lede">{activeRole.body(college)}</p>
+
+                    <ul className="mm-org-login__value" aria-label="Role benefits">
+                      {activeRole.highlights.map((item) => {
+                        const Icon = item.icon;
+                        return (
+                          <li key={item.title}>
+                            <Icon size={18} aria-hidden />
+                            <div>
+                              <strong>{item.title}</strong>
+                              <em>{item.text}</em>
+                            </div>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+            </section>
+
+            <div className="mm-org-login__form-wrap">
+              <motion.div
+                className="mm-org-login__card"
+                initial={reduceMotion ? false : { opacity: 0, x: 16 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, ease: EASE, delay: 0.05 }}
+              >
+                <div className="mm-org-login__progress" aria-hidden>
+                  <span />
+                  <span className="is-active" />
+                </div>
+                <p className="mm-org-login__step-label">Step 2 of 2</p>
+
+                <div className="mm-org-login__card-top">
+                  <div className="mm-org-login__card-brand">
+                    <img src={LOGO} alt="MentorMuni" className="mm-org-login__logo" />
+                    <span>MentorMuni</span>
+                  </div>
+                  <span className="mm-org-login__badge">
+                    <span className="mm-org-login__live" /> {college?.code || 'College'}
+                  </span>
+                </div>
+
+                <h2 className="mm-org-login__card-title">Login</h2>
+                <p className="mm-org-login__card-sub">
+                  Continue as TPO or HOD for {college?.name || 'your college'}.
+                </p>
+
+                <div className="mm-org-login__tabs" role="tablist" aria-label="Sign-in role">
+                  {ROLES.map((role) => {
+                    const Icon = role.icon;
+                    const selected = role.id === roleId;
+                    return (
+                      <motion.button
+                        key={role.id}
+                        type="button"
+                        role="tab"
+                        aria-selected={selected}
+                        className={`mm-org-login__tab ${selected ? 'is-active' : ''}`}
+                        onClick={() => setRoleId(role.id)}
+                        whileHover={reduceMotion ? undefined : { y: selected ? 0 : -1 }}
+                        whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+                      >
+                        <Icon size={14} aria-hidden />
+                        {role.label}
+                      </motion.button>
+                    );
+                  })}
+                </div>
+
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={`hint-${roleId}`}
+                    className="mm-org-login__hint"
+                    initial={reduceMotion ? false : { opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={reduceMotion ? undefined : { opacity: 0 }}
+                  >
+                    {activeRole.fieldUserHint}
+                  </motion.p>
+                </AnimatePresence>
+
+                <div className="mm-org-login__demo" role="note">
+                  <p className="mm-org-login__demo-title">Temp demo credentials (remove later)</p>
+                  <p className="mm-org-login__demo-line">
+                    College: <strong>DEMO</strong> · MentorMuni Demo College
+                  </p>
+                  <p className="mm-org-login__demo-line">
+                    TPO: <code>tpo@demo.edu</code> / <code>Demo@123</code>
+                  </p>
+                  <p className="mm-org-login__demo-line">
+                    HOD: <code>hod@demo.edu</code> / <code>Demo@123</code>
+                  </p>
+                  <button
+                    type="button"
+                    className="mm-org-login__demo-fill"
+                    onClick={() => {
+                      const demoCollege =
+                        colleges.find((c) => c.code === DEMO_ORG.code) || {
+                          id: DEMO_ORG.id,
+                          name: DEMO_ORG.name,
+                          code: DEMO_ORG.code,
+                          city: DEMO_ORG.city,
+                          state: DEMO_ORG.state,
+                        };
+                      setCollege(demoCollege);
+                      saveCollegeCode(DEMO_ORG.code);
+                      const u =
+                        roleId === 'hod'
+                          ? DEMO_USERS.find((x) => x.email.startsWith('hod'))
+                          : DEMO_USERS.find((x) => x.email.startsWith('tpo'));
+                      setUserId(u?.email || '');
+                      setPassword(u?.password || '');
+                      setError('');
+                    }}
+                  >
+                    Fill {roleId === 'hod' ? 'HOD' : 'TPO'} demo
+                  </button>
+                </div>
+
+                <form className="mm-org-login__form" onSubmit={handleSubmit} noValidate>
+                  {success ? (
+                    <div className="mm-org-login__alert mm-org-login__alert--ok" role="status">
+                      {success}
+                    </div>
+                  ) : null}
+                  {error ? (
+                    <div
+                      className={`mm-org-login__alert ${
+                        errorKind === 'suspended' ? 'mm-org-login__alert--warn' : 'mm-org-login__alert--err'
+                      }`}
+                      role="alert"
+                    >
+                      <p>{error}</p>
+                      {errorKind === 'suspended' && cta ? <span>{cta}</span> : null}
+                    </div>
+                  ) : null}
+
+                  <div>
+                    <label className="mm-org-login__label" htmlFor="org-login-user">
+                      {activeRole.fieldUser}
+                    </label>
+                    <div className="mm-org-login__field">
+                      <Mail size={16} aria-hidden />
+                      <input
+                        id="org-login-user"
+                        type="text"
+                        autoComplete="username"
+                        required
+                        placeholder={activeRole.placeholder}
+                        value={userId}
+                        onChange={(e) => setUserId(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="mm-org-login__label" htmlFor="org-login-password">
+                      {activeRole.fieldPass}
+                    </label>
+                    <div className="mm-org-login__field">
+                      <Lock size={16} aria-hidden />
+                      <input
+                        id="org-login-password"
+                        type={showPassword ? 'text' : 'password'}
+                        autoComplete="current-password"
+                        required
+                        placeholder="Enter your password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                      />
+                      <button
+                        type="button"
+                        className="mm-org-login__eye"
+                        onClick={() => setShowPassword((v) => !v)}
+                        aria-label={showPassword ? 'Hide password' : 'Show password'}
+                      >
+                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                      </button>
+                    </div>
+                  </div>
+
+                  <motion.button
+                    type="submit"
+                    className="mm-org-login__submit"
+                    disabled={loading || !userId || !password || !orgCode}
+                    whileHover={reduceMotion ? undefined : { scale: 1.01 }}
+                    whileTap={reduceMotion ? undefined : { scale: 0.985 }}
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 size={16} className="mm-org-login__spin" /> Signing in…
+                      </>
+                    ) : (
+                      <>
+                        {activeRole.cta}
+                        <ArrowRight size={16} aria-hidden />
+                      </>
+                    )}
+                  </motion.button>
+                </form>
+
+                <p className="mm-org-login__activate">
+                  For new users, activate your account and set your password from the email sent by your admin.
+                </p>
+              </motion.div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

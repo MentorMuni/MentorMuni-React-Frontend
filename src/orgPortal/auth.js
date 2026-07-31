@@ -32,6 +32,21 @@ export function setOrgSession(user) {
       role: user?.role || '',
       organization_id: user?.organization_id,
       organization_name: user?.organization_name || user?.organization?.name || '',
+      organization_code: user?.organization_code || user?.organization?.code || '',
+      department_id: user?.department_id ?? user?.department?.id ?? null,
+      department_name:
+        user?.department_name ||
+        user?.department?.name ||
+        '',
+      department_code: user?.department_code || user?.department?.code || '',
+      permissions: Array.isArray(user?.permissions) ? user.permissions : [],
+      mustChangePassword: Boolean(
+        user?.mustChangePassword ||
+          user?.must_change_password ||
+          user?.password_change_required ||
+          user?.force_password_change
+      ),
+      demo: Boolean(user?.demo),
       loggedInAt: new Date().toISOString(),
     })
   );
@@ -80,6 +95,32 @@ function buildLoginBody(userId, password, organizationCode = '') {
  * - 403 + suspended detail → show API detail (not wrong-password UX)
  */
 export async function loginOrgUser(userId, password, organizationCode = '') {
+  // TEMP demo bypass — remove with demoAuth.js when real accounts are live
+  const { matchDemoUser, DEMO_ORG } = await import('../organizationPortal/demoAuth');
+  const demo = matchDemoUser(userId, password);
+  if (demo) {
+    const { seedDemoWorkspace } = await import('../organizationPortal/store');
+    seedDemoWorkspace();
+    const token = `demo.${demo.role}.${Date.now()}`;
+    orgApi.setToken(token);
+    const user = {
+      id: `demo_${demo.role}`,
+      email: demo.email,
+      username: demo.email.split('@')[0],
+      role: demo.role,
+      name: demo.name,
+      organization_id: DEMO_ORG.id,
+      organization_name: DEMO_ORG.name,
+      organization_code: DEMO_ORG.code,
+      department_id: demo.department_id || null,
+      permissions: [],
+      mustChangePassword: false,
+      demo: true,
+    };
+    setOrgSession(user);
+    return { ok: true, user, token_type: 'bearer', source: 'demo' };
+  }
+
   try {
     const login = await orgApi.post(
       '/auth/login',
@@ -165,11 +206,21 @@ export function logoutOrgUser({ redirectToLogin = false, flash } = {}) {
     }
   }
   if (redirectToLogin && typeof window !== 'undefined') {
-    const path = window.location.pathname || '';
-    if (!path.includes('/login')) {
-      window.location.assign('/login');
+    const path = (window.location.pathname || '').toLowerCase();
+    if (!path.includes('/organization/login')) {
+      window.location.assign('/Organization/login');
     }
   }
+}
+
+/**
+ * POST /auth/change-password — same contract as platform admin.
+ */
+export async function changeOrgPassword(currentPassword, newPassword) {
+  return orgApi.post('/auth/change-password', {
+    current_password: currentPassword,
+    new_password: newPassword,
+  });
 }
 
 /**
@@ -220,4 +271,66 @@ export async function activateTpoAccount(token, newPassword) {
   }
 }
 
-export { OrgApiError, isOrgSuspendedDetail, getSuspendedUx };
+/**
+ * POST /auth/activate-hod (preferred) or /platform/auth/activate-hod
+ * API key only — used by /activate-hod?token=...
+ * Falls back to local invite token store until backend is live.
+ */
+export async function activateHodAccount(token, newPassword) {
+  const payload = {
+    token: String(token || '').trim(),
+    new_password: newPassword,
+  };
+
+  const paths = ['/auth/activate-hod', '/platform/auth/activate-hod'];
+  let lastError = null;
+
+  for (const path of paths) {
+    try {
+      const data = await orgApi.post(path, payload, { auth: false });
+      return {
+        ok: true,
+        message: data?.message || 'Password set. You can log in to the Organization Portal.',
+        data,
+        source: 'api',
+      };
+    } catch (err) {
+      if (err instanceof OrgApiError) {
+        if (err.status === 404 || err.status === 501) {
+          lastError = err;
+          continue;
+        }
+        return {
+          ok: false,
+          error: err.message || 'Unable to activate HOD account.',
+          status: err.status,
+          isSuspended: err.isSuspended,
+        };
+      }
+      lastError = err;
+    }
+  }
+
+  // Local fallback for demo / pre-API environments
+  try {
+    const { activateHodInviteLocal } = await import('../organizationPortal/store');
+    const local = activateHodInviteLocal(payload.token, newPassword);
+    if (local.ok) {
+      return {
+        ok: true,
+        message: local.message,
+        data: local,
+        source: 'local',
+      };
+    }
+    return { ok: false, error: local.error || 'Unable to activate HOD account.' };
+  } catch (err) {
+    return {
+      ok: false,
+      error:
+        lastError?.message ||
+        err?.message ||
+        'Unable to activate HOD account. Ask your TPO for a new invite.',
+    };
+  }
+}

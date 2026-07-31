@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { isPlatformAuthenticated } from './auth';
+import { platformAdminPaths } from './paths';
 import PlatformAdminLogin from './PlatformAdminLogin';
 import PlatformAdminShell from './PlatformAdminShell';
 import DashboardPage from './pages/DashboardPage';
@@ -12,14 +13,15 @@ import ChangePasswordPage from './pages/ChangePasswordPage';
 
 function RequirePlatformAuth({ children }) {
   if (!isPlatformAuthenticated()) {
-    return <Navigate to="/mentormuniplatformadmin" replace />;
+    return <Navigate to={platformAdminPaths.login} replace />;
   }
   return children;
 }
 
 /**
  * MentorMuni Platform Admin — tenant provisioning portal.
- * Route base: /mentormuniplatformadmin
+ * Route base: /platform/admin
+ * Login: /platform/admin/login
  */
 export default function PlatformAdminApp() {
   return (
@@ -27,8 +29,17 @@ export default function PlatformAdminApp() {
       <Route
         index
         element={
+          <Navigate
+            to={isPlatformAuthenticated() ? platformAdminPaths.dashboard : platformAdminPaths.login}
+            replace
+          />
+        }
+      />
+      <Route
+        path="login"
+        element={
           isPlatformAuthenticated() ? (
-            <Navigate to="/mentormuniplatformadmin/dashboard" replace />
+            <Navigate to={platformAdminPaths.dashboard} replace />
           ) : (
             <PlatformAdminLogin />
           )
@@ -49,7 +60,7 @@ export default function PlatformAdminApp() {
         <Route path="settings" element={<SettingsPage />} />
         <Route path="change-password" element={<ChangePasswordPage />} />
       </Route>
-      <Route path="*" element={<Navigate to="/mentormuniplatformadmin" replace />} />
+      <Route path="*" element={<Navigate to={platformAdminPaths.login} replace />} />
     </Routes>
   );
 }

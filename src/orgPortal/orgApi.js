@@ -84,10 +84,9 @@ function forceLogoutForSuspension(detail) {
   }
 
   if (typeof window !== 'undefined') {
-    const path = window.location.pathname || '';
-    // Avoid reload loops on the login page itself.
-    if (!path.includes('/login')) {
-      window.location.assign('/login');
+    const path = (window.location.pathname || '').toLowerCase();
+    if (!path.includes('/organization/login')) {
+      window.location.assign('/Organization/login');
     }
   }
 }
@@ -108,8 +107,7 @@ async function parseResponse(res, { auth = true } = {}) {
     const registrationDisabled =
       res.status === 403 && isRegistrationDisabledDetail(detail);
 
-    // Authenticated org calls: suspended org → hard logout + login redirect.
-    // Skip force-logout for activate-tpo (unauthenticated platform path).
+    // Skip force-logout for activate-tpo / activate-hod (unauthenticated paths).
     if (auth && suspended) {
       forceLogoutForSuspension(detail);
     }

@@ -1,0 +1,15 @@
+/** Organization portal route helpers */
+export const orgPaths = {
+  login: '/Organization/login',
+  dashboard: '/Organization/dashboard',
+  departments: '/Organization/departments',
+  enrollment: '/Organization/enrollment',
+  students: '/Organization/students',
+  programs: '/Organization/programs',
+  drives: '/Organization/drives',
+  notify: '/Organization/notify',
+  performance: '/Organization/performance',
+  access: '/Organization/access',
+  settings: '/Organization/settings',
+  changePassword: '/Organization/change-password',
+};
