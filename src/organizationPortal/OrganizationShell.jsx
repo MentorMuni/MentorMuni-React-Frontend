@@ -12,7 +12,6 @@ import {
   UserPlus,
   Users,
   BarChart3,
-  Eye,
 } from 'lucide-react';
 import { clearOrgSession, getOrgSession } from '../orgPortal';
 import {
@@ -171,7 +170,7 @@ export default function OrganizationShell() {
             </div>
           </div>
 
-          <nav className="flex flex-col gap-0.5" aria-label="Organization modules">
+          <nav className="mm-org-nav" aria-label="Organization modules">
             {navGroups.map((group) => (
               <div key={group.section}>
                 <p className="mm-org-nav-label">{group.section}</p>
@@ -199,38 +198,11 @@ export default function OrganizationShell() {
               </div>
             ))}
           </nav>
-
-          <div className="mm-org-sidebar__footer">
-            <div className="mm-org-user-card">
-              <p className="mm-org-user-card__name">{session?.name || roleLabel(session?.role)}</p>
-              <p className="mm-org-user-card__email">{session?.email || session?.username || '—'}</p>
-              <p className="mm-org-user-card__role">
-                {isViewerRole(session?.role) ? (
-                  <span className="inline-flex items-center gap-1">
-                    <Eye size={10} /> Viewer
-                  </span>
-                ) : (
-                  roleLabel(session?.role)
-                )}
-                {session?.organization_name ? ` · ${session.organization_name}` : ''}
-              </p>
-            </div>
-            <button
-              type="button"
-              className="mm-org-btn mm-org-btn--ghost"
-              onClick={() => {
-                clearOrgSession();
-                navigate(getOrgLoginPath(), { replace: true });
-              }}
-            >
-              <LogOut size={15} /> Sign out
-            </button>
-          </div>
         </aside>
 
         <div className="mm-org-main">
           <header className="mm-org-topbar">
-            <div>
+            <div className="mm-org-topbar__titles min-w-0">
               <AnimatePresence mode="wait">
                 <motion.h1
                   key={title}
@@ -244,9 +216,9 @@ export default function OrganizationShell() {
               </AnimatePresence>
               <p className="mm-org-page-sub">{sub}</p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="mm-org-topbar__right">
               <OrgThemeToggle theme={theme} onToggle={toggleTheme} />
-              <span className="mm-org-live hidden sm:inline-flex">
+              <span className="mm-org-live hidden md:inline-flex">
                 <span className="mm-org-live-dot" />
                 {isViewerRole(session?.role)
                   ? 'Live · View only'
@@ -254,6 +226,31 @@ export default function OrganizationShell() {
                     ? 'Live · Branch ops'
                     : 'Live · Campus ops'}
               </span>
+              <div className="mm-org-account" title="Signed-in account">
+                <div className="mm-org-account__meta">
+                  <p className="mm-org-account__name">
+                    {session?.name || roleLabel(session?.role)}
+                  </p>
+                  <p className="mm-org-account__email">
+                    {session?.email || session?.username || '—'}
+                  </p>
+                  <p className="mm-org-account__role">
+                    {isViewerRole(session?.role) ? 'Viewer' : roleLabel(session?.role)}
+                    {session?.organization_name ? ` · ${session.organization_name}` : ''}
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm mm-org-account__signout"
+                  onClick={() => {
+                    clearOrgSession();
+                    navigate(getOrgLoginPath(), { replace: true });
+                  }}
+                >
+                  <LogOut size={15} />
+                  <span>Sign out</span>
+                </button>
+              </div>
             </div>
           </header>
           <main className="mm-org-content">
