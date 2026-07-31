@@ -54,7 +54,7 @@ export default function HodNotifyPage() {
     return (
       <div className="mm-org-panel">
         <h2 className="mm-org-panel__title">Branch not linked</h2>
-        <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+        <p className="m-0 text-sm mm-org-text-muted">
           Link your HOD account to a department to notify students.
         </p>
       </div>
@@ -64,7 +64,7 @@ export default function HodNotifyPage() {
   return (
     <div className="space-y-5">
       <div className="mm-org-toolbar">
-        <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+        <p className="m-0 text-sm mm-org-text-muted">
           Reach only {dept.name} students — drives, mock deadlines, lab reminders.
         </p>
       </div>

@@ -2171,3 +2171,107 @@
     animation: none !important;
   }
 }
+
+/* ── Theme-safe fonts (login + home) — beat sitewide color leaks ── */
+.mm-stu-login-root.is-light {
+  color-scheme: light;
+  color: var(--stu-ink);
+}
+.mm-stu-login-root.is-dark {
+  color-scheme: dark;
+  color: var(--stu-ink);
+}
+
+/* Form / card brand uses panel ink — not showcase tokens */
+.mm-stu-form-col .mm-stu-brand__name,
+.mm-stu-card .mm-stu-brand__name {
+  color: var(--stu-ink);
+}
+.mm-stu-form-col .mm-stu-brand__tag,
+.mm-stu-card .mm-stu-brand__tag {
+  color: var(--stu-muted);
+}
+.mm-stu-login-root.is-dark .mm-stu-form-col .mm-stu-brand__tag,
+.mm-stu-login-root.is-dark .mm-stu-card .mm-stu-brand__tag {
+  color: rgba(153, 246, 228, 0.92);
+}
+
+.mm-stu-card-title,
+.mm-stu-gate2__title {
+  color: var(--stu-ink) !important;
+}
+.mm-stu-card-sub,
+.mm-stu-gate2__sub,
+.mm-stu-card-foot,
+.mm-stu-empty,
+.mm-stu-college-hint span,
+.mm-stu-demo__line {
+  color: var(--stu-muted) !important;
+}
+.mm-stu-step-label {
+  color: var(--stu-accent) !important;
+}
+.mm-stu-login-root.is-dark .mm-stu-step-label {
+  color: #99f6e4 !important;
+}
+.mm-stu-card strong,
+.mm-stu-card-sub strong,
+.mm-stu-home__identity strong {
+  color: var(--stu-ink) !important;
+  font-weight: 750;
+}
+.mm-stu-link {
+  color: var(--stu-accent) !important;
+}
+.mm-stu-login-root.is-dark .mm-stu-link {
+  color: #5eead4 !important;
+}
+.mm-stu-label {
+  color: var(--stu-ink) !important;
+  font-weight: 750;
+}
+.mm-stu-selected__name,
+.mm-stu-college-item__name,
+.mm-stu-vibe span {
+  color: var(--stu-ink) !important;
+}
+.mm-stu-selected__meta,
+.mm-stu-selected__label,
+.mm-stu-college-item__meta {
+  color: var(--stu-muted) !important;
+}
+.mm-stu-login-root.is-dark .mm-stu-demo {
+  border-color: rgba(94, 234, 212, 0.28);
+  background: rgba(13, 148, 136, 0.1);
+}
+.mm-stu-login-root.is-dark .mm-stu-demo__title {
+  color: #99f6e4;
+}
+.mm-stu-login-root.is-dark .mm-stu-demo__fill {
+  border-color: rgba(94, 234, 212, 0.28);
+  color: #99f6e4;
+}
+
+/* Signed-in home */
+.mm-stu-home {
+  min-height: 100dvh;
+  min-height: 100svh;
+}
+.mm-stu-home__col {
+  min-height: 100dvh;
+  min-height: 100svh;
+  flex-direction: column;
+  gap: 20px;
+}
+.mm-stu-home__card {
+  width: min(520px, 100%);
+}
+.mm-stu-home__brand {
+  margin-bottom: 18px;
+}
+.mm-stu-home__brand img {
+  height: 36px;
+}
+.mm-stu-home__identity {
+  margin-top: -8px !important;
+}

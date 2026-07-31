@@ -182,7 +182,7 @@ export default function ProgramsPage() {
     return (
       <div className="mm-org-panel">
         <h2 className="mm-org-panel__title">Branch not linked</h2>
-        <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+        <p className="m-0 text-sm mm-org-text-muted">
           Link your HOD account to a department before assigning assessments.
         </p>
       </div>
@@ -192,7 +192,7 @@ export default function ProgramsPage() {
   return (
     <div className="space-y-5">
       <div className="mm-org-toolbar">
-        <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+        <p className="m-0 text-sm mm-org-text-muted">
           {hod
             ? `Assign skill, aptitude, English, technical checks and AI/HR mocks for ${hodDept.name} — whole branch or selected students.`
             : 'Assign readiness tests, AI/HR mocks, competitions, or custom features — campus-wide, by department, or to specific students.'}
@@ -335,12 +335,12 @@ export default function ProgramsPage() {
                         disabled={!canAssign}
                       >
                         {s.name}
-                        <span style={{ color: 'var(--org-muted)' }}>{s.readiness}%</span>
+                        <span className="mm-org-text-muted">{s.readiness}%</span>
                       </button>
                     ))}
                   </div>
                 ) : (
-                  <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+                  <p className="m-0 text-sm mm-org-text-muted">
                     {hod
                       ? 'No enrolled students in your branch yet. Invite them from Students.'
                       : 'No enrolled students yet. Approve invites in Enrollment first.'}
@@ -349,7 +349,7 @@ export default function ProgramsPage() {
               </div>
             ) : null}
 
-            <p className="mt-3 text-xs" style={{ color: 'var(--org-muted)' }}>
+            <p className="mt-3 text-xs mm-org-text-muted">
               {hod
                 ? `${branchStudents.length} student(s) in your branch.`
                 : `${students.length} enrolled student(s) available.`}{' '}
@@ -388,7 +388,7 @@ export default function ProgramsPage() {
                         <p className="mm-org-table__title">{p.title}</p>
                         <p className="mm-org-table__meta">{typeLabel(p.type)}</p>
                       </td>
-                      <td style={{ color: 'var(--org-ink)' }}>{audienceLabel(p)}</td>
+                      <td className="mm-org-text">{audienceLabel(p)}</td>
                       <td>
                         <span className="mm-org-badge mm-org-badge--pending">{p.dueInDays} days</span>
                       </td>

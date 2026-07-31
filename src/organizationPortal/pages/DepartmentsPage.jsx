@@ -242,7 +242,7 @@ export default function DepartmentsPage() {
     <div className="space-y-5">
       <div className="mm-org-toolbar">
         <div>
-          <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+          <p className="m-0 text-sm mm-org-text-muted">
             Branches + HOD mentors. Invite → activate password → active.
             {source === 'local' ? ' (Local demo until departments API is live.)' : ' (Live API.)'}
           </p>
@@ -256,7 +256,7 @@ export default function DepartmentsPage() {
       {msg ? <div className="mm-org-alert mm-org-alert--success">{msg}</div> : null}
 
       {linkInfo?.url ? (
-        <section className="mm-org-panel" style={{ borderColor: 'rgba(56,189,248,.35)' }}>
+        <section className="mm-org-panel" style={{ borderColor: 'rgba(12, 110, 140, 0.35)' }}>
           <div className="mm-org-panel__head">
             <div>
               <h2 className="mm-org-panel__title">HOD activation link</h2>
@@ -270,7 +270,7 @@ export default function DepartmentsPage() {
             </button>
           </div>
           <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <code className="mm-org-input" style={{ flex: 1, display: 'block', padding: '10px 12px', fontSize: 12, wordBreak: 'break-all' }}>
+            <code className="mm-org-code mm-org-code--block" style={{ flex: 1 }}>
               {linkInfo.url}
             </code>
             <button type="button" className="mm-org-btn mm-org-btn--primary" onClick={copyLink}>
@@ -300,11 +300,11 @@ export default function DepartmentsPage() {
               {activeDept.mentorHistory.map((h) => (
                 <li
                   key={h.id}
-                  className="rounded-xl border px-3 py-2 text-xs"
+                  className="rounded-xl border px-3 py-2 text-xs mm-org-text"
                   style={{ borderColor: 'var(--org-line)' }}
                 >
-                  <strong className="uppercase tracking-wide">{h.event}</strong>
-                  <span style={{ color: 'var(--org-muted)' }}>
+                  <strong className="uppercase tracking-wide mm-org-text">{h.event}</strong>
+                  <span className="mm-org-text-muted">
                     {' '}
                     · {new Date(h.at).toLocaleString()}
                   </span>
@@ -378,8 +378,8 @@ export default function DepartmentsPage() {
 
             {panel === 'invite' && activeDept ? (
               <div className="mt-6 border-t pt-5" style={{ borderColor: 'var(--org-line)' }}>
-                <h3 className="m-0 text-sm font-extrabold">Invite HOD · {activeDept.name}</h3>
-                <p className="mt-1 mb-3 text-xs" style={{ color: 'var(--org-muted)' }}>
+                <h3 className="mm-org-panel__title">Invite HOD · {activeDept.name}</h3>
+                <p className="mt-1 mb-3 text-xs mm-org-text-muted">
                   Same pattern as TPO: link → set password → login.
                 </p>
                 <form onSubmit={onInvite}>
@@ -422,8 +422,8 @@ export default function DepartmentsPage() {
 
             {panel === 'replace' && activeDept ? (
               <div className="mt-6 border-t pt-5" style={{ borderColor: 'var(--org-line)' }}>
-                <h3 className="m-0 text-sm font-extrabold">Replace HOD · {activeDept.name}</h3>
-                <p className="mt-1 mb-3 text-xs" style={{ color: 'var(--org-muted)' }}>
+                <h3 className="mm-org-panel__title">Replace HOD · {activeDept.name}</h3>
+                <p className="mt-1 mb-3 text-xs mm-org-text-muted">
                   Revokes {activeDept.hodEmail || 'current mentor'}, keeps students, invites the new HOD.
                 </p>
                 <form onSubmit={onReplace}>

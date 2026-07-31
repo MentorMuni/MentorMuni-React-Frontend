@@ -45,8 +45,8 @@ export default function ChangePasswordPage() {
     <div className="mx-auto max-w-2xl">
       <section className="mm-org-panel">
         <div className="mb-1 flex items-center gap-2">
-          <KeyRound size={18} className="text-sky-600" />
-          <h2 className="m-0 text-xl font-extrabold">Change Password</h2>
+          <KeyRound size={18} className="mm-org-icon-accent" />
+          <h2 className="mm-org-section-title">Change Password</h2>
         </div>
         <form onSubmit={submit} className="mt-5 space-y-4">
           {error ? <div className="mm-org-alert mm-org-alert--error">{error}</div> : null}

@@ -259,7 +259,7 @@ export default function HodStudentsPage() {
   if (!scopeReady) {
     return (
       <div className="mm-org-panel">
-        <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+        <p className="m-0 text-sm mm-org-text-muted">
           Loading branch scope…
         </p>
       </div>
@@ -270,7 +270,7 @@ export default function HodStudentsPage() {
     return (
       <div className="mm-org-panel">
         <h2 className="mm-org-panel__title">Branch not linked</h2>
-        <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+        <p className="m-0 text-sm mm-org-text-muted">
           Ask your TPO to create the department and invite you as HOD. Your account needs a
           department_id from login. After that, sign in again to see this roster.
         </p>
@@ -281,7 +281,7 @@ export default function HodStudentsPage() {
   return (
     <div className="space-y-5">
       <div className="mm-org-toolbar">
-        <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+        <p className="m-0 text-sm mm-org-text-muted">
           {dept.name} ({dept.code || '—'}) · {students.length} enrolled · {pending.length} pending
           {dataSource ? ` · ${dataSource}` : ''}
           {loading ? ' · loading…' : ''}
@@ -310,7 +310,7 @@ export default function HodStudentsPage() {
         <div className="mm-org-panel" style={{ padding: 14 }}>
           <p className="mm-org-panel__meta m-0 mb-2">Set-password link (share if email did not send)</p>
           <div className="flex flex-wrap items-center gap-2">
-            <code className="text-xs break-all" style={{ flex: 1, color: 'var(--org-ink)' }}>
+            <code className="mm-org-code text-xs" style={{ flex: 1 }}>
               {lastSetupUrl}
             </code>
             <button
@@ -424,7 +424,7 @@ export default function HodStudentsPage() {
           {addMode === 'csv' ? (
             <form onSubmit={onCsv}>
               <p className="mm-org-panel__meta mb-3">
-                Columns: <code>email,name,college_id,batch_year</code>
+                Columns: <code className="mm-org-code">email,name,college_id,batch_year</code>
               </p>
               <div className="flex flex-wrap gap-2 mb-3">
                 <label className="mm-org-btn mm-org-btn--sm mm-org-btn--ghost" style={{ cursor: 'pointer' }}>
@@ -486,7 +486,7 @@ export default function HodStudentsPage() {
                 queue.
               </p>
               <div className="flex flex-wrap items-center gap-2 mb-3">
-                <code className="text-xs break-all" style={{ flex: 1 }}>
+                <code className="mm-org-code text-xs" style={{ flex: 1 }}>
                   {registerUrl}
                 </code>
                 <button
@@ -547,7 +547,7 @@ export default function HodStudentsPage() {
                           {sourceLabel(inv.source)}
                         </span>
                       </td>
-                      <td style={{ color: 'var(--org-muted)' }}>
+                      <td className="mm-org-text-muted">
                         {inv.createdAt ? new Date(inv.createdAt).toLocaleDateString() : '—'}
                       </td>
                       <td>

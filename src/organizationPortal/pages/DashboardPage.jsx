@@ -107,7 +107,7 @@ export default function DashboardPage() {
             </span>
             <h2>
               Welcome{session?.name ? `, ${session.name.split(' ')[0]}` : ''}.
-              <span className="block" style={{ color: 'rgba(186, 230, 253, 0.95)' }}>
+              <span className="block mm-org-hero__muted">
                 {viewer ? 'Campus analytics at a glance.' : 'Run the campus from one desk.'}
               </span>
             </h2>
@@ -147,21 +147,17 @@ export default function DashboardPage() {
             transition={{ delay: 0.08, duration: 0.45, ease: EASE }}
           >
             <div>
-              <p className="text-[11px] font-bold uppercase tracking-[0.14em]" style={{ color: 'var(--org-amber)' }}>
-                Campus pulse
-              </p>
-              <p className="mt-3 text-4xl font-black tracking-tight" style={{ color: 'var(--org-ink)' }}>
+              <p className="mm-org-pulse-label">Campus pulse</p>
+              <p className="mm-org-pulse-value">
                 {metrics.avgReadiness}
-                <span className="ml-2 text-base font-bold" style={{ color: 'var(--org-muted)' }}>
-                  avg readiness
-                </span>
+                <span>avg readiness</span>
               </p>
-              <p className="mt-2 text-sm" style={{ color: 'var(--org-muted)' }}>
+              <p className="mt-2 text-sm mm-org-text-muted">
                 {metrics.strong} strong · {metrics.weak} need support
               </p>
             </div>
             <div className="mt-6">
-              <div className="mb-2 flex justify-between text-xs" style={{ color: 'var(--org-muted)' }}>
+              <div className="mb-2 flex justify-between text-xs mm-org-text-muted">
                 <span>Readiness coverage</span>
                 <span>{metrics.avgReadiness}%</span>
               </div>
@@ -246,8 +242,8 @@ export default function DashboardPage() {
                   {metrics.topGaps.map((g, i) => (
                     <div key={g.label}>
                       <div className="mb-1 flex justify-between text-xs">
-                        <span className="font-bold" style={{ color: 'var(--org-ink)' }}>{g.label}</span>
-                        <span style={{ color: 'var(--org-muted)' }}>{g.count} students</span>
+                        <span className="mm-org-band-label">{g.label}</span>
+                        <span className="mm-org-text-muted">{g.count} students</span>
                       </div>
                       <div className="mm-org-progress">
                         <motion.div
@@ -263,7 +259,7 @@ export default function DashboardPage() {
                   ))}
                 </div>
               ) : (
-                <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+                <p className="m-0 text-sm mm-org-text-muted">
                   Enroll students to surface gap themes.
                 </p>
               )}
@@ -275,16 +271,15 @@ export default function DashboardPage() {
                   {metrics.topStrengths.map((s) => (
                     <li
                       key={s.label}
-                      className="flex items-center justify-between rounded-xl border px-3 py-2 text-sm"
-                      style={{ borderColor: 'var(--org-line)', color: 'var(--org-ink)' }}
+                      className="mm-org-list-card text-sm"
                     >
-                      <span className="font-bold">{s.label}</span>
+                      <span className="font-bold mm-org-text">{s.label}</span>
                       <span className="mm-org-badge mm-org-badge--active">{s.count}</span>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+                <p className="m-0 text-sm mm-org-text-muted">
                   Strength signals appear after scorecards load.
                 </p>
               )}
@@ -296,7 +291,7 @@ export default function DashboardPage() {
               <Sparkles size={14} /> AI campus brief
             </p>
             <p className="mm-org-ai-box__body">{insight.summary}</p>
-            <ul className="mt-2 mb-0 list-disc space-y-1 pl-5 text-sm" style={{ color: 'var(--org-ink)' }}>
+            <ul className="mt-2 mb-0 list-disc space-y-1 pl-5 text-sm mm-org-text">
               {(insight.actions || []).map((a) => (
                 <li key={a}>{a}</li>
               ))}
@@ -325,10 +320,10 @@ export default function DashboardPage() {
                 {metrics.byDept.map((d, i) => (
                   <div key={d.id}>
                     <div className="mb-1.5 flex items-center justify-between text-xs">
-                      <span className="font-bold" style={{ color: 'var(--org-ink)' }}>
-                        {d.name} <span style={{ color: 'var(--org-muted)' }}>({d.code})</span>
+                      <span className="font-bold mm-org-text">
+                        {d.name} <span className="mm-org-text-muted">({d.code})</span>
                       </span>
-                      <span style={{ color: 'var(--org-muted)' }}>
+                      <span className="mm-org-text-muted">
                         {d.students} students · {d.avgReadiness}%
                       </span>
                     </div>
@@ -363,10 +358,10 @@ export default function DashboardPage() {
                 {metrics.leaders.map((s, idx) => (
                   <li key={s.id} className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
-                      <p className="m-0 truncate text-sm font-bold" style={{ color: 'var(--org-ink)' }}>
+                      <p className="m-0 truncate text-sm font-bold mm-org-text">
                         {idx + 1}. {s.name}
                       </p>
-                      <p className="m-0 truncate text-xs" style={{ color: 'var(--org-muted)' }}>
+                      <p className="m-0 truncate text-xs mm-org-text-muted">
                         {s.departmentName || 'Unassigned'}
                       </p>
                     </div>
@@ -422,7 +417,7 @@ export default function DashboardPage() {
               </div>
               <AlertTriangle size={16} className="mm-org-icon-warn" />
             </div>
-            <ul className="m-0 list-none space-y-3 p-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+            <ul className="m-0 list-none space-y-3 p-0 text-sm mm-org-text-muted">
               <li>
                 {metrics.pendingInvites
                   ? `${metrics.pendingInvites} student invite(s) waiting for approval.`
@@ -461,10 +456,10 @@ export default function DashboardPage() {
           <span className="mm-org-pill">
             <Users size={12} /> Department mentor
           </span>
-          <h2 className="mt-3 mb-2 text-xl font-extrabold" style={{ color: 'var(--org-ink)' }}>
+          <h2 className="mm-org-section-title mt-3 mb-2">
             Welcome{session?.name ? `, ${session.name.split(' ')[0]}` : ''}.
           </h2>
-          <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+          <p className="m-0 text-sm mm-org-text-muted">
             Your HOD account is active, but no department is linked yet. Ask your TPO to invite you
             on a branch (or re-activate with the invite link). Then you can mentor students, assign
             assessments, and notify your batch.
@@ -483,7 +478,7 @@ export default function DashboardPage() {
 
     return (
       <div className="space-y-6">
-        <div className="mm-org-hero">
+        <div className="mm-org-hero mm-org-hero--solo">
           <motion.div
             className="mm-org-hero__card"
             initial={{ opacity: 0, y: 16 }}
@@ -495,7 +490,7 @@ export default function DashboardPage() {
             </span>
             <h2 className="mm-org-hero__title">
               {dept.name}
-              <span style={{ color: 'var(--org-muted)', fontWeight: 600 }}> readiness</span>
+              <span className="mm-org-hero__muted"> readiness</span>
             </h2>
             <p className="mm-org-hero__body">
               Mentor your batch like a branch head: spot at-risk students, assign aptitude / skill /
@@ -525,7 +520,7 @@ export default function DashboardPage() {
               >
                 <div className="flex items-start justify-between gap-2">
                   <p className="mm-org-stat__label">{c.label}</p>
-                  <Icon size={16} style={{ color: 'var(--org-muted)', opacity: 0.85 }} />
+                  <Icon size={16} className="mm-org-text-muted" style={{ opacity: 0.85 }} />
                 </div>
                 <p className="mm-org-stat__value">{c.value}</p>
                 <p className="mm-org-stat__hint">{c.hint}</p>
@@ -550,8 +545,8 @@ export default function DashboardPage() {
               ].map((b) => (
                 <div key={b.key}>
                   <div className="mb-1 flex justify-between text-xs">
-                    <span className="font-bold">{b.label}</span>
-                    <span style={{ color: 'var(--org-muted)' }}>
+                    <span className="mm-org-band-label">{b.label}</span>
+                    <span className="mm-org-text-muted">
                       {b.count ?? 0} · {b.pct}%
                     </span>
                   </div>
@@ -573,13 +568,13 @@ export default function DashboardPage() {
                 <ul className="m-0 list-none space-y-1.5 p-0">
                   {(hm?.topGaps || []).length ? (
                     hm.topGaps.map((g) => (
-                      <li key={g.label} className="text-sm" style={{ color: 'var(--org-ink)' }}>
+                      <li key={g.label} className="text-sm mm-org-text">
                         {g.label}{' '}
-                        <span style={{ color: 'var(--org-muted)' }}>({g.count})</span>
+                        <span className="mm-org-text-muted">({g.count})</span>
                       </li>
                     ))
                   ) : (
-                    <li className="text-sm" style={{ color: 'var(--org-muted)' }}>
+                    <li className="text-sm mm-org-text-muted">
                       Enroll students to see gaps.
                     </li>
                   )}
@@ -590,13 +585,13 @@ export default function DashboardPage() {
                 <ul className="m-0 list-none space-y-1.5 p-0">
                   {(hm?.topStrengths || []).length ? (
                     hm.topStrengths.map((g) => (
-                      <li key={g.label} className="text-sm" style={{ color: 'var(--org-ink)' }}>
+                      <li key={g.label} className="text-sm mm-org-text">
                         {g.label}{' '}
-                        <span style={{ color: 'var(--org-muted)' }}>({g.count})</span>
+                        <span className="mm-org-text-muted">({g.count})</span>
                       </li>
                     ))
                   ) : (
-                    <li className="text-sm" style={{ color: 'var(--org-muted)' }}>
+                    <li className="text-sm mm-org-text-muted">
                       —
                     </li>
                   )}
@@ -625,7 +620,7 @@ export default function DashboardPage() {
                 <Sparkles size={14} /> Mentor focus
               </p>
               <p className="mm-org-ai-box__body">{hodInsight?.summary}</p>
-              <ul className="mt-3 mb-0 space-y-1.5 pl-4 text-sm" style={{ color: 'var(--org-ink)' }}>
+              <ul className="mt-3 mb-0 space-y-1.5 pl-4 text-sm mm-org-text">
                 {(hodInsight?.actions || []).map((a) => (
                   <li key={a}>{a}</li>
                 ))}
@@ -639,7 +634,7 @@ export default function DashboardPage() {
                   <ul className="m-0 list-none space-y-2 p-0">
                     {hm.atRisk.map((s) => (
                       <li key={s.id} className="flex items-center justify-between gap-2 text-sm">
-                        <span className="font-semibold" style={{ color: 'var(--org-ink)' }}>
+                        <span className="font-semibold mm-org-text">
                           {s.name}
                         </span>
                         <span className="inline-flex items-center gap-1.5">
@@ -656,7 +651,7 @@ export default function DashboardPage() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+                  <p className="m-0 text-sm mm-org-text-muted">
                     No students below 50% — keep weekly checks going.
                   </p>
                 )}
@@ -667,7 +662,7 @@ export default function DashboardPage() {
                   <ul className="m-0 list-none space-y-2 p-0">
                     {hm.leaders.slice(0, 5).map((s) => (
                       <li key={s.id} className="flex items-center justify-between gap-2 text-sm">
-                        <span className="font-semibold" style={{ color: 'var(--org-ink)' }}>
+                        <span className="font-semibold mm-org-text">
                           {s.name}
                         </span>
                         <span className="inline-flex items-center gap-1.5">
@@ -684,7 +679,7 @@ export default function DashboardPage() {
                     ))}
                   </ul>
                 ) : (
-                  <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+                  <p className="m-0 text-sm mm-org-text-muted">
                     Leaders appear after enrollment.
                   </p>
                 )}
@@ -724,8 +719,8 @@ export default function DashboardPage() {
                   {hm.topGaps.map((g, i) => (
                     <div key={g.label}>
                       <div className="mb-1 flex justify-between text-xs">
-                        <span className="font-bold" style={{ color: 'var(--org-ink)' }}>{g.label}</span>
-                        <span style={{ color: 'var(--org-muted)' }}>{g.count} students</span>
+                        <span className="mm-org-band-label">{g.label}</span>
+                        <span className="mm-org-text-muted">{g.count} students</span>
                       </div>
                       <div className="mm-org-progress">
                         <motion.div
@@ -741,7 +736,7 @@ export default function DashboardPage() {
                   ))}
                 </div>
               ) : (
-                <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+                <p className="m-0 text-sm mm-org-text-muted">
                   Gap themes appear after students have scorecards.
                 </p>
               )}
@@ -753,16 +748,15 @@ export default function DashboardPage() {
                   {hm.topStrengths.map((s) => (
                     <li
                       key={s.label}
-                      className="flex items-center justify-between rounded-xl border px-3 py-2 text-sm"
-                      style={{ borderColor: 'var(--org-line)', color: 'var(--org-ink)' }}
+                      className="mm-org-list-card text-sm"
                     >
-                      <span className="font-bold">{s.label}</span>
+                      <span className="font-bold mm-org-text">{s.label}</span>
                       <span className="mm-org-badge mm-org-badge--active">{s.count}</span>
                     </li>
                   ))}
                 </ul>
               ) : (
-                <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+                <p className="m-0 text-sm mm-org-text-muted">
                   Strength signals appear after scorecards load.
                 </p>
               )}
@@ -779,7 +773,8 @@ export default function DashboardPage() {
             </p>
             <p className="mm-org-ai-box__meta">
               Placeholder only. Heuristic brief above works today; wire{' '}
-              <code>POST /organizations/ai/branch-insight</code> when live scores exist.
+              <code className="mm-org-code">POST /organizations/ai/branch-insight</code> when live
+              scores exist.
             </p>
           </div>
         </section>
@@ -836,9 +831,9 @@ export default function DashboardPage() {
                           </span>
                         </td>
                         <td>{s.mockScore ?? '—'}</td>
-                        <td style={{ color: 'var(--org-ink)' }}>{s.strength || '—'}</td>
-                        <td style={{ color: 'var(--org-ink)' }}>{s.weakness || '—'}</td>
-                        <td style={{ color: 'var(--org-muted)' }}>{s.activities ?? 0}</td>
+                        <td className="mm-org-text">{s.strength || '—'}</td>
+                        <td className="mm-org-text">{s.weakness || '—'}</td>
+                        <td className="mm-org-text-muted">{s.activities ?? 0}</td>
                         <td>
                           <button
                             type="button"
@@ -886,8 +881,8 @@ export default function DashboardPage() {
 
   return (
     <div className="mm-org-panel">
-      <h2 className="mt-0 mb-2 text-xl font-extrabold" style={{ color: 'var(--org-ink)' }}>Welcome.</h2>
-      <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+      <h2 className="mm-org-section-title">Welcome.</h2>
+      <p className="m-0 mt-2 text-sm mm-org-text-muted">
         Student workspace scaffolding continues after TPO and HOD portals.
       </p>
     </div>

@@ -148,12 +148,11 @@ export default function DrivesPage() {
             {drives.map((d) => (
               <div
                 key={d.id}
-                className="flex items-start justify-between gap-3 rounded-xl border p-3"
-                style={{ borderColor: 'var(--org-line)' }}
+                className="mm-org-list-card"
               >
                 <div className="min-w-0">
-                  <p className="m-0 font-bold">{d.company}</p>
-                  <p className="m-0 mt-1 text-sm" style={{ color: 'var(--org-muted)' }}>
+                  <p className="m-0 font-bold mm-org-text">{d.company}</p>
+                  <p className="m-0 mt-1 text-sm mm-org-text-muted">
                     {d.role}
                     {d.date ? ` · ${d.date}` : ''}
                     {d.audience === 'department'
@@ -161,7 +160,7 @@ export default function DrivesPage() {
                       : ' · Campus-wide'}
                   </p>
                   {d.message ? (
-                    <p className="m-0 mt-2 text-sm" style={{ color: 'var(--org-muted)' }}>{d.message}</p>
+                    <p className="m-0 mt-2 text-sm mm-org-text-muted">{d.message}</p>
                   ) : null}
                 </div>
                 <button

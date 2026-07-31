@@ -207,7 +207,7 @@ export default function EnrollmentPage() {
         {msg ? <div className="mm-org-alert mm-org-alert--success mb-3">{msg}</div> : null}
         {lastSetupUrl ? (
           <div className="mb-4 flex flex-wrap items-center gap-2">
-            <code className="text-xs break-all" style={{ flex: 1 }}>
+            <code className="mm-org-code text-xs" style={{ flex: 1 }}>
               {lastSetupUrl}
             </code>
             <button
@@ -364,7 +364,7 @@ export default function EnrollmentPage() {
 
         {addMode === 'link' ? (
           <div className="flex flex-wrap items-center gap-2">
-            <code className="text-xs break-all" style={{ flex: 1 }}>
+            <code className="mm-org-code text-xs" style={{ flex: 1 }}>
               {registerUrl}
             </code>
             <button

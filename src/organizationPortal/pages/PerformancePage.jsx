@@ -91,7 +91,7 @@ export default function PerformancePage() {
     return (
       <div className="mm-org-panel">
         <h2 className="mm-org-panel__title">Branch not linked</h2>
-        <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+        <p className="m-0 text-sm mm-org-text-muted">
           Scorecards appear once your HOD account is linked to a department.
         </p>
       </div>
@@ -119,7 +119,7 @@ export default function PerformancePage() {
   return (
     <div className="space-y-5">
       <div className="mm-org-toolbar">
-        <p className="m-0 text-sm" style={{ color: 'var(--org-muted)' }}>
+        <p className="m-0 text-sm mm-org-text-muted">
           {hod
             ? `${hodDept.name} readiness — export for mentoring notes anytime.`
             : `${session?.organization_name || 'Campus'} readiness — export for analysis anytime.`}
@@ -138,7 +138,7 @@ export default function PerformancePage() {
           <Download size={15} /> Export CSV
         </button>
       </div>
-      <div className="mm-org-stat-grid" style={{ gridTemplateColumns: 'repeat(4, minmax(0, 1fr))' }}>
+      <div className="mm-org-stat-grid mm-org-stat-grid--4">
         {[
           { label: 'Avg readiness', value: `${metrics.avgReadiness}%` },
           { label: 'Strong (≥75%)', value: metrics.strong },
@@ -171,8 +171,8 @@ export default function PerformancePage() {
               {byDept.map((d, i) => (
                 <div key={d.id}>
                   <div className="mb-1.5 flex justify-between text-xs">
-                    <span className="font-bold">{d.name}</span>
-                    <span style={{ color: 'var(--org-muted)' }}>{d.avgReadiness}%</span>
+                    <span className="mm-org-band-label">{d.name}</span>
+                    <span className="mm-org-text-muted">{d.avgReadiness}%</span>
                   </div>
                   <div className="mm-org-progress">
                     <motion.div
@@ -193,7 +193,7 @@ export default function PerformancePage() {
               <p className="mm-org-ai-box__title">
                 <Sparkles size={14} /> AI insight (next)
               </p>
-              <p className="mm-org-ai-box__body" style={{ color: 'var(--org-muted)' }}>
+              <p className="mm-org-ai-box__body mm-org-text-muted">
                 OpenAI-backed summaries: who’s interview-ready, which batch needs DSA vs HR mocks, and
                 personalized remediation plans — wired after live score APIs.
               </p>
@@ -204,13 +204,13 @@ export default function PerformancePage() {
               <ul className="m-0 list-none space-y-1.5 p-0">
                 {(metrics.topGaps || []).length ? (
                   metrics.topGaps.map((g) => (
-                    <li key={g.label} className="text-sm" style={{ color: 'var(--org-ink)' }}>
+                    <li className="text-sm mm-org-text" key={g.label}>
                       {g.label}{' '}
-                      <span style={{ color: 'var(--org-muted)' }}>({g.count})</span>
+                      <span className="mm-org-text-muted">({g.count})</span>
                     </li>
                   ))
                 ) : (
-                  <li className="text-sm" style={{ color: 'var(--org-muted)' }}>—</li>
+                  <li className="text-sm mm-org-text-muted">—</li>
                 )}
               </ul>
             </div>
