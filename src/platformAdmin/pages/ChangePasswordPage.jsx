@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { KeyRound, Loader2 } from 'lucide-react';
-import { changePlatformPassword, getPlatformSession, setPlatformSession } from '../auth';
+import { changePlatformPassword, getPlatformSession } from '../auth';
 import { platformAdminPaths } from '../paths';
 
 export default function ChangePasswordPage() {
@@ -36,8 +36,11 @@ export default function ChangePasswordPage() {
 
     try {
       setSaving(true);
-      await changePlatformPassword(form.currentPassword, form.newPassword);
-      setPlatformSession({ ...session, mustChangePassword: false });
+      const user = await changePlatformPassword(form.currentPassword, form.newPassword);
+      if (user?.mustChangePassword) {
+        setError('Password updated but server still requires a password change. Contact support.');
+        return;
+      }
       setSuccess('Password updated successfully. Redirecting to dashboard...');
       window.setTimeout(() => {
         navigate(platformAdminPaths.dashboard, { replace: true });
@@ -54,7 +57,9 @@ export default function ChangePasswordPage() {
       <section className="mm-pa-panel">
         <h2 className="text-xl font-extrabold tracking-tight">Change Password</h2>
         <p className="mt-2 text-sm text-slate-400">
-          For security, update your platform admin password before continuing operations.
+          {session?.mustChangePassword
+            ? 'You must update your password before continuing platform operations.'
+            : 'Update your platform admin password before continuing operations.'}
         </p>
 
         <form onSubmit={submit} className="mt-5 space-y-4">
@@ -95,13 +100,15 @@ export default function ChangePasswordPage() {
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <button
-              type="button"
-              className="mm-pa-btn mm-pa-btn--ghost"
-              onClick={() => navigate(platformAdminPaths.dashboard)}
-            >
-              Skip for now
-            </button>
+            {!session?.mustChangePassword ? (
+              <button
+                type="button"
+                className="mm-pa-btn mm-pa-btn--ghost"
+                onClick={() => navigate(platformAdminPaths.dashboard)}
+              >
+                Back
+              </button>
+            ) : null}
             <button type="submit" className="mm-pa-btn mm-pa-btn--primary" disabled={saving}>
               {saving ? (
                 <>

@@ -1,5 +1,5 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
-import { isPlatformAuthenticated } from './auth';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
+import { getPlatformSession, isPlatformAuthenticated } from './auth';
 import { platformAdminPaths } from './paths';
 import PlatformAdminLogin from './PlatformAdminLogin';
 import PlatformAdminShell from './PlatformAdminShell';
@@ -12,8 +12,14 @@ import SettingsPage from './pages/SettingsPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
 
 function RequirePlatformAuth({ children }) {
+  const location = useLocation();
   if (!isPlatformAuthenticated()) {
     return <Navigate to={platformAdminPaths.login} replace />;
+  }
+  const session = getPlatformSession();
+  const onChangePassword = location.pathname.includes('/change-password');
+  if (session?.mustChangePassword && !onChangePassword) {
+    return <Navigate to={platformAdminPaths.changePassword} replace />;
   }
   return children;
 }
@@ -60,7 +66,15 @@ export default function PlatformAdminApp() {
         <Route path="settings" element={<SettingsPage />} />
         <Route path="change-password" element={<ChangePasswordPage />} />
       </Route>
-      <Route path="*" element={<Navigate to={platformAdminPaths.login} replace />} />
+      <Route
+        path="*"
+        element={
+          <Navigate
+            to={isPlatformAuthenticated() ? platformAdminPaths.dashboard : platformAdminPaths.login}
+            replace
+          />
+        }
+      />
     </Routes>
   );
 }

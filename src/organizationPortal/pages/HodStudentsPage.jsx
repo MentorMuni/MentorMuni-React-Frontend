@@ -4,6 +4,7 @@ import {
   Copy,
   FileUp,
   Link2,
+  Pencil,
   Plus,
   UserPlus,
   X,
@@ -60,6 +61,9 @@ export default function HodStudentsPage() {
   });
   const [emails, setEmails] = useState('');
   const [csvText, setCsvText] = useState('');
+  const [editing, setEditing] = useState(null); // student being edited
+  const [editForm, setEditForm] = useState({ name: '', collegeId: '', batchYear: '' });
+  const [editBusy, setEditBusy] = useState(false);
 
   const canInvite = snap.access?.canInviteStudents !== false;
   const dept = snap.department;
@@ -165,14 +169,22 @@ export default function HodStudentsPage() {
   const onManual = async (e) => {
     e.preventDefault();
     if (!canInvite || !dept?.id) return;
-    const res = await addStudentManualApi({ ...manual, departmentId: dept.id });
+    const res = await addStudentManualApi({
+      ...manual,
+      departmentId: dept.id,
+      autoEnroll: true,
+    });
     if (!res.ok) {
       flash(false, res.error);
       return;
     }
     setManual({ name: '', email: '', collegeId: '', batchYear: '' });
-    flash(true, res.message || 'Student queued for approval.');
-    setTab('queue');
+    flash(
+      true,
+      res.message || 'Student added to roster.',
+      res.setupUrl || ''
+    );
+    setTab('roster');
     await reload();
   };
 
@@ -183,6 +195,7 @@ export default function HodStudentsPage() {
       csvText,
       departmentId: dept.id,
       sendInviteEmail: true,
+      autoEnroll: true,
     });
     if (!res.ok) {
       flash(false, res.error);
@@ -191,12 +204,13 @@ export default function HodStudentsPage() {
     const errN = res.errors?.length || 0;
     flash(
       true,
-      `Imported ${res.added} student(s)${res.skipped ? `, skipped ${res.skipped}` : ''}${
-        errN ? `, ${errN} row error(s)` : ''
-      }.`
+      res.message ||
+        `Imported ${res.added} student(s)${res.skipped ? `, skipped ${res.skipped}` : ''}${
+          errN ? `, ${errN} row error(s)` : ''
+        }.`
     );
     setCsvText('');
-    setTab('queue');
+    setTab('roster');
     await reload();
   };
 
@@ -212,14 +226,22 @@ export default function HodStudentsPage() {
       flash(false, 'Add at least one student email.');
       return;
     }
-    const res = await inviteStudentsApi({ emails, departmentId: dept.id });
+    const res = await inviteStudentsApi({
+      emails,
+      departmentId: dept.id,
+      autoEnroll: true,
+    });
     if (!res.ok) {
       flash(false, res.error);
       return;
     }
     setEmails('');
-    flash(true, `${res.added || 0} invite(s) queued.`);
-    setTab('queue');
+    flash(
+      true,
+      res.message || `${res.added || 0} student(s) invited onto the roster.`,
+      res.setupUrl || ''
+    );
+    setTab('roster');
     await reload();
   };
 
@@ -254,6 +276,34 @@ export default function HodStudentsPage() {
       res.message || `Set-password link ready for ${student.email}.`,
       res.setupUrl || ''
     );
+  };
+
+  const openEdit = (s) => {
+    setEditing(s);
+    setEditForm({
+      name: s.name || '',
+      collegeId: s.collegeId || '',
+      batchYear: s.batchYear || '',
+    });
+  };
+
+  const onSaveEdit = async (e) => {
+    e.preventDefault();
+    if (!editing?.id) return;
+    setEditBusy(true);
+    const res = await patchStudent(editing.id, {
+      name: editForm.name,
+      collegeId: editForm.collegeId,
+      batchYear: editForm.batchYear,
+    });
+    setEditBusy(false);
+    if (!res.ok) {
+      flash(false, res.error);
+      return;
+    }
+    setEditing(null);
+    flash(true, 'Student updated.');
+    await reload();
   };
 
   if (!scopeReady) {
@@ -336,8 +386,8 @@ export default function HodStudentsPage() {
             <div>
               <h2 className="mm-org-panel__title">Add students to {dept.name}</h2>
               <p className="mm-org-panel__meta">
-                Manual · CSV · email paste · or share a self-registration link. All go to approve /
-                deny first.
+                Manual, CSV, and email invites go straight to the roster (no approval). Only the
+                registration link needs approve / deny in the queue.
               </p>
             </div>
           </div>
@@ -415,7 +465,7 @@ export default function HodStudentsPage() {
               </div>
               <div className="mm-org-form-actions" style={{ gridColumn: '1 / -1' }}>
                 <button type="submit" className="mm-org-btn mm-org-btn--primary">
-                  <UserPlus size={15} /> Queue for approval
+                  <UserPlus size={15} /> Add to roster
                 </button>
               </div>
             </form>
@@ -453,7 +503,7 @@ export default function HodStudentsPage() {
               />
               <div className="mm-org-form-actions">
                 <button type="submit" className="mm-org-btn mm-org-btn--primary" disabled={!csvText.trim()}>
-                  <FileUp size={15} /> Import to queue
+                  <FileUp size={15} /> Import to roster
                 </button>
               </div>
             </form>
@@ -473,7 +523,7 @@ export default function HodStudentsPage() {
               />
               <div className="mm-org-form-actions">
                 <button type="submit" className="mm-org-btn mm-org-btn--primary">
-                  <UserPlus size={15} /> Queue invites
+                  <UserPlus size={15} /> Invite to roster
                 </button>
               </div>
             </form>
@@ -516,7 +566,8 @@ export default function HodStudentsPage() {
             <div>
               <h2 className="mm-org-panel__title">Pending approvals</h2>
               <p className="mm-org-panel__meta">
-                Approve → set-password email → student activates → login
+                Self-registration requests only. Approve → set-password email → student login. Deny →
+                they cannot log in.
               </p>
             </div>
           </div>
@@ -650,7 +701,14 @@ export default function HodStudentsPage() {
                         </td>
                         <td>{s.mockScore}</td>
                         <td>
-                          <div className="flex gap-2 justify-end">
+                          <div className="flex gap-2 justify-end flex-wrap">
+                            <button
+                              type="button"
+                              className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+                              onClick={() => openEdit(s)}
+                            >
+                              <Pencil size={14} /> Edit
+                            </button>
                             {s.authStatus === 'needs_password' ||
                             s.authStatus === 'ready' ||
                             s.authStatus === 'blocked' ||
@@ -699,10 +757,76 @@ export default function HodStudentsPage() {
               {loading
                 ? 'Loading roster…'
                 : dataSource === 'api'
-                  ? 'No students in this department yet. Add via CSV / manual / link, then approve.'
-                  : 'No students enrolled yet. Add via CSV / manual / link, then approve.'}
+                  ? 'No students in this department yet. Add via CSV / manual / email, or share the registration link.'
+                  : 'No students enrolled yet. Add via CSV / manual / email, or share the registration link.'}
             </div>
           )}
+        </section>
+      ) : null}
+
+      {editing ? (
+        <section className="mm-org-panel">
+          <div className="mm-org-panel__head">
+            <div>
+              <h2 className="mm-org-panel__title">Edit student</h2>
+              <p className="mm-org-panel__meta">{editing.email}</p>
+            </div>
+            <button
+              type="button"
+              className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+              onClick={() => setEditing(null)}
+            >
+              <X size={14} /> Close
+            </button>
+          </div>
+          <form onSubmit={onSaveEdit} className="mm-org-form-grid">
+            <div>
+              <label className="mm-org-label" htmlFor="hod-edit-name">
+                Full name
+              </label>
+              <input
+                id="hod-edit-name"
+                className="mm-org-input"
+                value={editForm.name}
+                onChange={(e) => setEditForm((f) => ({ ...f, name: e.target.value }))}
+                required
+              />
+            </div>
+            <div>
+              <label className="mm-org-label" htmlFor="hod-edit-roll">
+                College ID / roll
+              </label>
+              <input
+                id="hod-edit-roll"
+                className="mm-org-input"
+                value={editForm.collegeId}
+                onChange={(e) => setEditForm((f) => ({ ...f, collegeId: e.target.value }))}
+              />
+            </div>
+            <div>
+              <label className="mm-org-label" htmlFor="hod-edit-batch">
+                Batch year
+              </label>
+              <input
+                id="hod-edit-batch"
+                className="mm-org-input"
+                value={editForm.batchYear}
+                onChange={(e) => setEditForm((f) => ({ ...f, batchYear: e.target.value }))}
+              />
+            </div>
+            <div className="mm-org-form-actions" style={{ gridColumn: '1 / -1' }}>
+              <button type="submit" className="mm-org-btn mm-org-btn--primary" disabled={editBusy}>
+                {editBusy ? 'Saving…' : 'Save changes'}
+              </button>
+              <button
+                type="button"
+                className="mm-org-btn mm-org-btn--ghost"
+                onClick={() => setEditing(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
         </section>
       ) : null}
 

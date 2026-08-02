@@ -46,12 +46,17 @@ export default function ActivateHodPage() {
         setError(result.error || 'Unable to activate account.');
         return;
       }
-      navigate('/Organization/login', {
+      const orgCode = String(result.organizationCode || '').trim().toUpperCase();
+      const loginPath = orgCode
+        ? `/Organization/login?org=${encodeURIComponent(orgCode)}`
+        : '/Organization/login';
+      navigate(loginPath, {
         replace: true,
         state: {
           activateSuccess:
             result.message || 'Password set. Sign in as HOD for your department.',
           preferredRole: 'hod',
+          preferredOrgCode: orgCode || undefined,
         },
       });
     } catch (err) {

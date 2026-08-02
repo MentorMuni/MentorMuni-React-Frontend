@@ -1,10 +1,22 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Plus, Search, Building2, UserPlus, UserCheck, CreditCard, ToggleLeft } from 'lucide-react';
+import {
+  Plus,
+  Search,
+  Building2,
+  UserPlus,
+  UserCheck,
+  CreditCard,
+  ToggleLeft,
+  Pencil,
+  Trash2,
+} from 'lucide-react';
 import {
   getOrganizations,
   createOrganization,
   updateOrganization,
+  deleteOrganization,
   assignSubscription,
+  cancelSubscription,
   getSubscriptionForOrg,
   getOrgFeatures,
   saveOrgFeatures,
@@ -15,7 +27,6 @@ import {
   reinviteTpo,
   getFeatureCatalog,
   getSubscriptionPlans,
-  PLANS,
   statusLabel,
   isActiveStatus,
 } from '../store';
@@ -35,25 +46,49 @@ const emptyOrg = {
   country: 'India',
 };
 
+function orgToForm(org) {
+  if (!org) return emptyOrg;
+  return {
+    name: org.name || '',
+    code: org.code || '',
+    organization_type: org.organization_type || 'College',
+    status: isActiveStatus(org.status) ? 'Active' : 'Inactive',
+    contact_person: org.contact_person || '',
+    contact_email: org.contact_email || '',
+    contact_phone: org.contact_phone || '',
+    address: org.address || '',
+    city: org.city || '',
+    state: org.state || '',
+    country: org.country || 'India',
+  };
+}
+
 export default function OrganizationsPage() {
   const [orgs, setOrgs] = useState([]);
-  const [plans, setPlans] = useState(PLANS);
+  const [plans, setPlans] = useState([]);
   const [featureCatalog, setFeatureCatalog] = useState([]);
   const [query, setQuery] = useState('');
   const [createOpen, setCreateOpen] = useState(false);
+  const [editingOrgId, setEditingOrgId] = useState(null);
   const [form, setForm] = useState(emptyOrg);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [selected, setSelected] = useState(null);
   const [subOpen, setSubOpen] = useState(false);
+  const [activeSubId, setActiveSubId] = useState(null);
   const [featOpen, setFeatOpen] = useState(false);
   const [tpoOpen, setTpoOpen] = useState(false);
   const [statusConfirmOpen, setStatusConfirmOpen] = useState(false);
   const [statusTarget, setStatusTarget] = useState(null);
   const [statusBusy, setStatusBusy] = useState(false);
+  const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleteBusy, setDeleteBusy] = useState(false);
   const [subForm, setSubForm] = useState({
-    plan_name: 'Enterprise',
-    student_limit: 1500,
+    plan_id: '',
+    plan_code: '',
+    plan_name: '',
+    student_limit: 100,
     start_date: '',
     end_date: '',
     status: 'ACTIVE',
@@ -176,11 +211,14 @@ export default function OrganizationsPage() {
     const boot = async () => {
       try {
         const [plansResult, featureResult] = await Promise.all([
-          getSubscriptionPlans().catch(() => PLANS),
+          getSubscriptionPlans().catch((e) => {
+            setApiToast(e.message || 'Failed to load subscription plans.');
+            return [];
+          }),
           getFeatureCatalog().catch(() => []),
         ]);
         if (!mounted) return;
-        setPlans(plansResult?.length ? plansResult : PLANS);
+        setPlans(plansResult || []);
         setFeatureCatalog(featureResult || []);
         await refresh();
       } catch (e) {
@@ -215,7 +253,16 @@ export default function OrganizationsPage() {
   }, [orgs, query]);
 
   const openCreate = () => {
+    setEditingOrgId(null);
     setForm(emptyOrg);
+    setError('');
+    setSuccess('');
+    setCreateOpen(true);
+  };
+
+  const openEditOrg = (org) => {
+    setEditingOrgId(org.id);
+    setForm(orgToForm(org));
     setError('');
     setSuccess('');
     setCreateOpen(true);
@@ -225,28 +272,49 @@ export default function OrganizationsPage() {
     e.preventDefault();
     setError('');
     try {
-      const row = await createOrganization(form);
-      setSuccess(`Organization created · ID ${row.id} · Code ${row.code}`);
+      if (editingOrgId) {
+        const row = await updateOrganization(editingOrgId, form);
+        setSuccess(`Organization updated · ${row.name} (${row.code})`);
+      } else {
+        const row = await createOrganization(form);
+        setSuccess(`Organization created · ID ${row.id} · Code ${row.code}`);
+        setSelected(row);
+      }
       setCreateOpen(false);
-      setSelected(row);
+      setEditingOrgId(null);
       await refresh();
     } catch (err) {
-      setError(err.message || 'Failed to create organization.');
-      setApiToast(err.message || 'Failed to create organization.');
+      setError(err.message || 'Failed to save organization.');
+      setApiToast(err.message || 'Failed to save organization.');
     }
   };
 
   const openSubscription = async (org) => {
     try {
+      if (!plans.length) {
+        setApiToast('Subscription plans are unavailable. Reload or check the plans API.');
+        return;
+      }
       setSelected(org);
       const existing = await getSubscriptionForOrg(org.id);
-      const plan = plans.find((p) => p.name === existing?.plan_name) || plans[0] || PLANS[0];
+      setActiveSubId(existing?.id || null);
+      const plan =
+        plans.find((p) => Number(p.id) === Number(existing?.plan_id)) ||
+        plans.find(
+          (p) =>
+            p.plan_code &&
+            p.plan_code === String(existing?.plan_code || '').toUpperCase()
+        ) ||
+        plans.find((p) => p.name === existing?.plan_name) ||
+        plans[0];
       setSubForm({
-        plan_name: existing?.plan_name || plan.name,
+        plan_id: plan.id,
+        plan_code: plan.plan_code || '',
+        plan_name: plan.name,
         student_limit: existing?.student_limit || plan.defaultLimit,
         start_date: existing?.start_date || new Date().toISOString().slice(0, 10),
         end_date: existing?.end_date || `${new Date().getFullYear()}-12-31`,
-        status: 'ACTIVE',
+        status: existing?.status || 'ACTIVE',
       });
       setError('');
       setSubOpen(true);
@@ -258,13 +326,66 @@ export default function OrganizationsPage() {
   const submitSub = async (e) => {
     e.preventDefault();
     try {
-      await assignSubscription({ ...subForm, organization_id: selected.id });
-      setSuccess(`Subscription assigned to ${selected.name}`);
+      if (!plans.length) {
+        throw new Error('No subscription plans available from the API.');
+      }
+      await assignSubscription({
+        ...subForm,
+        organization_id: selected.id,
+        ...(activeSubId ? { subscription_id: activeSubId } : {}),
+      });
+      setSuccess(
+        activeSubId
+          ? `Subscription renewed for ${selected.name}`
+          : `Subscription assigned to ${selected.name}`
+      );
       setSubOpen(false);
+      setActiveSubId(null);
       await refresh();
     } catch (err) {
       setError(err.message);
-      setApiToast(err.message || 'Failed to assign subscription.');
+      setApiToast(err.message || 'Failed to save subscription.');
+    }
+  };
+
+  const onCancelSubscription = async () => {
+    if (!activeSubId || !selected) return;
+    try {
+      await cancelSubscription(activeSubId, 'CANCELLED');
+      setSuccess(`Subscription cancelled for ${selected.name}`);
+      setSubOpen(false);
+      setActiveSubId(null);
+      await refresh();
+    } catch (err) {
+      setApiToast(err.message || 'Failed to cancel subscription.');
+    }
+  };
+
+  const openDeleteOrg = (org) => {
+    const type = String(org.organization_type || '').toUpperCase();
+    if (type === 'PUBLIC' || org.organization_type === 'Public') {
+      setApiToast('PUBLIC organizations cannot be deleted. Suspend via status instead.');
+      return;
+    }
+    setDeleteTarget(org);
+    setDeleteConfirmOpen(true);
+  };
+
+  const confirmDeleteOrg = async () => {
+    if (!deleteTarget) return;
+    setDeleteBusy(true);
+    try {
+      await deleteOrganization(deleteTarget.id);
+      setSuccess(
+        `${deleteTarget.name} soft-deleted (SUSPENDED). Active subscriptions were cancelled.`
+      );
+      setDeleteConfirmOpen(false);
+      setDeleteTarget(null);
+      await refresh();
+    } catch (err) {
+      setApiToast(err.message || 'Failed to soft-delete organization.');
+    } finally {
+      setDeleteBusy(false);
     }
   };
 
@@ -596,6 +717,14 @@ export default function OrganizationsPage() {
                   </td>
                   <td>
                     <div className="flex flex-wrap gap-2">
+                      <button
+                        type="button"
+                        className="mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs"
+                        onClick={() => openEditOrg(org)}
+                        title="Edit organization"
+                      >
+                        <Pencil size={13} /> Edit
+                      </button>
                       <button type="button" className="mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs" onClick={() => openSubscription(org)}>
                         <CreditCard size={13} /> Plan
                       </button>
@@ -611,6 +740,14 @@ export default function OrganizationsPage() {
                         {hasTpo ? <UserCheck size={13} /> : <UserPlus size={13} />}
                         {hasTpo ? 'View TPO' : 'Add TPO'}
                       </button>
+                      <button
+                        type="button"
+                        className="mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs"
+                        onClick={() => openDeleteOrg(org)}
+                        title="Delete organization"
+                      >
+                        <Trash2 size={13} />
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -621,12 +758,19 @@ export default function OrganizationsPage() {
         {!loading && !filtered.length && <div className="mm-pa-empty">No organizations found.</div>}
       </div>
 
-      {/* Create Organization */}
+      {/* Create / Edit Organization */}
       <Modal
         open={createOpen}
-        onClose={() => setCreateOpen(false)}
-        title="Create Organization"
-        sub="Populates the organizations table and returns Organization ID + Code."
+        onClose={() => {
+          setCreateOpen(false);
+          setEditingOrgId(null);
+        }}
+        title={editingOrgId ? 'Edit Organization' : 'Create Organization'}
+        sub={
+          editingOrgId
+            ? 'Updates organization profile fields via PUT /platform/organizations/:id.'
+            : 'Populates the organizations table and returns Organization ID + Code.'
+        }
         wide
       >
         <form onSubmit={submitOrg} className="space-y-1">
@@ -645,6 +789,7 @@ export default function OrganizationsPage() {
                 value={form.code}
                 onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
                 placeholder="MEDICAPS"
+                disabled={Boolean(editingOrgId)}
               />
             </div>
             <div>
@@ -700,37 +845,58 @@ export default function OrganizationsPage() {
           </div>
 
           <div className="mt-5 flex justify-end gap-2">
-            <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={() => setCreateOpen(false)}>Cancel</button>
-            <button type="submit" className="mm-pa-btn mm-pa-btn--primary">Save Organization</button>
+            <button
+              type="button"
+              className="mm-pa-btn mm-pa-btn--ghost"
+              onClick={() => {
+                setCreateOpen(false);
+                setEditingOrgId(null);
+              }}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="mm-pa-btn mm-pa-btn--primary">
+              {editingOrgId ? 'Save Changes' : 'Save Organization'}
+            </button>
           </div>
         </form>
       </Modal>
 
-      {/* Assign Subscription */}
+      {/* Assign / Renew Subscription */}
       <Modal
         open={subOpen}
-        onClose={() => setSubOpen(false)}
-        title="Assign Subscription"
+        onClose={() => {
+          setSubOpen(false);
+          setActiveSubId(null);
+        }}
+        title={activeSubId ? 'Renew Subscription' : 'Assign Subscription'}
         sub={selected ? `Plan for ${selected.name} (${selected.code})` : ''}
       >
         <form onSubmit={submitSub} className="space-y-3">
+          {!plans.length ? (
+            <div className="mm-pa-error">No plans loaded from GET /subscription-plans. Cannot assign.</div>
+          ) : null}
           <div className="mm-pa-grid-2">
             <div>
               <label className="mm-pa-label">Plan</label>
               <select
                 className="mm-pa-select"
-                value={subForm.plan_name}
+                value={String(subForm.plan_id || '')}
                 onChange={(e) => {
-                  const plan = plans.find((p) => p.name === e.target.value);
+                  const plan = plans.find((p) => String(p.id) === e.target.value);
                   setSubForm({
                     ...subForm,
-                    plan_name: e.target.value,
+                    plan_id: plan?.id || '',
+                    plan_code: plan?.plan_code || '',
+                    plan_name: plan?.name || '',
                     student_limit: plan?.defaultLimit || subForm.student_limit,
                   });
                 }}
               >
                 {plans.map((p) => (
-                  <option key={p.id} value={p.name}>{p.name}</option>
+                  <option key={p.id} value={p.id}>
+                    {p.plan_code ? `${p.plan_code} — ${p.name}` : p.name}
+                  </option>
                 ))}
               </select>
             </div>
@@ -758,12 +924,30 @@ export default function OrganizationsPage() {
               <select className="mm-pa-select" value={subForm.status} onChange={(e) => setSubForm({ ...subForm, status: e.target.value })}>
                 <option value="ACTIVE">ACTIVE</option>
                 <option value="SUSPENDED">SUSPENDED</option>
+                <option value="CANCELLED">CANCELLED</option>
+                <option value="EXPIRED">EXPIRED</option>
               </select>
             </div>
           </div>
-          <div className="mt-4 flex justify-end gap-2">
-            <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={() => setSubOpen(false)}>Cancel</button>
-            <button type="submit" className="mm-pa-btn mm-pa-btn--primary">Assign Subscription</button>
+          <div className="mt-4 flex flex-wrap justify-end gap-2">
+            {activeSubId ? (
+              <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={onCancelSubscription}>
+                Cancel subscription
+              </button>
+            ) : null}
+            <button
+              type="button"
+              className="mm-pa-btn mm-pa-btn--ghost"
+              onClick={() => {
+                setSubOpen(false);
+                setActiveSubId(null);
+              }}
+            >
+              Close
+            </button>
+            <button type="submit" className="mm-pa-btn mm-pa-btn--primary" disabled={!plans.length}>
+              {activeSubId ? 'Save renewal' : 'Assign Subscription'}
+            </button>
           </div>
         </form>
       </Modal>
@@ -1084,6 +1268,48 @@ export default function OrganizationsPage() {
             </div>
           </div>
         )}
+      </Modal>
+
+      <Modal
+        open={deleteConfirmOpen}
+        onClose={() => {
+          if (deleteBusy) return;
+          setDeleteConfirmOpen(false);
+          setDeleteTarget(null);
+        }}
+        title="Soft-delete organization?"
+        sub={deleteTarget ? deleteTarget.name : ''}
+      >
+        {deleteTarget ? (
+          <div className="space-y-4">
+            <div className="mm-pa-callout mm-pa-callout--amber">
+              Soft delete only via <code className="mm-pa-code">DELETE /platform/organizations/{deleteTarget.id}</code>.
+              Organization becomes <strong>SUSPENDED</strong>; any ACTIVE subscriptions become{' '}
+              <strong>CANCELLED</strong>. No hard wipe. PUBLIC tenants are blocked by the API.
+            </div>
+            <div className="flex flex-wrap justify-end gap-2">
+              <button
+                type="button"
+                className="mm-pa-btn mm-pa-btn--ghost"
+                disabled={deleteBusy}
+                onClick={() => {
+                  setDeleteConfirmOpen(false);
+                  setDeleteTarget(null);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="mm-pa-btn mm-pa-btn--danger"
+                disabled={deleteBusy}
+                onClick={confirmDeleteOrg}
+              >
+                {deleteBusy ? 'Deleting…' : 'Yes, soft-delete'}
+              </button>
+            </div>
+          </div>
+        ) : null}
       </Modal>
     </div>
   );

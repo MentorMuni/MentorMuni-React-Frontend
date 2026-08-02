@@ -3,7 +3,9 @@ import { motion } from 'framer-motion';
 import { Download, Sparkles } from 'lucide-react';
 import { getOrgSession } from '../../orgPortal';
 import { isHodRole } from '../roles';
-import { resolveHodDepartment } from '../hodScope';
+import { buildBranchMetricsFromApi, resolveHodDepartment } from '../hodScope';
+import { fetchDepartments } from '../departmentsApi';
+import { fetchStudents } from '../studentsApi';
 import {
   getHodAccess,
   getHodMetrics,
@@ -42,41 +44,62 @@ function exportScorecardsCsv(rows, filenamePrefix = 'mentormuni-scorecards') {
 export default function PerformancePage() {
   const session = getOrgSession();
   const hod = isHodRole(session?.role);
-  const hodDept = hod ? resolveHodDepartment(session) : null;
+  const [hodDept, setHodDept] = useState(() => (hod ? resolveHodDepartment(session) : null));
   const [access] = useState(() => getHodAccess());
   const [metrics, setMetrics] = useState(() =>
-    hod && hodDept ? getHodMetrics(hodDept.id) : getTpoMetrics()
+    hod && resolveHodDepartment(session)
+      ? getHodMetrics(resolveHodDepartment(session).id)
+      : getTpoMetrics()
   );
   const [students, setStudents] = useState(() => listStudents());
+  const [dataSource, setDataSource] = useState('local');
   const [query, setQuery] = useState('');
-  const [deptFilter, setDeptFilter] = useState(hodDept?.id || '');
+  const [deptFilter, setDeptFilter] = useState(() => resolveHodDepartment(session)?.id || '');
 
-  useEffect(
-    () =>
-      subscribeOrgDb(() => {
-        const dept = resolveHodDepartment(getOrgSession());
-        if (isHodRole(getOrgSession()?.role) && dept) {
-          setMetrics(getHodMetrics(dept.id));
-          setDeptFilter(dept.id);
-        } else {
-          setMetrics(getTpoMetrics());
-        }
+  useEffect(() => {
+    if (!hod) {
+      return subscribeOrgDb(() => {
+        setMetrics(getTpoMetrics());
         setStudents(listStudents());
-      }),
-    []
-  );
-
-  const scopedStudents = useMemo(() => {
-    if (hod && hodDept) {
-      return students.filter((s) => s.departmentId === hodDept.id);
+        setDataSource('local');
+      });
     }
-    return students;
-  }, [students, hod, hodDept]);
+
+    let cancelled = false;
+    (async () => {
+      const deptRes = await fetchDepartments();
+      if (cancelled) return;
+      const dept = resolveHodDepartment(getOrgSession(), deptRes.departments || []);
+      setHodDept(dept);
+      if (!dept?.id) return;
+      setDeptFilter(dept.id);
+
+      if (session?.demo) {
+        setMetrics(getHodMetrics(dept.id));
+        setStudents(listStudents().filter((s) => String(s.departmentId) === String(dept.id)));
+        setDataSource('local');
+        return;
+      }
+
+      const roster = await fetchStudents({ departmentId: dept.id });
+      if (cancelled) return;
+      const list = roster.students || [];
+      setStudents(list);
+      setMetrics(buildBranchMetricsFromApi({ students: list }));
+      setDataSource(roster.source || 'api');
+    })();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [hod, session?.demo, session?.department_id]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return scopedStudents
-      .filter((s) => (!deptFilter || s.departmentId === deptFilter))
+    const base = hod
+      ? students
+      : students.filter((s) => !deptFilter || s.departmentId === deptFilter);
+    return base
       .filter(
         (s) =>
           !q ||
@@ -85,7 +108,7 @@ export default function PerformancePage() {
           (s.departmentName || '').toLowerCase().includes(q)
       )
       .sort((a, b) => (b.readiness || 0) - (a.readiness || 0));
-  }, [scopedStudents, query, deptFilter]);
+  }, [students, query, deptFilter, hod]);
 
   if (hod && !hodDept) {
     return (
@@ -121,7 +144,7 @@ export default function PerformancePage() {
       <div className="mm-org-toolbar">
         <p className="m-0 text-sm mm-org-text-muted">
           {hod
-            ? `${hodDept.name} readiness — export for mentoring notes anytime.`
+            ? `${hodDept.name} readiness${dataSource === 'api' ? ' · live roster' : ' · demo data'} — export anytime.`
             : `${session?.organization_name || 'Campus'} readiness — export for analysis anytime.`}
         </p>
         <button

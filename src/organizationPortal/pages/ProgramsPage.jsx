@@ -191,6 +191,10 @@ export default function ProgramsPage() {
 
   return (
     <div className="space-y-5">
+      <div className="mm-org-alert mm-org-alert--error" role="status">
+        Demo only for now — programs save in this browser. Student delivery / inbox waits on the
+        programs API.
+      </div>
       <div className="mm-org-toolbar">
         <p className="m-0 text-sm mm-org-text-muted">
           {hod

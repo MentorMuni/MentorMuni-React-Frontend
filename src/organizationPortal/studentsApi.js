@@ -65,8 +65,8 @@ function mapAuthStatus(status) {
   if (s === 'PENDING') return 'pending';
   if (s === 'INVITED' || s === 'NEEDS_PASSWORD') return 'needs_password';
   if (s === 'ACTIVE' || s === 'READY') return 'ready';
-  if (s === 'BLOCKED') return 'blocked';
-  if (s === 'DISABLED' || s === 'REJECTED') return 'disabled';
+  if (s === 'BLOCKED' || s === 'DISABLED') return 'blocked';
+  if (s === 'REJECTED') return 'disabled';
   return String(status || 'ready').toLowerCase() === 'needs_password' ? 'needs_password' : 'ready';
 }
 
@@ -171,7 +171,7 @@ function filterLocalInvites(status, departmentId) {
 
 /* ── Writes ──────────────────────────────────────────────── */
 
-export async function inviteStudentsApi({ emails, departmentId }) {
+export async function inviteStudentsApi({ emails, departmentId, autoEnroll = false }) {
   const emailList = Array.isArray(emails)
     ? emails
     : String(emails || '')
@@ -183,6 +183,8 @@ export async function inviteStudentsApi({ emails, departmentId }) {
     const data = await orgApi.post('/organizations/students/invite', {
       emails: emailList,
       department_id: departmentId || undefined,
+      auto_enroll: autoEnroll || undefined,
+      skip_approval: autoEnroll || undefined,
     });
     const added =
       data?.created ??
@@ -190,16 +192,41 @@ export async function inviteStudentsApi({ emails, departmentId }) {
       data?.count ??
       asList(data, 'invites', 'invitations').length ??
       emailList.length;
+    const { setupUrl, activationToken } = extractSetupUrl(data || {});
     return withSource(
-      { ok: true, added: Number(added) || emailList.length, message: data?.message || '' },
+      {
+        ok: true,
+        added: Number(added) || emailList.length,
+        setupUrl,
+        activationToken,
+        emailed: Boolean(data?.emailed ?? data?.email_sent ?? false),
+        message:
+          data?.message ||
+          (autoEnroll
+            ? 'Invites sent. Students are on the roster — they set a password from email/link.'
+            : ''),
+      },
       'api'
     );
   } catch (err) {
     if (!isMissingApi(err)) {
       return { ok: false, error: err.message || 'Unable to queue invites.' };
     }
-    const res = local.inviteStudents({ emails: emailList.join('\n'), departmentId });
-    return withSource({ ok: true, added: res.added || 0 }, 'local');
+    const res = local.inviteStudents({
+      emails: emailList.join('\n'),
+      departmentId,
+      autoEnroll,
+    });
+    return withSource(
+      {
+        ok: true,
+        added: res.added || 0,
+        message: autoEnroll
+          ? 'Demo: students added to roster (use Resend link for set-password).'
+          : undefined,
+      },
+      'local'
+    );
   }
 }
 
@@ -209,6 +236,7 @@ export async function addStudentManualApi({
   collegeId,
   batchYear,
   departmentId,
+  autoEnroll = false,
 }) {
   try {
     const data = await orgApi.post('/organizations/students', {
@@ -217,13 +245,29 @@ export async function addStudentManualApi({
       department_id: departmentId,
       roll_number: collegeId || undefined,
       batch_year: batchYear ? Number(batchYear) || batchYear : undefined,
+      auto_enroll: autoEnroll || undefined,
+      skip_approval: autoEnroll || undefined,
     });
+    const student = data?.student ? normalizeStudent(data.student) : null;
+    const invitation =
+      !student && (data?.invite || data?.invitation || (!autoEnroll && data))
+        ? normalizeInvite(data?.invite || data?.invitation || data)
+        : null;
+    const { setupUrl, activationToken } = extractSetupUrl(data || {});
+    const onRoster = Boolean(student) || autoEnroll;
     return withSource(
       {
         ok: true,
-        invitation: normalizeInvite(data?.invite || data?.invitation || data),
-        student: data?.student ? normalizeStudent(data.student) : null,
-        message: data?.message || 'Student queued for approval.',
+        invitation: onRoster ? null : invitation,
+        student,
+        setupUrl,
+        activationToken,
+        emailed: Boolean(data?.emailed ?? data?.email_sent ?? false),
+        message:
+          data?.message ||
+          (onRoster
+            ? 'Student added to roster. They get a set-password email when mail works.'
+            : 'Student queued for approval.'),
       },
       'api'
     );
@@ -231,7 +275,14 @@ export async function addStudentManualApi({
     if (!isMissingApi(err)) {
       return { ok: false, error: err.message || 'Unable to add student.' };
     }
-    return local.addStudentManual({ name, email, collegeId, batchYear, departmentId });
+    return local.addStudentManual({
+      name,
+      email,
+      collegeId,
+      batchYear,
+      departmentId,
+      autoEnroll,
+    });
   }
 }
 
@@ -240,16 +291,18 @@ export async function importStudentsApi({
   csvText,
   rows,
   sendInviteEmail = true,
+  autoEnroll = false,
 }) {
   try {
     const payload = {
       department_id: departmentId,
       send_invite_email: sendInviteEmail,
+      auto_enroll: autoEnroll || undefined,
+      skip_approval: autoEnroll || undefined,
     };
     if (csvText) payload.csv_text = csvText;
     if (rows?.length) payload.rows = rows;
     if (!payload.csv_text && !payload.rows) {
-      // Prefer parsing local CSV into rows if only text provided path fails
       payload.csv_text = csvText || '';
     }
     const data = await orgApi.post('/organizations/students/import', payload);
@@ -259,7 +312,11 @@ export async function importStudentsApi({
         added: Number(data?.created ?? data?.added ?? 0) || 0,
         skipped: Number(data?.skipped ?? data?.updated ?? 0) || 0,
         errors: data?.errors || [],
-        message: data?.message || '',
+        message:
+          data?.message ||
+          (autoEnroll
+            ? 'Import complete. Students are on the roster.'
+            : ''),
       },
       'api'
     );
@@ -267,7 +324,7 @@ export async function importStudentsApi({
     if (!isMissingApi(err)) {
       return { ok: false, error: err.message || 'CSV import failed.' };
     }
-    return local.importStudentsFromCsv({ csvText, departmentId });
+    return local.importStudentsFromCsv({ csvText, departmentId, autoEnroll });
   }
 }
 
@@ -334,13 +391,28 @@ export async function patchStudent(id, patch = {}) {
   try {
     const body = {};
     if (patch.departmentId != null) body.department_id = patch.departmentId;
-    if (patch.status != null) body.status = patch.status;
+    if (patch.status != null) {
+      // Contract: DISABLED / Inactive → BLOCKED on API
+      const s = String(patch.status).toUpperCase();
+      body.status =
+        s === 'DISABLED' || s === 'INACTIVE' || s === 'BLOCKED' ? 'BLOCKED' : s;
+    }
     if (patch.name != null) body.name = patch.name;
+    if (patch.collegeId != null) body.roll_number = patch.collegeId;
+    if (patch.batchYear != null) {
+      body.batch_year = patch.batchYear ? Number(patch.batchYear) || patch.batchYear : null;
+    }
     const data = await orgApi.patch(`/organizations/students/${id}`, body);
     return withSource({ ok: true, student: normalizeStudent(data?.student || data) }, 'api');
   } catch (err) {
     if (!isMissingApi(err)) {
       return { ok: false, error: err.message || 'Unable to update student.' };
+    }
+    try {
+      const student = local.patchStudentLocal(id, patch);
+      if (student) return withSource({ ok: true, student }, 'local');
+    } catch (e) {
+      return { ok: false, error: e?.message || 'Unable to update student.' };
     }
     return { ok: false, error: 'Student update API unavailable.' };
   }

@@ -44,11 +44,17 @@ export default function ActivateTpoPage() {
         setError(result.error || 'Unable to activate account.');
         return;
       }
-      navigate('/Organization/login', {
+      const orgCode = String(result.organizationCode || '').trim().toUpperCase();
+      const loginPath = orgCode
+        ? `/Organization/login?org=${encodeURIComponent(orgCode)}`
+        : '/Organization/login';
+      navigate(loginPath, {
         replace: true,
         state: {
           activateSuccess:
             result.message || 'Password set. You can log in to the Organization Portal.',
+          preferredRole: 'tpo',
+          preferredOrgCode: orgCode || undefined,
         },
       });
     } catch (err) {

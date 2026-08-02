@@ -20,13 +20,13 @@ export const DEMO_USERS = [
   {
     email: 'tpo@demo.edu',
     password: 'Demo@123',
-    role: 'ORG_ADMIN',
+    role: 'TPO',
     name: 'Demo TPO',
   },
   {
     email: 'hod@demo.edu',
     password: 'Demo@123',
-    role: 'DEPARTMENT_ADMIN',
+    role: 'HOD',
     name: 'Demo HOD',
     department_id: DEMO_DEPT_ID,
   },

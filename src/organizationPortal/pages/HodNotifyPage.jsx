@@ -63,6 +63,10 @@ export default function HodNotifyPage() {
 
   return (
     <div className="space-y-5">
+      <div className="mm-org-alert mm-org-alert--error" role="status">
+        Demo only for now — announcements save locally. Push / email delivery waits on the
+        notifications API.
+      </div>
       <div className="mm-org-toolbar">
         <p className="m-0 text-sm mm-org-text-muted">
           Reach only {dept.name} students — drives, mock deadlines, lab reminders.

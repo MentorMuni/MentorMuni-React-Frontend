@@ -32,13 +32,18 @@ export function normalizeDetail(detail) {
 }
 
 export function isOrgSuspendedDetail(detail) {
+  if (detail && typeof detail === 'object' && !Array.isArray(detail)) {
+    const code = String(detail.code || '').toUpperCase();
+    if (code === 'ORG_SUSPENDED') return true;
+  }
   const text = normalizeDetail(detail).toLowerCase();
   if (!text) return false;
   return (
     text.includes('organization is suspended') ||
     text.includes("organization's access has ended") ||
     text.includes('access has ended') ||
-    text.includes('registration is disabled')
+    text.includes('registration is disabled') ||
+    text.includes('org_suspended')
   );
 }
 

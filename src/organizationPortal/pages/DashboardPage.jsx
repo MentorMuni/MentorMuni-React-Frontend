@@ -19,13 +19,19 @@ import {
 import { getOrgSession } from '../../orgPortal';
 import { canMutateCampus, isViewerRole, normalizeOrgRole, ORG_ROLES } from '../roles';
 import { orgPaths } from '../paths';
-import { getHodWorkspaceSnapshot } from '../hodScope';
+import {
+  buildBranchMetricsFromApi,
+  getHodWorkspaceSnapshot,
+} from '../hodScope';
 import {
   buildLocalBranchInsight,
   buildLocalCampusInsight,
   getTpoMetrics,
+  listPrograms,
   subscribeOrgDb,
 } from '../store';
+import { fetchDepartments } from '../departmentsApi';
+import { fetchStudentInvites, fetchStudents } from '../studentsApi';
 import AssignToStudentModal from './AssignToStudentModal';
 
 const EASE = [0.22, 1, 0.36, 1];
@@ -39,9 +45,11 @@ export default function DashboardPage() {
   const [aiBusy, setAiBusy] = useState(false);
   const [insight, setInsight] = useState(() => buildLocalCampusInsight(getTpoMetrics()));
   const [hodSnap, setHodSnap] = useState(() => getHodWorkspaceSnapshot(session));
+  const [hodMetrics, setHodMetrics] = useState(() => getHodWorkspaceSnapshot(session).metrics);
   const [hodInsight, setHodInsight] = useState(() =>
     buildLocalBranchInsight(getHodWorkspaceSnapshot(session).metrics)
   );
+  const [hodDataSource, setHodDataSource] = useState('local');
   const [assignStudent, setAssignStudent] = useState(null);
   const [assignFlash, setAssignFlash] = useState('');
 
@@ -50,11 +58,58 @@ export default function DashboardPage() {
       const next = getTpoMetrics();
       setMetrics(next);
       setInsight(buildLocalCampusInsight(next));
+      if (normalizeOrgRole(getOrgSession()?.role) === ORG_ROLES.HOD && !getOrgSession()?.demo) {
+        return;
+      }
       const hs = getHodWorkspaceSnapshot(getOrgSession());
       setHodSnap(hs);
+      setHodMetrics(hs.metrics);
       setHodInsight(buildLocalBranchInsight(hs.metrics));
+      setHodDataSource('local');
     });
   }, []);
+
+  // Live HOD dashboard: students + pending from API for this department
+  useEffect(() => {
+    if (normalizeOrgRole(session?.role) !== ORG_ROLES.HOD) return undefined;
+    let cancelled = false;
+    (async () => {
+      const deptRes = await fetchDepartments();
+      if (cancelled) return;
+      const list = deptRes.departments || [];
+      const snap = getHodWorkspaceSnapshot(getOrgSession(), list);
+      setHodSnap(snap);
+      const deptId = snap.departmentId;
+      if (!deptId) return;
+      if (session?.demo) {
+        setHodMetrics(snap.metrics);
+        setHodInsight(buildLocalBranchInsight(snap.metrics));
+        setHodDataSource('local');
+        return;
+      }
+      const [roster, queue] = await Promise.all([
+        fetchStudents({ departmentId: deptId }),
+        fetchStudentInvites({ status: 'pending', departmentId: deptId }),
+      ]);
+      if (cancelled) return;
+      const programsCount = listPrograms().filter(
+        (p) =>
+          p.audience === 'all' ||
+          (p.audience === 'department' && String(p.departmentId) === String(deptId))
+      ).length;
+      const live = buildBranchMetricsFromApi({
+        students: roster.students || [],
+        pendingCount: (queue.invitations || []).length,
+        programsCount,
+      });
+      setHodMetrics(live);
+      setHodInsight(buildLocalBranchInsight(live));
+      setHodDataSource(roster.source || 'api');
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [session?.role, session?.demo, session?.department_id]);
 
   const runInsight = () => {
     setAiBusy(true);
@@ -67,8 +122,7 @@ export default function DashboardPage() {
   const runHodInsight = () => {
     setAiBusy(true);
     window.setTimeout(() => {
-      const hs = getHodWorkspaceSnapshot(getOrgSession());
-      setHodInsight(buildLocalBranchInsight(hs.metrics));
+      setHodInsight(buildLocalBranchInsight(hodMetrics));
       setAiBusy(false);
     }, 450);
   };
@@ -441,13 +495,13 @@ export default function DashboardPage() {
   }
 
   if (role === ORG_ROLES.HOD) {
-    const hm = hodSnap.metrics;
+    const hm = hodMetrics;
     const dept = hodSnap.department;
     const hTotal = Math.max(1, hm?.students || 0);
     const hBand = {
-      strong: Math.round(((hm?.bands?.strong || 0) / hTotal) * 100),
-      mid: Math.round(((hm?.bands?.mid || 0) / hTotal) * 100),
-      weak: Math.round(((hm?.bands?.weak || 0) / hTotal) * 100),
+      strong: Math.round(((hm?.bands?.strong || hm?.strong || 0) / hTotal) * 100),
+      mid: Math.round(((hm?.bands?.mid || hm?.mid || 0) / hTotal) * 100),
+      weak: Math.round(((hm?.bands?.weak || hm?.weak || 0) / hTotal) * 100),
     };
 
     if (!dept) {
@@ -487,6 +541,7 @@ export default function DashboardPage() {
           >
             <span className="mm-org-pill">
               <Users size={12} /> {dept.code || 'Branch'} · Mentor
+              {hodDataSource === 'api' ? ' · Live' : hodDataSource === 'local' ? ' · Demo' : ''}
             </span>
             <h2 className="mm-org-hero__title">
               {dept.name}

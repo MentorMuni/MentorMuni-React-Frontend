@@ -694,8 +694,8 @@ export function getStudentRegistrationLink(departmentId = '') {
   return `${window.location.origin}/studentportal/enroll?${params}`;
 }
 
-/** Paste emails (legacy) → pending invites */
-export function inviteStudents({ emails, departmentId, source = 'invite' }) {
+/** Paste emails → pending invites, or auto-enroll when autoEnroll=true (HOD/TPO staff add) */
+export function inviteStudents({ emails, departmentId, source = 'invite', autoEnroll = false }) {
   const dept = listDepartments().find((d) => d.id === departmentId);
   const rows = String(emails || '')
     .split(/[\n,;]+/)
@@ -706,6 +706,34 @@ export function inviteStudents({ emails, departmentId, source = 'invite' }) {
   mutate((data) => {
     rows.forEach((email) => {
       if (!isValidEmail(email) || invitationExists(data, email)) return;
+      if (autoEnroll) {
+        if (data.students.some((s) => s.email === email)) return;
+        data.students.unshift({
+          id: uid('stu'),
+          name: email.split('@')[0].replace(/[._]/g, ' '),
+          email,
+          collegeId: '',
+          batchYear: '',
+          departmentId: departmentId || '',
+          departmentName: dept?.name || '',
+          status: 'active',
+          authStatus: 'needs_password',
+          readiness: 0,
+          mockScore: 0,
+          activities: 0,
+          strength: '—',
+          weakness: '—',
+          source: source || 'invite',
+          setupUrl: '',
+          createdAt: new Date().toISOString(),
+        });
+        if (dept) {
+          const d = data.departments.find((x) => x.id === departmentId);
+          if (d) d.studentCount = (d.studentCount || 0) + 1;
+        }
+        added += 1;
+        return;
+      }
       data.invitations.unshift(
         buildInvitationRow({
           email,
@@ -721,19 +749,56 @@ export function inviteStudents({ emails, departmentId, source = 'invite' }) {
   return { ok: true, added };
 }
 
-/** Single student form → pending queue */
+/** Single student form → pending queue, or roster when autoEnroll */
 export function addStudentManual({
   name,
   email,
   collegeId,
   batchYear,
   departmentId,
+  autoEnroll = false,
 }) {
   const e = normalizeEmail(email);
   if (!isValidEmail(e)) return { ok: false, error: 'Enter a valid student email.' };
   if (!String(name || '').trim()) return { ok: false, error: 'Student name is required.' };
   const dept = listDepartments().find((d) => d.id === departmentId);
   if (!departmentId || !dept) return { ok: false, error: 'Select a department.' };
+
+  if (autoEnroll) {
+    let student = null;
+    mutate((data) => {
+      if (data.students.some((s) => s.email === e) || invitationExists(data, e)) return data;
+      student = {
+        id: uid('stu'),
+        name: String(name).trim(),
+        email: e,
+        collegeId: collegeId || '',
+        batchYear: batchYear || '',
+        departmentId,
+        departmentName: dept.name,
+        status: 'active',
+        authStatus: 'needs_password',
+        readiness: 0,
+        mockScore: 0,
+        activities: 0,
+        strength: '—',
+        weakness: '—',
+        source: 'manual',
+        setupUrl: '',
+        createdAt: new Date().toISOString(),
+      };
+      data.students.unshift(student);
+      const d = data.departments.find((x) => x.id === departmentId);
+      if (d) d.studentCount = (d.studentCount || 0) + 1;
+      return data;
+    });
+    if (!student) return { ok: false, error: 'This email is already pending or enrolled.' };
+    return {
+      ok: true,
+      student,
+      message: 'Student added to roster (demo). Use Resend link for set-password.',
+    };
+  }
 
   let created = null;
   const result = mutate((data) => {
@@ -759,10 +824,10 @@ export function addStudentManual({
 }
 
 /**
- * CSV text → pending invites.
+ * CSV text → pending invites, or roster when autoEnroll=true.
  * Expected headers (flexible): email, name, college_id|roll|roll_number, batch_year|batch
  */
-export function importStudentsFromCsv({ csvText, departmentId }) {
+export function importStudentsFromCsv({ csvText, departmentId, autoEnroll = false }) {
   const dept = listDepartments().find((d) => d.id === departmentId);
   if (!departmentId || !dept) return { ok: false, error: 'Select a department first.' };
 
@@ -828,27 +893,82 @@ export function importStudentsFromCsv({ csvText, departmentId }) {
         errors.push({ row: r + 1, email, message: 'Invalid email' });
         continue;
       }
-      if (invitationExists(data, email)) {
+      if (invitationExists(data, email) || data.students.some((s) => s.email === email)) {
         skipped += 1;
         continue;
       }
-      data.invitations.unshift(
-        buildInvitationRow({
+      if (autoEnroll) {
+        data.students.unshift({
+          id: uid('stu'),
+          name: name || email.split('@')[0].replace(/[._]/g, ' '),
           email,
-          name,
           collegeId,
           batchYear,
           departmentId,
           departmentName: dept.name,
+          status: 'active',
+          authStatus: 'needs_password',
+          readiness: 0,
+          mockScore: 0,
+          activities: 0,
+          strength: '—',
+          weakness: '—',
           source: 'csv',
-        })
-      );
+          setupUrl: '',
+          createdAt: new Date().toISOString(),
+        });
+        const d = data.departments.find((x) => x.id === departmentId);
+        if (d) d.studentCount = (d.studentCount || 0) + 1;
+      } else {
+        data.invitations.unshift(
+          buildInvitationRow({
+            email,
+            name,
+            collegeId,
+            batchYear,
+            departmentId,
+            departmentName: dept.name,
+            source: 'csv',
+          })
+        );
+      }
       added += 1;
     }
     return data;
   });
 
   return { ok: true, added, skipped, errors };
+}
+
+/** Local demo patch for student profile fields */
+export function patchStudentLocal(id, patch = {}) {
+  let updated = null;
+  mutate((data) => {
+    data.students = data.students.map((s) => {
+      if (String(s.id) !== String(id)) return s;
+      updated = {
+        ...s,
+        name: patch.name != null ? String(patch.name).trim() : s.name,
+        collegeId: patch.collegeId != null ? String(patch.collegeId).trim() : s.collegeId,
+        batchYear: patch.batchYear != null ? String(patch.batchYear).trim() : s.batchYear,
+        status:
+          patch.status != null
+            ? String(patch.status).toLowerCase() === 'disabled'
+              ? 'disabled'
+              : s.status
+            : s.status,
+        authStatus:
+          patch.status != null && String(patch.status).toUpperCase() === 'DISABLED'
+            ? 'disabled'
+            : s.authStatus,
+        departmentId: patch.departmentId != null ? patch.departmentId : s.departmentId,
+      };
+      return updated;
+    });
+    return data;
+  });
+  if (!updated) throw new Error('Student not found.');
+  return updated;
 }
 
 /** Public self-register → pending for HOD/TPO approve */

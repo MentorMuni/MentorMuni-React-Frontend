@@ -4,6 +4,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
   ArrowRight,
   Building2,
+  Check,
   ClipboardCheck,
   Eye,
   EyeOff,
@@ -14,13 +15,13 @@ import {
   Search,
   ShieldCheck,
   Users,
+  X,
   Zap,
 } from 'lucide-react';
 import {
+  clearOrgSession,
   consumeOrgAuthFlash,
   fetchLoginColleges,
-  getOrgSession,
-  isOrgAuthenticated,
   loginOrgUser,
   pickInitialCollege,
   saveCollegeCode,
@@ -108,7 +109,11 @@ export default function OrganizationLoginPage() {
   const [colleges, setColleges] = useState([]);
   const [college, setCollege] = useState(null);
   const [collegesLoading, setCollegesLoading] = useState(true);
+  const [collegesWarning, setCollegesWarning] = useState('');
+  const [collegesSource, setCollegesSource] = useState('');
   const [collegeQuery, setCollegeQuery] = useState('');
+  /** When false and a college is chosen, show selected card + Change. */
+  const [pickingCollege, setPickingCollege] = useState(true);
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -133,11 +138,44 @@ export default function OrganizationLoginPage() {
     );
   }, [colleges, collegeQuery]);
 
-  const selectColleges = useMemo(() => {
-    if (!college?.code) return filteredColleges;
-    if (filteredColleges.some((c) => c.code === college.code)) return filteredColleges;
-    return [college, ...filteredColleges];
-  }, [filteredColleges, college]);
+  const collegeQueryActive = collegeQuery.trim().length > 0;
+  const canContinue = Boolean(
+    college?.code && colleges.some((c) => c.code === college.code) && !pickingCollege
+  );
+
+  const pickCollege = (c) => {
+    setCollege(c);
+    setPickingCollege(false);
+    setCollegeQuery('');
+    setError('');
+    setErrorKind('');
+  };
+
+  // Landing on login always clears any prior session (back/forward safety).
+  useEffect(() => {
+    clearOrgSession();
+    const resetToLoginGate = () => {
+      clearOrgSession();
+      setStep('college');
+      setPickingCollege(true);
+      setCollegeQuery('');
+      setUserId('');
+      setPassword('');
+      setError('');
+      setErrorKind('');
+      setCta('');
+    };
+    const onPageShow = (e) => {
+      if (e.persisted) resetToLoginGate();
+    };
+    const onPopState = () => resetToLoginGate();
+    window.addEventListener('pageshow', onPageShow);
+    window.addEventListener('popstate', onPopState);
+    return () => {
+      window.removeEventListener('pageshow', onPageShow);
+      window.removeEventListener('popstate', onPopState);
+    };
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -148,10 +186,28 @@ export default function OrganizationLoginPage() {
       setCollegesLoading(false);
       if (!result.ok) {
         setColleges([]);
+        setCollegesWarning(result.warning || 'Unable to load colleges.');
+        setCollegesSource('');
         return;
       }
       setColleges(result.colleges);
-      setCollege((prev) => prev || pickInitialCollege(result.colleges, searchParams));
+      setCollegesWarning(result.warning || '');
+      setCollegesSource(result.source || '');
+      const preferredOrg = String(searchParams.get('org') || '').trim().toUpperCase();
+      const initial = pickInitialCollege(result.colleges, searchParams, {
+        allowSaved: Boolean(preferredOrg),
+      });
+      if (initial) {
+        setCollege(initial);
+        setPickingCollege(false);
+      } else if (preferredOrg) {
+        setError(
+          `College code “${preferredOrg}” was not found in the active list. Confirm the organization is ACTIVE, then refresh.`
+        );
+        setErrorKind('credentials');
+        setStep('college');
+        setPickingCollege(true);
+      }
     })();
     return () => {
       cancelled = true;
@@ -183,31 +239,35 @@ export default function OrganizationLoginPage() {
       setErrorKind('');
       const preferred = String(location.state?.preferredRole || 'tpo').toLowerCase();
       setRoleId(preferred === 'hod' ? 'hod' : 'tpo');
+      const preferredOrg = String(
+        location.state?.preferredOrgCode || searchParams.get('org') || ''
+      )
+        .trim()
+        .toUpperCase();
+      if (preferredOrg) {
+        saveCollegeCode(preferredOrg);
+      }
       setStep('login');
       navigate(location.pathname + location.search, { replace: true, state: {} });
     }
+  }, [location.pathname, location.search, location.state, navigate, searchParams]);
 
-    if (isOrgAuthenticated()) {
-      navigate(postLoginPath(getOrgSession()), { replace: true });
-    }
-  }, [location.pathname, location.search, location.state, navigate]);
-
-  // Login step requires a college — send users back to the gate if missing.
+  // Login step requires a locked college — send users back to the gate if missing.
   useEffect(() => {
-    if (step === 'login' && !collegesLoading && !college?.code && colleges.length) {
-      const initial = pickInitialCollege(colleges, searchParams);
-      if (initial) {
-        setCollege(initial);
-        return;
-      }
+    if (step !== 'login' || collegesLoading) return;
+    if (college?.code && !pickingCollege) return;
+    const initial = pickInitialCollege(colleges, searchParams, { allowSaved: true });
+    if (initial) {
+      setCollege(initial);
+      setPickingCollege(false);
+      return;
     }
-    if (step === 'login' && !collegesLoading && !college?.code && !colleges.length) {
-      setStep('college');
-    }
-  }, [step, college, colleges, collegesLoading, searchParams]);
+    setStep('college');
+    setPickingCollege(true);
+  }, [step, college, colleges, collegesLoading, searchParams, pickingCollege]);
 
   const confirmCollege = () => {
-    if (!college?.code) return;
+    if (!canContinue) return;
     saveCollegeCode(college.code);
     setError('');
     setErrorKind('');
@@ -326,6 +386,17 @@ export default function OrganizationLoginPage() {
               transition={{ duration: 0.4, ease: EASE }}
             >
               <div className="mm-org-gate__panel-inner">
+                <div className="mm-org-gate-brand">
+                  <div className="mm-org-gate-brand__link">
+                    <img src={LOGO} alt="" className="mm-org-gate-brand__logo" />
+                    <span>MentorMuni</span>
+                  </div>
+                  <span className="mm-org-gate-brand__badge">
+                    <Building2 size={13} aria-hidden />
+                    Organization
+                  </span>
+                </div>
+
                 <div className="mm-org-gate__progress" aria-hidden>
                   <span className="is-active" />
                   <span />
@@ -336,8 +407,19 @@ export default function OrganizationLoginPage() {
                   Confirm your institution to continue to secure sign-in.
                 </p>
 
+                {collegesWarning ? (
+                  <div className="mm-login-vibe-form__error" role="status" style={{ marginBottom: 12 }}>
+                    <p className="mm-login-vibe-form__error-text">{collegesWarning}</p>
+                    {collegesSource === 'offline' ? (
+                      <p className="mm-login-vibe-form__error-cta" style={{ marginTop: 6 }}>
+                        Demo login still works with <strong>DEMO</strong> · tpo@demo.edu / Demo@123
+                      </p>
+                    ) : null}
+                  </div>
+                ) : null}
+
                 <div className="mm-org-gate__form-block">
-                  <label className="mm-org-gate__label" htmlFor="college-select">
+                  <label className="mm-org-gate__label" htmlFor="org-college-q">
                     Institution
                   </label>
 
@@ -347,46 +429,107 @@ export default function OrganizationLoginPage() {
                       Loading institutions…
                     </div>
                   ) : colleges.length ? (
-                    <>
-                      {colleges.length > 8 ? (
-                        <div className="mm-org-gate__field">
-                          <Search size={16} aria-hidden />
-                          <input
-                            type="search"
-                            placeholder="Filter by name"
-                            value={collegeQuery}
-                            onChange={(e) => setCollegeQuery(e.target.value)}
-                            aria-label="Filter colleges"
-                          />
+                    college?.code && !pickingCollege ? (
+                      <div className="mm-org-gate__selected">
+                        <span className="mm-org-gate__selected-mark" aria-hidden>
+                          <Check size={14} strokeWidth={2.6} />
+                        </span>
+                        <div>
+                          <strong title={college.name}>{college.name}</strong>
+                          <small>
+                            {[college.city, college.state].filter(Boolean).join(', ')}
+                            {college.code ? ` · ${college.code}` : ''}
+                          </small>
                         </div>
-                      ) : null}
-
-                      <div className="mm-org-gate__select-wrap">
-                        <Building2 size={16} className="mm-org-gate__select-icon" aria-hidden />
-                        <select
-                          id="college-select"
-                          className="mm-org-gate__select"
-                          value={college?.code || ''}
-                          onChange={(e) => {
-                            const next = colleges.find((c) => c.code === e.target.value) || null;
-                            setCollege(next);
+                        <button
+                          type="button"
+                          className="mm-org-gate__change"
+                          onClick={() => {
+                            setPickingCollege(true);
+                            setCollegeQuery('');
+                            setError('');
+                            setErrorKind('');
                           }}
                         >
-                          <option value="" disabled>
-                            Select your college
-                          </option>
-                          {selectColleges.map((c) => (
-                            <option key={c.code} value={c.code}>
-                              {c.name}
-                            </option>
-                          ))}
-                        </select>
+                          Change
+                        </button>
                       </div>
+                    ) : (
+                      <div className="mm-org-college-picker">
+                        <div className="mm-org-gate__field mm-org-college-search">
+                          <Search size={16} aria-hidden />
+                          <input
+                            id="org-college-q"
+                            type="search"
+                            autoComplete="off"
+                            autoCorrect="off"
+                            spellCheck={false}
+                            placeholder="Search college name, city, or code…"
+                            value={collegeQuery}
+                            onChange={(e) => {
+                              setCollegeQuery(e.target.value);
+                              setError('');
+                              setErrorKind('');
+                            }}
+                            aria-label="Search colleges"
+                          />
+                          {collegeQuery ? (
+                            <button
+                              type="button"
+                              className="mm-org-college-clear"
+                              aria-label="Clear search"
+                              onClick={() => setCollegeQuery('')}
+                            >
+                              <X size={15} />
+                            </button>
+                          ) : null}
+                        </div>
 
-                      {!filteredColleges.length && collegeQuery.trim() ? (
-                        <p className="mm-org-gate__hint">No institutions match that filter.</p>
-                      ) : null}
-                    </>
+                        {!collegeQueryActive ? (
+                          <div className="mm-org-college-hint">
+                            <Search size={15} aria-hidden />
+                            <span>Type to find your college — results open below</span>
+                          </div>
+                        ) : filteredColleges.length ? (
+                          <ul className="mm-org-college-list" role="listbox" aria-label="Colleges">
+                            {filteredColleges.map((c) => {
+                              const selected = college?.code === c.code;
+                              return (
+                                <li key={c.code}>
+                                  <button
+                                    type="button"
+                                    role="option"
+                                    aria-selected={selected}
+                                    className={`mm-org-college-item ${selected ? 'is-selected' : ''}`}
+                                    onClick={() => pickCollege(c)}
+                                  >
+                                    <span className="mm-org-college-item__mark">
+                                      {selected ? (
+                                        <Check size={14} strokeWidth={2.6} />
+                                      ) : (
+                                        (c.code || '?').slice(0, 3)
+                                      )}
+                                    </span>
+                                    <span className="mm-org-college-item__text">
+                                      <span className="mm-org-college-item__name">{c.name}</span>
+                                      <span className="mm-org-college-item__meta">
+                                        {[c.city, c.state].filter(Boolean).join(', ')}
+                                        {c.code ? ` · ${c.code}` : ''}
+                                      </span>
+                                    </span>
+                                    {selected ? (
+                                      <span className="mm-org-college-item__badge">Selected</span>
+                                    ) : null}
+                                  </button>
+                                </li>
+                              );
+                            })}
+                          </ul>
+                        ) : (
+                          <p className="mm-org-gate__hint">No institutions match. Try another name or code.</p>
+                        )}
+                      </div>
+                    )
                   ) : (
                     <div className="mm-org-gate__empty-card">
                       <p>Institution list is temporarily unavailable.</p>
@@ -395,12 +538,20 @@ export default function OrganizationLoginPage() {
                         className="mm-org-gate__retry"
                         onClick={() => {
                           setCollegesLoading(true);
+                          setCollegesWarning('');
                           fetchLoginColleges().then((result) => {
                             setCollegesLoading(false);
                             setColleges(result.ok ? result.colleges : []);
+                            setCollegesWarning(result.warning || '');
+                            setCollegesSource(result.source || '');
                             if (result.ok) {
-                              const initial = pickInitialCollege(result.colleges, searchParams);
-                              if (initial) setCollege(initial);
+                              const initial = pickInitialCollege(result.colleges, searchParams, {
+                                allowSaved: true,
+                              });
+                              if (initial) {
+                                setCollege(initial);
+                                setPickingCollege(false);
+                              }
                             }
                           });
                         }}
@@ -414,10 +565,10 @@ export default function OrganizationLoginPage() {
                 <button
                   type="button"
                   className="mm-org-gate__cta"
-                  disabled={!college?.code}
+                  disabled={!canContinue}
                   onClick={confirmCollege}
                 >
-                  Continue
+                  Continue to sign-in
                   <ArrowRight size={16} aria-hidden />
                 </button>
 
@@ -453,7 +604,11 @@ export default function OrganizationLoginPage() {
                     <button
                       type="button"
                       className="mm-org-login__campus-chip is-button"
-                      onClick={() => setStep('college')}
+                      onClick={() => {
+                        setStep('college');
+                        setPickingCollege(true);
+                        setCollegeQuery('');
+                      }}
                     >
                       <MapPin size={13} aria-hidden />
                       <span className="mm-org-login__campus-copy">
@@ -576,6 +731,7 @@ export default function OrganizationLoginPage() {
                           state: DEMO_ORG.state,
                         };
                       setCollege(demoCollege);
+                      setPickingCollege(false);
                       saveCollegeCode(DEMO_ORG.code);
                       const u =
                         roleId === 'hod'

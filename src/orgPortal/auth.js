@@ -9,6 +9,7 @@ import {
   getSuspendedUx,
   isOrgSuspendedDetail,
 } from './suspended';
+import { normalizeOrgRole } from '../organizationPortal/roles';
 
 const SESSION_KEY = 'mm-org-session';
 
@@ -22,6 +23,12 @@ export function getOrgSession() {
 }
 
 export function setOrgSession(user) {
+  const expiresAt =
+    user?.expiresAt ||
+    (Number(user?.expires_in_minutes) > 0
+      ? new Date(Date.now() + Number(user.expires_in_minutes) * 60 * 1000).toISOString()
+      : undefined);
+
   localStorage.setItem(
     SESSION_KEY,
     JSON.stringify({
@@ -29,8 +36,9 @@ export function setOrgSession(user) {
       name: user?.name || [user?.first_name, user?.last_name].filter(Boolean).join(' ') || '',
       email: user?.email || '',
       username: user?.username || '',
-      role: user?.role || '',
-      organization_id: user?.organization_id,
+      // FE alias: ORG_ADMIN→TPO, DEPARTMENT_ADMIN→HOD (backend may still send either)
+      role: normalizeOrgRole(user?.role || user?.role_code),
+      organization_id: user?.organization_id ?? user?.org_id,
       organization_name: user?.organization_name || user?.organization?.name || '',
       organization_code: user?.organization_code || user?.organization?.code || '',
       department_id: user?.department_id ?? user?.department?.id ?? null,
@@ -46,6 +54,7 @@ export function setOrgSession(user) {
           user?.password_change_required ||
           user?.force_password_change
       ),
+      expiresAt,
       demo: Boolean(user?.demo),
       loggedInAt: new Date().toISOString(),
     })
@@ -134,17 +143,28 @@ export async function loginOrgUser(userId, password, organizationCode = '') {
 
     orgApi.setToken(login.access_token);
 
+    // Prefer nested user object; fall back to top-level login fields.
     let user = {
-      email: login.email,
-      username: login.username,
-      role: login.role,
-      name: login.name,
-      organization_id: login.organization_id,
+      ...(login.user && typeof login.user === 'object' ? login.user : {}),
+      email: login.user?.email || login.email,
+      username: login.user?.username || login.username,
+      role: login.user?.role || login.role,
+      name: login.user?.name || login.name,
+      organization_id: login.user?.organization_id || login.organization_id,
+      organization_code: login.user?.organization_code || login.organization_code,
+      organization_name: login.user?.organization_name || login.organization_name,
+      department_id: login.user?.department_id ?? login.department_id ?? null,
+      department_name: login.user?.department_name || login.department_name,
+      department_code: login.user?.department_code || login.department_code,
+      permissions: login.user?.permissions || login.permissions,
+      must_change_password:
+        login.user?.must_change_password ?? login.must_change_password,
+      expires_in_minutes: login.expires_in_minutes,
     };
 
     try {
       const me = await orgApi.get('/auth/me');
-      user = { ...user, ...me };
+      user = { ...user, ...me, expires_in_minutes: login.expires_in_minutes };
     } catch (err) {
       if (err instanceof OrgApiError && err.isSuspended) {
         clearOrgSession();
@@ -160,10 +180,15 @@ export async function loginOrgUser(userId, password, organizationCode = '') {
     }
 
     setOrgSession(user);
-    return { ok: true, user, token_type: login.token_type || 'bearer' };
+    return { ok: true, user: getOrgSession(), token_type: login.token_type || 'bearer' };
   } catch (err) {
     if (err instanceof OrgApiError) {
-      if (err.isSuspended || (err.status === 403 && isOrgSuspendedDetail(err.message))) {
+      const code = String(err.code || '').toUpperCase();
+      if (
+        err.isSuspended ||
+        code === 'ORG_SUSPENDED' ||
+        (err.status === 403 && isOrgSuspendedDetail(err.detail || err.message))
+      ) {
         clearOrgSession();
         return {
           ok: false,
@@ -173,7 +198,7 @@ export async function loginOrgUser(userId, password, organizationCode = '') {
           ux: getSuspendedUx(err.message),
         };
       }
-      if (err.status === 401) {
+      if (err.status === 401 || code === 'INVALID_CREDENTIALS') {
         return {
           ok: false,
           error: err.message || 'Invalid credentials.',
@@ -185,12 +210,17 @@ export async function loginOrgUser(userId, password, organizationCode = '') {
         return {
           ok: false,
           error: err.message,
-          code: 'FORBIDDEN',
+          code: code || 'FORBIDDEN',
           status: 403,
           ux: getSuspendedUx(err.message),
         };
       }
-      return { ok: false, error: err.message || 'Unable to login.', status: err.status };
+      return {
+        ok: false,
+        error: err.message || 'Unable to login.',
+        status: err.status,
+        code: code || undefined,
+      };
     }
     return { ok: false, error: err?.message || 'Unable to login.' };
   }
@@ -242,6 +272,7 @@ export function getRegistrationErrorMessage(err) {
 /**
  * POST /platform/auth/activate-tpo
  * API key only — no platform JWT. Used by /activate-tpo?token=...
+ * Success: { message, organization_code }; must_change_password is false after activate.
  */
 export async function activateTpoAccount(token, newPassword) {
   try {
@@ -256,25 +287,60 @@ export async function activateTpoAccount(token, newPassword) {
     return {
       ok: true,
       message: data?.message || 'Password set. You can log in to the Organization Portal.',
+      organizationCode: extractOrgCode(data),
       data,
     };
   } catch (err) {
-    if (err instanceof OrgApiError) {
-      return {
-        ok: false,
-        error: err.message || 'Unable to activate account.',
-        status: err.status,
-        isSuspended: err.isSuspended,
-      };
-    }
+    if (err instanceof OrgApiError) return friendlyActivateError(err);
     return { ok: false, error: err?.message || 'Unable to activate account.' };
   }
+}
+
+function extractOrgCode(data) {
+  const raw =
+    data?.organization_code ||
+    data?.organizationCode ||
+    data?.org_code ||
+    data?.orgCode ||
+    data?.organization?.code ||
+    data?.organization?.organization_code ||
+    '';
+  return String(raw || '')
+    .trim()
+    .toUpperCase();
+}
+
+function friendlyActivateError(err) {
+  const code = String(err?.code || '').toUpperCase();
+  if (code === 'ACTIVATION_TOKEN_EXPIRED') {
+    return {
+      ok: false,
+      error: err.message || 'This activation link has expired. Ask for a fresh invite email.',
+      status: err.status,
+      code,
+    };
+  }
+  if (code === 'TOKEN_INVALID' || code === 'ACTIVATION_TOKEN_INVALID') {
+    return {
+      ok: false,
+      error: err.message || 'This activation link is invalid or already used.',
+      status: err.status,
+      code,
+    };
+  }
+  return {
+    ok: false,
+    error: err?.message || 'Unable to activate account.',
+    status: err?.status,
+    code: code || undefined,
+    isSuspended: err?.isSuspended,
+  };
 }
 
 /**
  * POST /auth/activate-hod (preferred) or /platform/auth/activate-hod
  * API key only — used by /activate-hod?token=...
- * Falls back to local invite token store until backend is live.
+ * Local fallback only when a demo invite token exists in the browser store.
  */
 export async function activateHodAccount(token, newPassword) {
   const payload = {
@@ -291,6 +357,7 @@ export async function activateHodAccount(token, newPassword) {
       return {
         ok: true,
         message: data?.message || 'Password set. You can log in to the Organization Portal.',
+        organizationCode: extractOrgCode(data),
         data,
         source: 'api',
       };
@@ -300,25 +367,27 @@ export async function activateHodAccount(token, newPassword) {
           lastError = err;
           continue;
         }
-        return {
-          ok: false,
-          error: err.message || 'Unable to activate HOD account.',
-          status: err.status,
-          isSuspended: err.isSuspended,
-        };
+        return friendlyActivateError(err);
       }
       lastError = err;
     }
   }
 
-  // Local fallback for demo / pre-API environments
   try {
-    const { activateHodInviteLocal } = await import('../organizationPortal/store');
+    const { activateHodInviteLocal, peekHodInvite } = await import('../organizationPortal/store');
+    if (!peekHodInvite(payload.token)) {
+      return friendlyActivateError(
+        lastError || {
+          message: 'Unable to activate HOD account. Ask your TPO to resend the invite.',
+        }
+      );
+    }
     const local = activateHodInviteLocal(payload.token, newPassword);
     if (local.ok) {
       return {
         ok: true,
         message: local.message,
+        organizationCode: extractOrgCode(local) || 'DEMO',
         data: local,
         source: 'local',
       };

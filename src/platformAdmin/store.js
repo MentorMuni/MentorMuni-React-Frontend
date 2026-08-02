@@ -2,12 +2,6 @@ import { platformApi } from './platformApi';
 
 export const PLATFORM_ROLES = ['PLATFORM_ADMIN', 'SUPPORT', 'SALES', 'OPERATIONS'];
 
-export const PLANS = [
-  { id: 1, name: 'Starter', defaultLimit: 200 },
-  { id: 2, name: 'Growth', defaultLimit: 800 },
-  { id: 3, name: 'Enterprise', defaultLimit: 1500 },
-];
-
 function emitUpdate() {
   window.dispatchEvent(new CustomEvent('mm-platform-db-updated'));
 }
@@ -89,23 +83,34 @@ export async function createOrganization(payload) {
 }
 
 export async function updateOrganization(id, patch) {
-  const row = await platformApi.put(`/platform/organizations/${id}`, {
+  const body = {
     ...patch,
+    ...(patch.code != null ? { code: String(patch.code).toUpperCase() } : {}),
     ...(patch.organization_type ? { organization_type: apiOrgType(patch.organization_type) } : {}),
     ...(patch.status ? { status: apiStatus(patch.status) } : {}),
-  });
+  };
+  const row = await platformApi.put(`/platform/organizations/${id}`, body);
   emitUpdate();
   return normalizeOrganization(row);
 }
 
 export async function getSubscriptionPlans() {
+  // X-API-Key required; Bearer not required (auth: false still sends API key).
   const rows = asArray(await platformApi.get('/subscription-plans', { auth: false }), ['plans']);
-  return rows.map((p) => ({
-    id: p.id,
-    name: p.name || p.plan_name,
-    defaultLimit: p.default_student_limit || p.student_limit || 100,
-    plan_type: p.plan_type,
-  }));
+  const plans = rows
+    .map((p) => ({
+      id: p.id,
+      plan_code: String(p.plan_code || p.code || '').toUpperCase(),
+      name: p.name || p.plan_name || p.plan_code || p.code || `Plan ${p.id}`,
+      defaultLimit:
+        p.default_student_limit || p.max_students || p.student_limit || 100,
+      plan_type: p.plan_type,
+    }))
+    .filter((p) => p.id != null);
+  if (!plans.length) {
+    throw new Error('No subscription plans returned by the API.');
+  }
+  return plans;
 }
 
 export async function getSubscriptions(filters = {}) {
@@ -122,23 +127,53 @@ export async function getSubscriptionForOrg(organizationId) {
   return rows[0] || null;
 }
 
-export async function assignSubscription(payload) {
-  let planId = payload.plan_id;
-  if (!planId && payload.plan_name) {
-    const plans = await getSubscriptionPlans();
-    const matched = plans.find((p) => p.name === payload.plan_name);
-    if (matched) planId = matched.id;
+function resolvePlanId(payload, plans) {
+  if (payload.plan_id != null && payload.plan_id !== '') return Number(payload.plan_id);
+  const code = String(payload.plan_code || '').toUpperCase();
+  if (code) {
+    const byCode = plans.find((p) => p.plan_code === code);
+    if (byCode) return Number(byCode.id);
   }
-  if (!planId) throw new Error('Unable to resolve plan_id for subscription.');
+  const name = String(payload.plan_name || '').trim();
+  if (name) {
+    const byName = plans.find(
+      (p) => p.name === name || p.plan_code === name.toUpperCase()
+    );
+    if (byName) return Number(byName.id);
+  }
+  return null;
+}
 
-  const row = await platformApi.post('/platform/subscriptions', {
+export async function assignSubscription(payload) {
+  const plans = await getSubscriptionPlans();
+  const planId = resolvePlanId(payload, plans);
+  if (!planId) {
+    throw new Error('Unable to resolve plan_id. Use a plan id/plan_code from GET /subscription-plans.');
+  }
+
+  const body = {
     organization_id: Number(payload.organization_id),
     plan_id: Number(planId),
     student_limit: Number(payload.student_limit),
     start_date: payload.start_date,
     end_date: payload.end_date,
     status: payload.status || 'ACTIVE',
-  });
+  };
+
+  // Renew in place when an ACTIVE subscription already exists.
+  if (payload.subscription_id) {
+    const row = await platformApi.put(`/platform/subscriptions/${payload.subscription_id}`, {
+      plan_id: body.plan_id,
+      student_limit: body.student_limit,
+      start_date: body.start_date,
+      end_date: body.end_date,
+      status: body.status,
+    });
+    emitUpdate();
+    return row;
+  }
+
+  const row = await platformApi.post('/platform/subscriptions', body);
   emitUpdate();
   return row;
 }
@@ -147,6 +182,17 @@ export async function updateSubscription(id, patch) {
   const row = await platformApi.put(`/platform/subscriptions/${id}`, patch);
   emitUpdate();
   return row;
+}
+
+export async function cancelSubscription(id, status = 'CANCELLED') {
+  return updateSubscription(id, { status });
+}
+
+export async function deleteOrganization(id) {
+  // Soft delete only: backend sets org SUSPENDED and ACTIVE subscriptions → CANCELLED.
+  // PUBLIC organizations are blocked by the API.
+  await platformApi.delete(`/platform/organizations/${id}`);
+  emitUpdate();
 }
 
 export async function getFeatureCatalog() {
@@ -285,13 +331,24 @@ export async function createPlatformUser(payload) {
 }
 
 export async function updatePlatformUser(id, payload) {
-  const row = await platformApi.put(`/platform/users/${id}`, payload);
+  const body = { ...payload };
+  if (body.status) {
+    const s = String(body.status).toUpperCase();
+    body.status = s === 'SUSPENDED' || s === 'INACTIVE' ? 'INACTIVE' : 'ACTIVE';
+  }
+  const row = await platformApi.put(`/platform/users/${id}`, body);
   emitUpdate();
   return row;
 }
 
 export async function updatePlatformUserStatus(id, status) {
   return updatePlatformUser(id, { status });
+}
+
+export async function deletePlatformUser(id) {
+  const row = await platformApi.delete(`/platform/users/${id}`);
+  emitUpdate();
+  return row;
 }
 
 export async function getDashboardMetrics() {

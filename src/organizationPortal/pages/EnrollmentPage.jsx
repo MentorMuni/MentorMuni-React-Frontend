@@ -41,11 +41,21 @@ export default function EnrollmentPage() {
   const [csvText, setCsvText] = useState('');
   const [manual, setManual] = useState({ name: '', email: '', collegeId: '', batchYear: '' });
   const [lastSetupUrl, setLastSetupUrl] = useState('');
+  const [deptHodMap, setDeptHodMap] = useState({}); // id → hodStatus
 
   const registerUrl = useMemo(
     () => getRegistrationLink(departmentId || departments[0]?.id || ''),
     [departmentId, departments]
   );
+
+  /** Self-register pending is owned by HOD when that dept has an active mentor */
+  const visiblePending = useMemo(() => {
+    return pending.filter((inv) => {
+      if (inv.source !== 'self_register') return true;
+      const status = deptHodMap[String(inv.departmentId || '')];
+      return status !== 'active';
+    });
+  }, [pending, deptHodMap]);
 
   const reload = async (deptFilter = departmentId) => {
     setLoading(true);
@@ -72,6 +82,11 @@ export default function EnrollmentPage() {
             code: d.code,
           }))
         );
+        const map = {};
+        res.departments.forEach((d) => {
+          map[String(d.id)] = d.hodStatus || d.hod_status || '';
+        });
+        setDeptHodMap(map);
       } else {
         setDepartments(listDepartments());
       }
@@ -81,7 +96,24 @@ export default function EnrollmentPage() {
     };
   }, []);
 
-  useEffect(() => subscribeOrgDb(() => setDepartments(listDepartments())), []);
+  useEffect(() => {
+    const unsub = subscribeOrgDb(() => {
+      fetchDepartments().then((res) => {
+        if (res.ok && res.departments?.length) {
+          setDepartments(
+            res.departments.map((d) => ({
+              id: d.id,
+              name: d.name,
+              code: d.code,
+            }))
+          );
+        } else {
+          setDepartments(listDepartments());
+        }
+      });
+    });
+    return unsub;
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -126,14 +158,18 @@ export default function EnrollmentPage() {
       flash(false, 'Add at least one student email.');
       return;
     }
-    const res = await inviteStudentsApi({ emails, departmentId });
+    const res = await inviteStudentsApi({ emails, departmentId, autoEnroll: true });
     if (!res.ok) {
       flash(false, res.error);
       return;
     }
     setEmails('');
-    flash(true, `${res.added || 0} invite(s) queued.`);
-    setTab('queue');
+    flash(
+      true,
+      res.message || `${res.added || 0} student(s) invited onto the roster.`,
+      res.setupUrl || ''
+    );
+    setTab('roster');
     await reload();
   };
 
@@ -143,14 +179,14 @@ export default function EnrollmentPage() {
       flash(false, 'Select a department.');
       return;
     }
-    const res = await addStudentManualApi({ ...manual, departmentId });
+    const res = await addStudentManualApi({ ...manual, departmentId, autoEnroll: true });
     if (!res.ok) {
       flash(false, res.error);
       return;
     }
     setManual({ name: '', email: '', collegeId: '', batchYear: '' });
-    flash(true, res.message || 'Student queued for approval.');
-    setTab('queue');
+    flash(true, res.message || 'Student added to roster.', res.setupUrl || '');
+    setTab('roster');
     await reload();
   };
 
@@ -164,14 +200,18 @@ export default function EnrollmentPage() {
       csvText,
       departmentId,
       sendInviteEmail: true,
+      autoEnroll: true,
     });
     if (!res.ok) {
       flash(false, res.error);
       return;
     }
-    flash(true, `Imported ${res.added} · skipped ${res.skipped || 0}.`);
+    flash(
+      true,
+      res.message || `Imported ${res.added} · skipped ${res.skipped || 0}.`
+    );
     setCsvText('');
-    setTab('queue');
+    setTab('roster');
     await reload();
   };
 
@@ -197,7 +237,9 @@ export default function EnrollmentPage() {
           <div>
             <h2 className="mm-org-panel__title">Student enrollment</h2>
             <p className="mm-org-panel__meta">
-              API-first · local fallback · {dataSource || '…'}
+              Staff adds (email / manual / CSV) go to roster with set-password invite. Reg link
+              requests go to the approval queue
+              {dataSource ? ` · ${dataSource}` : ''}
               {loading ? ' · loading' : ''}
             </p>
           </div>
@@ -273,7 +315,7 @@ export default function EnrollmentPage() {
             />
             <div className="mm-org-form-actions">
               <button type="submit" className="mm-org-btn mm-org-btn--primary">
-                <UserPlus size={15} /> Queue invites
+                <UserPlus size={15} /> Invite to roster
               </button>
             </div>
           </form>
@@ -318,7 +360,7 @@ export default function EnrollmentPage() {
             </div>
             <div className="mm-org-form-actions" style={{ gridColumn: '1 / -1' }}>
               <button type="submit" className="mm-org-btn mm-org-btn--primary">
-                Queue for approval
+                Add to roster
               </button>
             </div>
           </form>
@@ -356,32 +398,41 @@ export default function EnrollmentPage() {
             />
             <div className="mm-org-form-actions">
               <button type="submit" className="mm-org-btn mm-org-btn--primary">
-                Import to queue
+                Import to roster
               </button>
             </div>
           </form>
         ) : null}
 
         {addMode === 'link' ? (
-          <div className="flex flex-wrap items-center gap-2">
-            <code className="mm-org-code text-xs" style={{ flex: 1 }}>
-              {registerUrl}
-            </code>
-            <button
-              type="button"
-              className="mm-org-btn mm-org-btn--sm mm-org-btn--primary"
-              onClick={() => copyText(registerUrl)}
-            >
-              <Copy size={14} /> Copy
-            </button>
-            <a
-              className="mm-org-btn mm-org-btn--sm mm-org-btn--ghost"
-              href={registerUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Link2 size={14} /> Open
-            </a>
+          <div>
+            <p className="mb-2 text-xs mm-org-text-muted">
+              Students open this link to request enrollment
+              {departmentId
+                ? ' for the selected department'
+                : ' (pick a department above to pre-select it)'}.
+              Uses your org code and lands on <code>/studentportal/enroll</code>.
+            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <code className="mm-org-code text-xs" style={{ flex: 1 }}>
+                {registerUrl}
+              </code>
+              <button
+                type="button"
+                className="mm-org-btn mm-org-btn--sm mm-org-btn--primary"
+                onClick={() => copyText(registerUrl)}
+              >
+                <Copy size={14} /> Copy
+              </button>
+              <a
+                className="mm-org-btn mm-org-btn--sm mm-org-btn--ghost"
+                href={registerUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Link2 size={14} /> Open
+              </a>
+            </div>
           </div>
         ) : null}
       </section>
@@ -393,7 +444,7 @@ export default function EnrollmentPage() {
             className={`mm-org-btn mm-org-btn--sm ${tab === 'queue' ? 'mm-org-btn--primary' : 'mm-org-btn--ghost'}`}
             onClick={() => setTab('queue')}
           >
-            Approval queue ({pending.length})
+            Approval queue ({visiblePending.length})
           </button>
           <button
             type="button"
@@ -405,9 +456,16 @@ export default function EnrollmentPage() {
         </div>
       </div>
 
+      {tab === 'queue' && pending.length > visiblePending.length ? (
+        <div className="mm-org-alert mm-org-alert--success" role="status">
+          Self-register requests for departments with an active HOD are handled on the HOD Students
+          queue — hidden here ({pending.length - visiblePending.length} hidden).
+        </div>
+      ) : null}
+
       <section className="mm-org-panel">
         {tab === 'queue' ? (
-          pending.length ? (
+          visiblePending.length ? (
             <div className="mm-org-table-wrap">
               <table className="mm-org-table">
                 <thead>
@@ -419,7 +477,7 @@ export default function EnrollmentPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {pending.map((inv) => (
+                  {visiblePending.map((inv) => (
                     <tr key={inv.id}>
                       <td>
                         <p className="mm-org-table__title">{inv.name || inv.email}</p>
@@ -481,7 +539,33 @@ export default function EnrollmentPage() {
                       <p className="mm-org-table__title">{s.name}</p>
                       <p className="mm-org-table__meta">{s.email}</p>
                     </td>
-                    <td>{s.departmentName || '—'}</td>
+                    <td>
+                      <select
+                        className="mm-org-select"
+                        aria-label={`Move ${s.name || s.email} to department`}
+                        value={s.departmentId || ''}
+                        onChange={async (e) => {
+                          const next = e.target.value;
+                          if (!next || String(next) === String(s.departmentId || '')) return;
+                          const res = await patchStudent(s.id, { departmentId: next });
+                          if (!res.ok) {
+                            flash(false, res.error);
+                            return;
+                          }
+                          flash(true, 'Department updated.');
+                          await reload();
+                        }}
+                      >
+                        <option value="" disabled>
+                          Select department
+                        </option>
+                        {departments.map((d) => (
+                          <option key={d.id} value={d.id}>
+                            {d.name} ({d.code})
+                          </option>
+                        ))}
+                      </select>
+                    </td>
                     <td>
                       <span
                         className={`mm-org-badge ${

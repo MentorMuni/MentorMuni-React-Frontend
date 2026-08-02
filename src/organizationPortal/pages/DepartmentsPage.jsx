@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   Check,
   Copy,
+  Eye,
   History,
   Link2,
   Mail,
@@ -38,6 +39,36 @@ function statusBadge(status) {
   return 'mm-org-badge--neutral';
 }
 
+function applyInviteResult(result, email, setters) {
+  const { setLinkInfo, flash } = setters;
+  const url = result.activationUrl || buildHodActivationUrl(result.activationToken);
+  // Always surface the link panel when we have a URL, or when email failed/unknown.
+  if (url || result.emailed === false || result.emailUnknown || result.emailSkipped) {
+    setLinkInfo({
+      url: url || '',
+      token: result.activationToken || '',
+      email,
+      emailed: Boolean(result.emailed),
+      emailUnknown: Boolean(result.emailUnknown),
+      emailSkipped: Boolean(result.emailSkipped),
+      emailDetail: result.emailDetail || '',
+      source: result.source || '',
+    });
+  } else if (result.emailed) {
+    setLinkInfo({
+      url: '',
+      token: '',
+      email,
+      emailed: true,
+      emailUnknown: false,
+      emailSkipped: false,
+      emailDetail: '',
+      source: result.source || '',
+    });
+  }
+  flash(true, result.message || 'Done.');
+}
+
 export default function DepartmentsPage() {
   const session = getOrgSession();
   const canEdit = canMutateCampus(session?.role);
@@ -46,7 +77,7 @@ export default function DepartmentsPage() {
   const [source, setSource] = useState('local');
   const [loading, setLoading] = useState(false);
   const [deptForm, setDeptForm] = useState(emptyDeptForm);
-  const [panel, setPanel] = useState(null); // invite | replace | history | null
+  const [panel, setPanel] = useState(null); // invite | replace | revoke | history | view | null
   const [activeId, setActiveId] = useState('');
   const [hodForm, setHodForm] = useState(emptyHodForm);
   const [linkInfo, setLinkInfo] = useState(null);
@@ -60,6 +91,10 @@ export default function DepartmentsPage() {
     const result = await fetchDepartments();
     setDepartments(result.departments || []);
     setSource(result.source || 'local');
+    if (!result.ok && result.error) {
+      setErr(result.error);
+      setMsg('');
+    }
     setLoading(false);
   };
 
@@ -69,8 +104,13 @@ export default function DepartmentsPage() {
       if (cancelled) return;
       setDepartments(result.departments || []);
       setSource(result.source || 'local');
+      if (!result.ok && result.error) {
+        setErr(result.error);
+      }
     });
     const unsub = subscribeOrgDb(() => {
+      // Local demo store only — ignore for live API sessions
+      if (!session?.demo) return;
       fetchDepartments().then((result) => {
         if (cancelled) return;
         setDepartments(result.departments || []);
@@ -81,7 +121,7 @@ export default function DepartmentsPage() {
       cancelled = true;
       unsub();
     };
-  }, []);
+  }, [session?.demo]);
 
   const activeDept = useMemo(
     () => departments.find((d) => d.id === activeId) || null,
@@ -137,11 +177,32 @@ export default function DepartmentsPage() {
     setErr('');
   };
 
+  const openRevoke = (dept) => {
+    setActiveId(dept.id);
+    setPanel('revoke');
+    setHodForm({ name: dept.hodName || '', email: dept.hodEmail || '', reason: '' });
+    setLinkInfo(null);
+    setMsg('');
+    setErr('');
+  };
+
   const openHistory = (dept) => {
     setActiveId(dept.id);
     setPanel('history');
     setMsg('');
     setErr('');
+  };
+
+  const openView = (dept) => {
+    setActiveId(dept.id);
+    setPanel('view');
+    setMsg('');
+    setErr('');
+  };
+
+  const inviteSetters = {
+    setLinkInfo,
+    flash,
   };
 
   const onInvite = async (e) => {
@@ -154,9 +215,7 @@ export default function DepartmentsPage() {
       flash(false, result.error);
       return;
     }
-    const url = result.activationUrl || buildHodActivationUrl(result.activationToken);
-    setLinkInfo({ url, token: result.activationToken, email: hodForm.email });
-    flash(true, result.message || 'Invite ready.');
+    applyInviteResult(result, hodForm.email, inviteSetters);
     await refresh();
   };
 
@@ -170,9 +229,7 @@ export default function DepartmentsPage() {
       flash(false, result.error);
       return;
     }
-    const url = result.activationUrl || buildHodActivationUrl(result.activationToken);
-    setLinkInfo({ url, token: result.activationToken, email: hodForm.email });
-    flash(true, result.message || 'HOD replaced.');
+    applyInviteResult(result, hodForm.email, inviteSetters);
     await refresh();
   };
 
@@ -188,19 +245,15 @@ export default function DepartmentsPage() {
     setActiveId(dept.id);
     setPanel('invite');
     setHodForm({ name: dept.hodName || '', email: dept.hodEmail || '', reason: '' });
-    const url = result.activationUrl || buildHodActivationUrl(result.activationToken);
-    setLinkInfo({ url, token: result.activationToken, email: dept.hodEmail });
-    flash(true, result.message || 'Reinvite ready.');
+    applyInviteResult(result, dept.hodEmail, inviteSetters);
     await refresh();
   };
 
-  const onRevoke = async (dept) => {
-    if (!canEdit) return;
-    if (!window.confirm(`Revoke HOD access for ${dept.hodName || dept.hodEmail}? Students stay in ${dept.name}.`)) {
-      return;
-    }
+  const onRevoke = async (e) => {
+    e?.preventDefault?.();
+    if (!canEdit || !activeId || !activeDept) return;
     setBusy(true);
-    const result = await revokeDepartmentHod(dept.id);
+    const result = await revokeDepartmentHod(activeId, hodForm.reason || '');
     setBusy(false);
     if (!result.ok) {
       flash(false, result.error);
@@ -243,8 +296,14 @@ export default function DepartmentsPage() {
       <div className="mm-org-toolbar">
         <div>
           <p className="m-0 text-sm mm-org-text-muted">
-            Branches + HOD mentors. Invite → activate password → active.
-            {source === 'local' ? ' (Local demo until departments API is live.)' : ' (Live API.)'}
+            Flow: create department → invite HOD → they set password from email/link → login as HOD.
+            {source === 'api'
+              ? ' Live API.'
+              : source === 'local'
+                ? ' Demo mode (local only — not emailed).'
+                : source === 'unavailable' || source === 'error'
+                  ? ' Server unavailable.'
+                  : ''}
           </p>
         </div>
         {!canEdit ? (
@@ -255,32 +314,145 @@ export default function DepartmentsPage() {
       {err ? <div className="mm-org-alert mm-org-alert--error">{err}</div> : null}
       {msg ? <div className="mm-org-alert mm-org-alert--success">{msg}</div> : null}
 
-      {linkInfo?.url ? (
+      {linkInfo ? (
         <section className="mm-org-panel" style={{ borderColor: 'rgba(12, 110, 140, 0.35)' }}>
           <div className="mm-org-panel__head">
             <div>
-              <h2 className="mm-org-panel__title">HOD activation link</h2>
+              <h2 className="mm-org-panel__title">HOD activation</h2>
               <p className="mm-org-panel__meta">
-                Share with {linkInfo.email}. They open it, set a password, then log in as HOD.
-                Email delivery attaches when the API is connected.
+                {linkInfo.emailed
+                  ? `Email sent to ${linkInfo.email}. They open the link, set a password, then sign in as HOD.`
+                  : linkInfo.emailSkipped || linkInfo.emailed === false
+                    ? `Email was not delivered to ${linkInfo.email}${
+                        linkInfo.emailDetail ? ` (${linkInfo.emailDetail})` : ''
+                      }. Copy the link below and share it manually.`
+                    : `Share with ${linkInfo.email}. They open the link, set a password, then sign in as HOD.`}
+                {linkInfo.source === 'local' ? ' Demo invite — no real email is sent.' : null}
               </p>
+              {linkInfo.emailed ? (
+                <span className="mm-org-badge mm-org-badge--active mt-2">Email sent</span>
+              ) : linkInfo.url ? (
+                <span className="mm-org-badge mm-org-badge--pending mt-2">Share link manually</span>
+              ) : null}
             </div>
-            <button type="button" className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm" onClick={() => setLinkInfo(null)}>
+            <button
+              type="button"
+              className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+              onClick={() => setLinkInfo(null)}
+            >
               <X size={14} /> Dismiss
             </button>
           </div>
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <code className="mm-org-code mm-org-code--block" style={{ flex: 1 }}>
-              {linkInfo.url}
-            </code>
-            <button type="button" className="mm-org-btn mm-org-btn--primary" onClick={copyLink}>
-              {copied ? <Check size={15} /> : <Copy size={15} />}
-              {copied ? 'Copied' : 'Copy link'}
+          {linkInfo.url ? (
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
+              <code className="mm-org-code mm-org-code--block" style={{ flex: 1 }}>
+                {linkInfo.url}
+              </code>
+              <button type="button" className="mm-org-btn mm-org-btn--primary" onClick={copyLink}>
+                {copied ? <Check size={15} /> : <Copy size={15} />}
+                {copied ? 'Copied' : 'Copy link'}
+              </button>
+              <a
+                className="mm-org-btn mm-org-btn--ghost"
+                href={linkInfo.url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <Link2 size={15} /> Open
+              </a>
+            </div>
+          ) : linkInfo.emailed ? (
+            <p className="m-0 text-sm mm-org-text-muted">
+              No backup link was returned. If the HOD did not get the email, use Resend.
+            </p>
+          ) : (
+            <p className="m-0 text-sm mm-org-text-muted">
+              No activation link was returned. Ask support to check invite email delivery, or try Resend.
+            </p>
+          )}
+        </section>
+      ) : null}
+
+      {panel === 'view' && activeDept ? (
+        <section className="mm-org-panel">
+          <div className="mm-org-panel__head">
+            <div>
+              <h2 className="mm-org-panel__title">{activeDept.name}</h2>
+              <p className="mm-org-panel__meta">
+                Code {activeDept.code || '—'} · {activeDept.studentCount || 0} student(s)
+              </p>
+            </div>
+            <button type="button" className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm" onClick={closePanels}>
+              Close
             </button>
-            <a className="mm-org-btn mm-org-btn--ghost" href={linkInfo.url} target="_blank" rel="noreferrer">
-              <Link2 size={15} /> Open
-            </a>
           </div>
+          <div className="mm-org-form-grid">
+            <div>
+              <p className="mm-org-label">HOD / mentor</p>
+              <p className="m-0 mm-org-table__title">{activeDept.hodName || 'Unassigned'}</p>
+              <p className="mm-org-table__meta">{activeDept.hodEmail || 'No email'}</p>
+              <span className={`mm-org-badge ${statusBadge(activeDept.hodStatus)}`}>
+                {activeDept.hodStatus || 'unassigned'}
+              </span>
+            </div>
+            <div>
+              <p className="mm-org-label">Mentor events</p>
+              <p className="m-0 text-sm mm-org-text-muted">
+                {(activeDept.mentorHistory || []).length} recorded
+              </p>
+              <button
+                type="button"
+                className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm mt-2"
+                onClick={() => openHistory(activeDept)}
+              >
+                <History size={14} /> View history
+              </button>
+            </div>
+          </div>
+          {canEdit ? (
+            <div className="mm-org-form-actions mt-4">
+              <button
+                type="button"
+                className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+                onClick={() =>
+                  setDeptForm({
+                    id: activeDept.id,
+                    name: activeDept.name,
+                    code: activeDept.code,
+                  })
+                }
+              >
+                <Pencil size={14} /> Edit department
+              </button>
+              {activeDept.hodStatus === 'unassigned' || !activeDept.hodEmail ? (
+                <button
+                  type="button"
+                  className="mm-org-btn mm-org-btn--primary mm-org-btn--sm"
+                  onClick={() => openInvite(activeDept)}
+                >
+                  <UserPlus size={14} /> Invite HOD
+                </button>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+                    onClick={() => onReinvite(activeDept)}
+                    disabled={busy}
+                  >
+                    <RefreshCw size={14} /> Resend activation
+                  </button>
+                  <button
+                    type="button"
+                    className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+                    onClick={() => openReplace(activeDept)}
+                  >
+                    <Replace size={14} /> Replace HOD
+                  </button>
+                </>
+              )}
+            </div>
+          ) : null}
         </section>
       ) : null}
 
@@ -306,7 +478,7 @@ export default function DepartmentsPage() {
                   <strong className="uppercase tracking-wide mm-org-text">{h.event}</strong>
                   <span className="mm-org-text-muted">
                     {' '}
-                    · {new Date(h.at).toLocaleString()}
+                    · {h.at ? new Date(h.at).toLocaleString() : '—'}
                   </span>
                   <div className="mt-1">
                     {h.name || '—'} · {h.email || '—'}
@@ -338,7 +510,9 @@ export default function DepartmentsPage() {
             <form onSubmit={onSaveDept}>
               <div className="mm-org-form-grid">
                 <div>
-                  <label className="mm-org-label" htmlFor="dept-name">Name</label>
+                  <label className="mm-org-label" htmlFor="dept-name">
+                    Name
+                  </label>
                   <input
                     id="dept-name"
                     className="mm-org-input"
@@ -349,7 +523,9 @@ export default function DepartmentsPage() {
                   />
                 </div>
                 <div>
-                  <label className="mm-org-label" htmlFor="dept-code">Code</label>
+                  <label className="mm-org-label" htmlFor="dept-code">
+                    Code
+                  </label>
                   <input
                     id="dept-code"
                     className="mm-org-input"
@@ -380,12 +556,14 @@ export default function DepartmentsPage() {
               <div className="mt-6 border-t pt-5" style={{ borderColor: 'var(--org-line)' }}>
                 <h3 className="mm-org-panel__title">Invite HOD · {activeDept.name}</h3>
                 <p className="mt-1 mb-3 text-xs mm-org-text-muted">
-                  Same pattern as TPO: link → set password → login.
+                  Same pattern as TPO: link → set password → login. TPO never sets the HOD password.
                 </p>
                 <form onSubmit={onInvite}>
                   <div className="mm-org-form-grid">
                     <div>
-                      <label className="mm-org-label" htmlFor="hod-name">Name</label>
+                      <label className="mm-org-label" htmlFor="hod-name">
+                        Name
+                      </label>
                       <input
                         id="hod-name"
                         className="mm-org-input"
@@ -396,7 +574,9 @@ export default function DepartmentsPage() {
                       />
                     </div>
                     <div>
-                      <label className="mm-org-label" htmlFor="hod-email">Email</label>
+                      <label className="mm-org-label" htmlFor="hod-email">
+                        Email
+                      </label>
                       <input
                         id="hod-email"
                         type="email"
@@ -410,7 +590,7 @@ export default function DepartmentsPage() {
                   </div>
                   <div className="mm-org-form-actions">
                     <button type="submit" className="mm-org-btn mm-org-btn--primary" disabled={busy}>
-                      <Mail size={15} /> Generate invite
+                      <Mail size={15} /> Send invite
                     </button>
                     <button type="button" className="mm-org-btn mm-org-btn--ghost" onClick={closePanels}>
                       Close
@@ -424,12 +604,15 @@ export default function DepartmentsPage() {
               <div className="mt-6 border-t pt-5" style={{ borderColor: 'var(--org-line)' }}>
                 <h3 className="mm-org-panel__title">Replace HOD · {activeDept.name}</h3>
                 <p className="mt-1 mb-3 text-xs mm-org-text-muted">
-                  Revokes {activeDept.hodEmail || 'current mentor'}, keeps students, invites the new HOD.
+                  Revokes {activeDept.hodEmail || 'current mentor'}, keeps students, invites the new
+                  HOD. Use this to change HOD name/email.
                 </p>
                 <form onSubmit={onReplace}>
                   <div className="mm-org-form-grid">
                     <div>
-                      <label className="mm-org-label" htmlFor="rep-name">New HOD name</label>
+                      <label className="mm-org-label" htmlFor="rep-name">
+                        New HOD name
+                      </label>
                       <input
                         id="rep-name"
                         className="mm-org-input"
@@ -439,7 +622,9 @@ export default function DepartmentsPage() {
                       />
                     </div>
                     <div>
-                      <label className="mm-org-label" htmlFor="rep-email">New HOD email</label>
+                      <label className="mm-org-label" htmlFor="rep-email">
+                        New HOD email
+                      </label>
                       <input
                         id="rep-email"
                         type="email"
@@ -450,7 +635,9 @@ export default function DepartmentsPage() {
                       />
                     </div>
                     <div style={{ gridColumn: '1 / -1' }}>
-                      <label className="mm-org-label" htmlFor="rep-reason">Reason (optional)</label>
+                      <label className="mm-org-label" htmlFor="rep-reason">
+                        Reason (optional)
+                      </label>
                       <input
                         id="rep-reason"
                         className="mm-org-input"
@@ -466,6 +653,38 @@ export default function DepartmentsPage() {
                     </button>
                     <button type="button" className="mm-org-btn mm-org-btn--ghost" onClick={closePanels}>
                       Close
+                    </button>
+                  </div>
+                </form>
+              </div>
+            ) : null}
+
+            {panel === 'revoke' && activeDept ? (
+              <div className="mt-6 border-t pt-5" style={{ borderColor: 'var(--org-line)' }}>
+                <h3 className="mm-org-panel__title">Revoke HOD · {activeDept.name}</h3>
+                <p className="mt-1 mb-3 text-xs mm-org-text-muted">
+                  Removes access for {activeDept.hodName || activeDept.hodEmail}. Students stay in
+                  this department.
+                </p>
+                <form onSubmit={onRevoke}>
+                  <div>
+                    <label className="mm-org-label" htmlFor="rev-reason">
+                      Reason (optional)
+                    </label>
+                    <input
+                      id="rev-reason"
+                      className="mm-org-input"
+                      value={hodForm.reason}
+                      onChange={(e) => setHodForm((f) => ({ ...f, reason: e.target.value }))}
+                      placeholder="Left college / role change"
+                    />
+                  </div>
+                  <div className="mm-org-form-actions">
+                    <button type="submit" className="mm-org-btn mm-org-btn--danger" disabled={busy}>
+                      <ShieldOff size={15} /> Confirm revoke
+                    </button>
+                    <button type="button" className="mm-org-btn mm-org-btn--ghost" onClick={closePanels}>
+                      Cancel
                     </button>
                   </div>
                 </form>
@@ -518,6 +737,13 @@ export default function DepartmentsPage() {
                       <td>{d.studentCount || 0}</td>
                       <td>
                         <div className="flex flex-wrap gap-2">
+                          <button
+                            type="button"
+                            className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+                            onClick={() => openView(d)}
+                          >
+                            <Eye size={14} /> View
+                          </button>
                           {canEdit ? (
                             <>
                               <button
@@ -545,7 +771,7 @@ export default function DepartmentsPage() {
                                     onClick={() => onReinvite(d)}
                                     disabled={busy}
                                   >
-                                    <RefreshCw size={14} /> Reinvite
+                                    <RefreshCw size={14} /> Resend
                                   </button>
                                   <button
                                     type="button"
@@ -557,7 +783,7 @@ export default function DepartmentsPage() {
                                   <button
                                     type="button"
                                     className="mm-org-btn mm-org-btn--danger mm-org-btn--sm"
-                                    onClick={() => onRevoke(d)}
+                                    onClick={() => openRevoke(d)}
                                     disabled={busy}
                                   >
                                     <ShieldOff size={14} /> Revoke

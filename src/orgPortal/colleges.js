@@ -1,14 +1,14 @@
 /**
  * College list for Organization login.
- * GET /organizations/colleges (X-API-Key) — same auth headers as other org APIs.
- * Falls back to SAMPLE_COLLEGES when the endpoint is unavailable.
+ * GET /organizations/colleges (X-API-Key) — ACTIVE orgs only.
+ * Never invent fake colleges when the API fails; DEMO only for offline/demo login.
  */
 
 import { orgApi } from './orgApi';
 
 const COLLEGE_STORAGE_KEY = 'mm-org-college-code';
 
-/** Temporary sample list until GET /organizations/colleges is live. */
+/** Demo college only — used when API is offline so demo credentials still work. */
 export const SAMPLE_COLLEGES = [
   {
     id: 'demo-org',
@@ -16,60 +16,6 @@ export const SAMPLE_COLLEGES = [
     code: 'DEMO',
     city: 'Bengaluru',
     state: 'Karnataka',
-    status: 'ACTIVE',
-    organization_type: 'COLLEGE',
-  },
-  {
-    id: 1001,
-    name: 'National Institute of Technology, Trichy',
-    code: 'NITT',
-    city: 'Tiruchirappalli',
-    state: 'Tamil Nadu',
-    status: 'ACTIVE',
-    organization_type: 'COLLEGE',
-  },
-  {
-    id: 1002,
-    name: 'Indian Institute of Technology Madras',
-    code: 'IITM',
-    city: 'Chennai',
-    state: 'Tamil Nadu',
-    status: 'ACTIVE',
-    organization_type: 'COLLEGE',
-  },
-  {
-    id: 1003,
-    name: 'PSG College of Technology',
-    code: 'PSGCT',
-    city: 'Coimbatore',
-    state: 'Tamil Nadu',
-    status: 'ACTIVE',
-    organization_type: 'COLLEGE',
-  },
-  {
-    id: 1004,
-    name: 'Vellore Institute of Technology',
-    code: 'VIT',
-    city: 'Vellore',
-    state: 'Tamil Nadu',
-    status: 'ACTIVE',
-    organization_type: 'COLLEGE',
-  },
-  {
-    id: 1005,
-    name: 'College of Engineering, Pune',
-    code: 'COEP',
-    city: 'Pune',
-    state: 'Maharashtra',
-    status: 'ACTIVE',
-    organization_type: 'COLLEGE',
-  },
-  {
-    id: 1006,
-    name: 'Birla Institute of Technology and Science, Pilani',
-    code: 'BITS',
-    city: 'Pilani',
-    state: 'Rajasthan',
     status: 'ACTIVE',
     organization_type: 'COLLEGE',
   },
@@ -104,19 +50,30 @@ function toSortedList(rows) {
   return rows
     .map(normalizeCollege)
     .filter((c) => c?.code)
+    // ACTIVE COLLEGE tenants only (contract: no plan/features required)
+    .filter((c) => !c.status || c.status === 'ACTIVE')
+    .filter((c) => {
+      const t = c.organization_type;
+      return !t || t === 'COLLEGE' || t === 'DEMO' || c.code === 'DEMO';
+    })
     .sort((a, b) => a.name.localeCompare(b.name));
+}
+
+function demoOnlyList() {
+  return toSortedList(SAMPLE_COLLEGES);
 }
 
 /**
  * List colleges for login picker.
- * Uses GET /organizations/colleges with X-API-Key (auth: false — no Bearer yet).
- * On failure or empty response, returns SAMPLE_COLLEGES so the gate still works.
+ * - API success → real ACTIVE colleges (+ DEMO if missing, for demo credentials)
+ * - API empty → empty list with warning (not fake tenants)
+ * - API failure → DEMO-only + warning so demo login still works
  */
 export async function fetchLoginColleges() {
   const ensureDemo = (list) => {
     const hasDemo = list.some((c) => c.code === 'DEMO');
     if (hasDemo) return list;
-    const demo = normalizeCollege(SAMPLE_COLLEGES.find((c) => c.code === 'DEMO'));
+    const demo = normalizeCollege(SAMPLE_COLLEGES[0]);
     return demo ? toSortedList([demo, ...list]) : list;
   };
 
@@ -124,17 +81,30 @@ export async function fetchLoginColleges() {
     const data = await orgApi.get('/organizations/colleges', { auth: false });
     const list = toSortedList(asItems(data));
     if (list.length) {
-      return { ok: true, colleges: ensureDemo(list), source: 'api' };
+      return {
+        ok: true,
+        colleges: ensureDemo(list),
+        source: 'api',
+        warning: '',
+      };
     }
-  } catch {
-    // Endpoint not ready / auth failure — use sample data below.
+    return {
+      ok: true,
+      colleges: ensureDemo([]),
+      source: 'api',
+      warning:
+        'No active colleges returned. If your organization was just created, confirm it is ACTIVE, then refresh.',
+    };
+  } catch (err) {
+    return {
+      ok: true,
+      colleges: demoOnlyList(),
+      source: 'offline',
+      warning:
+        err?.message ||
+        'Could not load colleges from the server. Only the Demo college is available until the API responds.',
+    };
   }
-
-  return {
-    ok: true,
-    colleges: toSortedList(SAMPLE_COLLEGES),
-    source: 'sample',
-  };
 }
 
 export function getSavedCollegeCode() {
@@ -155,10 +125,9 @@ export function saveCollegeCode(code) {
 }
 
 /**
- * Resolve initial college from URL only (?code= / ?college= / ?org=).
- * Does not auto-pick from the list or localStorage — dropdown stays on placeholder.
+ * Resolve initial college from URL (?code= / ?college= / ?org=) or saved code.
  */
-export function pickInitialCollege(colleges, searchParams) {
+export function pickInitialCollege(colleges, searchParams, { allowSaved = false } = {}) {
   const list = Array.isArray(colleges) ? colleges : [];
   const fromUrl = String(
     searchParams?.get?.('code') ||
@@ -169,6 +138,7 @@ export function pickInitialCollege(colleges, searchParams) {
     .trim()
     .toUpperCase();
 
-  if (!fromUrl) return null;
-  return list.find((c) => c.code === fromUrl || c.name.toUpperCase() === fromUrl) || null;
+  const code = fromUrl || (allowSaved ? getSavedCollegeCode() : '');
+  if (!code) return null;
+  return list.find((c) => c.code === code || c.name.toUpperCase() === code) || null;
 }

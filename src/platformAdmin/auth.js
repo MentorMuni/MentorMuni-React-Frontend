@@ -20,6 +20,7 @@ export function setPlatformSession(user) {
       email: user.email,
       role: user.role,
       mustChangePassword: Boolean(user.mustChangePassword),
+      expiresAt: user.expiresAt || null,
       loggedInAt: new Date().toISOString(),
     })
   );
@@ -31,7 +32,14 @@ export function clearPlatformSession() {
 }
 
 export function isPlatformAuthenticated() {
-  return Boolean(getPlatformSession());
+  const session = getPlatformSession();
+  const token = platformApi.getToken();
+  if (!session || !token) return false;
+  if (session.expiresAt && Date.now() > Number(session.expiresAt)) {
+    clearPlatformSession();
+    return false;
+  }
+  return true;
 }
 
 function normalizeUser(mePayload) {
@@ -43,8 +51,8 @@ function normalizeUser(mePayload) {
     status: mePayload?.status || 'ACTIVE',
     mustChangePassword: Boolean(
       mePayload?.must_change_password ||
-      mePayload?.password_change_required ||
-      mePayload?.force_password_change
+        mePayload?.password_change_required ||
+        mePayload?.force_password_change
     ),
   };
 }
@@ -64,22 +72,45 @@ export async function authenticatePlatformAdmin(email, password) {
     }
 
     platformApi.setToken(login.access_token);
-    const me = await platformApi.get('/platform/auth/me');
-    const user = normalizeUser(me);
-    return {
-      ok: true,
-      user,
-      token_type: login.token_type || 'bearer',
-      expires_in_minutes: login.expires_in_minutes,
-    };
+    try {
+      const me = await platformApi.get('/platform/auth/me');
+      const user = normalizeUser(me);
+      const expiresIn = Number(login.expires_in_minutes);
+      return {
+        ok: true,
+        user: {
+          ...user,
+          expiresAt:
+            Number.isFinite(expiresIn) && expiresIn > 0
+              ? Date.now() + expiresIn * 60 * 1000
+              : null,
+        },
+        token_type: login.token_type || 'bearer',
+        expires_in_minutes: login.expires_in_minutes,
+      };
+    } catch (meError) {
+      platformApi.clearToken();
+      return { ok: false, error: meError.message || 'Unable to load platform profile.' };
+    }
   } catch (error) {
+    platformApi.clearToken();
     return { ok: false, error: error.message || 'Unable to login.' };
   }
 }
 
 export async function changePlatformPassword(currentPassword, newPassword) {
-  return platformApi.post('/platform/auth/change-password', {
+  await platformApi.post('/platform/auth/change-password', {
     current_password: currentPassword,
     new_password: newPassword,
   });
+  // Confirm server cleared the flag (do not trust client-only clear).
+  const me = await platformApi.get('/platform/auth/me');
+  const user = normalizeUser(me);
+  const session = getPlatformSession();
+  setPlatformSession({
+    ...session,
+    ...user,
+    expiresAt: session?.expiresAt || null,
+  });
+  return user;
 }

@@ -31,7 +31,7 @@ export function resolveHodDepartment(session = getOrgSession(), departments) {
         id: byId.id,
         name: byId.name || session?.department_name || 'Department',
         code: byId.code || '',
-        hodEmail: byId.hodEmail || session?.email || '',
+        hodEmail: byId.hodEmail || byId.hod_email || session?.email || '',
       };
     }
     // Live API: trust session even when dept list not hydrated yet
@@ -50,7 +50,10 @@ export function resolveHodDepartment(session = getOrgSession(), departments) {
   const email = String(session?.email || '').trim().toLowerCase();
   if (email) {
     const byEmail = depts.find(
-      (d) => String(d.hodEmail || '').trim().toLowerCase() === email
+      (d) =>
+        String(d.hodEmail || d.hod_email || '')
+          .trim()
+          .toLowerCase() === email
     );
     if (byEmail) return byEmail;
   }
@@ -68,6 +71,59 @@ export function resolveHodAccess(session = getOrgSession()) {
     ...local,
     canInviteStudents: !denyInvite,
     canAssignPrograms: !denyAssign,
+  };
+}
+
+/** Build branch metrics from live API student + pending lists (HOD dashboard/performance). */
+export function buildBranchMetricsFromApi({ students = [], pendingCount = 0, programsCount = 0 } = {}) {
+  const list = Array.isArray(students) ? students : [];
+  const active = list.filter((s) => s.authStatus !== 'disabled' && s.authStatus !== 'blocked');
+  const readinessVals = active.map((s) => Number(s.readiness) || 0);
+  const avgReadiness = readinessVals.length
+    ? Math.round(readinessVals.reduce((a, b) => a + b, 0) / readinessVals.length)
+    : 0;
+  const strong = active.filter((s) => (s.readiness || 0) >= 75).length;
+  const mid = active.filter((s) => (s.readiness || 0) >= 50 && (s.readiness || 0) < 75).length;
+  const weak = active.filter((s) => (s.readiness || 0) < 50).length;
+  const atRisk = active
+    .filter((s) => (s.readiness || 0) < 50)
+    .sort((a, b) => (a.readiness || 0) - (b.readiness || 0))
+    .slice(0, 8);
+  const leaders = active
+    .slice()
+    .sort((a, b) => (b.readiness || 0) - (a.readiness || 0))
+    .slice(0, 8);
+
+  const gapMap = {};
+  const strengthMap = {};
+  active.forEach((s) => {
+    const g = s.weakness && s.weakness !== '—' ? s.weakness : null;
+    const st = s.strength && s.strength !== '—' ? s.strength : null;
+    if (g) gapMap[g] = (gapMap[g] || 0) + 1;
+    if (st) strengthMap[st] = (strengthMap[st] || 0) + 1;
+  });
+  const topGaps = Object.entries(gapMap)
+    .map(([label, count]) => ({ label, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+  const topStrengths = Object.entries(strengthMap)
+    .map(([label, count]) => ({ label, count }))
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 5);
+
+  return {
+    students: active.length,
+    avgReadiness,
+    strong,
+    mid,
+    weak,
+    bands: { strong, mid, weak },
+    pendingInvites: pendingCount,
+    activePrograms: programsCount,
+    atRisk,
+    leaders,
+    topGaps,
+    topStrengths,
   };
 }
 

@@ -1,6 +1,7 @@
-import { Navigate, Route, Routes } from 'react-router-dom';
+import { useEffect } from 'react';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import OrganizationLoginPage from '../components/organization/OrganizationLoginPage';
-import { getOrgSession, isOrgAuthenticated } from '../orgPortal';
+import { clearOrgSession, getOrgSession, isOrgAuthenticated } from '../orgPortal';
 import OrganizationShell from './OrganizationShell';
 import DashboardPage from './pages/DashboardPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
@@ -25,6 +26,26 @@ import {
 import { orgPaths } from './paths';
 
 function RequireOrgAuth({ children }) {
+  const navigate = useNavigate();
+
+  // Browser back/forward must end the session and land on login.
+  useEffect(() => {
+    const forceLogin = () => {
+      clearOrgSession();
+      navigate(getOrgLoginPath(), { replace: true });
+    };
+    const onPopState = () => forceLogin();
+    const onPageShow = (e) => {
+      if (e.persisted) forceLogin();
+    };
+    window.addEventListener('popstate', onPopState);
+    window.addEventListener('pageshow', onPageShow);
+    return () => {
+      window.removeEventListener('popstate', onPopState);
+      window.removeEventListener('pageshow', onPageShow);
+    };
+  }, [navigate]);
+
   if (!isOrgAuthenticated()) return <Navigate to={getOrgLoginPath()} replace />;
   return children;
 }

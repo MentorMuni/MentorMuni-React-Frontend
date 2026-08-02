@@ -1,24 +1,29 @@
 import { useEffect, useState } from 'react';
-import { Plus } from 'lucide-react';
+import { Pencil, Plus } from 'lucide-react';
 import {
   getPlatformUsers,
   createPlatformUser,
+  updatePlatformUser,
   updatePlatformUserStatus,
+  deletePlatformUser,
   PLATFORM_ROLES,
 } from '../store';
 import Modal from '../Modal';
 
+const emptyForm = {
+  name: '',
+  email: '',
+  password: '',
+  role: 'SUPPORT',
+  status: 'ACTIVE',
+};
+
 export default function PlatformUsersPage() {
   const [users, setUsers] = useState([]);
   const [open, setOpen] = useState(false);
+  const [editingId, setEditingId] = useState(null);
   const [error, setError] = useState('');
-  const [form, setForm] = useState({
-    name: '',
-    email: '',
-    password: '',
-    role: 'SUPPORT',
-    status: 'ACTIVE',
-  });
+  const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -41,13 +46,46 @@ export default function PlatformUsersPage() {
     return () => window.clearTimeout(timer);
   }, [error]);
 
+  const openCreate = () => {
+    setEditingId(null);
+    setForm(emptyForm);
+    setError('');
+    setOpen(true);
+  };
+
+  const openEdit = (user) => {
+    setEditingId(user.id);
+    const status = String(user.status || 'ACTIVE').toUpperCase();
+    setForm({
+      name: user.name || '',
+      email: user.email || '',
+      password: '',
+      role: user.role || 'SUPPORT',
+      status: status === 'SUSPENDED' ? 'INACTIVE' : status,
+    });
+    setError('');
+    setOpen(true);
+  };
+
   const submit = async (e) => {
     e.preventDefault();
     setError('');
     try {
-      await createPlatformUser(form);
+      if (editingId) {
+        const payload = {
+          name: form.name,
+          email: form.email,
+          role: form.role,
+          status: form.status,
+        };
+        if (form.password.trim()) payload.password = form.password.trim();
+        await updatePlatformUser(editingId, payload);
+      } else {
+        await createPlatformUser(form);
+      }
       setOpen(false);
-      setForm({ name: '', email: '', password: '', role: 'SUPPORT', status: 'ACTIVE' });
+      setEditingId(null);
+      setForm(emptyForm);
     } catch (err) {
       setError(err.message);
     }
@@ -56,7 +94,7 @@ export default function PlatformUsersPage() {
   return (
     <div className="space-y-5">
       <div className="flex justify-end">
-        <button type="button" className="mm-pa-btn mm-pa-btn--primary" onClick={() => setOpen(true)}>
+        <button type="button" className="mm-pa-btn mm-pa-btn--primary" onClick={openCreate}>
           <Plus size={15} /> Add Platform User
         </button>
       </div>
@@ -98,31 +136,56 @@ export default function PlatformUsersPage() {
                     </td>
                     <td>
                       <span className={`mm-pa-badge ${u.status === 'ACTIVE' ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
-                        {u.status}
+                        {u.status === 'SUSPENDED' ? 'INACTIVE' : u.status}
                       </span>
                     </td>
                     <td className="text-slate-400">
-                      {new Date(u.created_at).toLocaleDateString('en-IN')}
+                      {u.created_at ? new Date(u.created_at).toLocaleDateString('en-IN') : '—'}
                     </td>
                     <td>
-                      {u.email !== 'mentormuniteam@gmail.com' && (
+                      <div className="flex flex-wrap gap-2">
                         <button
                           type="button"
                           className="mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs"
-                          onClick={async () => {
-                            try {
-                              await updatePlatformUserStatus(
-                                u.id,
-                                u.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE'
-                              );
-                            } catch (err) {
-                              setError(err.message || 'Failed to update platform user status.');
-                            }
-                          }}
+                          onClick={() => openEdit(u)}
                         >
-                          {u.status === 'ACTIVE' ? 'Suspend' : 'Activate'}
+                          <Pencil size={13} /> Edit
                         </button>
-                      )}
+                        {u.email !== 'mentormuniteam@gmail.com' && (
+                          <>
+                            <button
+                              type="button"
+                              className="mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs"
+                              onClick={async () => {
+                                try {
+                                  await updatePlatformUserStatus(
+                                    u.id,
+                                    u.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
+                                  );
+                                } catch (err) {
+                                  setError(err.message || 'Failed to update platform user status.');
+                                }
+                              }}
+                            >
+                              {u.status === 'ACTIVE' ? 'Deactivate' : 'Activate'}
+                            </button>
+                            <button
+                              type="button"
+                              className="mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs"
+                              onClick={async () => {
+                                if (!window.confirm(`Deactivate ${u.name || u.email}?`)) return;
+                                try {
+                                  await deletePlatformUser(u.id);
+                                } catch (err) {
+                                  setError(err.message || 'Failed to delete platform user.');
+                                }
+                              }}
+                            >
+                              Delete
+                            </button>
+                          </>
+                        )}
+                      </div>
                     </td>
                   </>
                 )}
@@ -134,9 +197,16 @@ export default function PlatformUsersPage() {
 
       <Modal
         open={open}
-        onClose={() => setOpen(false)}
-        title="Add Platform User"
-        sub="Creates a MentorMuni employee account for the platform portal."
+        onClose={() => {
+          setOpen(false);
+          setEditingId(null);
+        }}
+        title={editingId ? 'Edit Platform User' : 'Add Platform User'}
+        sub={
+          editingId
+            ? 'Updates platform employee via PUT /platform/users/:id.'
+            : 'Creates a MentorMuni employee account for the platform portal.'
+        }
       >
         <form onSubmit={submit} className="space-y-3">
           {error && <div className="mm-pa-error">{error}</div>}
@@ -156,19 +226,44 @@ export default function PlatformUsersPage() {
               ))}
             </select>
           </div>
+          {editingId ? (
+            <div>
+              <label className="mm-pa-label">Status</label>
+              <select className="mm-pa-select" value={form.status === 'SUSPENDED' ? 'INACTIVE' : form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
+                <option value="ACTIVE">ACTIVE</option>
+                <option value="INACTIVE">INACTIVE</option>
+              </select>
+            </div>
+          ) : null}
           <div>
-            <label className="mm-pa-label">Password *</label>
+            <label className="mm-pa-label">{editingId ? 'New password (optional)' : 'Password *'}</label>
             <input
               type="password"
               className="mm-pa-input"
-              required
+              required={!editingId}
               value={form.password}
               onChange={(e) => setForm({ ...form, password: e.target.value })}
             />
+            {editingId ? (
+              <p className="mt-1 text-xs text-slate-500">
+                Setting a password marks must_change_password on the next login.
+              </p>
+            ) : null}
           </div>
           <div className="flex justify-end gap-2 pt-2">
-            <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={() => setOpen(false)}>Cancel</button>
-            <button type="submit" className="mm-pa-btn mm-pa-btn--primary">Create User</button>
+            <button
+              type="button"
+              className="mm-pa-btn mm-pa-btn--ghost"
+              onClick={() => {
+                setOpen(false);
+                setEditingId(null);
+              }}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="mm-pa-btn mm-pa-btn--primary">
+              {editingId ? 'Save Changes' : 'Create User'}
+            </button>
           </div>
         </form>
       </Modal>

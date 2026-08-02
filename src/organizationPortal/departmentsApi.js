@@ -1,19 +1,11 @@
 /**
- * Departments + HOD lifecycle — API-first with local fallback until backend lands.
- *
- * Expected API (when available):
- *   GET    /organizations/departments
- *   POST   /organizations/departments
- *   PUT    /organizations/departments/:id
- *   DELETE /organizations/departments/:id
- *   POST   /organizations/departments/:id/hod          { name, email }
- *   POST   /organizations/departments/:id/hod/reinvite
- *   POST   /organizations/departments/:id/hod/revoke
- *   POST   /organizations/departments/:id/hod/replace  { name, email }
- *   POST   /auth/activate-hod   { token, new_password }  (API key, no JWT)
+ * Departments + HOD lifecycle — API-first.
+ * Local fallback only for demo sessions (tpo@demo.edu). Real sessions fail loud.
  */
 
 import { orgApi, OrgApiError } from '../orgPortal/orgApi';
+import { getOrgSession } from '../orgPortal/auth';
+import { isDemoSession } from './demoAuth';
 import * as local from './store';
 
 function isMissingApi(err) {
@@ -21,20 +13,233 @@ function isMissingApi(err) {
   return err.status === 404 || err.status === 501 || err.status === 0;
 }
 
+function allowLocalFallback() {
+  return isDemoSession(getOrgSession());
+}
+
 function withSource(result, source) {
   return { ...result, source };
+}
+
+export function buildHodActivationUrl(token) {
+  if (!token || typeof window === 'undefined') return '';
+  return `${window.location.origin}/activate-hod?token=${encodeURIComponent(token)}`;
+}
+
+function normalizeHodStatus(raw) {
+  const s = String(raw || '')
+    .trim()
+    .toLowerCase();
+  if (!s || s === 'empty' || s === 'none' || s === 'null') return 'unassigned';
+  if (s === 'pending' || s === 'invited' || s === 'invite_sent') return 'invited';
+  if (s === 'active' || s === 'activated' || s === 'ready') return 'active';
+  if (s === 'revoked' || s === 'inactive' || s === 'disabled') return 'revoked';
+  return s;
+}
+
+function normalizeMentorHistoryEntry(row = {}) {
+  return {
+    id: row.id ?? row.event_id ?? `${row.at || row.created_at || ''}-${row.event || row.action || ''}`,
+    at: row.at || row.created_at || row.createdAt || '',
+    event: row.event || row.action || row.type || '',
+    name: row.name || row.hod_name || row.hodName || '',
+    email: row.email || row.hod_email || row.hodEmail || '',
+    status: normalizeHodStatus(row.status || row.hod_status || row.hodStatus),
+    reason: row.reason || '',
+    replacedByEmail: row.replaced_by_email || row.replacedByEmail || '',
+  };
+}
+
+/**
+ * Normalize API / local department rows to the camelCase shape DepartmentsPage expects.
+ */
+export function normalizeDepartment(row = {}) {
+  if (!row || typeof row !== 'object') return null;
+
+  const hodEmail = String(row.hod_email ?? row.hodEmail ?? row.hod?.email ?? '').trim().toLowerCase();
+  const hodName = String(row.hod_name ?? row.hodName ?? row.hod?.name ?? '').trim();
+  const rawStatus =
+    row.hod_status ?? row.hodStatus ?? row.hod?.status ?? (hodEmail ? 'invited' : 'unassigned');
+
+  const historyRaw =
+    row.mentor_history || row.mentorHistory || row.hod_history || row.history || [];
+
+  return {
+    id: row.id ?? row.department_id ?? row.departmentId,
+    name: row.name || row.department_name || '',
+    code: String(row.code || row.department_code || '').trim().toUpperCase(),
+    hodName,
+    hodEmail,
+    hodStatus: normalizeHodStatus(rawStatus),
+    studentCount: Number(
+      row.student_count ?? row.studentCount ?? row.students_count ?? row.studentsCount ?? 0
+    ) || 0,
+    mentorHistory: Array.isArray(historyRaw)
+      ? historyRaw.map(normalizeMentorHistoryEntry)
+      : [],
+    activationToken:
+      row.activation_token || row.activationToken || row.hod_activation_token || '',
+    raw: row,
+  };
+}
+
+function extractActivation(row = {}) {
+  const token =
+    row?.activation_token ||
+    row?.activationToken ||
+    row?.token ||
+    row?.invite_token ||
+    row?.setup_token ||
+    '';
+  const url =
+    row?.activation_url ||
+    row?.activationUrl ||
+    row?.invite_url ||
+    row?.setup_url ||
+    row?.setupUrl ||
+    (token ? buildHodActivationUrl(token) : '');
+
+  const emailedRaw = row?.emailed ?? row?.email_sent ?? row?.invite_email_sent;
+  const emailed = emailedRaw == null ? null : Boolean(emailedRaw);
+  const emailSkipped = Boolean(row?.email_skipped);
+  const emailDetail = row?.email_detail || row?.emailDetail || '';
+
+  return {
+    activationToken: token || '',
+    activationUrl: url || '',
+    emailed,
+    emailSkipped,
+    emailDetail,
+  };
+}
+
+function activationResult(row, fallbackMessage, source) {
+  const dept = normalizeDepartment(row?.department || row) || row?.department || row;
+  const { activationToken, activationUrl, emailed, emailSkipped, emailDetail } = extractActivation(
+    row || {}
+  );
+  let message = row?.message || fallbackMessage;
+  if (source === 'api') {
+    if (emailed === true && !activationUrl) {
+      message = row?.message || 'Invite email sent to the HOD. Ask them to check inbox (and spam).';
+    } else if (emailed === true && activationUrl) {
+      message =
+        row?.message ||
+        'Invite email sent. Keep the activation link below as a backup.';
+    } else if (emailed === false || emailSkipped) {
+      message =
+        row?.message ||
+        (emailDetail
+          ? `Invite saved, but email failed (${emailDetail}). Copy the link and share it with the HOD.`
+          : 'Invite saved, but email was not sent. Copy the activation link and share it with the HOD.');
+    } else if (activationUrl) {
+      message =
+        row?.message ||
+        'Invite created. Copy the activation link and share it with the HOD.';
+    }
+  }
+  return withSource(
+    {
+      ok: true,
+      department: dept,
+      activationToken,
+      activationUrl,
+      emailed: emailed === true,
+      emailUnknown: emailed == null,
+      emailSkipped,
+      emailDetail,
+      message,
+    },
+    source
+  );
+}
+
+function friendlyMutateError(err, action = 'complete this action') {
+  const status = err?.status;
+  const code = String(err?.code || '').toUpperCase();
+  const raw = String(err?.message || '').toLowerCase();
+
+  // Locked contract codes (docs/tpo-hod-e2e-contract.md)
+  if (code === 'HOD_EMAIL_CONFLICT') {
+    return (
+      err.message ||
+      'This email is already a HOD (or reserved) in this organization. Use a different email, or replace the existing HOD.'
+    );
+  }
+  if (code === 'HOD_ALREADY_ASSIGNED') {
+    return (
+      err.message ||
+      'This department already has a HOD. Resend their invite, or Replace to assign someone new.'
+    );
+  }
+  if (code === 'DEPARTMENT_HAS_STUDENTS') {
+    return (
+      err.message ||
+      'Cannot delete this department while students are still assigned. Move or remove students first.'
+    );
+  }
+  if (code === 'FORBIDDEN_ROLE' || code === 'FORBIDDEN' || status === 403) {
+    return (
+      err.message ||
+      'You do not have permission for this action. Only the TPO can manage departments and HOD invites.'
+    );
+  }
+  if (code === 'ACTIVATION_TOKEN_EXPIRED') {
+    return err.message || 'This activation link has expired. Ask your TPO to resend the invite.';
+  }
+
+  if (status === 409 || raw.includes('already') || raw.includes('duplicate') || raw.includes('unique')) {
+    if (raw.includes('student')) {
+      return (
+        err.message ||
+        'Cannot delete this department while students are still assigned. Move or remove students first.'
+      );
+    }
+    return (
+      err.message ||
+      'This email is already used for a HOD in this organization. Use a different email, or replace the existing HOD.'
+    );
+  }
+  if (status === 400 && (raw.includes('email') || raw.includes('hod'))) {
+    return err.message || 'Invalid HOD details. Check the name and email, then try again.';
+  }
+  return err?.message || `Unable to ${action}.`;
+}
+
+function apiUnavailableError(action) {
+  return {
+    ok: false,
+    error: `Departments API is unavailable. Cannot ${action} until the server responds. (Local demo works only when signed in as the demo TPO.)`,
+    source: 'unavailable',
+  };
 }
 
 export async function fetchDepartments() {
   try {
     const data = await orgApi.get('/organizations/departments');
     const list = Array.isArray(data) ? data : data?.departments || data?.items || [];
-    return withSource({ ok: true, departments: list }, 'api');
+    return withSource(
+      { ok: true, departments: list.map(normalizeDepartment).filter(Boolean) },
+      'api'
+    );
   } catch (err) {
     if (!isMissingApi(err)) {
-      return { ok: false, error: err.message || 'Failed to load departments.', departments: local.listDepartments() };
+      return {
+        ok: false,
+        error: err.message || 'Failed to load departments.',
+        departments: [],
+        source: 'error',
+      };
     }
-    return withSource({ ok: true, departments: local.listDepartments() }, 'local');
+    if (allowLocalFallback()) {
+      return withSource({ ok: true, departments: local.listDepartments() }, 'local');
+    }
+    return {
+      ok: false,
+      error: 'Unable to load departments from the server.',
+      departments: [],
+      source: 'unavailable',
+    };
   }
 }
 
@@ -46,15 +251,19 @@ export async function saveDepartment(input) {
     const method = input.id ? 'put' : 'post';
     const row = await orgApi[method](path, {
       name: input.name,
-      code: input.code,
-      hod_name: input.hodName,
-      hod_email: input.hodEmail,
+      code: String(input.code || '')
+        .trim()
+        .toUpperCase(),
     });
-    return withSource({ ok: true, department: row }, 'api');
+    return withSource(
+      { ok: true, department: normalizeDepartment(row?.department || row) || row },
+      'api'
+    );
   } catch (err) {
     if (!isMissingApi(err)) {
-      return { ok: false, error: err.message || 'Unable to save department.' };
+      return { ok: false, error: friendlyMutateError(err, 'save department'), status: err.status };
     }
+    if (!allowLocalFallback()) return apiUnavailableError('save department');
     try {
       local.upsertDepartment(input);
       const dept = local.listDepartments().find(
@@ -75,8 +284,14 @@ export async function deleteDepartment(id) {
     return withSource({ ok: true }, 'api');
   } catch (err) {
     if (!isMissingApi(err)) {
-      return { ok: false, error: err.message || 'Unable to delete department.' };
+      return {
+        ok: false,
+        error: friendlyMutateError(err, 'delete department'),
+        status: err.status,
+        code: err.code,
+      };
     }
+    if (!allowLocalFallback()) return apiUnavailableError('delete department');
     local.removeDepartment(id);
     return withSource({ ok: true }, 'local');
   }
@@ -88,19 +303,17 @@ export async function inviteDepartmentHod(departmentId, { name, email } = {}) {
       name,
       email,
     });
-    return withSource(
-      {
-        ok: true,
-        department: row,
-        activationToken: row?.activation_token || row?.activationToken || '',
-        message: row?.message || 'HOD invite sent.',
-      },
-      'api'
-    );
+    return activationResult(row, 'HOD invite sent.', 'api');
   } catch (err) {
     if (!isMissingApi(err)) {
-      return { ok: false, error: err.message || 'Unable to invite HOD.' };
+      return {
+        ok: false,
+        error: friendlyMutateError(err, 'invite HOD'),
+        status: err.status,
+        code: err.code,
+      };
     }
+    if (!allowLocalFallback()) return apiUnavailableError('invite HOD');
     try {
       const result = local.inviteHod(departmentId, { name, email });
       return withSource(
@@ -109,8 +322,10 @@ export async function inviteDepartmentHod(departmentId, { name, email } = {}) {
           department: result.department,
           activationToken: result.activationToken,
           activationUrl: result.activationUrl,
+          emailed: false,
+          emailUnknown: false,
           message:
-            'Invite ready. Share the activation link with the HOD (email delivery wires when API is live).',
+            'Demo invite ready (not emailed). Copy the activation link and open it to set the HOD password.',
         },
         'local'
       );
@@ -123,19 +338,17 @@ export async function inviteDepartmentHod(departmentId, { name, email } = {}) {
 export async function reinviteDepartmentHod(departmentId) {
   try {
     const row = await orgApi.post(`/organizations/departments/${departmentId}/hod/reinvite`);
-    return withSource(
-      {
-        ok: true,
-        department: row,
-        activationToken: row?.activation_token || row?.activationToken || '',
-        message: row?.message || 'HOD reinvited.',
-      },
-      'api'
-    );
+    return activationResult(row, 'HOD reinvited.', 'api');
   } catch (err) {
     if (!isMissingApi(err)) {
-      return { ok: false, error: err.message || 'Unable to reinvite HOD.' };
+      return {
+        ok: false,
+        error: friendlyMutateError(err, 'resend HOD invite'),
+        status: err.status,
+        code: err.code,
+      };
     }
+    if (!allowLocalFallback()) return apiUnavailableError('resend HOD invite');
     try {
       const result = local.reinviteHod(departmentId);
       return withSource(
@@ -144,7 +357,8 @@ export async function reinviteDepartmentHod(departmentId) {
           department: result.department,
           activationToken: result.activationToken,
           activationUrl: result.activationUrl,
-          message: 'Fresh activation link generated.',
+          emailed: false,
+          message: 'Demo: fresh activation link generated (not emailed).',
         },
         'local'
       );
@@ -159,11 +373,23 @@ export async function revokeDepartmentHod(departmentId, reason = '') {
     const row = await orgApi.post(`/organizations/departments/${departmentId}/hod/revoke`, {
       reason,
     });
-    return withSource({ ok: true, department: row, message: 'HOD access revoked.' }, 'api');
+    return withSource(
+      {
+        ok: true,
+        department: normalizeDepartment(row?.department || row) || row,
+        message: row?.message || 'HOD access revoked.',
+      },
+      'api'
+    );
   } catch (err) {
     if (!isMissingApi(err)) {
-      return { ok: false, error: err.message || 'Unable to revoke HOD.' };
+      return {
+        ok: false,
+        error: friendlyMutateError(err, 'revoke HOD'),
+        status: err.status,
+      };
     }
+    if (!allowLocalFallback()) return apiUnavailableError('revoke HOD');
     try {
       const department = local.revokeHod(departmentId, reason);
       return withSource(
@@ -183,19 +409,17 @@ export async function replaceDepartmentHod(departmentId, { name, email, reason =
       email,
       reason,
     });
-    return withSource(
-      {
-        ok: true,
-        department: row,
-        activationToken: row?.activation_token || row?.activationToken || '',
-        message: row?.message || 'HOD replaced. New invite sent.',
-      },
-      'api'
-    );
+    return activationResult(row, 'HOD replaced. New invite sent.', 'api');
   } catch (err) {
     if (!isMissingApi(err)) {
-      return { ok: false, error: err.message || 'Unable to replace HOD.' };
+      return {
+        ok: false,
+        error: friendlyMutateError(err, 'replace HOD'),
+        status: err.status,
+        code: err.code,
+      };
     }
+    if (!allowLocalFallback()) return apiUnavailableError('replace HOD');
     try {
       const result = local.replaceHod(departmentId, { name, email, reason });
       return withSource(
@@ -204,7 +428,8 @@ export async function replaceDepartmentHod(departmentId, { name, email, reason =
           department: result.department,
           activationToken: result.activationToken,
           activationUrl: result.activationUrl,
-          message: 'Previous HOD revoked. New mentor invited — share the activation link.',
+          emailed: false,
+          message: 'Demo: previous HOD revoked. Share the new activation link.',
         },
         'local'
       );
@@ -212,9 +437,4 @@ export async function replaceDepartmentHod(departmentId, { name, email, reason =
       return { ok: false, error: e.message || 'Unable to replace HOD.' };
     }
   }
-}
-
-export function buildHodActivationUrl(token) {
-  if (!token || typeof window === 'undefined') return '';
-  return `${window.location.origin}/activate-hod?token=${encodeURIComponent(token)}`;
 }
