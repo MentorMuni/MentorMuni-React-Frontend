@@ -2,11 +2,13 @@
 export const orgPaths = {
   login: '/Organization/login',
   dashboard: '/Organization/dashboard',
+  workspace: '/Organization/workspace',
   departments: '/Organization/departments',
   enrollment: '/Organization/enrollment',
   students: '/Organization/students',
   programs: '/Organization/programs',
   drives: '/Organization/drives',
+  upcomingDrives: '/Organization/upcoming-drives',
   notify: '/Organization/notify',
   performance: '/Organization/performance',
   access: '/Organization/access',

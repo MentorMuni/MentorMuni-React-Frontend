@@ -35,7 +35,7 @@ export default function StudentHomePage() {
   if (!session) return null;
 
   return (
-    <div className={`stu-app ${rootClass}`}>
+    <div className={`stu-app stu-app--page ${rootClass}`}>
       <StudentSidebar
         session={session}
         open={navOpen}

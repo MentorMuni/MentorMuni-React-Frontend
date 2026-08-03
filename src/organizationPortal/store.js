@@ -1339,14 +1339,17 @@ export function listDrives() {
 
 export function createDrive(input) {
   return mutate((data) => {
+    const kind = String(input.kind || input.type || 'event').toLowerCase();
+    const title = String(input.title || input.company || '').trim();
     data.drives.unshift({
       id: uid('drv'),
-      title: String(input.title || '').trim(),
-      company: String(input.company || input.title || '').trim(),
-      role: input.role?.trim() || input.title?.trim() || 'Open role',
+      kind: ['event', 'workshop', 'announcement'].includes(kind) ? kind : 'event',
+      title,
+      company: title, // legacy field used by older UI/metrics
+      role: input.role?.trim() || '',
       date: input.date || '',
       message: input.message?.trim() || '',
-      audience: input.audience || 'all',
+      audience: input.audience || 'all', // all | department | hods
       departmentId: input.departmentId || '',
       status: 'scheduled',
       notifiedAt: new Date().toISOString(),

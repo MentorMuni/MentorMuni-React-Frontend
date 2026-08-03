@@ -14,7 +14,15 @@ function isMissingApi(err) {
 }
 
 function allowLocalFallback() {
-  return isDemoSession(getOrgSession());
+  const session = getOrgSession();
+  if (isDemoSession(session)) return true;
+  // Safety: demo JWT without session.demo still must not hit the live API.
+  try {
+    const token = orgApi.getToken?.() || '';
+    return String(token).startsWith('demo.');
+  } catch {
+    return false;
+  }
 }
 
 function withSource(result, source) {
@@ -187,6 +195,15 @@ function friendlyMutateError(err, action = 'complete this action') {
   if (code === 'ACTIVATION_TOKEN_EXPIRED') {
     return err.message || 'This activation link has expired. Ask your TPO to resend the invite.';
   }
+  if (
+    code === 'TOKEN_INVALID' ||
+    code === 'TOKEN_EXPIRED' ||
+    code === 'TOKEN_MISSING' ||
+    code === 'TOKEN_WRONG_SCOPE' ||
+    status === 401
+  ) {
+    return 'Your session is invalid or expired. Sign out and sign in again, then retry.';
+  }
 
   if (status === 409 || raw.includes('already') || raw.includes('duplicate') || raw.includes('unique')) {
     if (raw.includes('student')) {
@@ -246,7 +263,26 @@ export async function fetchDepartments() {
   }
 }
 
+function saveDepartmentLocal(input) {
+  local.upsertDepartment(input);
+  const dept = local.listDepartments().find(
+    (d) =>
+      (input.id && d.id === input.id) ||
+      (!input.id && d.code === String(input.code || '').trim().toUpperCase())
+  );
+  return withSource({ ok: true, department: dept }, 'local');
+}
+
 export async function saveDepartment(input) {
+  // Demo sessions must never call the real API (fake demo.* JWT → "Invalid token.").
+  if (allowLocalFallback()) {
+    try {
+      return saveDepartmentLocal(input);
+    } catch (e) {
+      return { ok: false, error: e.message || 'Unable to save department.' };
+    }
+  }
+
   try {
     const path = input.id
       ? `/organizations/departments/${input.id}`
@@ -266,22 +302,16 @@ export async function saveDepartment(input) {
     if (!isMissingApi(err)) {
       return { ok: false, error: friendlyMutateError(err, 'save department'), status: err.status };
     }
-    if (!allowLocalFallback()) return apiUnavailableError('save department');
-    try {
-      local.upsertDepartment(input);
-      const dept = local.listDepartments().find(
-        (d) =>
-          (input.id && d.id === input.id) ||
-          (!input.id && d.code === String(input.code || '').trim().toUpperCase())
-      );
-      return withSource({ ok: true, department: dept }, 'local');
-    } catch (e) {
-      return { ok: false, error: e.message || 'Unable to save department.' };
-    }
+    return apiUnavailableError('save department');
   }
 }
 
 export async function deleteDepartment(id) {
+  if (allowLocalFallback()) {
+    local.removeDepartment(id);
+    return withSource({ ok: true }, 'local');
+  }
+
   try {
     await orgApi.delete(`/organizations/departments/${id}`);
     return withSource({ ok: true }, 'api');
@@ -294,29 +324,12 @@ export async function deleteDepartment(id) {
         code: err.code,
       };
     }
-    if (!allowLocalFallback()) return apiUnavailableError('delete department');
-    local.removeDepartment(id);
-    return withSource({ ok: true }, 'local');
+    return apiUnavailableError('delete department');
   }
 }
 
 export async function inviteDepartmentHod(departmentId, { name, email } = {}) {
-  try {
-    const row = await orgApi.post(`/organizations/departments/${departmentId}/hod`, {
-      name,
-      email,
-    });
-    return activationResult(row, 'HOD invite sent.', 'api');
-  } catch (err) {
-    if (!isMissingApi(err)) {
-      return {
-        ok: false,
-        error: friendlyMutateError(err, 'invite HOD'),
-        status: err.status,
-        code: err.code,
-      };
-    }
-    if (!allowLocalFallback()) return apiUnavailableError('invite HOD');
+  if (allowLocalFallback()) {
     try {
       const result = local.inviteHod(departmentId, { name, email });
       return withSource(
@@ -336,22 +349,28 @@ export async function inviteDepartmentHod(departmentId, { name, email } = {}) {
       return { ok: false, error: e.message || 'Unable to invite HOD.' };
     }
   }
-}
 
-export async function reinviteDepartmentHod(departmentId) {
   try {
-    const row = await orgApi.post(`/organizations/departments/${departmentId}/hod/reinvite`);
-    return activationResult(row, 'HOD reinvited.', 'api');
+    const row = await orgApi.post(`/organizations/departments/${departmentId}/hod`, {
+      name,
+      email,
+    });
+    return activationResult(row, 'HOD invite sent.', 'api');
   } catch (err) {
     if (!isMissingApi(err)) {
       return {
         ok: false,
-        error: friendlyMutateError(err, 'resend HOD invite'),
+        error: friendlyMutateError(err, 'invite HOD'),
         status: err.status,
         code: err.code,
       };
     }
-    if (!allowLocalFallback()) return apiUnavailableError('resend HOD invite');
+    return apiUnavailableError('invite HOD');
+  }
+}
+
+export async function reinviteDepartmentHod(departmentId) {
+  if (allowLocalFallback()) {
     try {
       const result = local.reinviteHod(departmentId);
       return withSource(
@@ -369,9 +388,36 @@ export async function reinviteDepartmentHod(departmentId) {
       return { ok: false, error: e.message || 'Unable to reinvite HOD.' };
     }
   }
+
+  try {
+    const row = await orgApi.post(`/organizations/departments/${departmentId}/hod/reinvite`);
+    return activationResult(row, 'HOD reinvited.', 'api');
+  } catch (err) {
+    if (!isMissingApi(err)) {
+      return {
+        ok: false,
+        error: friendlyMutateError(err, 'resend HOD invite'),
+        status: err.status,
+        code: err.code,
+      };
+    }
+    return apiUnavailableError('resend HOD invite');
+  }
 }
 
 export async function revokeDepartmentHod(departmentId, reason = '') {
+  if (allowLocalFallback()) {
+    try {
+      const department = local.revokeHod(departmentId, reason);
+      return withSource(
+        { ok: true, department, message: 'HOD access revoked. Students stay in the department.' },
+        'local'
+      );
+    } catch (e) {
+      return { ok: false, error: e.message || 'Unable to revoke HOD.' };
+    }
+  }
+
   try {
     const row = await orgApi.post(`/organizations/departments/${departmentId}/hod/revoke`, {
       reason,
@@ -392,37 +438,12 @@ export async function revokeDepartmentHod(departmentId, reason = '') {
         status: err.status,
       };
     }
-    if (!allowLocalFallback()) return apiUnavailableError('revoke HOD');
-    try {
-      const department = local.revokeHod(departmentId, reason);
-      return withSource(
-        { ok: true, department, message: 'HOD access revoked. Students stay in the department.' },
-        'local'
-      );
-    } catch (e) {
-      return { ok: false, error: e.message || 'Unable to revoke HOD.' };
-    }
+    return apiUnavailableError('revoke HOD');
   }
 }
 
 export async function replaceDepartmentHod(departmentId, { name, email, reason = '' }) {
-  try {
-    const row = await orgApi.post(`/organizations/departments/${departmentId}/hod/replace`, {
-      name,
-      email,
-      reason,
-    });
-    return activationResult(row, 'HOD replaced. New invite sent.', 'api');
-  } catch (err) {
-    if (!isMissingApi(err)) {
-      return {
-        ok: false,
-        error: friendlyMutateError(err, 'replace HOD'),
-        status: err.status,
-        code: err.code,
-      };
-    }
-    if (!allowLocalFallback()) return apiUnavailableError('replace HOD');
+  if (allowLocalFallback()) {
     try {
       const result = local.replaceHod(departmentId, { name, email, reason });
       return withSource(
@@ -439,5 +460,24 @@ export async function replaceDepartmentHod(departmentId, { name, email, reason =
     } catch (e) {
       return { ok: false, error: e.message || 'Unable to replace HOD.' };
     }
+  }
+
+  try {
+    const row = await orgApi.post(`/organizations/departments/${departmentId}/hod/replace`, {
+      name,
+      email,
+      reason,
+    });
+    return activationResult(row, 'HOD replaced. New invite sent.', 'api');
+  } catch (err) {
+    if (!isMissingApi(err)) {
+      return {
+        ok: false,
+        error: friendlyMutateError(err, 'replace HOD'),
+        status: err.status,
+        code: err.code,
+      };
+    }
+    return apiUnavailableError('replace HOD');
   }
 }

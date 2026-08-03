@@ -7,7 +7,6 @@ import {
   Building2,
   ClipboardList,
   Eye,
-  ShieldCheck,
   Sparkles,
   UserPlus,
   Users,
@@ -143,7 +142,7 @@ export default function DashboardPage() {
       { label: 'Students', value: metrics.students, icon: Users, hint: 'Enrolled' },
       { label: 'Pending invites', value: metrics.pendingInvites, icon: UserPlus, hint: 'Enrollment queue' },
       { label: 'Active programs', value: metrics.activePrograms, icon: ClipboardList, hint: 'Assigned work' },
-      { label: 'Upcoming drives', value: metrics.upcomingDrives, icon: Bell, hint: 'Notifications' },
+      { label: 'Upcoming notices', value: metrics.upcomingDrives, icon: Bell, hint: 'Events & workshops' },
     ];
 
     return (
@@ -156,7 +155,7 @@ export default function DashboardPage() {
             transition={{ duration: 0.45, ease: EASE }}
           >
             <span className="mm-org-pill">
-              {viewer ? <Eye size={12} /> : <ShieldCheck size={12} />}
+              {viewer ? <Eye size={12} /> : <Building2 size={12} />}
               {viewer ? 'View only' : 'Placement office'}
             </span>
             <h2>
@@ -169,7 +168,7 @@ export default function DashboardPage() {
               {session?.organization_name || 'Your college'} —{' '}
               {viewer
                 ? 'read-only readiness, departments, and leaderboards for analysis.'
-                : 'departments, HOD mentors, enrollment, programs, drives, and deep readiness analytics.'}
+                : 'departments, HOD mentors, enrollment, programs, events, and deep readiness analytics.'}
             </p>
             <div className="mm-org-hero__actions">
               {canEdit ? (
@@ -435,7 +434,7 @@ export default function DashboardPage() {
               <div>
                 <h2 className="mm-org-panel__title">{canEdit ? 'Quick actions' : 'Explore'}</h2>
                 <p className="mm-org-panel__meta">
-                  {canEdit ? 'Assign programs, notify drives, manage access' : 'Read-only analytics links'}
+                  {canEdit ? 'Assign programs, notify events, manage enrollment' : 'Read-only analytics links'}
                 </p>
               </div>
               <Sparkles size={16} className="mm-org-icon-warn" />
@@ -444,9 +443,9 @@ export default function DashboardPage() {
               {(canEdit
                 ? [
                     { to: orgPaths.programs, label: 'Assign program / mock', icon: ClipboardList },
-                    { to: orgPaths.drives, label: 'Notify upcoming drive', icon: Bell },
+                    { to: orgPaths.drives, label: 'Notify event / workshop', icon: Bell },
                     { to: orgPaths.enrollment, label: 'Enrollment queue', icon: UserPlus },
-                    { to: orgPaths.access, label: 'HOD permissions', icon: ShieldCheck },
+                    { to: orgPaths.departments, label: 'Departments & HODs', icon: Building2 },
                   ]
                 : [
                     { to: orgPaths.performance, label: 'Scorecards & export', icon: BarChart3 },

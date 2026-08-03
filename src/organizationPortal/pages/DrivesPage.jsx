@@ -1,49 +1,150 @@
 import { useEffect, useState } from 'react';
-import { Bell, Trash2 } from 'lucide-react';
+import { Bell, Loader2, Trash2 } from 'lucide-react';
+import { fetchDepartments } from '../departmentsApi';
 import {
-  createDrive,
-  listDepartments,
-  listDrives,
-  removeDrive,
-  subscribeOrgDb,
-} from '../store';
+  createNotification,
+  deleteNotification,
+  fetchNotifications,
+} from '../notificationsApi';
+import { listDepartments, subscribeOrgDb } from '../store';
+import { getOrgSession } from '../../orgPortal';
+import { isDemoSession } from '../demoAuth';
 
 const empty = {
-  company: '',
-  role: '',
+  kind: 'event',
+  title: '',
   date: '',
   message: '',
   audience: 'all',
   departmentId: '',
 };
 
+function audienceLabel(item, departments) {
+  if (item.audience === 'hods') return 'HODs only';
+  if (item.audience === 'department') {
+    const id = String(item.departmentId || '');
+    return departments.find((x) => String(x.id) === id)?.name || 'One department';
+  }
+  return 'All students';
+}
+
+function kindLabel(kind) {
+  if (kind === 'workshop') return 'Workshop';
+  if (kind === 'announcement') return 'Announcement';
+  return 'Event';
+}
+
+function deliveryLabel(status) {
+  const s = String(status || '').toLowerCase();
+  if (s === 'queued' || s === 'pending') return 'Queued';
+  if (s === 'sent' || s === 'delivered') return 'Sent';
+  if (s === 'failed') return 'Failed';
+  if (s === 'scheduled') return 'Saved';
+  return s ? s.replace(/_/g, ' ') : '';
+}
+
 export default function DrivesPage() {
-  const [drives, setDrives] = useState(() => listDrives());
+  const session = getOrgSession();
+  const demo = isDemoSession(session);
+
+  const [items, setItems] = useState([]);
   const [departments, setDepartments] = useState(() => listDepartments());
   const [form, setForm] = useState(empty);
   const [err, setErr] = useState('');
   const [msg, setMsg] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [busy, setBusy] = useState(false);
+  const [deletingId, setDeletingId] = useState(null);
 
-  useEffect(
-    () =>
-      subscribeOrgDb(() => {
-        setDrives(listDrives());
-        setDepartments(listDepartments());
-      }),
-    []
-  );
+  const refresh = async () => {
+    setLoading(true);
+    const [notes, depts] = await Promise.all([
+      fetchNotifications(),
+      fetchDepartments().catch(() => ({ ok: false, departments: listDepartments() })),
+    ]);
+    setItems(notes.notifications || []);
+    if (depts?.departments?.length) setDepartments(depts.departments);
+    else if (demo) setDepartments(listDepartments());
+    if (!notes.ok && notes.error) {
+      setErr(notes.error);
+      setMsg('');
+    }
+    setLoading(false);
+  };
 
-  const onSubmit = (e) => {
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      if (cancelled) return;
+      await refresh();
+    })();
+
+    if (!demo) return () => { cancelled = true; };
+
+    const unsub = subscribeOrgDb(() => {
+      fetchNotifications().then((notes) => {
+        if (cancelled) return;
+        setItems(notes.notifications || []);
+      });
+      setDepartments(listDepartments());
+    });
+    return () => {
+      cancelled = true;
+      unsub();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [demo]);
+
+  const onSubmit = async (e) => {
     e.preventDefault();
     setErr('');
     setMsg('');
-    if (!form.company.trim()) {
-      setErr('Company name is required.');
+    if (!form.title.trim()) {
+      setErr('Title is required.');
       return;
     }
-    createDrive(form);
+    if (!form.message.trim()) {
+      setErr('Message is required.');
+      return;
+    }
+    if (form.audience === 'department' && !form.departmentId) {
+      setErr('Select a department.');
+      return;
+    }
+
+    setBusy(true);
+    const result = await createNotification(form);
+    setBusy(false);
+
+    if (!result.ok) {
+      setErr(result.error || 'Unable to send notification.');
+      return;
+    }
+
     setForm(empty);
-    setMsg('Drive saved and marked as notified (email/push API next).');
+    const estimated =
+      result.recipientsEstimated != null
+        ? ` · ~${result.recipientsEstimated} recipient(s)`
+        : '';
+    setMsg(
+      result.message
+        ? `${result.message}${estimated}`
+        : `Notification queued${estimated}.`
+    );
+    await refresh();
+  };
+
+  const onDelete = async (id) => {
+    setErr('');
+    setDeletingId(id);
+    const result = await deleteNotification(id);
+    setDeletingId(null);
+    if (!result.ok) {
+      setErr(result.error || 'Unable to delete notification.');
+      return;
+    }
+    setMsg('Notification removed.');
+    await refresh();
   };
 
   return (
@@ -51,8 +152,10 @@ export default function DrivesPage() {
       <section className="mm-org-panel">
         <div className="mm-org-panel__head">
           <div>
-            <h2 className="mm-org-panel__title">Announce a drive</h2>
-            <p className="mm-org-panel__meta">Notify the campus about an upcoming company visit.</p>
+            <h2 className="mm-org-panel__title">Notify event / workshop</h2>
+            <p className="mm-org-panel__meta">
+              Send a campus notice from TPO — to all students, one department, or HODs only.
+            </p>
           </div>
         </div>
         {err ? <div className="mm-org-alert mm-org-alert--error mb-3">{err}</div> : null}
@@ -60,55 +163,70 @@ export default function DrivesPage() {
         <form onSubmit={onSubmit}>
           <div className="mm-org-form-grid">
             <div>
-              <label className="mm-org-label" htmlFor="drv-co">Company</label>
-              <input
-                id="drv-co"
-                className="mm-org-input"
-                placeholder="Infosys"
-                value={form.company}
-                onChange={(e) => setForm((f) => ({ ...f, company: e.target.value }))}
-              />
+              <label className="mm-org-label" htmlFor="evt-kind">Type</label>
+              <select
+                id="evt-kind"
+                className="mm-org-select"
+                value={form.kind}
+                onChange={(e) => setForm((f) => ({ ...f, kind: e.target.value }))}
+                disabled={busy}
+              >
+                <option value="event">Event</option>
+                <option value="workshop">Workshop</option>
+                <option value="announcement">Announcement</option>
+              </select>
             </div>
             <div>
-              <label className="mm-org-label" htmlFor="drv-role">Role</label>
+              <label className="mm-org-label" htmlFor="evt-date">Date (optional)</label>
               <input
-                id="drv-role"
-                className="mm-org-input"
-                placeholder="SDE Intern"
-                value={form.role}
-                onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))}
-              />
-            </div>
-            <div>
-              <label className="mm-org-label" htmlFor="drv-date">Drive date</label>
-              <input
-                id="drv-date"
+                id="evt-date"
                 type="date"
                 className="mm-org-input"
                 value={form.date}
                 onChange={(e) => setForm((f) => ({ ...f, date: e.target.value }))}
+                disabled={busy}
+              />
+            </div>
+            <div style={{ gridColumn: '1 / -1' }}>
+              <label className="mm-org-label" htmlFor="evt-title">Title</label>
+              <input
+                id="evt-title"
+                className="mm-org-input"
+                placeholder="Resume workshop · Alumni AMA · Hackathon briefing"
+                value={form.title}
+                onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
+                disabled={busy}
               />
             </div>
             <div>
-              <label className="mm-org-label" htmlFor="drv-aud">Audience</label>
+              <label className="mm-org-label" htmlFor="evt-aud">Send to</label>
               <select
-                id="drv-aud"
+                id="evt-aud"
                 className="mm-org-select"
                 value={form.audience}
-                onChange={(e) => setForm((f) => ({ ...f, audience: e.target.value }))}
+                onChange={(e) =>
+                  setForm((f) => ({
+                    ...f,
+                    audience: e.target.value,
+                    departmentId: e.target.value === 'department' ? f.departmentId : '',
+                  }))
+                }
+                disabled={busy}
               >
-                <option value="all">Entire campus</option>
-                <option value="department">One department</option>
+                <option value="all">All students</option>
+                <option value="department">One department (students)</option>
+                <option value="hods">HODs only</option>
               </select>
             </div>
             {form.audience === 'department' ? (
               <div>
-                <label className="mm-org-label" htmlFor="drv-dept">Department</label>
+                <label className="mm-org-label" htmlFor="evt-dept">Department</label>
                 <select
-                  id="drv-dept"
+                  id="evt-dept"
                   className="mm-org-select"
                   value={form.departmentId}
                   onChange={(e) => setForm((f) => ({ ...f, departmentId: e.target.value }))}
+                  disabled={busy}
                 >
                   <option value="">Select…</option>
                   {departments.map((d) => (
@@ -118,19 +236,28 @@ export default function DrivesPage() {
               </div>
             ) : null}
             <div style={{ gridColumn: '1 / -1' }}>
-              <label className="mm-org-label" htmlFor="drv-msg">Message</label>
+              <label className="mm-org-label" htmlFor="evt-msg">Message</label>
               <textarea
-                id="drv-msg"
+                id="evt-msg"
                 className="mm-org-textarea"
-                placeholder="Eligibility, rounds, prep tips…"
+                placeholder="What should people know? Venue, timing, who should attend…"
                 value={form.message}
                 onChange={(e) => setForm((f) => ({ ...f, message: e.target.value }))}
+                disabled={busy}
               />
             </div>
           </div>
           <div className="mm-org-form-actions">
-            <button type="submit" className="mm-org-btn mm-org-btn--primary">
-              <Bell size={15} /> Notify campus
+            <button type="submit" className="mm-org-btn mm-org-btn--primary" disabled={busy}>
+              {busy ? (
+                <>
+                  <Loader2 size={15} className="animate-spin" /> Queueing…
+                </>
+              ) : (
+                <>
+                  <Bell size={15} /> Send notification
+                </>
+              )}
             </button>
           </div>
         </form>
@@ -139,25 +266,30 @@ export default function DrivesPage() {
       <section className="mm-org-panel">
         <div className="mm-org-panel__head">
           <div>
-            <h2 className="mm-org-panel__title">Scheduled drives</h2>
-            <p className="mm-org-panel__meta">{drives.length} announcement(s)</p>
+            <h2 className="mm-org-panel__title">Sent notifications</h2>
+            <p className="mm-org-panel__meta">
+              {loading ? 'Loading…' : `${items.length} item(s)`}
+            </p>
           </div>
         </div>
-        {drives.length ? (
+        {loading ? (
+          <div className="mm-org-empty">Loading notifications…</div>
+        ) : items.length ? (
           <div className="space-y-3">
-            {drives.map((d) => (
-              <div
-                key={d.id}
-                className="mm-org-list-card"
-              >
+            {items.map((d) => (
+              <div key={d.id} className="mm-org-list-card">
                 <div className="min-w-0">
-                  <p className="m-0 font-bold mm-org-text">{d.company}</p>
+                  <p className="m-0 font-bold mm-org-text">
+                    {d.title || 'Untitled'}
+                  </p>
                   <p className="m-0 mt-1 text-sm mm-org-text-muted">
-                    {d.role}
+                    {kindLabel(d.kind)}
                     {d.date ? ` · ${d.date}` : ''}
-                    {d.audience === 'department'
-                      ? ` · ${departments.find((x) => x.id === d.departmentId)?.name || 'Dept'}`
-                      : ' · Campus-wide'}
+                    {` · ${audienceLabel(d, departments)}`}
+                    {d.deliveryStatus ? ` · ${deliveryLabel(d.deliveryStatus)}` : ''}
+                    {d.recipientsEstimated != null
+                      ? ` · ~${d.recipientsEstimated} recipients`
+                      : ''}
                   </p>
                   {d.message ? (
                     <p className="m-0 mt-2 text-sm mm-org-text-muted">{d.message}</p>
@@ -166,15 +298,16 @@ export default function DrivesPage() {
                 <button
                   type="button"
                   className="mm-org-btn mm-org-btn--danger mm-org-btn--sm"
-                  onClick={() => removeDrive(d.id)}
+                  disabled={deletingId === d.id}
+                  onClick={() => onDelete(d.id)}
                 >
-                  <Trash2 size={14} />
+                  {deletingId === d.id ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
                 </button>
               </div>
             ))}
           </div>
         ) : (
-          <div className="mm-org-empty">No drives announced yet.</div>
+          <div className="mm-org-empty">No events or workshops notified yet.</div>
         )}
       </section>
     </div>

@@ -137,6 +137,7 @@ export default function DepartmentsPage() {
     setPanel(null);
     setActiveId('');
     setHodForm(emptyHodForm);
+    setDeptForm(emptyDeptForm);
   };
 
   const onSaveDept = async (e) => {
@@ -158,6 +159,7 @@ export default function DepartmentsPage() {
   const openInvite = (dept) => {
     setActiveId(dept.id);
     setPanel('invite');
+    setDeptForm(emptyDeptForm);
     setHodForm({
       name: dept.hodName || '',
       email: dept.hodEmail || '',
@@ -171,6 +173,7 @@ export default function DepartmentsPage() {
   const openReplace = (dept) => {
     setActiveId(dept.id);
     setPanel('replace');
+    setDeptForm(emptyDeptForm);
     setHodForm({ name: '', email: '', reason: '' });
     setLinkInfo(null);
     setMsg('');
@@ -180,6 +183,7 @@ export default function DepartmentsPage() {
   const openRevoke = (dept) => {
     setActiveId(dept.id);
     setPanel('revoke');
+    setDeptForm(emptyDeptForm);
     setHodForm({ name: dept.hodName || '', email: dept.hodEmail || '', reason: '' });
     setLinkInfo(null);
     setMsg('');
@@ -497,72 +501,32 @@ export default function DepartmentsPage() {
       <div className="mm-org-split">
         {canEdit ? (
           <section className="mm-org-panel">
-            <div className="mm-org-panel__head">
-              <div>
-                <h2 className="mm-org-panel__title">
-                  {deptForm.id ? 'Edit department' : 'Create department'}
-                </h2>
-                <p className="mm-org-panel__meta">
-                  Name and code only. Invite the HOD after the branch exists.
-                </p>
-              </div>
-            </div>
-            <form onSubmit={onSaveDept}>
-              <div className="mm-org-form-grid">
-                <div>
-                  <label className="mm-org-label" htmlFor="dept-name">
-                    Name
-                  </label>
-                  <input
-                    id="dept-name"
-                    className="mm-org-input"
-                    placeholder="Computer Science"
-                    value={deptForm.name}
-                    onChange={(e) => setDeptForm((f) => ({ ...f, name: e.target.value }))}
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="mm-org-label" htmlFor="dept-code">
-                    Code
-                  </label>
-                  <input
-                    id="dept-code"
-                    className="mm-org-input"
-                    placeholder="CSE"
-                    value={deptForm.code}
-                    onChange={(e) => setDeptForm((f) => ({ ...f, code: e.target.value }))}
-                    required
-                  />
-                </div>
-              </div>
-              <div className="mm-org-form-actions">
-                <button type="submit" className="mm-org-btn mm-org-btn--primary" disabled={busy}>
-                  <Plus size={15} /> {deptForm.id ? 'Save department' : 'Create department'}
-                </button>
-                {deptForm.id ? (
-                  <button
-                    type="button"
-                    className="mm-org-btn mm-org-btn--ghost"
-                    onClick={() => setDeptForm(emptyDeptForm)}
-                  >
-                    Cancel
-                  </button>
-                ) : null}
-              </div>
-            </form>
-
             {panel === 'invite' && activeDept ? (
-              <div className="mt-6 border-t pt-5" style={{ borderColor: 'var(--org-line)' }}>
-                <h3 className="mm-org-panel__title">Invite HOD · {activeDept.name}</h3>
-                <p className="mt-1 mb-3 text-xs mm-org-text-muted">
-                  Same pattern as TPO: link → set password → login. TPO never sets the HOD password.
-                </p>
+              <>
+                <div className="mm-org-panel__head">
+                  <div>
+                    <h2 className="mm-org-panel__title">Invite HOD · {activeDept.name}</h2>
+                    <p className="mm-org-panel__meta">
+                      Same pattern as TPO: link → set password → login. TPO never sets the HOD
+                      password.
+                    </p>
+                  </div>
+                </div>
+                <div className="mm-org-form-grid mb-4">
+                  <div>
+                    <p className="mm-org-label">Department</p>
+                    <p className="m-0 text-sm font-semibold mm-org-text">{activeDept.name}</p>
+                  </div>
+                  <div>
+                    <p className="mm-org-label">Code</p>
+                    <p className="m-0 text-sm font-semibold mm-org-text">{activeDept.code || '—'}</p>
+                  </div>
+                </div>
                 <form onSubmit={onInvite}>
                   <div className="mm-org-form-grid">
                     <div>
                       <label className="mm-org-label" htmlFor="hod-name">
-                        Name
+                        HOD name
                       </label>
                       <input
                         id="hod-name"
@@ -575,7 +539,7 @@ export default function DepartmentsPage() {
                     </div>
                     <div>
                       <label className="mm-org-label" htmlFor="hod-email">
-                        Email
+                        HOD email
                       </label>
                       <input
                         id="hod-email"
@@ -597,16 +561,28 @@ export default function DepartmentsPage() {
                     </button>
                   </div>
                 </form>
-              </div>
-            ) : null}
-
-            {panel === 'replace' && activeDept ? (
-              <div className="mt-6 border-t pt-5" style={{ borderColor: 'var(--org-line)' }}>
-                <h3 className="mm-org-panel__title">Replace HOD · {activeDept.name}</h3>
-                <p className="mt-1 mb-3 text-xs mm-org-text-muted">
-                  Revokes {activeDept.hodEmail || 'current mentor'}, keeps students, invites the new
-                  HOD. Use this to change HOD name/email.
-                </p>
+              </>
+            ) : panel === 'replace' && activeDept ? (
+              <>
+                <div className="mm-org-panel__head">
+                  <div>
+                    <h2 className="mm-org-panel__title">Replace HOD · {activeDept.name}</h2>
+                    <p className="mm-org-panel__meta">
+                      Revokes {activeDept.hodEmail || 'current mentor'}, keeps students, invites the
+                      new HOD.
+                    </p>
+                  </div>
+                </div>
+                <div className="mm-org-form-grid mb-4">
+                  <div>
+                    <p className="mm-org-label">Department</p>
+                    <p className="m-0 text-sm font-semibold mm-org-text">{activeDept.name}</p>
+                  </div>
+                  <div>
+                    <p className="mm-org-label">Code</p>
+                    <p className="m-0 text-sm font-semibold mm-org-text">{activeDept.code || '—'}</p>
+                  </div>
+                </div>
                 <form onSubmit={onReplace}>
                   <div className="mm-org-form-grid">
                     <div>
@@ -656,16 +632,28 @@ export default function DepartmentsPage() {
                     </button>
                   </div>
                 </form>
-              </div>
-            ) : null}
-
-            {panel === 'revoke' && activeDept ? (
-              <div className="mt-6 border-t pt-5" style={{ borderColor: 'var(--org-line)' }}>
-                <h3 className="mm-org-panel__title">Revoke HOD · {activeDept.name}</h3>
-                <p className="mt-1 mb-3 text-xs mm-org-text-muted">
-                  Removes access for {activeDept.hodName || activeDept.hodEmail}. Students stay in
-                  this department.
-                </p>
+              </>
+            ) : panel === 'revoke' && activeDept ? (
+              <>
+                <div className="mm-org-panel__head">
+                  <div>
+                    <h2 className="mm-org-panel__title">Revoke HOD · {activeDept.name}</h2>
+                    <p className="mm-org-panel__meta">
+                      Removes access for {activeDept.hodName || activeDept.hodEmail}. Students stay
+                      in this department.
+                    </p>
+                  </div>
+                </div>
+                <div className="mm-org-form-grid mb-4">
+                  <div>
+                    <p className="mm-org-label">Department</p>
+                    <p className="m-0 text-sm font-semibold mm-org-text">{activeDept.name}</p>
+                  </div>
+                  <div>
+                    <p className="mm-org-label">Code</p>
+                    <p className="m-0 text-sm font-semibold mm-org-text">{activeDept.code || '—'}</p>
+                  </div>
+                </div>
                 <form onSubmit={onRevoke}>
                   <div>
                     <label className="mm-org-label" htmlFor="rev-reason">
@@ -688,8 +676,65 @@ export default function DepartmentsPage() {
                     </button>
                   </div>
                 </form>
-              </div>
-            ) : null}
+              </>
+            ) : (
+              <>
+                <div className="mm-org-panel__head">
+                  <div>
+                    <h2 className="mm-org-panel__title">
+                      {deptForm.id ? 'Edit department' : 'Create department'}
+                    </h2>
+                    <p className="mm-org-panel__meta">
+                      Name and code only. Invite the HOD after the branch exists.
+                    </p>
+                  </div>
+                </div>
+                <form onSubmit={onSaveDept}>
+                  <div className="mm-org-form-grid">
+                    <div>
+                      <label className="mm-org-label" htmlFor="dept-name">
+                        Name
+                      </label>
+                      <input
+                        id="dept-name"
+                        className="mm-org-input"
+                        placeholder="Computer Science"
+                        value={deptForm.name}
+                        onChange={(e) => setDeptForm((f) => ({ ...f, name: e.target.value }))}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="mm-org-label" htmlFor="dept-code">
+                        Code
+                      </label>
+                      <input
+                        id="dept-code"
+                        className="mm-org-input"
+                        placeholder="CSE"
+                        value={deptForm.code}
+                        onChange={(e) => setDeptForm((f) => ({ ...f, code: e.target.value }))}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="mm-org-form-actions">
+                    <button type="submit" className="mm-org-btn mm-org-btn--primary" disabled={busy}>
+                      <Plus size={15} /> {deptForm.id ? 'Save department' : 'Create department'}
+                    </button>
+                    {deptForm.id ? (
+                      <button
+                        type="button"
+                        className="mm-org-btn mm-org-btn--ghost"
+                        onClick={() => setDeptForm(emptyDeptForm)}
+                      >
+                        Cancel
+                      </button>
+                    ) : null}
+                  </div>
+                </form>
+              </>
+            )}
           </section>
         ) : (
           <section className="mm-org-panel">

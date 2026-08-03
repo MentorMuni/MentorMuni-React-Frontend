@@ -9,8 +9,10 @@ import DepartmentsPage from './pages/DepartmentsPage';
 import EnrollmentPage from './pages/EnrollmentPage';
 import ProgramsPage from './pages/ProgramsPage';
 import DrivesPage from './pages/DrivesPage';
+import UpcomingDrivesPage from './pages/UpcomingDrivesPage';
 import PerformancePage from './pages/PerformancePage';
 import AccessSettingsPage from './pages/AccessSettingsPage';
+import MyWorkspacePage from './pages/MyWorkspacePage';
 import HodStudentsPage from './pages/HodStudentsPage';
 import HodNotifyPage from './pages/HodNotifyPage';
 import {
@@ -40,6 +42,15 @@ function RequirePasswordOk({ children }) {
 function RequireTpo({ children }) {
   const session = getOrgSession();
   if (!canMutateCampus(session?.role)) {
+    return <Navigate to={getOrgHomePath()} replace />;
+  }
+  return children;
+}
+
+/** TPO/Org Admin or HOD — shared personal workspace. */
+function RequireWorkspace({ children }) {
+  const session = getOrgSession();
+  if (!canMutateCampus(session?.role) && !isHodRole(session?.role)) {
     return <Navigate to={getOrgHomePath()} replace />;
   }
   return children;
@@ -81,6 +92,14 @@ function TpoPage({ children }) {
   return (
     <RequirePasswordOk>
       <RequireTpo>{children}</RequireTpo>
+    </RequirePasswordOk>
+  );
+}
+
+function WorkspacePage({ children }) {
+  return (
+    <RequirePasswordOk>
+      <RequireWorkspace>{children}</RequireWorkspace>
     </RequirePasswordOk>
   );
 }
@@ -160,6 +179,8 @@ export default function OrganizationPortalApp() {
         <Route path="enrollment" element={<TpoPage><EnrollmentPage /></TpoPage>} />
         <Route path="programs" element={<ProgramsGate><ProgramsPage /></ProgramsGate>} />
         <Route path="drives" element={<TpoPage><DrivesPage /></TpoPage>} />
+        <Route path="upcoming-drives" element={<TpoPage><UpcomingDrivesPage /></TpoPage>} />
+        <Route path="workspace" element={<WorkspacePage><MyWorkspacePage /></WorkspacePage>} />
         <Route path="access" element={<TpoPage><AccessSettingsPage /></TpoPage>} />
         <Route path="students" element={<HodPage><HodStudentsPage /></HodPage>} />
         <Route path="notify" element={<HodPage><HodNotifyPage /></HodPage>} />

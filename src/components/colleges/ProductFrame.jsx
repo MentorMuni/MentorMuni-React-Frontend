@@ -44,8 +44,8 @@ export default function ProductFrame({
             width: stageWidth,
             transform: `scale(${scale})`,
           }}
-          /* eslint-disable-next-line react/no-unknown-property */
-          inert=""
+          /* React 19 treats inert="" as false — it must be a real boolean. */
+          inert={true}
           aria-hidden="true"
         >
           {children}

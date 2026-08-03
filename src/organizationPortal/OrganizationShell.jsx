@@ -2,11 +2,13 @@ import { NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import {
   Bell,
+  Briefcase,
   Building2,
   ClipboardList,
   KeyRound,
   LayoutDashboard,
   LogOut,
+  NotebookPen,
   Settings,
   Shield,
   UserPlus,
@@ -36,6 +38,7 @@ function navForRole(role) {
     return [
       { section: 'Overview', items: [
         { to: orgPaths.dashboard, label: 'Dashboard', icon: LayoutDashboard },
+        { to: orgPaths.workspace, label: 'My workspace', icon: NotebookPen },
         { to: orgPaths.performance, label: 'Performance', icon: BarChart3 },
       ]},
       { section: 'Campus', items: [
@@ -44,7 +47,8 @@ function navForRole(role) {
       ]},
       { section: 'Placement ops', items: [
         { to: orgPaths.programs, label: 'Programs & tests', icon: ClipboardList },
-        { to: orgPaths.drives, label: 'Drives & notify', icon: Bell },
+        { to: orgPaths.upcomingDrives, label: 'Upcoming drives', icon: Briefcase },
+        { to: orgPaths.drives, label: 'Notify events', icon: Bell },
       ]},
       { section: 'Admin', items: [
         { to: orgPaths.access, label: 'HOD access', icon: Shield },
@@ -58,6 +62,7 @@ function navForRole(role) {
     return [
       { section: 'Overview', items: [
         { to: orgPaths.dashboard, label: 'Dashboard', icon: LayoutDashboard },
+        { to: orgPaths.workspace, label: 'My workspace', icon: NotebookPen },
         { to: orgPaths.performance, label: 'Performance', icon: BarChart3 },
       ]},
       { section: 'My branch', items: [
@@ -104,6 +109,7 @@ const TITLES = {
     [ORG_ROLES.VIEWER]: ['Analytics Dashboard', 'Read-only campus readiness and trends.'],
     [ORG_ROLES.STUDENT]: ['Student Dashboard', 'Your placement preparation workspace.'],
   },
+  workspace: ['My workspace', 'Your private todos, reminders, and notes — stay on this platform.'],
   departments: ['Departments', 'Branches and HOD / department mentors.'],
   enrollment: ['Student enrollment', 'Invite students, approve requests, assign departments.'],
   students: ['Branch students', 'Roster, invites, and readiness for your department.'],
@@ -111,7 +117,8 @@ const TITLES = {
     [ORG_ROLES.TPO]: ['Programs & tests', 'Assign readiness tests, mocks, competitions, and timelines.'],
     [ORG_ROLES.HOD]: ['Programs & assessments', 'Assign skill, aptitude, English, technical, and mock interviews.'],
   },
-  drives: ['Drives & notify', 'Announce company drives and keep the campus informed.'],
+  drives: ['Notify events', 'Events, workshops, and announcements — campus, department, or HODs.'],
+  'upcoming-drives': ['Upcoming drives', 'Company drives — eligibility, date, and remarks for Org Admins.'],
   notify: ['Notify branch', 'Announcements and reminders for your department only.'],
   performance: {
     [ORG_ROLES.TPO]: ['Performance', 'Leaderboards, strengths, gaps — student and department.'],
