@@ -114,3 +114,20 @@ Body: `{ first_name, last_name, email, mobile, username }`
 2. Send email asynchronously (queue/worker); update status later or include `email_sent` when already done.
 3. Or provide a timeout/fallback: create succeeds even if mail provider is slow/fails (`email_sent: false` + `activation_url` for manual share).
 4. Target: API responds in <2–3s regardless of mail provider latency.
+
+---
+
+## Feature — Multi Org Admins (TPO / Dean / Director) (FE DONE — BE ready)
+
+**URL:** `/platform/admin/organizations` (+ Settings list)
+
+**Product:** Up to 3 Org Admins per college (titles TPO / DEAN / DIRECTOR), same `ORG_ADMIN` access. Primary = TPO. Deactivate one frees that title. Activate URL stays `/activate-tpo`.
+
+**FE changes:**
+- Organizations modal lists live admins; Add only for free titles; title dropdown on create/edit
+- Pass `user_id` on Edit / Reinvite / Deactivate
+- No longer block create when another title is still free
+- Labels: Org Admin + title subtitle
+- Store: `GET …/tpo` → `items[]`; `reinvite?user_id=`; `POST …/tpo/{userId}/deactivate`
+
+**Backend:** Already enforcing max 3 live, one live person per title.

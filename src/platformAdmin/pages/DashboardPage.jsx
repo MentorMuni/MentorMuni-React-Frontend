@@ -83,7 +83,7 @@ export default function DashboardPage() {
             <span className="block text-sky-300">Hand off in minutes.</span>
           </h2>
           <p className="max-w-lg text-sm leading-relaxed text-slate-300">
-            Create organization → assign subscription → enable features → invite TPO.
+            Create organization → assign subscription → enable features → invite Org Admin.
             MentorMuni Platform stops where the Organization Portal begins.
           </p>
           <div className="mt-5 flex flex-wrap gap-2">
@@ -253,7 +253,7 @@ export default function DashboardPage() {
             'Create Organization',
             'Assign Subscription',
             'Enable Features',
-            'Create TPO',
+            'Create Org Admin',
             'Send Activation',
           ].map((step, i) => (
             <motion.li

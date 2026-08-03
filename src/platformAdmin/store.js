@@ -240,6 +240,39 @@ export async function saveOrgFeatures(organizationId, enabledMap) {
   return row;
 }
 
+export const ORG_ADMIN_TITLES = [
+  { value: 'TPO', label: 'TPO' },
+  { value: 'DEAN', label: 'Dean' },
+  { value: 'DIRECTOR', label: 'Director' },
+];
+
+export function orgAdminTitleLabel(title) {
+  const key = String(title || 'TPO').toUpperCase();
+  return ORG_ADMIN_TITLES.find((t) => t.value === key)?.label || key;
+}
+
+export function isLiveOrgAdmin(admin) {
+  const status = String(admin?.activation_status || admin?.status || '').toUpperCase();
+  return status === 'ACTIVE' || status === 'INVITED' || status === 'PENDING';
+}
+
+export function liveOrgAdmins(admins = []) {
+  return (admins || []).filter(isLiveOrgAdmin);
+}
+
+export function takenOrgAdminTitles(admins = []) {
+  return new Set(
+    liveOrgAdmins(admins).map((a) => String(a.title || 'TPO').toUpperCase())
+  );
+}
+
+export function availableOrgAdminTitles(admins = [], keepTitle = null) {
+  const taken = takenOrgAdminTitles(admins);
+  const keep = String(keepTitle || '').toUpperCase();
+  if (keep) taken.delete(keep);
+  return ORG_ADMIN_TITLES.filter((t) => !taken.has(t.value));
+}
+
 function normalizeTpo(row, organizationId, orgName) {
   if (!row || typeof row !== 'object') return null;
   const orgId = row.organization_id ?? row.org_id ?? organizationId;
@@ -248,9 +281,12 @@ function normalizeTpo(row, organizationId, orgName) {
     row.status ||
     (row.activation_token ? 'PENDING' : 'ACTIVE');
   const nameParts = String(row.name || '').trim().split(/\s+/).filter(Boolean);
+  const title = String(row.title || 'TPO').toUpperCase();
+  const userId = row.user_id ?? row.id ?? null;
 
   return {
-    id: row.id ?? `org-${orgId}-tpo`,
+    id: userId ?? `org-${orgId}-tpo`,
+    user_id: userId,
     organization_id: orgId,
     organization_name:
       row.organization_name ||
@@ -268,6 +304,9 @@ function normalizeTpo(row, organizationId, orgName) {
     email: row.email || '',
     username: row.username || '',
     mobile: row.mobile || row.phone || '',
+    title,
+    is_primary: Boolean(row.is_primary ?? title === 'TPO'),
+    display_role: row.display_role || 'Org Admin',
     activation_status: String(status).toUpperCase(),
     activation_token: row.activation_token || '',
     activation_url: row.activation_url || '',
@@ -277,6 +316,18 @@ function normalizeTpo(row, organizationId, orgName) {
     email_detail: row.email_detail || '',
     message: row.message || '',
   };
+}
+
+function extractOrgAdminRows(payload) {
+  if (!payload) return [];
+  if (Array.isArray(payload)) return payload;
+  if (typeof payload !== 'object') return [];
+  if (Array.isArray(payload.items)) return payload.items;
+  // Legacy single-admin response
+  if (payload.id || payload.email || payload.username || payload.first_name || payload.user_id) {
+    return [payload];
+  }
+  return asArray(payload, ['tpos', 'users', 'org_admins', 'data']);
 }
 
 export async function getOrgAdmins() {
@@ -305,35 +356,60 @@ export async function getOrgAdmins() {
     .sort((a, b) => Number(b.organization_id) - Number(a.organization_id));
 }
 
-export async function getOrganizationTpo(organizationId) {
+/** List Org Admins for one org (up to 3 live titles). */
+export async function getOrganizationAdmins(organizationId) {
   try {
-    const row = await platformApi.get(`/platform/organizations/${organizationId}/tpo`);
-    if (!row || typeof row !== 'object') return null;
-    if (!row.id && !row.email && !row.username && !row.first_name) return null;
-    return normalizeTpo(row, organizationId);
+    const payload = await platformApi.get(`/platform/organizations/${organizationId}/tpo`);
+    return extractOrgAdminRows(payload)
+      .map((row) => normalizeTpo(row, organizationId))
+      .filter(Boolean);
   } catch (err) {
     const message = String(err?.message || '');
     if (/404|not found|no tpo|does not have|no org_admin/i.test(message)) {
-      return null;
+      return [];
     }
     throw err;
   }
 }
 
+/** @deprecated Prefer getOrganizationAdmins — kept for single-admin callers. */
+export async function getOrganizationTpo(organizationId) {
+  const admins = await getOrganizationAdmins(organizationId);
+  return admins[0] || null;
+}
+
 export async function createTpo(organizationId, payload) {
-  const row = await platformApi.post(`/platform/organizations/${organizationId}/tpo`, payload);
+  const body = {
+    ...payload,
+    title: String(payload?.title || 'TPO').toUpperCase(),
+  };
+  const row = await platformApi.post(`/platform/organizations/${organizationId}/tpo`, body);
   emitUpdate();
-  return normalizeTpo({ ...payload, ...row }, organizationId) || row;
+  return normalizeTpo({ ...body, ...row }, organizationId) || row;
 }
 
 export async function updateTpo(organizationId, payload) {
-  const row = await platformApi.put(`/platform/organizations/${organizationId}/tpo`, payload);
+  const body = { ...payload };
+  if (body.title) body.title = String(body.title).toUpperCase();
+  if (body.user_id == null && body.id != null) body.user_id = body.id;
+  const row = await platformApi.put(`/platform/organizations/${organizationId}/tpo`, body);
   emitUpdate();
-  return normalizeTpo({ ...payload, ...row }, organizationId) || row;
+  return normalizeTpo({ ...body, ...row }, organizationId) || row;
 }
 
-export async function reinviteTpo(organizationId) {
-  const row = await platformApi.post(`/platform/organizations/${organizationId}/tpo/reinvite`);
+export async function reinviteTpo(organizationId, userId) {
+  const qs = userId != null ? `?user_id=${encodeURIComponent(userId)}` : '';
+  const row = await platformApi.post(
+    `/platform/organizations/${organizationId}/tpo/reinvite${qs}`
+  );
+  emitUpdate();
+  return normalizeTpo(row, organizationId) || row;
+}
+
+export async function deactivateTpo(organizationId, userId) {
+  const row = await platformApi.post(
+    `/platform/organizations/${organizationId}/tpo/${userId}/deactivate`
+  );
   emitUpdate();
   return normalizeTpo(row, organizationId) || row;
 }

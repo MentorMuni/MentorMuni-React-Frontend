@@ -15,7 +15,7 @@ const FLOW = [
   { title: 'Create Organization', help: 'Spin up a college or public tenant' },
   { title: 'Assign Subscription', help: 'Plan, seats, and validity window' },
   { title: 'Enable Features', help: 'Resume ATS, AI Mentor, mocks…' },
-  { title: 'Create TPO', help: 'Activation link — they set their password' },
+  { title: 'Create Org Admin', help: 'Activation link — they set their password' },
 ];
 
 function Atmosphere() {
@@ -133,7 +133,7 @@ export default function PlatformAdminLogin() {
               animate={{ opacity: 1 }}
               transition={{ delay: 0.35 }}
             >
-              CEO-grade ops for MentorMuni. Create organizations, attach plans, flip features, hand off to TPO.
+              CEO-grade ops for MentorMuni. Create organizations, attach plans, flip features, hand off to Org Admins.
             </motion.p>
 
             <motion.div
@@ -281,7 +281,7 @@ export default function PlatformAdminLogin() {
               <div className="mm-pa-login-tile">
                 <Zap size={14} className="mm-pa-login-tile__icon mm-pa-login-tile__icon--amber" />
                 <p className="mm-pa-login-tile__title">Fast Handoff</p>
-                <p className="mm-pa-login-tile__sub">TPO activation link</p>
+                <p className="mm-pa-login-tile__sub">Org Admin activation link</p>
               </div>
             </div>
 

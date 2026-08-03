@@ -79,7 +79,7 @@ export default function ActivateTpoPage() {
             transition={{ duration: 0.55, ease: EASE }}
           >
             <h1 id="activate-tpo-heading" className="mm-login-vibe__headline">
-              <span className="mm-login-vibe__headline-line">Activate TPO account</span>
+              <span className="mm-login-vibe__headline-line">Activate Org Admin account</span>
               <span className="mm-login-vibe__headline-line mm-login-vibe__headline-grad">Set your password.</span>
             </h1>
           </motion.header>
