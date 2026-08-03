@@ -105,11 +105,23 @@ function isStudentPortalPath(pathname) {
   return p === "/studentportal" || p.startsWith("/studentportal/");
 }
 
+/** Password set / activation links from invite email — no marketing site chrome. */
+function isAuthStandalonePath(pathname) {
+  const p = String(pathname || "").toLowerCase();
+  return (
+    p === "/activate-tpo" ||
+    p.startsWith("/activate-tpo/") ||
+    p === "/activate-hod" ||
+    p.startsWith("/activate-hod/")
+  );
+}
+
 function isChromeLessPath(pathname) {
   return (
     isPlatformAdminPath(pathname) ||
     isOrganizationPortalPath(pathname) ||
-    isStudentPortalPath(pathname)
+    isStudentPortalPath(pathname) ||
+    isAuthStandalonePath(pathname)
   );
 }
 
