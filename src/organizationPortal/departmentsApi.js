@@ -215,6 +215,12 @@ function apiUnavailableError(action) {
 }
 
 export async function fetchDepartments() {
+  // Demo HOD/TPO use local store only — calling the real API with a fake token
+  // returns 401 and previously auto-logged the user out.
+  if (allowLocalFallback()) {
+    return withSource({ ok: true, departments: local.listDepartments() }, 'local');
+  }
+
   try {
     const data = await orgApi.get('/organizations/departments');
     const list = Array.isArray(data) ? data : data?.departments || data?.items || [];
@@ -230,9 +236,6 @@ export async function fetchDepartments() {
         departments: [],
         source: 'error',
       };
-    }
-    if (allowLocalFallback()) {
-      return withSource({ ok: true, departments: local.listDepartments() }, 'local');
     }
     return {
       ok: false,

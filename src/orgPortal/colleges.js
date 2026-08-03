@@ -96,13 +96,20 @@ export async function fetchLoginColleges() {
         'No active colleges returned. If your organization was just created, confirm it is ACTIVE, then refresh.',
     };
   } catch (err) {
+    const code = String(err?.code || '').toUpperCase();
+    const raw = String(err?.message || '');
+    const isApiKey =
+      code === 'INVALID_API_KEY' ||
+      /api key|missing api|invalid.*key/i.test(raw);
+
     return {
       ok: true,
       colleges: demoOnlyList(),
       source: 'offline',
-      warning:
-        err?.message ||
-        'Could not load colleges from the server. Only the Demo college is available until the API responds.',
+      warning: isApiKey
+        ? 'College list could not load: API key is missing or does not match this backend. Check VITE_API_KEY in .env.local, then restart npm run dev. Until then, use Demo college only.'
+        : raw ||
+          'Could not load colleges from the server. Only the Demo college is available until the API responds.',
     };
   }
 }

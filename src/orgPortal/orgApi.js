@@ -102,7 +102,14 @@ function extractDetail(data, text) {
   return { code, message: message || text || '', detail };
 }
 
+function isDemoToken(token = getToken()) {
+  return String(token || '').startsWith('demo.');
+}
+
 function forceLogoutUnauthorized() {
+  // Demo sessions use local fake tokens — never treat API 401 as a real logout.
+  if (isDemoToken()) return;
+
   clearToken();
   try {
     localStorage.removeItem(SESSION_KEY);

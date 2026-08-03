@@ -75,6 +75,8 @@ export default function StudentLoginPage() {
   const [colleges, setColleges] = useState([]);
   const [college, setCollege] = useState(null);
   const [collegesLoading, setCollegesLoading] = useState(true);
+  const [collegesWarning, setCollegesWarning] = useState('');
+  const [collegesSource, setCollegesSource] = useState('');
   const [collegeQuery, setCollegeQuery] = useState('');
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
@@ -113,10 +115,44 @@ export default function StudentLoginPage() {
       setCollegesLoading(false);
       if (!result.ok) {
         setColleges([]);
+        setCollegesWarning(result.warning || 'Unable to load campuses.');
+        setCollegesSource('');
         return;
       }
-      setColleges(result.colleges || []);
-      const initial = pickInitialCollege(result.colleges, searchParams);
+      const list = result.colleges || [];
+      setColleges(list);
+      setCollegesWarning(result.warning || '');
+      setCollegesSource(result.source || '');
+
+      const wantPrefill =
+        SHOW_DEMO &&
+        /^(1|true|yes|demo)$/i.test(
+          String(searchParams.get('prefill') || searchParams.get('demo') || '').trim()
+        );
+
+      if (wantPrefill) {
+        const demoCollege =
+          list.find((c) => c.code === DEMO_ORG.code) || {
+            id: DEMO_ORG.id,
+            name: DEMO_ORG.name,
+            code: DEMO_ORG.code,
+            city: DEMO_ORG.city,
+            state: DEMO_ORG.state,
+          };
+        if (!list.some((c) => c.code === DEMO_ORG.code)) {
+          setColleges([demoCollege, ...list]);
+        }
+        setCollege(demoCollege);
+        saveCollegeCode(DEMO_ORG.code);
+        setUserId(DEMO_STUDENT.email);
+        setPassword(DEMO_STUDENT.password);
+        setPickingCampus(false);
+        setStep('login');
+        setSuccess('Sample credentials prefilled. Click Sign in to continue.');
+        return;
+      }
+
+      const initial = pickInitialCollege(list, searchParams);
       if (initial) {
         setCollege(initial);
         setPickingCampus(false);
@@ -193,12 +229,38 @@ export default function StudentLoginPage() {
         state: DEMO_ORG.state,
       };
     setCollege(demoCollege);
+    setColleges((list) =>
+      list.some((c) => c.code === DEMO_ORG.code) ? list : [demoCollege, ...list]
+    );
     saveCollegeCode(DEMO_ORG.code);
     setUserId(DEMO_STUDENT.email);
     setPassword(DEMO_STUDENT.password);
     setError('');
+    setCollegesWarning('');
     setPickingCampus(false);
     setStep('login');
+    setSuccess('Sample credentials prefilled. Click Sign in to continue.');
+  };
+
+  const loginAsSampleStudent = async () => {
+    fillDemo();
+    setLoading(true);
+    setError('');
+    try {
+      const result = await loginStudent(DEMO_STUDENT.email, DEMO_STUDENT.password, DEMO_ORG.code);
+      if (!result.ok) {
+        setError(safeLoginError(result.error, 'Unable to sign in with sample student.'));
+        setStep('login');
+        return;
+      }
+      saveCollegeCode(DEMO_ORG.code);
+      navigate(studentPaths.home, { replace: true });
+    } catch (err) {
+      setError(safeLoginError(err?.message));
+      setStep('login');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -309,6 +371,46 @@ export default function StudentLoginPage() {
                 <p className="mm-org-gate__sub">
                   Lock your college so prep, drives, and your roster stay aligned.
                 </p>
+
+                {SHOW_DEMO ? (
+                  <div className="mm-org-login__demo" role="note" style={{ marginBottom: 16 }}>
+                    <p className="mm-org-login__demo-title">Sample student login</p>
+                    <p className="mm-org-login__demo-line">
+                      Campus: <strong>DEMO</strong> · MentorMuni Demo College
+                    </p>
+                    <p className="mm-org-login__demo-line">
+                      <code>{DEMO_STUDENT.email}</code> / <code>{DEMO_STUDENT.password}</code>
+                    </p>
+                    <div className="flex flex-wrap gap-2" style={{ marginTop: 10 }}>
+                      <button
+                        type="button"
+                        className="mm-org-login__demo-fill"
+                        onClick={fillDemo}
+                      >
+                        Prefill sample credentials
+                      </button>
+                      <button
+                        type="button"
+                        className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+                        disabled={loading}
+                        onClick={loginAsSampleStudent}
+                      >
+                        {loading ? 'Signing in…' : 'Sign in as sample student'}
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
+
+                {collegesWarning ? (
+                  <div className="mm-org-login__alert mm-org-login__alert--err" role="status" style={{ marginBottom: 12 }}>
+                    <p>{collegesWarning}</p>
+                    {collegesSource === 'offline' && SHOW_DEMO ? (
+                      <p style={{ marginTop: 6, opacity: 0.9 }}>
+                        Use the sample student login above while the API key / campus list is fixed.
+                      </p>
+                    ) : null}
+                  </div>
+                ) : null}
 
                 <div className="mm-org-gate__form-block">
                   <label className="mm-org-gate__label" htmlFor="stu-campus-q">
@@ -578,16 +680,32 @@ export default function StudentLoginPage() {
 
                 {SHOW_DEMO ? (
                   <div className="mm-org-login__demo" role="note">
-                    <p className="mm-org-login__demo-title">Temp demo credentials (remove later)</p>
+                    <p className="mm-org-login__demo-title">Sample student login</p>
                     <p className="mm-org-login__demo-line">
-                      College: <strong>DEMO</strong> · MentorMuni Demo College
+                      Campus: <strong>DEMO</strong> · MentorMuni Demo College
                     </p>
                     <p className="mm-org-login__demo-line">
-                      Student: <code>{DEMO_STUDENT.email}</code> / <code>{DEMO_STUDENT.password}</code>
+                      <code>{DEMO_STUDENT.email}</code> / <code>{DEMO_STUDENT.password}</code>
+                      {' · '}
+                      or roll <code>{DEMO_STUDENT.collegeId}</code>
                     </p>
-                    <button type="button" className="mm-org-login__demo-fill" onClick={fillDemo}>
-                      Fill student demo
-                    </button>
+                    <div className="flex flex-wrap gap-2" style={{ marginTop: 10 }}>
+                      <button
+                        type="button"
+                        className="mm-org-login__demo-fill"
+                        onClick={fillDemo}
+                      >
+                        Prefill sample credentials
+                      </button>
+                      <button
+                        type="button"
+                        className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+                        disabled={loading}
+                        onClick={loginAsSampleStudent}
+                      >
+                        {loading ? 'Signing in…' : 'Sign in as sample student'}
+                      </button>
+                    </div>
                   </div>
                 ) : null}
 

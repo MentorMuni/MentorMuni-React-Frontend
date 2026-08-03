@@ -151,30 +151,10 @@ export default function OrganizationLoginPage() {
     setErrorKind('');
   };
 
-  // Landing on login always clears any prior session (back/forward safety).
+  // Landing on login clears any prior session. Do not listen to popstate —
+  // React Router / history changes were wiping sessions right after demo login.
   useEffect(() => {
     clearOrgSession();
-    const resetToLoginGate = () => {
-      clearOrgSession();
-      setStep('college');
-      setPickingCollege(true);
-      setCollegeQuery('');
-      setUserId('');
-      setPassword('');
-      setError('');
-      setErrorKind('');
-      setCta('');
-    };
-    const onPageShow = (e) => {
-      if (e.persisted) resetToLoginGate();
-    };
-    const onPopState = () => resetToLoginGate();
-    window.addEventListener('pageshow', onPageShow);
-    window.addEventListener('popstate', onPopState);
-    return () => {
-      window.removeEventListener('pageshow', onPageShow);
-      window.removeEventListener('popstate', onPopState);
-    };
   }, []);
 
   useEffect(() => {
@@ -412,7 +392,9 @@ export default function OrganizationLoginPage() {
                     <p className="mm-login-vibe-form__error-text">{collegesWarning}</p>
                     {collegesSource === 'offline' ? (
                       <p className="mm-login-vibe-form__error-cta" style={{ marginTop: 6 }}>
-                        Demo login still works with <strong>DEMO</strong> · tpo@demo.edu / Demo@123
+                        Demo still works — college <strong>DEMO</strong> ·{' '}
+                        <code>tpo@demo.edu</code> / <code>Demo@123</code> (HOD:{' '}
+                        <code>hod@demo.edu</code>)
                       </p>
                     ) : null}
                   </div>

@@ -1,88 +1,19 @@
-import { Link, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
-import {
-  clearStudentSession,
-  getStudentSession,
-  isStudentAuthenticated,
-} from './auth';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { isStudentAuthenticated } from './auth';
 import { studentPaths } from './paths';
 import StudentLoginPage from './pages/StudentLoginPage';
+import StudentHomePage from './pages/StudentHomePage';
 import StudentRegisterPage from './pages/StudentRegisterPage';
 import StudentEnrollPage from './pages/StudentEnrollPage';
 import StudentSetPasswordPage from './pages/StudentSetPasswordPage';
 import StudentForgotPasswordPage from './pages/StudentForgotPasswordPage';
-import { StudentThemeFab, useStudentTheme } from './useStudentTheme.jsx';
 import './student-login.css';
-
-const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
 
 function RequireStudent({ children }) {
   if (!isStudentAuthenticated()) {
     return <Navigate to={studentPaths.login} replace />;
   }
   return children;
-}
-
-function StudentHomeStub() {
-  const navigate = useNavigate();
-  const session = getStudentSession();
-  const { theme, toggle, rootClass } = useStudentTheme();
-
-  return (
-    <div className={`mm-stu-login-root mm-stu-home ${rootClass}`}>
-      <StudentThemeFab theme={theme} onToggle={toggle} />
-
-      <div className="mm-stu-atm" aria-hidden>
-        <div className="mm-stu-atm__mesh" />
-        <div className="mm-stu-atm__blob mm-stu-atm__blob--a" />
-        <div className="mm-stu-atm__blob mm-stu-atm__blob--b" />
-      </div>
-
-      <div className="mm-stu-form-col mm-stu-home__col">
-        <div className="mm-stu-card mm-stu-card--genz mm-stu-home__card">
-          <div className="mm-stu-brand mm-stu-home__brand">
-            <img src={LOGO} alt="MentorMuni" />
-            <div className="mm-stu-brand__text">
-              <span className="mm-stu-brand__name">MentorMuni</span>
-              <span className="mm-stu-brand__tag">Student portal</span>
-            </div>
-          </div>
-
-          <p className="mm-stu-step-label">Signed in</p>
-          <h1 className="mm-stu-card-title">
-            Welcome{session?.name ? `, ${session.name.split(' ')[0]}` : ''}.
-          </h1>
-          <p className="mm-stu-card-sub">
-            {session?.organization_name || 'Your college'}
-            {session?.department_name ? ` · ${session.department_name}` : ''}. Full student workspace
-            (assessments, mocks, drives) ships next — login is ready.
-          </p>
-          <p className="mm-stu-card-sub mm-stu-home__identity">
-            Signed in as{' '}
-            <strong>{session?.email || session?.college_id}</strong>
-            {session?.demo ? ' (demo)' : ''}
-            {session?.localEnrollment ? ' (campus enrollment)' : ''}.
-          </p>
-
-          <button
-            type="button"
-            className="mm-stu-submit"
-            onClick={() => {
-              clearStudentSession();
-              navigate(studentPaths.login, { replace: true });
-            }}
-          >
-            Sign out
-          </button>
-
-          <p className="mm-stu-card-foot">
-            <Link to="/" className="mm-stu-link">
-              Back to MentorMuni home
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
-  );
 }
 
 export default function StudentPortalApp() {
@@ -97,7 +28,7 @@ export default function StudentPortalApp() {
         path="home"
         element={
           <RequireStudent>
-            <StudentHomeStub />
+            <StudentHomePage />
           </RequireStudent>
         }
       />
