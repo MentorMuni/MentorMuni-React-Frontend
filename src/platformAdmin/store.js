@@ -122,6 +122,24 @@ export async function getSubscriptions(filters = {}) {
   return asArray(await platformApi.get(`/platform/subscriptions${suffix}`), ['subscriptions']);
 }
 
+/**
+ * One request for all ACTIVE subscriptions, keyed by organization_id.
+ * Prefer the newest subscription id when an org has more than one ACTIVE row.
+ */
+export async function getActiveSubscriptionsByOrgId() {
+  const rows = await getSubscriptions({ status: 'ACTIVE' });
+  const map = {};
+  for (const row of rows) {
+    const orgId = row?.organization_id ?? row?.org_id;
+    if (orgId == null) continue;
+    const existing = map[orgId];
+    if (!existing || Number(row.id) > Number(existing.id)) {
+      map[orgId] = row;
+    }
+  }
+  return map;
+}
+
 export async function getSubscriptionForOrg(organizationId) {
   const rows = await getSubscriptions({ organization_id: organizationId, status: 'ACTIVE' });
   return rows[0] || null;

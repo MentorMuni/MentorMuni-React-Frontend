@@ -18,6 +18,7 @@ import {
   assignSubscription,
   cancelSubscription,
   getSubscriptionForOrg,
+  getActiveSubscriptionsByOrgId,
   getOrgFeatures,
   saveOrgFeatures,
   createTpo,
@@ -110,6 +111,7 @@ export default function OrganizationsPage() {
   const [subsByOrg, setSubsByOrg] = useState({});
   const [tpoByOrg, setTpoByOrg] = useState({});
   const [loading, setLoading] = useState(true);
+  const [enriching, setEnriching] = useState(false);
   const [apiToast, setApiToast] = useState('');
 
   const fillTpoForm = (tpo, org) => ({
@@ -182,11 +184,19 @@ export default function OrganizationsPage() {
   const refresh = async () => {
     try {
       setLoading(true);
-      const [rows, tpos] = await Promise.all([
-        getOrganizations(),
-        getOrgAdmins().catch(() => []),
-      ]);
+      setEnriching(true);
+      const orgPromise = getOrganizations();
+      const tpoPromise = getOrgAdmins().catch(() => []);
+      const subPromise = getActiveSubscriptionsByOrgId().catch(() => ({}));
+
+      // Paint the org table as soon as the list arrives — do not wait on
+      // subscription enrichment (that used to be N+1 per org).
+      const rows = await orgPromise;
       setOrgs(rows);
+      setLoading(false);
+      setApiToast('');
+
+      const [tpos, subsMap] = await Promise.all([tpoPromise, subPromise]);
       setTpoByOrg(
         Object.fromEntries(
           (tpos || [])
@@ -194,40 +204,47 @@ export default function OrganizationsPage() {
             .map((t) => [String(t.organization_id), t])
         )
       );
-      const subPairs = await Promise.all(
-        rows.map(async (o) => [o.id, await getSubscriptionForOrg(o.id)])
-      );
-      setSubsByOrg(Object.fromEntries(subPairs));
-      setApiToast('');
+      setSubsByOrg(subsMap || {});
     } catch (e) {
       setApiToast(e.message || 'Failed to fetch organizations.');
-    } finally {
       setLoading(false);
+    } finally {
+      setEnriching(false);
     }
   };
 
   useEffect(() => {
     let mounted = true;
     const boot = async () => {
+      // Plans/features are only needed for modals — load in parallel, never
+      // block the organizations table.
+      getSubscriptionPlans()
+        .then((plansResult) => {
+          if (mounted) setPlans(plansResult || []);
+        })
+        .catch((e) => {
+          if (mounted) setApiToast(e.message || 'Failed to load subscription plans.');
+        });
+      getFeatureCatalog()
+        .then((featureResult) => {
+          if (mounted) setFeatureCatalog(featureResult || []);
+        })
+        .catch(() => {
+          if (mounted) setFeatureCatalog([]);
+        });
+
       try {
-        const [plansResult, featureResult] = await Promise.all([
-          getSubscriptionPlans().catch((e) => {
-            setApiToast(e.message || 'Failed to load subscription plans.');
-            return [];
-          }),
-          getFeatureCatalog().catch(() => []),
-        ]);
-        if (!mounted) return;
-        setPlans(plansResult || []);
-        setFeatureCatalog(featureResult || []);
         await refresh();
       } catch (e) {
+        if (!mounted) return;
         setError(e.message || 'Failed to load organizations.');
         setApiToast(e.message || 'Failed to load organizations.');
       }
     };
     boot();
-    const onUpdate = async () => refresh();
+    const onUpdate = () => {
+      refresh();
+    };
     window.addEventListener('mm-platform-db-updated', onUpdate);
     return () => {
       mounted = false;
@@ -483,7 +500,7 @@ export default function OrganizationsPage() {
     e.preventDefault();
     const orgKey = String(selected?.id);
     if (tpoByOrg[orgKey] || activationInfo) {
-      setError('This organization already has an ORG_ADMIN (TPO). Open View TPO to manage it.');
+      setError('This organization already has a College Admin (TPO). Open View TPO to manage it.');
       setTpoMode('view');
       return;
     }
@@ -692,7 +709,11 @@ export default function OrganizationsPage() {
                         <p className="mm-pa-table__title">{org.name}</p>
                         <p className="mm-pa-table__meta">
                           {org.code} · ID {org.id}
-                          {sub ? ` · ${sub.plan_name}` : ' · No plan'}
+                          {sub
+                            ? ` · ${sub.plan_name}`
+                            : enriching
+                              ? ''
+                              : ' · No plan'}
                           {hasTpo ? ' · TPO assigned' : ''}
                         </p>
                       </div>
@@ -992,13 +1013,13 @@ export default function OrganizationsPage() {
             ? 'View TPO'
             : tpoMode === 'edit'
               ? 'Edit TPO'
-              : 'Add TPO (ORG_ADMIN)'
+              : 'Add TPO (College Admin)'
         }
         sub={
           selected
             ? tpoMode === 'create'
-              ? `First organization admin for ${selected.name}`
-              : `Same ORG_ADMIN account for ${selected.name} — org dashboards stay unchanged`
+              ? `Invite the campus TPO for ${selected.name}`
+              : `Update the TPO for ${selected.name} — college dashboards stay unchanged`
             : ''
         }
       >
@@ -1011,8 +1032,12 @@ export default function OrganizationsPage() {
         ) : tpoMode === 'create' ? (
           <form onSubmit={submitTpo} className="space-y-3">
             {error && <div className="mm-pa-error">{error}</div>}
-            <div className="mm-pa-callout mm-pa-callout--amber">
-              No temporary password. Backend generates a one-time activation token and emails the TPO to set their own password.
+            <div className="mm-pa-callout mm-pa-callout--info">
+              <p className="mm-pa-callout__title">How activation works</p>
+              <p className="mm-pa-callout__body">
+                We email the TPO a secure link to set their own password. No temporary password is shared here.
+                Sending the email can take a few seconds — please wait until the button finishes.
+              </p>
             </div>
             <div className="mm-pa-grid-2">
               <div>
@@ -1037,21 +1062,24 @@ export default function OrganizationsPage() {
               </div>
               <div>
                 <label className="mm-pa-label">Role</label>
-                <input className="mm-pa-input" value="ORG_ADMIN" disabled />
+                <input className="mm-pa-input" value="College Admin" disabled />
               </div>
             </div>
             <div className="mt-4 flex justify-end gap-2">
               <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={closeTpoModal}>Cancel</button>
               <button type="submit" className="mm-pa-btn mm-pa-btn--primary" disabled={tpoBusy}>
-                {tpoBusy ? 'Creating…' : 'Create & Send Activation'}
+                {tpoBusy ? 'Creating TPO & sending email…' : 'Create & Send Activation'}
               </button>
             </div>
           </form>
         ) : tpoMode === 'edit' ? (
           <form onSubmit={submitEditTpo} className="space-y-3">
             {error && <div className="mm-pa-error">{error}</div>}
-            <div className="mm-pa-callout mm-pa-callout--amber">
-              Edits the same ORG_ADMIN row in place. Organization, HODs, students, plans, and dashboards stay unchanged.
+            <div className="mm-pa-callout mm-pa-callout--info">
+              <p className="mm-pa-callout__title">Editing this TPO</p>
+              <p className="mm-pa-callout__body">
+                Updates apply to the same college admin account. Students, departments, plans, and dashboards are not affected.
+              </p>
             </div>
             <div className="mm-pa-grid-2">
               <div>
@@ -1076,7 +1104,7 @@ export default function OrganizationsPage() {
               </div>
               <div>
                 <label className="mm-pa-label">Role</label>
-                <input className="mm-pa-input" value="ORG_ADMIN" disabled />
+                <input className="mm-pa-input" value="College Admin" disabled />
               </div>
             </div>
 
@@ -1118,7 +1146,7 @@ export default function OrganizationsPage() {
               <p className="mt-1"><span className="mm-pa-detail-card__label">Email:</span> {activationInfo?.email || '—'}</p>
               <p className="mt-1"><span className="mm-pa-detail-card__label">Username:</span> {activationInfo?.username || '—'}</p>
               <p className="mt-1"><span className="mm-pa-detail-card__label">Mobile:</span> {activationInfo?.mobile || '—'}</p>
-              <p className="mt-1"><span className="mm-pa-detail-card__label">Role:</span> ORG_ADMIN</p>
+              <p className="mt-1"><span className="mm-pa-detail-card__label">Role:</span> College Admin</p>
               <p className="mt-1">
                 <span className="mm-pa-detail-card__label">Status:</span>{' '}
                 <span className={`mm-pa-badge ${

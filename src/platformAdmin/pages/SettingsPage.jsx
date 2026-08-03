@@ -17,7 +17,7 @@ export default function SettingsPage() {
         setTpos(await getOrgAdmins());
         setError('');
       } catch (e) {
-        setError(e.message || 'Unable to fetch ORG_ADMIN users.');
+        setError(e.message || 'Unable to load organization TPO accounts.');
       } finally {
         setLoading(false);
       }
@@ -59,7 +59,7 @@ export default function SettingsPage() {
       {error && <div className="mm-pa-inline-toast mm-pa-inline-toast--error">{error}</div>}
 
       <section className="mm-pa-panel">
-        <h2 className="text-sm font-extrabold">Platform scope</h2>
+        <h2 className="mm-pa-panel__title">Platform scope</h2>
         <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
           This portal only provisions tenants. After Create Organization → Assign Subscription → Enable Features → Create TPO,
           work moves to the Organization Portal. No student, HOD, assessment, or college dashboard tools live here.
@@ -72,10 +72,11 @@ export default function SettingsPage() {
       </section>
 
       <section className="mm-pa-panel">
-        <h2 className="mb-2 text-sm font-extrabold">ORG_ADMIN accounts</h2>
+        <h2 className="mm-pa-panel__title mb-2">Organization TPOs</h2>
         <p className="mb-4 text-sm text-slate-400">
-          Loaded from <code className="mm-pa-code">GET /platform/tpo</code>. One ORG_ADMIN per organization —
-          use <strong>Edit</strong> (with password reset) for handover, or <strong>Reinvite</strong> if the same person forgot their password.
+          Each college or public tenant has one Training &amp; Placement Officer (TPO). Use{' '}
+          <strong className="mm-pa-strong">Edit</strong> (with password reset) when handing the role to someone new,
+          or <strong className="mm-pa-strong">Reinvite</strong> if the same person needs a fresh activation link.
         </p>
         <div className="overflow-x-auto">
           <table className="mm-pa-table min-w-[820px]">
@@ -84,7 +85,7 @@ export default function SettingsPage() {
                 <th>Name</th>
                 <th>Email</th>
                 <th>Username</th>
-                <th>Org</th>
+                <th>Organization</th>
                 <th>Status</th>
                 <th />
               </tr>
@@ -104,13 +105,13 @@ export default function SettingsPage() {
                   ) : (
                     <>
                       <td className="font-semibold">
-                        {[u.first_name, u.last_name].filter(Boolean).join(' ') || 'ORG_ADMIN'}
+                        {[u.first_name, u.last_name].filter(Boolean).join(' ') || 'Organization TPO'}
                       </td>
                       <td>{u.email || '—'}</td>
                       <td className="font-mono text-xs">{u.username || '—'}</td>
                       <td>
                         <span className="mm-pa-table__title">
-                          {u.organization_name || u.organization_code || `Org #${u.organization_id}`}
+                          {u.organization_name || u.organization_code || `Organization #${u.organization_id}`}
                         </span>
                         <span className="mm-pa-table__meta block">ID {u.organization_id}</span>
                       </td>
@@ -143,17 +144,18 @@ export default function SettingsPage() {
           </table>
           {!loading && !tpos.length && (
             <div className="mm-pa-empty">
-              No TPO accounts yet. Create one from Organizations → TPO.
+              No TPO accounts yet. Create one from Organizations → Add TPO.
             </div>
           )}
         </div>
       </section>
 
       <section className="mm-pa-panel">
-        <h2 className="mm-pa-heading-warn">Environment</h2>
-        <p className="mt-2 text-sm text-slate-400">
-          This portal is connected to backend APIs using <code className="mm-pa-code">VITE_API_KEY</code> and
-          <code className="mm-pa-code">VITE_API_URL</code>.
+        <h2 className="mm-pa-panel__title">How this portal works</h2>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-400">
+          MentorMuni Platform is the control plane for tenant setup. You create organizations, attach plans,
+          turn features on, and invite the campus TPO. Day-to-day student and department work happens in the
+          Organization Portal after the TPO activates their account.
         </p>
       </section>
     </div>

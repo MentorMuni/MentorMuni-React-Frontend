@@ -175,8 +175,8 @@ export default function DashboardPage() {
           transition={{ delay: 0.15, duration: 0.4, ease: EASE }}
         >
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-extrabold tracking-tight">Feature Usage</h2>
-            <Link to={platformAdminPaths.features} className="text-xs font-bold text-sky-400 hover:text-sky-300">
+            <h2 className="mm-pa-panel__title">Feature Usage</h2>
+            <Link to={platformAdminPaths.features} className="mm-pa-panel__link">
               Manage features →
             </Link>
           </div>
@@ -207,8 +207,8 @@ export default function DashboardPage() {
           transition={{ delay: 0.2, duration: 0.4, ease: EASE }}
         >
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-sm font-extrabold tracking-tight">Recent Organizations</h2>
-            <Link to={platformAdminPaths.organizations} className="text-xs font-bold text-sky-400">
+            <h2 className="mm-pa-panel__title">Recent Organizations</h2>
+            <Link to={platformAdminPaths.organizations} className="mm-pa-panel__link">
               View all
             </Link>
           </div>
@@ -216,14 +216,14 @@ export default function DashboardPage() {
             {(loading ? Array.from({ length: 5 }, (_, i) => ({ id: `loading-org-${i}` })) : metrics.recentOrgs).map((org, i) => (
               <motion.li
                 key={org.id}
-                className="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.03] px-3 py-3"
+                className="mm-pa-list-row"
                 initial={{ opacity: 0, x: 8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.22 + i * 0.05 }}
               >
                 <div>
                   <p className="mm-pa-table__title">{loading ? 'Loading organization...' : org.name}</p>
-                  <p className="text-[11px] text-slate-500">{loading ? 'Loading...' : `${org.code} · ${String(org.organization_type || '').toUpperCase()}`}</p>
+                  <p className="mm-pa-list-row__meta">{loading ? 'Loading...' : `${org.code} · ${String(org.organization_type || '').toUpperCase()}`}</p>
                 </div>
                 <span className={`mm-pa-badge ${isActiveStatus(org.status) ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
                   {loading ? '...' : statusLabel(org.status)}
@@ -247,7 +247,7 @@ export default function DashboardPage() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.25, duration: 0.4, ease: EASE }}
       >
-        <h2 className="mb-3 text-sm font-extrabold">Complete provisioning flow</h2>
+        <h2 className="mm-pa-panel__title mb-3">Complete provisioning flow</h2>
         <ol className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {[
             'Create Organization',
@@ -258,13 +258,13 @@ export default function DashboardPage() {
           ].map((step, i) => (
             <motion.li
               key={step}
-              className="rounded-2xl border border-sky-400/15 bg-gradient-to-br from-sky-500/15 via-transparent to-amber-400/10 px-3 py-4"
+              className="mm-pa-step-card"
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.28 + i * 0.05 }}
               whileHover={{ y: -3, scale: 1.01 }}
             >
-              <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-sky-300">
+              <p className="mm-pa-step-card__label">
                 Step {String(i + 1).padStart(2, '0')}
               </p>
               <p className="mt-2 text-sm font-bold mm-pa-strong">{step}</p>

@@ -37,10 +37,32 @@ export default function PlatformAdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({ email: '', password: '' });
+
+  const clearFieldError = (field) => {
+    setFieldErrors((prev) => (prev[field] ? { ...prev, [field]: '' } : prev));
+  };
+
+  const validate = () => {
+    const next = { email: '', password: '' };
+    const emailTrim = String(email || '').trim();
+    if (!emailTrim) {
+      next.email = 'Enter your login ID to continue.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailTrim)) {
+      next.email = 'Enter a valid email address.';
+    }
+    if (!String(password || '').trim()) {
+      next.password = 'Enter your password to continue.';
+    }
+    setFieldErrors(next);
+    return !next.email && !next.password;
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    if (!validate()) return;
+
     setLoading(true);
     try {
       const result = await authenticatePlatformAdmin(email, password);
@@ -164,7 +186,7 @@ export default function PlatformAdminLogin() {
               Restricted operator access. No student dashboards here — tenants only.
             </p>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} noValidate className="space-y-4">
               {error && (
                 <motion.div className="mm-pa-error" initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}>
                   {error}
@@ -178,14 +200,23 @@ export default function PlatformAdminLogin() {
                   <input
                     id="pa-email"
                     type="email"
-                    required
                     autoComplete="username"
-                    className="mm-pa-input mm-pa-input--icon-left"
+                    aria-invalid={Boolean(fieldErrors.email)}
+                    aria-describedby={fieldErrors.email ? 'pa-email-error' : undefined}
+                    className={`mm-pa-input mm-pa-input--icon-left ${fieldErrors.email ? 'mm-pa-input--invalid' : ''}`}
                     placeholder="admin@mentormuni.com"
                     value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      clearFieldError('email');
+                    }}
                   />
                 </div>
+                {fieldErrors.email ? (
+                  <p id="pa-email-error" className="mm-pa-field-error" role="alert">
+                    {fieldErrors.email}
+                  </p>
+                ) : null}
               </div>
 
               <div>
@@ -195,12 +226,16 @@ export default function PlatformAdminLogin() {
                   <input
                     id="pa-password"
                     type={showPassword ? 'text' : 'password'}
-                    required
                     autoComplete="current-password"
-                    className="mm-pa-input mm-pa-input--icons"
+                    aria-invalid={Boolean(fieldErrors.password)}
+                    aria-describedby={fieldErrors.password ? 'pa-password-error' : undefined}
+                    className={`mm-pa-input mm-pa-input--icons ${fieldErrors.password ? 'mm-pa-input--invalid' : ''}`}
                     placeholder="••••••••••••"
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    onChange={(e) => {
+                      setPassword(e.target.value);
+                      clearFieldError('password');
+                    }}
                   />
                   <button
                     type="button"
@@ -211,6 +246,11 @@ export default function PlatformAdminLogin() {
                     {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
+                {fieldErrors.password ? (
+                  <p id="pa-password-error" className="mm-pa-field-error" role="alert">
+                    {fieldErrors.password}
+                  </p>
+                ) : null}
               </div>
 
               <motion.button
@@ -244,10 +284,6 @@ export default function PlatformAdminLogin() {
                 <p className="mm-pa-login-tile__sub">TPO activation link</p>
               </div>
             </div>
-
-            <p className="mm-pa-login-hint">
-              Seeded admin: <span>admin@mentormuni.com</span>
-            </p>
 
             <div className="mm-pa-login-note">
               <ShieldCheck size={16} className="mt-0.5 shrink-0" />
