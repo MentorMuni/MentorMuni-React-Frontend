@@ -2,11 +2,11 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
 import {
+  ArrowLeft,
   ArrowRight,
   Check,
   Eye,
   EyeOff,
-  GraduationCap,
   Loader2,
   Lock,
   Mail,
@@ -24,39 +24,122 @@ import {
 } from '../../orgPortal';
 import {
   DEMO_STUDENT,
-  isStudentAuthenticated,
+  clearStudentSession,
+  getStudentSession,
   loginStudent,
   matchDemoStudent,
 } from '../auth';
 import { DEMO_ORG } from '../../organizationPortal/demoAuth';
 import { studentPaths } from '../paths';
-import { useStudentTheme } from '../useStudentTheme.jsx';
-import OrgThemeToggle from '../../organizationPortal/OrgThemeToggle';
-import '../../components/organization/organization-login.css';
-import './student-login-bridge.css';
+import { StudentThemeFab, useStudentTheme } from '../useStudentTheme.jsx';
+import '../student-login.css';
 
 const EASE = [0.22, 1, 0.36, 1];
 const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
 const SHOW_DEMO =
   import.meta.env.DEV || String(import.meta.env.VITE_SHOW_DEMO || '') === 'true';
 
-const STUDENT_HIGHLIGHTS = [
-  {
-    icon: Target,
-    title: 'Know your readiness',
-    text: 'See gaps before drive week — not after the shortlist.',
-  },
-  {
-    icon: Mic2,
-    title: 'Practice like the round',
-    text: 'Mocks and missions that mirror campus interviews.',
-  },
-  {
-    icon: Sparkles,
-    title: 'A clear next step',
-    text: 'Daily focus tuned to your college and target companies.',
-  },
+/** Aspirational campus recruiters — mood, not partnership claims */
+const DREAM_COMPANIES = [
+  'Google',
+  'Amazon',
+  'Microsoft',
+  'Flipkart',
+  'TCS',
+  'Infosys',
+  'Accenture',
+  'Deloitte',
+  'Adobe',
+  'Uber',
+  'Zoho',
+  'Razorpay',
 ];
+
+const PATH_TO_OFFER = [
+  { n: '01', label: 'Measure', hint: 'Know your readiness' },
+  { n: '02', label: 'Practice', hint: 'Mocks that mirror drives' },
+  { n: '03', label: 'Clear', hint: 'Walk in drive-day ready' },
+];
+
+const ACHIEVE = [
+  { value: '78+', label: 'Avg readiness after 2 weeks' },
+  { value: '3×', label: 'More mock reps before drives' },
+  { value: '1 plan', label: 'Campus-tuned daily focus' },
+];
+
+const READINESS_SCORE = 78;
+const READINESS_R = 52;
+const READINESS_C = 2 * Math.PI * READINESS_R;
+
+function ReadinessOrb({ reduceMotion }) {
+  const [score, setScore] = useState(reduceMotion ? READINESS_SCORE : 0);
+
+  useEffect(() => {
+    if (reduceMotion) return undefined;
+    let raf = 0;
+    const start = performance.now();
+    const duration = 1800;
+    const tick = (now) => {
+      const t = Math.min(1, (now - start) / duration);
+      const eased = 1 - (1 - t) ** 3;
+      setScore(Math.round(READINESS_SCORE * eased));
+      if (t < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [reduceMotion]);
+
+  const dashOffset = READINESS_C * (1 - score / 100);
+
+  return (
+    <div className="mm-stu-stage__orb">
+      <div className="mm-stu-stage__glow" aria-hidden />
+      <div className="mm-stu-stage__orbit mm-stu-stage__orbit--a" aria-hidden />
+      <div className="mm-stu-stage__orbit mm-stu-stage__orbit--b" aria-hidden />
+      <div className="mm-stu-stage__spark mm-stu-stage__spark--1" aria-hidden />
+      <div className="mm-stu-stage__spark mm-stu-stage__spark--2" aria-hidden />
+      <div className="mm-stu-stage__spark mm-stu-stage__spark--3" aria-hidden />
+
+      <div className="mm-stu-stage__meter-wrap">
+        <svg className="mm-stu-stage__meter" viewBox="0 0 120 120" aria-hidden>
+          <defs>
+            <linearGradient id="mm-stu-ready-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#0d9488" />
+              <stop offset="55%" stopColor="#38bdf8" />
+              <stop offset="100%" stopColor="#fbbf24" />
+            </linearGradient>
+            <filter id="mm-stu-ready-glow" x="-40%" y="-40%" width="180%" height="180%">
+              <feGaussianBlur stdDeviation="2.4" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <circle className="mm-stu-stage__meter-track" cx="60" cy="60" r={READINESS_R} />
+          <circle
+            className="mm-stu-stage__meter-prog"
+            cx="60"
+            cy="60"
+            r={READINESS_R}
+            strokeDasharray={READINESS_C}
+            strokeDashoffset={dashOffset}
+            filter="url(#mm-stu-ready-glow)"
+          />
+        </svg>
+        <div className="mm-stu-stage__score">
+          <strong>{score}</strong>
+          <span>readiness</span>
+        </div>
+      </div>
+      <p className="mm-stu-stage__orb-cap">Your placement signal</p>
+      <div className="mm-stu-stage__offer" aria-hidden>
+        <span className="mm-stu-stage__offer-tag">Path</span>
+        <p>From gap report → offer-ready</p>
+      </div>
+    </div>
+  );
+}
 
 function safeLoginError(message, fallback = 'Unable to sign in. Please try again.') {
   const text = String(message || '').trim();
@@ -69,7 +152,7 @@ export default function StudentLoginPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const reduceMotion = useReducedMotion();
-  const { theme, toggle } = useStudentTheme();
+  const { theme, toggle, rootClass } = useStudentTheme();
 
   const [step, setStep] = useState('college');
   const [colleges, setColleges] = useState([]);
@@ -84,8 +167,7 @@ export default function StudentLoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
-  /** When false and a campus is chosen, show the selected card + Change (not the dropdown). */
-  const [pickingCampus, setPickingCampus] = useState(true);
+  const [listOpen, setListOpen] = useState(true);
 
   const orgCode = String(college?.code || '').trim().toUpperCase();
 
@@ -103,8 +185,15 @@ export default function StudentLoginPage() {
   const collegeQueryActive = collegeQuery.trim().length > 0;
 
   const canContinue = Boolean(
-    college?.code && colleges.some((c) => c.code === college.code) && !pickingCampus
+    college?.code && colleges.some((c) => c.code === college.code) && !listOpen
   );
+
+  useEffect(() => {
+    if (!listOpen || !collegeQueryActive || !college?.code) return;
+    if (!filteredColleges.some((c) => c.code === college.code)) {
+      setCollege(null);
+    }
+  }, [college, filteredColleges, listOpen, collegeQueryActive]);
 
   useEffect(() => {
     let cancelled = false;
@@ -146,7 +235,7 @@ export default function StudentLoginPage() {
         saveCollegeCode(DEMO_ORG.code);
         setUserId(DEMO_STUDENT.email);
         setPassword(DEMO_STUDENT.password);
-        setPickingCampus(false);
+        setListOpen(false);
         setStep('login');
         setSuccess('Sample credentials prefilled. Click Sign in to continue.');
         return;
@@ -155,7 +244,7 @@ export default function StudentLoginPage() {
       const initial = pickInitialCollege(list, searchParams);
       if (initial) {
         setCollege(initial);
-        setPickingCampus(false);
+        setListOpen(false);
       }
     })();
     return () => {
@@ -163,36 +252,49 @@ export default function StudentLoginPage() {
     };
   }, [searchParams]);
 
+  const [activeSession, setActiveSession] = useState(() => getStudentSession());
+
   useEffect(() => {
-    if (isStudentAuthenticated()) {
-      navigate(studentPaths.home, { replace: true });
-    }
-  }, [navigate]);
+    const forceLogout = /^(1|true|yes|logout)$/i.test(
+      String(searchParams.get('logout') || searchParams.get('force') || '').trim()
+    );
+    if (!forceLogout) return;
+    clearStudentSession();
+    setActiveSession(null);
+    navigate(studentPaths.login, { replace: true });
+  }, [navigate, searchParams]);
 
   useEffect(() => {
     if (step === 'login' && !collegesLoading && !college?.code) {
       setStep('college');
+      setListOpen(true);
     }
   }, [step, college, collegesLoading]);
 
   const confirmCollege = () => {
     if (!canContinue) {
-      setError('Select a campus from the list to continue.');
-      setPickingCampus(true);
+      setError('Select a college from the list to continue.');
+      setListOpen(true);
       return;
     }
     saveCollegeCode(college.code);
     setError('');
     setSuccess('');
-    setPickingCampus(false);
+    setListOpen(false);
     setStep('login');
   };
 
   const pickCollege = (c) => {
     setCollege(c);
     setError('');
-    setPickingCampus(false);
+    setListOpen(false);
     setCollegeQuery('');
+  };
+
+  const reopenCollegeList = () => {
+    setListOpen(true);
+    setCollegeQuery('');
+    setError('');
   };
 
   const handleSubmit = async (e) => {
@@ -237,7 +339,7 @@ export default function StudentLoginPage() {
     setPassword(DEMO_STUDENT.password);
     setError('');
     setCollegesWarning('');
-    setPickingCampus(false);
+    setListOpen(false);
     setStep('login');
     setSuccess('Sample credentials prefilled. Click Sign in to continue.');
   };
@@ -263,557 +365,724 @@ export default function StudentLoginPage() {
     }
   };
 
+  const retryColleges = () => {
+    setCollegesLoading(true);
+    setCollegesWarning('');
+    fetchLoginColleges().then((result) => {
+      setCollegesLoading(false);
+      if (!result.ok) {
+        setColleges([]);
+        setCollegesWarning(result.warning || 'Unable to load campuses.');
+        setCollegesSource('');
+        return;
+      }
+      const list = result.colleges || [];
+      setColleges(list);
+      setCollegesWarning(result.warning || '');
+      setCollegesSource(result.source || '');
+      const initial = pickInitialCollege(list, searchParams);
+      if (initial) {
+        setCollege(initial);
+        setListOpen(false);
+      }
+    });
+  };
+
+  const signOutAndStay = () => {
+    clearStudentSession();
+    setActiveSession(null);
+    setUserId('');
+    setPassword('');
+    setSuccess('');
+    setError('');
+    setStep('college');
+    setListOpen(true);
+    navigate(studentPaths.login, { replace: true });
+  };
+
   return (
-    <div
-      className={`mm-org-root-login mm-org-root-login--student mm-stu-portal-login ${
-        theme === 'light' ? 'is-light' : 'is-dark'
-      }`}
-    >
-      <div className={`mm-org-atm ${theme === 'light' ? 'mm-org-atm--light' : ''}`} aria-hidden>
-        <div className="mm-org-atm__grid" />
-        <div className="mm-org-atm__orb mm-org-atm__orb--1" />
-        <div className="mm-org-atm__orb mm-org-atm__orb--2" />
-        <div className="mm-org-atm__orb mm-org-atm__orb--3" />
+    <div className={`mm-stu-login-root ${rootClass}`}>
+      <StudentThemeFab theme={theme} onToggle={toggle} />
+
+      <div className="mm-stu-atm" aria-hidden>
+        <div className="mm-stu-atm__mesh" />
+        <div className="mm-stu-atm__blob mm-stu-atm__blob--a" />
+        <div className="mm-stu-atm__blob mm-stu-atm__blob--b" />
+        <div className="mm-stu-atm__blob mm-stu-atm__blob--c" />
       </div>
 
-      <OrgThemeToggle
-        theme={theme}
-        onToggle={toggle}
-        className="mm-org-theme-toggle--floating"
-      />
-
-      <AnimatePresence mode="wait">
-        {step === 'college' ? (
-          <motion.div
-            key="college-gate"
-            className="mm-org-gate"
-            initial={reduceMotion ? false : { opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={reduceMotion ? undefined : { opacity: 0 }}
-            transition={{ duration: 0.3, ease: EASE }}
-          >
-            <section className="mm-org-gate__stage">
-              <div className="mm-org-gate__stage-inner">
-                <Link to="/" className="mm-org-gate__brand-link">
-                  <img src={LOGO} alt="MentorMuni" className="mm-org-gate__brand-logo" />
-                  <span>MentorMuni</span>
-                </Link>
-
-                <p className="mm-org-gate__kicker">For students</p>
-                <h1 className="mm-org-gate__headline">
-                  Walk into drives
-                  <br />
-                  offer-ready
-                </h1>
-                <p className="mm-org-gate__lede">
-                  Your campus placement coach — readiness, mocks, and a clear next step every day.
-                  Not the TPO desk. This portal is yours.
-                </p>
-
-                <ul className="mm-org-gate__value" aria-label="Why students use MentorMuni">
-                  {STUDENT_HIGHLIGHTS.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <li key={item.title}>
-                        <Icon size={18} aria-hidden />
-                        <div>
-                          <strong>{item.title}</strong>
-                          <em>{item.text}</em>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            </section>
-
-            <motion.aside
-              className="mm-org-gate__panel"
-              initial={reduceMotion ? false : { opacity: 0, x: 16 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, ease: EASE }}
+      {activeSession ? (
+        <div className="mm-stu-session-banner" role="status">
+          <p>
+            Signed in as <strong>{activeSession.name || activeSession.email || 'student'}</strong>
+            {activeSession.organization_name ? ` · ${activeSession.organization_name}` : ''}
+          </p>
+          <div className="mm-stu-session-banner__actions">
+            <button
+              type="button"
+              className="mm-stu-session-banner__continue"
+              onClick={() => navigate(studentPaths.home, { replace: true })}
             >
-              <div className="mm-org-gate__panel-inner">
-                <div className="mm-stu-gate-brand">
-                  <Link to="/" className="mm-stu-gate-brand__link">
-                    <img src={LOGO} alt="MentorMuni" className="mm-stu-gate-brand__logo" />
-                    <span>MentorMuni</span>
-                  </Link>
-                  <span className="mm-stu-gate-brand__badge">
-                    <GraduationCap size={13} aria-hidden />
-                    Student portal
-                  </span>
-                </div>
+              Continue to home
+            </button>
+            <button type="button" className="mm-stu-session-banner__out" onClick={signOutAndStay}>
+              Sign out
+            </button>
+          </div>
+        </div>
+      ) : null}
 
-                <div className="mm-stu-gate-path" aria-hidden>
-                  <span className="is-current">
-                    <MapPin size={12} />
-                    Campus
+      <div className="mm-stu-shell">
+        <section
+          className={`mm-stu-showcase ${step === 'login' ? 'mm-stu-showcase--login' : ''}`}
+          aria-label="MentorMuni student portal"
+        >
+          <div className="mm-stu-showcase__glow" aria-hidden />
+          <div className="mm-stu-showcase__top">
+            <div className={`mm-stu-brand ${step === 'login' && college ? 'mm-stu-brand--collab' : ''}`}>
+              <img src={LOGO} alt="MentorMuni" />
+              <div className="mm-stu-brand__text">
+                <span className="mm-stu-brand__name">MentorMuni</span>
+                <span className="mm-stu-brand__tag">Student portal</span>
+              </div>
+              {step === 'login' && college ? (
+                <>
+                  <span className="mm-stu-brand__sep" aria-hidden>
+                    |
                   </span>
-                  <span className="mm-stu-gate-path__line" />
-                  <span>
-                    <Lock size={12} />
-                    Sign in
-                  </span>
-                  <span className="mm-stu-gate-path__line" />
-                  <span>
-                    <Target size={12} />
-                    Prep
-                  </span>
-                </div>
+                  <div className="mm-stu-brand__campus">
+                    <span className="mm-stu-brand__campus-name" title={college.name}>
+                      {college.name}
+                    </span>
+                    <button
+                      type="button"
+                      className="mm-stu-brand__change"
+                      onClick={() => {
+                        setStep('college');
+                        setListOpen(false);
+                      }}
+                    >
+                      Change
+                    </button>
+                  </div>
+                </>
+              ) : null}
+            </div>
+          </div>
 
-                <div className="mm-org-gate__progress" aria-hidden>
-                  <span className="is-active" />
-                  <span />
-                </div>
-                <p className="mm-org-gate__eyebrow">Step 1 of 2</p>
-                <h2 className="mm-org-gate__title">Select your campus</h2>
-                <p className="mm-org-gate__sub">
-                  Lock your college so prep, drives, and your roster stay aligned.
+          <div className={`mm-stu-showcase__body ${step === 'login' ? 'mm-stu-showcase__body--login' : ''}`}>
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={step}
+                initial={reduceMotion ? false : { opacity: 0, y: 22 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={reduceMotion ? undefined : { opacity: 0, y: -12 }}
+                transition={{ duration: 0.5, ease: EASE }}
+              >
+                <p className="mm-stu-eyebrow">
+                  <span className="mm-stu-eyebrow__dot" />
+                  {step === 'college' ? 'Campus placement season' : 'Your prep workspace'}
+                </p>
+                <h1 className="mm-stu-headline">
+                  {step === 'college' ? (
+                    <>
+                      Walk into drives <em>ready</em>.
+                    </>
+                  ) : (
+                    <>
+                      Continue your <em>offer path</em>.
+                    </>
+                  )}
+                </h1>
+                <p className="mm-stu-lede">
+                  {step === 'college'
+                    ? 'See where you stand, close the gaps that matter, and practice like the companies on your campus calendar — TCS to product.'
+                    : college?.name
+                      ? `${college.name} · readiness, AI mocks, and company drills in one calm workspace.`
+                      : 'Pick up your readiness, mocks, and company prep exactly where you left off.'}
                 </p>
 
-                {SHOW_DEMO ? (
-                  <div className="mm-org-login__demo" role="note" style={{ marginBottom: 16 }}>
-                    <p className="mm-org-login__demo-title">Sample student login</p>
-                    <p className="mm-org-login__demo-line">
-                      Campus: <strong>DEMO</strong> · MentorMuni Demo College
-                    </p>
-                    <p className="mm-org-login__demo-line">
-                      <code>{DEMO_STUDENT.email}</code> / <code>{DEMO_STUDENT.password}</code>
-                    </p>
-                    <div className="flex flex-wrap gap-2" style={{ marginTop: 10 }}>
-                      <button
-                        type="button"
-                        className="mm-org-login__demo-fill"
-                        onClick={fillDemo}
-                      >
-                        Prefill sample credentials
-                      </button>
-                      <button
-                        type="button"
-                        className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
-                        disabled={loading}
-                        onClick={loginAsSampleStudent}
-                      >
-                        {loading ? 'Signing in…' : 'Sign in as sample student'}
-                      </button>
-                    </div>
-                  </div>
-                ) : null}
-
-                {collegesWarning ? (
-                  <div className="mm-org-login__alert mm-org-login__alert--err" role="status" style={{ marginBottom: 12 }}>
-                    <p>{collegesWarning}</p>
-                    {collegesSource === 'offline' && SHOW_DEMO ? (
-                      <p style={{ marginTop: 6, opacity: 0.9 }}>
-                        Use the sample student login above while the API key / campus list is fixed.
-                      </p>
-                    ) : null}
-                  </div>
-                ) : null}
-
-                <div className="mm-org-gate__form-block">
-                  <label className="mm-org-gate__label" htmlFor="stu-campus-q">
-                    Campus
-                  </label>
-
-                  {collegesLoading ? (
-                    <div className="mm-org-gate__select-shell is-loading">
-                      <Loader2 className="mm-org-login__spin" size={18} />
-                      Loading campuses…
-                    </div>
-                  ) : colleges.length ? (
-                    college?.code && !pickingCampus ? (
-                      <div className="mm-org-gate__selected">
-                        <span className="mm-org-gate__selected-mark" aria-hidden>
-                          <Check size={14} strokeWidth={2.6} />
+                <div className="mm-stu-dream" aria-hidden>
+                  <p className="mm-stu-dream__label">
+                    {step === 'college' ? 'Roles students prepare for' : 'Built around campus recruiters'}
+                  </p>
+                  <div className="mm-stu-marquee">
+                    <div className="mm-stu-marquee__track">
+                      {[...DREAM_COMPANIES, ...DREAM_COMPANIES].map((name, i) => (
+                        <span key={`${name}-${i}`} className="mm-stu-marquee__chip">
+                          {name}
                         </span>
-                        <div>
-                          <strong title={college.name}>{college.name}</strong>
-                          <small>
-                            {[college.city, college.state].filter(Boolean).join(', ')}
-                            {college.code ? ` · ${college.code}` : ''}
-                          </small>
-                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {step === 'college' ? (
+                  <>
+                    <ol className="mm-stu-journey">
+                      {PATH_TO_OFFER.map((j, i) => (
+                        <motion.li
+                          key={j.n}
+                          initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.1 + i * 0.1, duration: 0.42, ease: EASE }}
+                        >
+                          <span className="mm-stu-journey__n">{j.n}</span>
+                          <span className="mm-stu-journey__text">
+                            <strong>{j.label}</strong>
+                            <em>{j.hint}</em>
+                          </span>
+                        </motion.li>
+                      ))}
+                    </ol>
+                    <div className="mm-stu-achieve" aria-hidden>
+                      {ACHIEVE.map((a, i) => (
+                        <motion.div
+                          key={a.label}
+                          className="mm-stu-achieve__item"
+                          initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ delay: 0.28 + i * 0.08, duration: 0.4, ease: EASE }}
+                        >
+                          <strong>{a.value}</strong>
+                          <span>{a.label}</span>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <ul className="mm-stu-daily" aria-hidden>
+                    <li>
+                      <strong>Score</strong>
+                      <em>see the real gaps</em>
+                    </li>
+                    <li>
+                      <strong>Mocks</strong>
+                      <em>HR + technical</em>
+                    </li>
+                    <li>
+                      <strong>Drives</strong>
+                      <em>company-shaped prep</em>
+                    </li>
+                  </ul>
+                )}
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="mm-stu-stage" aria-hidden>
+              <motion.div
+                initial={reduceMotion ? false : { opacity: 0, y: 18, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ delay: 0.1, duration: 0.55, ease: EASE }}
+              >
+                <ReadinessOrb reduceMotion={reduceMotion} />
+              </motion.div>
+
+              <motion.div
+                className="mm-stu-stage__session"
+                initial={reduceMotion ? false : { opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2, duration: 0.45, ease: EASE }}
+              >
+                <div className="mm-stu-stage__session-top">
+                  <Mic2 size={15} strokeWidth={2.2} />
+                  <span>AI interview</span>
+                  <em>8 min</em>
+                </div>
+                <div className="mm-stu-stage__wave">
+                  <i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i /><i />
+                </div>
+                <p className="mm-stu-stage__session-copy">
+                  Speak like drive day. Get calm, specific feedback.
+                </p>
+              </motion.div>
+
+              <motion.div
+                className="mm-stu-stage__note"
+                initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.28, duration: 0.45, ease: EASE }}
+              >
+                <Sparkles size={14} strokeWidth={2.2} />
+                <p>
+                  Aptitude, English, DSA, and company rounds — one plan tuned to your campus season.
+                </p>
+              </motion.div>
+            </div>
+          </div>
+
+          <div className={`mm-stu-showcase__foot ${step === 'login' ? 'mm-stu-showcase__foot--tight' : ''}`}>
+            <span>
+              {step === 'college' ? (
+                <>
+                  measure → practice → <strong>clear with confidence</strong>
+                </>
+              ) : (
+                <>
+                  {college?.code ? (
+                    <>
+                      <strong>{college.code}</strong> × MentorMuni · secure campus sign-in
+                    </>
+                  ) : (
+                    <>
+                      secure campus sign-in · <strong>your offer path continues</strong>
+                    </>
+                  )}
+                </>
+              )}
+            </span>
+          </div>
+        </section>
+
+        <div className="mm-stu-form-col">
+          <motion.div
+            className={`mm-stu-card mm-stu-card--genz ${step === 'login' ? 'mm-stu-card--gate2' : ''}`}
+            initial={reduceMotion ? false : { opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.45, ease: EASE, delay: 0.06 }}
+          >
+            {step === 'college' ? (
+              <div className="mm-stu-progress" aria-hidden>
+                <span className="is-on" />
+                <span />
+              </div>
+            ) : null}
+
+            <AnimatePresence mode="wait">
+              {step === 'college' ? (
+                <motion.div
+                  key="college"
+                  initial={reduceMotion ? false : { opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
+                  transition={{ duration: 0.3, ease: EASE }}
+                >
+                  <p className="mm-stu-step-label">Step 1 of 2 · Campus gate</p>
+                  <h2 className="mm-stu-card-title">Where do you study?</h2>
+                  <p className="mm-stu-card-sub">
+                    Lock your campus so prep, drives, and HOD roster stay aligned — then start the
+                    path to offer-ready.
+                  </p>
+
+                  <div className="mm-stu-vibe" aria-hidden>
+                    <span>Drive season</span>
+                    <span>Company mocks</span>
+                    <span>Offer path</span>
+                  </div>
+
+                  {SHOW_DEMO ? (
+                    <div className="mm-stu-demo" role="note">
+                      <p className="mm-stu-demo__title">Sample student login</p>
+                      <p className="mm-stu-demo__line">
+                        Campus: <strong>DEMO</strong> · MentorMuni Demo College
+                      </p>
+                      <p className="mm-stu-demo__line">
+                        <code>{DEMO_STUDENT.email}</code> / <code>{DEMO_STUDENT.password}</code>
+                      </p>
+                      <div className="mm-stu-demo__actions">
+                        <button type="button" className="mm-stu-demo__fill" onClick={fillDemo}>
+                          Prefill sample credentials
+                        </button>
                         <button
                           type="button"
-                          className="mm-stu-campus-change"
-                          onClick={() => {
-                            setPickingCampus(true);
-                            setCollegeQuery('');
-                            setError('');
-                          }}
+                          className="mm-stu-demo__fill mm-stu-demo__fill--ghost"
+                          disabled={loading}
+                          onClick={loginAsSampleStudent}
                         >
-                          Change
+                          {loading ? 'Signing in…' : 'Sign in as sample student'}
                         </button>
                       </div>
-                    ) : (
-                      <>
-                        <div className="mm-org-gate__field mm-stu-campus-search">
-                          <Search size={16} aria-hidden />
+                    </div>
+                  ) : null}
+
+                  {collegesWarning ? (
+                    <div className="mm-stu-alert mm-stu-alert--error" role="status">
+                      <p>{collegesWarning}</p>
+                      {collegesSource === 'offline' && SHOW_DEMO ? (
+                        <p style={{ marginTop: 6, opacity: 0.9 }}>
+                          Use the sample student login above while the campus list is unavailable.
+                        </p>
+                      ) : null}
+                    </div>
+                  ) : null}
+
+                  {college && !listOpen ? (
+                    <div className="mm-stu-selected">
+                      <div className="mm-stu-selected__mark" aria-hidden>
+                        <Check size={16} strokeWidth={2.6} />
+                      </div>
+                      <div className="mm-stu-selected__body">
+                        <p className="mm-stu-selected__label">Selected campus</p>
+                        <p className="mm-stu-selected__name">{college.name}</p>
+                        <p className="mm-stu-selected__meta">
+                          {[college.city, college.state].filter(Boolean).join(', ')}
+                          {college.code ? ` · ${college.code}` : ''}
+                        </p>
+                      </div>
+                      <button type="button" className="mm-stu-selected__change" onClick={reopenCollegeList}>
+                        Change
+                      </button>
+                    </div>
+                  ) : (
+                    <>
+                      <div className="mm-stu-field mm-stu-search">
+                        <label className="mm-stu-label" htmlFor="stu-college-q">
+                          Search campus
+                        </label>
+                        <div className="mm-stu-input-wrap">
+                          <Search size={17} aria-hidden />
                           <input
-                            id="stu-campus-q"
-                            type="search"
+                            id="stu-college-q"
+                            name="campus-search"
+                            type="text"
+                            inputMode="search"
                             autoComplete="off"
                             autoCorrect="off"
+                            autoCapitalize="off"
                             spellCheck={false}
                             placeholder="Type BITS, NIT, your city…"
                             value={collegeQuery}
                             onChange={(e) => {
                               setCollegeQuery(e.target.value);
                               setError('');
+                              setListOpen(true);
                             }}
-                            aria-label="Search campuses"
+                            onFocus={() => setListOpen(true)}
                           />
                           {collegeQuery ? (
                             <button
                               type="button"
-                              className="mm-stu-campus-clear"
+                              className="mm-stu-eye"
                               aria-label="Clear search"
-                              onClick={() => setCollegeQuery('')}
+                              onClick={() => {
+                                setCollegeQuery('');
+                                setListOpen(true);
+                              }}
                             >
-                              <X size={15} />
+                              <X size={16} />
                             </button>
                           ) : null}
                         </div>
+                      </div>
 
-                        {!collegeQueryActive ? (
-                          <div className="mm-stu-campus-hint">
-                            <Search size={15} aria-hidden />
-                            <span>Type your campus name, city, or code to find it</span>
-                          </div>
-                        ) : filteredColleges.length ? (
-                          <ul className="mm-stu-campus-list" role="listbox" aria-label="Campuses">
-                            {filteredColleges.map((c) => {
-                              const selected = college?.code === c.code;
-                              return (
-                                <li key={c.code}>
-                                  <button
-                                    type="button"
-                                    role="option"
-                                    aria-selected={selected}
-                                    className={`mm-stu-campus-item ${selected ? 'is-selected' : ''}`}
-                                    onClick={() => pickCollege(c)}
-                                  >
-                                    <span className="mm-stu-campus-item__mark">
-                                      {selected ? (
-                                        <Check size={14} strokeWidth={2.6} />
-                                      ) : (
-                                        (c.code || '?').slice(0, 3)
-                                      )}
-                                    </span>
-                                    <span className="mm-stu-campus-item__text">
-                                      <span className="mm-stu-campus-item__name">{c.name}</span>
-                                      <span className="mm-stu-campus-item__meta">
-                                        {[c.city, c.state].filter(Boolean).join(', ')}
-                                        {c.code ? ` · ${c.code}` : ''}
-                                      </span>
-                                    </span>
+                      {collegesLoading ? (
+                        <div className="mm-stu-empty">
+                          <Loader2 size={18} className="mm-stu-inline-spin" aria-hidden />
+                          Loading campuses…
+                        </div>
+                      ) : !colleges.length ? (
+                        <div className="mm-stu-empty">
+                          <p>Campus list is temporarily unavailable.</p>
+                          <button type="button" className="mm-stu-demo__fill" onClick={retryColleges}>
+                            Try again
+                          </button>
+                        </div>
+                      ) : !collegeQueryActive ? (
+                        <div className="mm-stu-college-hint">
+                          <Search size={15} aria-hidden />
+                          <span>Type your campus name, city, or code to find it</span>
+                        </div>
+                      ) : filteredColleges.length ? (
+                        <ul className="mm-stu-college-list" role="listbox" aria-label="Colleges">
+                          {filteredColleges.map((c) => {
+                            const selected = college?.code === c.code;
+                            return (
+                              <li key={c.code}>
+                                <button
+                                  type="button"
+                                  role="option"
+                                  aria-selected={selected}
+                                  className={`mm-stu-college-item ${selected ? 'is-selected' : ''}`}
+                                  onClick={() => pickCollege(c)}
+                                >
+                                  <span className="mm-stu-college-item__mark">
                                     {selected ? (
-                                      <span className="mm-stu-campus-item__badge">Selected</span>
-                                    ) : null}
-                                  </button>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        ) : (
-                          <p className="mm-org-gate__hint">No campuses match. Try another name or code.</p>
-                        )}
-                      </>
-                    )
-                  ) : (
-                    <div className="mm-org-gate__empty-card">
-                      <p>Campus list is temporarily unavailable.</p>
+                                      <Check size={14} strokeWidth={2.6} />
+                                    ) : (
+                                      (c.code || '?').slice(0, 3)
+                                    )}
+                                  </span>
+                                  <span className="mm-stu-college-item__text">
+                                    <p className="mm-stu-college-item__name">{c.name}</p>
+                                    <p className="mm-stu-college-item__meta">
+                                      {[c.city, c.state].filter(Boolean).join(', ')}
+                                      {c.code ? ` · ${c.code}` : ''}
+                                    </p>
+                                  </span>
+                                  {selected ? (
+                                    <span className="mm-stu-college-item__badge">Selected</span>
+                                  ) : null}
+                                </button>
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      ) : (
+                        <div className="mm-stu-empty">
+                          No campuses match. Try another name or code.
+                        </div>
+                      )}
+                    </>
+                  )}
+
+                  {error && step === 'college' ? (
+                    <div className="mm-stu-alert mm-stu-alert--error" role="alert">
+                      {error}
+                    </div>
+                  ) : null}
+
+                  <motion.button
+                    type="button"
+                    className="mm-stu-submit"
+                    disabled={!canContinue}
+                    onClick={confirmCollege}
+                    whileHover={reduceMotion || !canContinue ? undefined : { scale: 1.015, y: -1 }}
+                    whileTap={reduceMotion || !canContinue ? undefined : { scale: 0.985 }}
+                  >
+                    Continue to placement prep <ArrowRight size={17} />
+                  </motion.button>
+
+                  <p className="mm-stu-card-foot">
+                    Not enrolled yet?{' '}
+                    <Link
+                      to={
+                        college?.code
+                          ? `${studentPaths.enroll}?org=${encodeURIComponent(college.code)}`
+                          : studentPaths.enroll
+                      }
+                      className="mm-stu-link"
+                    >
+                      Request enrollment
+                    </Link>
+                    <br />
+                    Staff use the{' '}
+                    <Link to="/Organization/login" className="mm-stu-link">
+                      Organization portal
+                    </Link>
+                    .
+                  </p>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="login"
+                  className="mm-stu-gate2"
+                  initial={reduceMotion ? false : { opacity: 0, y: 16, scale: 0.98 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  exit={reduceMotion ? undefined : { opacity: 0, y: -10 }}
+                  transition={{ duration: 0.38, ease: EASE }}
+                >
+                  <div className="mm-stu-gate2__top">
+                    <button
+                      type="button"
+                      className="mm-stu-gate2__back mm-stu-gate2__back--icon"
+                      aria-label="Back to campus selection"
+                      title="Change campus"
+                      onClick={() => {
+                        setStep('college');
+                        setListOpen(false);
+                      }}
+                    >
+                      <ArrowLeft size={18} strokeWidth={2.4} />
+                    </button>
+                    <span className="mm-stu-gate2__live">
+                      <i /> Secure
+                    </span>
+                  </div>
+
+                  <header className="mm-stu-gate2__hero">
+                    <p className="mm-stu-step-label" style={{ marginBottom: 8 }}>
+                      Step 2 of 2 · Student sign-in
+                    </p>
+                    <h2 className="mm-stu-gate2__title">
+                      Ready for <em>drives</em>?
+                    </h2>
+                    <p className="mm-stu-gate2__sub">
+                      Sign in for {college?.name || 'your campus'} to pick up readiness, mocks, and
+                      company prep.
+                    </p>
+                  </header>
+
+                  {college ? (
+                    <div className="mm-stu-duo" aria-label="Campus connection">
+                      <span className="mm-stu-duo__side">
+                        <img src={LOGO} alt="" className="mm-stu-duo__logo" />
+                        MentorMuni
+                      </span>
+                      <span className="mm-stu-duo__x" aria-hidden>
+                        ×
+                      </span>
+                      <span className="mm-stu-duo__side mm-stu-duo__side--campus">
+                        <MapPin size={14} aria-hidden />
+                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                          {college.code || college.name}
+                        </span>
+                      </span>
                       <button
                         type="button"
-                        className="mm-org-gate__retry"
+                        className="mm-stu-duo__change"
                         onClick={() => {
-                          setCollegesLoading(true);
-                          fetchLoginColleges().then((result) => {
-                            setCollegesLoading(false);
-                            setColleges(result.ok ? result.colleges : []);
-                            if (result.ok) {
-                              const initial = pickInitialCollege(result.colleges, searchParams);
-                              if (initial) {
-                                setCollege(initial);
-                                setPickingCampus(false);
-                              }
-                            }
-                          });
+                          setStep('college');
+                          setListOpen(false);
                         }}
                       >
-                        Try again
+                        Change
                       </button>
                     </div>
-                  )}
-                </div>
+                  ) : null}
 
-                {error && step === 'college' ? (
-                  <div className="mm-org-login__alert mm-org-login__alert--err" role="alert">
-                    <p>{error}</p>
-                  </div>
-                ) : null}
-
-                <button
-                  type="button"
-                  className="mm-org-gate__cta"
-                  disabled={!canContinue}
-                  onClick={confirmCollege}
-                >
-                  Continue to student sign-in
-                  <ArrowRight size={16} aria-hidden />
-                </button>
-
-                <p className="mm-org-gate__footnote">
-                  Student access only. Staff use the{' '}
-                  <Link to="/Organization/login" className="mm-stu-bridge-link">
-                    Organization portal
-                  </Link>
-                  .
-                </p>
-
-                <p className="mm-org-gate__footnote mm-stu-bridge-enroll">
-                  Not enrolled yet?{' '}
-                  <Link
-                    to={
-                      college?.code
-                        ? `${studentPaths.enroll}?org=${encodeURIComponent(college.code)}`
-                        : studentPaths.enroll
-                    }
-                  >
-                    Request enrollment
-                  </Link>
-                </p>
-              </div>
-            </motion.aside>
-          </motion.div>
-        ) : (
-          <motion.div
-            key="login"
-            className="mm-org-login"
-            initial={reduceMotion ? false : { opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, ease: EASE }}
-          >
-            <section className="mm-org-login__showcase">
-              <div className="mm-org-login__showcase-inner">
-                <Link to="/" className="mm-org-login__brand">
-                  <img
-                    src={LOGO}
-                    alt="MentorMuni"
-                    className="mm-org-login__logo mm-org-login__logo--lg"
-                  />
-                  <span className="mm-org-login__brand-name">MentorMuni</span>
-                </Link>
-
-                <button
-                  type="button"
-                  className="mm-org-login__campus-chip is-button"
-                  onClick={() => setStep('college')}
-                >
-                  <MapPin size={13} aria-hidden />
-                  <span className="mm-org-login__campus-copy">
-                    <strong>{college?.name || 'Campus'}</strong>
-                    {college?.code ? <em>{college.code}</em> : null}
-                  </span>
-                  <span className="mm-org-login__change">Change</span>
-                </button>
-
-                <p className="mm-org-login__pill">
-                  <GraduationCap size={13} aria-hidden />
-                  <span>Student · Placement prep</span>
-                </p>
-                <h1 className="mm-org-login__headline">Continue your offer path</h1>
-                <p className="mm-org-login__accent">
-                  Readiness, mocks, and today&apos;s mission — in one place.
-                </p>
-                <p className="mm-org-login__lede">
-                  Sign in for {college?.name || 'your campus'} to pick up where you left off. This is
-                  your prep workspace — not the college admin portal.
-                </p>
-
-                <ul className="mm-org-login__value" aria-label="Student benefits">
-                  {STUDENT_HIGHLIGHTS.map((item) => {
-                    const Icon = item.icon;
-                    return (
-                      <li key={item.title}>
-                        <Icon size={18} aria-hidden />
-                        <div>
-                          <strong>{item.title}</strong>
-                          <em>{item.text}</em>
-                        </div>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            </section>
-
-            <div className="mm-org-login__form-wrap">
-              <motion.div
-                className="mm-org-login__card"
-                initial={reduceMotion ? false : { opacity: 0, x: 16 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, ease: EASE, delay: 0.05 }}
-              >
-                <div className="mm-org-login__progress" aria-hidden>
-                  <span />
-                  <span className="is-active" />
-                </div>
-                <p className="mm-org-login__step-label">Step 2 of 2</p>
-
-                <div className="mm-org-login__card-top">
-                  <div className="mm-org-login__card-brand">
-                    <img src={LOGO} alt="MentorMuni" className="mm-org-login__logo" />
-                    <span>MentorMuni</span>
-                  </div>
-                  <span className="mm-org-login__badge">
-                    <span className="mm-org-login__live" /> {college?.code || 'Student'}
-                  </span>
-                </div>
-
-                <h2 className="mm-org-login__card-title">Student login</h2>
-                <p className="mm-org-login__card-sub">
-                  Sign in for {college?.name || 'your campus'} with your college ID or email.
-                </p>
-
-                {SHOW_DEMO ? (
-                  <div className="mm-org-login__demo" role="note">
-                    <p className="mm-org-login__demo-title">Sample student login</p>
-                    <p className="mm-org-login__demo-line">
-                      Campus: <strong>DEMO</strong> · MentorMuni Demo College
-                    </p>
-                    <p className="mm-org-login__demo-line">
-                      <code>{DEMO_STUDENT.email}</code> / <code>{DEMO_STUDENT.password}</code>
-                      {' · '}
-                      or roll <code>{DEMO_STUDENT.collegeId}</code>
-                    </p>
-                    <div className="flex flex-wrap gap-2" style={{ marginTop: 10 }}>
-                      <button
-                        type="button"
-                        className="mm-org-login__demo-fill"
-                        onClick={fillDemo}
-                      >
-                        Prefill sample credentials
-                      </button>
-                      <button
-                        type="button"
-                        className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
-                        disabled={loading}
-                        onClick={loginAsSampleStudent}
-                      >
-                        {loading ? 'Signing in…' : 'Sign in as sample student'}
-                      </button>
+                  <div className="mm-stu-gate2__tiles" aria-hidden>
+                    <div className="mm-stu-gate2__tile">
+                      <Target size={16} strokeWidth={2.2} />
+                      <strong>Score</strong>
+                      <span>Know the gaps</span>
+                    </div>
+                    <div className="mm-stu-gate2__tile mm-stu-gate2__tile--hot">
+                      <Mic2 size={16} strokeWidth={2.2} />
+                      <strong>Mocks</strong>
+                      <span>Drive-day voice</span>
+                    </div>
+                    <div className="mm-stu-gate2__tile">
+                      <Sparkles size={16} strokeWidth={2.2} />
+                      <strong>Offers</strong>
+                      <span>Company drills</span>
                     </div>
                   </div>
-                ) : null}
 
-                <form className="mm-org-login__form" onSubmit={handleSubmit} noValidate>
+                  {SHOW_DEMO ? (
+                    <div className="mm-stu-demo mm-stu-demo--quiet" role="note">
+                      <p className="mm-stu-demo__title">Sample student login</p>
+                      <p className="mm-stu-demo__line">
+                        <code>{DEMO_STUDENT.email}</code> / <code>{DEMO_STUDENT.password}</code>
+                        {' · '}
+                        or roll <code>{DEMO_STUDENT.collegeId}</code>
+                      </p>
+                      <div className="mm-stu-demo__actions">
+                        <button type="button" className="mm-stu-demo__fill" onClick={fillDemo}>
+                          Prefill sample credentials
+                        </button>
+                        <button
+                          type="button"
+                          className="mm-stu-demo__fill mm-stu-demo__fill--ghost"
+                          disabled={loading}
+                          onClick={loginAsSampleStudent}
+                        >
+                          {loading ? 'Signing in…' : 'Sign in as sample student'}
+                        </button>
+                      </div>
+                    </div>
+                  ) : null}
+
                   {success ? (
-                    <div className="mm-org-login__alert mm-org-login__alert--ok" role="status">
+                    <div className="mm-stu-alert mm-stu-alert--ok" role="status">
                       {success}
                     </div>
                   ) : null}
                   {error ? (
-                    <div className="mm-org-login__alert mm-org-login__alert--err" role="alert">
-                      <p>{error}</p>
+                    <div className="mm-stu-alert mm-stu-alert--error" role="alert">
+                      {error}
                     </div>
                   ) : null}
 
-                  <div>
-                    <label className="mm-org-login__label" htmlFor="stu-login-user">
-                      College ID or email
+                  <form className="mm-stu-gate2__form" onSubmit={handleSubmit} noValidate>
+                    <label className="mm-stu-gate2__field">
+                      <span>College ID or email</span>
+                      <div className="mm-stu-gate2__input">
+                        <Mail size={18} aria-hidden />
+                        <input
+                          id="stu-id"
+                          name="username"
+                          autoComplete="username"
+                          autoFocus
+                          placeholder="CSE2024A01 or you@college.edu"
+                          value={userId}
+                          onChange={(e) => setUserId(e.target.value)}
+                          required
+                        />
+                      </div>
                     </label>
-                    <div className="mm-org-login__field">
-                      <Mail size={16} aria-hidden />
-                      <input
-                        id="stu-login-user"
-                        type="text"
-                        autoComplete="username"
-                        required
-                        placeholder="CSE2024A01 or you@college.edu"
-                        value={userId}
-                        onChange={(e) => setUserId(e.target.value)}
-                      />
-                    </div>
-                  </div>
 
-                  <div>
-                    <label className="mm-org-login__label" htmlFor="stu-login-password">
-                      Password
+                    <label className="mm-stu-gate2__field">
+                      <span className="mm-stu-gate2__pass-row">
+                        Password
+                        <Link to={studentPaths.forgotPassword} className="mm-stu-link mm-stu-link--sm">
+                          Forgot?
+                        </Link>
+                      </span>
+                      <div className="mm-stu-gate2__input">
+                        <Lock size={18} aria-hidden />
+                        <input
+                          id="stu-pass"
+                          name="password"
+                          type={showPassword ? 'text' : 'password'}
+                          autoComplete="current-password"
+                          placeholder="••••••••"
+                          value={password}
+                          onChange={(e) => setPassword(e.target.value)}
+                          required
+                        />
+                        <button
+                          type="button"
+                          className="mm-stu-eye"
+                          aria-label={showPassword ? 'Hide password' : 'Show password'}
+                          onClick={() => setShowPassword((v) => !v)}
+                        >
+                          {showPassword ? <EyeOff size={17} /> : <Eye size={17} />}
+                        </button>
+                      </div>
                     </label>
-                    <div className="mm-org-login__field">
-                      <Lock size={16} aria-hidden />
-                      <input
-                        id="stu-login-password"
-                        type={showPassword ? 'text' : 'password'}
-                        autoComplete="current-password"
-                        required
-                        placeholder="Enter your password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                      />
-                      <button
-                        type="button"
-                        className="mm-org-login__eye"
-                        onClick={() => setShowPassword((v) => !v)}
-                        aria-label={showPassword ? 'Hide password' : 'Show password'}
-                      >
-                        {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                      </button>
-                    </div>
-                  </div>
 
-                  <div className="mm-stu-bridge-row">
-                    <Link to={studentPaths.forgotPassword} className="mm-stu-bridge-link">
-                      Forgot password?
+                    <motion.button
+                      type="submit"
+                      className="mm-stu-gate2__cta"
+                      disabled={
+                        loading ||
+                        !userId.trim() ||
+                        !password ||
+                        (!matchDemoStudent(userId, password) && !orgCode)
+                      }
+                      whileHover={reduceMotion || loading ? undefined : { scale: 1.015, y: -2 }}
+                      whileTap={reduceMotion || loading ? undefined : { scale: 0.985 }}
+                    >
+                      {loading ? (
+                        <>
+                          <span className="mm-stu-submit__spin" aria-hidden /> Opening…
+                        </>
+                      ) : (
+                        <>
+                          Start my offer path <ArrowRight size={18} strokeWidth={2.4} />
+                        </>
+                      )}
+                    </motion.button>
+                  </form>
+
+                  <p className="mm-stu-gate2__hook">
+                    Measure → practice → clear campus drives with confidence.
+                  </p>
+
+                  <p className="mm-stu-card-foot" style={{ marginTop: 4 }}>
+                    Not on the roster?{' '}
+                    <Link
+                      to={
+                        college?.code
+                          ? `${studentPaths.enroll}?org=${encodeURIComponent(college.code)}`
+                          : studentPaths.enroll
+                      }
+                      className="mm-stu-link"
+                    >
+                      Enroll
                     </Link>
-                  </div>
-
-                  <motion.button
-                    type="submit"
-                    className="mm-org-login__submit"
-                    disabled={loading || !userId || !password || (!matchDemoStudent(userId, password) && !orgCode)}
-                    whileHover={reduceMotion ? undefined : { scale: 1.01 }}
-                    whileTap={reduceMotion ? undefined : { scale: 0.985 }}
-                  >
-                    {loading ? (
-                      <>
-                        <Loader2 size={16} className="mm-org-login__spin" /> Signing in…
-                      </>
-                    ) : (
-                      <>
-                        Continue to prep
-                        <ArrowRight size={16} aria-hidden />
-                      </>
-                    )}
-                  </motion.button>
-                </form>
-
-                <p className="mm-org-login__activate">
-                  Not enrolled yet?{' '}
-                  <Link
-                    to={
-                      college?.code
-                        ? `${studentPaths.enroll}?org=${encodeURIComponent(college.code)}`
-                        : studentPaths.enroll
-                    }
-                    className="mm-stu-bridge-link"
-                  >
-                    Request enrollment
-                  </Link>
-                  {' · '}
-                  Staff?{' '}
-                  <Link to="/Organization/login" className="mm-stu-bridge-link">
-                    Organization portal
-                  </Link>
-                </p>
-              </motion.div>
-            </div>
+                    {' · '}
+                    Staff?{' '}
+                    <Link to="/Organization/login" className="mm-stu-link">
+                      Organization portal
+                    </Link>
+                  </p>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </motion.div>
-        )}
-      </AnimatePresence>
+        </div>
+      </div>
     </div>
   );
 }
