@@ -31,12 +31,42 @@
   padding-inline: var(--gutter);
 }
 
-/* ── dark bands ─────────────────────────────────────────── */
+/* ── feature bands ──────────────────────────────────────────
+   These follow the site theme. The site toggles dark by putting
+   `mm-new-ui` on <html> (see HeaderThemeToggle + NewUIContext), so
+   the cinematic near-black treatment is applied only there. In light
+   mode the same band gets a bright, high-depth treatment rather than
+   staying stuck dark.
+   ─────────────────────────────────────────────────────────── */
 .mmc-dark {
   position: relative;
   overflow: hidden;
+  /* light mode default */
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--accent) 10%, var(--bg-card)) 0%,
+      var(--bg-primary) 100%);
+  color: var(--text-primary);
+}
+
+html.mm-new-ui .mmc-dark {
   background: var(--ink-dark);
-  color: var(--on-dark);
+  color: var(--band-ink, #eef6fb);
+}
+
+/* Tokens that flip with the band's own ground, so descendants can stay
+   theme-agnostic instead of every rule needing a dark override. */
+.mmc-dark {
+  --band-ink: var(--text-primary);
+  --band-mute: var(--text-body);
+  --band-hair: var(--border);
+  --band-glass: color-mix(in srgb, var(--accent) 6%, transparent);
+}
+html.mm-new-ui .mmc-dark {
+  --band-ink: var(--on-dark);
+  --band-mute: var(--on-dark-mute);
+  --band-hair: var(--hair);
+  --band-glass: var(--glass);
 }
 
 /* Aurora — transform-only drift so it never triggers layout. */
@@ -109,7 +139,7 @@
 .mmc-h1 em {
   font-style: normal;
   font-weight: 400;
-  color: var(--on-dark-mute);
+  color: var(--band-mute, rgba(238,246,251,.62));
 }
 
 .mmc-h2 {
@@ -130,7 +160,7 @@
   color: var(--text-body);
   text-wrap: pretty;
 }
-.mmc-dark .mmc-lede { color: var(--on-dark-mute); }
+.mmc-dark .mmc-lede { color: var(--band-mute, rgba(238,246,251,.62)); }
 
 .mmc-num {
   font-family: var(--font-display, inherit);
@@ -169,9 +199,9 @@
   box-shadow: 0 1px 2px var(--accent-cta-shadow, rgba(255,149,0,.25));
 }
 .mmc-btn--glass {
-  background: var(--glass);
-  border-color: var(--hair);
-  color: var(--on-dark);
+  background: var(--band-glass, rgba(255,255,255,.06));
+  border-color: var(--band-hair, rgba(255,255,255,.1));
+  color: var(--band-ink, #eef6fb);
 }
 .mmc-btn--outline {
   background: var(--bg-card);
@@ -204,11 +234,11 @@
   gap: 0.5rem;
   padding: 0.4375rem 0.875rem;
   border-radius: 999px;
-  background: var(--glass);
-  border: 1px solid var(--hair);
+  background: var(--band-glass, rgba(255,255,255,.06));
+  border: 1px solid var(--band-hair, rgba(255,255,255,.1));
   font-size: 0.78125rem;
   font-weight: 600;
-  color: var(--on-dark);
+  color: var(--band-ink, #eef6fb);
   margin-bottom: 1.25rem;
 }
 .mmc-chip i {
@@ -221,7 +251,7 @@
 .mmc-hero__cta { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 2rem; }
 .mmc-hero__proof {
   display: flex; gap: 1.25rem; flex-wrap: wrap;
-  margin-top: 1.25rem; font-size: 0.8125rem; color: var(--on-dark-mute);
+  margin-top: 1.25rem; font-size: 0.8125rem; color: var(--band-mute, rgba(238,246,251,.62));
 }
 .mmc-hero__proof b { color: #6ee7a8; font-weight: 800; }
 
@@ -229,7 +259,7 @@
 .mmc-frame {
   border-radius: 1rem;
   overflow: hidden;
-  border: 1px solid var(--hair);
+  border: 1px solid var(--band-hair, rgba(255,255,255,.1));
   background: #fff;
   box-shadow: 0 30px 70px -30px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.04);
 }
@@ -298,7 +328,7 @@
   line-height: 1.55;
   color: var(--text-body);
 }
-.mmc-dark .mmc-caps li { color: var(--on-dark-mute); }
+.mmc-dark .mmc-caps li { color: var(--band-mute, rgba(238,246,251,.62)); }
 .mmc-caps li::before {
   content: '';
   position: absolute; left: 0; top: 0.5rem;
@@ -306,7 +336,7 @@
   background: var(--accent);
 }
 .mmc-caps b { color: var(--text-primary); font-weight: 650; }
-.mmc-dark .mmc-caps b { color: var(--on-dark); }
+.mmc-dark .mmc-caps b { color: var(--band-ink, #eef6fb); }
 
 /* ── effort collapse ────────────────────────────────────── */
 .mmc-effort {
@@ -315,8 +345,8 @@
 }
 .mmc-ecol {
   border-radius: 1.125rem; padding: 1.5rem;
-  border: 1px solid var(--hair);
-  background: var(--glass);
+  border: 1px solid var(--band-hair, rgba(255,255,255,.1));
+  background: var(--band-glass, rgba(255,255,255,.06));
 }
 .mmc-ecol--after {
   border-color: color-mix(in srgb, var(--accent) 45%, transparent);
@@ -326,14 +356,14 @@
 .mmc-ecol__sub {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 0.6875rem; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--on-dark-mute); margin: 0 0 1.125rem;
+  color: var(--band-mute, rgba(238,246,251,.62)); margin: 0 0 1.125rem;
 }
 .mmc-estep {
   display: grid; grid-template-columns: 1.5rem minmax(0,1fr) auto;
   gap: 0.625rem; align-items: baseline;
   padding: 0.5rem 0; font-size: 0.84375rem;
-  border-bottom: 1px dashed var(--hair);
-  color: var(--on-dark-mute);
+  border-bottom: 1px dashed var(--band-hair, rgba(255,255,255,.1));
+  color: var(--band-mute, rgba(238,246,251,.62));
 }
 .mmc-estep:last-of-type { border-bottom: 0; }
 .mmc-estep i { font-style: normal; font-family: ui-monospace, monospace;
@@ -344,11 +374,11 @@
 .mmc-ecol--after .mmc-estep i { color: color-mix(in srgb, var(--accent) 80%, white); }
 .mmc-etotal {
   margin-top: 1rem; padding-top: 0.875rem;
-  border-top: 1px solid var(--hair);
+  border-top: 1px solid var(--band-hair, rgba(255,255,255,.1));
   display: flex; align-items: baseline; justify-content: space-between;
   gap: 0.75rem; flex-wrap: wrap;
 }
-.mmc-etotal span { font-size: 0.8125rem; color: var(--on-dark-mute); font-weight: 600; }
+.mmc-etotal span { font-size: 0.8125rem; color: var(--band-mute, rgba(238,246,251,.62)); font-weight: 600; }
 .mmc-etotal b { font-size: 1.5rem; font-weight: 800; letter-spacing: -0.03em; color: #ffb37a; }
 .mmc-ecol--after .mmc-etotal b { color: #6ee7a8; }
 
@@ -394,4 +424,546 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
+}
+
+/* ── light-mode corrections ─────────────────────────────────
+   Values that must differ per ground and can't be expressed as a
+   single token. Light mode is the default; dark is under .mm-new-ui.
+   ─────────────────────────────────────────────────────────── */
+@media (hover: hover) {
+  .mmc-btn--glass:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+  html.mm-new-ui .mmc-btn--glass:hover { background: rgba(255, 255, 255, 0.13); }
+}
+
+/* Aurora is far too strong on a light ground. */
+.mmc-dark::before { opacity: 0.35; }
+.mmc-dark::after  { opacity: 0.28; }
+html.mm-new-ui .mmc-dark::before,
+html.mm-new-ui .mmc-dark::after { opacity: 1; }
+
+.mmc-hero__proof b { color: var(--success); }
+html.mm-new-ui .mmc-hero__proof b { color: #6ee7a8; }
+
+.mmc-estep b { color: var(--accent-cta-deep, #ea580c); }
+.mmc-ecol--after .mmc-estep b,
+.mmc-etotal b { color: var(--success); }
+.mmc-etotal b { color: var(--accent-cta-deep, #ea580c); }
+.mmc-ecol--after .mmc-etotal b { color: var(--success); }
+html.mm-new-ui .mmc-estep b { color: #ffb37a; }
+html.mm-new-ui .mmc-ecol--after .mmc-estep b,
+html.mm-new-ui .mmc-ecol--after .mmc-etotal b { color: #6ee7a8; }
+html.mm-new-ui .mmc-etotal b { color: #ffb37a; }
+
+.mmc-estep i { color: var(--text-hint); }
+html.mm-new-ui .mmc-estep i { color: rgba(255, 255, 255, 0.3); }
+
+/* Product frame chrome follows the ground it sits on. */
+.mmc-frame__bar { background: var(--bg-primary); border-bottom-color: var(--border); }
+.mmc-frame__url { color: var(--text-muted); }
+.mmc-frame__dot { background: var(--border); }
+html.mm-new-ui .mmc-frame__bar { background: #0f1c26; border-bottom-color: rgba(255,255,255,.08); }
+html.mm-new-ui .mmc-frame__url { color: rgba(255,255,255,.45); }
+html.mm-new-ui .mmc-frame__dot { background: rgba(255,255,255,.22); }
+
+.mmc-frame {
+  border-color: var(--border);
+  box-shadow: 0 24px 56px -28px rgba(21,121,159,.34), 0 1px 2px rgba(24,24,27,.06);
+}
+html.mm-new-ui .mmc-frame {
+  border-color: var(--hair);
+  box-shadow: 0 30px 70px -30px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.04);
+}
+
+/* ── three-role benefits ────────────────────────────────── */
+.mmc-roles {
+  display: grid; gap: 1rem; margin-top: 2.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+}
+.mmc-role {
+  border-radius: 1.125rem; padding: 1.5rem;
+  border: 1px solid var(--border); background: var(--bg-card);
+}
+.mmc-role__who {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase;
+  font-weight: 700; color: var(--accent); margin: 0 0 0.5rem;
+}
+.mmc-role h3 { margin: 0 0 0.5rem; font-size: 1.125rem; font-weight: 750; letter-spacing: -0.02em; }
+.mmc-role__gain {
+  font-size: 0.875rem; line-height: 1.55; color: var(--text-body);
+  margin: 0 0 1rem; padding-bottom: 1rem; border-bottom: 1px dashed var(--border);
+}
+.mmc-role ul { list-style: none; margin: 0; padding: 0;
+               display: flex; flex-direction: column; gap: 0.5rem; }
+.mmc-role li {
+  position: relative; padding-left: 1.5rem;
+  font-size: 0.84375rem; line-height: 1.5; color: var(--text-body);
+}
+.mmc-role li::before {
+  content: '✓'; position: absolute; left: 0; top: 0;
+  color: var(--success); font-weight: 800; font-size: 0.75rem;
+}
+
+/* ── differentiators ────────────────────────────────────── */
+.mmc-diff {
+  display: grid; gap: 1rem; margin-top: 2.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+}
+.mmc-diff__card {
+  border-radius: 1.125rem; padding: 1.5rem;
+  border: 1px solid var(--band-hair, var(--border));
+  background: var(--band-glass, var(--bg-card));
+}
+.mmc-diff__n {
+  font-family: ui-monospace, monospace; font-size: 0.6875rem;
+  letter-spacing: 0.12em; color: var(--accent); font-weight: 700;
+}
+.mmc-diff__card h3 {
+  margin: 0.5rem 0 0.5rem; font-size: 1.0625rem; font-weight: 750;
+  letter-spacing: -0.02em; color: var(--band-ink, var(--text-primary));
+}
+.mmc-diff__card p {
+  margin: 0; font-size: 0.875rem; line-height: 1.55;
+  color: var(--band-mute, var(--text-body));
+}
+
+/* ── pricing / plans ────────────────────────────────────── */
+.mmc-plan {
+  margin-top: 2rem; border-radius: 1.25rem; padding: clamp(1.5rem, 4vw, 2.5rem);
+  border: 1px solid var(--border); background: var(--bg-card);
+  display: grid; gap: clamp(1.5rem, 4vw, 2.5rem);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  align-items: center;
+}
+.mmc-plan__points { list-style: none; margin: 1rem 0 0; padding: 0;
+                    display: flex; flex-direction: column; gap: 0.75rem; }
+.mmc-plan__points li {
+  position: relative; padding-left: 1.75rem;
+  font-size: 0.9375rem; line-height: 1.55; color: var(--text-body);
+}
+.mmc-plan__points li::before {
+  content: '→'; position: absolute; left: 0; top: 0;
+  color: var(--accent); font-weight: 700;
+}
+.mmc-plan__points b { color: var(--text-primary); font-weight: 650; }
+.mmc-plan__cta { text-align: center; }
+.mmc-plan__note {
+  margin-top: 0.875rem; font-size: 0.8125rem; color: var(--text-muted); line-height: 1.5;
+}
+.mmc-shipping {
+  margin-top: 1.25rem; padding: 1rem 1.125rem; border-radius: 0.875rem;
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, transparent);
+  font-size: 0.875rem; line-height: 1.55; color: var(--text-body);
+}
+.mmc-shipping b { color: var(--accent-hover); }
+
+/* ============================================================
+   SECTION RHYTHM & COLOUR MEANING
+
+   Before: 10 sections drew on 3 grounds, and two tinted bands sat
+   adjacent so they merged into one slab. Now every band differs
+   from its neighbours, and the ground carries meaning rather than
+   just alternating:
+
+     hero        brand peak
+     effort      surface   — neutral, so the two columns carry tension
+     TPO         tint
+     HOD         surface
+     who-helps   tint      — cards role-coded
+     why-us      dark peak
+     ROI         success wash — outcomes are green
+     plans       surface   — clean, trustworthy
+     objections  tint      — calm
+     final       brand peak
+   ============================================================ */
+
+/* Band tokens default to the light ground so components work in any
+   band, not only inside .mmc-dark. */
+.mmc {
+  --band-ink: var(--text-primary);
+  --band-mute: var(--text-body);
+  --band-hair: var(--border);
+  --band-glass: var(--bg-card);
+}
+
+.mmc-surface { background: var(--bg-card); color: var(--text-primary); }
+
+/* Outcomes band — a whisper of success green, not a slab of it. */
+.mmc-wash-success {
+  background:
+    linear-gradient(180deg,
+      color-mix(in srgb, var(--success) 7%, var(--bg-card)) 0%,
+      var(--bg-card) 62%);
+  color: var(--text-primary);
+}
+
+/* ── effort columns: tension through temperature ─────────── */
+.mmc-ecol {
+  background: var(--bg-card);
+  border-color: var(--border);
+  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.04);
+}
+.mmc-ecol--before {
+  background: color-mix(in srgb, var(--accent-cta) 6%, var(--bg-card));
+  border-color: color-mix(in srgb, var(--accent-cta) 24%, transparent);
+}
+.mmc-ecol--after {
+  background: color-mix(in srgb, var(--accent) 7%, var(--bg-card));
+  border-color: color-mix(in srgb, var(--accent) 34%, transparent);
+  box-shadow: 0 12px 30px -18px color-mix(in srgb, var(--accent) 60%, transparent);
+}
+.mmc-ecol h3 { color: var(--text-primary); }
+.mmc-ecol__sub, .mmc-estep, .mmc-etotal span { color: var(--text-muted); }
+.mmc-estep { border-bottom-color: var(--border); }
+.mmc-estep span { color: var(--text-body); }
+.mmc-etotal { border-top-color: var(--border); }
+
+html.mm-new-ui .mmc-ecol {
+  background: var(--band-glass);
+  border-color: var(--band-hair);
+  box-shadow: none;
+}
+html.mm-new-ui .mmc-ecol--before {
+  background: rgba(255, 149, 0, 0.07);
+  border-color: rgba(255, 149, 0, 0.24);
+}
+html.mm-new-ui .mmc-ecol--after {
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 42%, transparent);
+}
+html.mm-new-ui .mmc-ecol h3 { color: var(--on-dark); }
+html.mm-new-ui .mmc-ecol__sub,
+html.mm-new-ui .mmc-estep,
+html.mm-new-ui .mmc-etotal span { color: var(--on-dark-mute); }
+html.mm-new-ui .mmc-estep span { color: var(--on-dark-mute); }
+html.mm-new-ui .mmc-estep { border-bottom-color: var(--hair); }
+html.mm-new-ui .mmc-etotal { border-top-color: var(--hair); }
+
+/* ── role identity: blue → teal → amber, top of chain to bottom ── */
+.mmc-role { position: relative; overflow: hidden; }
+.mmc-role::before {
+  content: '';
+  position: absolute; inset: 0 0 auto 0; height: 3px;
+  background: var(--role-hue, var(--accent));
+}
+.mmc-role--tpo { --role-hue: var(--accent); }
+.mmc-role--hod { --role-hue: var(--accent-secondary); }
+.mmc-role--student { --role-hue: var(--accent-cta); }
+.mmc-role__who { color: var(--role-hue, var(--accent)); }
+.mmc-role li::before { color: var(--role-hue, var(--success)); }
+.mmc-role {
+  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.04);
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+@media (hover: hover) {
+  .mmc-role:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 18px 38px -22px color-mix(in srgb, var(--role-hue) 70%, transparent);
+  }
+}
+
+/* ── ROI: let the headline number dominate ──────────────── */
+.mmc-roi__card {
+  background: var(--bg-card);
+  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.04);
+}
+.mmc-roi__card.is-hero {
+  border-color: color-mix(in srgb, var(--success) 40%, transparent);
+  background: color-mix(in srgb, var(--success) 8%, var(--bg-card));
+  box-shadow: 0 14px 34px -20px color-mix(in srgb, var(--success) 65%, transparent);
+}
+.mmc-roi__card.is-hero b { font-size: clamp(2.5rem, 6vw, 3.5rem); }
+
+/* ── elevation hierarchy — not every card is equally important ── */
+.mmc-obj__card { box-shadow: none; }          /* reference material, flat */
+.mmc-plan {                                    /* the conversion moment */
+  box-shadow: 0 24px 60px -34px color-mix(in srgb, var(--accent) 70%, transparent),
+              0 1px 2px rgba(24, 24, 27, 0.04);
+}
+@media (hover: hover) {
+  .mmc-obj__card { transition: border-color 0.18s var(--ease); }
+  .mmc-obj__card:hover { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
+}
+
+/* Differentiator cards sit on the dark band — keep them glassy. */
+.mmc-diff__card { transition: border-color 0.18s var(--ease), transform 0.2s var(--ease); }
+@media (hover: hover) {
+  .mmc-diff__card:hover {
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+}
+
+/* Differentiator cards sat on a light-blue gradient using a 6%-accent
+   glass fill — barely distinguishable from the band behind them. Give
+   them a solid surface in light mode; keep the glass only on dark. */
+.mmc-diff__card {
+  background: var(--bg-card);
+  border-color: var(--border);
+  box-shadow: 0 1px 2px rgba(24, 24, 27, 0.05);
+}
+html.mm-new-ui .mmc-diff__card {
+  background: var(--glass);
+  border-color: var(--hair);
+  box-shadow: none;
+}
+
+/* Checkmarks mean "you get this" and should read the same on every card.
+   Role identity is already carried by the top rail and the eyebrow —
+   tinting the ticks amber on the student card just cost legibility. */
+.mmc-role li::before { color: var(--success); }
+
+/* Honesty note — deliberately plain. It is a credibility device, so
+   dressing it up as a highlight box would undercut the point. */
+.mmc-honest {
+  margin-top: 1.75rem;
+  padding: 1rem 1.25rem;
+  border-left: 3px solid var(--border);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--text-muted);
+  max-width: 62ch;
+}
+.mmc-honest b { color: var(--text-body); font-weight: 650; }
+
+/* These cards now carry words ("Per student") rather than short numerals
+   ("+16%"), so the display size that suited digits makes them wrap and
+   the row go ragged. Smaller, tighter, and evenly aligned. */
+.mmc-roi { align-items: stretch; }
+.mmc-roi__card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.5rem;
+  text-align: left;
+  padding: 1.5rem 1.375rem;
+}
+.mmc-roi__card b {
+  font-size: clamp(1.375rem, 2.2vw, 1.75rem);
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+.mmc-roi__card.is-hero b { font-size: clamp(1.5rem, 2.4vw, 1.875rem); }
+.mmc-roi__card em { margin-top: 0; font-size: 0.84375rem; line-height: 1.5; }
+
+/* ── belief panel (Who we are) ──────────────────────────── */
+.mmc-belief {
+  border-radius: 1.125rem;
+  padding: 1.5rem;
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+}
+.mmc-belief__lead {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.6875rem; letter-spacing: 0.12em; text-transform: uppercase;
+  font-weight: 700; color: var(--accent); margin: 0 0 1rem;
+}
+.mmc-belief__list { list-style: none; margin: 0; padding: 0;
+                    display: flex; flex-direction: column; gap: 1rem; }
+.mmc-belief__list li {
+  position: relative; padding-left: 1.25rem;
+  font-size: 0.9375rem; line-height: 1.6; color: var(--text-body);
+}
+.mmc-belief__list li::before {
+  content: ''; position: absolute; left: 0; top: 0.6em;
+  width: 0.375rem; height: 0.375rem; border-radius: 50%;
+  background: var(--accent);
+}
+.mmc-belief__list b { color: var(--text-primary); font-weight: 650; }
+
+/* The data band reuses .mmc-diff cards but has no numbered eyebrow, so
+   pull the heading up to fill that space. */
+#data .mmc-diff__card h3 { margin-top: 0; }
+
+/* ── the trade (Why now) ────────────────────────────────────
+   Two columns that must read as an exchange, not a feature list.
+   "Get" carries the accent; "ask" stays deliberately plain so the
+   offer doesn't look like it's dressing up the obligation.
+   ─────────────────────────────────────────────────────────── */
+.mmc-trade {
+  display: grid;
+  gap: 1rem;
+  margin-top: 2.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  align-items: start;
+}
+.mmc-trade__col {
+  border-radius: 1.125rem;
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+}
+.mmc-trade__col--get {
+  border-color: color-mix(in srgb, var(--accent) 38%, transparent);
+  background: color-mix(in srgb, var(--accent) 6%, var(--bg-card));
+  box-shadow: 0 14px 34px -22px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+.mmc-trade__head {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.6875rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin: 0 0 1.125rem;
+  color: var(--text-muted);
+}
+.mmc-trade__col--get .mmc-trade__head { color: var(--accent-hover); }
+
+.mmc-trade__col ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.125rem;
+}
+.mmc-trade__col li {
+  position: relative;
+  padding-left: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.mmc-trade__col li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.45em;
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background: var(--border);
+}
+.mmc-trade__col--get li::before { background: var(--accent); }
+.mmc-trade__col li b {
+  font-size: 0.9375rem;
+  font-weight: 650;
+  line-height: 1.4;
+  color: var(--text-primary);
+}
+.mmc-trade__col li span {
+  font-size: 0.84375rem;
+  line-height: 1.55;
+  color: var(--text-body);
+}
+.mmc-trade__note {
+  margin: 1.25rem 0 0;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--border);
+  font-size: 0.84375rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+}
+
+/* ============================================================
+   SECTION LABELS — reworked
+
+   Were 11px monospace, uppercase, 0.16em tracking. At that size the
+   mono reads thin and the wide tracking pulls the words apart, so the
+   labels looked incidental rather than structural. Now: the display
+   face, larger, heavier, tighter tracking, with a short accent rule
+   that gives the label presence without shouting.
+   ============================================================ */
+.mmc-eyebrow,
+.mmc-trade__head,
+.mmc-belief__lead,
+.mmc-role__who {
+  font-family: var(--font-display, inherit);
+  font-size: clamp(0.8125rem, 1.5vw, 0.875rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1.3;
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+}
+
+.mmc-eyebrow::before,
+.mmc-trade__head::before,
+.mmc-belief__lead::before {
+  content: '';
+  flex: none;
+  width: 1.5rem;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+/* Role cards are compact — the rule would crowd them. */
+.mmc-role__who { gap: 0; }
+
+.mmc-eyebrow { margin-bottom: 1rem; }
+
+/* ============================================================
+   PRODUCT FRAMES ON SMALL SCREENS
+
+   The frame scales a fixed-width desktop stage with transform, which
+   reads as a screenshot on a wide viewport. Below tablet the stage is
+   wider than its container, so the dashboard was being cropped — at
+   375px only the left ~60% was visible.
+
+   The embedded components are genuinely responsive, so on small
+   screens drop the transform and let them lay out at container width.
+   Overrides inline styles set by the component, hence !important.
+   ============================================================ */
+@media (max-width: 64em) {
+  .mmc-frame__stage {
+    width: 100% !important;
+    transform: none !important;
+  }
+  .mmc-frame__viewport {
+    height: auto !important;
+  }
+}
+
+/* Frame chrome shrinks a little too, so it doesn't dominate. */
+@media (max-width: 40em) {
+  .mmc-frame { border-radius: 0.75rem; }
+  .mmc-frame__bar { padding: 0.4375rem 0.625rem; }
+  .mmc-frame__url { font-size: 0.5625rem; }
+  .mmc-glow::before { display: none; }   /* glow reads as a smudge at phone size */
+}
+
+/* Exact-fit stage: lay out at 100%/scale, then scale back down so the
+   rendered width lands on the container edge. A fixed pixel stage width
+   overshot by ~13px at 1440 and cropped the right edge of the dashboard.
+   `min-width` on the element keeps the embedded UI in its desktop layout
+   rather than collapsing to a narrow column. */
+@media (min-width: 64em) {
+  .mmc-frame__stage {
+    width: calc(100% / var(--frame-scale, 0.5));
+    transform: scale(var(--frame-scale, 0.5));
+  }
+}
+
+/* The product frames render at natural size now rather than being scaled
+   down, so the hero gives the product column more room — at the previous
+   50/50 split the dashboard was squeezed into ~538px. */
+@media (min-width: 64em) {
+  .mmc-hero__grid { grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); }
+}
+
+/* No transform means no need to inflate the stage; keep it at container
+   width so the responsive components lay themselves out. */
+@media (min-width: 64em) {
+  .mmc-frame__stage {
+    width: calc(100% / var(--frame-scale, 1));
+    transform: scale(var(--frame-scale, 1));
+  }
+}
+
+/* Fade the crop edge so a clipped frame reads as "more below" rather
+   than a hard cut through a row of text. */
+.mmc-frame__viewport { position: relative; }
+.mmc-frame__viewport::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 3.5rem;
+  pointer-events: none;
+  background: linear-gradient(to bottom, transparent, var(--bg-primary));
 }

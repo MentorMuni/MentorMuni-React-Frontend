@@ -192,8 +192,9 @@ html.mm-new-ui .hover\:text-primary:hover {
   color: #7dd3fc;
 }
 
-html.mm-new-ui strong,
-html.mm-new-ui b,
+/* Marketing shell only — portals set their own heading/body ink. */
+html.mm-new-ui strong:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *)),
+html.mm-new-ui b:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *)),
 html.mm-new-ui .font-semibold.text-foreground,
 html.mm-new-ui .font-bold.text-foreground {
   color: var(--text-heading);
@@ -205,9 +206,9 @@ html.mm-new-ui [class*="text-white/"] {
   color: #ffffff !important;
 }
 
-html.mm-new-ui input,
-html.mm-new-ui textarea,
-html.mm-new-ui select {
+html.mm-new-ui input:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *)),
+html.mm-new-ui textarea:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *)),
+html.mm-new-ui select:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *)) {
   color: var(--text-heading);
   background-color: rgba(15, 23, 42, 0.85);
   border-color: rgba(148, 163, 184, 0.25);

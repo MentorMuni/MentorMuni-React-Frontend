@@ -254,6 +254,60 @@ export async function changeOrgPassword(currentPassword, newPassword) {
 }
 
 /**
+ * POST /auth/forgot-password
+ * identifier = email or username/college ID
+ * portal = organization | student
+ */
+export async function requestPasswordReset({
+  identifier = '',
+  email = '',
+  username = '',
+  organizationCode = '',
+  portal = 'organization',
+} = {}) {
+  const body = {
+    organization_code: String(organizationCode || '').trim().toUpperCase() || undefined,
+    portal: portal === 'student' ? 'student' : 'organization',
+  };
+  const id = String(identifier || '').trim();
+  if (email) body.email = String(email).trim().toLowerCase();
+  if (username) body.username = String(username).trim();
+  if (id) {
+    if (id.includes('@')) body.email = id.toLowerCase();
+    else body.username = id;
+    body.identifier = id;
+  }
+
+  const data = await orgApi.post('/auth/forgot-password', body, { auth: false });
+  return {
+    ok: true,
+    message:
+      data?.message ||
+      'If an account exists for those details, a reset link has been sent.',
+    emailed: Boolean(data?.emailed ?? data?.email_sent),
+    resetUrl: data?.reset_url || data?.resetUrl || data?.setup_url || '',
+  };
+}
+
+/**
+ * POST /auth/reset-password
+ */
+export async function resetPasswordWithToken({ token, newPassword }) {
+  const data = await orgApi.post(
+    '/auth/reset-password',
+    {
+      token: String(token || '').trim(),
+      new_password: String(newPassword || ''),
+    },
+    { auth: false }
+  );
+  return {
+    ok: true,
+    message: data?.message || 'Password has been reset. You can log in now.',
+  };
+}
+
+/**
  * For college signup / registration forms.
  * Returns a display string when the API blocked signup because the org is suspended.
  */

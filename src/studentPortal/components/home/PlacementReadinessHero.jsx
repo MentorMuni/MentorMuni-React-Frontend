@@ -18,10 +18,17 @@ export default function PlacementReadinessHero({
   previousReadiness = 41,
   targetReadiness = 85,
   estimatedDays = 38,
+  /** Readiness earned from today's tasks, so the number moves as work lands. */
+  todayGain = 0,
+  /** Where a student should be by now — turns a bare score into a judgement. */
+  expectedByNow = 45,
+  weekLabel = 'week 3',
 }) {
   const [open, setOpen] = useState(false);
+  const live = Math.round((currentReadiness + todayGain) * 10) / 10;
   const delta = currentReadiness - previousReadiness;
-  const offset = C - (currentReadiness / 100) * C;
+  const offset = C - (live / 100) * C;
+  const onTrack = live >= expectedByNow;
 
   return (
     <section className="stu-readiness">
@@ -30,28 +37,30 @@ export default function PlacementReadinessHero({
           <p className="stu-readiness__eyebrow">
             Your placement readiness
             <span className="stu-tip" title="Weighted score across aptitude, skills, communication, interviews and projects.">
-              <Info size={13} aria-hidden />
+              <Info size={14} strokeWidth={2} aria-hidden />
             </span>
           </p>
 
           <div className="stu-readiness__figure">
-            <span className="stu-readiness__pct">{currentReadiness}</span>
+            <span className="stu-readiness__pct">{live}</span>
             <span className="stu-readiness__unit">%</span>
             {delta !== 0 ? (
               <span className={`stu-delta${delta > 0 ? ' is-up' : ' is-down'}`}>
-                <TrendingUp size={13} aria-hidden />
+                <TrendingUp size={14} strokeWidth={2} aria-hidden />
                 {delta > 0 ? '+' : ''}
                 {delta}% <em>vs last week</em>
               </span>
             ) : null}
           </div>
 
-          <p className="stu-readiness__note">
-            You&apos;re ahead of <strong>38%</strong> of students in your department.
+          <p className={`stu-readiness__track-note${onTrack ? ' is-ok' : ' is-behind'}`}>
+            {onTrack
+              ? `On track — ${expectedByNow}% is typical by ${weekLabel}.`
+              : `Slightly behind — ${expectedByNow}% is typical by ${weekLabel}. Today's plan closes it.`}
           </p>
 
-          <div className="stu-readiness__track" role="img" aria-label={`${currentReadiness} percent of the way to placement ready`}>
-            <span className="stu-readiness__fill" style={{ width: `${currentReadiness}%` }} />
+          <div className="stu-readiness__track" role="img" aria-label={`${live} percent of the way to placement ready`}>
+            <span className="stu-readiness__fill" style={{ width: `${live}%` }} />
             <span
               className="stu-readiness__target-tick"
               style={{ left: `${targetReadiness}%` }}
@@ -94,18 +103,36 @@ export default function PlacementReadinessHero({
         </div>
       </div>
 
+      {/* Always visible: it answers "where am I losing marks" and fills the
+          card with something useful instead of 148px of empty space. */}
+      <ul className="stu-breakdown stu-breakdown--inline">
+        {BREAKDOWN.map((row) => (
+          <li key={row.label} className="stu-breakdown__row">
+            <span className="stu-breakdown__label">{row.label}</span>
+            <span className="stu-breakdown__track">
+              <span
+                className="stu-breakdown__fill"
+                style={{ width: `${row.score}%` }}
+                data-tone={row.score >= 60 ? 'good' : row.score >= 45 ? 'mid' : 'low'}
+              />
+            </span>
+            <span className="stu-breakdown__score">{row.score}%</span>
+          </li>
+        ))}
+      </ul>
+
       <div className="stu-readiness__foot">
         <button
           className="stu-readiness__toggle"
           onClick={() => setOpen((v) => !v)}
           aria-expanded={open}
         >
-          See how we calculated this
-          <ChevronDown size={15} className={open ? 'is-flipped' : ''} aria-hidden />
+          How this is weighted
+          <ChevronDown size={16} strokeWidth={2} className={open ? 'is-flipped' : ''} aria-hidden />
         </button>
         <button className="stu-btn stu-btn--ghost-light">
           Improve my score
-          <ArrowUpRight size={15} aria-hidden />
+          <ArrowUpRight size={16} strokeWidth={2} aria-hidden />
         </button>
       </div>
 

@@ -64,7 +64,7 @@ function NavGroup({ label, items, onNavigate }) {
                   `stu-nav__item${isActive ? ' is-active' : ''}`
                 }
               >
-                <Icon size={17} strokeWidth={1.9} aria-hidden />
+                <Icon size={16} strokeWidth={2} aria-hidden />
                 <span className="stu-nav__text">{item.label}</span>
                 {item.badge ? (
                   <span
@@ -110,7 +110,7 @@ export default function StudentSidebar({ session, open, onClose, streak = 18 }) 
             </span>
           </Link>
           <button className="stu-sidebar__close" onClick={onClose} aria-label="Close navigation">
-            <X size={18} />
+            <X size={16} strokeWidth={2} />
           </button>
         </div>
 
@@ -149,7 +149,7 @@ export default function StudentSidebar({ session, open, onClose, streak = 18 }) 
                 {session?.year ? ` · ${session.year}` : ''}
               </em>
             </span>
-            <ChevronRight size={15} aria-hidden />
+            <ChevronRight size={16} strokeWidth={2} aria-hidden />
           </button>
         </div>
       </aside>

@@ -3,17 +3,20 @@ import { motion } from 'framer-motion';
 import { ArrowRight } from 'lucide-react';
 
 const DATA = {
+  /* A slice around the student, not the top of the table. Comparing a 47%
+     student against 92% only teaches them they are losing; showing the two
+     people just ahead makes the next rank feel like a step. */
   department: [
-    { rank: 1, name: 'Sarvesh Gupta', score: 82 },
-    { rank: 2, name: 'Ananya Singh', score: 79 },
-    { rank: 3, name: 'Meera Iyer', score: 74 },
+    { rank: 6, name: 'Kavya Nair', score: 54 },
+    { rank: 7, name: 'Imran Shaikh', score: 51 },
     { rank: 8, name: 'Rahul Verma', score: 47, you: true },
+    { rank: 9, name: 'Dev Patel', score: 44 },
   ],
   college: [
-    { rank: 1, name: 'Karan Mehta', score: 91 },
-    { rank: 2, name: 'Sarvesh Gupta', score: 82 },
-    { rank: 3, name: 'Ananya Singh', score: 79 },
+    { rank: 40, name: 'Sneha Rao', score: 52 },
+    { rank: 41, name: 'Arjun Menon', score: 49 },
     { rank: 42, name: 'Rahul Verma', score: 47, you: true },
+    { rank: 43, name: 'Ritu Bansal', score: 45 },
   ],
   friends: [
     { rank: 1, name: 'Ananya Singh', score: 79 },
@@ -39,7 +42,7 @@ export default function LeaderboardSection() {
       <header className="stu-card__head">
         <div>
           <h2 className="stu-card__title">Leaderboard</h2>
-          <p className="stu-card__sub">Ranked by readiness score</p>
+          <p className="stu-card__sub">Your neighbourhood — the next rank is one step away</p>
         </div>
       </header>
 
@@ -76,9 +79,15 @@ export default function LeaderboardSection() {
         ))}
       </ul>
 
-      <button className="stu-link-btn stu-link-btn--block">
-        Full leaderboard <ArrowRight size={14} aria-hidden />
-      </button>
+      <div className="stu-lb__foot">
+        <p className="stu-lb__bar">
+          <strong>12 of 47</strong> in your branch have cleared the 85% placement bar.
+          Rank moves; the bar is what recruiters check.
+        </p>
+        <button className="stu-link-btn stu-link-btn--block">
+          Full leaderboard <ArrowRight size={16} strokeWidth={2} aria-hidden />
+        </button>
+      </div>
     </section>
   );
 }

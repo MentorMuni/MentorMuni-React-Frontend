@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Bell, CalendarDays, LogOut, Menu, Search, Settings, User } from 'lucide-react';
+import { Bell, CalendarDays, GraduationCap, LogOut, Menu, Search, Settings, User } from 'lucide-react';
 import { clearStudentSession } from '../../auth';
 import { studentPaths } from '../../paths';
 
@@ -42,11 +42,11 @@ export default function StudentTopbar({ session, onMenu, theme, onToggleTheme })
   return (
     <header className="stu-topbar">
       <button className="stu-topbar__menu" onClick={onMenu} aria-label="Open navigation">
-        <Menu size={20} />
+        <Menu size={18} strokeWidth={2} />
       </button>
 
       <div className="stu-search">
-        <Search size={16} aria-hidden />
+        <Search size={16} strokeWidth={2} aria-hidden />
         <input
           type="search"
           placeholder="Search tests, topics, companies…"
@@ -56,9 +56,23 @@ export default function StudentTopbar({ session, onMenu, theme, onToggleTheme })
       </div>
 
       <div className="stu-topbar__right">
+        {/* College + branch: identity sits with the account, not in the
+            greeting row where it competed with the student's own name. */}
+        {session?.organization_name ? (
+          <div className="stu-campus" title={session.organization_name}>
+            <span className="stu-campus__mark" aria-hidden>
+              <GraduationCap size={15} strokeWidth={2.1} />
+            </span>
+            <span className="stu-campus__text">
+              <strong>{session.organization_name}</strong>
+              {session.department_name ? <em>{session.department_name}</em> : null}
+            </span>
+          </div>
+        ) : null}
+
         <div className="stu-drive-chip" title="Next campus drive">
           <span className="stu-drive-chip__icon" aria-hidden>
-            <CalendarDays size={15} />
+            <CalendarDays size={16} strokeWidth={2} />
           </span>
           <span className="stu-drive-chip__text">
             <strong>Campus Drive</strong>
@@ -67,7 +81,7 @@ export default function StudentTopbar({ session, onMenu, theme, onToggleTheme })
         </div>
 
         <button className="stu-icon-btn" aria-label="Notifications (3 unread)">
-          <Bell size={18} />
+          <Bell size={18} strokeWidth={2} />
           <span className="stu-icon-btn__dot">3</span>
         </button>
 
@@ -97,14 +111,14 @@ export default function StudentTopbar({ session, onMenu, theme, onToggleTheme })
               </div>
               <div className="stu-menu__sep" />
               <button className="stu-menu__item" role="menuitem">
-                <User size={15} /> Profile &amp; resume
+                <User size={16} strokeWidth={2} /> Profile &amp; resume
               </button>
               <button className="stu-menu__item" role="menuitem" onClick={onToggleTheme}>
-                <Settings size={15} /> Switch to {theme === 'light' ? 'dark' : 'light'} mode
+                <Settings size={16} strokeWidth={2} /> Switch to {theme === 'light' ? 'dark' : 'light'} mode
               </button>
               <div className="stu-menu__sep" />
               <button className="stu-menu__item stu-menu__item--danger" role="menuitem" onClick={signOut}>
-                <LogOut size={15} /> Sign out
+                <LogOut size={16} strokeWidth={2} /> Sign out
               </button>
             </div>
           ) : null}

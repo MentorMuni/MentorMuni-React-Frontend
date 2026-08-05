@@ -18,7 +18,7 @@ export default function ProgressMetricsSection({
       <header className="stu-card__head">
         <div>
           <h2 className="stu-card__title">Your week</h2>
-          <p className="stu-card__sub">Mon–Sun · resets Monday</p>
+          <p className="stu-card__sub">Progress since Monday · resets next week</p>
         </div>
       </header>
 

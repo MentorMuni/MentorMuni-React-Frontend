@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Check, Clock, Code2, FileText, Mic, Play, Zap } from 'lucide-react';
 
 const ICONS = { resume: FileText, aptitude: Zap, mock: Mic, code: Code2 };
@@ -33,7 +33,7 @@ const SEED = [
   },
 ];
 
-export default function TodaysPlanSection({ currentReadiness = 47 }) {
+export default function TodaysPlanSection({ currentReadiness = 47, onGain }) {
   const [tasks, setTasks] = useState(SEED);
 
   const { doneCount, remainingMin, projected } = useMemo(() => {
@@ -47,7 +47,12 @@ export default function TodaysPlanSection({ currentReadiness = 47 }) {
     };
   }, [tasks, currentReadiness]);
 
+  const earned = tasks.reduce((s, t) => s + (t.done ? t.lift : 0), 0);
   const allDone = doneCount === tasks.length;
+
+  useEffect(() => {
+    if (onGain) onGain(earned, allDone);
+  }, [earned, allDone, onGain]);
   const pct = Math.round((doneCount / tasks.length) * 100);
 
   const toggle = (id) =>
@@ -61,10 +66,10 @@ export default function TodaysPlanSection({ currentReadiness = 47 }) {
           <p className="stu-card__sub">
             {allDone
               ? 'All done — come back tomorrow for a fresh set.'
-              : `${tasks.length - doneCount} left · about ${remainingMin} min`}
+              : `${tasks.length - doneCount} left · about ${remainingMin} min · do these first`}
           </p>
         </div>
-        <span className="stu-chip stu-chip--soft">
+        <span className="stu-chip stu-chip--accent">
           {doneCount}/{tasks.length}
         </span>
       </header>
@@ -86,11 +91,11 @@ export default function TodaysPlanSection({ currentReadiness = 47 }) {
                 aria-pressed={task.done}
                 aria-label={`${task.done ? 'Mark incomplete' : 'Mark complete'}: ${task.title}`}
               >
-                {task.done ? <Check size={13} strokeWidth={3} aria-hidden /> : null}
+                {task.done ? <Check size={12} strokeWidth={3} aria-hidden /> : null}
               </button>
 
               <span className={`stu-task__icon stu-task__icon--${task.kind}`} aria-hidden>
-                <Icon size={16} strokeWidth={1.9} />
+                <Icon size={16} strokeWidth={2} />
               </span>
 
               <span className="stu-task__body">
@@ -99,7 +104,7 @@ export default function TodaysPlanSection({ currentReadiness = 47 }) {
               </span>
 
               <span className="stu-task__time">
-                <Clock size={12} aria-hidden />
+                <Clock size={12} strokeWidth={2} aria-hidden />
                 {task.minutes}m
               </span>
 
@@ -114,13 +119,18 @@ export default function TodaysPlanSection({ currentReadiness = 47 }) {
       <div className="stu-plan__foot">
         <p className="stu-plan__lift">
           {allDone ? (
-            <>Nice work — today added <strong>+4%</strong> to your readiness.</>
+            <>Done for today — that added <strong>+{earned.toFixed(1)}%</strong> to your readiness.</>
+          ) : earned > 0 ? (
+            <>
+              <strong>+{earned.toFixed(1)}%</strong> earned so far. Finish the rest to reach{' '}
+              <strong>{projected}%</strong>.
+            </>
           ) : (
             <>Finish all three and you&apos;ll reach <strong>{projected}%</strong> readiness.</>
           )}
         </p>
         <button className="stu-btn stu-btn--primary" disabled={allDone}>
-          <Play size={15} fill="currentColor" aria-hidden />
+          <Play size={16} fill="currentColor" strokeWidth={2} aria-hidden />
           {allDone ? 'Plan complete' : "Start today's plan"}
         </button>
       </div>

@@ -11,6 +11,8 @@ export {
   activateTpoAccount,
   activateHodAccount,
   changeOrgPassword,
+  requestPasswordReset,
+  resetPasswordWithToken,
 } from './auth';
 export {
   fetchLoginColleges,

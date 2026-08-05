@@ -1,6 +1,8 @@
 /** Organization portal route helpers */
 export const orgPaths = {
   login: '/Organization/login',
+  forgotPassword: '/Organization/forgot-password',
+  resetPassword: '/Organization/reset-password',
   dashboard: '/Organization/dashboard',
   workspace: '/Organization/workspace',
   departments: '/Organization/departments',

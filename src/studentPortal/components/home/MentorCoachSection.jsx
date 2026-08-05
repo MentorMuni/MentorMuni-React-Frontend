@@ -14,11 +14,11 @@ export default function MentorCoachSection({ studentName = 'there' }) {
       <header className="stu-card__head">
         <div className="stu-coach__id">
           <span className="stu-coach__avatar" aria-hidden>
-            <Sparkles size={16} />
+            <Sparkles size={16} strokeWidth={2} />
           </span>
           <div>
             <h2 className="stu-card__title">MentorMuni Coach</h2>
-            <p className="stu-card__sub">Available 24/7</p>
+            <p className="stu-card__sub">Personal tips · available 24/7</p>
           </div>
         </div>
       </header>
@@ -49,7 +49,7 @@ export default function MentorCoachSection({ studentName = 'there' }) {
 
       <button className="stu-btn stu-btn--primary stu-btn--block">
         Chat with AI Mentor
-        <ArrowRight size={15} aria-hidden />
+        <ArrowRight size={16} strokeWidth={2} aria-hidden />
       </button>
     </section>
   );

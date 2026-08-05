@@ -129,8 +129,8 @@ export default function StudentForgotPasswordPage() {
           <p className="mm-stu-step-label">Student portal</p>
           <h1 className="mm-stu-card-title">Forgot password?</h1>
           <p className="mm-stu-card-sub">
-            Enter your campus and college ID or email. If a reset is available, we’ll email a
-            set-password link — or show it here when mail isn’t configured.
+            Enter your campus and college ID or email. We’ll send a reset link to your
+            registered email.
           </p>
 
           {error ? (
@@ -193,13 +193,13 @@ export default function StudentForgotPasswordPage() {
 
               <button type="submit" className="mm-stu-submit" disabled={loading}>
                 <Mail size={16} style={{ marginRight: 6 }} />
-                {loading ? 'Checking…' : 'Get reset link'}
+                {loading ? 'Sending…' : 'Send reset link'}
               </button>
             </form>
           ) : setupUrl ? (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
               <label className="mm-stu-label">
-                Your set-password link
+                Your reset link
                 <textarea
                   className="mm-stu-field-input"
                   style={{ minHeight: 88, padding: '12px 14px', resize: 'vertical' }}

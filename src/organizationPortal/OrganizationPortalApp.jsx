@@ -1,5 +1,7 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import OrganizationLoginPage from '../components/organization/OrganizationLoginPage';
+import OrgForgotPasswordPage from './pages/OrgForgotPasswordPage';
+import OrgResetPasswordPage from './pages/OrgResetPasswordPage';
 import { getOrgSession, isOrgAuthenticated } from '../orgPortal';
 import OrganizationShell from './OrganizationShell';
 import DashboardPage from './pages/DashboardPage';
@@ -140,6 +142,8 @@ export default function OrganizationPortalApp() {
   return (
     <Routes>
       <Route path="login" element={<OrganizationLoginPage />} />
+      <Route path="forgot-password" element={<OrgForgotPasswordPage />} />
+      <Route path="reset-password" element={<OrgResetPasswordPage />} />
       <Route
         index
         element={

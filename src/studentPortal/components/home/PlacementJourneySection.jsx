@@ -17,10 +17,10 @@ export default function PlacementJourneySection() {
       <header className="stu-card__head">
         <div>
           <h2 className="stu-card__title">Your 90-day journey</h2>
-          <p className="stu-card__sub">Day 34 of 90 · on track</p>
+          <p className="stu-card__sub">Day 34 of 90 · you are in skills building</p>
         </div>
         <button className="stu-link-btn">
-          Full roadmap <ArrowRight size={14} aria-hidden />
+          Full roadmap <ArrowRight size={16} strokeWidth={2} aria-hidden />
         </button>
       </header>
 
@@ -30,7 +30,7 @@ export default function PlacementJourneySection() {
             <span className="stu-step__rail" aria-hidden />
             <span className="stu-step__node" aria-hidden>
               {stage.state === 'done' ? (
-                <Check size={13} strokeWidth={3} />
+                <Check size={12} strokeWidth={3} />
               ) : stage.state === 'current' ? (
                 <span className="stu-step__pulse" />
               ) : (

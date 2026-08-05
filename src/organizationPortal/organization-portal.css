@@ -862,6 +862,42 @@
   color: #7a92a3;
 }
 
+/* Setup / share callouts — theme-safe (never hardcode dark ink) */
+.mm-org-callout {
+  margin: 0;
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid rgba(45, 212, 191, 0.28);
+  background: rgba(45, 212, 191, 0.08);
+  color: var(--org-ink);
+}
+.mm-org-root--light .mm-org-callout {
+  border-color: rgba(13, 148, 136, 0.28);
+  background: rgba(13, 148, 136, 0.06);
+}
+.mm-org-callout__title {
+  margin: 0 0 8px;
+  font-size: 0.75rem;
+  font-weight: 750;
+  line-height: 1.45;
+  color: var(--org-ink);
+}
+
+/* Browser autofill can force light/dark fills — keep typed text readable */
+.mm-org-root .mm-org-input:-webkit-autofill,
+.mm-org-root .mm-org-select:-webkit-autofill,
+.mm-org-root .mm-org-textarea:-webkit-autofill {
+  -webkit-text-fill-color: var(--org-ink);
+  caret-color: var(--org-ink);
+  box-shadow: 0 0 0 1000px var(--org-input) inset;
+  transition: background-color 99999s ease-out;
+}
+.mm-org-root .mm-org-input[type='date'],
+.mm-org-root .mm-org-input[type='datetime-local'],
+.mm-org-root .mm-org-input[type='time'] {
+  color-scheme: inherit;
+}
+
 /* Deep analysis */
 .mm-org-insight {
   display: grid;
@@ -1092,7 +1128,8 @@ html.mm-new-ui .mm-org-root:not(.mm-org-root--light) {
 .mm-org-content,
 .mm-org-panel,
 .mm-org-stat,
-.mm-org-modal {
+.mm-org-modal,
+.mm-org-callout {
   color: var(--org-ink);
 }
 
@@ -1252,7 +1289,7 @@ html.mm-new-ui .mm-org-root:not(.mm-org-root--light) {
   color: var(--org-muted);
 }
 .mm-org-workspace__item.is-overdue:not(.is-done) .mm-org-workspace__due {
-  color: #ca8a04;
+  color: var(--org-amber);
 }
 .mm-org-workspace__actions,
 .mm-org-workspace__edit-actions {

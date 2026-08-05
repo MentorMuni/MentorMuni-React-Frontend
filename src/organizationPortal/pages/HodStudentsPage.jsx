@@ -6,6 +6,7 @@ import {
   Link2,
   Pencil,
   Plus,
+  Trash2,
   UserPlus,
   X,
 } from 'lucide-react';
@@ -16,6 +17,7 @@ import { subscribeOrgDb } from '../store';
 import {
   addStudentManualApi,
   approveStudentInvite,
+  deleteStudentApi,
   fetchStudentInvites,
   fetchStudents,
   getRegistrationLink,
@@ -62,7 +64,13 @@ export default function HodStudentsPage() {
   const [emails, setEmails] = useState('');
   const [csvText, setCsvText] = useState('');
   const [editing, setEditing] = useState(null); // student being edited
-  const [editForm, setEditForm] = useState({ name: '', collegeId: '', batchYear: '' });
+  const [editForm, setEditForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    collegeId: '',
+    batchYear: '',
+  });
   const [editBusy, setEditBusy] = useState(false);
 
   const canInvite = snap.access?.canInviteStudents !== false;
@@ -155,13 +163,39 @@ export default function HodStudentsPage() {
     setErr(ok ? '' : text);
     setMsg(ok ? text : '');
     if (setupUrl) setLastSetupUrl(setupUrl);
+    else if (!ok) setLastSetupUrl('');
+  };
+
+  const clearFlash = () => {
+    setErr('');
+    setMsg('');
+    setLastSetupUrl('');
   };
 
   const copyText = async (text) => {
+    const value = String(text || '').trim();
+    if (!value) {
+      flash(false, 'Nothing to copy.');
+      return;
+    }
     try {
-      await navigator.clipboard.writeText(text);
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+      } else {
+        const ta = document.createElement('textarea');
+        ta.value = value;
+        ta.setAttribute('readonly', '');
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+      }
+      setErr('');
       setMsg('Copied to clipboard.');
     } catch {
+      setMsg('');
       setErr('Could not copy — select the link manually.');
     }
   };
@@ -253,14 +287,10 @@ export default function HodStudentsPage() {
       return;
     }
     if (decision === 'approve') {
-      flash(
-        true,
-        res.message ||
-          'Approved. Set-password email sent when mail works — link shown if returned.',
-        res.setupUrl || ''
-      );
+      flash(true, res.message || 'Approved.', res.setupUrl || '');
+      setTab('roster');
     } else {
-      flash(true, res.message || 'Registration rejected.');
+      flash(true, res.message || 'Denied.');
     }
     await reload();
   };
@@ -282,6 +312,8 @@ export default function HodStudentsPage() {
     setEditing(s);
     setEditForm({
       name: s.name || '',
+      email: s.email || '',
+      phone: s.phone || '',
       collegeId: s.collegeId || '',
       batchYear: s.batchYear || '',
     });
@@ -290,9 +322,15 @@ export default function HodStudentsPage() {
   const onSaveEdit = async (e) => {
     e.preventDefault();
     if (!editing?.id) return;
+    if (!String(editForm.name || '').trim() || !String(editForm.email || '').trim()) {
+      flash(false, 'Name and email are required.');
+      return;
+    }
     setEditBusy(true);
     const res = await patchStudent(editing.id, {
       name: editForm.name,
+      email: editForm.email,
+      phone: editForm.phone,
       collegeId: editForm.collegeId,
       batchYear: editForm.batchYear,
     });
@@ -302,7 +340,26 @@ export default function HodStudentsPage() {
       return;
     }
     setEditing(null);
-    flash(true, 'Student updated.');
+    flash(true, 'Student details updated.');
+    await reload();
+  };
+
+  const onDeleteStudent = async (s) => {
+    const label = s.name || s.email || 'this student';
+    if (
+      !window.confirm(
+        `Remove ${label} from the roster?\n\nThis deletes the enrollment record. They can re-enroll later if needed.`
+      )
+    ) {
+      return;
+    }
+    const res = await deleteStudentApi(s.id);
+    if (!res.ok) {
+      flash(false, res.error);
+      return;
+    }
+    if (editing && String(editing.id) === String(s.id)) setEditing(null);
+    flash(true, res.message || 'Student removed.');
     await reload();
   };
 
@@ -346,7 +403,10 @@ export default function HodStudentsPage() {
               key={id}
               type="button"
               className={`mm-org-btn mm-org-btn--sm ${tab === id ? 'mm-org-btn--primary' : 'mm-org-btn--ghost'}`}
-              onClick={() => setTab(id)}
+              onClick={() => {
+                clearFlash();
+                setTab(id);
+              }}
             >
               {label}
             </button>
@@ -357,8 +417,8 @@ export default function HodStudentsPage() {
       {err ? <div className="mm-org-alert mm-org-alert--error">{err}</div> : null}
       {msg ? <div className="mm-org-alert mm-org-alert--success">{msg}</div> : null}
       {lastSetupUrl ? (
-        <div className="mm-org-panel" style={{ padding: 14 }}>
-          <p className="mm-org-panel__meta m-0 mb-2">Set-password link (share if email did not send)</p>
+        <div className="mm-org-callout">
+          <p className="mm-org-callout__title">Set-password link (share if email did not send)</p>
           <div className="flex flex-wrap items-center gap-2">
             <code className="mm-org-code text-xs" style={{ flex: 1 }}>
               {lastSetupUrl}
@@ -405,7 +465,10 @@ export default function HodStudentsPage() {
                 className={`mm-org-btn mm-org-btn--sm ${
                   addMode === id ? 'mm-org-btn--primary' : 'mm-org-btn--ghost'
                 }`}
-                onClick={() => setAddMode(id)}
+                onClick={() => {
+                  clearFlash();
+                  setAddMode(id);
+                }}
               >
                 {label}
               </button>
@@ -739,6 +802,13 @@ export default function HodStudentsPage() {
                             ) : null}
                             <button
                               type="button"
+                              className="mm-org-btn mm-org-btn--danger mm-org-btn--sm"
+                              onClick={() => onDeleteStudent(s)}
+                            >
+                              <Trash2 size={14} /> Delete
+                            </button>
+                            <button
+                              type="button"
                               className="mm-org-btn mm-org-btn--primary mm-org-btn--sm"
                               onClick={() => setAssignStudent(s)}
                               disabled={snap.access?.canAssignPrograms === false}
@@ -790,6 +860,30 @@ export default function HodStudentsPage() {
                 value={editForm.name}
                 onChange={(e) => setEditForm((f) => ({ ...f, name: e.target.value }))}
                 required
+              />
+            </div>
+            <div>
+              <label className="mm-org-label" htmlFor="hod-edit-email">
+                College email
+              </label>
+              <input
+                id="hod-edit-email"
+                type="email"
+                className="mm-org-input"
+                value={editForm.email}
+                onChange={(e) => setEditForm((f) => ({ ...f, email: e.target.value }))}
+                required
+              />
+            </div>
+            <div>
+              <label className="mm-org-label" htmlFor="hod-edit-phone">
+                Phone
+              </label>
+              <input
+                id="hod-edit-phone"
+                className="mm-org-input"
+                value={editForm.phone}
+                onChange={(e) => setEditForm((f) => ({ ...f, phone: e.target.value }))}
               />
             </div>
             <div>

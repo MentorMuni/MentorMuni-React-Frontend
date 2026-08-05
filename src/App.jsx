@@ -353,6 +353,8 @@ function App() {
               <Route path="/colleges" element={<CollegesPage />} />
               <Route path="/about" element={<AboutUs />} />
               <Route path="/login" element={<Navigate to="/Organization/login" replace />} />
+              <Route path="/reset-password" element={<Navigate to="/Organization/reset-password" replace />} />
+              <Route path="/forgot-password" element={<Navigate to="/Organization/forgot-password" replace />} />
               <Route path="/activate-tpo" element={<ActivateTpoPage />} />
               <Route path="/activate-hod" element={<ActivateHodPage />} />
               <Route path="/contact" element={<ContactPage />} />

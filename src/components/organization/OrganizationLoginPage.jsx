@@ -810,6 +810,10 @@ export default function OrganizationLoginPage() {
                   </motion.button>
                 </form>
 
+                <p className="mm-org-login__activate" style={{ marginTop: 12 }}>
+                  <Link to="/Organization/forgot-password">Forgot password?</Link>
+                </p>
+
                 <p className="mm-org-login__activate">
                   For new users, activate your account and set your password from the email sent by your admin.
                 </p>

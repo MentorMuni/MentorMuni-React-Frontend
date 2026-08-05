@@ -170,13 +170,17 @@ export default function StudentEnrollPage() {
 
           {done ? (
             <>
-              <p className="mm-stu-step-label">Submitted</p>
-              <h1 className="mm-stu-card-title">Waiting for HOD approval</h1>
+              <p className="mm-stu-step-label">Request sent</p>
+              <h1 className="mm-stu-card-title">Waiting for approval</h1>
               <p className="mm-stu-card-sub">
-                Your request for <strong>{college?.name || orgCode}</strong>
-                {selectedDept ? ` · ${selectedDept.name}` : ''} is with your department. After
-                approval you’ll get a set-password link, then you can sign in.
+                <strong>{college?.name || orgCode}</strong>
+                {selectedDept ? ` · ${selectedDept.name}` : ''}
               </p>
+              <ul className="mm-stu-enroll-steps">
+                <li>HOD reviews your request</li>
+                <li>You get a set-password link if approved</li>
+                <li>Set password, then sign in with email or roll</li>
+              </ul>
               <Link
                 to={studentPaths.login}
                 className="mm-stu-submit"

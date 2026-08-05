@@ -31,7 +31,7 @@ function Hero() {
           <span className="mmc-chip"><i />Placement season starts in 6 weeks</span>
 
           <h1 className="mmc-h1">
-            Interview practice that scales to&nbsp;1,200&nbsp;students.
+            Interview practice that scales to your whole&nbsp;campus.
           </h1>
 
           <p className="mmc-lede">
@@ -52,14 +52,14 @@ function Hero() {
           </div>
 
           <p className="mmc-hero__proof">
-            <span><b>✓</b> 38 campuses live</span>
-            <span><b>✓</b> Set up in a week</span>
-            <span><b>✓</b> No per-student admin</span>
+            <span><b>✓</b> Runs on your drive calendar</span>
+            <span><b>✓</b> Roster upload, then we onboard</span>
+            <span><b>✓</b> No invigilation, no scheduling</span>
           </p>
         </div>
 
         <div className="mmc-glow">
-          <ProductFrame url="mentormuni.com/studentportal/home" stageWidth={1060} scale={0.52} height={430}>
+          <ProductFrame url="mentormuni.com/studentportal/home" height={520}>
             {/* `.stu-app is-light` supplies the dashboard's own token scope.
                 No `--page` modifier: this is artwork, not the page. */}
             <div className="stu-app is-light" style={{ padding: 18, background: 'var(--bg)' }}>
@@ -87,7 +87,7 @@ function Hero() {
 const MANUAL = [
   ['Collect rosters, build the spreadsheet', '2 weeks'],
   ['Schedule slots, book rooms, assign faculty', '1 week'],
-  ['Interview at 8 students per faculty-day', '150 days'],
+  ['Interview at 8 students per faculty-day', '60+ days'],
   ['Chase no-shows over WhatsApp', 'ongoing'],
   ['Compile scores by hand, resolve conflicts', '2 weeks'],
   ['Build the report for management', '1 week'],
@@ -114,31 +114,33 @@ function Steps({ rows }) {
 
 function EffortCollapse() {
   return (
-    <section className="mmc-dark mmc-band" id="effort">
+    <section className="mmc-surface mmc-band" id="effort">
       <div className="mmc-shell">
         <ScrollReveal>
           <p className="mmc-eyebrow">Why this exists</p>
           <h2 className="mmc-h2">
-            Mock interviews for 1,200 students used to be&nbsp;impossible.
+            Mock interviews for every student used to be&nbsp;impossible.
           </h2>
           <p className="mmc-lede">
             Not hard — <em>impossible</em>. One faculty member can run maybe eight
-            interviews a day. That&rsquo;s 150 working days for a single round. So campuses
-            run a seminar instead and hope. This is the arithmetic that changes.
+            interviews in a day. For a 500-student batch that is over sixty working days
+            of one person&rsquo;s time, for <em>one</em> round. So campuses run a seminar
+            instead and hope. This is the arithmetic that changes — and you can check it
+            against your own numbers.
           </p>
         </ScrollReveal>
 
         <div className="mmc-effort">
-          <ScrollReveal className="mmc-ecol">
+          <ScrollReveal className="mmc-ecol mmc-ecol--before">
             <h3>Running one mock round today</h3>
-            <p className="mmc-ecol__sub">1,200 students · manual</p>
+            <p className="mmc-ecol__sub">500+ students · manual</p>
             <Steps rows={MANUAL} />
             <div className="mmc-etotal"><span>Realistically</span><b>Never happens</b></div>
           </ScrollReveal>
 
           <ScrollReveal className="mmc-ecol mmc-ecol--after">
             <h3>Running it on MentorMuni</h3>
-            <p className="mmc-ecol__sub">1,200 students · automated</p>
+            <p className="mmc-ecol__sub">500+ students · automated</p>
             <Steps rows={AUTOMATED} />
             <div className="mmc-etotal"><span>Your time</span><b>≈ 40 minutes</b></div>
           </ScrollReveal>
@@ -186,7 +188,7 @@ function RankingPreview() {
     ['…', 'DN', 'Dev Nair', 'ECE', '38%', 'risk'],
   ];
   return (
-    <ProductFrame url="mentormuni.com/tpo/students" tone="light" stageWidth={560} scale={0.92}>
+    <ProductFrame url="mentormuni.com/tpo/students" tone="light">
       <div style={{ padding: '14px 16px', background: 'var(--bg-card)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
                       marginBottom: 10, fontSize: 13, fontWeight: 700 }}>
@@ -220,7 +222,7 @@ function RankingPreview() {
 
 function NotifyPreview() {
   return (
-    <ProductFrame url="mentormuni.com/hod/ece/notify" tone="light" stageWidth={560} scale={0.92}>
+    <ProductFrame url="mentormuni.com/hod/ece/notify" tone="light">
       <div style={{ padding: '14px 16px', background: 'var(--bg-card)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline',
                       marginBottom: 12, fontSize: 13, fontWeight: 700 }}>
@@ -255,32 +257,44 @@ function NotifyPreview() {
 /* ══════════════════════════════════════════════════════════════
    ROI · OBJECTIONS · CTA
    ══════════════════════════════════════════════════════════════ */
-const ROI = [
-  ['+16%', 'placement rate, year on year', true],
-  ['2.4×', 'interview conversion', false],
-  ['71%', 'weekly active students', false],
-  ['6 hrs', 'staff time per week', false],
+/* Deliberately not outcome statistics. We don't have a defensible season of
+   placement-rate data yet, and a TPO will check anything we publish — one
+   disprovable number would discredit the rest of the page. What we can stand
+   behind is the visibility itself, so the section sells that instead. */
+const MEASURES = [
+  ['Per student', 'Readiness across all six placement rounds, not a single test score', true],
+  ['Per branch', 'Every department side by side, updated as students practise'],
+  ['Weekly', 'Who has stalled, flagged while there is still time to act'],
+  ['One click', 'Management reports and NAAC / NBA exports, already formatted'],
 ];
 
 function Roi() {
   return (
-    <section className="mmc-light mmc-band">
+    <section className="mmc-wash-success mmc-band">
       <div className="mmc-shell">
         <ScrollReveal>
-          <p className="mmc-eyebrow">The only metric that matters</p>
-          <h2 className="mmc-h2">Your placement percentage. Not a readiness&nbsp;score.</h2>
+          <p className="mmc-eyebrow">What you&rsquo;ll be able to see</p>
+          <h2 className="mmc-h2">The questions you cannot answer&nbsp;today</h2>
           <p className="mmc-lede">
-            Readiness is how we get there — placement rate is what you report to your
-            Director. Across 38 campuses in the 2024–25 season:
+            Not because your team isn&rsquo;t good — because nobody has the data. Ask any
+            placement cell which forty students are least ready for next month&rsquo;s drive
+            and the honest answer is a guess. That is the gap this closes.
           </p>
         </ScrollReveal>
         <div className="mmc-roi">
-          {ROI.map(([n, label, hero]) => (
-            <ScrollReveal key={label} className={`mmc-roi__card ${hero ? 'is-hero' : ''}`}>
+          {MEASURES.map(([n, label, hero]) => (
+            <ScrollReveal key={n} className={`mmc-roi__card ${hero ? 'is-hero' : ''}`}>
               <b>{n}</b><em>{label}</em>
             </ScrollReveal>
           ))}
         </div>
+        <ScrollReveal>
+          <div className="mmc-honest">
+            <b>On numbers:</b> we don&rsquo;t publish placement-rate claims we can&rsquo;t
+            show you the working for. Ask us on the demo what our live campuses are seeing
+            and we&rsquo;ll tell you exactly what we do and don&rsquo;t know yet.
+          </div>
+        </ScrollReveal>
       </div>
     </section>
   );
@@ -288,15 +302,19 @@ function Roi() {
 
 const OBJECTIONS = [
   ['“How much work is this for my team?”',
-   'Upload your student list once. We handle onboarding, reminders and chasing. TPOs on live campuses spend a median of 6 hours a week, mostly reading reports. No invigilation, no scheduling, no manual result entry.'],
+   'Upload your student list once — we handle onboarding, reminders and chasing from there. There is no invigilation, no slot scheduling and no manual result entry, so what is left for your team is reading reports and deciding what to do about them.'],
   ['“My students won’t actually log in.”',
-   'The honest number: 71% weekly active, and it holds because the plan is 40 minutes a day, not a 200-hour course. We report engagement weekly — if a department drops below 50%, you’ll know before it becomes a problem.'],
-  ['“What does it cost, and who pays?”',
-   'Campus licence is priced per enrolled student per year, and lands between ₹400–₹900 depending on cohort size. Most colleges fund it from the training budget. We give you a written quote in the first call, not a discovery process.'],
+   'A fair worry — most campus tools die this way. Two things work against it: the daily plan is about forty minutes, not a 200-hour course, and you see engagement per department every week rather than at the end of the year. If a branch goes quiet you will know while you can still do something about it.'],
+  ['“What does it cost?”',
+   'It depends on your cohort size and which modules you actually want, so we don’t publish a number that would be wrong for you. Take the demo, tell us your student count and priorities, and you’ll have a written quote — not a discovery process.'],
   ['“Does this help my NAAC / NBA file?”',
    'Yes — and this is usually what gets it approved. One-click export of training hours, student progression, placement outcomes and department-wise attainment, formatted for accreditation reporting.'],
-  ['“Which colleges near me use it?”',
-   'We’ll name them on the call and connect you directly with a TPO who has run a full season — no sales rep on the line. If nobody in your state is live yet, we’ll tell you that too.'],
+  ['“Show me it actually works.”',
+   'Take the demo. We will run the TPO dashboard, the HOD view and a live AI interview against a real cohort structure — not slides — and you can put your own department names and student counts into it. Judge the capability in front of you rather than taking a claim on trust.'],
+  ['“Are you replacing my placement cell?”',
+   'No, and we would not want to. Your TPO team knows your recruiters, runs your drives and owns those relationships — none of that is something software should touch. What we take off them is the volume work: tracking hundreds of students individually, chasing completion, compiling scores. The cell stays; the spreadsheets go.'],
+  ['“What happens to our data?”',
+   'Student, department and institutional data stays with your organisation. We operate under an NDA per campus, and DPDP and ISO compliance work is in progress — we will tell you exactly where that stands rather than claiming a certificate we do not yet hold. Your Registrar can read the agreement before anything is signed.'],
   ['“I’m not signing campus-wide cold.”',
    'Don’t. Run one department for one semester, priced pro-rata. If readiness in that branch doesn’t move measurably against your other departments, walk away — no renewal clause, no lock-in.'],
 ];
@@ -318,6 +336,364 @@ function Objections() {
             <ScrollReveal key={q} className="mmc-obj__card">
               <p className="mmc-obj__q">{q}</p>
               <p className="mmc-obj__a">{a}</p>
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   WHO IT HELPS — the three roles, and what each one gets
+   ══════════════════════════════════════════════════════════════ */
+const ROLES = [
+  {
+    key: 'tpo',
+    who: 'For the TPO',
+    title: 'Stop guessing who is ready',
+    gain: 'You walk into the drive knowing exactly which students clear the bar — and you built that list in a minute, not a fortnight.',
+    points: [
+      'Live readiness across every department and batch',
+      'Assign any test or mock to campus, branch or one student',
+      'Shortlist for a drive by score, branch and eligibility',
+      'Announce drives and notify students in-app and by email',
+      'Export scorecards for management, NAAC and NBA',
+    ],
+  },
+  {
+    key: 'hod',
+    who: 'For the HOD',
+    title: 'Catch your branch slipping early',
+    gain: 'You see which students are stalling while there is still a semester left to fix it — instead of finding out on results day.',
+    points: [
+      'Department view, section by section',
+      'At-risk students surfaced automatically',
+      'Assign targeted practice where the data points',
+      'Notify your branch about deadlines and sessions',
+      'Compare your branch against the campus average',
+    ],
+  },
+  {
+    key: 'student',
+    who: 'For the student',
+    title: 'Know what to do today',
+    gain: 'Instead of vague advice to “practise more”, a student opens the app and sees three specific tasks worth about forty minutes.',
+    points: [
+      'One readiness score across all six placement rounds',
+      'A daily plan weighted to their weakest area',
+      'Unlimited AI mock interviews — technical, HR, project',
+      'Which companies they can clear, and what is blocking the rest',
+      'A 24/7 AI mentor that has read their results',
+    ],
+  },
+];
+
+function WhoItHelps() {
+  return (
+    <section className="mmc-light mmc-tint mmc-band" id="roles">
+      <div className="mmc-shell">
+        <ScrollReveal>
+          <p className="mmc-eyebrow">Who it helps</p>
+          <h2 className="mmc-h2">One system. Three people who stop&nbsp;guessing.</h2>
+          <p className="mmc-lede">
+            Placement is a chain — management sets the goal, the TPO runs the campus, the
+            HOD runs the branch, the student does the work. Break any link and the season
+            slips. This connects all four.
+          </p>
+        </ScrollReveal>
+
+        <div className="mmc-roles">
+          {ROLES.map((r) => (
+            <ScrollReveal key={r.who} className={`mmc-role mmc-role--${r.key}`}>
+              <p className="mmc-role__who">{r.who}</p>
+              <h3>{r.title}</h3>
+              <p className="mmc-role__gain">{r.gain}</p>
+              <ul>{r.points.map((p) => <li key={p}>{p}</li>)}</ul>
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DIFFERENTIATION — why this is not the tool you already rejected
+   ══════════════════════════════════════════════════════════════ */
+const DIFFERENTIATORS = [
+  {
+    n: '01',
+    h: 'We measure, not teach',
+    p: 'Every topic your students need is already free online — content was never the problem. We tell you where each student actually stands, then close that specific gap. Nobody else gives you a number you can act on.',
+  },
+  {
+    n: '02',
+    h: 'The whole chain, not just the student',
+    p: 'Other tools stop at the learner. Management, TPO, HOD and student each get their own view of the same data — so an intervention decided upstairs actually reaches the student who needs it.',
+  },
+  {
+    n: '03',
+    h: 'Unlimited interviews, zero faculty',
+    p: 'The rounds students lose — HR and communication — are exactly the ones a campus cannot rehearse at scale. AI mocks run 24/7 with no invigilation, no scheduling and no ceiling on attempts.',
+  },
+  {
+    n: '04',
+    h: 'Built for the placement calendar',
+    p: 'Everything counts down to your drive dates. Plans compress when a drive moves up. Generic courses have no idea when your season starts.',
+  },
+];
+
+function WhyDifferent() {
+  return (
+    <section className="mmc-dark mmc-band" id="why-us">
+      <div className="mmc-shell">
+        <ScrollReveal>
+          <p className="mmc-eyebrow">Why MentorMuni</p>
+          <h2 className="mmc-h2">What makes this different from what you&rsquo;ve already&nbsp;tried</h2>
+          <p className="mmc-lede">
+            You have probably bought a training portal before. Here is what we do that
+            those did not.
+          </p>
+        </ScrollReveal>
+
+        <div className="mmc-diff">
+          {DIFFERENTIATORS.map((d) => (
+            <ScrollReveal key={d.n} className="mmc-diff__card">
+              <span className="mmc-diff__n">{d.n}</span>
+              <h3>{d.h}</h3>
+              <p>{d.p}</p>
+            </ScrollReveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   PLANS — demo first, price after. No published numbers.
+   ══════════════════════════════════════════════════════════════ */
+function Plans() {
+  return (
+    <section className="mmc-surface mmc-band" id="plans">
+      <div className="mmc-shell">
+        <ScrollReveal>
+          <p className="mmc-eyebrow">Plans</p>
+          <h2 className="mmc-h2">Built around your campus, not a&nbsp;price list</h2>
+          <p className="mmc-lede">
+            A 400-student private college and a 4,000-student university need different
+            things. We would rather understand your cohort and your season than sell you
+            a tier you half-use.
+          </p>
+        </ScrollReveal>
+
+        <div className="mmc-plan">
+          <ScrollReveal>
+            <ul className="mmc-plan__points">
+              <li><b>Pick the modules you need.</b> Aptitude, technical, communication,
+                HR mocks, coding rounds, project defence — take the ones your students
+                actually lose marks on.</li>
+              <li><b>Priced on cohort size and scope.</b> Per enrolled student per year,
+                scaled to your numbers. You get a written quote after the demo.</li>
+              <li><b>Runs by semester or by year, not as a 90-day sprint.</b> The 90-day
+                plan is what a final-year student sees before a drive. Underneath it, programmes
+                run across semesters and year groups — you can start preparing second and third
+                years long before the season.</li>
+              <li><b>Start with one department.</b> One branch, one semester, pro-rata.
+                Expand when the numbers convince you rather than when a contract says so.</li>
+              <li><b>New features ship every month</b> and land in your plan at no extra
+                cost — you are buying a product that keeps moving, not a fixed bundle.</li>
+            </ul>
+
+            <div className="mmc-shipping">
+              <b>Shipping soon:</b> group discussion rounds, regional-language
+              communication practice, recruiter-facing shortlists, and deeper NAAC
+              automation. Existing campuses get these as they land.
+            </div>
+          </ScrollReveal>
+
+          <ScrollReveal className="mmc-plan__cta">
+            <p className="mmc-eyebrow" style={{ marginBottom: '0.5rem' }}>Next step</p>
+            <h3 style={{ margin: '0 0 0.75rem', fontSize: '1.375rem', fontWeight: 750, letterSpacing: '-0.02em' }}>
+              See it on your own numbers
+            </h3>
+            <p style={{ margin: 0, fontSize: '0.9375rem', lineHeight: 1.6, color: 'var(--text-body)' }}>
+              Thirty minutes. We will walk your departments through the dashboard and show
+              you what your readiness would look like today.
+            </p>
+            <div style={{ marginTop: '1.5rem' }}>
+              <a className="mmc-btn mmc-btn--cta" href={DEMO_URL} target="_blank" rel="noopener noreferrer">
+                <CalendarDays size={17} aria-hidden />
+                Book a live demo
+              </a>
+            </div>
+            <p className="mmc-plan__note">
+              Pricing is discussed on the call, once we know what you need.
+            </p>
+          </ScrollReveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   WHO WE ARE — a Director is buying the company, not just the tool
+   ══════════════════════════════════════════════════════════════ */
+function WhoWeAre() {
+  return (
+    <section className="mmc-surface mmc-band" id="about">
+      <div className="mmc-shell mmc-band__grid">
+        <ScrollReveal>
+          <p className="mmc-eyebrow">Who we are</p>
+          <h2 className="mmc-h2">We chose placement, and nothing&nbsp;else</h2>
+          <p className="mmc-lede">
+            MentorMuni has been working on placement preparation for years. What changed
+            recently is what AI made possible — the individual practice that was never
+            affordable at campus scale suddenly is.
+          </p>
+          <p className="mmc-lede">
+            We think the market has drifted toward general upskilling while the moment that
+            actually decides a student&rsquo;s career — the placement season — is left to a
+            handful of group sessions. We build for that window only. It is the whole
+            company.
+          </p>
+        </ScrollReveal>
+
+        <ScrollReveal>
+          <div className="mmc-belief">
+            <p className="mmc-belief__lead">What we will and won&rsquo;t claim</p>
+            <ul className="mmc-belief__list">
+              <li>
+                <b>We will not promise you 100% placement.</b> Nobody can, and a vendor who
+                does is telling you what you want to hear.
+              </li>
+              <li>
+                <b>What we commit to</b> is a roadmap your TPO and HODs own, honest visibility
+                of where every student stands, and the gaps identified early enough to act on.
+              </li>
+              <li>
+                <b>AI is part of it, not the whole of it.</b> Mentors and structured programmes
+                sit behind the automation — the software is what makes them reach everyone.
+              </li>
+            </ul>
+          </div>
+        </ScrollReveal>
+      </div>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   WHY NOW — early access framed as the advantage, not an apology
+
+   A Director's instinct is to ask "who else uses this?". Answering
+   with a reference list makes the college one of many and hands the
+   advantage to whoever adopted first. The honest and stronger frame:
+   placement percentage is a competitive number in the admissions
+   market, so the edge exists only while it is uncommon.
+   ══════════════════════════════════════════════════════════════ */
+const EARLY_GET = [
+  ['A direct line to the people who build it',
+   'Not a ticket queue. Your TPO talks to the team that writes the software.'],
+  ['Influence over what gets built next',
+   'Founding campuses set the roadmap. The features shipping each month come from what these colleges ask for.'],
+  ['Pricing held as you grow',
+   'Your rate is locked at founding terms even as the product and the price rise for later campuses.'],
+  ['Your season becomes the benchmark',
+   'The first campuses to show results define what "good" looks like in this category — with their name on it.'],
+];
+
+const EARLY_ASK = [
+  ['Honest feedback, quickly',
+   'Tell us what is broken while we can still fix it in the same season.'],
+  ['Patience with a young product',
+   'Some things will not exist yet. We will tell you which, before you sign, not after.'],
+  ['Let us tell your story once it works',
+   'If the numbers move, we would like to say so publicly — with your approval on every word.'],
+];
+
+function WhyNow() {
+  return (
+    <section className="mmc-light mmc-tint mmc-band" id="why-now">
+      <div className="mmc-shell">
+        <ScrollReveal>
+          <p className="mmc-eyebrow">Why now</p>
+          <h2 className="mmc-h2">Placement percentage is a competitive&nbsp;number</h2>
+          <p className="mmc-lede">
+            It is on your brochure, in your NIRF submission and in the conversation every
+            parent has before admission. It only works as a differentiator while your
+            neighbours cannot match it.
+          </p>
+          <p className="mmc-lede">
+            Individual interview practice at campus scale has just become possible. Within a
+            few seasons it will be ordinary — every college will run something like this and
+            the advantage disappears into the baseline. The window where it separates you
+            from the campus down the road is now, and it is not a long one.
+          </p>
+        </ScrollReveal>
+
+        <div className="mmc-trade">
+          <ScrollReveal className="mmc-trade__col mmc-trade__col--get">
+            <p className="mmc-trade__head">What a founding campus gets</p>
+            <ul>
+              {EARLY_GET.map(([h, p]) => (
+                <li key={h}><b>{h}</b><span>{p}</span></li>
+              ))}
+            </ul>
+          </ScrollReveal>
+
+          <ScrollReveal className="mmc-trade__col mmc-trade__col--ask">
+            <p className="mmc-trade__head">What we ask in return</p>
+            <ul>
+              {EARLY_ASK.map(([h, p]) => (
+                <li key={h}><b>{h}</b><span>{p}</span></li>
+              ))}
+            </ul>
+            <p className="mmc-trade__note">
+              That is the whole trade. We would rather you knew it going in than discovered
+              it in month three.
+            </p>
+          </ScrollReveal>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* ══════════════════════════════════════════════════════════════
+   DATA & TRUST — the Registrar's questions, answered before asked
+   ══════════════════════════════════════════════════════════════ */
+const TRUST = [
+  ['Your data stays yours',
+   'Student, department and institutional data belongs to your organisation. We do not sell it, share it between campuses, or use one college’s data to serve another.'],
+  ['NDA per campus',
+   'We sign a non-disclosure agreement with every institution before onboarding. Your Registrar reads it before anything moves.'],
+  ['DPDP & ISO — in progress',
+   'Compliance work is underway and we will show you exactly where it stands. We would rather tell you that than display a badge we have not earned.'],
+  ['Exit without hostage-taking',
+   'If you leave, your data leaves with you in a portable export. No lock-in clause, no retention of student records.'],
+];
+
+function DataTrust() {
+  return (
+    <section className="mmc-dark mmc-band" id="data">
+      <div className="mmc-shell">
+        <ScrollReveal>
+          <p className="mmc-eyebrow">Data &amp; trust</p>
+          <h2 className="mmc-h2">The questions your Registrar will&nbsp;ask</h2>
+          <p className="mmc-lede">
+            You are handing us student records and assessment history. That deserves a
+            straight answer before procurement, not a clause discovered later.
+          </p>
+        </ScrollReveal>
+
+        <div className="mmc-diff">
+          {TRUST.map(([h, p]) => (
+            <ScrollReveal key={h} className="mmc-diff__card">
+              <h3>{h}</h3>
+              <p>{p}</p>
             </ScrollReveal>
           ))}
         </div>
@@ -369,6 +745,7 @@ export default function CollegesPage() {
       <EffortCollapse />
 
       <Band
+        tint
         eyebrow="For the TPO"
         title="Rank every student. Shortlist in one&nbsp;click."
         lede="Campus-wide readiness, sortable by branch and batch, always current — so drive shortlisting takes a minute instead of a fortnight."
@@ -383,7 +760,6 @@ export default function CollegesPage() {
       </Band>
 
       <Band
-        tint
         flipped
         eyebrow="For the HOD"
         title="See your branch slipping before the TPO&nbsp;does."
@@ -398,7 +774,13 @@ export default function CollegesPage() {
         <NotifyPreview />
       </Band>
 
+      <WhoItHelps />
+      <WhyDifferent />
       <Roi />
+      <WhoWeAre />
+      <WhyNow />
+      <DataTrust />
+      <Plans />
       <Objections />
       <FinalCta />
       <SiteFooter />

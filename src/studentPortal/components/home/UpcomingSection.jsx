@@ -12,10 +12,10 @@ export default function UpcomingSection() {
       <header className="stu-card__head">
         <div>
           <h2 className="stu-card__title">Coming up</h2>
-          <p className="stu-card__sub">Next 14 days</p>
+          <p className="stu-card__sub">Tests &amp; drives in the next 14 days</p>
         </div>
         <button className="stu-link-btn">
-          Calendar <ArrowRight size={14} aria-hidden />
+          Calendar <ArrowRight size={16} strokeWidth={2} aria-hidden />
         </button>
       </header>
 
@@ -25,7 +25,7 @@ export default function UpcomingSection() {
           return (
             <li key={e.id} className={`stu-up__row${e.urgent ? ' is-urgent' : ''}`}>
               <span className="stu-up__icon" aria-hidden>
-                <Icon size={15} strokeWidth={1.9} />
+                <Icon size={16} strokeWidth={2} />
               </span>
               <span className="stu-up__text">
                 <strong>{e.title}</strong>

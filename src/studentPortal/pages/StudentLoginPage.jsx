@@ -699,7 +699,7 @@ export default function StudentLoginPage() {
                     <div className="mm-stu-alert mm-stu-alert--error" role="status">
                       <p>{collegesWarning}</p>
                       {collegesSource === 'offline' && SHOW_DEMO ? (
-                        <p style={{ marginTop: 6, opacity: 0.9 }}>
+                        <p className="mm-stu-alert__hint">
                           Use the sample student login above while the campus list is unavailable.
                         </p>
                       ) : null}
@@ -890,7 +890,7 @@ export default function StudentLoginPage() {
                   </div>
 
                   <header className="mm-stu-gate2__hero">
-                    <p className="mm-stu-step-label" style={{ marginBottom: 8 }}>
+                    <p className="mm-stu-step-label mm-stu-step-label--tight">
                       Step 2 of 2 · Student sign-in
                     </p>
                     <h2 className="mm-stu-gate2__title">
@@ -913,7 +913,7 @@ export default function StudentLoginPage() {
                       </span>
                       <span className="mm-stu-duo__side mm-stu-duo__side--campus">
                         <MapPin size={14} aria-hidden />
-                        <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                        <span className="mm-stu-duo__campus-name">
                           {college.code || college.name}
                         </span>
                       </span>
@@ -1059,7 +1059,7 @@ export default function StudentLoginPage() {
                     Measure → practice → clear campus drives with confidence.
                   </p>
 
-                  <p className="mm-stu-card-foot" style={{ marginTop: 4 }}>
+                  <p className="mm-stu-card-foot mm-stu-card-foot--tight">
                     Not on the roster?{' '}
                     <Link
                       to={

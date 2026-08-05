@@ -1,5 +1,6 @@
 /**
  * Student enrollment — API-first with local store fallback.
+ * Demo sessions (tpo@demo.edu) never call the live API with a fake demo.* JWT.
  *
  * Live (migration 0005):
  *   GET    /organizations/students?department_id=
@@ -15,12 +16,41 @@
  */
 
 import { orgApi, OrgApiError } from '../orgPortal/orgApi';
+import { getOrgSession } from '../orgPortal/auth';
+import { isDemoSession, DEMO_ORG } from './demoAuth';
 import * as local from './store';
 import { buildStudentSetupUrl } from '../studentPortal/localStudentAuth';
 
 function isMissingApi(err) {
   if (!(err instanceof OrgApiError)) return true;
   return err.status === 404 || err.status === 501 || err.status === 0;
+}
+
+/** Demo TPO/HOD must not hit Railway with a fake demo.* Bearer (→ “Invalid token”). */
+function allowLocalFallback() {
+  const session = getOrgSession();
+  if (isDemoSession(session)) return true;
+  try {
+    const token = orgApi.getToken?.() || '';
+    return String(token).startsWith('demo.');
+  } catch {
+    return false;
+  }
+}
+
+function authErrorMessage(err, fallback) {
+  const code = String(err?.code || err?.body?.code || '').toUpperCase();
+  const status = err?.status;
+  if (
+    code === 'TOKEN_INVALID' ||
+    code === 'TOKEN_EXPIRED' ||
+    code === 'TOKEN_MISSING' ||
+    code === 'TOKEN_WRONG_SCOPE' ||
+    status === 401
+  ) {
+    return 'Your session is invalid or expired. Sign out and sign in again, then retry.';
+  }
+  return err?.message || fallback;
 }
 
 function withSource(result, source) {
@@ -41,6 +71,7 @@ export function normalizeStudent(row = {}) {
     id: row.id ?? row.student_id,
     name: row.name || '',
     email: String(row.email || '').toLowerCase(),
+    phone: row.phone || row.contact || row.mobile || '',
     collegeId: row.roll_number || row.college_id || row.username || row.collegeId || '',
     batchYear: row.batch_year != null ? String(row.batch_year) : row.batchYear || '',
     departmentId: row.department_id ?? row.departmentId ?? '',
@@ -105,6 +136,9 @@ function extractSetupUrl(row) {
 /* ── Reads ───────────────────────────────────────────────── */
 
 export async function fetchStudents({ departmentId } = {}) {
+  if (allowLocalFallback()) {
+    return withSource({ ok: true, students: filterLocalStudents(departmentId) }, 'local');
+  }
   try {
     const qs = departmentId
       ? `?department_id=${encodeURIComponent(departmentId)}`
@@ -116,7 +150,7 @@ export async function fetchStudents({ departmentId } = {}) {
     if (!isMissingApi(err)) {
       return {
         ok: false,
-        error: err.message || 'Failed to load students.',
+        error: authErrorMessage(err, 'Failed to load students.'),
         students: filterLocalStudents(departmentId),
       };
     }
@@ -131,6 +165,12 @@ function filterLocalStudents(departmentId) {
 }
 
 export async function fetchStudentInvites({ status = 'pending', departmentId } = {}) {
+  if (allowLocalFallback()) {
+    return withSource(
+      { ok: true, invitations: filterLocalInvites(status, departmentId) },
+      'local'
+    );
+  }
   try {
     const params = new URLSearchParams();
     if (status) params.set('status', status);
@@ -149,7 +189,7 @@ export async function fetchStudentInvites({ status = 'pending', departmentId } =
     if (!isMissingApi(err)) {
       return {
         ok: false,
-        error: err.message || 'Failed to load invites.',
+        error: authErrorMessage(err, 'Failed to load invites.'),
         invitations: filterLocalInvites(status, departmentId),
       };
     }
@@ -178,6 +218,27 @@ export async function inviteStudentsApi({ emails, departmentId, autoEnroll = fal
         .split(/[\n,;]+/)
         .map((e) => e.trim().toLowerCase())
         .filter(Boolean);
+
+  if (allowLocalFallback()) {
+    const res = local.inviteStudents({
+      emails: emailList.join('\n'),
+      departmentId,
+      autoEnroll,
+    });
+    return withSource(
+      {
+        ok: true,
+        added: res.added || 0,
+        setupUrl: res.setupUrl || '',
+        message:
+          res.message ||
+          (autoEnroll
+            ? 'Students added to roster. Copy the set-password link below (demo — no email).'
+            : 'Invites queued for approval.'),
+      },
+      'local'
+    );
+  }
 
   try {
     const data = await orgApi.post('/organizations/students/invite', {
@@ -210,7 +271,7 @@ export async function inviteStudentsApi({ emails, departmentId, autoEnroll = fal
     );
   } catch (err) {
     if (!isMissingApi(err)) {
-      return { ok: false, error: err.message || 'Unable to queue invites.' };
+      return { ok: false, error: authErrorMessage(err, 'Unable to queue invites.') };
     }
     const res = local.inviteStudents({
       emails: emailList.join('\n'),
@@ -221,9 +282,12 @@ export async function inviteStudentsApi({ emails, departmentId, autoEnroll = fal
       {
         ok: true,
         added: res.added || 0,
-        message: autoEnroll
-          ? 'Demo: students added to roster (use Resend link for set-password).'
-          : undefined,
+        setupUrl: res.setupUrl || '',
+        message:
+          res.message ||
+          (autoEnroll
+            ? 'Students added to roster. Copy the set-password link below.'
+            : undefined),
       },
       'local'
     );
@@ -238,6 +302,30 @@ export async function addStudentManualApi({
   departmentId,
   autoEnroll = false,
 }) {
+  if (allowLocalFallback()) {
+    const res = local.addStudentManual({
+      name,
+      email,
+      collegeId,
+      batchYear,
+      departmentId,
+      autoEnroll,
+    });
+    return withSource(
+      res.ok
+        ? {
+            ...res,
+            message:
+              res.message ||
+              (autoEnroll
+                ? 'Student added to roster. Copy the set-password link below (demo — no email).'
+                : 'Student queued for approval.'),
+          }
+        : res,
+      'local'
+    );
+  }
+
   try {
     const data = await orgApi.post('/organizations/students', {
       name: String(name || '').trim(),
@@ -273,16 +361,19 @@ export async function addStudentManualApi({
     );
   } catch (err) {
     if (!isMissingApi(err)) {
-      return { ok: false, error: err.message || 'Unable to add student.' };
+      return { ok: false, error: authErrorMessage(err, 'Unable to add student.') };
     }
-    return local.addStudentManual({
-      name,
-      email,
-      collegeId,
-      batchYear,
-      departmentId,
-      autoEnroll,
-    });
+    return withSource(
+      local.addStudentManual({
+        name,
+        email,
+        collegeId,
+        batchYear,
+        departmentId,
+        autoEnroll,
+      }),
+      'local'
+    );
   }
 }
 
@@ -293,6 +384,11 @@ export async function importStudentsApi({
   sendInviteEmail = true,
   autoEnroll = false,
 }) {
+  if (allowLocalFallback()) {
+    const res = local.importStudentsFromCsv({ csvText, departmentId, autoEnroll });
+    return withSource(res, 'local');
+  }
+
   try {
     const payload = {
       department_id: departmentId,
@@ -322,32 +418,70 @@ export async function importStudentsApi({
     );
   } catch (err) {
     if (!isMissingApi(err)) {
-      return { ok: false, error: err.message || 'CSV import failed.' };
+      return { ok: false, error: authErrorMessage(err, 'CSV import failed.') };
     }
-    return local.importStudentsFromCsv({ csvText, departmentId, autoEnroll });
+    return withSource(
+      local.importStudentsFromCsv({ csvText, departmentId, autoEnroll }),
+      'local'
+    );
   }
 }
 
+/**
+ * Approve pending invite → roster + set-password email to student.
+ * POST /organizations/students/invites/:id/approve
+ * Body: { send_email: true }
+ * Response (preferred): { emailed, email_sent?, setup_url?, activation_token?, student?, message? }
+ */
 export async function approveStudentInvite(id) {
-  try {
-    const data = await orgApi.post(`/organizations/students/invites/${id}/approve`);
-    const { setupUrl, activationToken } = extractSetupUrl(data || {});
-    const emailed = Boolean(
-      data?.emailed ?? data?.email_sent ?? data?.invite_email_sent ?? false
+  if (allowLocalFallback()) {
+    const res = local.decideInvitation(id, 'approve');
+    return withSource(
+      {
+        ...res,
+        emailed: false,
+        emailSkipped: true,
+        message:
+          res.message ||
+          (res.setupUrl
+            ? 'Approved (demo). Email is not sent in demo — copy the set-password link and share it with the student.'
+            : 'Approved (demo). Email is not sent in demo mode.'),
+      },
+      'local'
     );
+  }
+
+  try {
+    const data = await orgApi.post(`/organizations/students/invites/${id}/approve`, {
+      send_email: true,
+      notify_student: true,
+    });
+    const { setupUrl, activationToken } = extractSetupUrl(data || {});
+    const emailedRaw = data?.emailed ?? data?.email_sent ?? data?.invite_email_sent;
+    const emailed = emailedRaw == null ? null : Boolean(emailedRaw);
+    const studentEmail =
+      data?.student?.email || data?.email || data?.invite?.email || data?.invitation?.email || '';
+
     let message = data?.message || '';
     if (!message) {
-      if (setupUrl) {
-        message = emailed
-          ? 'Approved. Email sent — copy link below if needed.'
-          : 'Approved. Copy the set-password link below (email may not have sent).';
-      } else if (emailed) {
-        message = 'Approved. Set-password email sent to the student.';
+      if (emailed === true) {
+        message = studentEmail
+          ? `Approved. Set-password email sent to ${studentEmail}.`
+          : 'Approved. Set-password email sent to the student.';
+        if (setupUrl) message += ' Copy link below if they need it again.';
+      } else if (emailed === false) {
+        message = setupUrl
+          ? 'Approved, but email failed to send. Copy the set-password link below and share it.'
+          : 'Approved, but email failed to send. Use Resend link on the roster.';
+      } else if (setupUrl) {
+        message =
+          'Approved. Copy the set-password link below (confirm whether email was sent on the server).';
       } else {
         message =
-          'Approved. No set-password link returned — ask the student to check email, or use Password link on the roster.';
+          'Approved. Ask the student to check email, or use Resend link on the roster.';
       }
     }
+
     return withSource(
       {
         ok: true,
@@ -355,6 +489,9 @@ export async function approveStudentInvite(id) {
         setupUrl,
         activationToken,
         emailed,
+        emailSkipped: emailed === false,
+        emailUnknown: emailed == null,
+        studentEmail,
         student: data?.student ? normalizeStudent(data.student) : null,
         message,
       },
@@ -362,43 +499,130 @@ export async function approveStudentInvite(id) {
     );
   } catch (err) {
     if (!isMissingApi(err)) {
-      return { ok: false, error: err.message || 'Unable to approve.' };
+      return { ok: false, error: authErrorMessage(err, 'Unable to approve.') };
     }
-    return withSource(local.decideInvitation(id, 'approve'), 'local');
+    const res = local.decideInvitation(id, 'approve');
+    return withSource(
+      {
+        ...res,
+        emailed: false,
+        emailSkipped: true,
+        message:
+          res.message ||
+          'Approved locally. Copy the set-password link (API approve/email unavailable).',
+      },
+      'local'
+    );
   }
 }
 
+/**
+ * Deny pending invite → notify student by email.
+ * POST /organizations/students/invites/:id/reject
+ * Body: { send_email: true }
+ * Response (preferred): { emailed, message? }
+ */
 export async function rejectStudentInvite(id) {
+  if (allowLocalFallback()) {
+    const res = local.decideInvitation(id, 'reject');
+    return withSource(
+      {
+        ...res,
+        emailed: false,
+        emailSkipped: true,
+        message:
+          res.message ||
+          'Denied (demo). Rejection email is not sent in demo mode — tell the student manually if needed.',
+      },
+      'local'
+    );
+  }
+
   try {
-    const data = await orgApi.post(`/organizations/students/invites/${id}/reject`);
+    const data = await orgApi.post(`/organizations/students/invites/${id}/reject`, {
+      send_email: true,
+      notify_student: true,
+    });
+    const emailedRaw = data?.emailed ?? data?.email_sent ?? data?.rejection_email_sent;
+    const emailed = emailedRaw == null ? null : Boolean(emailedRaw);
+    const studentEmail = data?.email || data?.invite?.email || data?.invitation?.email || '';
+
+    let message = data?.message || '';
+    if (!message) {
+      if (emailed === true) {
+        message = studentEmail
+          ? `Denied. Notification email sent to ${studentEmail}.`
+          : 'Denied. Notification email sent to the student.';
+      } else if (emailed === false) {
+        message = 'Denied, but notification email failed to send. Inform the student manually.';
+      } else {
+        message = 'Registration denied.';
+      }
+    }
+
     return withSource(
       {
         ok: true,
         decision: 'reject',
-        message: data?.message || 'Registration rejected.',
+        emailed,
+        emailSkipped: emailed === false,
+        emailUnknown: emailed == null,
+        studentEmail,
+        message,
       },
       'api'
     );
   } catch (err) {
     if (!isMissingApi(err)) {
-      return { ok: false, error: err.message || 'Unable to reject.' };
+      return { ok: false, error: authErrorMessage(err, 'Unable to reject.') };
     }
-    return withSource(local.decideInvitation(id, 'reject'), 'local');
+    const res = local.decideInvitation(id, 'reject');
+    return withSource(
+      {
+        ...res,
+        emailed: false,
+        emailSkipped: true,
+        message: res.message || 'Denied locally (API reject/email unavailable).',
+      },
+      'local'
+    );
   }
 }
 
 export async function patchStudent(id, patch = {}) {
+  if (allowLocalFallback()) {
+    try {
+      const student = local.patchStudentLocal(id, patch);
+      if (student) return withSource({ ok: true, student }, 'local');
+    } catch (e) {
+      return { ok: false, error: e?.message || 'Unable to update student.' };
+    }
+    return { ok: false, error: 'Student not found.' };
+  }
+
   try {
     const body = {};
-    if (patch.departmentId != null) body.department_id = patch.departmentId;
+    if (patch.departmentId != null) {
+      const n = Number(patch.departmentId);
+      body.department_id =
+        Number.isFinite(n) && String(n) === String(patch.departmentId).trim()
+          ? n
+          : patch.departmentId;
+    }
     if (patch.status != null) {
       // Contract: DISABLED / Inactive → BLOCKED on API
       const s = String(patch.status).toUpperCase();
       body.status =
         s === 'DISABLED' || s === 'INACTIVE' || s === 'BLOCKED' ? 'BLOCKED' : s;
     }
-    if (patch.name != null) body.name = patch.name;
-    if (patch.collegeId != null) body.roll_number = patch.collegeId;
+    if (patch.name != null) body.name = String(patch.name).trim();
+    if (patch.email != null) body.email = String(patch.email).trim().toLowerCase();
+    if (patch.phone != null) {
+      const phone = String(patch.phone).replace(/\D/g, '');
+      body.phone = phone || null;
+      body.contact = phone || null;
+    }
+    if (patch.collegeId != null) body.roll_number = String(patch.collegeId).trim();
     if (patch.batchYear != null) {
       body.batch_year = patch.batchYear ? Number(patch.batchYear) || patch.batchYear : null;
     }
@@ -406,7 +630,7 @@ export async function patchStudent(id, patch = {}) {
     return withSource({ ok: true, student: normalizeStudent(data?.student || data) }, 'api');
   } catch (err) {
     if (!isMissingApi(err)) {
-      return { ok: false, error: err.message || 'Unable to update student.' };
+      return { ok: false, error: authErrorMessage(err, 'Unable to update student.') };
     }
     try {
       const student = local.patchStudentLocal(id, patch);
@@ -415,6 +639,28 @@ export async function patchStudent(id, patch = {}) {
       return { ok: false, error: e?.message || 'Unable to update student.' };
     }
     return { ok: false, error: 'Student update API unavailable.' };
+  }
+}
+
+/**
+ * Permanently remove a student from the roster.
+ * DELETE /organizations/students/{id}
+ */
+export async function deleteStudentApi(id) {
+  if (allowLocalFallback()) {
+    const res = local.deleteStudentLocal(id);
+    return withSource(res, 'local');
+  }
+
+  try {
+    await orgApi.delete(`/organizations/students/${encodeURIComponent(id)}`);
+    return withSource({ ok: true, message: 'Student removed from roster.' }, 'api');
+  } catch (err) {
+    if (!isMissingApi(err)) {
+      return { ok: false, error: authErrorMessage(err, 'Unable to delete student.') };
+    }
+    const res = local.deleteStudentLocal(id);
+    return withSource(res, 'local');
   }
 }
 
@@ -430,6 +676,21 @@ export async function patchStudent(id, patch = {}) {
 export async function resendStudentSetupLink(studentOrInviteId, { asInvite = false } = {}) {
   if (asInvite) {
     return approveStudentInvite(studentOrInviteId);
+  }
+
+  if (allowLocalFallback()) {
+    const localRes = local.regenerateStudentSetupLink(studentOrInviteId);
+    if (localRes?.ok && localRes.setupUrl) {
+      return withSource(
+        {
+          ...localRes,
+          emailed: false,
+          message: localRes.message || 'Copy the set-password link below (demo — no email).',
+        },
+        'local'
+      );
+    }
+    return { ok: false, error: localRes?.error || 'Unable to create set-password link.' };
   }
 
   const id = encodeURIComponent(studentOrInviteId);
@@ -579,19 +840,39 @@ export async function fetchPublicDepartments(organizationCode) {
 }
 
 export async function registerStudentPublic(payload) {
+  const orgCode = String(payload.orgCode || '').trim().toUpperCase();
+  const deptRaw = payload.departmentId;
+  const deptAsInt = toOptionalInt(deptRaw);
+  const phoneDigits = String(payload.phone || payload.contact || '').replace(/\D/g, '');
+  const roll = String(payload.collegeId || '').trim();
+
+  // Demo college / non-numeric local dept ids → local queue (no fake API ints).
+  const isDemoOrg = orgCode === String(DEMO_ORG.code || 'DEMO').toUpperCase();
+  const isLocalDeptId =
+    deptRaw != null &&
+    String(deptRaw).trim() !== '' &&
+    deptAsInt === undefined;
+
+  if (isDemoOrg || isLocalDeptId) {
+    return withSource(local.submitStudentSelfRegistration(payload), 'local');
+  }
+
   try {
     const body = {
-      name: payload.name,
+      name: String(payload.name || '').trim(),
       email: String(payload.email || '').trim().toLowerCase(),
-      organization_code: String(payload.orgCode || '').trim().toUpperCase(),
-      department_id: payload.departmentId,
-      roll_number: payload.collegeId || undefined,
-      batch_year: payload.batchYear ? Number(payload.batchYear) || payload.batchYear : undefined,
+      organization_code: orgCode,
+      // FastAPI often types department_id as int — JSON string "3" → validation error.
+      department_id: deptAsInt !== undefined ? deptAsInt : deptRaw,
+      // Roll / college IDs are often alphanumeric — always send as string.
+      roll_number: roll || undefined,
+      batch_year: toOptionalInt(payload.batchYear),
     };
     if (payload.password) body.password = payload.password;
-    if (payload.phone || payload.contact) {
-      body.phone = String(payload.phone || payload.contact || '').trim();
-      body.contact = body.phone;
+    if (phoneDigits) {
+      // Prefer string; if API insists on int, digits-only still parses when sent as number.
+      body.phone = phoneDigits;
+      body.contact = phoneDigits;
     }
     const data = await orgApi.post('/students/register', body, { auth: false });
     return withSource(
@@ -604,10 +885,41 @@ export async function registerStudentPublic(payload) {
     );
   } catch (err) {
     if (!isMissingApi(err)) {
-      return { ok: false, error: err.message || 'Unable to register.' };
+      return { ok: false, error: formatRegisterError(err) };
     }
-    return local.submitStudentSelfRegistration(payload);
+    return withSource(local.submitStudentSelfRegistration(payload), 'local');
   }
+}
+
+function toOptionalInt(value) {
+  if (value == null || value === '') return undefined;
+  const trimmed = String(value).trim();
+  if (!/^-?\d+$/.test(trimmed)) return undefined;
+  const n = Number(trimmed);
+  return Number.isFinite(n) ? n : undefined;
+}
+
+function formatRegisterError(err) {
+  const detail = err?.detail;
+  if (Array.isArray(detail)) {
+    const parts = detail
+      .map((item) => {
+        if (typeof item === 'string') return item;
+        const loc = Array.isArray(item?.loc)
+          ? item.loc.filter((p) => p !== 'body').join('.')
+          : '';
+        const msg = item?.msg || item?.message || '';
+        if (loc && msg) return `${loc}: ${msg}`;
+        return msg;
+      })
+      .filter(Boolean);
+    if (parts.length) return parts.join(' · ');
+  }
+  const raw = String(err?.message || '');
+  if (/valid integer/i.test(raw)) {
+    return 'One of the fields must be a number (usually department). Re-select your department and try again. If your roll number has letters, that is fine — tell your campus if this keeps failing.';
+  }
+  return raw || 'Unable to register.';
 }
 
 export async function activateStudentAccount({ token, newPassword }) {
@@ -640,32 +952,33 @@ export async function activateStudentAccount({ token, newPassword }) {
 }
 
 export async function requestStudentPasswordResetApi({ orgCode, userId }) {
-  // Prefer standard forgot-password if backend has it
   try {
     const id = String(userId || '').trim();
     const body = {
       organization_code: String(orgCode || '').trim().toUpperCase(),
+      portal: 'student',
+      identifier: id,
     };
     if (id.includes('@')) body.email = id.toLowerCase();
     else body.username = id;
 
     const data = await orgApi.post('/auth/forgot-password', body, { auth: false });
-    const { setupUrl, activationToken } = extractSetupUrl(data || {});
+    const resetUrl = data?.reset_url || data?.resetUrl || data?.setup_url || '';
     return withSource(
       {
         ok: true,
-        setupUrl,
-        activationToken,
-        emailed: Boolean(data?.emailed ?? data?.email_sent ?? !setupUrl),
-        message: data?.message || 'If an account exists, a reset email was sent.',
+        setupUrl: resetUrl,
+        emailed: Boolean(data?.emailed ?? data?.email_sent ?? !resetUrl),
+        message:
+          data?.message ||
+          'If an account exists, a reset email was sent. Check your inbox.',
         email: data?.email || '',
-        delivery: setupUrl ? 'link' : 'email',
+        delivery: resetUrl ? 'link' : 'email',
       },
       'api'
     );
   } catch (err) {
     if (!isMissingApi(err)) {
-      // Don't leak existence on 404-style responses if backend returns generic message
       return { ok: false, error: err.message || 'Unable to start password reset.' };
     }
     return withSource(local.requestStudentPasswordReset({ orgCode, userId }), 'local');

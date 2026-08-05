@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { ArrowRight, Building2, Eye, EyeOff, Loader2, Lock, UserRound } from 'lucide-react';
 import RoutePageShell from '../layout/RoutePageShell';
@@ -191,6 +191,9 @@ export default function LoginPage() {
                       <label className="mm-login-vibe-label" htmlFor="login-password">
                         Password
                       </label>
+                      <Link to="/Organization/forgot-password" className="mm-login-vibe-forgot">
+                        Forgot password?
+                      </Link>
                     </div>
                     <div className="mm-login-vibe-input-wrap">
                       <span className="mm-login-vibe-input-wrap__leading" aria-hidden>

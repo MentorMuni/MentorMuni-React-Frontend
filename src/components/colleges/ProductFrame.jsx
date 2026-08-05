@@ -17,10 +17,14 @@
 export default function ProductFrame({
   url,
   children,
-  /** Natural width the embedded UI is designed for, in px. */
-  stageWidth = 1180,
-  /** Rendered scale. 0.5 ≈ a half-size, crisp "screenshot". */
-  scale = 0.5,
+  /**
+   * Rendered scale on desktop. Default 1 — do not reduce this without
+   * checking the result: at 0.52 the dashboard's 13.5px body text rendered
+   * at 7px and its labels at 5.7px, which looked like a screenshot but was
+   * unreadable. The embedded components are responsive, so showing them at
+   * natural size in a narrow frame is both legible and accurate.
+   */
+  scale = 1,
   /** Clip height in px after scaling; omit to show the full component. */
   height,
   className = '',
@@ -37,13 +41,16 @@ export default function ProductFrame({
         {url ? <span className="mmc-frame__url">{url}</span> : null}
       </div>
 
+      {/* The stage is laid out at `100% / scale` and then scaled back down,
+          so the rendered width lands exactly on the container instead of
+          the few pixels over that a fixed pixel width produced. */}
       <div className="mmc-frame__viewport" style={{ height: scaledHeight }}>
         <div
           className="mmc-frame__stage"
-          style={{
-            width: stageWidth,
-            transform: `scale(${scale})`,
-          }}
+          /* No min-width: it fought the exact-fit calc and reintroduced a
+             crop. The embedded components are responsive, so whatever
+             width the calc yields lays out correctly. */
+          style={{ '--frame-scale': scale }}
           /* React 19 treats inert="" as false — it must be a real boolean. */
           inert={true}
           aria-hidden="true"

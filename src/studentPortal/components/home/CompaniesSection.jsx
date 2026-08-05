@@ -21,10 +21,10 @@ export default function CompaniesSection() {
       <header className="stu-card__head">
         <div>
           <h2 className="stu-card__title">Companies you can crack</h2>
-          <p className="stu-card__sub">Matched to your campus drive calendar</p>
+          <p className="stu-card__sub">Based on your readiness vs campus drives</p>
         </div>
         <button className="stu-link-btn">
-          View all <ArrowRight size={14} aria-hidden />
+          View all <ArrowRight size={16} strokeWidth={2} aria-hidden />
         </button>
       </header>
 
@@ -61,13 +61,13 @@ export default function CompaniesSection() {
 
       <button className="stu-nudge">
         <span className="stu-nudge__icon" aria-hidden>
-          <Target size={16} />
+          <Target size={16} strokeWidth={2} />
         </span>
         <span className="stu-nudge__text">
           <strong>Focus on aptitude &amp; communication</strong>
           <em>Unlocks eligibility for 90%+ of your campus drives</em>
         </span>
-        <ArrowRight size={16} aria-hidden />
+        <ArrowRight size={16} strokeWidth={2} aria-hidden />
       </button>
     </section>
   );

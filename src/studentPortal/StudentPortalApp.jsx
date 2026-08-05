@@ -7,6 +7,7 @@ import StudentRegisterPage from './pages/StudentRegisterPage';
 import StudentEnrollPage from './pages/StudentEnrollPage';
 import StudentSetPasswordPage from './pages/StudentSetPasswordPage';
 import StudentForgotPasswordPage from './pages/StudentForgotPasswordPage';
+import StudentResetPasswordPage from './pages/StudentResetPasswordPage';
 import './student-login.css';
 
 function RequireStudent({ children }) {
@@ -24,6 +25,7 @@ export default function StudentPortalApp() {
       <Route path="enroll" element={<StudentEnrollPage />} />
       <Route path="set-password" element={<StudentSetPasswordPage />} />
       <Route path="forgot-password" element={<StudentForgotPasswordPage />} />
+      <Route path="reset-password" element={<StudentResetPasswordPage />} />
       <Route
         path="home"
         element={
