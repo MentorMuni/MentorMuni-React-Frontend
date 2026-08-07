@@ -9,6 +9,8 @@ import {
 import { RESUME_ATS_URL } from '../config';
 import { PRIMARY_CTA_LABEL } from '../constants/brandCopy';
 import InnerRouteShell from './new-ui/InnerRouteShell';
+import { useToolSession } from '../widgets/ToolSessionContext';
+import ToolChrome from '../widgets/ToolChrome';
 
 /**
  * POST {API_BASE}/api/resume/ats — multipart/form-data only (no JSON body).
@@ -955,6 +957,7 @@ function AnalysisLoader({ stepIndex }) {
 
 /* ─── MAIN PAGE ──────────────────────────────────────────────── */
 export default function ResumeAnalyzer() {
+  const session = useToolSession();
   const [file, setFile] = useState(null);
   const [role, setRole] = useState('');
   const [candidateType, setCandidateType] = useState('');
@@ -1069,6 +1072,27 @@ export default function ResumeAnalyzer() {
         ];
       }
       setResult(normalized);
+      if (session.source !== 'standalone') {
+        const score =
+          typeof normalized?.overall === 'number'
+            ? normalized.overall
+            : typeof normalized?.score === 'number'
+              ? normalized.score
+              : typeof normalized?.ats_score === 'number'
+                ? normalized.ats_score
+                : null;
+        session.persistResult({
+          toolCode: session.toolCode || 'resume_ats',
+          result: {
+            score,
+            label: normalized?.band || normalized?.label || 'ATS result',
+            strengths: normalized?.strengths || [],
+            weaknesses: normalized?.gaps || normalized?.missing_keywords || [],
+            recommendations: normalized?.fixes || [],
+            raw: normalized,
+          },
+        });
+      }
     } catch (err) {
       setApiError(
         err?.message?.includes('Failed to fetch')
@@ -1092,8 +1116,9 @@ export default function ResumeAnalyzer() {
     { label: 'Get score', state: result ? 'done' : stepScan },
   ];
 
+  const Shell = session.embedded ? ToolChrome : InnerRouteShell;
   return (
-    <InnerRouteShell scope="tool" className="mm-site-theme mm-resume-ats-page min-h-screen">
+    <Shell scope="tool" className="mm-site-theme mm-resume-ats-page min-h-screen">
 
       <section className="mm-resume-ats-hero mm-marketing-hero-backdrop relative overflow-hidden">
         <div className="mm-resume-ats-hero__orb--1 mm-resume-ats-hero__orb--animate" aria-hidden />
@@ -1453,6 +1478,6 @@ export default function ResumeAnalyzer() {
         </div>
       </section>
 
-    </InnerRouteShell>
+    </Shell>
   );
 }

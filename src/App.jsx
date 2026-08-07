@@ -72,6 +72,7 @@ const InterviewReadinessToolsPage = lazy(() => import("./components/InterviewRea
 const VoiceInterviewCoach = lazy(() => import("./components/voiceInterview/VoiceInterviewCoach"));
 const LeadershipBoard = lazy(() => import("./components/leadershipBoard"));
 const SnapReadinessTest = lazy(() => import("./components/snapTest/SnapReadinessTest"));
+const WidgetsDemoPage = lazy(() => import("./widgets/WidgetsDemoPage"));
 const RoadmapPage = lazy(() => import("./components/RoadmapPage"));
 const BlogList = lazy(() => import("./components/Blog/BlogList"));
 const BlogPost = lazy(() => import("./components/Blog/BlogPost"));
@@ -116,12 +117,18 @@ function isAuthStandalonePath(pathname) {
   );
 }
 
+function isWidgetsPath(pathname) {
+  const p = String(pathname || "").toLowerCase();
+  return p === "/widgets" || p.startsWith("/widgets/");
+}
+
 function isChromeLessPath(pathname) {
   return (
     isPlatformAdminPath(pathname) ||
     isOrganizationPortalPath(pathname) ||
     isStudentPortalPath(pathname) ||
-    isAuthStandalonePath(pathname)
+    isAuthStandalonePath(pathname) ||
+    isWidgetsPath(pathname)
   );
 }
 
@@ -329,6 +336,7 @@ function App() {
               <Route path="/interview-readiness-tools" element={<InterviewReadinessToolsPage />} />
               <Route path="/tools/voice-interview" element={<VoiceInterviewCoach />} />
               <Route path="/voice-interview-coach" element={<VoiceInterviewCoach />} />
+              <Route path="/widgets" element={<WidgetsDemoPage />} />
               <Route path="/tools" element={<Tools />} />
               <Route path="/mentors" element={<Mentors />} />
               <Route path="/snap-test" element={<SnapReadinessTest />} />

@@ -1,0 +1,13 @@
+/* ============================================================
+   MentorMuni — Student Portal / shared shell bundle
+
+   Imported once by StudentLayout. Individual pages import only
+   their own page stylesheet on top of this.
+
+   Vite inlines these @imports at build time, so this stays a
+   single request in production.
+   ============================================================ */
+
+@import './tokens.css';
+@import './shell.css';
+@import './primitives.css';

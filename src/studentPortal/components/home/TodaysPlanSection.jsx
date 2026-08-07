@@ -1,139 +1,148 @@
-import { useEffect, useMemo, useState } from 'react';
-import { Check, Clock, Code2, FileText, Mic, Play, Zap } from 'lucide-react';
+import { Check, Clock, Lock } from 'lucide-react';
+import { ToolIcon } from '../../roadmap/toolIcons';
+import EmptyState from './EmptyState';
 
-const ICONS = { resume: FileText, aptitude: Zap, mock: Mic, code: Code2 };
+/**
+ * The page's anchor: the one unlocked step, and a button to start it.
+ *
+ * Kept at this path with this prop shape because CollegesPage embeds
+ * it as marketing artwork — see src/components/CollegesPage.jsx.
+ */
+export default function TodaysPlanSection({ steps = [], onStart }) {
+  const current = steps.find((s) => s.status === 'current') || null;
+  const lastDone =
+    [...steps].filter((s) => s.status === 'done').sort((a, b) => b.order - a.order)[0] || null;
+  const doneCount = steps.filter((s) => s.status === 'done').length;
+  const total = steps.length || 8;
+  const allDone = steps.length > 0 && doneCount === total;
 
-const SEED = [
-  {
-    id: 1,
-    kind: 'resume',
-    title: 'Resume fix: quantify your impact',
-    meta: 'Rewrite 3 bullet points with numbers',
-    minutes: 15,
-    lift: 1.5,
-    done: false,
-  },
-  {
-    id: 2,
-    kind: 'aptitude',
-    title: 'Aptitude practice set',
-    meta: '20 questions · Quant & reasoning',
-    minutes: 18,
-    lift: 1.5,
-    done: false,
-  },
-  {
-    id: 3,
-    kind: 'mock',
-    title: 'AI mock interview — technical',
-    meta: '5 questions · Java fundamentals',
-    minutes: 10,
-    lift: 1,
-    done: false,
-  },
-];
+  if (allDone) {
+    return (
+      <section className="stu-card stu-today">
+        <header className="stu-card__head">
+          <div>
+            <h2 className="stu-card__title">Today’s focus</h2>
+            <p className="stu-card__sub">
+              Week 1 baseline is complete. Generate your 90-day plan next.
+            </p>
+          </div>
+          <span className="stu-plan__count">
+            {doneCount}/{total}
+          </span>
+        </header>
 
-export default function TodaysPlanSection({ currentReadiness = 47, onGain }) {
-  const [tasks, setTasks] = useState(SEED);
+        <div className="stu-today__done">
+          <Check size={20} strokeWidth={2} aria-hidden focusable="false" />
+          <div>
+            <p className="stu-today__done-title">All {total} checks finished</p>
+            <p className="stu-today__done-sub">
+              Your scores and gaps are ready for the placement plan.
+            </p>
+          </div>
+        </div>
 
-  const { doneCount, remainingMin, projected } = useMemo(() => {
-    const open = tasks.filter((t) => !t.done);
-    return {
-      doneCount: tasks.length - open.length,
-      remainingMin: open.reduce((s, t) => s + t.minutes, 0),
-      projected: Math.round(
-        currentReadiness + tasks.reduce((s, t) => s + (t.done ? 0 : t.lift), 0)
-      ),
-    };
-  }, [tasks, currentReadiness]);
+        {lastDone ? (
+          <p className="stu-today__retake">
+            Last finished: {lastDone.title}
+            <button type="button" className="stu-link-btn" onClick={() => onStart?.(lastDone)}>
+              Retake
+            </button>
+          </p>
+        ) : null}
+      </section>
+    );
+  }
 
-  const earned = tasks.reduce((s, t) => s + (t.done ? t.lift : 0), 0);
-  const allDone = doneCount === tasks.length;
+  if (!current) {
+    return (
+      <section className="stu-card stu-today">
+        <header className="stu-card__head">
+          <div>
+            <h2 className="stu-card__title">Today’s focus</h2>
+          </div>
+        </header>
+        <EmptyState art="complete" title="Nothing queued yet">
+          Your first baseline check appears here as soon as your roadmap loads.
+        </EmptyState>
+      </section>
+    );
+  }
 
-  useEffect(() => {
-    if (onGain) onGain(earned, allDone);
-  }, [earned, allDone, onGain]);
-  const pct = Math.round((doneCount / tasks.length) * 100);
-
-  const toggle = (id) =>
-    setTasks((list) => list.map((t) => (t.id === id ? { ...t, done: !t.done } : t)));
+  const scoreLabel =
+    current.tool_code === '5_sec'
+      ? null
+      : current.score != null
+        ? `${Math.round(current.score)}%`
+        : null;
 
   return (
-    <section className="stu-card stu-plan">
+    <section className="stu-card stu-today">
       <header className="stu-card__head">
         <div>
-          <h2 className="stu-card__title">Today&apos;s plan</h2>
+          <h2 className="stu-card__title">Today’s focus</h2>
           <p className="stu-card__sub">
-            {allDone
-              ? 'All done — come back tomorrow for a fresh set.'
-              : `${tasks.length - doneCount} left · about ${remainingMin} min · do these first`}
+            One step, about {current.minutes} minutes. Finish it to unlock the next.
           </p>
         </div>
-        <span className="stu-chip stu-chip--accent">
-          {doneCount}/{tasks.length}
+        <span className="stu-plan__count">
+          {doneCount}/{total}
         </span>
       </header>
 
-      <div className="stu-plan__progress" aria-hidden>
-        <span className="stu-plan__progress-fill" style={{ width: `${pct}%` }} />
-      </div>
-
-      <ul className="stu-plan__list">
-        {tasks.map((task) => {
-          const Icon = ICONS[task.kind] || Zap;
-          return (
-            <li key={task.id} className={`stu-task${task.done ? ' is-done' : ''}`}>
-              {/* The tick is rendered only when done rather than hidden with
-                  colour — the global stylesheet overrides `color` here. */}
-              <button
-                className="stu-task__check"
-                onClick={() => toggle(task.id)}
-                aria-pressed={task.done}
-                aria-label={`${task.done ? 'Mark incomplete' : 'Mark complete'}: ${task.title}`}
-              >
-                {task.done ? <Check size={12} strokeWidth={3} aria-hidden /> : null}
-              </button>
-
-              <span className={`stu-task__icon stu-task__icon--${task.kind}`} aria-hidden>
-                <Icon size={16} strokeWidth={2} />
-              </span>
-
-              <span className="stu-task__body">
-                <span className="stu-task__title">{task.title}</span>
-                <span className="stu-task__meta">{task.meta}</span>
-              </span>
-
-              <span className="stu-task__time">
-                <Clock size={12} strokeWidth={2} aria-hidden />
-                {task.minutes}m
-              </span>
-
-              <button className="stu-task__cta" disabled={task.done}>
-                {task.done ? 'Done' : 'Start'}
-              </button>
-            </li>
-          );
-        })}
-      </ul>
-
-      <div className="stu-plan__foot">
-        <p className="stu-plan__lift">
-          {allDone ? (
-            <>Done for today — that added <strong>+{earned.toFixed(1)}%</strong> to your readiness.</>
-          ) : earned > 0 ? (
-            <>
-              <strong>+{earned.toFixed(1)}%</strong> earned so far. Finish the rest to reach{' '}
-              <strong>{projected}%</strong>.
-            </>
-          ) : (
-            <>Finish all three and you&apos;ll reach <strong>{projected}%</strong> readiness.</>
-          )}
-        </p>
-        <button className="stu-btn stu-btn--primary" disabled={allDone}>
-          <Play size={16} fill="currentColor" strokeWidth={2} aria-hidden />
-          {allDone ? 'Plan complete' : "Start today's plan"}
+      <div className="stu-today__mission">
+        <span className="stu-today__order" aria-hidden>
+          {current.order}
+        </span>
+        <span className="stu-today__icon" aria-hidden>
+          <ToolIcon toolCode={current.tool_code} size={20} strokeWidth={2} />
+        </span>
+        <div className="stu-today__body">
+          <p className="stu-today__kicker">Do this now</p>
+          <h3 className="stu-today__title">{current.title}</h3>
+          <p className="stu-today__meta">
+            <Clock size={14} strokeWidth={2} aria-hidden focusable="false" />
+            {current.minutes} min
+            {scoreLabel ? ` · last score ${scoreLabel}` : ''}
+            {current.order < total
+              ? ` · unlocks step ${current.order + 1}`
+              : ' · completes baseline'}
+          </p>
+        </div>
+        <button
+          type="button"
+          className="stu-btn stu-btn--primary stu-today__cta"
+          onClick={() => onStart?.(current)}
+        >
+          Start
         </button>
       </div>
+
+      <ol className="stu-today__rail" aria-label={`Baseline progress: ${doneCount} of ${total} done`}>
+        {steps.map((s) => (
+          <li
+            key={s.tool_code}
+            className={`stu-today__dot${s.status === 'done' ? ' is-done' : ''}${s.status === 'current' ? ' is-current' : ''}${s.status === 'locked' ? ' is-locked' : ''}`}
+            title={`${s.order}. ${s.title} — ${s.status}`}
+          >
+            {s.status === 'done' ? (
+              <Check size={12} strokeWidth={3} aria-hidden focusable="false" />
+            ) : s.status === 'locked' ? (
+              <Lock size={10} strokeWidth={2.5} aria-hidden focusable="false" />
+            ) : (
+              s.order
+            )}
+          </li>
+        ))}
+      </ol>
+
+      {lastDone ? (
+        <p className="stu-today__retake">
+          Last finished: {lastDone.title}
+          <button type="button" className="stu-link-btn" onClick={() => onStart?.(lastDone)}>
+            Retake
+          </button>
+        </p>
+      ) : null}
     </section>
   );
 }

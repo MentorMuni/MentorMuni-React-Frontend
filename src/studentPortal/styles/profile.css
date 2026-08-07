@@ -1,0 +1,560 @@
+/* ============================================================
+   MentorMuni — Student Portal / Placement profile
+
+   This page gets shown to other people — a TPO across a desk, a
+   recruiter at a drive, or printed to PDF. So it is styled as a
+   document rather than a dashboard: quieter surfaces, a strong
+   identity block, and a scorecard that survives a monochrome print.
+   ============================================================ */
+
+.stu-pf { gap: var(--space-5); }
+
+.stu-pf__loading {
+  padding: var(--space-9) 0;
+  text-align: center;
+  font-size: var(--text-body-sm);
+  color: var(--ink-3);
+}
+
+/* ============================================================
+   IDENTITY
+   ============================================================ */
+
+.stu-pf__id {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, auto);
+  gap: var(--space-6);
+  align-items: center;
+  padding: var(--space-6);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  background:
+    radial-gradient(90% 80% at 100% 0%, color-mix(in srgb, var(--accent) 10%, transparent), transparent 60%),
+    var(--surface);
+  box-shadow: var(--sh-1);
+}
+
+.stu-pf__id-main {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.stu-pf__avatar {
+  width: 64px;
+  height: 64px;
+  font-size: 22px;
+  border-radius: var(--r-lg);
+}
+
+.stu-pf__id-text { min-width: 0; }
+
+.stu-pf__name {
+  font-size: var(--text-display);
+  font-weight: 730;
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-tight);
+  color: var(--ink);
+}
+
+.stu-pf__headline {
+  margin-top: var(--space-1);
+  font-size: var(--text-body);
+  font-weight: 500;
+  color: var(--ink-2);
+}
+
+.stu-pf__org {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: var(--space-3);
+  font-size: var(--text-body-sm);
+  font-weight: 550;
+  color: var(--ink-2);
+}
+
+.stu-pf__org svg { color: var(--interactive); flex: none; }
+
+.stu-pf__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  margin-top: var(--space-3);
+}
+
+.stu-pf__meta li {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: var(--text-caption);
+  color: var(--ink-3);
+}
+
+.stu-pf__meta-key {
+  font-weight: 650;
+  color: var(--ink-2);
+}
+
+/* ---- Headline score ---------------------------------------- */
+
+.stu-pf__score-card {
+  padding: var(--space-5);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  text-align: center;
+}
+
+.stu-pf__score-card.is-ready {
+  border-color: color-mix(in srgb, var(--ok) 40%, var(--line));
+  background: var(--ok-soft);
+}
+
+.stu-pf__score-card.is-approaching {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  background: var(--accent-soft);
+}
+
+.stu-pf__score-card.is-building {
+  border-color: color-mix(in srgb, var(--warn) 34%, var(--line));
+  background: var(--warn-soft);
+}
+
+.stu-pf__score-card.is-early {
+  border-color: color-mix(in srgb, var(--alert) 30%, var(--line));
+  background: var(--alert-soft);
+}
+
+.stu-pf__score-label {
+  font-size: var(--text-micro);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.stu-pf__score-value {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 2px;
+  margin-top: var(--space-2);
+  font-size: 44px;
+  font-weight: 780;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.stu-pf__score-value em {
+  font-size: var(--text-title);
+  font-weight: 650;
+  color: var(--ink-3);
+}
+
+.stu-pf__band {
+  margin-top: var(--space-2);
+  font-size: var(--text-body-sm);
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.stu-pf__score-card.is-ready .stu-pf__band { color: var(--ok-ink); }
+.stu-pf__score-card.is-approaching .stu-pf__band { color: var(--interactive); }
+.stu-pf__score-card.is-building .stu-pf__band { color: var(--warn-ink); }
+.stu-pf__score-card.is-early .stu-pf__band { color: var(--alert-ink); }
+
+.stu-pf__score-track {
+  position: relative;
+  height: 6px;
+  margin-top: var(--space-4);
+  border-radius: 999px;
+  background: var(--track);
+  overflow: visible;
+}
+
+.stu-pf__score-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--brand), var(--accent));
+}
+
+.stu-pf__score-tick {
+  position: absolute;
+  top: -3px;
+  width: 2px;
+  height: 12px;
+  border-radius: 2px;
+  background: var(--ink-3);
+}
+
+.stu-pf__score-foot {
+  margin-top: var(--space-3);
+  font-size: var(--text-micro);
+  line-height: var(--leading-snug);
+  color: var(--ink-3);
+}
+
+/* ============================================================
+   PROVENANCE
+
+   The single most important line for a third-party reader: where
+   these numbers came from, and that the student did not type them.
+   ============================================================ */
+
+.stu-pf__provenance {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--r-md);
+  border: 1px solid color-mix(in srgb, var(--info) 22%, var(--line));
+  background: var(--info-soft);
+  font-size: var(--text-caption);
+  line-height: var(--leading-body);
+  color: var(--info-ink);
+}
+
+.stu-pf__provenance > svg { flex: none; }
+.stu-pf__provenance > span { flex: 1; min-width: 220px; }
+
+.stu-pf__print {
+  margin-left: auto;
+  color: var(--info-ink);
+  white-space: nowrap;
+}
+
+.stu-pf__print:hover { color: var(--info-ink); }
+
+/* ============================================================
+   SCORECARD
+   ============================================================ */
+
+.stu-pf__block { padding: var(--space-6); }
+
+.stu-pf__groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
+}
+
+.stu-pf__group-title {
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--line);
+  font-size: var(--text-micro);
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.stu-pf__rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.stu-pf__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 140px 108px;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-2);
+  border-radius: var(--space-2);
+}
+
+.stu-pf__row:hover { background: var(--surface-2); }
+
+.stu-pf__row-main { min-width: 0; }
+
+.stu-pf__row-title {
+  font-size: var(--text-body-sm);
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.stu-pf__row-blurb {
+  margin-top: 2px;
+  font-size: var(--text-caption);
+  line-height: var(--leading-body);
+  color: var(--ink-3);
+}
+
+.stu-pf__row-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--track);
+  overflow: hidden;
+}
+
+.stu-pf__row-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+}
+
+.stu-pf__row-fill[data-tone='good'] { background: var(--ok); }
+.stu-pf__row-fill[data-tone='mid'] { background: var(--warn); }
+.stu-pf__row-fill[data-tone='low'] { background: var(--alert); }
+
+.stu-pf__row-value {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+}
+
+.stu-pf__score {
+  font-size: var(--text-body);
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+
+.stu-pf__score.is-good { color: var(--ok-ink); }
+.stu-pf__score.is-mid { color: var(--warn-ink); }
+.stu-pf__score.is-low { color: var(--alert-ink); }
+.stu-pf__score.is-none { font-size: var(--text-body-sm); color: var(--ink-2); }
+
+.stu-pf__score.is-pending {
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.stu-pf__row-date {
+  font-size: var(--text-micro);
+  color: var(--ink-3);
+}
+
+/* ============================================================
+   STRENGTHS / GAPS
+   ============================================================ */
+
+.stu-pf__cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
+.stu-pf__col-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: var(--space-3);
+  font-size: var(--text-body-sm);
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.stu-pf__cols > div:first-child .stu-pf__col-title svg { color: var(--ok-ink); }
+.stu-pf__cols > div:last-child .stu-pf__col-title svg { color: var(--warn-ink); }
+
+.stu-pf__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.stu-pf__tags li {
+  padding: 5px var(--space-3);
+  border-radius: 999px;
+  font-size: var(--text-caption);
+  font-weight: 550;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink-2);
+}
+
+.stu-pf__tags.is-good li {
+  border-color: color-mix(in srgb, var(--ok) 28%, var(--line));
+  background: var(--ok-soft);
+  color: var(--ok-ink);
+}
+
+.stu-pf__tags.is-warn li {
+  border-color: color-mix(in srgb, var(--warn) 28%, var(--line));
+  background: var(--warn-soft);
+  color: var(--warn-ink);
+}
+
+.stu-pf__tag-empty {
+  font-size: var(--text-caption);
+  color: var(--ink-3);
+}
+
+/* ============================================================
+   PREPARATION RECORD
+   ============================================================ */
+
+.stu-pf__stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--line);
+  border: 1px solid var(--line);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+
+.stu-pf__stats > div {
+  padding: var(--space-4);
+  background: var(--surface);
+}
+
+.stu-pf__stats dt {
+  font-size: var(--text-caption);
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+.stu-pf__stats dd {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-top: var(--space-1);
+  font-size: var(--text-display-sm);
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.stu-pf__stats dd em {
+  font-size: var(--text-body-sm);
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+/* ============================================================
+   FOOT
+   ============================================================ */
+
+.stu-pf__foot {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+}
+
+.stu-pf__foot p {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-micro);
+  color: var(--ink-3);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 1024px) {
+  .stu-pf__id { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 860px) {
+  .stu-pf__row {
+    grid-template-columns: minmax(0, 1fr) 96px;
+    row-gap: var(--space-2);
+  }
+  .stu-pf__row-track { grid-column: 1 / -1; order: 3; }
+  .stu-pf__cols { grid-template-columns: 1fr; }
+  .stu-pf__stats { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .stu-pf__id,
+  .stu-pf__block { padding: var(--space-5); }
+  .stu-pf__id-main { flex-direction: column; gap: var(--space-4); }
+  .stu-pf__name { font-size: 24px; }
+  .stu-pf__print { margin-left: 0; }
+}
+
+/* ============================================================
+   PRINT
+
+   A profile shown to a TPO or recruiter gets printed or saved as a
+   PDF. Drop the app chrome, force ink-on-white regardless of the
+   student's theme, and keep each block off a page break.
+   ============================================================ */
+
+@media print {
+  .stu-sidebar,
+  .stu-scrim,
+  .stu-topbar,
+  .stu-pf__print {
+    display: none !important;
+  }
+
+  .stu-shell { margin-left: 0 !important; }
+
+  /* Force the light palette: a dark-theme user printing this would
+     otherwise get an unreadable page or a wall of toner.
+
+     This is the one place outside tokens.css that may hold raw hex —
+     it IS a token block, just one scoped to the print medium, and
+     print ink must not depend on the on-screen theme. */
+  .stu-app,
+  .stu-app[data-theme='dark'] {
+    --bg: #ffffff;
+    --surface: #ffffff;
+    --surface-2: #ffffff;
+    --surface-raised: #ffffff;
+    --line: #c8d2dc;
+    --line-strong: #98a7b5;
+    --ink: #000000;
+    --ink-2: #1f2c38;
+    --ink-3: #455666;
+    --track: #e3e9ef;
+    --interactive: #0a5480;
+    --ok-ink: #0f5c30;
+    --warn-ink: #7a4a06;
+    --alert-ink: #93310a;
+    --bad-ink: #8c1515;
+    --info-ink: #16357f;
+    /* The tinted card backgrounds need resetting too — in dark these
+       are near-black (--warn-soft is #2e2413), which printed the
+       readiness card as a solid dark block on white paper. */
+    --ok-soft: #eef8f1;
+    --warn-soft: #fdf6e8;
+    --alert-soft: #fdf1ea;
+    --bad-soft: #fdeeed;
+    --info-soft: #eef3fd;
+    --accent-soft: #eaf5fa;
+    --amber-soft: #fdf6e8;
+    --avatar-from: #0e6fa8;
+    --avatar-to: #0a5480;
+    --avatar-ink: #ffffff;
+    background: #ffffff !important;
+    display: block !important;
+  }
+
+  .stu-main {
+    max-width: none;
+    padding: 0;
+    gap: var(--space-4);
+  }
+
+  .stu-pf__id,
+  .stu-pf__block,
+  .stu-pf__provenance {
+    break-inside: avoid;
+    box-shadow: none !important;
+    background: #ffffff !important;
+  }
+
+  .stu-pf__group { break-inside: avoid; }
+  .stu-pf__row:hover { background: none; }
+
+  /* Meter fills print as outlines unless colour-adjust is forced. */
+  .stu-pf__row-fill,
+  .stu-pf__score-fill {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}

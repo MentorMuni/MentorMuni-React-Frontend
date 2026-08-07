@@ -38,6 +38,15 @@ export function setOrgSession(user) {
       username: user?.username || '',
       // FE alias: ORG_ADMIN→TPO, DEPARTMENT_ADMIN→HOD (backend may still send either)
       role: normalizeOrgRole(user?.role || user?.role_code),
+      role_code: user?.role_code || '',
+      dept_admin_title: user?.dept_admin_title || user?.deptAdminTitle || '',
+      role_label:
+        user?.role_label ||
+        user?.roleLabel ||
+        (String(user?.dept_admin_title || user?.deptAdminTitle || '').toUpperCase() ===
+        'PLACEMENT_COORDINATOR'
+          ? 'Placement Coordinator'
+          : ''),
       organization_id: user?.organization_id ?? user?.org_id,
       organization_name: user?.organization_name || user?.organization?.name || '',
       organization_code: user?.organization_code || user?.organization?.code || '',
@@ -113,7 +122,7 @@ export async function loginOrgUser(userId, password, organizationCode = '') {
     const token = `demo.${demo.role}.${Date.now()}`;
     orgApi.setToken(token);
     const user = {
-      id: `demo_${demo.role}`,
+      id: `demo_${demo.role}_${String(demo.email).split('@')[0]}`,
       email: demo.email,
       username: demo.email.split('@')[0],
       role: demo.role,
@@ -122,6 +131,8 @@ export async function loginOrgUser(userId, password, organizationCode = '') {
       organization_name: DEMO_ORG.name,
       organization_code: DEMO_ORG.code,
       department_id: demo.department_id || null,
+      dept_admin_title: demo.dept_admin_title || '',
+      role_label: demo.role_label || '',
       permissions: [],
       mustChangePassword: false,
       demo: true,
@@ -438,6 +449,18 @@ export async function activateHodAccount(token, newPassword) {
     }
     const local = activateHodInviteLocal(payload.token, newPassword);
     if (local.ok) {
+      try {
+        const { registerActivatedDemoMentor } = await import('../organizationPortal/demoAuth');
+        registerActivatedDemoMentor({
+          email: local.email,
+          password: newPassword,
+          name: local.name,
+          departmentId: local.departmentId,
+          slot: local.slot || 'hod',
+        });
+      } catch {
+        // demo registry optional
+      }
       return {
         ok: true,
         message: local.message,

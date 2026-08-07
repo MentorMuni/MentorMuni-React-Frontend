@@ -24,7 +24,7 @@ import {
   isViewerRole,
   normalizeOrgRole,
   ORG_ROLES,
-  roleLabel,
+  sessionDisplayRole,
 } from './roles';
 import { orgPaths } from './paths';
 import { useOrgTheme } from './useOrgTheme';
@@ -105,12 +105,12 @@ function navForRole(role) {
 const TITLES = {
   dashboard: {
     [ORG_ROLES.TPO]: ['TPO Dashboard', 'Campus readiness, enrollment, and placement ops.'],
-    [ORG_ROLES.HOD]: ['HOD Dashboard', 'Your branch pulse — readiness, gaps, and mentoring actions.'],
+    [ORG_ROLES.HOD]: ['Branch dashboard', 'Your branch pulse — readiness, gaps, and mentoring actions.'],
     [ORG_ROLES.VIEWER]: ['Analytics Dashboard', 'Read-only campus readiness and trends.'],
     [ORG_ROLES.STUDENT]: ['Student Dashboard', 'Your placement preparation workspace.'],
   },
   workspace: ['My workspace', 'Your private todos, reminders, and notes — stay on this platform.'],
-  departments: ['Departments', 'Branches and HOD / department mentors.'],
+  departments: ['Departments', 'Branches, HOD, and optional Placement Coordinator.'],
   enrollment: ['Student enrollment', 'Invite students, approve requests, assign departments.'],
   students: ['Branch students', 'Roster, invites, and readiness for your department.'],
   programs: {
@@ -159,7 +159,9 @@ export default function OrganizationShell() {
     portalRole === ORG_ROLES.TPO
       ? 'TPO Portal'
       : portalRole === ORG_ROLES.HOD
-        ? 'HOD Portal'
+        ? sessionDisplayRole(session) === 'Placement Coordinator'
+          ? 'Placement Coordinator Portal'
+          : 'HOD Portal'
         : portalRole === ORG_ROLES.VIEWER
           ? 'Viewer'
           : 'Organization';
@@ -236,13 +238,13 @@ export default function OrganizationShell() {
               <div className="mm-org-account" title="Signed-in account">
                 <div className="mm-org-account__meta">
                   <p className="mm-org-account__name">
-                    {session?.name || roleLabel(session?.role)}
+                    {session?.name || sessionDisplayRole(session)}
                   </p>
                   <p className="mm-org-account__email">
                     {session?.email || session?.username || '—'}
                   </p>
                   <p className="mm-org-account__role">
-                    {isViewerRole(session?.role) ? 'Viewer' : roleLabel(session?.role)}
+                    {isViewerRole(session?.role) ? 'Viewer' : sessionDisplayRole(session)}
                     {session?.organization_name ? ` · ${session.organization_name}` : ''}
                   </p>
                 </div>

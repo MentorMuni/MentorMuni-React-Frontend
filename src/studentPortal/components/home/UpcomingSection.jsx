@@ -1,44 +1,57 @@
-import { ArrowRight, Code2, Mic, Zap } from 'lucide-react';
+import { ArrowRight, Building2 } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { studentPaths } from '../../paths';
+import { COMPANY_PREP_TASKS, missionTotalMinutes } from '../../companyPrep';
+import { driveCountdown } from '../../drives';
+import EmptyState from './EmptyState';
 
-const EVENTS = [
-  { id: 1, icon: Zap, title: 'Aptitude full test', when: 'Tomorrow · 10:00 AM', days: 1, urgent: true },
-  { id: 2, icon: Mic, title: 'AI mock interview — HR', when: 'Fri · 2:00 PM', days: 4 },
-  { id: 3, icon: Code2, title: 'TCS NQT campus drive', when: 'Dec 20 · 9:00 AM', days: 14 },
-];
+/**
+ * The daily company-prep mission.
+ *
+ * The task list and total used to be a hand-typed string
+ * ("Aptitude · SQL · HR · Technical · Daily challenge · ~22 min")
+ * that would silently go stale the moment COMPANY_PREP_TASKS changed.
+ * Both are derived now.
+ */
+export default function UpcomingSection({ nextDrive = null }) {
+  const taskNames = COMPANY_PREP_TASKS.map((t) => t.title).join(' · ');
+  const minutes = missionTotalMinutes();
 
-export default function UpcomingSection() {
   return (
     <section className="stu-card stu-up">
       <header className="stu-card__head">
         <div>
-          <h2 className="stu-card__title">Coming up</h2>
-          <p className="stu-card__sub">Tests &amp; drives in the next 14 days</p>
+          <h2 className="stu-card__title">Daily company mission</h2>
+          <p className="stu-card__sub">
+            {nextDrive
+              ? `${nextDrive.company_name} · ${driveCountdown(nextDrive)}`
+              : 'Short daily drill, ready when a drive is announced'}
+          </p>
         </div>
-        <button className="stu-link-btn">
-          Calendar <ArrowRight size={16} strokeWidth={2} aria-hidden />
-        </button>
+        <Link className="stu-link-btn" to={studentPaths.companyPrep}>
+          Company Prep <ArrowRight size={16} strokeWidth={2} aria-hidden focusable="false" />
+        </Link>
       </header>
 
-      <ul className="stu-up__list">
-        {EVENTS.map((e) => {
-          const Icon = e.icon;
-          return (
-            <li key={e.id} className={`stu-up__row${e.urgent ? ' is-urgent' : ''}`}>
-              <span className="stu-up__icon" aria-hidden>
-                <Icon size={16} strokeWidth={2} />
-              </span>
-              <span className="stu-up__text">
-                <strong>{e.title}</strong>
-                <em>{e.when}</em>
-              </span>
-              <span className="stu-up__count">
-                <strong>{e.days}</strong>
-                <em>{e.days === 1 ? 'day' : 'days'}</em>
-              </span>
-            </li>
-          );
-        })}
-      </ul>
+      {nextDrive ? (
+        <div className="stu-up__promo">
+          <span className="stu-up__icon" aria-hidden>
+            <Building2 size={16} strokeWidth={2} focusable="false" />
+          </span>
+          <div className="stu-up__text">
+            <strong>Today&rsquo;s mission · ~{minutes} min</strong>
+            <em>{taskNames}</em>
+          </div>
+          <Link className="stu-btn stu-btn--soft" to={studentPaths.companyPrep}>
+            Open
+          </Link>
+        </div>
+      ) : (
+        <EmptyState art="drives" title="No drive scheduled yet">
+          The daily {minutes}-minute mission ({taskNames}) starts automatically once your college
+          announces a drive.
+        </EmptyState>
+      )}
     </section>
   );
 }

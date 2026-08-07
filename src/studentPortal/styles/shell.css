@@ -1,0 +1,745 @@
+/* ============================================================
+   MentorMuni — Student Portal / Shell
+   Sidebar · scrim · topbar · avatars · main · footer
+
+   Shared by every authed portal page via StudentLayout.
+   ============================================================ */
+
+/* ============================================================
+   SIDEBAR
+   ============================================================ */
+
+.stu-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: var(--rail);
+  background: var(--surface);
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  z-index: 60;
+}
+
+.stu-sidebar__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-5) var(--space-5) var(--space-4);
+}
+
+.stu-sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--ink);
+  min-width: 0;
+}
+
+.stu-sidebar__logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  flex-shrink: 0;
+}
+
+.stu-sidebar__brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.stu-sidebar__brand-text strong {
+  font-size: var(--text-body);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.stu-sidebar__brand-text em {
+  font-size: 11.5px;
+  color: var(--ink-3);
+  line-height: 1.3;
+}
+
+.stu-sidebar__close {
+  display: none;
+  margin-left: auto;
+  background: none;
+  border: 0;
+  color: var(--ink-3);
+  padding: 6px;
+  border-radius: var(--space-2);
+}
+
+.stu-nav {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--space-1) var(--space-3) var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.stu-nav::-webkit-scrollbar { width: 6px; }
+.stu-nav::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 3px; }
+
+.stu-nav__group-label {
+  margin: 0 0 6px 10px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.stu-nav__list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stu-nav__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 40px;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--space-3);
+  text-decoration: none;
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.25;
+  font-weight: 520;
+  position: relative;
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.stu-nav__item:hover {
+  background: var(--surface-2);
+  color: var(--ink);
+}
+
+.stu-nav__item.is-active {
+  background: var(--accent-soft);
+  color: var(--interactive);
+  font-weight: 650;
+}
+
+.stu-nav__item.is-active::before {
+  content: '';
+  position: absolute;
+  left: calc(var(--space-3) * -1);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  border-radius: 0 3px 3px 0;
+  background: var(--interactive);
+}
+
+.stu-nav__text { flex: 1; }
+
+.stu-sidebar__foot {
+  padding: 13px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* ---- Streak widget ----------------------------------------
+   Amber, not brand blue: momentum reads as a different kind of
+   thing from navigation chrome. Text is near-black rather than
+   white — white on this amber was about 2:1. */
+
+.stu-streak-mini {
+  background: linear-gradient(160deg, var(--amber-soft) 0%, color-mix(in srgb, var(--amber) 22%, var(--surface)) 100%);
+  border: 1px solid color-mix(in srgb, var(--amber) 34%, var(--line));
+  border-radius: var(--r-md);
+  padding: 13px 14px;
+  color: var(--ink);
+}
+
+.stu-streak-mini__top {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+
+.stu-streak-mini__flame {
+  display: inline-flex;
+  align-self: center;
+  color: var(--amber-ink);
+}
+
+.stu-streak-mini__count {
+  font-size: 21px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.stu-streak-mini__unit {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.stu-streak-mini__week {
+  display: flex;
+  gap: var(--space-1);
+  margin: 10px 0 var(--space-2);
+}
+
+.stu-streak-mini__dot {
+  flex: 1;
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  border-radius: 6px;
+  font-size: 9.5px;
+  font-weight: 700;
+  background: color-mix(in srgb, var(--amber) 16%, var(--surface));
+  color: var(--ink-3);
+}
+
+.stu-streak-mini__dot.is-done {
+  background: var(--amber-ink);
+  color: var(--on-amber);
+}
+
+.stu-streak-mini__hint {
+  font-size: 10.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+  line-height: 1.4;
+}
+
+.stu-sidebar__user {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 44px;
+  padding: var(--space-2);
+  background: none;
+  border: 1px solid transparent;
+  border-radius: var(--space-3);
+  text-align: left;
+  text-decoration: none;
+  color: var(--ink-3);
+  transition: background var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+
+.stu-sidebar__user:hover {
+  background: var(--surface-2);
+  border-color: var(--line);
+}
+
+.stu-sidebar__user-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.stu-sidebar__user-text strong {
+  font-size: 13px;
+  font-weight: 620;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stu-sidebar__user-text em {
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+
+/* ============================================================
+   AVATARS
+   ============================================================ */
+
+.stu-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(145deg, var(--avatar-from), var(--avatar-to));
+  color: var(--avatar-ink);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  flex-shrink: 0;
+}
+
+.stu-avatar--sm { width: 32px; height: 32px; font-size: 11px; }
+.stu-avatar--xs { width: 28px; height: 28px; font-size: 10px; }
+
+/* ============================================================
+   SCRIM (mobile nav)
+   ============================================================ */
+
+.stu-scrim {
+  position: fixed;
+  inset: 0;
+  background: var(--overlay);
+  backdrop-filter: blur(2px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 220ms var(--ease);
+  z-index: 55;
+}
+
+.stu-scrim.is-open { opacity: 1; pointer-events: auto; }
+
+/* ============================================================
+   SHELL + TOPBAR
+   ============================================================ */
+
+.stu-shell {
+  flex: 1;
+  min-width: 0;
+  margin-left: var(--rail);
+  display: flex;
+  flex-direction: column;
+}
+
+.stu-topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  height: 64px;
+  padding: 0 var(--space-7);
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: saturate(1.5) blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+
+.stu-topbar__menu {
+  display: none;
+  background: none;
+  border: 0;
+  padding: 7px;
+  border-radius: 9px;
+  color: var(--ink-2);
+}
+
+.stu-topbar__right {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-left: auto;
+}
+
+/* ---- Campus identity --------------------------------------- */
+
+.stu-campus {
+  display: none;
+  align-items: center;
+  gap: 9px;
+  height: 38px;
+  padding: 0 13px;
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  max-width: 230px;
+}
+
+.stu-campus__mark {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 7px;
+  background: var(--accent-soft);
+  color: var(--interactive);
+  flex: none;
+}
+
+.stu-campus__text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+  min-width: 0;
+}
+
+.stu-campus__text strong {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stu-campus__text em { font-size: 11px; color: var(--ink-3); }
+
+/* ---- Next drive chip ---------------------------------------
+   Rendered only when a real drive comes back from
+   GET /student/upcoming-drives. No drive, no chip. */
+
+.stu-drive-chip {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 38px;
+  padding: 0 var(--space-3);
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  text-decoration: none;
+  transition: border-color var(--dur-fast) var(--ease);
+}
+
+.stu-drive-chip:hover { border-color: var(--line-strong); }
+
+.stu-drive-chip.is-soon {
+  border-color: color-mix(in srgb, var(--alert) 38%, var(--line));
+  background: var(--alert-soft);
+}
+
+.stu-drive-chip__icon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: var(--space-2);
+  background: var(--accent-soft);
+  color: var(--interactive);
+  flex: none;
+}
+
+.stu-drive-chip.is-soon .stu-drive-chip__icon {
+  background: color-mix(in srgb, var(--alert) 16%, transparent);
+  color: var(--alert-ink);
+}
+
+.stu-drive-chip__text { display: flex; flex-direction: column; line-height: 1.25; min-width: 0; }
+
+.stu-drive-chip__text strong {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stu-drive-chip__text em { font-size: 11px; color: var(--ink-3); }
+
+/* ---- Theme switch ------------------------------------------
+   A visible segmented control, not an item buried in the account
+   menu behind a gear icon. */
+
+.stu-theme-switch {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 3px;
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+
+.stu-theme-switch__btn {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 0;
+  border-radius: 7px;
+  background: none;
+  color: var(--ink-3);
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.stu-theme-switch__btn:hover { color: var(--ink); }
+
+.stu-theme-switch__btn[aria-pressed='true'] {
+  background: var(--surface);
+  color: var(--interactive);
+  box-shadow: var(--sh-1);
+}
+
+/* ---- Icon buttons + notifications --------------------------- */
+
+.stu-icon-btn {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.stu-icon-btn:hover { background: var(--surface-2); color: var(--ink); }
+
+.stu-notif { position: relative; }
+
+.stu-notif__panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 268px;
+  padding: var(--space-5) var(--space-4);
+  background: var(--surface-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-3);
+  text-align: center;
+  animation: stu-pop var(--dur-fast) var(--ease);
+  z-index: 5;
+}
+
+.stu-notif__title {
+  font-size: var(--text-body-sm);
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.stu-notif__sub {
+  margin-top: var(--space-1);
+  font-size: var(--text-caption);
+  line-height: var(--leading-body);
+  color: var(--ink-3);
+}
+
+/* ---- Account menu ------------------------------------------- */
+
+.stu-topbar__profile { position: relative; }
+
+.stu-topbar__profile-btn {
+  background: none;
+  border: 0;
+  padding: 0;
+  border-radius: 50%;
+  display: block;
+  transition: transform var(--dur-fast) var(--ease);
+}
+
+.stu-topbar__profile-btn:hover { transform: scale(1.05); }
+
+.stu-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 272px;
+  background: var(--surface-raised);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-3);
+  padding: var(--space-2);
+  animation: stu-pop var(--dur-fast) var(--ease);
+  z-index: 5;
+}
+
+@keyframes stu-pop {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}
+
+.stu-menu__head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+}
+
+.stu-menu__id { min-width: 0; display: flex; flex-direction: column; }
+.stu-menu__id strong { font-size: var(--text-body-sm); font-weight: 650; color: var(--ink); }
+
+.stu-menu__id em {
+  font-size: 11.5px;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stu-menu__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 0 10px 10px;
+}
+
+.stu-menu__meta span {
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 3px var(--space-2);
+  border-radius: 6px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+}
+
+.stu-menu__sep { height: 1px; background: var(--line); margin: var(--space-1) 0; }
+
+.stu-menu__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 40px;
+  padding: var(--space-2) var(--space-3);
+  border: 0;
+  background: none;
+  border-radius: var(--r-sm);
+  font-size: 14px;
+  color: var(--ink-2);
+  text-align: left;
+  text-decoration: none;
+  transition: background 140ms var(--ease);
+}
+
+.stu-menu__item:hover { background: var(--surface-2); color: var(--ink); }
+.stu-menu__item--danger { color: var(--bad-ink); }
+
+.stu-menu__item--danger:hover {
+  background: var(--bad-soft);
+  color: var(--bad-ink);
+}
+
+/* ============================================================
+   MAIN + FOOTER
+   ============================================================ */
+
+.stu-main {
+  flex: 1;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: var(--space-5) var(--space-7) var(--space-10);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.stu-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  margin-top: var(--space-2);
+  padding: var(--space-5);
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.stu-foot p {
+  font-size: var(--text-body-sm);
+  font-weight: 550;
+  color: var(--ink-2);
+}
+
+.stu-foot span { font-size: 11.5px; color: var(--ink-3); }
+
+/* ---- Marketing override ------------------------------------
+   This replaces the old 155-line "cascade guard", which blanket
+   re-asserted colour on every portal text role. Auditing which
+   marketing declarations actually reach inside `.stu-app` turned up
+   exactly one selector:
+
+     html.mm-new-ui footer { background-color / background-image /
+                             border-top-color: … !important }
+     html.mm-new-ui footer p { color: … !important }
+     (src/theme/new-ui-tokens.css)
+
+   It paints every <footer> dark site-wide, which left the portal
+   footer dark-on-light in LIGHT mode. `!important` is required here
+   only because the source rule uses it.
+
+   Scoped to any footer inside the shell rather than one class, so a
+   footer added later is covered — the profile page's footer hit this
+   exact bug after the first fix was written against `.stu-foot` only.
+
+   Two classes are load-bearing: the source rule is `html.mm-new-ui
+   footer` at (0,1,2) and also `!important`, so a (0,1,1) selector
+   like `.stu-app footer` loses the tie-break. `.stu-app .stu-shell
+   footer` is (0,2,1) and wins.
+
+   Nothing else bleeds through; re-run the audit before extending. */
+
+.stu-app .stu-shell footer {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-color: var(--line) !important;
+}
+
+.stu-app .stu-shell footer.stu-foot {
+  background-color: var(--surface) !important;
+}
+
+.stu-app .stu-shell footer p {
+  color: var(--ink-2) !important;
+}
+
+.stu-app .stu-shell footer.stu-pf__foot p {
+  color: var(--ink-3) !important;
+}
+
+.stu-portal-fallback {
+  padding: var(--space-9) var(--space-6);
+  text-align: center;
+  font-size: var(--text-body-sm);
+  color: var(--ink-3);
+}
+
+/* ============================================================
+   RESPONSIVE
+   Five stops, used consistently across every portal stylesheet:
+   1200 · 1024 · 860 · 640 · 420
+   ============================================================ */
+
+@media (min-width: 1057px) {
+  .stu-campus { display: flex; }
+}
+
+@media (max-width: 1024px) {
+  .stu-app { --rail: 232px; }
+  .stu-topbar { padding: 0 var(--space-5); }
+}
+
+@media (max-width: 860px) {
+  .stu-sidebar {
+    transform: translateX(-100%);
+    transition: transform 260ms var(--ease);
+    box-shadow: var(--sh-3);
+  }
+  .stu-sidebar.is-open { transform: none; }
+  .stu-sidebar__close { display: block; }
+  .stu-shell { margin-left: 0; }
+  .stu-topbar__menu { display: grid; place-items: center; }
+  .stu-topbar { padding: 0 var(--space-4); }
+  .stu-drive-chip { display: none; }
+  .stu-main { padding: var(--space-4) var(--space-4) var(--space-8); gap: var(--space-7); }
+}
+
+@media (max-width: 640px) {
+  .stu-topbar { height: 56px; gap: var(--space-2); padding: 0 var(--space-3); }
+  .stu-topbar__right { gap: var(--space-2); }
+  .stu-icon-btn { width: 36px; height: 36px; }
+  .stu-avatar { width: 32px; height: 32px; font-size: 11px; }
+  .stu-foot { flex-direction: column; align-items: flex-start; }
+}
+
+@media (max-width: 420px) {
+  .stu-theme-switch__btn { width: 27px; height: 27px; }
+  .stu-menu,
+  .stu-notif__panel { width: min(272px, calc(100vw - var(--space-6))); }
+}

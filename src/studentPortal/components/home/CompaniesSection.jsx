@@ -1,12 +1,19 @@
-import { ArrowRight, Target } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { ArrowRight } from 'lucide-react';
+import { companyLogo, companyMonogram } from '../../companyLogos';
+import { driveCountdown } from '../../drives';
+import { studentPaths } from '../../paths';
+import EmptyState from './EmptyState';
 
-const COMPANIES = [
-  { id: 1, name: 'TCS', score: 82, role: 'Ninja / Digital' },
-  { id: 2, name: 'Infosys', score: 80, role: 'Systems Engineer' },
-  { id: 3, name: 'Accenture', score: 71, role: 'ASE' },
-  { id: 4, name: 'Wipro', score: 65, role: 'Project Engineer' },
-  { id: 5, name: 'Amazon', score: 28, role: 'SDE-1' },
-];
+/**
+ * Drives your college has actually published, matched against your
+ * readiness.
+ *
+ * This used to be five invented employers with invented scores (TCS 82,
+ * Amazon 28…). Every row here comes from GET /student/upcoming-drives,
+ * and the readiness figure is the student's real one — so the tier is a
+ * claim we can stand behind.
+ */
 
 function tier(score) {
   if (score >= 80) return { key: 'ready', label: 'Ready' };
@@ -15,60 +22,76 @@ function tier(score) {
   return { key: 'gap', label: 'Needs work' };
 }
 
-export default function CompaniesSection() {
+function CompanyMark({ name }) {
+  const logo = companyLogo(name);
+  return (
+    <span className="stu-co__mark" aria-hidden>
+      {logo ? <img src={logo} alt="" loading="lazy" /> : companyMonogram(name)}
+    </span>
+  );
+}
+
+export default function CompaniesSection({ drives = [], readiness = 0, isDemo = false }) {
+  const rows = drives.filter((d) => d && !d.is_past).slice(0, 5);
+  const score = Math.round(readiness);
+
   return (
     <section className="stu-card stu-companies">
       <header className="stu-card__head">
         <div>
-          <h2 className="stu-card__title">Companies you can crack</h2>
-          <p className="stu-card__sub">Based on your readiness vs campus drives</p>
+          <h2 className="stu-card__title">Drives you can target</h2>
+          <p className="stu-card__sub">
+            {rows.length
+              ? `Your ${score}% readiness against the drives your college has posted`
+              : 'Posted by your training &amp; placement office'}
+          </p>
         </div>
-        <button className="stu-link-btn">
-          View all <ArrowRight size={16} strokeWidth={2} aria-hidden />
-        </button>
+        {rows.length ? (
+          <Link className="stu-link-btn" to={studentPaths.companyPrep}>
+            Prep daily <ArrowRight size={16} strokeWidth={2} aria-hidden focusable="false" />
+          </Link>
+        ) : null}
       </header>
 
-      <ul className="stu-co__list">
-        {COMPANIES.map((c, i) => {
-          const t = tier(c.score);
-          return (
-            <li key={c.id} className="stu-co">
-              <span className="stu-co__mark" aria-hidden>
-                {c.name.slice(0, 2).toUpperCase()}
-              </span>
+      {rows.length ? (
+        <>
+          {isDemo ? (
+            <p className="stu-alert stu-alert--info" role="status">
+              Sample drive — your college has not published its calendar yet.
+            </p>
+          ) : null}
 
-              <span className="stu-co__id">
-                <strong>{c.name}</strong>
-                <em>{c.role}</em>
-              </span>
+          <ul className="stu-co__list">
+            {rows.map((drive) => {
+              const t = tier(score);
+              return (
+                <li key={drive.id} className="stu-co">
+                  <CompanyMark name={drive.company_name} />
 
-              {/* Width is declared, not animated in JS, so the bar is correct
-                  even if the grow animation never runs. */}
-              <span className="stu-co__bar" aria-hidden>
-                <span
-                  className="stu-co__fill"
-                  data-tier={t.key}
-                  style={{ width: `${c.score}%`, animationDelay: `${i * 60}ms` }}
-                />
-              </span>
+                  <span className="stu-co__id">
+                    <strong>{drive.company_name}</strong>
+                    <em>{driveCountdown(drive) || drive.eligibility_criteria || 'Date to be announced'}</em>
+                  </span>
 
-              <span className="stu-co__score">{c.score}%</span>
-              <span className={`stu-tier stu-tier--${t.key}`}>{t.label}</span>
-            </li>
-          );
-        })}
-      </ul>
+                  {/* Width is declared, not animated in JS, so the bar is
+                      correct even if the grow animation never runs. */}
+                  <span className="stu-co__bar" aria-hidden>
+                    <span className="stu-co__fill" data-tier={t.key} style={{ width: `${score}%` }} />
+                  </span>
 
-      <button className="stu-nudge">
-        <span className="stu-nudge__icon" aria-hidden>
-          <Target size={16} strokeWidth={2} />
-        </span>
-        <span className="stu-nudge__text">
-          <strong>Focus on aptitude &amp; communication</strong>
-          <em>Unlocks eligibility for 90%+ of your campus drives</em>
-        </span>
-        <ArrowRight size={16} strokeWidth={2} aria-hidden />
-      </button>
+                  <span className="stu-co__score">{score}%</span>
+                  <span className={`stu-tier stu-tier--${t.key}`}>{t.label}</span>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      ) : (
+        <EmptyState art="drives" title="No drives posted yet">
+          When your training &amp; placement office publishes the campus calendar, each drive shows
+          up here with your readiness against it.
+        </EmptyState>
+      )}
     </section>
   );
 }

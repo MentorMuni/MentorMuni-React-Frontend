@@ -52,7 +52,7 @@ export default function EnrollmentPage() {
   const [manual, setManual] = useState({ name: '', email: '', collegeId: '', batchYear: '' });
   const [lastSetupUrl, setLastSetupUrl] = useState('');
   const [copiedKey, setCopiedKey] = useState('');
-  const [deptHodMap, setDeptHodMap] = useState({}); // id → hodStatus
+  const [deptHodMap, setDeptHodMap] = useState({}); // id → true if any live mentor active
   const [busyId, setBusyId] = useState('');
   const [editing, setEditing] = useState(null);
   const [editForm, setEditForm] = useState(EMPTY_EDIT);
@@ -63,12 +63,12 @@ export default function EnrollmentPage() {
     [departmentId, departments]
   );
 
-  /** Self-register pending is owned by HOD when that dept has an active mentor */
+  /** Self-register pending is owned by branch mentors when HOD or coordinator is active */
   const visiblePending = useMemo(() => {
     return pending.filter((inv) => {
       if (inv.source !== 'self_register') return true;
-      const status = deptHodMap[String(inv.departmentId || '')];
-      return status !== 'active';
+      const hasActiveMentor = deptHodMap[String(inv.departmentId || '')];
+      return !hasActiveMentor;
     });
   }, [pending, deptHodMap]);
 
@@ -108,7 +108,10 @@ export default function EnrollmentPage() {
         );
         const map = {};
         res.departments.forEach((d) => {
-          map[String(d.id)] = d.hodStatus || d.hod_status || '';
+          const hodOk = (d.hodStatus || d.hod_status || '') === 'active';
+          const coordOk =
+            (d.coordinatorStatus || d.coordinator_status || '') === 'active';
+          map[String(d.id)] = hodOk || coordOk;
         });
         setDeptHodMap(map);
       } else {
@@ -131,6 +134,14 @@ export default function EnrollmentPage() {
               code: d.code,
             }))
           );
+          const map = {};
+          res.departments.forEach((d) => {
+            const hodOk = (d.hodStatus || d.hod_status || '') === 'active';
+            const coordOk =
+              (d.coordinatorStatus || d.coordinator_status || '') === 'active';
+            map[String(d.id)] = hodOk || coordOk;
+          });
+          setDeptHodMap(map);
         } else {
           setDepartments(listDepartments());
         }

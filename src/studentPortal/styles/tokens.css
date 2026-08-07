@@ -1,0 +1,347 @@
+/* ============================================================
+   MentorMuni — Student Portal / Design tokens
+
+   Tokens live on `.stu-app`, not `:root`, on purpose: the portal's
+   readiness and today's-focus components are embedded as artwork on
+   the public /colleges page, and portal theming must not leak into
+   the marketing stylesheet (or vice versa).
+
+   Theme is an attribute, not a boolean class: `.stu-app[data-theme]`
+   is written by StudentThemeProvider from the resolved light/dark
+   value, so both states are assertable.
+
+   THE RULE: component stylesheets never contain a raw hex. Every
+   colour resolves through a token declared here, and every token has
+   a value in both themes. Dark mode used to be 52 hand-patched
+   component rules with literal hexes; those are gone because the
+   tokens below cover the cases they were patching.
+   ============================================================ */
+
+.stu-app {
+  /* ---- Brand ------------------------------------------------
+     From the MentorMuni mark: cyan→blue gradient M, amber ring.
+     Green is deliberately not brand — it is reserved for the
+     "ready / success" semantic so status still reads. */
+  --brand: #0e6fa8;
+  --brand-600: #1183c4;
+  --brand-700: #0a5480;
+  --accent: #17b6d4;
+  --accent-soft: #e4f4fa;
+
+  /* Amber — the ring in the logo. Streaks, momentum, gamification. */
+  --amber: #e8a33d;
+  --amber-soft: #fdf3e3;
+
+  /* ---- Interactive ------------------------------------------
+     The brand colour that stays legible on the current surface.
+     In light this is the deep blue; in dark the blue fails against
+     a dark card, so it becomes the cyan. Every link, active nav
+     item, icon glyph and inline emphasis uses this — which is why
+     none of them need a per-component dark override any more. */
+  --interactive: #0e6fa8;
+  --interactive-hover: #0a5480;
+  /* Text/glyph colour on a solid --brand or --accent fill. */
+  --on-brand: #ffffff;
+
+  /* ---- Semantic ---------------------------------------------
+     Each semantic has two forms:
+       --x       the fill  (meter bars, dots, solid badges)
+       --x-ink   the text  (legible on --surface, AA at 4.5:1)
+       --x-soft  the tint  (chip and callout backgrounds)
+     Splitting fill from text is what the old dark overrides were
+     doing by hand with literals like #4ade80 and #f0b45e. */
+  --ok: #16a34a;
+  /* #15803d measured 4.49:1 on the 10%-green tint used by the Progress
+     strength chips — a hundredth short. This clears it at 5.48:1. */
+  --ok-ink: #12703a;
+  --ok-soft: #e8f6ed;
+
+  --warn: #d99400;
+  --warn-ink: #a16207;
+  --warn-soft: #fdf4e3;
+
+  --alert: #e0701a;
+  --alert-ink: #c2410c;
+  --alert-soft: #fdefe6;
+
+  --bad: #dc4a3d;
+  --bad-ink: #b91c1c;
+  --bad-soft: #fdecea;
+
+  --info: #2f6feb;
+  --info-ink: #1d4ed8;
+  --info-soft: #e9f0fe;
+
+  --amber-ink: #b45309;
+  /* Ink on a solid --amber-ink fill (the streak week dots). */
+  --on-amber: #ffffff;
+
+  /* ---- Neutrals — light (cool grey under a blue brand) ------- */
+  --bg: #f4f7fa;
+  --surface: #ffffff;
+  --surface-2: #f7fafc;
+  /* Elevated surface. In light, elevation reads as shadow and this
+     stays white; in dark, shadow is invisible so elevation has to be
+     carried by lightness instead. */
+  --surface-raised: #ffffff;
+  --line: #e3e9ef;
+  --line-strong: #d1dae3;
+  --ink: #0d1720;
+  --ink-2: #2f4253;
+  --ink-3: #55697a;
+
+  /* Meter/progress troughs and the mobile nav scrim. */
+  --track: rgba(13, 27, 42, 0.08);
+  --overlay: rgba(13, 27, 42, 0.45);
+
+  /* Focus ring. There was no focus style at all before this. */
+  --focus: #1183c4;
+
+  /* ---- Always-dark surfaces ----------------------------------
+     The readiness card and voice callout stay dark in both themes —
+     that contrast against the light cards is what makes readiness
+     read as the page's headline number.
+
+     Because the surface never lightens, these tokens are theme-
+     independent. They are tuned against --deep-1, the LIGHTEST stop
+     of those gradients, so every label clears AA at the weakest
+     point of the fill rather than only in the dark corner. */
+  --deep-1: #0e5a83;
+  --deep-2: #0d4a6d;
+  --deep-3: #0b3f62;
+
+  --on-dark: #ffffff;
+  --on-dark-2: rgba(255, 255, 255, 0.88);
+  /* 0.8, not 0.6: measured against --deep-1 with an --on-dark-fill
+     panel on top (the ETA pill), 0.6 gave 3.28:1 and 0.72 gave 4.06:1.
+     0.8 clears 4.5 and still reads as secondary next to --on-dark. */
+  --on-dark-3: rgba(255, 255, 255, 0.8);
+  --on-dark-accent: #8fe3f5;
+  --on-dark-line: rgba(255, 255, 255, 0.14);
+  --on-dark-fill: rgba(255, 255, 255, 0.08);
+  --on-dark-fill-2: rgba(255, 255, 255, 0.18);
+
+  /* Score ramp for always-dark surfaces — brighter than the on-white
+     semantic inks, which would disappear against --deep-1. */
+  --on-dark-ok: #34d385;
+  --on-dark-warn: #ffc94d;
+  --on-dark-low: #ff8a6b;
+  --on-dark-ring: #2ecbe8;
+  /* Deepest stop — used as the ink on a white pill sitting on a deep
+     surface, and as the far end of the voice gradient. */
+  --deep-4: #08202f;
+  --on-dark-glyph: #cdf3fb;
+  /* Neutral plate behind a logo, so dark company marks stay visible
+     on a dark card. Not --surface: it must be white in both themes. */
+  --logo-plate: #ffffff;
+
+  /* Avatar fill. In light this must stay dark enough for white
+     initials (the cyan end of the old gradient measured 2.42:1); in
+     dark it flips to the bright ramp with dark initials. */
+  --avatar-from: #0e6fa8;
+  --avatar-to: #0a5480;
+  --avatar-ink: #ffffff;
+
+  /* ---- Elevation -------------------------------------------- */
+  --sh-1: 0 1px 2px rgba(13, 27, 42, 0.05);
+  --sh-2: 0 2px 8px -2px rgba(13, 27, 42, 0.08), 0 1px 3px rgba(13, 27, 42, 0.04);
+  --sh-3: 0 12px 32px -8px rgba(13, 27, 42, 0.16), 0 2px 8px rgba(13, 27, 42, 0.06);
+
+  /* ---- Geometry --------------------------------------------- */
+  --r-sm: 10px;
+  --r-md: 14px;
+  --r-lg: 18px;
+  --r-xl: 22px;
+  --rail: 260px;
+
+  /* ---- 8pt spacing grid -------------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 64px;
+
+  /* ---- Typography -------------------------------------------- */
+  --text-micro: 11px;
+  --text-caption: 12.5px;
+  --text-body-sm: 13.5px;
+  --text-body: 15px;
+  --text-title-sm: 16px;
+  --text-title: 18px;
+  --text-display-sm: 24px;
+  --text-display: clamp(26px, 2.6vw, 30px);
+  --leading-tight: 1.12;
+  --leading-snug: 1.28;
+  --leading-body: 1.5;
+  --tracking-display: -0.028em;
+  --tracking-title: -0.018em;
+  --tracking-label: 0.02em;
+
+  /* ---- Motion ------------------------------------------------
+     Mirrored in src/studentPortal/motion.js, which is the single
+     source of truth for these numbers — see the header comment
+     there before changing either side. */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 180ms;
+  --dur-base: 320ms;
+  --dur-slow: 480ms;
+
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'tnum', 'ss01';
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  color: var(--ink);
+  background: var(--bg);
+  min-height: 100vh;
+  display: flex;
+}
+
+/* ============================================================
+   DARK
+
+   Every token that changes meaning in dark is redeclared here.
+   If a component needs a colour that isn't right in dark, the fix
+   belongs in this block — not in a `[data-theme='dark'] .my-thing`
+   override next to the component.
+   ============================================================ */
+
+.stu-app[data-theme='dark'] {
+  --bg: #0d141d;
+  --surface: #161f2b;
+  --surface-2: #1b2634;
+  --surface-raised: #202c3b;
+  --line: #293747;
+  --line-strong: #3a4c60;
+  --ink: #eaf1f8;
+  --ink-2: #adbecd;
+  --ink-3: #8397aa;
+
+  --brand: #54b3e5;
+  --brand-600: #68c0ef;
+  --brand-700: #2f8fbe;
+  --accent: #46d4ee;
+  --accent-soft: #183548;
+
+  --interactive: #5ad3ee;
+  --interactive-hover: #8ae4f7;
+  /* Dark cyan fills need dark text, not white. */
+  --on-brand: #04222c;
+
+  --ok-ink: #4ade80;
+  --ok-soft: #10291c;
+  --warn-ink: #f5c464;
+  --warn-soft: #2e2413;
+  --alert-ink: #fb9b52;
+  --alert-soft: #2f1e12;
+  --bad-ink: #f87171;
+  --bad-soft: #33191a;
+  --info-ink: #7fb0ff;
+  --info-soft: #16233d;
+  --amber-ink: #f0b45e;
+  --on-amber: #1a1207;
+  --amber-soft: #312716;
+
+  --track: rgba(255, 255, 255, 0.1);
+  --overlay: rgba(0, 0, 0, 0.62);
+  --focus: #5ad3ee;
+
+  --avatar-from: #68c0ef;
+  --avatar-to: #46d4ee;
+  --avatar-ink: #04222c;
+
+  --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --sh-2: 0 2px 8px -2px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3);
+  --sh-3: 0 12px 32px -8px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================================
+   SCOPED NORMALIZE
+
+   The global marketing stylesheet themes bare elements and is
+   injected after this file, so it wins on source order. Rather
+   than re-asserting 155 lines of colour one specificity level
+   deeper (the old "cascade guard"), portal components set their
+   own `color` explicitly and these two rules neutralise the
+   inherited element paint.
+   ============================================================ */
+
+.stu-app :where(h1, h2, h3, h4, h5, h6, p, ul, ol, li, dl, dd, figure, blockquote) {
+  margin: 0;
+}
+
+.stu-app :where(p, li, dd, dt, label, strong, b, em, i, small, h1, h2, h3, h4, h5, h6) {
+  color: inherit;
+}
+
+/* `em` is used throughout the portal as a secondary-text slot, never
+   for stress emphasis, so italics here are always a mistake. */
+.stu-app :where(em, i) {
+  font-style: normal;
+}
+
+.stu-app :where(ul, ol) {
+  padding: 0;
+  list-style: none;
+}
+
+.stu-app :where(button) {
+  font: inherit;
+  cursor: pointer;
+}
+
+.stu-app :where(button:disabled) {
+  cursor: not-allowed;
+}
+
+/* ============================================================
+   FOCUS
+   ============================================================ */
+
+.stu-app :focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+.stu-app :focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ============================================================
+   PAGE CANVAS
+
+   `data-student-portal` is written to <html> by the theme provider
+   while a portal route is mounted, and removed on unmount.
+
+   The canvas COLOUR is not set here. index.html ships an inline
+   `<body style="background-color:…">` for the marketing site, and an
+   inline style beats every selector — so useStudentPortalCanvas sets
+   and restores that same inline property. Adding a colour rule here
+   would be dead CSS that looks authoritative.
+   ============================================================ */
+
+html[data-student-portal] body {
+  margin: 0;
+}
+
+/* ============================================================
+   MOTION PREFERENCES
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .stu-app *,
+  .stu-app *::before,
+  .stu-app *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

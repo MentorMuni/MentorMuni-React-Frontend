@@ -4,7 +4,8 @@ import SiteFooter from './layout/SiteFooter';
 import ScrollReveal from './layout/ScrollReveal';
 import ProductFrame from './colleges/ProductFrame';
 import { ArrowRight, CalendarDays, Phone } from 'lucide-react';
-import '../studentPortal/styles/student-home.css';
+import '../studentPortal/styles/portal.css';
+import '../studentPortal/styles/home.css';
 import './colleges/colleges-page.css';
 
 /* The real student dashboard sections. These are pure presentational and
@@ -19,6 +20,26 @@ const TodaysPlanSection = lazy(
 );
 
 const DEMO_URL = 'https://calendly.com/mentormuni';
+
+/* Frozen sample state for the screenshot. TodaysPlanSection takes `steps`;
+   this page used to pass `currentReadiness`, so the marketing shot silently
+   rendered the component's empty state instead of a mission card. */
+const DEMO_STEPS = [
+  { tool_code: '5_sec', order: 1, title: '5-sec snap test', minutes: 5, status: 'done', score: 62 },
+  { tool_code: 'aptitude', order: 2, title: 'Aptitude readiness', minutes: 20, status: 'done', score: 54 },
+  { tool_code: 'skill_readiness', order: 3, title: 'Skill readiness', minutes: 25, status: 'done', score: 71 },
+  { tool_code: 'skill_mock', order: 4, title: 'Skill AI mock interview', minutes: 45, status: 'current', score: null },
+  { tool_code: 'project_mock', order: 5, title: 'Project AI mock interview', minutes: 45, status: 'locked', score: null },
+  { tool_code: 'interview_readiness', order: 6, title: 'Interview readiness', minutes: 25, status: 'locked', score: null },
+  { tool_code: 'interview_mock', order: 7, title: 'Interview AI mock', minutes: 45, status: 'locked', score: null },
+  { tool_code: 'hr_mock', order: 8, title: 'HR AI mock interview', minutes: 30, status: 'locked', score: null },
+];
+
+const DEMO_BREAKDOWN = [
+  { label: 'Aptitude', score: 54, weight: '' },
+  { label: 'Skills', score: 71, weight: '' },
+  { label: 'Communication', score: 38, weight: '' },
+];
 
 /* ══════════════════════════════════════════════════════════════
    HERO — dark, cinematic, product as the light source
@@ -60,18 +81,19 @@ function Hero() {
 
         <div className="mmc-glow">
           <ProductFrame url="mentormuni.com/studentportal/home" height={520}>
-            {/* `.stu-app is-light` supplies the dashboard's own token scope.
-                No `--page` modifier: this is artwork, not the page. */}
-            <div className="stu-app is-light" style={{ padding: 18, background: 'var(--bg)' }}>
+            {/* `.stu-app[data-theme]` supplies the dashboard's own token
+                scope. No `--page` modifier: this is artwork, not the page. */}
+            <div className="stu-app" data-theme="light" style={{ padding: 18, background: 'var(--bg)' }}>
               <Suspense fallback={<div style={{ height: 820 }} />}>
                 <PlacementReadinessHero
                   currentReadiness={47}
                   previousReadiness={41}
                   targetReadiness={85}
                   estimatedDays={38}
+                  breakdown={DEMO_BREAKDOWN}
                 />
                 <div style={{ height: 18 }} />
-                <TodaysPlanSection currentReadiness={47} />
+                <TodaysPlanSection steps={DEMO_STEPS} />
               </Suspense>
             </div>
           </ProductFrame>

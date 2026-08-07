@@ -1,0 +1,65 @@
+/* In-portal tool host — keeps assessments inside student shell */
+
+.stu-main--tool {
+  max-width: none;
+}
+
+.stu-tool-host {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 60vh;
+}
+
+.stu-tool-host__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 12px 20px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--stu-line, #e5e7eb) 80%, transparent);
+}
+
+.stu-tool-host__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid var(--stu-line, #e5e7eb);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.stu-tool-host__back:hover {
+  background: color-mix(in srgb, var(--stu-fg, #111) 6%, transparent);
+}
+
+.stu-tool-host__eyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  opacity: 0.55;
+}
+
+.stu-tool-host__title {
+  margin: 2px 0 0;
+  font-size: 1.15rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.stu-tool-host__error {
+  margin: 0 0 12px;
+}
+
+.stu-tool-host .mm-tool-widget-root {
+  min-width: 0;
+}

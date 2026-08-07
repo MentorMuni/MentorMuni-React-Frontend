@@ -38,6 +38,9 @@ export default function ActivateHodPage() {
   const [params] = useSearchParams();
   const token = useMemo(() => String(params.get('token') || '').trim(), [params]);
   const invitePreview = useMemo(() => (token ? peekHodInvite(token) : null), [token]);
+  const isCoordinator = invitePreview?.slot === 'coordinator';
+  const roleNoun = isCoordinator ? 'Placement Coordinator' : 'HOD';
+  const roleHeadline = isCoordinator ? 'Welcome, Placement Coordinator' : 'Welcome, Head of Department';
 
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
@@ -82,7 +85,8 @@ export default function ActivateHodPage() {
         replace: true,
         state: {
           activateSuccess:
-            result.message || 'Password set. Sign in as HOD for your department.',
+            result.message ||
+            `Password set. Sign in as ${roleNoun} for your department.`,
           preferredRole: 'hod',
           preferredOrgCode: orgCode || undefined,
         },
@@ -106,13 +110,17 @@ export default function ActivateHodPage() {
 
         <div className="mm-activate__brand-mid">
           <p className="mm-activate__eyebrow">Department leadership access</p>
-          <h1 className="mm-activate__headline">Welcome, Head of Department</h1>
+          <h1 className="mm-activate__headline">{roleHeadline}</h1>
           <p className="mm-activate__lede">
-            Set your password to activate your HOD account and track placement readiness
+            Set your password to activate your {roleNoun} account and track placement readiness
             for your department.
+            {isCoordinator
+              ? ' You have the same portal access as the HOD for your branch.'
+              : ''}
           </p>
           {invitePreview ? (
             <ul className="mm-activate__roles" aria-label="Invite details">
+              <li className="mm-activate__role">{roleNoun}</li>
               {invitePreview.name ? (
                 <li className="mm-activate__role">{invitePreview.name}</li>
               ) : null}
@@ -122,7 +130,7 @@ export default function ActivateHodPage() {
             </ul>
           ) : (
             <ul className="mm-activate__roles" aria-label="Role">
-              <li className="mm-activate__role">HOD</li>
+              <li className="mm-activate__role">{roleNoun}</li>
             </ul>
           )}
         </div>

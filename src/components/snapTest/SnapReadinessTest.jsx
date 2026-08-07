@@ -14,14 +14,18 @@ import {
   Bot,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import RoutePageShell from '../layout/RoutePageShell';
 import { goToStartAssessment } from '../../utils/startAssessmentNavigation';
+import { useNavigate } from 'react-router-dom';
+import { useToolSession } from '../../widgets/ToolSessionContext';
+import ToolChrome from '../../widgets/ToolChrome';
+import { hostBackLabel, hostSaveStatusMessage, showHostChrome } from '../../widgets/hostCopy';
 import {
   SNAP_QUESTIONS,
   SNAP_SCALE_OPTIONS,
   SNAP_STAGES,
   computeSnapScore,
   buildSnapResult,
+  readySignalCount,
 } from '../../utils/snapReadinessScoring';
 import {
   SNAP_TEST_EYEBROW,
@@ -288,11 +292,29 @@ function ScaleChoices({ onPick, disabled }) {
 }
 
 export default function SnapReadinessTest() {
+  const navigate = useNavigate();
+  const session = useToolSession();
   const reduceMotion = useReducedMotion();
   const [step, setStep] = useState(STEPS.intro);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [answers, setAnswers] = useState({});
   const [locking, setLocking] = useState(false);
+  const [roadmapSave, setRoadmapSave] = useState({ status: 'idle', message: '' });
+  const [saveAttempt, setSaveAttempt] = useState(0);
+  const roadmapQuery = session;
+  const [practiceNotice, setPracticeNotice] = useState('');
+
+  useEffect(() => {
+    if (!roadmapQuery.fromPractice) return;
+    const gate = session.guardPractice(roadmapQuery.toolCode || '5_sec');
+    if (gate.blocked) {
+      setPracticeNotice(gate.message);
+      const t = window.setTimeout(() => session.returnHome(), 1600);
+      return () => window.clearTimeout(t);
+    }
+    return undefined;
+  }, [roadmapQuery.fromPractice, roadmapQuery.toolCode, session]);
+
   const elapsed = useElapsedMs(step === STEPS.quiz);
 
   const currentQuestion = SNAP_QUESTIONS[questionIndex];
@@ -319,6 +341,54 @@ export default function SnapReadinessTest() {
       fireConfetti();
     }
   }, [step, result, fireConfetti]);
+
+  useEffect(() => {
+    if (step !== STEPS.result || !result) return undefined;
+    const shouldPersist = roadmapQuery.fromPortal || roadmapQuery.source === 'embed' || typeof session.persistResult === 'function';
+    if (!shouldPersist && !roadmapQuery.fromHost) return undefined;
+    // Standalone marketing page: no host + no portal → skip persist
+    if (!roadmapQuery.fromPortal && roadmapQuery.source === 'standalone') return undefined;
+    let cancelled = false;
+    (async () => {
+      setRoadmapSave({ status: 'saving', message: '' });
+      const score = computeSnapScore(answers);
+      const strengths = [];
+      const ready = readySignalCount(answers);
+      if (ready > 0) strengths.push(`${ready}/${result.totalSignals} ready signals`);
+      const outcome = await session.persistResult({
+        toolCode: roadmapQuery.toolCode || '5_sec',
+        result: {
+          score,
+          label: result.stage?.label || 'Snap stage',
+          strengths,
+          weaknesses: (result.gaps || []).map((g) => g.label || g.id).filter(Boolean),
+          recommendations: [],
+          raw: { stage: result.stage, gaps: result.gaps, answers, signalsReady: ready },
+        },
+      });
+      if (cancelled) return;
+      if (outcome.status === 'idle') {
+        setRoadmapSave({ status: 'idle', message: '' });
+        return;
+      }
+      setRoadmapSave(
+        outcome.ok
+          ? { status: 'saved', message: outcome.message || '' }
+          : { status: 'error', message: outcome.message || 'Could not save result.' }
+      );
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    step,
+    result,
+    roadmapQuery.fromPortal,
+    roadmapQuery.fromPractice,
+    roadmapQuery.toolCode,
+    answers,
+    saveAttempt,
+  ]);
 
   const advance = useCallback(
     (value) => {
@@ -351,7 +421,7 @@ export default function SnapReadinessTest() {
   const elapsedSec = (elapsed / 1000).toFixed(1);
 
   return (
-    <RoutePageShell scope="marketing" className="bg-background">
+    <ToolChrome scope="marketing" className="bg-background">
       <div className="mm-container mx-auto max-w-lg px-4 py-8 sm:py-12">
         <AnimatePresence mode="wait">
           {step === STEPS.intro && (
@@ -549,27 +619,73 @@ export default function SnapReadinessTest() {
                 <p className="text-sm leading-relaxed text-foreground">{SNAP_RESULT_MENTOR_LINE}</p>
               </div>
 
-              <button
-                type="button"
-                onClick={goToStartAssessment}
-                className="mm-btn-primary mm-btn-shimmer mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-base font-bold text-white shadow-lg transition active:scale-[0.98] sm:w-auto"
-              >
-                {SNAP_RESULT_CTA_PRIMARY}
-                <ArrowRight size={18} aria-hidden />
-              </button>
-              <p className="mt-2 text-xs text-muted-foreground">{SNAP_RESULT_CTA_SUB}</p>
+              {practiceNotice ? (
+                <div className="mt-6 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-left text-sm text-amber-900 dark:border-amber-800 dark:bg-amber-950/40 dark:text-amber-200">
+                  {practiceNotice}
+                </div>
+              ) : null}
+
+              {roadmapQuery.fromRoadmap && roadmapSave.status === 'error' ? (
+                <div className="mt-6 rounded-2xl border border-red-300 bg-red-50 px-4 py-3 text-left dark:border-red-900 dark:bg-red-950/40">
+                  <p className="text-sm font-medium text-red-700 dark:text-red-300">
+                    {roadmapSave.message}
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => setSaveAttempt((n) => n + 1)}
+                    className="mt-2 text-sm font-bold text-red-700 underline underline-offset-2 dark:text-red-300"
+                  >
+                    Retry save
+                  </button>
+                </div>
+              ) : null}
+
+              {roadmapQuery.fromPractice && roadmapSave.status === 'saved' ? (
+                <p className="mt-6 text-sm font-medium text-muted-foreground">{roadmapSave.message}</p>
+              ) : null}
 
               <button
                 type="button"
-                onClick={startQuiz}
-                className="mt-4 text-sm font-semibold text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                onClick={
+                  showHostChrome(roadmapQuery)
+                    ? () => session.returnHome()
+                    : goToStartAssessment
+                }
+                className="mm-btn-primary mm-btn-shimmer mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-4 text-base font-bold text-white shadow-lg transition active:scale-[0.98] sm:w-auto"
               >
-                Retake snap test
+                {hostBackLabel(roadmapQuery) || SNAP_RESULT_CTA_PRIMARY}
+                <ArrowRight size={18} aria-hidden />
               </button>
-            </motion.div>
+              <p className="mt-2 text-xs text-muted-foreground">
+                {roadmapQuery.fromPractice
+                  ? 'Locked until tomorrow · one run per day'
+                  : roadmapQuery.fromRoadmap
+                    ? roadmapSave.status === 'saving'
+                      ? 'Saving to your baseline…'
+                      : roadmapSave.status === 'saved'
+                        ? 'Saved. Step 1 is done and the next step is unlocked.'
+                        : 'Your snap result is shown above.'
+                    : roadmapQuery.fromCompanyPrep || roadmapQuery.fromJourney
+                      ? hostSaveStatusMessage(roadmapQuery, roadmapSave) ||
+                        'Your snap result is shown above.'
+                      : roadmapQuery.source === 'embed'
+                        ? hostSaveStatusMessage(roadmapQuery, roadmapSave) ||
+                          'Your snap result is shown above.'
+                        : SNAP_RESULT_CTA_SUB}
+              </p>
+
+              {!roadmapQuery.fromPractice ? (
+                <button
+                  type="button"
+                  onClick={startQuiz}
+                  className="mt-4 text-sm font-semibold text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+                >
+                  Retake snap test
+                </button>
+              ) : null}            </motion.div>
           )}
         </AnimatePresence>
       </div>
-    </RoutePageShell>
+    </ToolChrome>
   );
 }

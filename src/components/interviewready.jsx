@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useId } from 'react';
+import React, { useState, useEffect, useRef, useId, useCallback } from 'react';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import {
   AlertCircle, CheckCircle, ChevronRight, Lock, Mail, Phone, Check, Zap, ArrowRight, Star,
@@ -25,6 +25,8 @@ import { fetchWithDeduplication } from '../utils/apiOptimization';
 import { toAppAbsoluteUrl } from '../utils/appPaths';
 import { getInterviewReadinessShareUrl, buildWhatsAppChallengeMessage } from '../utils/readinessShare';
 import ReadinessSharePanel from './readiness/ReadinessSharePanel';
+import { useToolSession } from '../widgets/ToolSessionContext';
+import { hostBackLabel, hostSaveStatusMessage, showHostChrome } from '../widgets/hostCopy';
 
 const FREE_TIER_LIMIT = 3;
 
@@ -382,6 +384,32 @@ function readToolsEntryFromSearch() {
   } catch {
     return false;
   }
+}
+
+/** Deep-link mode for student roadmap: aptitude | skill | placement */
+function readAssessmentModeFromSearch() {
+  if (typeof window === 'undefined') return null;
+  try {
+    const mode = new URLSearchParams(window.location.search).get('mode');
+    if (mode === 'aptitude') return ASSESSMENT_FOCUS_APTITUDE;
+    if (mode === 'skill') return ASSESSMENT_FOCUS_SKILL;
+    if (mode === 'placement') return ASSESSMENT_FOCUS_PLACEMENT;
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+function readRoadmapFromSearch() {
+  // Legacy helper kept for module-level callers; InterviewReady uses useToolSession().
+  return {
+    fromRoadmap: false,
+    fromPractice: false,
+    fromCompanyPrep: false,
+    fromPortal: false,
+    toolCode: '',
+    mode: '',
+  };
 }
 
 /** Aptitude has no year/profile step — back from skills (4) returns to mode picker, not step 2. */
@@ -1601,19 +1629,57 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
 const InterviewReady = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const [fromToolsEntry] = useState(() => readToolsEntryFromSearch());
+  const session = useToolSession();
+  const [fromToolsEntry] = useState(() => readToolsEntryFromSearch() || session.source === 'embed');
+  const roadmapEntry = session;
+  const deepLinkMode = useState(() => {
+    const fromSession = session.mode;
+    if (fromSession === 'aptitude' || fromSession === 'skill' || fromSession === 'placement') {
+      return fromSession;
+    }
+    return readAssessmentModeFromSearch();
+  })[0];
+  const [roadmapSave, setRoadmapSave] = useState({ status: 'idle', message: '' });
+  const roadmapPayloadRef = useRef(null);
+
+  const retryRoadmapSave = useCallback(async () => {
+    if (!roadmapPayloadRef.current) return;
+    setRoadmapSave({ status: 'saving', message: '' });
+    const outcome = await session.persistResult(roadmapPayloadRef.current);
+    setRoadmapSave(
+      outcome.ok || outcome.status === 'idle'
+        ? { status: outcome.status === 'idle' ? 'idle' : 'saved', message: outcome.message || '' }
+        : { status: 'error', message: outcome.message || 'Could not save result.' }
+    );
+  }, [session]);
 
   // Initialize free usage tracker and modal
   const { incrementUsage, getUsageInfo } = useFreeUsageTracker('interview_readiness');
 
   // 0: landing, 12: mode (tools entry), 2: role, … — tools skips hero, starts at mode picker
-  const [step, setStep] = useState(() => (readToolsEntryFromSearch() ? 12 : 0));
+  // Roadmap deep-link with mode skips mode picker (step 12) into profile/skills flow.
+  const [step, setStep] = useState(() => {
+    if (deepLinkMode) {
+      if (deepLinkMode === ASSESSMENT_FOCUS_APTITUDE) return 4;
+      return 2;
+    }
+    return readToolsEntryFromSearch() || roadmapEntry.fromPortal ? 12 : 0;
+  });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [showSkillValidationModal, setShowSkillValidationModal] = useState(false);
   const [validationErrors, setValidationErrors] = useState({});
   const [otpSent, setOtpSent] = useState(false);
+
+  useEffect(() => {
+    if (!roadmapEntry.fromPractice) return undefined;
+    const gate = session.guardPractice(roadmapEntry.toolCode);
+    if (!gate.blocked) return undefined;
+    setError(gate.message);
+    const t = window.setTimeout(() => session.returnHome(), 1600);
+    return () => window.clearTimeout(t);
+  }, [roadmapEntry.fromPractice, roadmapEntry.toolCode, session]);
   
   const [contactInfo, setContactInfo] = useState({
     email: '',
@@ -1628,8 +1694,8 @@ const InterviewReady = () => {
   const [reportSent, setReportSent] = useState(false);
   
   const [profile, setProfile] = useState({
-    assessmentMode: null,
-    userCategory: '',
+    assessmentMode: deepLinkMode,
+    userCategory: deepLinkMode === ASSESSMENT_FOCUS_APTITUDE ? '4th_year' : '',
     primarySkill: '',
     email: '',
     contactNumber: '',
@@ -2361,8 +2427,52 @@ const InterviewReady = () => {
           });
           setStep(6);
 
-          const { isLimitReached } = incrementUsage();
-          if (isLimitReached) setShowUpgradeModal(true);
+          const shouldPersist =
+            roadmapEntry.fromPortal ||
+            roadmapEntry.source === 'embed' ||
+            roadmapEntry.lockMode !== 'none';
+          if (shouldPersist && roadmapEntry.source !== 'standalone') {
+            const recs = (data.learning_recommendations || data.learningRecommendations || []).map(
+              (r) => (typeof r === 'string' ? r : r?.topic ? `${r.topic}${r.why ? `: ${r.why}` : ''}` : '')
+            ).filter(Boolean);
+            const toolCode =
+              roadmapEntry.toolCode ||
+              (profile.assessmentMode === ASSESSMENT_FOCUS_APTITUDE
+                ? 'aptitude'
+                : profile.assessmentMode === ASSESSMENT_FOCUS_SKILL
+                  ? 'skill_readiness'
+                  : 'interview_readiness');
+            const roadmapPayload = {
+              toolCode,
+              result: {
+                score: readinessPct,
+                label: readinessLabel,
+                strengths: data.strengths || [],
+                weaknesses: data.gaps || [],
+                recommendations: recs,
+                raw: data,
+              },
+            };
+            roadmapPayloadRef.current = roadmapPayload;
+            setRoadmapSave({ status: 'saving', message: '' });
+            session.persistResult(roadmapPayload).then((outcome) => {
+              if (outcome.status === 'idle') {
+                setRoadmapSave({ status: 'idle', message: '' });
+                return;
+              }
+              setRoadmapSave(
+                outcome.ok
+                  ? { status: 'saved', message: outcome.message || '' }
+                  : {
+                      status: 'error',
+                      message: outcome.message || 'Could not save result.',
+                    }
+              );
+            });
+          } else {
+            const { isLimitReached } = incrementUsage();
+            if (isLimitReached) setShowUpgradeModal(true);
+          }
           return;
         }
 
@@ -4322,7 +4432,38 @@ const InterviewReady = () => {
             className="mm-surface-panel mm-surface-panel--lg"
           >
             <div className="space-y-3">
-              {usageInfo.remaining_attempts > 0 ? (
+              {showHostChrome(roadmapEntry) && roadmapSave.status !== 'idle' ? (
+                <div
+                  className={`rounded-2xl border px-4 py-3 text-left text-sm ${
+                    roadmapSave.status === 'error'
+                      ? 'border-red-300 bg-red-50 text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300'
+                      : 'border-border bg-tint-subtle text-ink'
+                  }`}
+                >
+                  <p className="font-medium">
+                    {hostSaveStatusMessage(roadmapEntry, roadmapSave)}
+                  </p>
+                  {roadmapSave.status === 'error' && roadmapEntry.fromRoadmap ? (
+                    <button
+                      type="button"
+                      onClick={retryRoadmapSave}
+                      className="mt-2 text-sm font-bold underline underline-offset-2"
+                    >
+                      Retry save
+                    </button>
+                  ) : null}
+                </div>
+              ) : null}
+
+              {showHostChrome(roadmapEntry) ? (
+                <button
+                  type="button"
+                  onClick={() => session.returnHome()}
+                  className="w-full rounded-2xl bg-gradient-to-r from-cta to-cta-mid py-4 text-base font-bold text-white shadow-lg shadow-button-strong transition-all hover:from-cta hover:to-cta-mid active:scale-[0.98]"
+                >
+                  {hostBackLabel(roadmapEntry) || 'Done'}
+                </button>
+              ) : usageInfo.remaining_attempts > 0 ? (
                 <button
                   type="button"
                   onClick={() => {

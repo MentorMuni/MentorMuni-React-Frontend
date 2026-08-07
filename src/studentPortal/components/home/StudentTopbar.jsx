@@ -1,30 +1,44 @@
 import { useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Bell, CalendarDays, GraduationCap, LogOut, Menu, Search, Settings, User } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Bell, CalendarDays, GraduationCap, LogOut, Menu, Monitor, Moon, Sun, User } from 'lucide-react';
 import { clearStudentSession } from '../../auth';
 import { studentPaths } from '../../paths';
+import { useStudentTheme } from '../../useStudentTheme.jsx';
+import { driveCountdown, isDriveSoon } from '../../drives';
 
-export default function StudentTopbar({ session, onMenu, theme, onToggleTheme }) {
-  const navigate = useNavigate();
-  const [menuOpen, setMenuOpen] = useState(false);
-  const menuRef = useRef(null);
+const THEME_MODES = [
+  { id: 'light', label: 'Light', Icon: Sun },
+  { id: 'system', label: 'System', Icon: Monitor },
+  { id: 'dark', label: 'Dark', Icon: Moon },
+];
 
-  const initials =
-    session?.name
-      ?.split(' ')
+/** Demo/local sessions get a synthetic drive; it must not read as real. */
+function isSampleDrive(drive) {
+  return String(drive?.id || '').startsWith('demo');
+}
+
+function initialsOf(name) {
+  return (
+    String(name || '')
+      .split(' ')
       .filter(Boolean)
       .slice(0, 2)
       .map((n) => n[0])
       .join('')
-      .toUpperCase() || 'ST';
+      .toUpperCase() || 'ST'
+  );
+}
 
+/** Closes a popover on outside click or Escape. */
+function useDismissable(open, onDismiss) {
+  const ref = useRef(null);
   useEffect(() => {
-    if (!menuOpen) return undefined;
+    if (!open) return undefined;
     const onDown = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) setMenuOpen(false);
+      if (ref.current && !ref.current.contains(e.target)) onDismiss();
     };
     const onKey = (e) => {
-      if (e.key === 'Escape') setMenuOpen(false);
+      if (e.key === 'Escape') onDismiss();
     };
     document.addEventListener('mousedown', onDown);
     document.addEventListener('keydown', onKey);
@@ -32,7 +46,19 @@ export default function StudentTopbar({ session, onMenu, theme, onToggleTheme })
       document.removeEventListener('mousedown', onDown);
       document.removeEventListener('keydown', onKey);
     };
-  }, [menuOpen]);
+  }, [open, onDismiss]);
+  return ref;
+}
+
+export default function StudentTopbar({ session, onMenu, nextDrive }) {
+  const navigate = useNavigate();
+  const { mode, setMode } = useStudentTheme();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [notifOpen, setNotifOpen] = useState(false);
+
+  const initials = initialsOf(session?.name);
+  const menuRef = useDismissable(menuOpen, () => setMenuOpen(false));
+  const notifRef = useDismissable(notifOpen, () => setNotifOpen(false));
 
   const signOut = () => {
     clearStudentSession();
@@ -42,48 +68,92 @@ export default function StudentTopbar({ session, onMenu, theme, onToggleTheme })
   return (
     <header className="stu-topbar">
       <button className="stu-topbar__menu" onClick={onMenu} aria-label="Open navigation">
-        <Menu size={18} strokeWidth={2} />
+        <Menu size={20} strokeWidth={2} aria-hidden />
       </button>
 
-      <div className="stu-search">
-        <Search size={16} strokeWidth={2} aria-hidden />
-        <input
-          type="search"
-          placeholder="Search tests, topics, companies…"
-          aria-label="Search"
-        />
-        <kbd className="stu-search__kbd">/</kbd>
-      </div>
+      {/* College + branch: identity sits with the account, not in the
+          greeting row where it competed with the student's own name. */}
+      {session?.organization_name ? (
+        <div className="stu-campus" title={session.organization_name}>
+          <span className="stu-campus__mark" aria-hidden>
+            <GraduationCap size={16} strokeWidth={2} />
+          </span>
+          <span className="stu-campus__text">
+            <strong>{session.organization_name}</strong>
+            {session.department_name ? <em>{session.department_name}</em> : null}
+          </span>
+        </div>
+      ) : null}
 
       <div className="stu-topbar__right">
-        {/* College + branch: identity sits with the account, not in the
-            greeting row where it competed with the student's own name. */}
-        {session?.organization_name ? (
-          <div className="stu-campus" title={session.organization_name}>
-            <span className="stu-campus__mark" aria-hidden>
-              <GraduationCap size={15} strokeWidth={2.1} />
+        {/* Only rendered when a drive actually exists — and a sample
+            drive says so rather than passing as a real one. */}
+        {nextDrive ? (
+          <div
+            className={`stu-drive-chip${isDriveSoon(nextDrive) ? ' is-soon' : ''}`}
+            title={
+              isSampleDrive(nextDrive)
+                ? 'Sample drive — your college has not published its calendar yet'
+                : `Next campus drive: ${nextDrive.company_name}`
+            }
+          >
+            <span className="stu-drive-chip__icon" aria-hidden>
+              <CalendarDays size={16} strokeWidth={2} focusable="false" />
             </span>
-            <span className="stu-campus__text">
-              <strong>{session.organization_name}</strong>
-              {session.department_name ? <em>{session.department_name}</em> : null}
+            <span className="stu-drive-chip__text">
+              <strong>{nextDrive.company_name}</strong>
+              <em>
+                {isSampleDrive(nextDrive) ? 'sample drive' : driveCountdown(nextDrive)}
+              </em>
             </span>
           </div>
         ) : null}
 
-        <div className="stu-drive-chip" title="Next campus drive">
-          <span className="stu-drive-chip__icon" aria-hidden>
-            <CalendarDays size={16} strokeWidth={2} />
-          </span>
-          <span className="stu-drive-chip__text">
-            <strong>Campus Drive</strong>
-            <em>TCS · in 14 days</em>
-          </span>
+        <div
+          className="stu-theme-switch"
+          role="group"
+          aria-label="Colour theme"
+        >
+          {THEME_MODES.map((option) => {
+            const Icon = option.Icon;
+            return (
+              <button
+                key={option.id}
+                type="button"
+                className="stu-theme-switch__btn"
+                aria-pressed={mode === option.id}
+                aria-label={`${option.label} theme`}
+                title={`${option.label} theme`}
+                onClick={() => setMode(option.id)}
+              >
+                <Icon size={16} strokeWidth={2} aria-hidden focusable="false" />
+              </button>
+            );
+          })}
         </div>
 
-        <button className="stu-icon-btn" aria-label="Notifications (3 unread)">
-          <Bell size={18} strokeWidth={2} />
-          <span className="stu-icon-btn__dot">3</span>
-        </button>
+        {/* No badge: there is no notification backend, and a hardcoded
+            count is worse than an honest empty panel. */}
+        <div className="stu-notif" ref={notifRef}>
+          <button
+            className="stu-icon-btn"
+            aria-label="Notifications"
+            aria-haspopup="dialog"
+            aria-expanded={notifOpen}
+            onClick={() => setNotifOpen((v) => !v)}
+          >
+            <Bell size={16} strokeWidth={2} aria-hidden />
+          </button>
+
+          {notifOpen ? (
+            <div className="stu-notif__panel" role="dialog" aria-label="Notifications">
+              <p className="stu-notif__title">You&rsquo;re all caught up</p>
+              <p className="stu-notif__sub">
+                Drive announcements and plan reminders will show up here.
+              </p>
+            </div>
+          ) : null}
+        </div>
 
         <div className="stu-topbar__profile" ref={menuRef}>
           <button
@@ -110,15 +180,21 @@ export default function StudentTopbar({ session, onMenu, theme, onToggleTheme })
                 {session?.department_name ? <span>{session.department_name}</span> : null}
               </div>
               <div className="stu-menu__sep" />
-              <button className="stu-menu__item" role="menuitem">
-                <User size={16} strokeWidth={2} /> Profile &amp; resume
-              </button>
-              <button className="stu-menu__item" role="menuitem" onClick={onToggleTheme}>
-                <Settings size={16} strokeWidth={2} /> Switch to {theme === 'light' ? 'dark' : 'light'} mode
-              </button>
+              <Link
+                className="stu-menu__item"
+                role="menuitem"
+                to={studentPaths.profile}
+                onClick={() => setMenuOpen(false)}
+              >
+                <User size={16} strokeWidth={2} aria-hidden focusable="false" /> Placement profile
+              </Link>
               <div className="stu-menu__sep" />
-              <button className="stu-menu__item stu-menu__item--danger" role="menuitem" onClick={signOut}>
-                <LogOut size={16} strokeWidth={2} /> Sign out
+              <button
+                className="stu-menu__item stu-menu__item--danger"
+                role="menuitem"
+                onClick={signOut}
+              >
+                <LogOut size={16} strokeWidth={2} aria-hidden /> Sign out
               </button>
             </div>
           ) : null}

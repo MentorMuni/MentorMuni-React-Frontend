@@ -21,9 +21,13 @@ import {
   buildHodActivationUrl,
   deleteDepartment,
   fetchDepartments,
+  inviteDepartmentCoordinator,
   inviteDepartmentHod,
+  reinviteDepartmentCoordinator,
   reinviteDepartmentHod,
+  replaceDepartmentCoordinator,
   replaceDepartmentHod,
+  revokeDepartmentCoordinator,
   revokeDepartmentHod,
   saveDepartment,
 } from '../departmentsApi';
@@ -32,6 +36,30 @@ import { subscribeOrgDb, listDepartments as listLocalDepartments } from '../stor
 const emptyDeptForm = { id: '', name: '', code: '' };
 const emptyHodForm = { name: '', email: '', reason: '' };
 
+function mentorLabel(slot) {
+  return slot === 'coordinator' ? 'Placement Coordinator' : 'HOD';
+}
+
+function mentorFields(dept, slot) {
+  if (slot === 'coordinator') {
+    return {
+      name: dept?.coordinatorName || '',
+      email: dept?.coordinatorEmail || '',
+      status: dept?.coordinatorStatus || 'unassigned',
+    };
+  }
+  return {
+    name: dept?.hodName || '',
+    email: dept?.hodEmail || '',
+    status: dept?.hodStatus || 'unassigned',
+  };
+}
+
+function isMentorUnassigned(dept, slot) {
+  const m = mentorFields(dept, slot);
+  return m.status === 'unassigned' || !m.email;
+}
+
 function statusBadge(status) {
   if (status === 'active') return 'mm-org-badge--active';
   if (status === 'invited') return 'mm-org-badge--pending';
@@ -39,32 +67,26 @@ function statusBadge(status) {
   return 'mm-org-badge--neutral';
 }
 
-function applyInviteResult(result, email, setters) {
+function applyInviteResult(result, email, setters, mentorSlot = 'hod') {
   const { setLinkInfo, flash } = setters;
   const url = result.activationUrl || buildHodActivationUrl(result.activationToken);
+  const slot = mentorSlot === 'coordinator' ? 'coordinator' : 'hod';
+  const base = {
+    url: url || '',
+    token: result.activationToken || '',
+    email,
+    emailed: Boolean(result.emailed),
+    emailUnknown: Boolean(result.emailUnknown),
+    emailSkipped: Boolean(result.emailSkipped),
+    emailDetail: result.emailDetail || '',
+    source: result.source || '',
+    mentorSlot: slot,
+  };
   // Always surface the link panel when we have a URL, or when email failed/unknown.
   if (url || result.emailed === false || result.emailUnknown || result.emailSkipped) {
-    setLinkInfo({
-      url: url || '',
-      token: result.activationToken || '',
-      email,
-      emailed: Boolean(result.emailed),
-      emailUnknown: Boolean(result.emailUnknown),
-      emailSkipped: Boolean(result.emailSkipped),
-      emailDetail: result.emailDetail || '',
-      source: result.source || '',
-    });
+    setLinkInfo(base);
   } else if (result.emailed) {
-    setLinkInfo({
-      url: '',
-      token: '',
-      email,
-      emailed: true,
-      emailUnknown: false,
-      emailSkipped: false,
-      emailDetail: '',
-      source: result.source || '',
-    });
+    setLinkInfo({ ...base, url: '', token: '' });
   }
   flash(true, result.message || 'Done.');
 }
@@ -78,6 +100,7 @@ export default function DepartmentsPage() {
   const [loading, setLoading] = useState(false);
   const [deptForm, setDeptForm] = useState(emptyDeptForm);
   const [panel, setPanel] = useState(null); // invite | replace | revoke | history | view | null
+  const [mentorSlot, setMentorSlot] = useState('hod'); // hod | coordinator
   const [activeId, setActiveId] = useState('');
   const [hodForm, setHodForm] = useState(emptyHodForm);
   const [linkInfo, setLinkInfo] = useState(null);
@@ -135,6 +158,7 @@ export default function DepartmentsPage() {
 
   const closePanels = () => {
     setPanel(null);
+    setMentorSlot('hod');
     setActiveId('');
     setHodForm(emptyHodForm);
     setDeptForm(emptyDeptForm);
@@ -152,26 +176,30 @@ export default function DepartmentsPage() {
       return;
     }
     setDeptForm(emptyDeptForm);
-    flash(true, deptForm.id ? 'Department updated.' : 'Department created. Next: invite an HOD.');
+    flash(
+      true,
+      deptForm.id
+        ? 'Department updated.'
+        : 'Department created. Next: invite an HOD (optional Placement Coordinator too).'
+    );
     await refresh();
   };
 
-  const openInvite = (dept) => {
+  const openInvite = (dept, slot = 'hod') => {
     setActiveId(dept.id);
+    setMentorSlot(slot);
     setPanel('invite');
     setDeptForm(emptyDeptForm);
-    setHodForm({
-      name: dept.hodName || '',
-      email: dept.hodEmail || '',
-      reason: '',
-    });
+    const m = mentorFields(dept, slot);
+    setHodForm({ name: m.name, email: m.email, reason: '' });
     setLinkInfo(null);
     setMsg('');
     setErr('');
   };
 
-  const openReplace = (dept) => {
+  const openReplace = (dept, slot = 'hod') => {
     setActiveId(dept.id);
+    setMentorSlot(slot);
     setPanel('replace');
     setDeptForm(emptyDeptForm);
     setHodForm({ name: '', email: '', reason: '' });
@@ -180,11 +208,13 @@ export default function DepartmentsPage() {
     setErr('');
   };
 
-  const openRevoke = (dept) => {
+  const openRevoke = (dept, slot = 'hod') => {
     setActiveId(dept.id);
+    setMentorSlot(slot);
     setPanel('revoke');
     setDeptForm(emptyDeptForm);
-    setHodForm({ name: dept.hodName || '', email: dept.hodEmail || '', reason: '' });
+    const m = mentorFields(dept, slot);
+    setHodForm({ name: m.name, email: m.email, reason: '' });
     setLinkInfo(null);
     setMsg('');
     setErr('');
@@ -213,13 +243,16 @@ export default function DepartmentsPage() {
     e.preventDefault();
     if (!canEdit || !activeId) return;
     setBusy(true);
-    const result = await inviteDepartmentHod(activeId, hodForm);
+    const result =
+      mentorSlot === 'coordinator'
+        ? await inviteDepartmentCoordinator(activeId, hodForm)
+        : await inviteDepartmentHod(activeId, hodForm);
     setBusy(false);
     if (!result.ok) {
       flash(false, result.error);
       return;
     }
-    applyInviteResult(result, hodForm.email, inviteSetters);
+    applyInviteResult(result, hodForm.email, inviteSetters, mentorSlot);
     await refresh();
   };
 
@@ -227,29 +260,37 @@ export default function DepartmentsPage() {
     e.preventDefault();
     if (!canEdit || !activeId) return;
     setBusy(true);
-    const result = await replaceDepartmentHod(activeId, hodForm);
+    const result =
+      mentorSlot === 'coordinator'
+        ? await replaceDepartmentCoordinator(activeId, hodForm)
+        : await replaceDepartmentHod(activeId, hodForm);
     setBusy(false);
     if (!result.ok) {
       flash(false, result.error);
       return;
     }
-    applyInviteResult(result, hodForm.email, inviteSetters);
+    applyInviteResult(result, hodForm.email, inviteSetters, mentorSlot);
     await refresh();
   };
 
-  const onReinvite = async (dept) => {
+  const onReinvite = async (dept, slot = 'hod') => {
     if (!canEdit) return;
     setBusy(true);
-    const result = await reinviteDepartmentHod(dept.id);
+    const result =
+      slot === 'coordinator'
+        ? await reinviteDepartmentCoordinator(dept.id)
+        : await reinviteDepartmentHod(dept.id);
     setBusy(false);
     if (!result.ok) {
       flash(false, result.error);
       return;
     }
     setActiveId(dept.id);
+    setMentorSlot(slot);
     setPanel('invite');
-    setHodForm({ name: dept.hodName || '', email: dept.hodEmail || '', reason: '' });
-    applyInviteResult(result, dept.hodEmail, inviteSetters);
+    const m = mentorFields(dept, slot);
+    setHodForm({ name: m.name, email: m.email, reason: '' });
+    applyInviteResult(result, m.email, inviteSetters, slot);
     await refresh();
   };
 
@@ -257,7 +298,10 @@ export default function DepartmentsPage() {
     e?.preventDefault?.();
     if (!canEdit || !activeId || !activeDept) return;
     setBusy(true);
-    const result = await revokeDepartmentHod(activeId, hodForm.reason || '');
+    const result =
+      mentorSlot === 'coordinator'
+        ? await revokeDepartmentCoordinator(activeId, hodForm.reason || '')
+        : await revokeDepartmentHod(activeId, hodForm.reason || '');
     setBusy(false);
     if (!result.ok) {
       flash(false, result.error);
@@ -265,7 +309,7 @@ export default function DepartmentsPage() {
     }
     closePanels();
     setLinkInfo(null);
-    flash(true, result.message || 'HOD revoked.');
+    flash(true, result.message || `${mentorLabel(mentorSlot)} revoked.`);
     await refresh();
   };
 
@@ -300,7 +344,7 @@ export default function DepartmentsPage() {
       <div className="mm-org-toolbar">
         <div>
           <p className="m-0 text-sm mm-org-text-muted">
-            Flow: create department → invite HOD → they set password from email/link → login as HOD.
+            Flow: create department → invite HOD (optional Placement Coordinator with same access) → they set password → login.
             {source === 'api'
               ? ' Live API.'
               : source === 'local'
@@ -322,15 +366,17 @@ export default function DepartmentsPage() {
         <section className="mm-org-panel" style={{ borderColor: 'rgba(12, 110, 140, 0.35)' }}>
           <div className="mm-org-panel__head">
             <div>
-              <h2 className="mm-org-panel__title">HOD activation</h2>
+              <h2 className="mm-org-panel__title">
+                {mentorLabel(linkInfo.mentorSlot || 'hod')} activation
+              </h2>
               <p className="mm-org-panel__meta">
                 {linkInfo.emailed
-                  ? `Email sent to ${linkInfo.email}. They open the link, set a password, then sign in as HOD.`
+                  ? `Email sent to ${linkInfo.email}. They open the link, set a password, then sign in as ${mentorLabel(linkInfo.mentorSlot || 'hod')}.`
                   : linkInfo.emailSkipped || linkInfo.emailed === false
                     ? `Email was not delivered to ${linkInfo.email}${
                         linkInfo.emailDetail ? ` (${linkInfo.emailDetail})` : ''
                       }. Copy the link below and share it manually.`
-                    : `Share with ${linkInfo.email}. They open the link, set a password, then sign in as HOD.`}
+                    : `Share with ${linkInfo.email}. They open the link, set a password, then sign in as ${mentorLabel(linkInfo.mentorSlot || 'hod')}.`}
                 {linkInfo.source === 'local' ? ' Demo invite — no real email is sent.' : null}
               </p>
               {linkInfo.emailed ? (
@@ -392,12 +438,23 @@ export default function DepartmentsPage() {
           </div>
           <div className="mm-org-form-grid">
             <div>
-              <p className="mm-org-label">HOD / mentor</p>
+              <p className="mm-org-label">HOD</p>
               <p className="m-0 mm-org-table__title">{activeDept.hodName || 'Unassigned'}</p>
               <p className="mm-org-table__meta">{activeDept.hodEmail || 'No email'}</p>
               <span className={`mm-org-badge ${statusBadge(activeDept.hodStatus)}`}>
                 {activeDept.hodStatus || 'unassigned'}
               </span>
+            </div>
+            <div>
+              <p className="mm-org-label">Placement Coordinator (optional)</p>
+              <p className="m-0 mm-org-table__title">
+                {activeDept.coordinatorName || 'Unassigned'}
+              </p>
+              <p className="mm-org-table__meta">{activeDept.coordinatorEmail || 'No email'}</p>
+              <span className={`mm-org-badge ${statusBadge(activeDept.coordinatorStatus)}`}>
+                {activeDept.coordinatorStatus || 'unassigned'}
+              </span>
+              <p className="mt-1 text-xs mm-org-text-muted">Same portal access as HOD for this branch.</p>
             </div>
             <div>
               <p className="mm-org-label">Mentor events</p>
@@ -414,7 +471,7 @@ export default function DepartmentsPage() {
             </div>
           </div>
           {canEdit ? (
-            <div className="mm-org-form-actions mt-4">
+            <div className="mm-org-form-actions mt-4 flex flex-wrap gap-2">
               <button
                 type="button"
                 className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
@@ -428,11 +485,11 @@ export default function DepartmentsPage() {
               >
                 <Pencil size={14} /> Edit department
               </button>
-              {activeDept.hodStatus === 'unassigned' || !activeDept.hodEmail ? (
+              {isMentorUnassigned(activeDept, 'hod') ? (
                 <button
                   type="button"
                   className="mm-org-btn mm-org-btn--primary mm-org-btn--sm"
-                  onClick={() => openInvite(activeDept)}
+                  onClick={() => openInvite(activeDept, 'hod')}
                 >
                   <UserPlus size={14} /> Invite HOD
                 </button>
@@ -441,17 +498,60 @@ export default function DepartmentsPage() {
                   <button
                     type="button"
                     className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
-                    onClick={() => onReinvite(activeDept)}
+                    onClick={() => onReinvite(activeDept, 'hod')}
                     disabled={busy}
                   >
-                    <RefreshCw size={14} /> Resend activation
+                    <RefreshCw size={14} /> Resend HOD
                   </button>
                   <button
                     type="button"
                     className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
-                    onClick={() => openReplace(activeDept)}
+                    onClick={() => openReplace(activeDept, 'hod')}
                   >
                     <Replace size={14} /> Replace HOD
+                  </button>
+                  <button
+                    type="button"
+                    className="mm-org-btn mm-org-btn--danger mm-org-btn--sm"
+                    onClick={() => openRevoke(activeDept, 'hod')}
+                    disabled={busy}
+                  >
+                    <ShieldOff size={14} /> Revoke HOD
+                  </button>
+                </>
+              )}
+              {isMentorUnassigned(activeDept, 'coordinator') ? (
+                <button
+                  type="button"
+                  className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+                  onClick={() => openInvite(activeDept, 'coordinator')}
+                >
+                  <UserPlus size={14} /> Invite Coordinator
+                </button>
+              ) : (
+                <>
+                  <button
+                    type="button"
+                    className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+                    onClick={() => onReinvite(activeDept, 'coordinator')}
+                    disabled={busy}
+                  >
+                    <RefreshCw size={14} /> Resend Coordinator
+                  </button>
+                  <button
+                    type="button"
+                    className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+                    onClick={() => openReplace(activeDept, 'coordinator')}
+                  >
+                    <Replace size={14} /> Replace Coordinator
+                  </button>
+                  <button
+                    type="button"
+                    className="mm-org-btn mm-org-btn--danger mm-org-btn--sm"
+                    onClick={() => openRevoke(activeDept, 'coordinator')}
+                    disabled={busy}
+                  >
+                    <ShieldOff size={14} /> Revoke Coordinator
                   </button>
                 </>
               )}
@@ -505,10 +605,15 @@ export default function DepartmentsPage() {
               <>
                 <div className="mm-org-panel__head">
                   <div>
-                    <h2 className="mm-org-panel__title">Invite HOD · {activeDept.name}</h2>
+                    <h2 className="mm-org-panel__title">
+                      Invite {mentorLabel(mentorSlot)} · {activeDept.name}
+                    </h2>
                     <p className="mm-org-panel__meta">
-                      Same pattern as TPO: link → set password → login. TPO never sets the HOD
+                      Same pattern as TPO: link → set password → login. TPO never sets their
                       password.
+                      {mentorSlot === 'coordinator'
+                        ? ' Placement Coordinator has the same access as HOD for this branch.'
+                        : ''}
                     </p>
                   </div>
                 </div>
@@ -526,7 +631,7 @@ export default function DepartmentsPage() {
                   <div className="mm-org-form-grid">
                     <div>
                       <label className="mm-org-label" htmlFor="hod-name">
-                        HOD name
+                        {mentorLabel(mentorSlot)} name
                       </label>
                       <input
                         id="hod-name"
@@ -539,7 +644,7 @@ export default function DepartmentsPage() {
                     </div>
                     <div>
                       <label className="mm-org-label" htmlFor="hod-email">
-                        HOD email
+                        {mentorLabel(mentorSlot)} email
                       </label>
                       <input
                         id="hod-email"
@@ -566,10 +671,10 @@ export default function DepartmentsPage() {
               <>
                 <div className="mm-org-panel__head">
                   <div>
-                    <h2 className="mm-org-panel__title">Replace HOD · {activeDept.name}</h2>
+                    <h2 className="mm-org-panel__title">Replace {mentorLabel(mentorSlot)} · {activeDept.name}</h2>
                     <p className="mm-org-panel__meta">
-                      Revokes {activeDept.hodEmail || 'current mentor'}, keeps students, invites the
-                      new HOD.
+                      Revokes {mentorFields(activeDept, mentorSlot).email || 'current mentor'}, keeps
+                      students, invites the new {mentorLabel(mentorSlot)}.
                     </p>
                   </div>
                 </div>
@@ -587,7 +692,7 @@ export default function DepartmentsPage() {
                   <div className="mm-org-form-grid">
                     <div>
                       <label className="mm-org-label" htmlFor="rep-name">
-                        New HOD name
+                        New {mentorLabel(mentorSlot)} name
                       </label>
                       <input
                         id="rep-name"
@@ -599,7 +704,7 @@ export default function DepartmentsPage() {
                     </div>
                     <div>
                       <label className="mm-org-label" htmlFor="rep-email">
-                        New HOD email
+                        New {mentorLabel(mentorSlot)} email
                       </label>
                       <input
                         id="rep-email"
@@ -637,10 +742,13 @@ export default function DepartmentsPage() {
               <>
                 <div className="mm-org-panel__head">
                   <div>
-                    <h2 className="mm-org-panel__title">Revoke HOD · {activeDept.name}</h2>
+                    <h2 className="mm-org-panel__title">Revoke {mentorLabel(mentorSlot)} · {activeDept.name}</h2>
                     <p className="mm-org-panel__meta">
-                      Removes access for {activeDept.hodName || activeDept.hodEmail}. Students stay
-                      in this department.
+                      Removes access for{' '}
+                      {mentorFields(activeDept, mentorSlot).name ||
+                        mentorFields(activeDept, mentorSlot).email ||
+                        'this mentor'}
+                      . Students stay in this department.
                     </p>
                   </div>
                 </div>
@@ -760,7 +868,8 @@ export default function DepartmentsPage() {
                 <thead>
                   <tr>
                     <th>Department</th>
-                    <th>HOD / mentor</th>
+                    <th>HOD</th>
+                    <th>Coordinator</th>
                     <th>Students</th>
                     <th>Actions</th>
                   </tr>
@@ -777,6 +886,15 @@ export default function DepartmentsPage() {
                         <p className="mm-org-table__meta">{d.hodEmail || 'No email'}</p>
                         <span className={`mm-org-badge ${statusBadge(d.hodStatus)}`}>
                           {d.hodStatus || 'unassigned'}
+                        </span>
+                      </td>
+                      <td>
+                        <p className="mm-org-table__title">
+                          {d.coordinatorName || 'Unassigned'}
+                        </p>
+                        <p className="mm-org-table__meta">{d.coordinatorEmail || 'No email'}</p>
+                        <span className={`mm-org-badge ${statusBadge(d.coordinatorStatus)}`}>
+                          {d.coordinatorStatus || 'unassigned'}
                         </span>
                       </td>
                       <td>{d.studentCount || 0}</td>
@@ -800,11 +918,11 @@ export default function DepartmentsPage() {
                               >
                                 <Pencil size={14} /> Edit
                               </button>
-                              {d.hodStatus === 'unassigned' || !d.hodEmail ? (
+                              {isMentorUnassigned(d, 'hod') ? (
                                 <button
                                   type="button"
                                   className="mm-org-btn mm-org-btn--primary mm-org-btn--sm"
-                                  onClick={() => openInvite(d)}
+                                  onClick={() => openInvite(d, 'hod')}
                                 >
                                   <UserPlus size={14} /> Invite HOD
                                 </button>
@@ -813,25 +931,60 @@ export default function DepartmentsPage() {
                                   <button
                                     type="button"
                                     className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
-                                    onClick={() => onReinvite(d)}
+                                    onClick={() => onReinvite(d, 'hod')}
                                     disabled={busy}
                                   >
-                                    <RefreshCw size={14} /> Resend
+                                    <RefreshCw size={14} /> Resend HOD
                                   </button>
                                   <button
                                     type="button"
                                     className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
-                                    onClick={() => openReplace(d)}
+                                    onClick={() => openReplace(d, 'hod')}
                                   >
-                                    <Replace size={14} /> Replace
+                                    <Replace size={14} /> Replace HOD
                                   </button>
                                   <button
                                     type="button"
                                     className="mm-org-btn mm-org-btn--danger mm-org-btn--sm"
-                                    onClick={() => openRevoke(d)}
+                                    onClick={() => openRevoke(d, 'hod')}
                                     disabled={busy}
                                   >
-                                    <ShieldOff size={14} /> Revoke
+                                    <ShieldOff size={14} /> Revoke HOD
+                                  </button>
+                                </>
+                              )}
+                              {isMentorUnassigned(d, 'coordinator') ? (
+                                <button
+                                  type="button"
+                                  className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+                                  onClick={() => openInvite(d, 'coordinator')}
+                                >
+                                  <UserPlus size={14} /> Invite Coord.
+                                </button>
+                              ) : (
+                                <>
+                                  <button
+                                    type="button"
+                                    className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+                                    onClick={() => onReinvite(d, 'coordinator')}
+                                    disabled={busy}
+                                  >
+                                    <RefreshCw size={14} /> Resend Coord.
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+                                    onClick={() => openReplace(d, 'coordinator')}
+                                  >
+                                    <Replace size={14} /> Replace Coord.
+                                  </button>
+                                  <button
+                                    type="button"
+                                    className="mm-org-btn mm-org-btn--danger mm-org-btn--sm"
+                                    onClick={() => openRevoke(d, 'coordinator')}
+                                    disabled={busy}
+                                  >
+                                    <ShieldOff size={14} /> Revoke Coord.
                                   </button>
                                 </>
                               )}

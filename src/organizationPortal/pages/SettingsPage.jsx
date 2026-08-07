@@ -1,5 +1,5 @@
 import { getOrgSession } from '../../orgPortal';
-import { roleLabel } from '../roles';
+import { sessionDisplayRole } from '../roles';
 
 export default function SettingsPage() {
   const session = getOrgSession();
@@ -11,7 +11,7 @@ export default function SettingsPage() {
           {[
             ['Name', session?.name || '—'],
             ['Email', session?.email || '—'],
-            ['Role', roleLabel(session?.role)],
+            ['Role', sessionDisplayRole(session)],
             ['Organization', session?.organization_name || session?.organization_code || '—'],
           ].map(([k, v]) => (
             <div key={k} className="mm-org-settings-row">

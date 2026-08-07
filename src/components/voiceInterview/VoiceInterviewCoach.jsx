@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Mic,
@@ -17,9 +17,11 @@ import {
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
-import RoutePageShell from '../layout/RoutePageShell';
 import { analyzeVoiceInterview, messageForHttpStatus } from './voiceInterviewApi';
 import { useRealtimeVoiceSession } from './useRealtimeVoiceSession';
+import { useToolSession } from '../../widgets/ToolSessionContext';
+import { hostBackLabel, hostSaveStatusMessage, showHostChrome } from '../../widgets/hostCopy';
+import ToolChrome from '../../widgets/ToolChrome';
 import './voice-interview.css';
 
 const MODES = [
@@ -40,6 +42,12 @@ const MODES = [
     label: 'Project interview',
     focus: 'projects only',
     blurb: 'Walk through your projects, decisions, and trade-offs',
+  },
+  {
+    id: 'hr',
+    label: 'HR behavioral',
+    focus: 'HR behavioral',
+    blurb: 'Tell me about yourself, STAR stories, culture fit',
   },
 ];
 
@@ -159,10 +167,45 @@ function formatElapsed(seconds) {
 }
 
 export default function VoiceInterviewCoach() {
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const session = useToolSession();
+  const roadmapQuery = session;
+
+  const requestedMode = (() => {
+    const fromSession = session.mode;
+    const m = fromSession || searchParams.get('mode');
+    return m === 'skill' || m === 'projects' || m === 'live' || m === 'hr' ? m : null;
+  })();
+  const initialMode = requestedMode || 'live';
+  // Host / portal launches map 1:1 to a round, so the round must not be switchable here.
+  const modeLocked = (roadmapQuery.fromHost || roadmapQuery.fromPortal) && Boolean(requestedMode);
+  const skillFromQuery = (session.skill || searchParams.get('skill') || '').trim().toLowerCase();
+  const initialSkill =
+    skillFromQuery && SKILL_PRESETS.some((s) => s.id === skillFromQuery)
+      ? skillFromQuery
+      : skillFromQuery
+        ? 'custom'
+        : 'java';
+  const [practiceNotice, setPracticeNotice] = useState('');
+
+  useEffect(() => {
+    if (!roadmapQuery.fromPractice) return undefined;
+    const gate = session.guardPractice(roadmapQuery.toolCode);
+    if (!gate.blocked) return undefined;
+    setPracticeNotice(gate.message);
+    const t = window.setTimeout(() => session.returnHome(), 1600);
+    return () => window.clearTimeout(t);
+  }, [roadmapQuery.fromPractice, roadmapQuery.toolCode, session]);
+
   const [screen, setScreen] = useState(SCREENS.SETUP);
-  const [modeId, setModeId] = useState('live');
-  const [skillId, setSkillId] = useState('java');
-  const [customSkill, setCustomSkill] = useState('');
+  const [modeId, setModeId] = useState(initialMode);
+  const [skillId, setSkillId] = useState(initialSkill);
+  const [customSkill, setCustomSkill] = useState(
+    initialSkill === 'custom' && skillFromQuery && !SKILL_PRESETS.some((s) => s.id === skillFromQuery)
+      ? skillFromQuery
+      : ''
+  );
   const [targetRole, setTargetRole] = useState('');
   const [targetCompanies, setTargetCompanies] = useState('');
   const [extraContext, setExtraContext] = useState('');
@@ -174,9 +217,15 @@ export default function VoiceInterviewCoach() {
   const [results, setResults] = useState(null);
   const [uiError, setUiError] = useState(null);
   const [pendingTranscript, setPendingTranscript] = useState(null);
-  const [focusLabel, setFocusLabel] = useState('Full live interview');
-  const [interviewFocus, setInterviewFocus] = useState('Live technical interview');
+  const [focusLabel, setFocusLabel] = useState(
+    MODES.find((m) => m.id === initialMode)?.label || 'Full live interview'
+  );
+  const [interviewFocus, setInterviewFocus] = useState(
+    MODES.find((m) => m.id === initialMode)?.focus || 'Live technical interview'
+  );
   const [elapsed, setElapsed] = useState(0);
+  const [roadmapSave, setRoadmapSave] = useState({ status: 'idle', message: '' });
+  const roadmapPayloadRef = useRef(null);
   const transcriptEndRef = useRef(null);
   const endingRef = useRef(false);
   const liveStartedAtRef = useRef(null);
@@ -201,10 +250,7 @@ export default function VoiceInterviewCoach() {
 
   const resolveFocus = () => {
     const mode = MODES.find((m) => m.id === modeId) ?? MODES[0];
-    if (mode.id === 'live') {
-      return { focus: mode.focus, label: mode.label };
-    }
-    if (mode.id === 'projects') {
+    if (mode.id === 'live' || mode.id === 'projects' || mode.id === 'hr') {
       return { focus: mode.focus, label: mode.label };
     }
     if (skillId === 'custom') {
@@ -243,6 +289,53 @@ export default function VoiceInterviewCoach() {
     setResults(analysis);
     setPendingTranscript(null);
     setScreen(SCREENS.RESULTS);
+
+    const shouldPersist =
+      roadmapQuery.fromPortal ||
+      roadmapQuery.source === 'embed' ||
+      roadmapQuery.lockMode !== 'none';
+    if (shouldPersist && roadmapQuery.source !== 'standalone') {
+      const overall = Math.round(
+        analysis.overall_score ??
+          ((analysis.technical_score ?? 0) + (analysis.communication_score ?? 0)) / 2
+      );
+      const modeToTool = {
+        skill: 'skill_mock',
+        projects: 'project_mock',
+        live: 'interview_mock',
+        hr: 'hr_mock',
+      };
+      const toolCode = roadmapQuery.toolCode || modeToTool[modeId] || 'interview_mock';
+      roadmapPayloadRef.current = {
+        toolCode,
+        result: {
+          score: overall,
+          label: scoreBand(overall).label,
+          technical_score: analysis.technical_score,
+          communication_score: analysis.communication_score,
+          strengths: analysis.strengths || [],
+          weaknesses: analysis.weaknesses || [],
+          recommendations: analysis.study_plan || [],
+          raw: analysis,
+        },
+      };
+      await saveToRoadmap();
+    }
+  };
+  const saveToRoadmap = async () => {
+    const payload = roadmapPayloadRef.current;
+    if (!payload) return;
+    setRoadmapSave({ status: 'saving', message: '' });
+    const outcome = await session.persistResult(payload);
+    if (outcome.status === 'idle') {
+      setRoadmapSave({ status: 'idle', message: '' });
+      return;
+    }
+    setRoadmapSave(
+      outcome.ok
+        ? { status: 'saved', message: outcome.message || '' }
+        : { status: 'error', message: outcome.message || 'Could not save result.' }
+    );
   };
 
   const handleStart = async () => {
@@ -250,6 +343,15 @@ export default function VoiceInterviewCoach() {
     setResults(null);
     setPendingTranscript(null);
     setConfirmEnd(false);
+
+    if (roadmapQuery.fromPractice) {
+      const gate = session.guardPractice(roadmapQuery.toolCode);
+      if (gate.blocked) {
+        setPracticeNotice(gate.message);
+        session.returnHome();
+        return;
+      }
+    }
 
     const resolved = resolveFocus();
     if (modeId === 'skill' && skillId === 'custom' && !customSkill.trim()) {
@@ -335,7 +437,7 @@ export default function VoiceInterviewCoach() {
   };
 
   return (
-    <RoutePageShell scope="tool" className="mm-voice-page pb-20">
+    <ToolChrome scope="tool" className="mm-voice-page pb-20">
       <AnimatePresence mode="wait">
         {screen === SCREENS.SETUP && (
           <motion.div
@@ -417,17 +519,26 @@ export default function VoiceInterviewCoach() {
                         <p className="mm-voice-kicker">Compose</p>
                         <h2 className="mm-voice-compose__title mt-2">Choose your round</h2>
                       </div>
-                      <p className="text-sm text-muted-foreground">One mode. Then start when ready.</p>
+                      <p className="text-sm text-muted-foreground">
+                        {modeLocked
+                          ? roadmapQuery.fromJourney
+                            ? 'This round is set by your 90-day plan.'
+                            : roadmapQuery.fromCompanyPrep
+                              ? 'This round is set by Company Prep.'
+                              : 'This round is set by your Week 1 plan.'
+                          : 'One mode. Then start when ready.'}
+                      </p>
                     </div>
 
                     <div className="mm-voice-mode">
-                      {MODES.map((mode) => {
+                      {(modeLocked ? MODES.filter((m) => m.id === modeId) : MODES).map((mode) => {
                         const active = modeId === mode.id;
                         return (
                           <button
                             key={mode.id}
                             type="button"
                             onClick={() => setModeId(mode.id)}
+                            disabled={modeLocked}
                             className={`mm-voice-mode__btn ${active ? 'is-active' : ''}`}
                           >
                             <p className="mm-voice-mode__label">{mode.label}</p>
@@ -853,6 +964,29 @@ export default function VoiceInterviewCoach() {
 
                   <div className="mm-container pt-8 pb-4">
                     <div className="mx-auto max-w-4xl space-y-5">
+                      {practiceNotice ? (
+                        <div className="mm-voice-panel text-sm font-medium text-amber-800 dark:text-amber-200">
+                          {practiceNotice}
+                        </div>
+                      ) : null}
+
+                      {(showHostChrome(roadmapQuery) && roadmapSave.status !== 'idle') ? (
+                        <div className="mm-voice-panel flex flex-wrap items-center justify-between gap-3">
+                          <p className="text-sm font-medium text-foreground">
+                            {hostSaveStatusMessage(roadmapQuery, roadmapSave)}
+                          </p>
+                          {roadmapSave.status === 'error' && roadmapQuery.fromRoadmap ? (
+                            <button
+                              type="button"
+                              onClick={saveToRoadmap}
+                              className="mm-voice-ctrl mm-voice-ctrl--secondary !px-4 !py-2"
+                            >
+                              <RefreshCw size={14} /> Retry save
+                            </button>
+                          ) : null}
+                        </div>
+                      ) : null}
+
                       <ResultList
                         title="Your study plan"
                         subtitle="Do these next — short, focused reps beat vague revision."
@@ -870,24 +1004,42 @@ export default function VoiceInterviewCoach() {
 
                       <div className="mm-voice-panel flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
                         <p className="text-sm text-muted-foreground">
-                          Ready for another round? Practice the same focus, or open deeper prep tools.
+                          {roadmapQuery.fromPractice
+                            ? 'This practice is locked until tomorrow. Pick another tool or come back then.'
+                            : showHostChrome(roadmapQuery)
+                              ? 'Review your feedback, then return to the student portal when ready.'
+                              : 'Ready for another round? Practice the same focus, or open deeper prep tools.'}
                         </p>
                         <div className="flex flex-wrap gap-2">
-                          <button type="button" onClick={handlePracticeAgain} className="mm-voice-btn-primary !py-2.5 !px-5">
-                            <RefreshCw size={15} /> Practice again
-                          </button>
-                          <Link
-                            to="/skill-gap-analyzer"
-                            className="mm-voice-ctrl mm-voice-ctrl--secondary !px-5 !py-2.5"
-                          >
-                            Skill gap analyzer
-                          </Link>
-                          <Link
-                            to="/placement-tracks"
-                            className="mm-voice-ctrl mm-voice-ctrl--secondary !px-5 !py-2.5"
-                          >
-                            Placement tracks <ArrowRight size={15} />
-                          </Link>
+                          {showHostChrome(roadmapQuery) ? (
+                            <button
+                              type="button"
+                              onClick={() => session.returnHome()}
+                              className="mm-voice-btn-primary !py-2.5 !px-5"
+                            >
+                              {hostBackLabel(roadmapQuery) || 'Done'}
+                            </button>
+                          ) : (
+                            <button type="button" onClick={handlePracticeAgain} className="mm-voice-btn-primary !py-2.5 !px-5">
+                              <RefreshCw size={15} /> Practice again
+                            </button>
+                          )}
+                          {!showHostChrome(roadmapQuery) ? (
+                            <>
+                              <Link
+                                to="/skill-gap-analyzer"
+                                className="mm-voice-ctrl mm-voice-ctrl--secondary !px-5 !py-2.5"
+                              >
+                                Skill gap analyzer
+                              </Link>
+                              <Link
+                                to="/placement-tracks"
+                                className="mm-voice-ctrl mm-voice-ctrl--secondary !px-5 !py-2.5"
+                              >
+                                Placement tracks <ArrowRight size={15} />
+                              </Link>
+                            </>
+                          ) : null}
                         </div>
                       </div>
                     </div>
@@ -898,7 +1050,7 @@ export default function VoiceInterviewCoach() {
           </motion.div>
         )}
       </AnimatePresence>
-    </RoutePageShell>
+    </ToolChrome>
   );
 }
 

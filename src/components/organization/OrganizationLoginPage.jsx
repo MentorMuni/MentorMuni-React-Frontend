@@ -67,17 +67,17 @@ const ROLES = [
     accent: 'See who needs support — before drive week.',
     body: (college) =>
       college
-        ? `Sign in as HOD for ${college.name} to monitor batch readiness and act early.`
-        : 'Sign in as HOD to monitor batch readiness and act early.',
+        ? `Sign in as HOD or Placement Coordinator for ${college.name} to monitor batch readiness.`
+        : 'Sign in as HOD or Placement Coordinator to monitor batch readiness.',
     highlights: [
       { icon: Users, title: 'Batch overview', text: 'See readiness across your department' },
       { icon: ClipboardCheck, title: 'Early alerts', text: 'Spot students who need help sooner' },
       { icon: Building2, title: 'Aligned with TPO', text: 'Same data your placement office uses' },
     ],
-    fieldUser: 'HOD email or username',
+    fieldUser: 'HOD / Coordinator email or username',
     fieldUserHint: 'Use your department account',
     fieldPass: 'Password',
-    cta: 'Continue as HOD',
+    cta: 'Continue as HOD / Coordinator',
     placeholder: 'hod@college.edu',
   },
 ];

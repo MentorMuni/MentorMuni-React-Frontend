@@ -282,6 +282,9 @@ export function seedDemoWorkspace() {
         hodName: 'Demo HOD',
         hodEmail: 'hod@demo.edu',
         hodStatus: 'active',
+        coordinatorName: '',
+        coordinatorEmail: '',
+        coordinatorStatus: 'unassigned',
         studentCount: students.length,
         createdAt: now,
       },
@@ -291,7 +294,10 @@ export function seedDemoWorkspace() {
         code: 'ECE',
         hodName: '',
         hodEmail: '',
-        hodStatus: 'empty',
+        hodStatus: 'unassigned',
+        coordinatorName: '',
+        coordinatorEmail: '',
+        coordinatorStatus: 'unassigned',
         studentCount: 0,
         createdAt: now,
       },
@@ -418,6 +424,14 @@ function issueHodInvite(dept, { name, email } = {}) {
   if (!dept.hodEmail) {
     throw new Error('HOD email is required to send an invite.');
   }
+  if (
+    dept.coordinatorEmail &&
+    dept.coordinatorEmail === dept.hodEmail &&
+    dept.coordinatorStatus !== 'unassigned' &&
+    dept.coordinatorStatus !== 'revoked'
+  ) {
+    throw new Error('Email is already the live Placement Coordinator for this department.');
+  }
   if (dept.activationToken) clearInviteToken(dept.activationToken);
   const token = makeActivationToken();
   const now = new Date().toISOString();
@@ -433,10 +447,49 @@ function issueHodInvite(dept, { name, email } = {}) {
     departmentCode: dept.code,
     email: dept.hodEmail,
     name: dept.hodName || '',
+    slot: 'hod',
     organizationName: getOrgSession()?.organization_name || '',
     organizationCode: getOrgSession()?.organization_code || '',
   });
   pushMentorHistory(dept, 'invited');
+  return { department: dept, activationToken: token, activationUrl: activationUrlFor(token) };
+}
+
+function issueCoordinatorInvite(dept, { name, email } = {}) {
+  if (name) dept.coordinatorName = String(name).trim();
+  if (email) dept.coordinatorEmail = String(email).trim().toLowerCase();
+  if (!dept.coordinatorEmail) {
+    throw new Error('Placement Coordinator email is required to send an invite.');
+  }
+  if (
+    dept.hodEmail &&
+    dept.hodEmail === dept.coordinatorEmail &&
+    dept.hodStatus !== 'unassigned' &&
+    dept.hodStatus !== 'revoked'
+  ) {
+    throw new Error('Email is already the live HOD for this department.');
+  }
+  if (dept.coordinatorActivationToken) clearInviteToken(dept.coordinatorActivationToken);
+  const token = makeActivationToken();
+  const now = new Date().toISOString();
+  dept.coordinatorActivationToken = token;
+  dept.coordinatorStatus = 'invited';
+  dept.updatedAt = now;
+  registerInvite(token, {
+    orgKey: orgKey(),
+    departmentId: dept.id,
+    departmentName: dept.name,
+    departmentCode: dept.code,
+    email: dept.coordinatorEmail,
+    name: dept.coordinatorName || '',
+    slot: 'coordinator',
+    organizationName: getOrgSession()?.organization_name || '',
+    organizationCode: getOrgSession()?.organization_code || '',
+  });
+  pushMentorHistory(dept, 'coordinator_invited', {
+    name: dept.coordinatorName || '',
+    email: dept.coordinatorEmail || '',
+  });
   return { department: dept, activationToken: token, activationUrl: activationUrlFor(token) };
 }
 
@@ -479,7 +532,11 @@ export function upsertDepartment(input) {
         hodName: '',
         hodEmail: '',
         hodStatus: 'unassigned',
+        coordinatorName: '',
+        coordinatorEmail: '',
+        coordinatorStatus: 'unassigned',
         activationToken: '',
+        coordinatorActivationToken: '',
         invitedAt: null,
         activatedAt: null,
         mentorHistory: [],
@@ -496,6 +553,7 @@ export function removeDepartment(id) {
   return mutate((data) => {
     const dept = data.departments.find((d) => d.id === id);
     if (dept?.activationToken) clearInviteToken(dept.activationToken);
+    if (dept?.coordinatorActivationToken) clearInviteToken(dept.coordinatorActivationToken);
     data.departments = data.departments.filter((d) => d.id !== id);
     data.students = data.students.map((s) =>
       s.departmentId === id ? { ...s, departmentId: '', departmentName: '' } : s
@@ -569,11 +627,76 @@ export function replaceHod(departmentId, { name, email, reason = '' }) {
   return result;
 }
 
+export function inviteCoordinator(departmentId, { name, email } = {}) {
+  let result = null;
+  mutate((data) => {
+    const dept = data.departments.find((d) => d.id === departmentId);
+    if (!dept) throw new Error('Department not found.');
+    result = issueCoordinatorInvite(dept, {
+      name: name || dept.coordinatorName,
+      email: email || dept.coordinatorEmail,
+    });
+    return data;
+  });
+  return result;
+}
+
+export function reinviteCoordinator(departmentId) {
+  return inviteCoordinator(departmentId);
+}
+
+export function revokeCoordinator(departmentId, reason = '') {
+  let department = null;
+  mutate((data) => {
+    const dept = data.departments.find((d) => d.id === departmentId);
+    if (!dept) throw new Error('Department not found.');
+    if (!dept.coordinatorEmail && dept.coordinatorStatus === 'unassigned') {
+      throw new Error('No Placement Coordinator assigned to revoke.');
+    }
+    pushMentorHistory(dept, 'coordinator_revoked', {
+      reason: reason || '',
+      name: dept.coordinatorName || '',
+      email: dept.coordinatorEmail || '',
+    });
+    if (dept.coordinatorActivationToken) clearInviteToken(dept.coordinatorActivationToken);
+    dept.coordinatorName = '';
+    dept.coordinatorEmail = '';
+    dept.coordinatorStatus = 'unassigned';
+    dept.coordinatorActivationToken = '';
+    dept.updatedAt = new Date().toISOString();
+    department = { ...dept };
+    return data;
+  });
+  return department;
+}
+
+export function replaceCoordinator(departmentId, { name, email, reason = '' }) {
+  if (!String(email || '').trim()) throw new Error('New Placement Coordinator email is required.');
+  let result = null;
+  mutate((data) => {
+    const dept = data.departments.find((d) => d.id === departmentId);
+    if (!dept) throw new Error('Department not found.');
+    if (dept.coordinatorEmail || dept.coordinatorStatus !== 'unassigned') {
+      pushMentorHistory(dept, 'coordinator_replaced', {
+        reason: reason || '',
+        name: dept.coordinatorName || '',
+        email: dept.coordinatorEmail || '',
+        replacedByName: String(name || '').trim(),
+        replacedByEmail: String(email).trim().toLowerCase(),
+      });
+      if (dept.coordinatorActivationToken) clearInviteToken(dept.coordinatorActivationToken);
+    }
+    result = issueCoordinatorInvite(dept, { name, email });
+    return data;
+  });
+  return result;
+}
+
 /**
  * Complete HOD activation from /activate-hod?token=…
  * Local path marks department active (API path lives in auth.activateHodAccount).
  */
-export function activateHodInviteLocal(token) {
+export function activateHodInviteLocal(token, password = '') {
   const map = readInvites();
   const invite = map[String(token || '').trim()];
   if (!invite) {
@@ -590,26 +713,48 @@ export function activateHodInviteLocal(token) {
   if (!dept) {
     return { ok: false, error: 'Department for this invite no longer exists.' };
   }
-  if (dept.activationToken !== invite.token) {
+  const slot = invite.slot === 'coordinator' ? 'coordinator' : 'hod';
+  const expectedToken =
+    slot === 'coordinator' ? dept.coordinatorActivationToken : dept.activationToken;
+  if (expectedToken !== invite.token) {
     return { ok: false, error: 'This invite was superseded. Ask your TPO for a new link.' };
   }
 
   const now = new Date().toISOString();
-  dept.hodStatus = 'active';
-  dept.hodEmail = invite.email;
-  dept.hodName = invite.name || dept.hodName;
-  dept.activatedAt = now;
-  dept.updatedAt = now;
-  dept.activationToken = '';
-  pushMentorHistory(dept, 'activated');
+  if (slot === 'coordinator') {
+    dept.coordinatorStatus = 'active';
+    dept.coordinatorEmail = invite.email;
+    dept.coordinatorName = invite.name || dept.coordinatorName;
+    dept.coordinatorActivationToken = '';
+    dept.updatedAt = now;
+    pushMentorHistory(dept, 'coordinator_activated', {
+      name: dept.coordinatorName || '',
+      email: dept.coordinatorEmail || '',
+    });
+  } else {
+    dept.hodStatus = 'active';
+    dept.hodEmail = invite.email;
+    dept.hodName = invite.name || dept.hodName;
+    dept.activatedAt = now;
+    dept.updatedAt = now;
+    dept.activationToken = '';
+    pushMentorHistory(dept, 'activated');
+  }
   clearInviteToken(invite.token);
   writeAll(all);
 
   return {
     ok: true,
-    message: 'Password set. You can log in to the Organization Portal as HOD.',
+    message:
+      slot === 'coordinator'
+        ? 'Password set. You can log in to the Organization Portal as Placement Coordinator.'
+        : 'Password set. You can log in to the Organization Portal as HOD.',
     department: dept,
     email: invite.email,
+    name: invite.name || '',
+    slot,
+    departmentId: dept.id,
+    password: String(password || ''),
     organizationCode: invite.organizationCode || '',
   };
 }
@@ -622,6 +767,7 @@ export function peekHodInvite(token) {
     name: invite.name,
     departmentName: invite.departmentName,
     organizationName: invite.organizationName,
+    slot: invite.slot === 'coordinator' ? 'coordinator' : 'hod',
   };
 }
 

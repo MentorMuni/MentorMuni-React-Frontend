@@ -61,6 +61,17 @@ export function roleLabel(role) {
   return 'Student';
 }
 
+/** Prefer API/session role_label (e.g. Placement Coordinator) over generic HOD. */
+export function sessionDisplayRole(session) {
+  const label = String(session?.role_label || session?.roleLabel || '').trim();
+  if (label) return label;
+  const title = String(session?.dept_admin_title || session?.deptAdminTitle || '')
+    .trim()
+    .toUpperCase();
+  if (title === 'PLACEMENT_COORDINATOR') return 'Placement Coordinator';
+  return roleLabel(session?.role);
+}
+
 /** Can create/edit departments, enroll, assign programs, notify, set HOD access. */
 export function canMutateCampus(role) {
   return normalizeOrgRole(role) === ORG_ROLES.TPO;
