@@ -1,11 +1,12 @@
 import { NavLink, Link } from 'react-router-dom';
-import { Home, Code2, TrendingUp, Building2, ChevronRight, Flame, X } from 'lucide-react';
+import { Home, Code2, TrendingUp, Building2, Briefcase, ChevronRight, Flame, X } from 'lucide-react';
 
 const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
 
 const NAV_PRIMARY = [
   { icon: Home, label: 'Home', to: '/studentportal/home', end: true },
   { icon: Code2, label: 'Practice', to: '/studentportal/practice' },
+  { icon: Briefcase, label: 'Companies', to: '/studentportal/companies' },
   { icon: Building2, label: 'Company Prep', to: '/studentportal/company-prep' },
   { icon: TrendingUp, label: 'Progress', to: '/studentportal/progress' },
 ];

@@ -47,10 +47,19 @@ export default function CompaniesSection({ drives = [], readiness = 0, isDemo = 
           </p>
         </div>
         {rows.length ? (
-          <Link className="stu-link-btn" to={studentPaths.companyPrep}>
-            Prep daily <ArrowRight size={16} strokeWidth={2} aria-hidden focusable="false" />
+          <div className="stu-co__actions">
+            <Link className="stu-link-btn" to={studentPaths.companies}>
+              Company intel <ArrowRight size={16} strokeWidth={2} aria-hidden focusable="false" />
+            </Link>
+            <Link className="stu-link-btn" to={studentPaths.companyPrep}>
+              Prep daily <ArrowRight size={16} strokeWidth={2} aria-hidden focusable="false" />
+            </Link>
+          </div>
+        ) : (
+          <Link className="stu-link-btn" to={studentPaths.companies}>
+            Browse companies <ArrowRight size={16} strokeWidth={2} aria-hidden focusable="false" />
           </Link>
-        ) : null}
+        )}
       </header>
 
       {rows.length ? (
@@ -64,6 +73,7 @@ export default function CompaniesSection({ drives = [], readiness = 0, isDemo = 
           <ul className="stu-co__list">
             {rows.map((drive) => {
               const t = tier(score);
+              const intelTo = `${studentPaths.companies}?company=${encodeURIComponent(drive.company_name || '')}`;
               return (
                 <li key={drive.id} className="stu-co">
                   <CompanyMark name={drive.company_name} />
@@ -71,6 +81,9 @@ export default function CompaniesSection({ drives = [], readiness = 0, isDemo = 
                   <span className="stu-co__id">
                     <strong>{drive.company_name}</strong>
                     <em>{driveCountdown(drive) || drive.eligibility_criteria || 'Date to be announced'}</em>
+                    <Link className="stu-co__intel" to={intelTo}>
+                      How they hire
+                    </Link>
                   </span>
 
                   {/* Width is declared, not animated in JS, so the bar is
@@ -89,7 +102,8 @@ export default function CompaniesSection({ drives = [], readiness = 0, isDemo = 
       ) : (
         <EmptyState art="drives" title="No drives posted yet">
           When your training &amp; placement office publishes the campus calendar, each drive shows
-          up here with your readiness against it.
+          up here with your readiness against it. You can still browse{' '}
+          <Link to={studentPaths.companies}>company hiring intelligence</Link>.
         </EmptyState>
       )}
     </section>

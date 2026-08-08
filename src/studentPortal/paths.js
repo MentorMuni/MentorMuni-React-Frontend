@@ -5,6 +5,7 @@ export const studentPaths = {
   home: '/studentportal/home',
   practice: '/studentportal/practice',
   companyPrep: '/studentportal/company-prep',
+  companies: '/studentportal/companies',
   progress: '/studentportal/progress',
   profile: '/studentportal/profile',
   forgotPassword: '/studentportal/forgot-password',

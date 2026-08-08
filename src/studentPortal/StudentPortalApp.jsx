@@ -18,6 +18,8 @@ const StudentCompanyPrepPage = lazy(() => import('./pages/StudentCompanyPrepPage
 const StudentProgressPage = lazy(() => import('./pages/StudentProgressPage'));
 const StudentProfilePage = lazy(() => import('./pages/StudentProfilePage'));
 const StudentToolPage = lazy(() => import('./pages/StudentToolPage'));
+const StudentCompaniesPage = lazy(() => import('./pages/StudentCompaniesPage'));
+const StudentCompanyIntelPage = lazy(() => import('./pages/StudentCompanyIntelPage'));
 
 function PortalFallback() {
   return (
@@ -58,6 +60,16 @@ export default function StudentPortalApp() {
           <Route path="company-prep" element={
               <Suspense fallback={<PortalFallback />}>
                 <StudentCompanyPrepPage />
+              </Suspense>
+            } />
+          <Route path="companies" element={
+              <Suspense fallback={<PortalFallback />}>
+                <StudentCompaniesPage />
+              </Suspense>
+            } />
+          <Route path="companies/:slug" element={
+              <Suspense fallback={<PortalFallback />}>
+                <StudentCompanyIntelPage />
               </Suspense>
             } />
           <Route path="progress" element={
