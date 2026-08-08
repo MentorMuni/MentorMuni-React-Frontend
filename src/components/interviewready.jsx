@@ -37,10 +37,8 @@ const INTERVIEW_PLAN_PATH = '/interview-ready/interview-readiness/plan';
 const SKILL_READINESS_PLAN_PATH = '/interview-ready/skill-readiness/plan';
 /**
  * Aptitude preparation — POST /interview-ready/aptitude-readiness/plan
- * Body: AptitudeReadinessPlanRequest (see API /docs). Required: user_type. Optional: experience_years,
- * primary_skill (default below), target_role (empty on server → Software Engineer), target_company_type
- * (service_mnc | product_company | both), email, phone. No skill validation. Response: evaluation_plan
- * with 15× AptitudeReadinessMultipleChoiceItem (quant 1–5, logical 6–10, verbal 11–15). Score via POST /interview-ready/evaluate.
+ * level / question_count are API-only (backend defaults). UI does not expose them.
+ * Score via POST /interview-ready/evaluate.
  */
 const APTITUDE_READINESS_PLAN_PATH = '/interview-ready/aptitude-readiness/plan';
 
@@ -220,11 +218,12 @@ const ASSESSMENT_FOCUS_SKILL = 'skill';
 const ASSESSMENT_FOCUS_PLACEMENT = 'placement';
 const ASSESSMENT_FOCUS_APTITUDE = 'aptitude';
 const DEFAULT_QUESTION_COUNT = 15;
-const APTITUDE_QUESTION_COUNT = 15;
+/** Aptitude plan size is controlled by the API (defaults on server). UI does not send level/count. */
+const APTITUDE_MIN_PLAN_QUESTIONS = 5;
 /** Interview-readiness API may return a variable-length plan (e.g. 12–15 items); validate shape, not a fixed count. */
 const INTERVIEW_PLAN_ITEM_TYPES = ['yes_no', 'multiple_choice', 'scenario', 'code_mcq'];
 const APTITUDE_SKILLS = ['quantitative', 'logical reasoning', 'verbal reasoning'];
-/** AptitudeReadinessPlanRequest.primary_skill default — do not send skill-readiness-only fields (skills, question_count). */
+/** AptitudeReadinessPlanRequest.primary_skill default. */
 const APTITUDE_PRIMARY_SKILL_API = 'quantitative, logical and verbal reasoning';
 /** Server default when target_role is omitted; we send explicitly to match API examples. */
 const APTITUDE_DEFAULT_TARGET_ROLE = 'Software Engineer';
@@ -790,7 +789,7 @@ const ASSESSMENT_MODE_OPTIONS = [
     badge: 'Engineering aptitude',
     compactHint: 'Quantitative, logical, and verbal reasoning.',
     details: [
-      `Fixed ${APTITUDE_QUESTION_COUNT}-question mixed aptitude set`,
+      'Mixed aptitude set across quantitative, logical, and verbal reasoning',
       'No skill-stack prompt; personal info and then start',
       'Best for campus aptitude preparation and screening rounds',
     ],
@@ -2163,7 +2162,7 @@ const InterviewReady = () => {
       question_count: DEFAULT_QUESTION_COUNT,
       experience_years: expParsed,
     };
-    /** AptitudeReadinessPlanRequest — rate limit 20/min; 422/429/500/504 per API. */
+    /** AptitudeReadinessPlanRequest — level/question_count omitted (API defaults). */
     const aptitudeSkillReadinessPayload = {
       user_type: SKILL_API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'college_student_year_4',
       primary_skill: APTITUDE_PRIMARY_SKILL_API,
@@ -2281,11 +2280,11 @@ const InterviewReady = () => {
         return;
       }
 
-      const finalPlan = isAptitudeMode ? apiPlan.slice(0, APTITUDE_QUESTION_COUNT) : apiPlan;
+      const finalPlan = apiPlan;
       if (isAptitudeMode) {
-        if (finalPlan.length < APTITUDE_QUESTION_COUNT) {
+        if (finalPlan.length < APTITUDE_MIN_PLAN_QUESTIONS) {
           setError(
-            `Expected ${APTITUDE_QUESTION_COUNT} aptitude questions, but the server returned ${finalPlan.length}. Try again in a moment. If this repeats, the API is likely returning an incomplete or stub plan — check backend logs and LLM configuration.`
+            `Expected at least ${APTITUDE_MIN_PLAN_QUESTIONS} aptitude questions, but the server returned ${finalPlan.length}. Try again in a moment. If this repeats, the API is likely returning an incomplete or stub plan — check backend logs and LLM configuration.`
           );
           setEvaluationData(null);
           return;
@@ -3272,8 +3271,9 @@ const InterviewReady = () => {
                 <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">
                   {isAptitudeFocus ? (
                     <>
-                      We will generate a fixed <span className="font-semibold text-foreground">{APTITUDE_QUESTION_COUNT}-question</span>{' '}
-                      aptitude set across quantitative, logical, and verbal reasoning. No skill input needed here.
+                      We will generate a placement-style aptitude set across{' '}
+                      <span className="font-semibold text-foreground">quantitative, logical, and verbal</span>{' '}
+                      reasoning. No skill input needed here.
                     </>
                   ) : isSkillFocus ? (
                     <>
@@ -3330,8 +3330,8 @@ const InterviewReady = () => {
                 <p className="text-xs leading-snug text-muted-foreground">
                   {isAptitudeFocus ? (
                     <>
-                      <span className="font-semibold text-muted-foreground">Aptitude mode:</span> Questions are auto-generated for
-                      quantitative, logical, and verbal reasoning.
+                      <span className="font-semibold text-muted-foreground">Aptitude mode:</span> Questions are
+                      auto-generated for quantitative, logical, and verbal reasoning.
                     </>
                   ) : isSkillFocus ? (
                     <>
