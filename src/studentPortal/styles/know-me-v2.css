@@ -589,3 +589,70 @@
     padding: 1.25rem;
   }
 }
+
+/* Fear → Fearless journey (post-insight) */
+.stu-ftf-journey {
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+.stu-ftf-meta {
+  color: var(--ink-3);
+  font-size: 0.9rem;
+}
+.stu-ftf-fears {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+.stu-ftf-fear-card {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--interactive) 6%, transparent);
+}
+.stu-ftf-plan-details {
+  margin: 0.75rem 0 1rem;
+}
+.stu-ftf-plan-json {
+  white-space: pre-wrap;
+  font-size: 0.75rem;
+  background: var(--surface-2, #f6f7f9);
+  padding: 0.75rem;
+  border-radius: 8px;
+  overflow: auto;
+  max-height: 220px;
+}
+.stu-ftf-weekly {
+  display: grid;
+  gap: 0.65rem;
+  margin-top: 1rem;
+}
+.stu-ftf-weekly label {
+  display: grid;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+}
+.stu-ftf-weekly input,
+.stu-ftf-weekly select,
+.stu-ftf-weekly textarea {
+  padding: 0.5rem 0.65rem;
+  border-radius: 8px;
+  border: 1px solid var(--line);
+  font: inherit;
+}
+.stu-ftf-weekly-result,
+.stu-ftf-celebration {
+  display: flex;
+  gap: 0.65rem;
+  margin-top: 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  background: color-mix(in srgb, #10b981 12%, transparent);
+}
+.stu-ftf-notifs ul {
+  margin: 0.35rem 0 0;
+  padding-left: 1.1rem;
+}

@@ -10,20 +10,26 @@ import {
   X,
   Terminal,
   Sparkles,
-  EyeOff,
+  Lock,
+  ArrowRight,
 } from 'lucide-react';
+import '../../styles/fear-to-fearless-sidebar.css';
 
 const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
 
 const NAV_PRIMARY = [
   { icon: Home, label: 'Home', to: '/studentportal/home', end: true },
   { icon: Sparkles, label: 'AI Mentor', to: '/studentportal/mentor' },
-  { icon: EyeOff, label: 'Know Me', to: '/studentportal/know-me' },
   { icon: Code2, label: 'Practice', to: '/studentportal/practice' },
   { icon: Terminal, label: 'Coding Round', to: '/studentportal/coding' },
   { icon: Briefcase, label: 'Companies', to: '/studentportal/companies' },
   { icon: Building2, label: 'Company Prep', to: '/studentportal/company-prep' },
   { icon: TrendingUp, label: 'Progress', to: '/studentportal/progress' },
+];
+
+// Special premium feature - separated with divider
+const PREMIUM_FEATURES = [
+  { icon: Lock, label: 'Fear → Fearless', to: '/studentportal/fear-to-fearless', special: true },
 ];
 
 const DAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
@@ -105,6 +111,33 @@ export default function StudentSidebar({
 
         <nav className="stu-nav">
           <NavGroup items={NAV_PRIMARY} onNavigate={onClose} />
+          
+          {/* Divider for premium feature */}
+          <div className="stu-nav__divider" />
+          
+          {/* Fear → Fearless premium feature */}
+          <div className="stu-nav__group">
+            <ul className="stu-nav__list">
+              {PREMIUM_FEATURES.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <li key={item.label}>
+                    <NavLink
+                      to={item.to}
+                      onClick={onClose}
+                      className={({ isActive }) =>
+                        `stu-nav__item${isActive ? ' is-active' : ''}${item.special ? ' stu-nav__item--premium' : ''}`
+                      }
+                      title="Your private 6-week AI coaching journey"
+                    >
+                      <Icon size={16} strokeWidth={2} aria-hidden focusable="false" />
+                      <span className="stu-nav__text">{item.label}</span>
+                    </NavLink>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
         </nav>
 
         <div className="stu-sidebar__foot">

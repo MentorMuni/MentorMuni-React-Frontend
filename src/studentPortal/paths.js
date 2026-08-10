@@ -4,7 +4,8 @@ export const studentPaths = {
   login: '/studentportal/login',
   home: '/studentportal/home',
   mentor: '/studentportal/mentor',
-  knowMe: '/studentportal/know-me',
+  fearToFearless: '/studentportal/fear-to-fearless',
+  knowMe: '/studentportal/know-me', // deprecated: use fearToFearless
   practice: '/studentportal/practice',
   coding: '/studentportal/coding',
   companyPrep: '/studentportal/company-prep',

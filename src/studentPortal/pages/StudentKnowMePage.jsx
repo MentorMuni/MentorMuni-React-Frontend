@@ -1,31 +1,23 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Lock, ArrowRight, ArrowLeft, Loader, AlertCircle, CheckCircle2, Zap } from 'lucide-react';
-import { useStudentShell } from '../shellContext';
+import { useEffect, useState } from 'react';
+import { ArrowRight, ArrowLeft, Loader, AlertCircle, CheckCircle2, Zap } from 'lucide-react';
 import {
   startCheckIn,
   saveStepResponse,
   generateInsight,
   getProgress,
+  getInterventionStatus,
+  submitWeeklyProgress,
+  completeIntervention,
+  getFearToFearlessNotifications,
   loadSessionState,
   saveSessionState,
   clearSessionState,
   StudentApiError,
 } from '../knowMe/knowMeApi';
+import FearToFearlessLanding from './FearToFearlessLanding';
 import '../styles/know-me-v2.css';
 
-const EMPATHY_COPY = [
-  "You don't have to impress anyone here.",
-  "You don't have to sound confident.",
-  "You don't have to know the right answer.",
-  "Just tell us what's actually going on.",
-];
-
-const PRIVACY_NOTE = (
-  "Your answers are private and aren't shown to your TPO, HOD, classmates, or leaderboard."
-);
-
 export default function StudentKnowMePage() {
-  const { session } = useStudentShell();
   const [state, setState] = useState('landing');
   const [checkinId, setCheckinId] = useState(null);
   const [questions, setQuestions] = useState([]);
@@ -36,6 +28,17 @@ export default function StudentKnowMePage() {
   const [error, setError] = useState('');
   const [insight, setInsight] = useState(null);
   const [progress, setProgress] = useState(null);
+  const [intervention, setIntervention] = useState(null);
+  const [weeklyFearId, setWeeklyFearId] = useState('');
+  const [weeklyForm, setWeeklyForm] = useState({
+    actions_completed: 3,
+    actions_total: 7,
+    self_assessment: 7,
+    challenges: '',
+  });
+  const [weeklyResult, setWeeklyResult] = useState(null);
+  const [notifications, setNotifications] = useState([]);
+  const [celebration, setCelebration] = useState(null);
 
   useEffect(() => {
     const cached = loadSessionState();
@@ -47,24 +50,51 @@ export default function StudentKnowMePage() {
     }
   }, []);
 
+  async function loadIntervention(id) {
+    if (!id) return null;
+    try {
+      const status = await getInterventionStatus(id);
+      setIntervention(status);
+      const firstFear = status?.fears?.[0]?.fear_id || status?.solutions?.[0]?.fear_id || '';
+      setWeeklyFearId((prev) => prev || firstFear);
+      return status;
+    } catch (err) {
+      console.warn('intervention status failed', err);
+      return null;
+    }
+  }
+
+  async function loadNotifications() {
+    try {
+      const data = await getFearToFearlessNotifications(false);
+      setNotifications(data?.notifications || []);
+    } catch {
+      /* optional */
+    }
+  }
+
   async function handleStartCheckIn() {
     setLoading(true);
     setError('');
     try {
-      console.log('Starting check-in...');
       const data = await startCheckIn();
-      console.log('Check-in started:', data);
       setCheckinId(data.checkin_id);
       setQuestions(data.questions);
       setStepIndex(0);
       setResponses(new Map());
       setCurrentResponses({ selected_ids: [], free_text: '' });
+      setInsight(null);
+      setIntervention(null);
+      setWeeklyResult(null);
+      setCelebration(null);
       setState('form');
       saveSessionState(data.checkin_id, [], 0);
     } catch (err) {
       console.error('StartCheckIn failed:', err);
       setError(
-        err instanceof StudentApiError ? err.message : 'Could not start check-in. Make sure you are logged in as a student.'
+        err instanceof StudentApiError
+          ? err.message
+          : 'Could not start check-in. Make sure you are logged in as a student.'
       );
     } finally {
       setLoading(false);
@@ -73,10 +103,13 @@ export default function StudentKnowMePage() {
 
   async function handleCheckProgress() {
     setLoading(true);
+    setError('');
     try {
       const data = await getProgress();
       setProgress(data);
       setState('progress');
+      await loadNotifications();
+      if (checkinId) await loadIntervention(checkinId);
     } catch {
       setError('Could not load progress.');
     } finally {
@@ -103,6 +136,8 @@ export default function StudentKnowMePage() {
       if (stepIndex + 1 >= questions.length) {
         const insightData = await generateInsight(checkinId);
         setInsight(insightData);
+        await loadIntervention(checkinId);
+        await loadNotifications();
         setState('result');
         clearSessionState();
       } else {
@@ -113,6 +148,37 @@ export default function StudentKnowMePage() {
     } catch (err) {
       console.error('Error in handleNextStep:', err);
       setError(err instanceof StudentApiError ? err.message : 'Error saving response.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleWeeklySubmit(e) {
+    e?.preventDefault?.();
+    if (!checkinId || !weeklyFearId) {
+      setError('Select a fear to update weekly progress.');
+      return;
+    }
+    setLoading(true);
+    setError('');
+    try {
+      const weekNumber = Math.min(6, Math.max(1, (intervention?.week_current || 0) + 1));
+      const result = await submitWeeklyProgress(checkinId, {
+        fear_id: weeklyFearId,
+        week_number: weekNumber,
+        actions_completed: Number(weeklyForm.actions_completed) || 0,
+        actions_total: Number(weeklyForm.actions_total) || 7,
+        self_assessment: Number(weeklyForm.self_assessment) || 0,
+        challenges: weeklyForm.challenges || '',
+      });
+      setWeeklyResult(result);
+      const status = await loadIntervention(checkinId);
+      if (status?.status === 'completed') {
+        const done = await completeIntervention(checkinId);
+        setCelebration(done);
+      }
+    } catch (err) {
+      setError(err instanceof StudentApiError ? err.message : 'Could not save weekly progress.');
     } finally {
       setLoading(false);
     }
@@ -139,9 +205,8 @@ export default function StudentKnowMePage() {
           ...prev,
           selected_ids: idx >= 0 ? sels.filter((x) => x !== id) : [...sels, id],
         };
-      } else {
-        return { ...prev, selected_ids: [id] };
       }
+      return { ...prev, selected_ids: [id] };
     });
   }
 
@@ -156,6 +221,9 @@ export default function StudentKnowMePage() {
     setResponses(new Map());
     setCurrentResponses({ selected_ids: [], free_text: '' });
     setInsight(null);
+    setIntervention(null);
+    setWeeklyResult(null);
+    setCelebration(null);
     setError('');
     clearSessionState();
     setState('landing');
@@ -163,72 +231,17 @@ export default function StudentKnowMePage() {
 
   const currentQuestion = stepIndex < questions.length ? questions[stepIndex] : null;
   const progressPct = questions.length > 0 ? ((stepIndex + 1) / questions.length) * 100 : 0;
+  const solutionList = intervention?.solutions || [];
 
   return (
     <main className="stu-main stu-knowme">
       {state === 'landing' && (
-        <section className="stu-knowme-landing">
-          <div className="stu-knowme__hero">
-            <div className="stu-knowme__hero-inner">
-              <p className="stu-knowme__lock-badge">
-                <Lock size={13} strokeWidth={2.5} aria-hidden />
-                Private to you
-              </p>
-              <h1 className="stu-knowme__title">Know Me</h1>
-              <p className="stu-knowme__tagline">A private space to understand what's really holding you back.</p>
-            </div>
-          </div>
-
-          <div className="stu-knowme-copy">
-            {EMPATHY_COPY.map((line) => (
-              <div key={line} className="stu-knowme-copy__block">
-                {line}
-              </div>
-            ))}
-          </div>
-
-          <div className="stu-knowme__privacy-pledge">
-            <Lock size={15} strokeWidth={2} aria-hidden />
-            {PRIVACY_NOTE}
-          </div>
-
-          <p style={{ margin: '0.5rem 0 0', fontSize: '0.85rem', color: 'var(--ink-3)' }}>
-            <em>No judgment. No marks. No right or wrong answers.</em>
-          </p>
-
-          <div className="stu-knowme__cta">
-            <button
-              type="button"
-              className="stu-knowme__btn stu-knowme__btn--primary"
-              onClick={handleStartCheckIn}
-              disabled={loading}
-            >
-              {loading ? 'Starting...' : "Start a private check-in"}
-              <ArrowRight size={16} strokeWidth={2} aria-hidden />
-            </button>
-            <button
-              type="button"
-              className="stu-knowme__btn stu-knowme__btn--secondary"
-              onClick={handleCheckProgress}
-            >
-              View my progress
-            </button>
-          </div>
-          <p style={{ margin: '0.35rem 0 0', fontSize: '0.82rem', color: 'var(--ink-3)' }}>
-            Takes about 5–7 minutes
-          </p>
-
-          {error && (
-            <div className="stu-knowme__error">
-              <AlertCircle size={16} strokeWidth={2} style={{ verticalAlign: -2, marginRight: 6 }} aria-hidden />
-              {error}
-              <p style={{ fontSize: '0.8rem', marginTop: '0.5rem', color: 'var(--bad-ink)' }}>
-                💡 <strong>Debug:</strong> Make sure you're logged in as a student. 
-                Try logging out and back in from Home.
-              </p>
-            </div>
-          )}
-        </section>
+        <FearToFearlessLanding
+          onStartJourney={handleStartCheckIn}
+          onViewProgress={handleCheckProgress}
+          loading={loading}
+          error={error}
+        />
       )}
 
       {state === 'form' && currentQuestion && (
@@ -251,10 +264,10 @@ export default function StudentKnowMePage() {
             <div className="stu-knowme__field">
               <label className="stu-knowme__field-label">{currentQuestion.question_text}</label>
 
-              {/* Conversational choice buttons (not checkboxes) */}
               {(currentQuestion.response_type === 'single_select' ||
                 currentQuestion.response_type === 'multi_select' ||
-                currentQuestion.response_type === 'multi_select_with_text') && currentQuestion.choices ? (
+                currentQuestion.response_type === 'multi_select_with_text') &&
+              currentQuestion.choices ? (
                 <div className="stu-knowme__choices">
                   {currentQuestion.choices.map((ch) => {
                     const isSelected = (currentResponses.selected_ids || []).includes(ch.id);
@@ -280,39 +293,22 @@ export default function StudentKnowMePage() {
                 </div>
               ) : null}
 
-              {/* Free text area (conversational) */}
               {(currentQuestion.response_type === 'free_text_only' ||
-                currentQuestion.response_type === 'multi_select_with_text') && currentQuestion.free_text_placeholder ? (
-                <>
-                  <div className="stu-knowme__textarea-wrapper">
-                    <textarea
-                      className="stu-knowme__textarea"
-                      value={currentResponses.free_text || ''}
-                      onChange={(e) => handleFreeText(e.target.value)}
-                      placeholder={currentQuestion.free_text_placeholder}
-                      maxLength={2000}
-                    />
-                    <span className="stu-knowme__char-count">{(currentResponses.free_text || '').length}/2000</span>
-                  </div>
-                  {currentQuestion.free_text_prompt && (
-                    <p className="stu-knowme__hint">{currentQuestion.free_text_prompt}</p>
-                  )}
-                </>
-              ) : currentQuestion.free_text_prompt ? (
-                <>
-                  <div className="stu-knowme__textarea-wrapper">
-                    <textarea
-                      className="stu-knowme__textarea"
-                      value={currentResponses.free_text || ''}
-                      onChange={(e) => handleFreeText(e.target.value)}
-                      placeholder={currentQuestion.free_text_placeholder || 'Tell us more...'}
-                      maxLength={2000}
-                    />
-                    <span className="stu-knowme__char-count">{(currentResponses.free_text || '').length}/2000</span>
-                  </div>
-                  <p className="stu-knowme__hint">{currentQuestion.free_text_prompt}</p>
-                </>
-              ) : null}
+                currentQuestion.response_type === 'multi_select_with_text' ||
+                currentQuestion.free_text_prompt) && (
+                <div className="stu-knowme__textarea-wrap">
+                  {currentQuestion.free_text_prompt ? (
+                    <p className="stu-knowme__field-hint">{currentQuestion.free_text_prompt}</p>
+                  ) : null}
+                  <textarea
+                    className="stu-knowme__textarea"
+                    rows={4}
+                    placeholder={currentQuestion.free_text_placeholder || 'Write in your own words…'}
+                    value={currentResponses.free_text || ''}
+                    onChange={(e) => handleFreeText(e.target.value)}
+                  />
+                </div>
+              )}
             </div>
 
             {error && <p className="stu-knowme__error">{error}</p>}
@@ -358,11 +354,11 @@ export default function StudentKnowMePage() {
       {state === 'result' && insight && (
         <section className="stu-knowme-result">
           <div className="stu-knowme-result__header">
-            <p>Your private reflection</p>
+            <p>Fear → Fearless · private reflection</p>
             <h2 className="stu-knowme-result__headline">{insight.headline}</h2>
           </div>
 
-          {insight.what_i_hear && insight.what_i_hear.length > 0 && (
+          {insight.what_i_hear?.length > 0 && (
             <div className="stu-knowme__section">
               <h3>What I hear</h3>
               <ul className="stu-knowme__list">
@@ -375,7 +371,7 @@ export default function StudentKnowMePage() {
 
           <div className="stu-knowme-result__narrative">{insight.narrative}</div>
 
-          {insight.blockers && insight.blockers.length > 0 && (
+          {insight.blockers?.length > 0 && (
             <div className="stu-knowme__section">
               <h3>Your biggest blockers</h3>
               {insight.blockers.map((b) => (
@@ -383,9 +379,7 @@ export default function StudentKnowMePage() {
                   <p className="stu-knowme__blocker-title">
                     {b.order}. {b.title}
                   </p>
-                  {b.student_quote && (
-                    <p className="stu-knowme__blocker-quote">{b.student_quote}</p>
-                  )}
+                  {b.student_quote && <p className="stu-knowme__blocker-quote">{b.student_quote}</p>}
                   <div className="stu-knowme__blocker-action">
                     <strong>MentorMuni action: </strong>
                     {b.mentormuni_action}
@@ -395,18 +389,18 @@ export default function StudentKnowMePage() {
             </div>
           )}
 
-          {insight.action_plan && insight.action_plan.length > 0 && (
+          {insight.action_plan?.length > 0 && (
             <div className="stu-knowme__section">
               <h3>Your first steps</h3>
               <ul className="stu-knowme__list">
                 {insight.action_plan.slice(0, 3).map((a) => (
                   <li key={`${a.priority}-${a.action_type}`}>
                     <strong>{a.description}</strong>
-                    {a.duration_minutes && (
+                    {a.duration_minutes ? (
                       <span style={{ marginLeft: '0.5rem', color: 'var(--ink-3)' }}>
                         (~{a.duration_minutes}m)
                       </span>
-                    )}
+                    ) : null}
                   </li>
                 ))}
               </ul>
@@ -414,15 +408,162 @@ export default function StudentKnowMePage() {
           )}
 
           <div className="stu-knowme__call-to-action">{insight.call_to_action}</div>
-
           <div className="stu-knowme__closing">{insight.closing_line}</div>
 
+          <div className="stu-knowme__section stu-ftf-journey">
+            <h3>Your 6-week Fear → Fearless plan</h3>
+            {intervention ? (
+              <>
+                <p className="stu-ftf-meta">
+                  Status: <strong>{intervention.status}</strong>
+                  {' · '}
+                  Week {intervention.week_current || 0}/6
+                  {' · '}
+                  Overall {intervention.overall_progress_percent || 0}%
+                </p>
+                <div className="stu-ftf-fears">
+                  {(intervention.fears || []).map((f) => (
+                    <div key={f.fear_id} className="stu-ftf-fear-card">
+                      <strong>{f.fear_name}</strong>
+                      <span>
+                        Fear {f.severity_initial} → {f.severity_current}
+                      </span>
+                      <div className="stu-knowme-progress__bar">
+                        <div
+                          className="stu-knowme-progress__fill"
+                          style={{ width: `${f.progress_percent || 0}%` }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {solutionList.length > 0 && (
+                  <details className="stu-ftf-plan-details">
+                    <summary>View week-1 actions</summary>
+                    {solutionList.map((s) => (
+                      <div key={s.solution_id || s.fear_id} className="stu-ftf-plan-block">
+                        <strong>{s.fear_name}</strong>
+                        <pre className="stu-ftf-plan-json">
+                          {JSON.stringify(
+                            s.solution_data?.week1 ||
+                              s.solution_data?.action_plan_section?.week1 ||
+                              s.weekly_actions,
+                            null,
+                            2
+                          )}
+                        </pre>
+                      </div>
+                    ))}
+                  </details>
+                )}
+              </>
+            ) : (
+              <p>Building your personalized 6-week plan…</p>
+            )}
+
+            <form className="stu-ftf-weekly" onSubmit={handleWeeklySubmit}>
+              <h4>Weekly progress check-in</h4>
+              <label>
+                Fear
+                <select value={weeklyFearId} onChange={(e) => setWeeklyFearId(e.target.value)}>
+                  {(intervention?.fears || []).map((f) => (
+                    <option key={f.fear_id} value={f.fear_id}>
+                      {f.fear_name}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                Actions completed
+                <input
+                  type="number"
+                  min={0}
+                  value={weeklyForm.actions_completed}
+                  onChange={(e) =>
+                    setWeeklyForm((p) => ({ ...p, actions_completed: e.target.value }))
+                  }
+                />
+              </label>
+              <label>
+                Actions total
+                <input
+                  type="number"
+                  min={1}
+                  value={weeklyForm.actions_total}
+                  onChange={(e) => setWeeklyForm((p) => ({ ...p, actions_total: e.target.value }))}
+                />
+              </label>
+              <label>
+                Self-assessment (0–10)
+                <input
+                  type="number"
+                  min={0}
+                  max={10}
+                  step={0.5}
+                  value={weeklyForm.self_assessment}
+                  onChange={(e) =>
+                    setWeeklyForm((p) => ({ ...p, self_assessment: e.target.value }))
+                  }
+                />
+              </label>
+              <label>
+                Challenges (optional)
+                <textarea
+                  rows={2}
+                  value={weeklyForm.challenges}
+                  onChange={(e) => setWeeklyForm((p) => ({ ...p, challenges: e.target.value }))}
+                />
+              </label>
+              <button
+                type="submit"
+                className="stu-knowme__btn stu-knowme__btn--primary"
+                disabled={loading || !weeklyFearId}
+              >
+                {loading ? 'Saving…' : 'Submit weekly progress'}
+              </button>
+            </form>
+
+            {weeklyResult && (
+              <div className="stu-ftf-weekly-result">
+                <CheckCircle2 size={16} />
+                <div>
+                  <p>
+                    Severity {weeklyResult.severity_before} → {weeklyResult.severity_after}
+                    {weeklyResult.milestone_reached ? ' · Fear conquered!' : ''}
+                  </p>
+                  {weeklyResult.feedback?.celebration && <p>{weeklyResult.feedback.celebration}</p>}
+                  {weeklyResult.feedback?.next_week_focus && (
+                    <p>
+                      <strong>Next:</strong> {weeklyResult.feedback.next_week_focus}
+                    </p>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {celebration?.celebration && (
+              <div className="stu-ftf-celebration">
+                <h4>{celebration.celebration.celebration_title || 'You did it!'}</h4>
+                <p>{celebration.celebration.main_message}</p>
+              </div>
+            )}
+
+            {notifications.length > 0 && (
+              <div className="stu-ftf-notifs">
+                <h4>Your reminders</h4>
+                <ul>
+                  {notifications.slice(0, 5).map((n) => (
+                    <li key={n.id}>
+                      <strong>{n.title}</strong> — {n.message}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+
           <div className="stu-knowme__actions">
-            <button
-              type="button"
-              className="stu-knowme__btn stu-knowme__btn--primary"
-              onClick={restartFlow}
-            >
+            <button type="button" className="stu-knowme__btn stu-knowme__btn--primary" onClick={restartFlow}>
               Start a new check-in
             </button>
           </div>
@@ -434,12 +575,26 @@ export default function StudentKnowMePage() {
           <div className="stu-knowme-result__header">
             <p>Your growth</p>
             <h2 className="stu-knowme-result__headline">
-              {progress.days_since_first === 0 ? 'First check-in' : `${progress.days_since_first} days of progress`}
+              {progress.days_since_first === 0
+                ? 'First check-in'
+                : `${progress.days_since_first} days of progress`}
             </h2>
           </div>
           <div className="stu-knowme__section">
             <p>{progress.growth_summary}</p>
           </div>
+          {notifications.length > 0 && (
+            <div className="stu-knowme__section stu-ftf-notifs">
+              <h3>Reminders</h3>
+              <ul>
+                {notifications.slice(0, 5).map((n) => (
+                  <li key={n.id}>
+                    <strong>{n.title}</strong> — {n.message}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           <div className="stu-knowme__actions">
             <button type="button" className="stu-knowme__btn stu-knowme__btn--primary" onClick={restartFlow}>
               Start a check-in

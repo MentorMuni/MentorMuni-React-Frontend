@@ -60,6 +60,11 @@ export default function StudentPortalApp() {
                 <StudentMentorPage />
               </Suspense>
             } />
+          <Route path="fear-to-fearless" element={
+              <Suspense fallback={<PortalFallback />}>
+                <StudentKnowMePage />
+              </Suspense>
+            } />
           <Route path="know-me" element={
               <Suspense fallback={<PortalFallback />}>
                 <StudentKnowMePage />
