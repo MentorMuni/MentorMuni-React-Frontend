@@ -13,7 +13,10 @@ import StudentResetPasswordPage from './pages/StudentResetPasswordPage';
 import './student-login.css';
 
 const StudentHomePage = lazy(() => import('./pages/StudentHomePage'));
+const StudentMentorPage = lazy(() => import('./pages/StudentMentorPage'));
+const StudentKnowMePage = lazy(() => import('./pages/StudentKnowMePage'));
 const StudentPracticePage = lazy(() => import('./pages/StudentPracticePage'));
+const StudentCodingRoundPage = lazy(() => import('./pages/StudentCodingRoundPage'));
 const StudentCompanyPrepPage = lazy(() => import('./pages/StudentCompanyPrepPage'));
 const StudentProgressPage = lazy(() => import('./pages/StudentProgressPage'));
 const StudentProfilePage = lazy(() => import('./pages/StudentProfilePage'));
@@ -52,9 +55,24 @@ export default function StudentPortalApp() {
                 <StudentHomePage />
               </Suspense>
             } />
+          <Route path="mentor" element={
+              <Suspense fallback={<PortalFallback />}>
+                <StudentMentorPage />
+              </Suspense>
+            } />
+          <Route path="know-me" element={
+              <Suspense fallback={<PortalFallback />}>
+                <StudentKnowMePage />
+              </Suspense>
+            } />
           <Route path="practice" element={
               <Suspense fallback={<PortalFallback />}>
                 <StudentPracticePage />
+              </Suspense>
+            } />
+          <Route path="coding" element={
+              <Suspense fallback={<PortalFallback />}>
+                <StudentCodingRoundPage />
               </Suspense>
             } />
           <Route path="company-prep" element={

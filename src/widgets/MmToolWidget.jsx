@@ -8,12 +8,14 @@ const SnapReadinessTest = lazy(() => import('../components/snapTest/SnapReadines
 const InterviewReady = lazy(() => import('../components/interviewready'));
 const VoiceInterviewCoach = lazy(() => import('../components/voiceInterview/VoiceInterviewCoach'));
 const ResumeAnalyzer = lazy(() => import('../components/resumeAnalyzer'));
+const CodingAssessment = lazy(() => import('../components/coding/CodingAssessment'));
 
 function familyComponent(family) {
   if (family === 'snap') return SnapReadinessTest;
   if (family === 'readiness') return InterviewReady;
   if (family === 'voice') return VoiceInterviewCoach;
   if (family === 'resume') return ResumeAnalyzer;
+  if (family === 'coding') return CodingAssessment;
   return null;
 }
 

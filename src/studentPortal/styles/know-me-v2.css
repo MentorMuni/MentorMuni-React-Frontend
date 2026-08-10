@@ -1,0 +1,591 @@
+/* ============================================================
+   Know Me — A private sanctuary (not an assessment)
+   Landing + multi-step form + elder-brother response + progress
+   ============================================================ */
+
+.stu-knowme {
+  --knowme-max: 720px;
+  max-width: var(--knowme-max);
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* ============================================================
+   LANDING / EMPATHY STATE
+   ============================================================ */
+
+.stu-knowme-landing {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: stu-knowme-fade-in 0.5s ease both;
+}
+
+@keyframes stu-knowme-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.stu-knowme__hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 20px;
+  padding: 2rem 1.5rem 2.25rem;
+  border: 1px solid color-mix(in srgb, var(--interactive) 22%, var(--line));
+  background:
+    radial-gradient(
+      110% 100% at 85% 15%,
+      color-mix(in srgb, var(--accent) 20%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(
+      135deg,
+      #f9fbfd 0%,
+      #f0f7fc 48%,
+      #eef5fb 100%
+    );
+  box-shadow: 0 16px 36px color-mix(in srgb, var(--interactive) 12%, transparent);
+}
+
+.stu-knowme__hero::after {
+  content: '';
+  position: absolute;
+  inset: -30% 50% -50% 20%;
+  height: 80%;
+  background: radial-gradient(circle at 50% 30%, rgb(23 182 212 / 12%), transparent);
+  pointer-events: none;
+  animation: stu-knowme-glow 6s ease-in-out infinite;
+}
+
+@keyframes stu-knowme-glow {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+.stu-knowme__hero-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.stu-knowme__lock-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0 0 1rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--ok) 12%, transparent);
+  color: var(--ok-ink);
+  border: 1px solid color-mix(in srgb, var(--ok) 35%, var(--line));
+}
+
+.stu-knowme__title {
+  margin: 0;
+  font-size: clamp(2rem, 5vw, 2.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.stu-knowme__tagline {
+  margin: 0.5rem 0 0;
+  max-width: 50ch;
+  font-size: 1.05rem;
+  font-weight: 500;
+  color: var(--ink-2, var(--ink));
+  line-height: 1.45;
+}
+
+.stu-knowme-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.stu-knowme-copy__block {
+  padding: 1rem 1.2rem;
+  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-size: 0.93rem;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.stu-knowme-copy__block strong {
+  font-weight: 700;
+  color: var(--ink);
+  display: block;
+  margin-bottom: 0.25rem;
+}
+
+.stu-knowme__privacy-pledge {
+  padding: 1rem 1.2rem;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--ok) 8%, var(--bg));
+  border: 1px solid color-mix(in srgb, var(--ok) 22%, var(--line));
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+.stu-knowme__privacy-pledge svg {
+  display: inline;
+  margin-right: 0.4rem;
+  vertical-align: -2px;
+  color: var(--ok-ink);
+}
+
+.stu-knowme__cta {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.stu-knowme__btn {
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.75rem 1.35rem;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.15s ease, background 0.15s ease, opacity 0.15s ease;
+}
+
+.stu-knowme__btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.stu-knowme__btn:not(:disabled):active {
+  transform: translateY(1px);
+}
+
+.stu-knowme__btn--primary {
+  background: var(--interactive);
+  color: var(--on-brand);
+}
+
+.stu-knowme__btn--primary:not(:disabled):hover {
+  background: var(--interactive-hover);
+}
+
+.stu-knowme__btn--secondary {
+  background: var(--surface);
+  color: var(--ink-2, var(--ink));
+  border: 1px solid var(--line);
+}
+
+.stu-knowme__btn--secondary:not(:disabled):hover {
+  background: var(--bg);
+  border-color: color-mix(in srgb, var(--interactive) 35%, var(--line));
+}
+
+/* ============================================================
+   MULTI-STEP FORM
+   ============================================================ */
+
+.stu-knowme-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  animation: stu-knowme-fade-in 0.4s ease both;
+}
+
+.stu-knowme-progress {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.88rem;
+  color: var(--ink-3);
+  margin-bottom: 0.5rem;
+}
+
+.stu-knowme-progress__bar {
+  flex: 1;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--line);
+  overflow: hidden;
+}
+
+.stu-knowme-progress__fill {
+  height: 100%;
+  background: var(--interactive);
+  transition: width 0.3s ease;
+}
+
+.stu-knowme__step {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.stu-knowme__step-header h2 {
+  margin: 0;
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.stu-knowme__step-header p {
+  margin: 0.4rem 0 0;
+  max-width: 52ch;
+  font-size: 0.96rem;
+  line-height: 1.5;
+  color: var(--ink-2, var(--ink));
+}
+
+.stu-knowme__field {
+  margin-top: 1.25rem;
+}
+
+.stu-knowme__field-label {
+  display: block;
+  margin-bottom: 0.65rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.stu-knowme__choices {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.stu-knowme__choice {
+  appearance: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  border: 1.5px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 500;
+  line-height: 1.4;
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.stu-knowme__choice-dot {
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  background: var(--bg);
+  transition: all 0.2s ease;
+}
+
+.stu-knowme__choice:hover {
+  border-color: color-mix(in srgb, var(--interactive) 40%, var(--line));
+  background: color-mix(in srgb, var(--bg) 80%, var(--interactive) 20%);
+  transform: translateX(4px);
+}
+
+.stu-knowme__choice[aria-pressed="true"] {
+  border-color: var(--interactive);
+  background: color-mix(in srgb, var(--accent-soft) 75%, var(--surface));
+  box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--interactive) 20%, transparent);
+}
+
+.stu-knowme__choice[aria-pressed="true"] .stu-knowme__choice-dot {
+  background: var(--interactive);
+  border-color: var(--interactive);
+}
+
+.stu-knowme__textarea {
+  width: 100%;
+  min-height: 100px;
+  margin-top: 0.75rem;
+  padding: 0.85rem;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--bg);
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.93rem;
+  line-height: 1.5;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.stu-knowme__textarea:focus {
+  outline: 2px solid color-mix(in srgb, var(--interactive) 45%, transparent);
+  outline-offset: 1px;
+  border-color: var(--interactive);
+}
+
+.stu-knowme__textarea-wrapper {
+  position: relative;
+}
+
+.stu-knowme__char-count {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.8rem;
+  font-size: 0.75rem;
+  color: var(--ink-3);
+  pointer-events: none;
+}
+
+.stu-knowme__actions {
+  display: flex;
+  gap: 0.65rem;
+  margin-top: 1.35rem;
+  flex-wrap: wrap;
+}
+
+.stu-knowme__hint {
+  margin: 0.65rem 0 0;
+  font-size: 0.8rem;
+  color: var(--ink-3);
+}
+
+/* ============================================================
+   RESULT / RESPONSE
+   ============================================================ */
+
+.stu-knowme-result {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  animation: stu-knowme-fade-in 0.5s ease both;
+}
+
+.stu-knowme-result__header {
+  padding: 1.5rem;
+  background: color-mix(in srgb, var(--accent-soft) 60%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--brand) 18%, var(--line));
+  border-radius: 14px;
+}
+
+.stu-knowme-result__header p {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.stu-knowme-result__headline {
+  margin: 0.4rem 0 0;
+  font-size: clamp(1.35rem, 2.2vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  color: var(--ink);
+}
+
+.stu-knowme-result__narrative {
+  padding: 1.2rem;
+  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  font-size: 0.98rem;
+  line-height: 1.7;
+  color: var(--ink);
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+.stu-knowme__section {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.stu-knowme__section h3 {
+  margin: 0 0 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 750;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.stu-knowme__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.stu-knowme__list li {
+  padding: 0.75rem 0.9rem;
+  border-radius: 10px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.stu-knowme__blocker {
+  background: var(--bg);
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--alert) 22%, var(--line));
+  padding: 1rem;
+  margin-bottom: 0.65rem;
+}
+
+.stu-knowme__blocker-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.stu-knowme__blocker-quote {
+  margin: 0.35rem 0 0;
+  font-size: 0.86rem;
+  font-style: italic;
+  color: var(--ink-3);
+}
+
+.stu-knowme__blocker-action {
+  margin: 0.5rem 0 0;
+  padding: 0.65rem;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--info) 12%, var(--bg));
+  border-left: 3px solid var(--info-ink);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--ink);
+}
+
+.stu-knowme__call-to-action {
+  padding: 1rem 1.15rem;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--brand) 8%, var(--bg));
+  border: 1px solid color-mix(in srgb, var(--brand) 25%, var(--line));
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.stu-knowme__closing {
+  padding: 1rem 1.15rem;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--ok) 10%, var(--bg));
+  border: 1px solid color-mix(in srgb, var(--ok) 28%, var(--line));
+  font-size: 1.02rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ok-ink);
+  font-style: italic;
+}
+
+/* ============================================================
+   LOADING STATE
+   ============================================================ */
+
+.stu-knowme__loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 2.5rem 1.5rem;
+  text-align: center;
+}
+
+.stu-knowme__spinner {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 2.5px solid color-mix(in srgb, var(--interactive) 35%, transparent);
+  border-top-color: var(--interactive);
+  animation: stu-knowme-spin 0.85s linear infinite;
+}
+
+@keyframes stu-knowme-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.stu-knowme__loading h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--ink);
+}
+
+.stu-knowme__loading p {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--ink-3);
+}
+
+/* ============================================================
+   ERROR STATE
+   ============================================================ */
+
+.stu-knowme__error {
+  padding: 1rem 1.15rem;
+  border-radius: 10px;
+  background: var(--bad-soft);
+  border: 1px solid color-mix(in srgb, var(--bad) 25%, var(--line));
+  color: var(--bad-ink);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 600px) {
+  .stu-knowme__hero {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .stu-knowme__step {
+    padding: 1.25rem;
+  }
+
+  .stu-knowme-result__header {
+    padding: 1.25rem;
+  }
+}

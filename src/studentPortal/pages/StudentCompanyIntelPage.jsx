@@ -6,9 +6,19 @@ import {
   getCompanyIntelligenceBySlug,
   pollUntilReady,
 } from '../companyIntelligenceApi';
-import { studentPaths } from '../paths';
+import { studentPaths, studentToolPath } from '../paths';
 import { companyLogo, companyMonogram } from '../companyLogos';
 import '../styles/company-intel.css';
+
+function companyKeyFromSlugOrName(slug, name) {
+  const raw = String(slug || name || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+  if (raw.includes('microsoft')) return 'microsoft';
+  return raw || '';
+}
 
 function Mark({ name }) {
   const logo = companyLogo(name);
@@ -307,6 +317,15 @@ export default function StudentCompanyIntelPage() {
             ) : null}
 
             <section className="stu-ci__cta">
+              <Link
+                className="stu-btn stu-btn--primary"
+                to={studentToolPath('coding', {
+                  from: 'company-prep',
+                  mode: companyKeyFromSlugOrName(row?.slug, row?.company || profile?.name),
+                })}
+              >
+                Practice coding patterns <ArrowRight size={16} aria-hidden />
+              </Link>
               <Link className="stu-btn stu-btn--primary" to={studentPaths.companyPrep}>
                 Practice with Company Prep <ArrowRight size={16} aria-hidden />
               </Link>

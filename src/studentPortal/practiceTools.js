@@ -1,22 +1,33 @@
 import { WEEK1_STEPS } from './roadmap/week1Steps';
+import { studentToolPath } from './paths';
 
 /**
  * Practice catalog — same core MentorMuni tools as Week 1,
  * but all available (not sequential). Each may run once per day.
  */
-export const PRACTICE_TOOLS = WEEK1_STEPS.map((step) => {
-  const url = new URL(step.href, 'http://local');
-  url.searchParams.set('from', 'practice');
-  url.searchParams.set('tool', step.tool_code);
-  return {
-    tool_code: step.tool_code,
-    order: step.order,
-    title: step.title,
-    minutes: step.minutes,
-    blurb: practiceBlurb(step.tool_code),
-    href: `${url.pathname}?${url.searchParams.toString()}`,
-  };
-});
+export const PRACTICE_TOOLS = [
+  ...WEEK1_STEPS.map((step) => {
+    const url = new URL(step.href, 'http://local');
+    url.searchParams.set('from', 'practice');
+    url.searchParams.set('tool', step.tool_code);
+    return {
+      tool_code: step.tool_code,
+      order: step.order,
+      title: step.title,
+      minutes: step.minutes,
+      blurb: practiceBlurb(step.tool_code),
+      href: `${url.pathname}?${url.searchParams.toString()}`,
+    };
+  }),
+  {
+    tool_code: 'coding',
+    order: 20,
+    title: 'Coding assessment',
+    minutes: 45,
+    blurb: practiceBlurb('coding'),
+    href: studentToolPath('coding', { from: 'practice', skill: 'practice-two-sum' }),
+  },
+];
 
 function practiceBlurb(code) {
   switch (code) {
@@ -36,6 +47,8 @@ function practiceBlurb(code) {
       return 'End-to-end technical interview simulation.';
     case 'hr_mock':
       return 'HR / behavioral voice interview practice.';
+    case 'coding':
+      return 'Judge0-scored DSA practice with coaching analysis.';
     default:
       return 'Practice once today, then come back tomorrow.';
   }

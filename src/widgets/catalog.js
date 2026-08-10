@@ -13,13 +13,14 @@ export const TOOL_IDS = Object.freeze({
   INTERVIEW_MOCK: 'interview_mock',
   HR_MOCK: 'hr_mock',
   RESUME_ATS: 'resume_ats',
+  CODING: 'coding',
 });
 
 /**
  * @type {Record<string, {
  *   id: string,
  *   title: string,
- *   family: 'snap' | 'readiness' | 'voice' | 'resume',
+ *   family: 'snap' | 'readiness' | 'voice' | 'resume' | 'coding',
  *   minutes?: number,
  *   mode?: string,
  *   description?: string,
@@ -95,6 +96,13 @@ export const TOOL_CATALOG = Object.freeze({
     family: 'resume',
     minutes: 5,
     description: 'ATS score and keyword gaps for a target role',
+  },
+  [TOOL_IDS.CODING]: {
+    id: TOOL_IDS.CODING,
+    title: 'Coding assessment',
+    family: 'coding',
+    minutes: 45,
+    description: 'Timed coding practice with Judge0 scoring and coaching analysis',
   },
 });
 

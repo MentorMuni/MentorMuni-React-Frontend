@@ -7,6 +7,7 @@ import { useStudentShell } from '../shellContext';
 import { fetchUpcomingDrives } from '../drives';
 import {
   COMPANY_PREP_TASKS,
+  codingPrepHref,
   demoNearestDrive,
   ensurePrepDay,
   getMissionCompletion,
@@ -73,7 +74,17 @@ export default function StudentCompanyPrepPage() {
 
   const totalMinutes = useMemo(() => missionTotalMinutes(COMPANY_PREP_TASKS), []);
   const doneCount = COMPANY_PREP_TASKS.filter((t) => doneMap[t.id]).length;
-  const nextTask = COMPANY_PREP_TASKS.find((t) => !doneMap[t.id]) || COMPANY_PREP_TASKS[0];
+  const daysLeft = Math.max(0, nearest?.days_until ?? 0);
+  const company = nearest?.company_name || 'Campus';
+
+  const missionTasks = useMemo(
+    () =>
+      COMPANY_PREP_TASKS.map((t) =>
+        t.id === 'coding_dsa' ? { ...t, href: codingPrepHref(company) } : t,
+      ),
+    [company],
+  );
+  const nextTask = missionTasks.find((t) => !doneMap[t.id]) || missionTasks[0];
 
   const selectDrive = useCallback(
     (drive) => {
@@ -102,9 +113,6 @@ export default function StudentCompanyPrepPage() {
     if (nextTask) startTask(nextTask);
   }, [nextTask, startTask]);
 
-  const daysLeft = Math.max(0, nearest?.days_until ?? 0);
-  const company = nearest?.company_name || 'Campus';
-
   return (
     <main className="stu-main">
           <section className="stu-cprep" aria-labelledby="stu-cprep-title">
@@ -120,7 +128,7 @@ export default function StudentCompanyPrepPage() {
                 {nearest?.drive_date
                   ? ` · ${new Date(`${nearest.drive_date}T12:00:00`).toLocaleDateString()}`
                   : ''}
-                . Finish all five blocks — about {totalMinutes} minutes.
+                . Finish all blocks — about {totalMinutes} minutes.
               </p>
             </header>
 
@@ -157,7 +165,7 @@ export default function StudentCompanyPrepPage() {
               <div className="stu-cprep__today-label">Today</div>
 
               <ol className="stu-cprep__tasks">
-                {COMPANY_PREP_TASKS.map((task, index) => {
+                {missionTasks.map((task, index) => {
                   const done = Boolean(doneMap[task.id]);
                   return (
                     <li
@@ -190,17 +198,17 @@ export default function StudentCompanyPrepPage() {
                 <p className="stu-cprep__total">
                   <strong>{totalMinutes}</strong> minutes
                   <em>
-                    · {doneCount}/{COMPANY_PREP_TASKS.length} done today
+                    · {doneCount}/{missionTasks.length} done today
                   </em>
                 </p>
                 <button
                   type="button"
                   className="stu-cprep__cta"
                   onClick={startMission}
-                  disabled={doneCount === COMPANY_PREP_TASKS.length}
+                  disabled={doneCount === missionTasks.length}
                 >
                   <Play size={16} fill="currentColor" strokeWidth={2} aria-hidden />
-                  {doneCount === COMPANY_PREP_TASKS.length
+                  {doneCount === missionTasks.length
                     ? 'Mission complete'
                     : "Start today's mission"}
                   <ArrowRight size={16} strokeWidth={2.2} aria-hidden />

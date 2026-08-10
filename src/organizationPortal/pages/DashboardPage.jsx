@@ -32,6 +32,22 @@ import {
 import { fetchDepartments } from '../departmentsApi';
 import { fetchStudentInvites, fetchStudents } from '../studentsApi';
 import AssignToStudentModal from './AssignToStudentModal';
+import {
+  fetchBranchInsight,
+  fetchCampusInsight,
+  fetchPerformanceSummary,
+  mapInsight,
+  summaryToUiMetrics,
+} from '../performanceApi';
+import {
+  ActivityMix,
+  BandDonut,
+  ClarityBoard,
+  DeptStackedBands,
+  FrequencyBars,
+  PillarBars,
+  ToolCoverageBars,
+} from '../components/PerformanceCharts';
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -51,6 +67,7 @@ export default function DashboardPage() {
   const [hodDataSource, setHodDataSource] = useState('local');
   const [assignStudent, setAssignStudent] = useState(null);
   const [assignFlash, setAssignFlash] = useState('');
+  const [perfSource, setPerfSource] = useState('local');
 
   useEffect(() => {
     return subscribeOrgDb(() => {
@@ -67,6 +84,44 @@ export default function DashboardPage() {
       setHodDataSource('local');
     });
   }, []);
+
+  // Live campus / branch performance from roadmap scores
+  useEffect(() => {
+    if (session?.demo) return undefined;
+    let cancelled = false;
+    (async () => {
+      try {
+        const summary = await fetchPerformanceSummary();
+        if (cancelled || !summary) return;
+        const ui = summaryToUiMetrics(summary);
+        if (normalizeOrgRole(session?.role) === ORG_ROLES.HOD) {
+          setHodMetrics((prev) => ({
+            ...(prev || {}),
+            ...ui,
+            activePrograms: prev?.activePrograms ?? 0,
+            pendingInvites: ui.pendingInvites ?? prev?.pendingInvites ?? 0,
+          }));
+          setHodDataSource('api');
+        } else {
+          setMetrics((prev) => ({
+            ...prev,
+            ...ui,
+            departments: prev.departments,
+            activePrograms: prev.activePrograms,
+            recentPrograms: prev.recentPrograms,
+            recentDrives: prev.recentDrives,
+            programCoverage: prev.programCoverage,
+          }));
+          setPerfSource('api');
+        }
+      } catch {
+        /* keep local heuristics */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [session?.role, session?.demo, session?.department_id]);
 
   // Live HOD dashboard: students + pending from API for this department
   useEffect(() => {
@@ -101,8 +156,33 @@ export default function DashboardPage() {
         pendingCount: (queue.invitations || []).length,
         programsCount,
       });
-      setHodMetrics(live);
-      setHodInsight(buildLocalBranchInsight(live));
+      setHodMetrics((prev) => ({
+        // Live roster counts first, then layer performance summary fields that roster lacks
+        ...live,
+        pillars: prev?.pillars || live.pillars,
+        areaLeaders: prev?.areaLeaders?.length ? prev.areaLeaders : live.areaLeaders,
+        atRisk: prev?.atRisk?.length ? prev.atRisk : live.atRisk,
+        topGaps: prev?.topGaps?.length ? prev.topGaps : live.topGaps,
+        topStrengths: prev?.topStrengths?.length ? prev.topStrengths : live.topStrengths,
+        bands: prev?.bands || live.bands,
+        strong: prev?.strong ?? live.strong,
+        mid: prev?.mid ?? live.mid,
+        weak: prev?.weak ?? live.weak,
+        unscored: prev?.unscored ?? live.unscored,
+        avgReadiness: prev?.avgReadiness ?? live.avgReadiness,
+        coveragePct: prev?.coveragePct ?? live.coveragePct,
+        driveReadyPct: prev?.driveReadyPct ?? live.driveReadyPct,
+        driveReadyOfScoredPct: prev?.driveReadyOfScoredPct ?? live.driveReadyOfScoredPct,
+        clarity: prev?.clarity || live.clarity,
+        toolCoverage: prev?.toolCoverage?.length ? prev.toolCoverage : live.toolCoverage,
+        leaders: prev?.leaders?.length ? prev.leaders : live.leaders,
+        active7d: prev?.active7d ?? live.active7d,
+        idleCount: prev?.idleCount ?? live.idleCount,
+        inactive14d: prev?.inactive14d ?? live.inactive14d,
+        neverStarted: prev?.neverStarted ?? live.neverStarted,
+        activePrograms: programsCount,
+        pendingInvites: (queue.invitations || []).length,
+      }));
       setHodDataSource(roster.source || 'api');
     })();
     return () => {
@@ -110,20 +190,62 @@ export default function DashboardPage() {
     };
   }, [session?.role, session?.demo, session?.department_id]);
 
-  const runInsight = () => {
+  const runInsight = async () => {
     setAiBusy(true);
-    window.setTimeout(() => {
-      setInsight(buildLocalCampusInsight(getTpoMetrics()));
+    try {
+      if (!session?.demo) {
+        const [res, summary] = await Promise.all([
+          fetchCampusInsight({ include_leaderboard: true, max_actions: 5 }),
+          fetchPerformanceSummary(),
+        ]);
+        if (summary) {
+          setMetrics((prev) => ({
+            ...prev,
+            ...summaryToUiMetrics(summary),
+            departments: prev.departments,
+            activePrograms: prev.activePrograms,
+            recentPrograms: prev.recentPrograms,
+            recentDrives: prev.recentDrives,
+            programCoverage: prev.programCoverage,
+          }));
+        }
+        setInsight(mapInsight(res) || buildLocalCampusInsight(getTpoMetrics()));
+        setPerfSource(res?.source === 'openai' ? 'api+ai' : 'api');
+      } else {
+        setInsight(buildLocalCampusInsight(getTpoMetrics()));
+      }
+    } catch {
+      setInsight(buildLocalCampusInsight(metrics));
+    } finally {
       setAiBusy(false);
-    }, 450);
+    }
   };
 
-  const runHodInsight = () => {
+  const runHodInsight = async () => {
     setAiBusy(true);
-    window.setTimeout(() => {
+    try {
+      if (!session?.demo) {
+        const [res, summary] = await Promise.all([
+          fetchBranchInsight({ include_leaderboard: true, max_actions: 5 }),
+          fetchPerformanceSummary(),
+        ]);
+        setHodInsight(mapInsight(res) || buildLocalBranchInsight(hodMetrics));
+        if (summary) {
+          setHodMetrics((prev) => ({
+            ...(prev || {}),
+            ...summaryToUiMetrics(summary),
+            activePrograms: prev?.activePrograms ?? 0,
+            pendingInvites: summaryToUiMetrics(summary).pendingInvites ?? prev?.pendingInvites ?? 0,
+          }));
+        }
+      } else {
+        setHodInsight(buildLocalBranchInsight(hodMetrics));
+      }
+    } catch {
       setHodInsight(buildLocalBranchInsight(hodMetrics));
+    } finally {
       setAiBusy(false);
-    }, 450);
+    }
   };
 
   const bandTotal = Math.max(1, metrics.students || 0);
@@ -202,23 +324,26 @@ export default function DashboardPage() {
             <div>
               <p className="mm-org-pulse-label">Campus pulse</p>
               <p className="mm-org-pulse-value">
-                {metrics.avgReadiness}
+                {metrics.avgReadiness == null ? '—' : Math.round(metrics.avgReadiness)}
                 <span>avg readiness</span>
               </p>
               <p className="mt-2 text-sm mm-org-text-muted">
-                {metrics.strong} strong · {metrics.weak} need support
+                {metrics.strong} drive-ready · {metrics.weak} less prepared
+                {metrics.coveragePct != null ? ` · ${Math.round(metrics.coveragePct)}% scored` : ''}
               </p>
             </div>
             <div className="mt-6">
               <div className="mb-2 flex justify-between text-xs mm-org-text-muted">
-                <span>Readiness coverage</span>
-                <span>{metrics.avgReadiness}%</span>
+                <span>Score coverage</span>
+                <span>
+                  {metrics.coveragePct != null ? `${Math.round(metrics.coveragePct)}%` : '—'}
+                </span>
               </div>
               <div className="mm-org-progress">
                 <motion.div
                   className="mm-org-progress__bar"
                   initial={{ width: 0 }}
-                  animate={{ width: `${metrics.avgReadiness}%` }}
+                  animate={{ width: `${metrics.coveragePct ?? 0}%` }}
                   transition={{ duration: 0.9, ease: EASE }}
                 />
               </div>
@@ -272,72 +397,81 @@ export default function DashboardPage() {
           <div className="mm-org-insight">
             <div className="mm-org-insight__card">
               <h4>Drive-ready (≥75%)</h4>
-              <strong>{metrics.bands?.strong || 0}</strong>
+              <strong>{metrics.bands?.strong || metrics.strong || 0}</strong>
               <p>{bandPct.strong}% of enrolled cohort</p>
             </div>
             <div className="mm-org-insight__card">
               <h4>Developing (50–74%)</h4>
-              <strong>{metrics.bands?.mid || 0}</strong>
+              <strong>{metrics.bands?.mid || metrics.mid || 0}</strong>
               <p>{bandPct.mid}% — assign targeted mocks</p>
             </div>
             <div className="mm-org-insight__card">
-              <h4>At risk (&lt;50%)</h4>
-              <strong>{metrics.bands?.weak || 0}</strong>
-              <p>{bandPct.weak}% — priority for readiness tests</p>
+              <h4>Less prepared (&lt;50%)</h4>
+              <strong>{metrics.bands?.weak || metrics.weak || 0}</strong>
+              <p>{bandPct.weak}% — priority for focused practice</p>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <ClarityBoard clarity={metrics.clarity} insight={insight} />
+          </div>
+
+          <div className="mt-4 grid gap-4 lg:grid-cols-3">
+            <div className="mm-org-panel mm-org-panel--nested">
+              <p className="mm-org-stat__label mb-2">Readiness mix</p>
+              <BandDonut
+                strong={metrics.bands?.strong || metrics.strong || 0}
+                mid={metrics.bands?.mid || metrics.mid || 0}
+                weak={metrics.bands?.weak || metrics.weak || 0}
+                unscored={metrics.unscored || 0}
+                centerValue={metrics.avgReadiness}
+                centerLabel="avg readiness"
+                size={148}
+              />
+            </div>
+            <div className="mm-org-panel mm-org-panel--nested">
+              <p className="mm-org-stat__label mb-2">Pillar averages</p>
+              <PillarBars pillars={metrics.pillars || {}} />
+            </div>
+            <div className="mm-org-panel mm-org-panel--nested">
+              <p className="mm-org-stat__label mb-2">Activity pulse</p>
+              <ActivityMix
+                active={metrics.active7d || 0}
+                idle={metrics.idleCount || 0}
+                inactive={metrics.inactive14d || 0}
+                never={metrics.neverStarted || 0}
+              />
+              <p className="mt-2 text-xs mm-org-text-muted">
+                Coverage {Math.round(metrics.coveragePct || 0)}% scored
+                {perfSource !== 'local' ? ` · ${perfSource}` : ''}
+              </p>
             </div>
           </div>
 
           <div className="mt-4 grid gap-4 lg:grid-cols-2">
             <div>
               <p className="mm-org-stat__label mb-2">Top skill gaps</p>
-              {(metrics.topGaps || []).length ? (
-                <div className="space-y-3">
-                  {metrics.topGaps.map((g, i) => (
-                    <div key={g.label}>
-                      <div className="mb-1 flex justify-between text-xs">
-                        <span className="mm-org-band-label">{g.label}</span>
-                        <span className="mm-org-text-muted">{g.count} students</span>
-                      </div>
-                      <div className="mm-org-progress">
-                        <motion.div
-                          className="mm-org-progress__bar"
-                          initial={{ width: 0 }}
-                          animate={{
-                            width: `${Math.min(100, Math.round((g.count / bandTotal) * 100))}%`,
-                          }}
-                          transition={{ duration: 0.6, delay: 0.05 * i, ease: EASE }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="m-0 text-sm mm-org-text-muted">
-                  Enroll students to surface gap themes.
-                </p>
-              )}
+              <FrequencyBars items={metrics.topGaps || []} tone="bad" empty="Enroll students to surface gap themes." />
             </div>
             <div>
               <p className="mm-org-stat__label mb-2">Campus strengths</p>
-              {(metrics.topStrengths || []).length ? (
-                <ul className="m-0 list-none space-y-2 p-0">
-                  {metrics.topStrengths.map((s) => (
-                    <li
-                      key={s.label}
-                      className="mm-org-list-card text-sm"
-                    >
-                      <span className="font-bold mm-org-text">{s.label}</span>
-                      <span className="mm-org-badge mm-org-badge--active">{s.count}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="m-0 text-sm mm-org-text-muted">
-                  Strength signals appear after scorecards load.
-                </p>
-              )}
+              <FrequencyBars items={metrics.topStrengths || []} tone="good" empty="Strength signals appear after scorecards load." />
             </div>
           </div>
+
+          {(metrics.byDept || []).length ? (
+            <div className="mt-4">
+              <p className="mm-org-stat__label mb-2">Departments — band mix</p>
+              <DeptStackedBands departments={metrics.byDept || []} />
+            </div>
+          ) : null}
+
+          {(metrics.toolCoverage || []).length ? (
+            <div className="mt-4">
+              <p className="mm-org-stat__label mb-2">Tool completion</p>
+              <ToolCoverageBars tools={metrics.toolCoverage || []} />
+            </div>
+          ) : null}
 
           <div className="mm-org-ai-box">
             <p className="mm-org-ai-box__title">
@@ -351,7 +485,7 @@ export default function DashboardPage() {
             </ul>
             <p className="mm-org-ai-box__meta">
               {insight.source === 'heuristic'
-                ? 'Running on local heuristics today. Wire OpenAI via backend for narrative + personalized remediation plans.'
+                ? 'Heuristic brief from live aggregates. OpenAI narrative when API key is configured.'
                 : 'Generated with OpenAI'}
             </p>
           </div>
@@ -377,14 +511,15 @@ export default function DashboardPage() {
                         {d.name} <span className="mm-org-text-muted">({d.code})</span>
                       </span>
                       <span className="mm-org-text-muted">
-                        {d.students} students · {d.avgReadiness}%
+                        {d.students} students ·{' '}
+                        {d.avgReadiness == null ? 'no scores' : `${Math.round(d.avgReadiness)}%`}
                       </span>
                     </div>
                     <div className="mm-org-progress">
                       <motion.div
                         className="mm-org-progress__bar"
                         initial={{ width: 0 }}
-                        animate={{ width: `${d.avgReadiness}%` }}
+                        animate={{ width: `${d.avgReadiness == null ? 0 : d.avgReadiness}%` }}
                         transition={{ duration: 0.7, delay: 0.04 * i, ease: EASE }}
                       />
                     </div>
@@ -478,7 +613,7 @@ export default function DashboardPage() {
               </li>
               <li>
                 {metrics.weak
-                  ? `${metrics.weak} student(s) below 50% readiness — assign a readiness test or AI mock.`
+                  ? `${metrics.weak} student(s) are less prepared (&lt;50%) — assign a readiness test or AI mock.`
                   : 'No students flagged as needing support yet.'}
               </li>
               <li>
@@ -523,8 +658,8 @@ export default function DashboardPage() {
 
     const cards = [
       { label: 'Students', value: hm?.students ?? 0, icon: Users, hint: dept.name },
-      { label: 'Avg readiness', value: `${hm?.avgReadiness ?? 0}%`, icon: BarChart3, hint: 'Branch' },
-      { label: 'At risk', value: hm?.weak ?? 0, icon: AlertTriangle, hint: '< 50%' },
+      { label: 'Avg readiness', value: hm?.avgReadiness == null ? '—' : `${Math.round(hm.avgReadiness)}%`, icon: BarChart3, hint: 'Among scored' },
+      { label: 'Less prepared', value: hm?.weak ?? 0, icon: AlertTriangle, hint: '< 50%' },
       { label: 'Active programs', value: hm?.activePrograms ?? 0, icon: ClipboardList, hint: 'Assigned' },
       { label: 'Pending invites', value: hm?.pendingInvites ?? 0, icon: UserPlus, hint: 'Queue' },
     ];
@@ -547,7 +682,7 @@ export default function DashboardPage() {
               <span className="mm-org-hero__muted"> readiness</span>
             </h2>
             <p className="mm-org-hero__body">
-              Mentor your batch like a branch head: spot at-risk students, assign aptitude / skill /
+              Mentor your batch like a branch head: spot less-prepared students, assign aptitude / skill /
               English / technical checks and mock interviews, and keep the department informed.
             </p>
             <div className="mm-org-hero__actions">
@@ -595,7 +730,7 @@ export default function DashboardPage() {
               {[
                 { key: 'strong', label: 'Drive-ready (≥75%)', pct: hBand.strong, count: hm?.strong },
                 { key: 'mid', label: 'Developing (50–74%)', pct: hBand.mid, count: hm?.mid },
-                { key: 'weak', label: 'Needs support (<50%)', pct: hBand.weak, count: hm?.weak },
+                { key: 'weak', label: 'Less prepared (<50%)', pct: hBand.weak, count: hm?.weak },
               ].map((b) => (
                 <div key={b.key}>
                   <div className="mb-1 flex justify-between text-xs">
@@ -658,7 +793,9 @@ export default function DashboardPage() {
             <div className="mm-org-panel__head">
               <div>
                 <h2 className="mm-org-panel__title">Branch brief</h2>
-                <p className="mm-org-panel__meta">Local heuristic · OpenAI later</p>
+                <p className="mm-org-panel__meta">
+                  {hodInsight?.source === 'openai' ? 'OpenAI deep analysis' : 'Heuristic / live scores'}
+                </p>
               </div>
               <button
                 type="button"
@@ -681,9 +818,48 @@ export default function DashboardPage() {
               </ul>
             </div>
 
+            <div className="mt-4">
+              <ClarityBoard clarity={hm?.clarity} insight={hodInsight} />
+            </div>
+
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <div>
+                <p className="mm-org-stat__label mb-2">Readiness mix</p>
+                <BandDonut
+                  strong={hm?.bands?.strong || hm?.strong || 0}
+                  mid={hm?.bands?.mid || hm?.mid || 0}
+                  weak={hm?.bands?.weak || hm?.weak || 0}
+                  unscored={hm?.unscored || 0}
+                  centerValue={hm?.avgReadiness}
+                  centerLabel="avg readiness"
+                  size={132}
+                />
+              </div>
+              <div>
+                <p className="mm-org-stat__label mb-2">Pillar averages</p>
+                <PillarBars pillars={hm?.pillars || {}} />
+              </div>
+            </div>
+
+            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+              <div>
+                <p className="mm-org-stat__label mb-2">Activity pulse</p>
+                <ActivityMix
+                  active={hm?.active7d || 0}
+                  idle={hm?.idleCount || 0}
+                  inactive={hm?.inactive14d || 0}
+                  never={hm?.neverStarted || 0}
+                />
+              </div>
+              <div>
+                <p className="mm-org-stat__label mb-2">Branch gaps</p>
+                <FrequencyBars items={hm?.topGaps || []} tone="bad" empty="Gaps appear after scored attempts." />
+              </div>
+            </div>
+
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <div>
-                <p className="mm-org-label">At-risk students</p>
+                <p className="mm-org-label">Less-prepared students</p>
                 {(hm?.atRisk || []).length ? (
                   <ul className="m-0 list-none space-y-2 p-0">
                     {hm.atRisk.map((s) => (
@@ -706,7 +882,7 @@ export default function DashboardPage() {
                   </ul>
                 ) : (
                   <p className="m-0 text-sm mm-org-text-muted">
-                    No students below 50% — keep weekly checks going.
+                    No less-prepared students in this band — keep weekly checks going.
                   </p>
                 )}
               </div>
@@ -767,7 +943,7 @@ export default function DashboardPage() {
 
           <div className="grid gap-5 lg:grid-cols-2 mb-5">
             <div>
-              <p className="mm-org-stat__label mb-2">Branch weaknesses (gaps)</p>
+              <p className="mm-org-stat__label mb-2">Branch preparation gaps</p>
               {(hm?.topGaps || []).length ? (
                 <div className="space-y-3">
                   {hm.topGaps.map((g, i) => (
@@ -857,7 +1033,7 @@ export default function DashboardPage() {
                     <th>Readiness</th>
                     <th>Mock</th>
                     <th>Strength</th>
-                    <th>Weakness</th>
+                    <th>Prep gap</th>
                     <th>Activity</th>
                     <th />
                   </tr>

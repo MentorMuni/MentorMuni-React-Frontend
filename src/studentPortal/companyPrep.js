@@ -13,6 +13,12 @@ export const COMPANY_PREP_TASKS = [
     href: studentToolPath('aptitude', { from: 'company-prep' }),
   },
   {
+    id: 'coding_dsa',
+    title: 'Coding pattern drill',
+    minutes: 20,
+    href: studentToolPath('coding', { from: 'company-prep', skill: 'practice-two-sum' }),
+  },
+  {
     id: 'sql_challenge',
     title: 'SQL Challenge',
     minutes: 5,
@@ -37,6 +43,25 @@ export const COMPANY_PREP_TASKS = [
     href: studentToolPath('5_sec', { from: 'company-prep' }),
   },
 ];
+
+/**
+ * Prefer company-keyed coding when drive company is known.
+ * Falls back to seeded practice-two-sum.
+ */
+export function codingPrepHref(companyName) {
+  const key = String(companyName || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+  if (key.includes('microsoft')) {
+    return studentToolPath('coding', { from: 'company-prep', mode: 'microsoft' });
+  }
+  if (key) {
+    return studentToolPath('coding', { from: 'company-prep', mode: key });
+  }
+  return studentToolPath('coding', { from: 'company-prep', skill: 'practice-two-sum' });
+}
 
 export function missionTotalMinutes(tasks = COMPANY_PREP_TASKS) {
   return tasks.reduce((sum, t) => sum + (t.minutes || 0), 0);

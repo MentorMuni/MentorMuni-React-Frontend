@@ -1818,7 +1818,7 @@ export function buildLocalBranchInsight(metrics) {
   const gap = metrics.topGaps[0];
   const actions = [];
   if (metrics.weak > 0) {
-    actions.push(`Pull ${metrics.weak} at-risk student(s) into a technical or aptitude drill`);
+    actions.push(`Pull ${metrics.weak} less-prepared student(s) into a technical or aptitude drill`);
   }
   if (gap) {
     actions.push(`Run a focused ${gap.label} session for ${gap.count} student(s)`);
@@ -1833,9 +1833,17 @@ export function buildLocalBranchInsight(metrics) {
     actions.push('Keep weekly English + technical checks ahead of placement season');
   }
   return {
-    summary: `${metrics.departmentName} avg readiness is ${metrics.avgReadiness}%. ${metrics.strong} drive-ready, ${metrics.weak} need support${
-      gap ? `. Top gap: ${gap.label}` : ''
+    summary: `${metrics.departmentName} avg readiness is ${metrics.avgReadiness}%. ${metrics.strong} drive-ready, ${metrics.weak} less prepared${
+      gap ? `. Top prep gap: ${gap.label}` : ''
     }.`,
+    goingWell: [
+      metrics.strong > 0 ? `${metrics.strong} drive-ready students in branch` : null,
+      metrics.topStrengths?.[0] ? `Strength: ${metrics.topStrengths[0].label}` : null,
+    ].filter(Boolean),
+    concerns: [
+      metrics.weak > 0 ? `${metrics.weak} students are less prepared (<50%)` : null,
+      gap ? `Top prep gap: ${gap.label}` : null,
+    ].filter(Boolean),
     actions,
     source: 'heuristic',
   };
@@ -1863,9 +1871,20 @@ export function buildLocalCampusInsight(metrics = getTpoMetrics()) {
   if (!actions.length) actions.push('Maintain weekly readiness tests ahead of next drive');
 
   return {
-    summary: `Campus avg readiness is ${metrics.avgReadiness}%. ${metrics.strong} students are drive-ready; ${metrics.weak} need support${
-      gap ? `. Top skill gap: ${gap.label} (${gap.count} students)` : ''
+    summary: `Campus avg readiness is ${metrics.avgReadiness}%. ${metrics.strong} students are drive-ready; ${metrics.weak} are less prepared${
+      gap ? `. Top prep gap: ${gap.label} (${gap.count} students)` : ''
     }.`,
+    goingWell: [
+      metrics.strong > 0 ? `${metrics.strong} drive-ready students (≥75%)` : null,
+      metrics.topStrengths?.[0] ? `Strength theme: ${metrics.topStrengths[0].label}` : null,
+    ].filter(Boolean),
+    concerns: [
+      metrics.weak > 0 ? `${metrics.weak} students are less prepared (<50% readiness)` : null,
+      gap ? `Top prep gap: ${gap.label} (${gap.count})` : null,
+      weakDept && weakDept.avgReadiness < 60
+        ? `${weakDept.name} needs more prep (avg ${weakDept.avgReadiness}%)`
+        : null,
+    ].filter(Boolean),
     actions,
     source: 'heuristic',
   };

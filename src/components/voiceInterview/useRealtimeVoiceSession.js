@@ -222,7 +222,15 @@ export function useRealtimeVoiceSession() {
   }, []);
 
   const startSession = useCallback(
-    async ({ interview_focus, target_role, target_companies, extra_context, voice }) => {
+    async ({
+      interview_focus,
+      target_role,
+      target_companies,
+      extra_context,
+      voice,
+      mintSession,
+      promptFirstResponse = false,
+    } = {}) => {
       setError(null);
       setTranscript([]);
       transcriptRef.current = [];
@@ -230,13 +238,15 @@ export function useRealtimeVoiceSession() {
       setStatus('connecting');
 
       try {
-        const session = await createVoiceInterviewSession({
-          interview_focus,
-          ...(target_role ? { target_role } : {}),
-          ...(target_companies ? { target_companies } : {}),
-          ...(extra_context ? { extra_context } : {}),
-          ...(voice ? { voice } : {}),
-        });
+        const session = mintSession
+          ? await mintSession()
+          : await createVoiceInterviewSession({
+              interview_focus,
+              ...(target_role ? { target_role } : {}),
+              ...(target_companies ? { target_companies } : {}),
+              ...(extra_context ? { extra_context } : {}),
+              ...(voice ? { voice } : {}),
+            });
 
         if (!mountedRef.current) return null;
 
@@ -318,6 +328,16 @@ export function useRealtimeVoiceSession() {
         dc.addEventListener('message', (e) => handleRealtimeEvent(e.data));
         // Do not send session.update here — OpenAI GA requires session.type "realtime",
         // and /session already configures instructions + transcription on the ephemeral key.
+        // Mentor (and similar) can ask the model to speak the opening line immediately.
+        if (promptFirstResponse) {
+          dc.addEventListener('open', () => {
+            try {
+              dc.send(JSON.stringify({ type: 'response.create' }));
+            } catch {
+              /* ignore */
+            }
+          });
+        }
 
         const offer = await pc.createOffer();
         await pc.setLocalDescription(offer);

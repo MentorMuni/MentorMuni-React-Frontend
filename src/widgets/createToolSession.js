@@ -18,7 +18,7 @@ import {
  * @param {string} opts.toolCode
  * @param {string} [opts.mode]
  * @param {string} [opts.skill]
- * @param {'roadmap'|'practice'|'company-prep'|'journey'|'embed'|'standalone'} [opts.source]
+ * @param {'roadmap'|'practice'|'company-prep'|'journey'|'embed'|'standalone'|'coding'} [opts.source]
  * @param {'full'|'minimal'|'none'} [opts.chrome]
  * @param {'none'|'practice-daily'|'roadmap-sequential'} [opts.lockMode]
  * @param {string} [opts.returnTo]
@@ -50,7 +50,8 @@ export function createToolSession(opts = {}) {
   const fromRoadmap = source === 'roadmap';
   const fromCompanyPrep = source === 'company-prep';
   const fromJourney = source === 'journey';
-  const fromPortal = fromPractice || fromRoadmap || fromCompanyPrep || fromJourney;
+  const fromCoding = source === 'coding';
+  const fromPortal = fromPractice || fromRoadmap || fromCompanyPrep || fromJourney || fromCoding;
   /** Embeds / widgets should skip marketing landings the same way portal deep-links do. */
   const fromHost = fromPortal || source === 'embed';
 
@@ -59,6 +60,7 @@ export function createToolSession(opts = {}) {
     fromPractice,
     fromCompanyPrep,
     fromJourney,
+    fromCoding,
     fromPortal,
     toolCode,
     mode,
@@ -78,6 +80,7 @@ export function createToolSession(opts = {}) {
     fromRoadmap,
     fromCompanyPrep,
     fromJourney,
+    fromCoding,
     fromHost,
     launchQuery,
 
@@ -104,20 +107,42 @@ export function createToolSession(opts = {}) {
         }
       }
 
+      // Always try to persist to roadmap when authenticated so HOD/TPO see scores
+      // (practice daily lock is additive — not a substitute for org analytics).
+      let roadmapOutcome = null;
+      if (
+        lockMode === 'roadmap-sequential' ||
+        fromRoadmap ||
+        fromJourney ||
+        fromPractice ||
+        fromCompanyPrep
+      ) {
+        roadmapOutcome = await submitRoadmapResult(payload);
+      }
+
       if (lockMode === 'practice-daily' || fromPractice) {
         finishPracticeRun(payload.toolCode);
+        if (roadmapOutcome && !roadmapOutcome.ok) {
+          return {
+            ...roadmapOutcome,
+            status: 'error',
+            message:
+              roadmapOutcome.message ||
+              'Counted for today, but roadmap save failed — retry to update your branch dashboard.',
+          };
+        }
         return {
           ok: true,
           status: 'saved',
-          message: 'Counted for today. This practice unlocks again tomorrow.',
+          message: 'Counted for today and saved to your readiness record.',
+          roadmap: roadmapOutcome?.roadmap,
         };
       }
 
-      if (lockMode === 'roadmap-sequential') {
-        const outcome = await submitRoadmapResult(payload);
+      if (roadmapOutcome) {
         return {
-          ...outcome,
-          status: outcome.ok ? 'saved' : 'error',
+          ...roadmapOutcome,
+          status: roadmapOutcome.ok ? 'saved' : 'error',
         };
       }
 

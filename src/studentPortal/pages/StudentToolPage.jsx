@@ -6,10 +6,11 @@ import { getToolMeta } from '../../widgets/catalog';
 import { studentPaths, studentToolPath } from '../paths';
 import '../styles/tool-host.css';
 
-const VALID_FROM = new Set(['roadmap', 'practice', 'company-prep', 'journey', 'embed']);
+const VALID_FROM = new Set(['roadmap', 'practice', 'company-prep', 'journey', 'embed', 'coding']);
 
 function returnPathFor(from) {
   if (from === 'practice') return studentPaths.practice;
+  if (from === 'coding') return studentPaths.coding;
   if (from === 'company-prep') return studentPaths.companyPrep;
   if (from === 'journey') return `${studentPaths.home}#stu-90day-plan`;
   return studentPaths.home;
@@ -42,6 +43,7 @@ export default function StudentToolPage() {
 
   const backLabel = useMemo(() => {
     if (from === 'practice') return 'Back to Practice';
+    if (from === 'coding') return 'Back to Coding Round';
     if (from === 'company-prep') return 'Back to Company Prep';
     if (from === 'journey') return 'Back to your 90-day plan';
     if (from === 'roadmap') return 'Back to Home';
@@ -79,13 +81,15 @@ export default function StudentToolPage() {
             <p className="stu-tool-host__eyebrow">
               {from === 'practice'
                 ? 'Practice'
-                : from === 'company-prep'
-                  ? 'Company Prep'
-                  : from === 'journey'
-                    ? '90-day journey'
-                    : from === 'roadmap'
-                      ? 'Week 1 roadmap'
-                      : 'Tool'}
+                : from === 'coding'
+                  ? 'Coding Round'
+                  : from === 'company-prep'
+                    ? 'Company Prep'
+                    : from === 'journey'
+                      ? '90-day journey'
+                      : from === 'roadmap'
+                        ? 'Week 1 roadmap'
+                        : 'Tool'}
             </p>
             <h1 className="stu-tool-host__title">{meta.title}</h1>
           </div>

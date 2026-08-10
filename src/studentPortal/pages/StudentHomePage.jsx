@@ -22,8 +22,10 @@ import PlacementJourneySection from '../components/home/PlacementJourneySection'
 import UpcomingSection from '../components/home/UpcomingSection';
 import CompaniesSection from '../components/home/CompaniesSection';
 import LeaderboardSection from '../components/home/LeaderboardSection';
+import MentorAlwaysOn from '../components/home/MentorAlwaysOn';
 
 import '../styles/home.css';
+import '../styles/mentor.css';
 
 const BASELINE_CELEBRATED_KEY = 'mm-student-baseline-celebrated';
 const POLL_INTERVAL_MS = 2500;
@@ -230,6 +232,8 @@ export default function StudentHomePage() {
         onGenerate={handleGenerate}
         generating={generating}
       />
+
+      <MentorAlwaysOn />
 
       <PageSection
         id="stu-today-zone"
