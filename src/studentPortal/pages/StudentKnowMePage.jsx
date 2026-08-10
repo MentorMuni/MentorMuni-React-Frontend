@@ -42,11 +42,20 @@ export default function StudentKnowMePage() {
 
   useEffect(() => {
     const cached = loadSessionState();
-    if (cached?.checkin_id && cached?.step_index !== undefined) {
+    const cachedQuestions = Array.isArray(cached?.questions) ? cached.questions : [];
+    // Old sessions stored checkin_id without questions → blank form screen.
+    if (cached?.checkin_id != null && cached?.step_index !== undefined && cachedQuestions.length > 0) {
       setCheckinId(cached.checkin_id);
       setStepIndex(cached.step_index);
+      setQuestions(cachedQuestions);
       setResponses(new Map(cached.responses || []));
+      const prev = new Map(cached.responses || []).get(cachedQuestions[cached.step_index]?.key);
+      setCurrentResponses(prev || { selected_ids: [], free_text: '' });
       setState('form');
+      return;
+    }
+    if (cached?.checkin_id) {
+      clearSessionState();
     }
   }, []);
 
@@ -88,7 +97,7 @@ export default function StudentKnowMePage() {
       setWeeklyResult(null);
       setCelebration(null);
       setState('form');
-      saveSessionState(data.checkin_id, [], 0);
+      saveSessionState(data.checkin_id, [], 0, data.questions || []);
     } catch (err) {
       console.error('StartCheckIn failed:', err);
       setError(
@@ -143,7 +152,7 @@ export default function StudentKnowMePage() {
       } else {
         setStepIndex(stepIndex + 1);
         setCurrentResponses({ selected_ids: [], free_text: '' });
-        saveSessionState(checkinId, [...newResponses.entries()], stepIndex + 1);
+        saveSessionState(checkinId, [...newResponses.entries()], stepIndex + 1, questions);
       }
     } catch (err) {
       console.error('Error in handleNextStep:', err);
@@ -234,7 +243,7 @@ export default function StudentKnowMePage() {
   const solutionList = intervention?.solutions || [];
 
   return (
-    <main className="stu-main stu-knowme">
+    <main className={`stu-main stu-knowme${state === 'landing' ? ' stu-knowme--landing' : ''}`}>
       {state === 'landing' && (
         <FearToFearlessLanding
           onStartJourney={handleStartCheckIn}
@@ -242,6 +251,17 @@ export default function StudentKnowMePage() {
           loading={loading}
           error={error}
         />
+      )}
+
+      {state === 'form' && !currentQuestion && (
+        <section className="stu-knowme-form">
+          <p className="stu-knowme__error" role="alert">
+            This check-in session could not be resumed.
+          </p>
+          <button type="button" className="stu-knowme__btn stu-knowme__btn--primary" onClick={restartFlow}>
+            Back to Fear → Fearless
+          </button>
+        </section>
       )}
 
       {state === 'form' && currentQuestion && (

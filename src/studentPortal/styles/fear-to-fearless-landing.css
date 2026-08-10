@@ -2,11 +2,13 @@
 
 .ftf-landing {
   position: relative;
-  min-height: 100vh;
+  min-height: min(100%, 100vh);
+  width: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
   background: #ffffff;
 }
 
@@ -86,8 +88,8 @@
   z-index: 1;
   max-width: 700px;
   width: 100%;
-  padding: 60px 40px;
-  margin: auto;
+  padding: 32px 24px 64px;
+  margin: 0 auto;
   animation: slide-up 0.8s ease-out;
 }
 
@@ -184,16 +186,17 @@
   font-weight: 700;
   line-height: 1.2;
   margin-bottom: 16px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: #5b6fd6;
+  background: none;
+  -webkit-text-fill-color: #5b6fd6;
   animation: fade-in 0.8s ease-out 0.4s both;
 }
 
 .ftf-landing__arrow {
   display: inline-block;
   margin: 0 8px;
+  color: #764ba2;
+  -webkit-text-fill-color: #764ba2;
   animation: pulse-arrow-title 1.5s ease-in-out infinite;
 }
 

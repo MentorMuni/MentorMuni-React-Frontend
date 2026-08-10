@@ -86,7 +86,7 @@ export async function getProgress() {
 
 const DEVICE_STORAGE_KEY = 'mm-fear-to-fearless-session';
 
-export function saveSessionState(checkin_id, responses, step_index) {
+export function saveSessionState(checkin_id, responses, step_index, questions = []) {
   try {
     localStorage.setItem(
       DEVICE_STORAGE_KEY,
@@ -94,6 +94,7 @@ export function saveSessionState(checkin_id, responses, step_index) {
         checkin_id,
         responses,
         step_index,
+        questions,
         saved_at: Date.now(),
       })
     );
@@ -117,6 +118,7 @@ export function loadSessionState() {
 export function clearSessionState() {
   try {
     localStorage.removeItem(DEVICE_STORAGE_KEY);
+    localStorage.removeItem('mm-know-me-session');
   } catch {
     /* ignore */
   }
