@@ -1,171 +1,198 @@
-import { Lock, ArrowRight, Zap, CheckCircle } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { AnimatePresence, motion, useReducedMotion } from 'framer-motion';
+import { ArrowRight, LineChart, Lock } from 'lucide-react';
+import FearFactorMeter from '../components/FearFactorMeter';
+import FearScoreCard from '../components/FearScoreCard';
+import FearScoreJourney from '../components/FearScoreJourney';
+import { MOTION, enterProps } from '../motion';
 import '../styles/fear-to-fearless-landing.css';
+
+const FEARS = [
+  'I blank in the interview',
+  'Everyone else has projects',
+  'DSA freeze',
+  'Family keeps asking',
+  '“Tell me about yourself”',
+  'I don’t belong in this drive',
+];
 
 export default function FearToFearlessLanding({
   onStartJourney,
   onViewProgress,
+  onOpenPlan,
+  onOpenHistory,
   loading = false,
   error = '',
+  active = null,
 }) {
+  const reduce = useReducedMotion();
+  const [liveFear, setLiveFear] = useState(0);
+  const locked = Boolean(active?.locked);
+  const hasPlan = Boolean(active?.checkin_id && (active?.phase === 'plan' || active?.phase === 'unlocked'));
+  const inForm = active?.phase === 'form';
+  const history = active?.history || [];
+  const older = history.filter((h) => h.checkin_id !== active?.checkin_id);
+
+  useEffect(() => {
+    if (reduce || hasPlan) return undefined;
+    const id = window.setInterval(() => {
+      setLiveFear((i) => (i + 1) % FEARS.length);
+    }, 2200);
+    return () => window.clearInterval(id);
+  }, [hasPlan, reduce]);
+
+  const ctaLabel = hasPlan
+    ? loading
+      ? 'Opening…'
+      : 'Open my plan'
+    : loading
+      ? 'Starting…'
+      : inForm
+        ? 'Continue check-in'
+        : 'Try it once';
+
+  const ctaSub = hasPlan
+    ? locked
+      ? `${active.days_remaining} day${active.days_remaining === 1 ? '' : 's'} left on this plan`
+      : 'Pick up where you left the mocks'
+    : '6 minutes. Private. Then a plan to beat placement fear.';
+
   return (
     <div className="ftf-landing">
-      <div className="ftf-landing__background">
-        <div className="ftf-landing__gradient-1" />
-        <div className="ftf-landing__gradient-2" />
-        <div className="ftf-landing__gradient-3" />
-      </div>
+      <header className="ftf-landing__hero">
+        <div className="ftf-landing__copy">
+          <motion.p className="ftf-landing__badge" {...enterProps(reduce, 0)}>
+            <span className="ftf-landing__live" aria-hidden />
+            Private · TPO and HOD never see this
+          </motion.p>
+          <motion.h1 className="ftf-landing__title" {...enterProps(reduce, 0.06)}>
+            Fear <span className="ftf-landing__to" aria-hidden>→</span> Fearless
+          </motion.h1>
+          <motion.p className="ftf-landing__punch" {...enterProps(reduce, 0.12)}>
+            That 3am spiral before the drive?
+            <br />
+            We built a 6-week plan for it.
+          </motion.p>
+          <motion.p className="ftf-landing__lead" {...enterProps(reduce, 0.18)}>
+            Blank in HR. Compare yourself to the person with four projects.
+            Family WhatsApp. You do not have to “just be confident.” Name it once.
+            Show up to the mocks. Watch the fear score fall to 0.
+          </motion.p>
 
-      <div className="ftf-landing__container">
-        <div className="ftf-landing__hero">
-          <div className="ftf-landing__icon-wrapper">
-            <div className="ftf-landing__lock-icon">
-              <Lock size={48} strokeWidth={1.5} />
-            </div>
-            <div className="ftf-landing__icon-glow" />
-          </div>
-
-          <div className="ftf-landing__headline">
-            <span className="ftf-landing__overline">🔒 Private to you</span>
-            <h1 className="ftf-landing__title">
-              Fear <span className="ftf-landing__arrow">→</span> Fearless
-            </h1>
-            <p className="ftf-landing__subtitle">
-              Your private 6-week AI coaching journey
-              <br />
-              <span className="ftf-landing__subtitle-accent">
-                From placement anxiety to interview confidence
-              </span>
-            </p>
-          </div>
-
-          <div className="ftf-landing__privacy-section">
-            <div className="ftf-landing__privacy-card">
-              <p className="ftf-landing__privacy-headline">
-                A private space to understand what&apos;s really holding you back.
+          <motion.div className="ftf-landing__actions" {...enterProps(reduce, 0.24)}>
+            {error ? (
+              <p className="ftf-landing__error" role="alert">
+                {error}
               </p>
-
-              <div className="ftf-landing__privacy-details">
-                <div className="ftf-landing__privacy-item ftf-landing__privacy-item--fade-in-1">
-                  <span className="ftf-landing__check">✓</span>
-                  <span>You don&apos;t have to impress anyone here</span>
-                </div>
-                <div className="ftf-landing__privacy-item ftf-landing__privacy-item--fade-in-2">
-                  <span className="ftf-landing__check">✓</span>
-                  <span>You don&apos;t have to sound confident</span>
-                </div>
-                <div className="ftf-landing__privacy-item ftf-landing__privacy-item--fade-in-3">
-                  <span className="ftf-landing__check">✓</span>
-                  <span>You don&apos;t have to know the right answer</span>
-                </div>
-                <div className="ftf-landing__privacy-item ftf-landing__privacy-item--fade-in-4">
-                  <span className="ftf-landing__check">✓</span>
-                  <span>Just tell us what&apos;s actually going on</span>
-                </div>
-              </div>
-
-              <div className="ftf-landing__divider" />
-
-              <p className="ftf-landing__privacy-footer">
-                <Lock size={14} className="ftf-landing__privacy-lock-icon" />
-                Your answers are private and aren&apos;t shown to your TPO, HOD, classmates, or
-                leaderboard.
-              </p>
-
-              <p className="ftf-landing__no-judgment">
-                No judgment. No marks. No right or wrong answers.
-              </p>
+            ) : null}
+            <div className="ftf-landing__btns">
+              <motion.button
+                type="button"
+                className="ftf-landing__cta"
+                onClick={hasPlan ? onOpenPlan : onStartJourney}
+                disabled={loading}
+                whileHover={reduce || loading ? undefined : { y: -2 }}
+                whileTap={reduce || loading ? undefined : { scale: 0.98 }}
+                transition={{ duration: MOTION.duration.fast, ease: MOTION.ease }}
+              >
+                {ctaLabel}
+                {!loading ? <ArrowRight size={18} strokeWidth={2.4} aria-hidden /> : null}
+              </motion.button>
+              <motion.button
+                type="button"
+                className="ftf-landing__cta ftf-landing__cta--progress"
+                onClick={onViewProgress}
+                whileHover={reduce ? undefined : { y: -2 }}
+                whileTap={reduce ? undefined : { scale: 0.98 }}
+                transition={{ duration: MOTION.duration.fast, ease: MOTION.ease }}
+              >
+                <LineChart size={18} strokeWidth={2.4} aria-hidden />
+                View my progress
+              </motion.button>
             </div>
-          </div>
-
-          <div className="ftf-landing__journey-preview">
-            <h3 className="ftf-landing__journey-title">Your 6-Week Transformation</h3>
-            <div className="ftf-landing__journey-steps">
-              <div className="ftf-landing__journey-step ftf-landing__journey-step--week-1">
-                <div className="ftf-landing__journey-number">1-2</div>
-                <div className="ftf-landing__journey-label">Foundation</div>
-                <div className="ftf-landing__journey-fear">Fear: 8→5</div>
+            <p className="ftf-landing__cta-hint">{ctaSub}</p>
+            {hasPlan && !locked ? (
+              <div className="ftf-landing__links">
+                <button type="button" className="ftf-landing__link" onClick={onStartJourney}>
+                  Start a new check-in
+                </button>
               </div>
-
-              <div className="ftf-landing__journey-arrow">→</div>
-
-              <div className="ftf-landing__journey-step ftf-landing__journey-step--week-3">
-                <div className="ftf-landing__journey-number">3-4</div>
-                <div className="ftf-landing__journey-label">Growth</div>
-                <div className="ftf-landing__journey-fear">Fear: 5→2</div>
-              </div>
-
-              <div className="ftf-landing__journey-arrow">→</div>
-
-              <div className="ftf-landing__journey-step ftf-landing__journey-step--week-6">
-                <div className="ftf-landing__journey-number">5-6</div>
-                <div className="ftf-landing__journey-label">Fearless!</div>
-                <div className="ftf-landing__journey-fear">Fear: 2→0 ✅</div>
-              </div>
-            </div>
-          </div>
-
-          {error ? (
-            <p className="ftf-landing__error" role="alert">
-              {error}
-            </p>
-          ) : null}
-
-          <div className="ftf-landing__cta-section">
-            <button
-              type="button"
-              className="ftf-landing__cta ftf-landing__cta--primary"
-              onClick={onStartJourney}
-              disabled={loading}
-            >
-              <span className="ftf-landing__cta-text">
-                {loading ? 'Starting…' : 'Start your journey'}
-              </span>
-              {!loading ? <ArrowRight size={18} className="ftf-landing__cta-arrow" /> : null}
-              <span className="ftf-landing__cta-subtext">Takes 5–7 minutes</span>
-            </button>
-
-            <p className="ftf-landing__cta-secondary">
-              Or{' '}
-              <button type="button" className="ftf-landing__link" onClick={onViewProgress}>
-                view my progress
-              </button>{' '}
-              if you&apos;ve already started
-            </p>
-          </div>
-
-          <div className="ftf-landing__features">
-            <div className="ftf-landing__feature ftf-landing__feature--animate-1">
-              <div className="ftf-landing__feature-icon">
-                <Zap size={20} />
-              </div>
-              <div className="ftf-landing__feature-text">
-                <strong>Personalized</strong>
-                <span>AI understands YOUR fears</span>
-              </div>
-            </div>
-
-            <div className="ftf-landing__feature ftf-landing__feature--animate-2">
-              <div className="ftf-landing__feature-icon">
-                <CheckCircle size={20} />
-              </div>
-              <div className="ftf-landing__feature-text">
-                <strong>Actionable</strong>
-                <span>Concrete plans, not generic advice</span>
-              </div>
-            </div>
-
-            <div className="ftf-landing__feature ftf-landing__feature--animate-3">
-              <div className="ftf-landing__feature-icon">
-                <Lock size={20} />
-              </div>
-              <div className="ftf-landing__feature-text">
-                <strong>Private</strong>
-                <span>100% confidential journey</span>
-              </div>
-            </div>
-          </div>
+            ) : null}
+          </motion.div>
         </div>
-      </div>
+
+        <motion.div {...enterProps(reduce, 0.16)}>
+          <FearScoreCard score={active?.fear_factor} />
+        </motion.div>
+      </header>
+
+      {hasPlan ? (
+        <motion.div className="ftf-landing__panel" {...enterProps(reduce, 0.28)}>
+          <FearFactorMeter
+            current={active.fear_factor}
+            initial={active.fear_factor_initial}
+            daysRemaining={locked ? active.days_remaining : 0}
+            lockDays={active.lock_days || 15}
+          />
+          <p className="ftf-landing__note">
+            {locked
+              ? `A new check-in unlocks in ${active.days_remaining} day${
+                  active.days_remaining === 1 ? '' : 's'
+                }. Aptitude, skill, interview, and HR mocks are how this number drops.`
+              : 'Your 15-day window is open again. Start a new check-in, or keep working the last plan.'}
+          </p>
+        </motion.div>
+      ) : (
+        <>
+          <FearScoreJourney />
+
+          <div className="ftf-landing__if">
+            <h2>If this is you</h2>
+            <ul className="ftf-landing__fears">
+              <AnimatePresence mode="sync">
+                {FEARS.map((fear, i) => (
+                  <motion.li
+                    key={fear}
+                    className={i === liveFear ? 'is-live' : ''}
+                    {...enterProps(reduce, 0.08 + i * 0.04)}
+                    animate={
+                      reduce
+                        ? undefined
+                        : { opacity: 1, y: 0, scale: i === liveFear ? 1.03 : 1 }
+                    }
+                  >
+                    {fear}
+                  </motion.li>
+                ))}
+              </AnimatePresence>
+            </ul>
+          </div>
+        </>
+      )}
+
+      <p className="ftf-landing__privacy">
+        <Lock size={13} strokeWidth={2.2} aria-hidden />
+        Your answers stay between you and this space. Classmates never see them.
+      </p>
+
+      {older.length > 0 ? (
+        <section className="ftf-landing__history">
+          <h2>Earlier plans</h2>
+          <ul>
+            {older.slice(0, 5).map((item) => (
+              <li key={item.checkin_id}>
+                <button type="button" onClick={() => onOpenHistory?.(item.checkin_id)}>
+                  <span>{item.headline}</span>
+                  <span>
+                    Fear {item.fear_factor ?? '—'}/10
+                    {item.completed_at ? ` · ${String(item.completed_at).slice(0, 10)}` : ''}
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </div>
   );
 }

@@ -138,7 +138,7 @@ export default function StudentHomePage() {
         return;
       }
       try {
-        const p = await fetchPlan();
+        const p = await fetchPlan({ silent: true });
         setPlan(p);
         if (p.status !== 'generating') refresh();
       } catch (err) {

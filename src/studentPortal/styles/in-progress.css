@@ -1,0 +1,252 @@
+/* Role-aware wait overlay — student (Fear → Fearless) */
+
+.mm-wait--student {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: var(--rail);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: color-mix(in srgb, var(--bg) 78%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+@media (max-width: 860px) {
+  .mm-wait--student {
+    left: 0;
+  }
+}
+
+.mm-wait--student .mm-wait__card {
+  width: min(520px, 100%);
+  padding: 28px 26px 22px;
+  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--sh-3);
+  color: var(--ink);
+}
+
+.mm-wait--student .mm-wait__overline {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  color: #5a67d8;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.mm-wait--student .mm-wait__title {
+  margin: 0 0 8px;
+  font-size: clamp(1.25rem, 2.4vw, 1.55rem);
+  font-weight: 750;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+
+.mm-wait--student .mm-wait__lead {
+  margin: 0 0 16px;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.mm-wait--student .mm-wait__journey {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #667eea14 0%, #764ba214 100%);
+  color: #5a67d8;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.mm-wait--student .mm-wait__arrow {
+  color: #764ba2;
+  opacity: 0.7;
+}
+
+.mm-wait--student .mm-wait__zero {
+  color: #059669;
+}
+
+.mm-wait--student .mm-wait__tip {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  min-height: 72px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  animation: mm-wait-in 0.35s ease both;
+}
+
+.mm-wait--student .mm-wait__tip svg {
+  color: #667eea;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.mm-wait--student .mm-wait__tip strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--ink);
+  font-size: 0.95rem;
+}
+
+.mm-wait--student .mm-wait__tip p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.mm-wait--student .mm-wait__dots {
+  display: flex;
+  gap: 6px;
+  margin: 14px 0 16px;
+}
+
+.mm-wait--student .mm-wait__dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 99px;
+  background: var(--line);
+}
+
+.mm-wait--student .mm-wait__dots span.is-on {
+  background: #667eea;
+}
+
+.mm-wait--student .mm-wait__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 12px;
+}
+
+.mm-wait--student .mm-wait__spinner {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  border: 2px solid color-mix(in srgb, #667eea 30%, transparent);
+  border-top-color: #667eea;
+  animation: mm-wait-spin 0.8s linear infinite;
+}
+
+.mm-wait--student .mm-wait__status {
+  flex: 1;
+  min-width: 120px;
+  font-size: 0.85rem;
+  color: var(--ink-3);
+}
+
+.mm-wait--student .mm-wait__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff !important;
+  -webkit-text-fill-color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.mm-wait--student .mm-wait__cta:hover {
+  filter: none;
+  color: #fff !important;
+}
+
+.mm-wait--personal .mm-wait__card {
+  width: min(560px, 100%);
+}
+
+.mm-wait__stages {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 10px 12px;
+  display: grid;
+  gap: 8px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #667eea12 0%, #764ba212 100%);
+  border: 1px solid color-mix(in srgb, #667eea 22%, var(--line));
+}
+
+.mm-wait__stage {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.88rem;
+  font-weight: 650;
+  color: var(--ink-3);
+  line-height: 1.35;
+}
+
+.mm-wait__stage.is-on {
+  color: var(--ink);
+}
+
+.mm-wait__stage.is-done {
+  color: #059669;
+}
+
+.mm-wait__stage-mark {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  border-radius: 99px;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  color: #fff;
+}
+
+.mm-wait__stage.is-on .mm-wait__stage-mark {
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px #667eea22;
+}
+
+.mm-wait__stage.is-done .mm-wait__stage-mark {
+  border-color: #059669;
+  background: #059669;
+}
+
+@keyframes mm-wait-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes mm-wait-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mm-wait--student .mm-wait__spinner,
+  .mm-wait--student .mm-wait__tip {
+    animation: none;
+  }
+}

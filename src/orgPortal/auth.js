@@ -1,8 +1,10 @@
 /**
- * Org-portal (tenant) auth helpers for college TPO / HOD / student users.
+ * Org-portal (tenant) auth helpers for college TPO / HOD.
+ * Token + session live in sessionStorage so closing the browser requires login.
  * Separate from platform admin (/platform/auth/*).
  */
 
+import { createBrowserSessionStore } from '../lib/browserSessionStore';
 import { orgApi, OrgApiError } from './orgApi';
 import {
   ORG_SUSPENDED_FLASH_KEY,
@@ -12,10 +14,12 @@ import {
 import { normalizeOrgRole } from '../organizationPortal/roles';
 
 const SESSION_KEY = 'mm-org-session';
+const TOKEN_KEY = 'mm-org-token';
+const authStore = createBrowserSessionStore([SESSION_KEY, TOKEN_KEY]);
 
 export function getOrgSession() {
   try {
-    const raw = localStorage.getItem(SESSION_KEY);
+    const raw = authStore.get(SESSION_KEY);
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
@@ -29,7 +33,7 @@ export function setOrgSession(user) {
       ? new Date(Date.now() + Number(user.expires_in_minutes) * 60 * 1000).toISOString()
       : undefined);
 
-  localStorage.setItem(
+  authStore.set(
     SESSION_KEY,
     JSON.stringify({
       id: user?.id,
@@ -71,11 +75,7 @@ export function setOrgSession(user) {
 }
 
 export function clearOrgSession() {
-  try {
-    localStorage.removeItem(SESSION_KEY);
-  } catch {
-    // ignore
-  }
+  authStore.clearAll();
   orgApi.clearToken();
 }
 

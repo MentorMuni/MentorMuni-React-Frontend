@@ -12,19 +12,24 @@ import {
   Sparkles,
   Lock,
   ArrowRight,
+  LifeBuoy,
+  StickyNote,
 } from 'lucide-react';
 import '../../styles/fear-to-fearless-sidebar.css';
+import '../../styles/whiteboard.css';
 
 const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
 
 const NAV_PRIMARY = [
   { icon: Home, label: 'Home', to: '/studentportal/home', end: true },
   { icon: Sparkles, label: 'AI Mentor', to: '/studentportal/mentor' },
+  { icon: StickyNote, label: 'White Board', to: '/studentportal/whiteboard', wall: true },
   { icon: Code2, label: 'Practice', to: '/studentportal/practice' },
   { icon: Terminal, label: 'Coding Round', to: '/studentportal/coding' },
   { icon: Briefcase, label: 'Companies', to: '/studentportal/companies' },
   { icon: Building2, label: 'Company Prep', to: '/studentportal/company-prep' },
   { icon: TrendingUp, label: 'Progress', to: '/studentportal/progress' },
+  { icon: LifeBuoy, label: 'Help Center', to: '/studentportal/help' },
 ];
 
 // Special premium feature - separated with divider
@@ -48,7 +53,7 @@ function NavGroup({ label, items, onNavigate }) {
                 end={item.end}
                 onClick={onNavigate}
                 className={({ isActive }) =>
-                  `stu-nav__item${isActive ? ' is-active' : ''}`
+                  `stu-nav__item no-underline${isActive ? ' is-active' : ''}${item.wall ? ' stu-nav__item--wall' : ''}`
                 }
               >
                 <Icon size={16} strokeWidth={2} aria-hidden focusable="false" />
@@ -126,7 +131,7 @@ export default function StudentSidebar({
                       to={item.to}
                       onClick={onClose}
                       className={({ isActive }) =>
-                        `stu-nav__item${isActive ? ' is-active' : ''}${item.special ? ' stu-nav__item--premium' : ''}`
+                        `stu-nav__item no-underline${isActive ? ' is-active' : ''}${item.special ? ' stu-nav__item--premium' : ''}`
                       }
                       title="Your private 6-week AI coaching journey"
                     >

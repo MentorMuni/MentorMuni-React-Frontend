@@ -7,6 +7,7 @@ import {
   ToggleLeft,
   Users,
   Settings,
+  Inbox,
   LogOut,
 } from 'lucide-react';
 import { clearPlatformSession, getPlatformSession } from './auth';
@@ -23,6 +24,7 @@ const NAV = [
   { to: platformAdminPaths.subscriptions, label: 'Subscriptions', icon: CreditCard },
   { to: platformAdminPaths.features, label: 'Feature Management', icon: ToggleLeft },
   { to: platformAdminPaths.platformUsers, label: 'Platform Users', icon: Users },
+  { to: platformAdminPaths.support, label: 'Support Inbox', icon: Inbox },
   { to: platformAdminPaths.settings, label: 'Settings', icon: Settings },
 ];
 
@@ -32,6 +34,7 @@ const TITLES = {
   subscriptions: ['Subscriptions', 'History of assigned plans, seat limits, and seats used.'],
   features: ['Feature Management', 'Enable capabilities per organization.'],
   'platform-users': ['Platform Users', 'MentorMuni employees with portal access.'],
+  support: ['Support Inbox', 'Campus tickets — organization and portal only, no reporter names.'],
   settings: ['Settings', 'Platform preferences and data tools.'],
   'change-password': ['Change Password', 'Update platform admin credentials securely.'],
 };

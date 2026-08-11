@@ -6,6 +6,7 @@
  * lockModes call them. Prefer widgets/adapters/portalHandlers from portal pages.
  */
 
+import { completePlanAction } from '../studentPortal/knowMe/knowMeApi';
 import {
   finishPracticeRun,
   goToPortalReturn,
@@ -51,7 +52,13 @@ export function createToolSession(opts = {}) {
   const fromCompanyPrep = source === 'company-prep';
   const fromJourney = source === 'journey';
   const fromCoding = source === 'coding';
-  const fromPortal = fromPractice || fromRoadmap || fromCompanyPrep || fromJourney || fromCoding;
+  const fromFearToFearless = source === 'fear-to-fearless';
+  const fromPortal =
+    fromPractice || fromRoadmap || fromCompanyPrep || fromJourney || fromCoding || fromFearToFearless;
+  const url =
+    typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams();
+  const checkinId = opts.checkinId || url.get('checkin') || url.get('checkinId') || '';
+  const fearId = opts.fearId || url.get('fear') || url.get('fearId') || '';
   /** Embeds / widgets should skip marketing landings the same way portal deep-links do. */
   const fromHost = fromPortal || source === 'embed';
 
@@ -61,7 +68,10 @@ export function createToolSession(opts = {}) {
     fromCompanyPrep,
     fromJourney,
     fromCoding,
+    fromFearToFearless,
     fromPortal,
+    checkinId,
+    fearId,
     toolCode,
     mode,
   };
@@ -81,6 +91,7 @@ export function createToolSession(opts = {}) {
     fromCompanyPrep,
     fromJourney,
     fromCoding,
+    fromFearToFearless,
     fromHost,
     launchQuery,
 
@@ -102,6 +113,45 @@ export function createToolSession(opts = {}) {
           await onComplete(payload);
         } catch (err) {
           const message = err?.message || 'Host onComplete failed';
+          onError?.({ message, status: err?.status });
+          return { ok: false, status: 'error', message };
+        }
+      }
+
+      if (fromFearToFearless && checkinId) {
+        try {
+          const ftf = await completePlanAction(checkinId, {
+            fear_id: fearId,
+            tool_code: payload.toolCode,
+            source: 'tool',
+          });
+          try {
+            sessionStorage.setItem(
+              'mm-ftf-score-delta',
+              JSON.stringify({
+                before: ftf.severity_before,
+                after: ftf.fear_factor ?? ftf.severity_after,
+              })
+            );
+          } catch {
+            /* ignore */
+          }
+          const dropped =
+            ftf.severity_before != null &&
+            ftf.fear_factor != null &&
+            ftf.severity_before !== ftf.fear_factor;
+          return {
+            ok: true,
+            status: 'saved',
+            fearToFearless: ftf,
+            message: ftf.already_recorded
+              ? 'Already counted on this plan. Redo anytime — the score already moved.'
+              : dropped
+                ? `Fear factor ${ftf.severity_before} → ${ftf.fear_factor}. Back to your plan.`
+                : 'Saved to your Fear → Fearless plan.',
+          };
+        } catch (err) {
+          const message = err?.message || 'Could not update your fear factor.';
           onError?.({ message, status: err?.status });
           return { ok: false, status: 'error', message };
         }

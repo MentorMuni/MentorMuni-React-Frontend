@@ -259,9 +259,15 @@ const PRESETS = {
 };
 
 function ensureSession() {
-  if (localStorage.getItem(KEYS.session) && localStorage.getItem(KEYS.token)) return;
-  localStorage.setItem(KEYS.token, `demo.student.${Date.now()}`);
-  localStorage.setItem(
+  try {
+    localStorage.removeItem(KEYS.session);
+    localStorage.removeItem(KEYS.token);
+  } catch {
+    /* ignore */
+  }
+  if (sessionStorage.getItem(KEYS.session) && sessionStorage.getItem(KEYS.token)) return;
+  sessionStorage.setItem(KEYS.token, `demo.student.${Date.now()}`);
+  sessionStorage.setItem(
     KEYS.session,
     JSON.stringify({
       id: USER_KEY,
@@ -347,6 +353,12 @@ export function seedStudentDemo(presetName = 'full') {
 
 export function clearStudentDemo() {
   Object.values(KEYS).forEach((k) => localStorage.removeItem(k));
+  try {
+    sessionStorage.removeItem(KEYS.session);
+    sessionStorage.removeItem(KEYS.token);
+  } catch {
+    /* ignore */
+  }
   console.info('[mmSeed] cleared. Reloading…');
   setTimeout(() => window.location.reload(), 60);
 }

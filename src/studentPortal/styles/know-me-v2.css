@@ -193,22 +193,40 @@
 
 .stu-knowme__btn--primary {
   background: var(--interactive);
+  background-color: var(--interactive);
   color: var(--on-brand);
+  -webkit-text-fill-color: var(--on-brand);
+  filter: none;
 }
 
-.stu-knowme__btn--primary:not(:disabled):hover {
+.stu-knowme__btn--primary:not(:disabled):hover,
+.stu-knowme__btn--primary:not(:disabled):focus-visible,
+.stu-knowme__btn--primary:not(:disabled):active {
   background: var(--interactive-hover);
+  background-color: var(--interactive-hover);
+  color: var(--on-brand);
+  -webkit-text-fill-color: var(--on-brand);
+  filter: none;
 }
 
 .stu-knowme__btn--secondary {
   background: var(--surface);
+  background-color: var(--surface);
   color: var(--ink-2, var(--ink));
+  -webkit-text-fill-color: var(--ink-2, var(--ink));
   border: 1px solid var(--line);
+  filter: none;
 }
 
-.stu-knowme__btn--secondary:not(:disabled):hover {
+.stu-knowme__btn--secondary:not(:disabled):hover,
+.stu-knowme__btn--secondary:not(:disabled):focus-visible,
+.stu-knowme__btn--secondary:not(:disabled):active {
   background: var(--bg);
+  background-color: var(--bg);
+  color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
   border-color: color-mix(in srgb, var(--interactive) 35%, var(--line));
+  filter: none;
 }
 
 /* ============================================================
@@ -219,6 +237,7 @@
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
+  padding-bottom: 96px;
   animation: stu-knowme-fade-in 0.4s ease both;
 }
 
@@ -319,16 +338,26 @@
   transition: all 0.2s ease;
 }
 
-.stu-knowme__choice:hover {
+.stu-knowme__choice:hover,
+.stu-knowme__choice:focus-visible {
   border-color: color-mix(in srgb, var(--interactive) 40%, var(--line));
   background: color-mix(in srgb, var(--bg) 80%, var(--interactive) 20%);
+  background-color: color-mix(in srgb, var(--bg) 80%, var(--interactive) 20%);
+  color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
   transform: translateX(4px);
+  filter: none;
 }
 
-.stu-knowme__choice[aria-pressed="true"] {
+.stu-knowme__choice[aria-pressed="true"],
+.stu-knowme__choice[aria-pressed="true"]:hover {
   border-color: var(--interactive);
   background: color-mix(in srgb, var(--accent-soft) 75%, var(--surface));
+  background-color: color-mix(in srgb, var(--accent-soft) 75%, var(--surface));
+  color: var(--ink);
+  -webkit-text-fill-color: var(--ink);
   box-shadow: 0 0 0 1.5px color-mix(in srgb, var(--interactive) 20%, transparent);
+  filter: none;
 }
 
 .stu-knowme__choice[aria-pressed="true"] .stu-knowme__choice-dot {
@@ -372,10 +401,52 @@
 }
 
 .stu-knowme__actions {
+  position: fixed;
+  left: var(--rail, 256px);
+  right: 0;
+  bottom: 0;
+  z-index: 35;
   display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: 0.65rem;
-  margin-top: 1.35rem;
   flex-wrap: wrap;
+  margin: 0;
+  padding: 12px 28px calc(12px + env(safe-area-inset-bottom, 0px));
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  border-top: 1px solid var(--line);
+  backdrop-filter: saturate(1.4) blur(14px);
+  box-shadow: 0 -10px 28px -20px rgba(15, 23, 42, 0.35);
+}
+
+.stu-knowme__actions .stu-knowme__btn--primary {
+  margin-left: auto;
+}
+
+@media (max-width: 860px) {
+  .stu-knowme__actions {
+    left: 0;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+.stu-knowme__actions--inline {
+  position: static;
+  left: auto;
+  right: auto;
+  bottom: auto;
+  margin-top: 1.25rem;
+  padding: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  backdrop-filter: none;
+}
+
+.stu-knowme__actions--inline .stu-knowme__btn--primary,
+.stu-knowme__actions--inline .stu-knowme__btn--secondary {
+  margin-left: 0;
 }
 
 .stu-knowme__hint {
@@ -596,58 +667,321 @@
   }
 }
 
-/* Fear → Fearless journey (post-insight) */
-.stu-ftf-journey {
-  margin-top: 1.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--line);
+/* Fear factor 0–10 */
+.ftf-meter {
+  padding: 1rem 1.1rem 1.05rem;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, #c05621 28%, var(--line));
+  background:
+    radial-gradient(120% 80% at 100% 0%, color-mix(in srgb, #ed8936 16%, transparent), transparent 55%),
+    var(--surface);
 }
-.stu-ftf-meta {
+.ftf-meter--compact {
+  padding: 0.8rem 0.9rem;
+}
+.ftf-meter__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+.ftf-meter__kicker {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #c05621;
+}
+.ftf-meter__score {
+  margin: 0;
+  color: var(--ink);
+  font-variant-numeric: tabular-nums;
+}
+.ftf-meter__score strong {
+  font-size: 2rem;
+  letter-spacing: -0.04em;
+  line-height: 1;
+}
+.ftf-meter__score span {
+  margin-left: 4px;
   color: var(--ink-3);
-  font-size: 0.9rem;
+  font-weight: 700;
 }
-.stu-ftf-fears {
-  display: grid;
-  gap: 0.75rem;
-  margin: 1rem 0;
+.ftf-meter__track {
+  margin: 10px 0 8px;
+  height: 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 8%, var(--surface-2, var(--bg)));
+  overflow: hidden;
 }
-.stu-ftf-fear-card {
+.ftf-meter__fill {
+  height: 100%;
+  border-radius: inherit;
+  transition: width 0.45s ease;
+}
+.ftf-meter__fill.is-high {
+  background: linear-gradient(90deg, #dd6b20, #c53030);
+}
+.ftf-meter__fill.is-mid {
+  background: linear-gradient(90deg, #d69e2e, #dd6b20);
+}
+.ftf-meter__fill.is-low {
+  background: linear-gradient(90deg, #38a169, #d69e2e);
+}
+.ftf-meter__fill.is-zero {
+  background: #38a169;
+}
+.ftf-meter__caption,
+.ftf-meter__lock {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.ftf-meter__lock {
+  margin-top: 6px;
+  font-weight: 700;
+  color: #6b46c1;
+}
+.stu-ftf-plan__delta {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: color-mix(in srgb, #38a169 14%, transparent);
+  color: var(--ink);
+  font-weight: 650;
+}
+.stu-ftf-plan__tools {
+  margin: 8px 0 0 !important;
+  font-size: 0.88rem;
+  color: var(--ink-2);
+}
+.stu-ftf-days li.is-done {
+  border-color: color-mix(in srgb, #38a169 40%, var(--line));
+  background: color-mix(in srgb, #38a169 8%, var(--surface));
+}
+.stu-ftf-days__acts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 14px;
+  align-items: center;
+}
+.stu-ftf-days__mark {
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 750;
+  color: var(--ink-3);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.stu-ftf-days__mark:disabled {
+  cursor: default;
+  text-decoration: none;
+  color: #276749;
+}
+
+.stu-app[data-theme='dark'] .ftf-meter {
+  border-color: color-mix(in srgb, #ed8936 35%, var(--line));
+}
+
+.stu-app[data-theme='dark'] .ftf-meter__kicker,
+.stu-app[data-theme='dark'] .ftf-meter__lock {
+  color: #f6ad55;
+}
+
+/* Fear → Fearless plan (student-facing week) */
+.stu-ftf-plan {
+  margin-top: 1.75rem;
   display: grid;
-  gap: 0.35rem;
-  padding: 0.85rem 1rem;
+  gap: 1.1rem;
+}
+
+.stu-ftf-plan__hero {
+  padding: 1.15rem 1.2rem;
+  border-radius: 16px;
+  border: 1px solid color-mix(in srgb, #667eea 28%, var(--line));
+  background: linear-gradient(135deg, #667eea12 0%, #764ba210 100%);
+}
+
+.stu-ftf-plan__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 8px;
+  color: #5a67d8;
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.stu-ftf-plan__hero h3 {
+  margin: 0 0 6px;
+  font-size: 1.2rem;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.stu-ftf-plan__hero p {
+  margin: 0;
+  color: var(--ink-2);
+  line-height: 1.5;
+}
+
+.stu-ftf-plan__focus,
+.stu-ftf-plan__focus-static {
+  display: grid;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 650;
+  color: var(--ink-2);
+}
+
+.stu-ftf-plan__focus select {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+}
+
+.stu-ftf-plan__hear {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
   border-radius: 12px;
   border: 1px solid var(--line);
-  background: color-mix(in srgb, var(--interactive) 6%, transparent);
+  background: var(--surface);
+  color: var(--ink-2);
+  line-height: 1.5;
 }
-.stu-ftf-plan-details {
-  margin: 0.75rem 0 1rem;
+
+.stu-ftf-plan__hear svg {
+  color: #667eea;
+  flex-shrink: 0;
+  margin-top: 2px;
 }
-.stu-ftf-plan-json {
-  white-space: pre-wrap;
-  font-size: 0.75rem;
-  background: var(--surface-2, #f6f7f9);
-  padding: 0.75rem;
-  border-radius: 8px;
-  overflow: auto;
-  max-height: 220px;
+
+.stu-ftf-plan__hear p {
+  margin: 0 0 6px;
 }
-.stu-ftf-weekly {
+
+.stu-ftf-plan__hear p:last-child {
+  margin: 0;
+}
+
+.stu-ftf-plan__weekhead h4 {
+  margin: 0 0 4px;
+  color: var(--ink);
+}
+
+.stu-ftf-plan__weekhead p {
+  margin: 0;
+  color: var(--ink-2);
+}
+
+.stu-ftf-plan__win {
+  margin-top: 8px !important;
+  font-size: 0.9rem;
+}
+
+.stu-ftf-days {
+  list-style: none;
+  margin: 0;
+  padding: 0;
   display: grid;
-  gap: 0.65rem;
-  margin-top: 1rem;
+  gap: 10px;
 }
-.stu-ftf-weekly label {
+
+.stu-ftf-days li {
   display: grid;
-  gap: 0.25rem;
-  font-size: 0.85rem;
-}
-.stu-ftf-weekly input,
-.stu-ftf-weekly select,
-.stu-ftf-weekly textarea {
-  padding: 0.5rem 0.65rem;
-  border-radius: 8px;
+  grid-template-columns: 64px 1fr;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 12px;
   border: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.stu-ftf-days__n {
+  font-size: 12px;
+  font-weight: 800;
+  color: #5a67d8;
+}
+
+.stu-ftf-days__body p {
+  margin: 0 0 6px;
+  color: var(--ink);
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.stu-ftf-days__metric {
+  display: block;
+  font-size: 0.82rem;
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+
+.stu-ftf-days__go {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  font-weight: 750;
+  color: var(--interactive);
+  text-decoration: none;
+}
+
+.stu-ftf-checkin {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--surface-2, var(--bg));
+}
+
+.stu-ftf-checkin h4 {
+  margin: 0;
+  color: var(--ink);
+}
+
+.stu-ftf-checkin > p {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--ink-3);
+}
+
+.stu-ftf-checkin label {
+  display: grid;
+  gap: 6px;
+  font-size: 0.88rem;
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.stu-ftf-checkin input[type='range'] {
+  width: 100%;
+}
+
+.stu-ftf-checkin textarea {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink);
   font: inherit;
+}
+
+.stu-ftf-plan__empty {
+  color: var(--ink-3);
 }
 .stu-ftf-weekly-result,
 .stu-ftf-celebration {

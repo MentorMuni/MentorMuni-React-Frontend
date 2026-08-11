@@ -1,9 +1,11 @@
 import { API_BASE } from '../config';
+import { createBrowserSessionStore } from '../lib/browserSessionStore';
 
 const BASE_URL = API_BASE;
 const API_KEY = import.meta.env.VITE_API_KEY || '';
 const TOKEN_KEY = 'mm-platform-admin-token';
 const SESSION_KEY = 'mm-platform-admin-session';
+const authStore = createBrowserSessionStore([TOKEN_KEY, SESSION_KEY]);
 
 /** Codes that mean the session/API key is unusable — force login. */
 const AUTO_LOGOUT_CODES = new Set([
@@ -23,29 +25,15 @@ export class PlatformApiError extends Error {
 }
 
 function getToken() {
-  try {
-    return localStorage.getItem(TOKEN_KEY);
-  } catch {
-    return null;
-  }
+  return authStore.get(TOKEN_KEY);
 }
 
 function setToken(token) {
-  try {
-    if (!token) localStorage.removeItem(TOKEN_KEY);
-    else localStorage.setItem(TOKEN_KEY, token);
-  } catch {
-    // ignore storage issues
-  }
+  authStore.set(TOKEN_KEY, token || '');
 }
 
 function forceLogoutUnauthorized() {
-  try {
-    localStorage.removeItem(SESSION_KEY);
-    localStorage.removeItem(TOKEN_KEY);
-  } catch {
-    // ignore
-  }
+  authStore.clearAll();
   const path = String(window.location?.pathname || '');
   if (!path.includes('/platform/admin/login')) {
     window.location.assign('/platform/admin/login');

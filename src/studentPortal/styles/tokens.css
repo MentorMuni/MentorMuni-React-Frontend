@@ -142,6 +142,54 @@
   --avatar-to: #0a5480;
   --avatar-ink: #ffffff;
 
+  /* ---- White Board (locker wall) -----------------------------
+     Immersive feature surface. Notes stay candy-coloured in both
+     themes so the wall reads like a hostel locker, not a card. */
+  --wb-wall-0: #0c0814;
+  --wb-wall-1: #2a173f;
+  --wb-wall-2: #140c22;
+  --wb-wall-3: #3d2463;
+  --wb-wall-ink: #f7f0e6;
+  --wb-wall-muted: rgba(247, 240, 230, 0.72);
+  --wb-wall-faint: rgba(247, 240, 230, 0.42);
+  --wb-tape: #f3d27a;
+  --wb-tape-ink: #4a3210;
+  --wb-paper: #fff7e8;
+  --wb-paper-line: #ead7b4;
+  --wb-paper-ink: #1c140c;
+  --wb-note-canary: #ffe56a;
+  --wb-note-pink: #ff9ecf;
+  --wb-note-mint: #7dffc3;
+  --wb-note-lilac: #cbb6ff;
+  --wb-note-peach: #ffb086;
+  --wb-note-sky: #7ecbff;
+  --wb-note-coral: #ff8a8a;
+  --wb-note-butter: #fff1a3;
+  --wb-note-ink: #1a140c;
+  --wb-note-meta: #3a2412;
+  --wb-note-placeholder: #4a3218;
+  --wb-note-shadow: 0 18px 28px -16px rgba(12, 8, 20, 0.45), 0 1px 0 rgba(255, 247, 232, 0.4) inset;
+  --wb-pin: #b03a3a;
+  --wb-pin-hi: #fff7e8;
+  --wb-pin-shadow: 0 2px 0 rgba(12, 8, 20, 0.22);
+  --wb-mask-solid: #000000;
+  --wb-peel: #34d385;
+  --wb-peel-ink: #0d2a1a;
+  --wb-btn: #ffe56a;
+  --wb-btn-hover: #f3d27a;
+  --wb-btn-active: #e4b84a;
+  --wb-btn-ink: #1a140c;
+  --wb-nav-active: color-mix(in srgb, var(--wb-note-canary) 34%, var(--surface));
+  --wb-fab-clearance: 120px;
+  --wb-hand: 'Caveat', 'Segoe Print', cursive;
+  --wb-display: 'Fraunces', Georgia, serif;
+
+  /* Fear → Fearless — themes with the rest of the portal */
+  --ftf-accent: #5b52d6;
+  --ftf-accent-soft: #eef0fc;
+  --ftf-accent-ink: #3d36a8;
+  --ftf-on-accent: #ffffff;
+
   /* ---- Elevation -------------------------------------------- */
   --sh-1: 0 1px 2px rgba(13, 27, 42, 0.05);
   --sh-2: 0 2px 8px -2px rgba(13, 27, 42, 0.08), 0 1px 3px rgba(13, 27, 42, 0.04);
@@ -259,6 +307,15 @@
   --sh-1: 0 1px 2px rgba(0, 0, 0, 0.4);
   --sh-2: 0 2px 8px -2px rgba(0, 0, 0, 0.5), 0 1px 3px rgba(0, 0, 0, 0.3);
   --sh-3: 0 12px 32px -8px rgba(0, 0, 0, 0.6), 0 2px 8px rgba(0, 0, 0, 0.4);
+
+  --wb-nav-active: color-mix(in srgb, var(--wb-note-canary) 26%, var(--surface));
+  --wb-tape: #ffe56a;
+  --wb-tape-ink: #1a140c;
+
+  --ftf-accent: #a39cff;
+  --ftf-accent-soft: #1c2238;
+  --ftf-accent-ink: #c9c4ff;
+  --ftf-on-accent: #14121c;
 }
 
 /* ============================================================

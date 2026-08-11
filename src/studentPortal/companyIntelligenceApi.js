@@ -214,13 +214,13 @@ export async function ensureCompanyIntelligence({ company, role, forceRefresh = 
   });
 }
 
-export async function getCompanyIntelligenceById(id) {
+export async function getCompanyIntelligenceById(id, opts = {}) {
   if (isLocalFallbackSession()) {
     const hit = [...localCache.values()].find((x) => x.id === Number(id));
     if (!hit) throw Object.assign(new Error('Not found'), { status: 404 });
     return hit;
   }
-  return studentApi.get(`/student/company-intelligence/id/${encodeURIComponent(id)}`);
+  return studentApi.get(`/student/company-intelligence/id/${encodeURIComponent(id)}`, opts);
 }
 
 export async function getCompanyIntelligenceBySlug(slug) {
@@ -233,11 +233,11 @@ export async function getCompanyIntelligenceBySlug(slug) {
 }
 
 export async function pollUntilReady(id, { intervalMs = 2000, maxAttempts = 45 } = {}) {
-  let last = await getCompanyIntelligenceById(id);
+  let last = await getCompanyIntelligenceById(id, { silent: true });
   for (let i = 0; i < maxAttempts; i += 1) {
     if (last.status !== 'generating') return last;
     await new Promise((r) => setTimeout(r, intervalMs));
-    last = await getCompanyIntelligenceById(id);
+    last = await getCompanyIntelligenceById(id, { silent: true });
   }
   return last;
 }

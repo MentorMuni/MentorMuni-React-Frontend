@@ -25,15 +25,25 @@ export function getRoadmapQuery(search) {
   const fromCompanyPrep = from === 'company-prep' && Boolean(tool);
   const fromJourney = from === 'journey' && Boolean(tool);
   const fromCoding = from === 'coding' && Boolean(tool);
+  const fromFearToFearless = from === 'fear-to-fearless';
   return {
     fromRoadmap,
     fromPractice,
     fromCompanyPrep,
     fromJourney,
     fromCoding,
-    fromPortal: fromRoadmap || fromPractice || fromCompanyPrep || fromJourney || fromCoding,
+    fromFearToFearless,
+    fromPortal:
+      fromRoadmap ||
+      fromPractice ||
+      fromCompanyPrep ||
+      fromJourney ||
+      fromCoding ||
+      fromFearToFearless,
     toolCode: tool || '',
     mode: params.get('mode') || '',
+    checkinId: params.get('checkin') || params.get('checkinId') || '',
+    fearId: params.get('fear') || params.get('fearId') || '',
   };
 }
 
@@ -82,8 +92,21 @@ export function goToCodingHome(navigate) {
   else if (typeof window !== 'undefined') window.location.assign(home);
 }
 
+export function fearToFearlessReturnPath(launchQuery) {
+  const q = new URLSearchParams({ open: 'plan' });
+  if (launchQuery?.checkinId) q.set('checkin', String(launchQuery.checkinId));
+  return `${studentPaths.fearToFearless}?${q.toString()}`;
+}
+
+export function goToFearToFearless(navigate, launchQuery) {
+  const path = fearToFearlessReturnPath(launchQuery);
+  if (typeof navigate === 'function') navigate(path);
+  else if (typeof window !== 'undefined') window.location.assign(path);
+}
+
 export function goToPortalReturn(navigate, launchQuery) {
-  if (launchQuery?.fromCoding) goToCodingHome(navigate);
+  if (launchQuery?.fromFearToFearless) goToFearToFearless(navigate, launchQuery);
+  else if (launchQuery?.fromCoding) goToCodingHome(navigate);
   else if (launchQuery?.fromCompanyPrep) goToCompanyPrepHome(navigate);
   else if (launchQuery?.fromPractice) goToPracticeHome(navigate);
   else goToRoadmapHome(navigate); // roadmap + journey → home (90-day section)

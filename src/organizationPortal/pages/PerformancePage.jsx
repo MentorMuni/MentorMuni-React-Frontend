@@ -333,7 +333,7 @@ export default function PerformancePage() {
             <label className="mm-org-filter">
               <Filter size={14} />
               <select
-                className="mm-org-input"
+                className="mm-org-select"
                 value={deptFilter}
                 onChange={(e) => setDeptFilter(e.target.value)}
                 aria-label="Filter by department"
@@ -350,7 +350,7 @@ export default function PerformancePage() {
           <label className="mm-org-filter">
             Top / less prepared N
             <select
-              className="mm-org-input"
+              className="mm-org-select"
               value={boardLimit}
               onChange={(e) => setBoardLimit(Number(e.target.value))}
             >

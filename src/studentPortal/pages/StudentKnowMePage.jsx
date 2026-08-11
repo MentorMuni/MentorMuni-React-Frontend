@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ArrowRight, ArrowLeft, Loader, AlertCircle, CheckCircle2, Zap } from 'lucide-react';
+import { useSearchParams } from 'react-router-dom';
+import { ArrowRight, ArrowLeft, Loader, AlertCircle, Zap } from 'lucide-react';
 import {
   startCheckIn,
   saveStepResponse,
@@ -9,17 +10,53 @@ import {
   submitWeeklyProgress,
   completeIntervention,
   getFearToFearlessNotifications,
+  getActiveJourney,
+  completePlanAction,
   loadSessionState,
   saveSessionState,
   clearSessionState,
   StudentApiError,
 } from '../knowMe/knowMeApi';
+import { canonicalToolCode } from '../knowMe/planUtils';
 import FearToFearlessLanding from './FearToFearlessLanding';
+import FearToFearlessInProgress from '../components/FearToFearlessInProgress';
+import FearToFearlessPlan from '../components/FearToFearlessPlan';
+import { normalizeWeek } from '../knowMe/planUtils';
+import { useStudentShell } from '../shellContext';
 import '../styles/know-me-v2.css';
 
+function readScoreDelta() {
+  try {
+    const raw = sessionStorage.getItem('mm-ftf-score-delta');
+    if (!raw) return null;
+    sessionStorage.removeItem('mm-ftf-score-delta');
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+function applySavedResponses(saved = []) {
+  const map = new Map();
+  saved.forEach((row) => {
+    if (!row?.question_key) return;
+    map.set(row.question_key, {
+      selected_ids: row.selected_ids || [],
+      free_text: row.free_text || '',
+    });
+  });
+  return map;
+}
+
 export default function StudentKnowMePage() {
+  const { session } = useStudentShell();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [state, setState] = useState('landing');
+  const [waitKind, setWaitKind] = useState(null);
   const [checkinId, setCheckinId] = useState(null);
+  const [activeJourney, setActiveJourney] = useState(null);
+  const [scoreDelta, setScoreDelta] = useState(null);
+  const [markingTool, setMarkingTool] = useState('');
   const [questions, setQuestions] = useState([]);
   const [stepIndex, setStepIndex] = useState(0);
   const [responses, setResponses] = useState(new Map());
@@ -41,31 +78,118 @@ export default function StudentKnowMePage() {
   const [celebration, setCelebration] = useState(null);
 
   useEffect(() => {
-    const cached = loadSessionState();
-    const cachedQuestions = Array.isArray(cached?.questions) ? cached.questions : [];
-    // Old sessions stored checkin_id without questions → blank form screen.
-    if (cached?.checkin_id != null && cached?.step_index !== undefined && cachedQuestions.length > 0) {
-      setCheckinId(cached.checkin_id);
-      setStepIndex(cached.step_index);
-      setQuestions(cachedQuestions);
-      setResponses(new Map(cached.responses || []));
-      const prev = new Map(cached.responses || []).get(cachedQuestions[cached.step_index]?.key);
-      setCurrentResponses(prev || { selected_ids: [], free_text: '' });
-      setState('form');
-      return;
+    let cancelled = false;
+    const wantPlan = searchParams.get('open') === 'plan';
+    const historyId = searchParams.get('checkin');
+
+    async function hydrate() {
+      try {
+        const active = await getActiveJourney(historyId || undefined);
+        if (cancelled) return;
+        setActiveJourney(active);
+        setScoreDelta(readScoreDelta());
+
+        if (active?.phase === 'form' && active.checkin_id) {
+          restoreFormFromActive(active);
+          return;
+        }
+
+        if ((wantPlan || historyId) && active?.insight && active?.intervention) {
+          openPlanFromActive(active);
+          return;
+        }
+
+        const cached = loadSessionState();
+        const cachedQuestions = Array.isArray(cached?.questions) ? cached.questions : [];
+        if (
+          cached?.checkin_id != null &&
+          cached?.step_index !== undefined &&
+          cachedQuestions.length > 0 &&
+          active?.phase === 'form'
+        ) {
+          restoreFormFromCache(cached, cachedQuestions);
+        }
+      } catch {
+        const cached = loadSessionState();
+        const cachedQuestions = Array.isArray(cached?.questions) ? cached.questions : [];
+        if (cached?.checkin_id != null && cached?.step_index !== undefined && cachedQuestions.length > 0) {
+          restoreFormFromCache(cached, cachedQuestions);
+        } else if (cached?.checkin_id) {
+          clearSessionState();
+        }
+      }
     }
-    if (cached?.checkin_id) {
-      clearSessionState();
-    }
+
+    hydrate();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  function restoreFormFromCache(cached, cachedQuestions) {
+    setCheckinId(cached.checkin_id);
+    setStepIndex(cached.step_index);
+    setQuestions(cachedQuestions);
+    setResponses(new Map(cached.responses || []));
+    const prev = new Map(cached.responses || []).get(cachedQuestions[cached.step_index]?.key);
+    setCurrentResponses(prev || { selected_ids: [], free_text: '' });
+    setState('form');
+  }
+
+  function restoreFormFromActive(active) {
+    const qs = Array.isArray(active.questions) ? active.questions : [];
+    const cached = loadSessionState();
+    const cachedMatches = cached?.checkin_id === active.checkin_id;
+    const map = cachedMatches
+      ? new Map(cached.responses || [])
+      : applySavedResponses(active.saved_responses || []);
+    const idx = cachedMatches ? cached.step_index : active.step_index || 0;
+    setCheckinId(active.checkin_id);
+    setQuestions(qs);
+    setStepIndex(idx);
+    setResponses(map);
+    setCurrentResponses(map.get(qs[idx]?.key) || { selected_ids: [], free_text: '' });
+    setState('form');
+    saveSessionState(active.checkin_id, [...map.entries()], idx, qs);
+  }
+
+  function openPlanFromActive(active) {
+    setCheckinId(active.checkin_id);
+    setInsight(active.insight);
+    setIntervention(active.intervention);
+    if (active.intervention?.fear_factor != null) {
+      setWeeklyForm((p) => ({ ...p, self_assessment: active.intervention.fear_factor }));
+    }
+    const firstFear =
+      active.intervention?.fears?.[0]?.fear_id || active.intervention?.solutions?.[0]?.fear_id || '';
+    setWeeklyFearId(firstFear);
+    setState('result');
+    clearSessionState();
+    loadNotifications();
+  }
 
   async function loadIntervention(id) {
     if (!id) return null;
     try {
       const status = await getInterventionStatus(id);
       setIntervention(status);
+      if (status?.fear_factor != null) {
+        setWeeklyForm((p) => ({ ...p, self_assessment: status.fear_factor }));
+      }
       const firstFear = status?.fears?.[0]?.fear_id || status?.solutions?.[0]?.fear_id || '';
       setWeeklyFearId((prev) => prev || firstFear);
+      const sol =
+        (status?.solutions || []).find((s) => String(s.fear_id) === String(firstFear)) ||
+        status?.solutions?.[0];
+      if (sol) {
+        const week = normalizeWeek(
+          sol,
+          Math.min(6, Math.max(1, (status.week_current || 0) + 1)),
+          { checkinId: id, fearId: sol.fear_id }
+        );
+        setWeeklyForm((p) => ({ ...p, actions_total: week.days.length || 5 }));
+      }
       return status;
     } catch (err) {
       console.warn('intervention status failed', err);
@@ -83,30 +207,110 @@ export default function StudentKnowMePage() {
   }
 
   async function handleStartCheckIn() {
+    if (activeJourney?.locked) {
+      await handleOpenPlan();
+      return;
+    }
     setLoading(true);
     setError('');
     try {
       const data = await startCheckIn();
+      const saved = applySavedResponses(data.saved_responses || []);
+      const idx = data.resumed ? data.step_index || 0 : 0;
       setCheckinId(data.checkin_id);
       setQuestions(data.questions);
-      setStepIndex(0);
-      setResponses(new Map());
-      setCurrentResponses({ selected_ids: [], free_text: '' });
+      setStepIndex(idx);
+      setResponses(saved);
+      setCurrentResponses(saved.get(data.questions?.[idx]?.key) || { selected_ids: [], free_text: '' });
       setInsight(null);
       setIntervention(null);
       setWeeklyResult(null);
       setCelebration(null);
       setState('form');
-      saveSessionState(data.checkin_id, [], 0, data.questions || []);
+      saveSessionState(data.checkin_id, [...saved.entries()], idx, data.questions || []);
     } catch (err) {
       console.error('StartCheckIn failed:', err);
-      setError(
-        err instanceof StudentApiError
-          ? err.message
-          : 'Could not start check-in. Make sure you are logged in as a student.'
-      );
+      if (err instanceof StudentApiError && err.status === 409) {
+        const lockedId = err.detail?.checkin_id || err.data?.detail?.checkin_id;
+        setError(err.message || 'Stay with your current plan for 15 days.');
+        try {
+          const active = await getActiveJourney(lockedId);
+          setActiveJourney(active);
+          if (active?.insight) openPlanFromActive(active);
+        } catch {
+          /* landing still shows lock */
+        }
+      } else {
+        setError(
+          err instanceof StudentApiError
+            ? err.message
+            : 'Could not start check-in. Make sure you are logged in as a student.'
+        );
+      }
     } finally {
       setLoading(false);
+    }
+  }
+
+  async function handleOpenPlan(id) {
+    setLoading(true);
+    setError('');
+    try {
+      const active = await getActiveJourney(id || undefined);
+      setActiveJourney(active);
+      if (active?.insight && active?.intervention) {
+        openPlanFromActive(active);
+        setSearchParams((prev) => {
+          const next = new URLSearchParams(prev);
+          next.set('open', 'plan');
+          if (active.checkin_id) next.set('checkin', String(active.checkin_id));
+          return next;
+        });
+      } else if (active?.phase === 'form') {
+        restoreFormFromActive(active);
+      } else {
+        setError('No saved plan yet. Start a check-in first.');
+      }
+    } catch (err) {
+      setError(err instanceof StudentApiError ? err.message : 'Could not open your last plan.');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleMarkAction(fearId, toolCode, actionKey) {
+    if (!checkinId || !toolCode) return;
+    const tool = canonicalToolCode(toolCode);
+    setMarkingTool(tool);
+    setError('');
+    try {
+      const result = await completePlanAction(checkinId, {
+        fear_id: fearId,
+        tool_code: tool,
+        action_key: actionKey,
+        source: 'plan',
+      });
+      if (result?.intervention) setIntervention(result.intervention);
+      else await loadIntervention(checkinId);
+      if (result?.severity_before != null && result?.severity_after != null) {
+        setScoreDelta({
+          before: result.fear_factor != null ? result.severity_before : result.severity_before,
+          after: result.fear_factor ?? result.severity_after,
+        });
+      }
+      setActiveJourney((prev) =>
+        prev
+          ? {
+              ...prev,
+              fear_factor: result.fear_factor ?? prev.fear_factor,
+              intervention: result.intervention || prev.intervention,
+            }
+          : prev
+      );
+    } catch (err) {
+      setError(err instanceof StudentApiError ? err.message : 'Could not update your fear factor.');
+    } finally {
+      setMarkingTool('');
     }
   }
 
@@ -131,6 +335,9 @@ export default function StudentKnowMePage() {
     const q = questions[stepIndex];
     setError('');
     setLoading(true);
+    const lastStep = stepIndex + 1 >= questions.length;
+    const waitStarted = Date.now();
+    if (lastStep) setWaitKind('building');
     try {
       await saveStepResponse(checkinId, {
         question_key: q.key,
@@ -142,11 +349,17 @@ export default function StudentKnowMePage() {
       newResponses.set(q.key, currentResponses);
       setResponses(newResponses);
 
-      if (stepIndex + 1 >= questions.length) {
+      if (lastStep) {
         const insightData = await generateInsight(checkinId);
         setInsight(insightData);
         await loadIntervention(checkinId);
         await loadNotifications();
+        try {
+          const active = await getActiveJourney(checkinId);
+          setActiveJourney(active);
+        } catch {
+          /* plan still shows from intervention */
+        }
         setState('result');
         clearSessionState();
       } else {
@@ -158,7 +371,12 @@ export default function StudentKnowMePage() {
       console.error('Error in handleNextStep:', err);
       setError(err instanceof StudentApiError ? err.message : 'Error saving response.');
     } finally {
+      if (lastStep) {
+        const remain = Math.max(0, 2600 - (Date.now() - waitStarted));
+        if (remain) await new Promise((resolve) => window.setTimeout(resolve, remain));
+      }
       setLoading(false);
+      setWaitKind(null);
     }
   }
 
@@ -169,6 +387,7 @@ export default function StudentKnowMePage() {
       return;
     }
     setLoading(true);
+    setWaitKind('weekly');
     setError('');
     try {
       const weekNumber = Math.min(6, Math.max(1, (intervention?.week_current || 0) + 1));
@@ -190,6 +409,7 @@ export default function StudentKnowMePage() {
       setError(err instanceof StudentApiError ? err.message : 'Could not save weekly progress.');
     } finally {
       setLoading(false);
+      setWaitKind(null);
     }
   }
 
@@ -224,23 +444,47 @@ export default function StudentKnowMePage() {
   }
 
   function restartFlow() {
-    setCheckinId(null);
     setQuestions([]);
     setStepIndex(0);
     setResponses(new Map());
     setCurrentResponses({ selected_ids: [], free_text: '' });
-    setInsight(null);
-    setIntervention(null);
     setWeeklyResult(null);
     setCelebration(null);
     setError('');
+    setWaitKind(null);
     clearSessionState();
+    setSearchParams({});
     setState('landing');
+    getActiveJourney()
+      .then((active) => {
+        setActiveJourney(active);
+        if (active?.locked) {
+          setCheckinId(active.checkin_id);
+          setInsight(active.insight);
+          setIntervention(active.intervention);
+        } else {
+          setCheckinId(active?.checkin_id || null);
+          setInsight(null);
+          setIntervention(null);
+        }
+      })
+      .catch(() => {
+        setInsight(null);
+        setIntervention(null);
+      });
   }
 
   const currentQuestion = stepIndex < questions.length ? questions[stepIndex] : null;
+  const personalNote = (() => {
+    const latest = String(currentResponses?.free_text || '').trim();
+    if (latest) return latest;
+    for (const value of responses.values()) {
+      const text = String(value?.free_text || '').trim();
+      if (text) return text;
+    }
+    return '';
+  })();
   const progressPct = questions.length > 0 ? ((stepIndex + 1) / questions.length) * 100 : 0;
-  const solutionList = intervention?.solutions || [];
 
   return (
     <main className={`stu-main stu-knowme${state === 'landing' ? ' stu-knowme--landing' : ''}`}>
@@ -248,8 +492,11 @@ export default function StudentKnowMePage() {
         <FearToFearlessLanding
           onStartJourney={handleStartCheckIn}
           onViewProgress={handleCheckProgress}
+          onOpenPlan={() => handleOpenPlan()}
+          onOpenHistory={(id) => handleOpenPlan(id)}
           loading={loading}
           error={error}
+          active={activeJourney}
         />
       )}
 
@@ -265,7 +512,20 @@ export default function StudentKnowMePage() {
       )}
 
       {state === 'form' && currentQuestion && (
-        <section className="stu-knowme-form">
+        <form
+          className="stu-knowme-form"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleNextStep();
+          }}
+          onKeyDown={(e) => {
+            if (e.key !== 'Enter' || e.shiftKey || e.nativeEvent.isComposing || loading) return;
+            if (e.target instanceof HTMLTextAreaElement) return;
+            if (e.target instanceof HTMLButtonElement && e.target.type === 'submit') return;
+            e.preventDefault();
+            e.currentTarget.requestSubmit();
+          }}
+        >
           <div className="stu-knowme-progress">
             <span>
               Question {stepIndex + 1} of {questions.length}
@@ -326,7 +586,13 @@ export default function StudentKnowMePage() {
                     placeholder={currentQuestion.free_text_placeholder || 'Write in your own words…'}
                     value={currentResponses.free_text || ''}
                     onChange={(e) => handleFreeText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key !== 'Enter' || e.shiftKey || e.nativeEvent.isComposing) return;
+                      e.preventDefault();
+                      e.currentTarget.form?.requestSubmit();
+                    }}
                   />
+                  <p className="stu-knowme__hint">Enter continues · Shift+Enter for a new line</p>
                 </div>
               )}
             </div>
@@ -344,9 +610,8 @@ export default function StudentKnowMePage() {
                 Back
               </button>
               <button
-                type="button"
+                type="submit"
                 className="stu-knowme__btn stu-knowme__btn--primary"
-                onClick={handleNextStep}
                 disabled={loading}
               >
                 {loading ? (
@@ -368,7 +633,7 @@ export default function StudentKnowMePage() {
               </button>
             </div>
           </div>
-        </section>
+        </form>
       )}
 
       {state === 'result' && insight && (
@@ -430,161 +695,34 @@ export default function StudentKnowMePage() {
           <div className="stu-knowme__call-to-action">{insight.call_to_action}</div>
           <div className="stu-knowme__closing">{insight.closing_line}</div>
 
-          <div className="stu-knowme__section stu-ftf-journey">
-            <h3>Your 6-week Fear → Fearless plan</h3>
-            {intervention ? (
-              <>
-                <p className="stu-ftf-meta">
-                  Status: <strong>{intervention.status}</strong>
-                  {' · '}
-                  Week {intervention.week_current || 0}/6
-                  {' · '}
-                  Overall {intervention.overall_progress_percent || 0}%
-                </p>
-                <div className="stu-ftf-fears">
-                  {(intervention.fears || []).map((f) => (
-                    <div key={f.fear_id} className="stu-ftf-fear-card">
-                      <strong>{f.fear_name}</strong>
-                      <span>
-                        Fear {f.severity_initial} → {f.severity_current}
-                      </span>
-                      <div className="stu-knowme-progress__bar">
-                        <div
-                          className="stu-knowme-progress__fill"
-                          style={{ width: `${f.progress_percent || 0}%` }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-                {solutionList.length > 0 && (
-                  <details className="stu-ftf-plan-details">
-                    <summary>View week-1 actions</summary>
-                    {solutionList.map((s) => (
-                      <div key={s.solution_id || s.fear_id} className="stu-ftf-plan-block">
-                        <strong>{s.fear_name}</strong>
-                        <pre className="stu-ftf-plan-json">
-                          {JSON.stringify(
-                            s.solution_data?.week1 ||
-                              s.solution_data?.action_plan_section?.week1 ||
-                              s.weekly_actions,
-                            null,
-                            2
-                          )}
-                        </pre>
-                      </div>
-                    ))}
-                  </details>
-                )}
-              </>
-            ) : (
-              <p>Building your personalized 6-week plan…</p>
-            )}
+          {intervention ? (
+            <FearToFearlessPlan
+              intervention={intervention}
+              weeklyFearId={weeklyFearId}
+              onFearChange={(id, dayCount) => {
+                setWeeklyFearId(id);
+                setWeeklyForm((p) => ({ ...p, actions_total: dayCount || p.actions_total }));
+              }}
+              weeklyForm={weeklyForm}
+              onFormChange={setWeeklyForm}
+              onSubmit={handleWeeklySubmit}
+              loading={loading}
+              weeklyResult={weeklyResult}
+              celebration={celebration}
+              notifications={notifications}
+              onMarkAction={handleMarkAction}
+              markingTool={markingTool}
+              daysRemaining={activeJourney?.locked ? activeJourney.days_remaining : null}
+              lockDays={activeJourney?.lock_days || 15}
+              scoreDelta={scoreDelta}
+            />
+          ) : (
+            <p className="stu-knowme__field-hint">Building your personal week…</p>
+          )}
 
-            <form className="stu-ftf-weekly" onSubmit={handleWeeklySubmit}>
-              <h4>Weekly progress check-in</h4>
-              <label>
-                Fear
-                <select value={weeklyFearId} onChange={(e) => setWeeklyFearId(e.target.value)}>
-                  {(intervention?.fears || []).map((f) => (
-                    <option key={f.fear_id} value={f.fear_id}>
-                      {f.fear_name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label>
-                Actions completed
-                <input
-                  type="number"
-                  min={0}
-                  value={weeklyForm.actions_completed}
-                  onChange={(e) =>
-                    setWeeklyForm((p) => ({ ...p, actions_completed: e.target.value }))
-                  }
-                />
-              </label>
-              <label>
-                Actions total
-                <input
-                  type="number"
-                  min={1}
-                  value={weeklyForm.actions_total}
-                  onChange={(e) => setWeeklyForm((p) => ({ ...p, actions_total: e.target.value }))}
-                />
-              </label>
-              <label>
-                Self-assessment (0–10)
-                <input
-                  type="number"
-                  min={0}
-                  max={10}
-                  step={0.5}
-                  value={weeklyForm.self_assessment}
-                  onChange={(e) =>
-                    setWeeklyForm((p) => ({ ...p, self_assessment: e.target.value }))
-                  }
-                />
-              </label>
-              <label>
-                Challenges (optional)
-                <textarea
-                  rows={2}
-                  value={weeklyForm.challenges}
-                  onChange={(e) => setWeeklyForm((p) => ({ ...p, challenges: e.target.value }))}
-                />
-              </label>
-              <button
-                type="submit"
-                className="stu-knowme__btn stu-knowme__btn--primary"
-                disabled={loading || !weeklyFearId}
-              >
-                {loading ? 'Saving…' : 'Submit weekly progress'}
-              </button>
-            </form>
-
-            {weeklyResult && (
-              <div className="stu-ftf-weekly-result">
-                <CheckCircle2 size={16} />
-                <div>
-                  <p>
-                    Severity {weeklyResult.severity_before} → {weeklyResult.severity_after}
-                    {weeklyResult.milestone_reached ? ' · Fear conquered!' : ''}
-                  </p>
-                  {weeklyResult.feedback?.celebration && <p>{weeklyResult.feedback.celebration}</p>}
-                  {weeklyResult.feedback?.next_week_focus && (
-                    <p>
-                      <strong>Next:</strong> {weeklyResult.feedback.next_week_focus}
-                    </p>
-                  )}
-                </div>
-              </div>
-            )}
-
-            {celebration?.celebration && (
-              <div className="stu-ftf-celebration">
-                <h4>{celebration.celebration.celebration_title || 'You did it!'}</h4>
-                <p>{celebration.celebration.main_message}</p>
-              </div>
-            )}
-
-            {notifications.length > 0 && (
-              <div className="stu-ftf-notifs">
-                <h4>Your reminders</h4>
-                <ul>
-                  {notifications.slice(0, 5).map((n) => (
-                    <li key={n.id}>
-                      <strong>{n.title}</strong> — {n.message}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-
-          <div className="stu-knowme__actions">
-            <button type="button" className="stu-knowme__btn stu-knowme__btn--primary" onClick={restartFlow}>
-              Start a new check-in
+          <div className="stu-knowme__actions stu-knowme__actions--inline">
+            <button type="button" className="stu-knowme__btn stu-knowme__btn--secondary" onClick={restartFlow}>
+              {activeJourney?.locked ? 'Back to Fear → Fearless' : 'Talk about something else'}
             </button>
           </div>
         </section>
@@ -616,8 +754,12 @@ export default function StudentKnowMePage() {
             </div>
           )}
           <div className="stu-knowme__actions">
-            <button type="button" className="stu-knowme__btn stu-knowme__btn--primary" onClick={restartFlow}>
-              Start a check-in
+            <button
+              type="button"
+              className="stu-knowme__btn stu-knowme__btn--primary"
+              onClick={activeJourney?.locked ? () => handleOpenPlan() : restartFlow}
+            >
+              {activeJourney?.locked ? 'Open my plan' : 'Back to Fear → Fearless'}
             </button>
           </div>
         </section>
@@ -637,6 +779,14 @@ export default function StudentKnowMePage() {
           {error}
         </div>
       )}
+
+      {waitKind ? (
+        <FearToFearlessInProgress
+          variant={waitKind}
+          session={session}
+          studentNote={personalNote}
+        />
+      ) : null}
     </main>
   );
 }

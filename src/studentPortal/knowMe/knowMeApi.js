@@ -84,6 +84,30 @@ export async function getProgress() {
   return studentApi.get(`${BASE}/progress`);
 }
 
+/**
+ * Latest (or a past) journey: lock window, fear factor, plan, history.
+ */
+export async function getActiveJourney(checkinId) {
+  const q = checkinId != null && checkinId !== '' ? `?checkin_id=${encodeURIComponent(checkinId)}` : '';
+  return studentApi.get(`${BASE}/active${q}`);
+}
+
+export async function getJourneyHistory() {
+  return studentApi.get(`${BASE}/history`);
+}
+
+/**
+ * Record a suggested mock/test so the fear-factor score drops.
+ */
+export async function completePlanAction(checkinId, { fear_id, tool_code, action_key, source = 'tool' } = {}) {
+  return studentApi.post(`${BASE}/plan-actions/${checkinId}/complete`, {
+    fear_id: fear_id || '',
+    tool_code,
+    action_key: action_key || undefined,
+    source,
+  });
+}
+
 const DEVICE_STORAGE_KEY = 'mm-fear-to-fearless-session';
 
 export function saveSessionState(checkin_id, responses, step_index, questions = []) {

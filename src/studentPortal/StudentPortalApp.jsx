@@ -23,6 +23,8 @@ const StudentProfilePage = lazy(() => import('./pages/StudentProfilePage'));
 const StudentToolPage = lazy(() => import('./pages/StudentToolPage'));
 const StudentCompaniesPage = lazy(() => import('./pages/StudentCompaniesPage'));
 const StudentCompanyIntelPage = lazy(() => import('./pages/StudentCompanyIntelPage'));
+const StudentHelpCenterPage = lazy(() => import('./pages/StudentHelpCenterPage'));
+const StudentWhiteboardPage = lazy(() => import('./pages/StudentWhiteboardPage'));
 
 function PortalFallback() {
   return (
@@ -103,6 +105,16 @@ export default function StudentPortalApp() {
           <Route path="profile" element={
               <Suspense fallback={<PortalFallback />}>
                 <StudentProfilePage />
+              </Suspense>
+            } />
+          <Route path="help" element={
+              <Suspense fallback={<PortalFallback />}>
+                <StudentHelpCenterPage />
+              </Suspense>
+            } />
+          <Route path="whiteboard" element={
+              <Suspense fallback={<PortalFallback />}>
+                <StudentWhiteboardPage />
               </Suspense>
             } />
           <Route path="tools/:toolCode" element={

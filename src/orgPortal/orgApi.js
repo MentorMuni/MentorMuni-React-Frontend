@@ -7,6 +7,8 @@
  */
 
 import { API_BASE } from '../config';
+import { createBrowserSessionStore } from '../lib/browserSessionStore';
+import { orgApiBusy } from '../lib/apiBusy';
 import {
   ORG_SUSPENDED_FLASH_KEY,
   getSuspendedUx,
@@ -19,6 +21,7 @@ const BASE_URL = API_BASE;
 const API_KEY = import.meta.env.VITE_API_KEY || '';
 const TOKEN_KEY = 'mm-org-token';
 const SESSION_KEY = 'mm-org-session';
+const authStore = createBrowserSessionStore([TOKEN_KEY, SESSION_KEY]);
 
 /** Codes that mean the session/API key is unusable — force login. */
 const AUTO_LOGOUT_CODES = new Set([
@@ -53,20 +56,11 @@ export class OrgApiError extends Error {
 }
 
 function getToken() {
-  try {
-    return localStorage.getItem(TOKEN_KEY);
-  } catch {
-    return null;
-  }
+  return authStore.get(TOKEN_KEY);
 }
 
 function setToken(token) {
-  try {
-    if (!token) localStorage.removeItem(TOKEN_KEY);
-    else localStorage.setItem(TOKEN_KEY, token);
-  } catch {
-    // ignore storage issues
-  }
+  authStore.set(TOKEN_KEY, token || '');
 }
 
 function clearToken() {
@@ -111,12 +105,7 @@ function forceLogoutUnauthorized() {
   // Demo sessions use local fake tokens — never treat API 401 as a real logout.
   if (isDemoToken()) return;
 
-  clearToken();
-  try {
-    localStorage.removeItem(SESSION_KEY);
-  } catch {
-    // ignore
-  }
+  authStore.clearAll();
   if (typeof window !== 'undefined') {
     const path = (window.location.pathname || '').toLowerCase();
     if (!path.includes('/organization/login')) {
@@ -126,12 +115,7 @@ function forceLogoutUnauthorized() {
 }
 
 function forceLogoutForSuspension(detail) {
-  clearToken();
-  try {
-    localStorage.removeItem(SESSION_KEY);
-  } catch {
-    // ignore
-  }
+  authStore.clearAll();
 
   const ux = getSuspendedUx(detail);
   try {
@@ -197,13 +181,18 @@ async function parseResponse(res, { auth = true } = {}) {
   return data;
 }
 
-async function request(method, path, { body, auth = true } = {}) {
-  const res = await fetch(`${BASE_URL}${path}`, {
-    method,
-    headers: buildHeaders(auth),
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-  });
-  return parseResponse(res, { auth });
+async function request(method, path, { body, auth = true, silent = false } = {}) {
+  if (!silent) orgApiBusy.begin();
+  try {
+    const res = await fetch(`${BASE_URL}${path}`, {
+      method,
+      headers: buildHeaders(auth),
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
+    return await parseResponse(res, { auth });
+  } finally {
+    if (!silent) orgApiBusy.end();
+  }
 }
 
 export const orgApi = {

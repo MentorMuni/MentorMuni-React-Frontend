@@ -116,18 +116,18 @@
   transition: background var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
 }
 
-.stu-nav__item:hover {
+.stu-nav__item:hover:not(.stu-nav__item--premium) {
   background: var(--surface-2);
   color: var(--ink);
 }
 
-.stu-nav__item.is-active {
+.stu-nav__item.is-active:not(.stu-nav__item--premium) {
   background: var(--accent-soft);
   color: var(--interactive);
   font-weight: 650;
 }
 
-.stu-nav__item.is-active::before {
+.stu-nav__item.is-active:not(.stu-nav__item--premium)::before {
   content: '';
   position: absolute;
   left: calc(var(--space-3) * -1);

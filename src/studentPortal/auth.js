@@ -1,8 +1,10 @@
 /**
  * Student portal auth — separate session from TPO/HOD org portal.
+ * Token + session live in sessionStorage so closing the browser requires login.
  * TEMP demo student included; remove when campus student APIs are live.
  */
 
+import { createBrowserSessionStore } from '../lib/browserSessionStore';
 import { orgApi, OrgApiError } from '../orgPortal/orgApi';
 import { isOrgSuspendedDetail, getSuspendedUx, ORG_SUSPENDED_FLASH_KEY } from '../orgPortal/suspended';
 import { DEMO_ORG } from '../organizationPortal/demoAuth';
@@ -11,6 +13,7 @@ import { studentPaths } from './paths';
 
 const SESSION_KEY = 'mm-student-session';
 const TOKEN_KEY = 'mm-student-token';
+const authStore = createBrowserSessionStore([SESSION_KEY, TOKEN_KEY]);
 
 export const DEMO_STUDENT = {
   email: 'student@demo.edu',
@@ -22,7 +25,7 @@ export const DEMO_STUDENT = {
 
 export function getStudentSession() {
   try {
-    const raw = localStorage.getItem(SESSION_KEY);
+    const raw = authStore.get(SESSION_KEY);
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
@@ -30,7 +33,7 @@ export function getStudentSession() {
 }
 
 export function setStudentSession(user) {
-  localStorage.setItem(
+  authStore.set(
     SESSION_KEY,
     JSON.stringify({
       id: user?.id,
@@ -53,29 +56,15 @@ export function setStudentSession(user) {
 }
 
 export function getStudentToken() {
-  try {
-    return localStorage.getItem(TOKEN_KEY) || '';
-  } catch {
-    return '';
-  }
+  return authStore.get(TOKEN_KEY) || '';
 }
 
 export function setStudentToken(token) {
-  try {
-    if (token) localStorage.setItem(TOKEN_KEY, token);
-    else localStorage.removeItem(TOKEN_KEY);
-  } catch {
-    // ignore
-  }
+  authStore.set(TOKEN_KEY, token || '');
 }
 
 export function clearStudentSession() {
-  try {
-    localStorage.removeItem(SESSION_KEY);
-    localStorage.removeItem(TOKEN_KEY);
-  } catch {
-    // ignore
-  }
+  authStore.clearAll();
 }
 
 export function isStudentAuthenticated() {

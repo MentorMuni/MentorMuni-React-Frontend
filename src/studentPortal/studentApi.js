@@ -1,16 +1,16 @@
 /**
  * Student-portal-only HTTP client.
- * Uses mm-student-token; 401 → /studentportal/login.
+ * Uses the student session token (sessionStorage); 401 → /studentportal/login.
  * Never touches Organization session/token.
  */
 
 import { API_BASE } from '../config';
+import { studentApiBusy } from '../lib/apiBusy';
+import { clearStudentSession, getStudentToken } from './auth';
 import { studentPaths } from './paths';
 
 const BASE_URL = API_BASE;
 const API_KEY = import.meta.env.VITE_API_KEY || '';
-const TOKEN_KEY = 'mm-student-token';
-const SESSION_KEY = 'mm-student-session';
 
 const AUTO_LOGOUT_CODES = new Set([
   'TOKEN_EXPIRED',
@@ -32,11 +32,7 @@ export class StudentApiError extends Error {
 }
 
 function getToken() {
-  try {
-    return localStorage.getItem(TOKEN_KEY) || '';
-  } catch {
-    return '';
-  }
+  return getStudentToken();
 }
 
 function isDemoOrLocalToken(token = getToken()) {
@@ -76,12 +72,7 @@ function extractDetail(data, text) {
 
 function forceStudentLogout() {
   if (isDemoOrLocalToken()) return;
-  try {
-    localStorage.removeItem(TOKEN_KEY);
-    localStorage.removeItem(SESSION_KEY);
-  } catch {
-    // ignore
-  }
+  clearStudentSession();
   if (typeof window !== 'undefined') {
     const path = (window.location.pathname || '').toLowerCase();
     if (!path.includes('/studentportal/login')) {
@@ -122,13 +113,18 @@ async function parseResponse(res, { auth = true } = {}) {
   return data;
 }
 
-async function request(method, path, { body, auth = true } = {}) {
-  const res = await fetch(`${BASE_URL}${path}`, {
-    method,
-    headers: buildHeaders(auth),
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-  });
-  return parseResponse(res, { auth });
+async function request(method, path, { body, auth = true, silent = false } = {}) {
+  if (!silent) studentApiBusy.begin();
+  try {
+    const res = await fetch(`${BASE_URL}${path}`, {
+      method,
+      headers: buildHeaders(auth),
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
+    return await parseResponse(res, { auth });
+  } finally {
+    if (!silent) studentApiBusy.end();
+  }
 }
 
 export const studentApi = {

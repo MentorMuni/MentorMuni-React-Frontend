@@ -9,6 +9,7 @@ import SubscriptionsPage from './pages/SubscriptionsPage';
 import FeatureManagementPage from './pages/FeatureManagementPage';
 import PlatformUsersPage from './pages/PlatformUsersPage';
 import SettingsPage from './pages/SettingsPage';
+import SupportInboxPage from './pages/SupportInboxPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
 
 function RequirePlatformAuth({ children }) {
@@ -63,6 +64,7 @@ export default function PlatformAdminApp() {
         <Route path="subscriptions" element={<SubscriptionsPage />} />
         <Route path="features" element={<FeatureManagementPage />} />
         <Route path="platform-users" element={<PlatformUsersPage />} />
+        <Route path="support" element={<SupportInboxPage />} />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="change-password" element={<ChangePasswordPage />} />
       </Route>

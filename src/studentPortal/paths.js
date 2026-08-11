@@ -4,6 +4,7 @@ export const studentPaths = {
   login: '/studentportal/login',
   home: '/studentportal/home',
   mentor: '/studentportal/mentor',
+  whiteboard: '/studentportal/whiteboard',
   fearToFearless: '/studentportal/fear-to-fearless',
   knowMe: '/studentportal/know-me', // deprecated: use fearToFearless
   practice: '/studentportal/practice',
@@ -12,6 +13,7 @@ export const studentPaths = {
   companies: '/studentportal/companies',
   progress: '/studentportal/progress',
   profile: '/studentportal/profile',
+  help: '/studentportal/help',
   forgotPassword: '/studentportal/forgot-password',
   resetPassword: '/studentportal/reset-password',
   register: '/studentportal/register',
@@ -23,7 +25,7 @@ export const studentPaths = {
 /**
  * In-portal tool URL (embeds MmToolWidget — never leaves the student portal).
  * @param {string} toolCode e.g. aptitude | skill_mock | 5_sec
- * @param {{ from?: string, skill?: string, mode?: string }} [opts]
+ * @param {{ from?: string, skill?: string, mode?: string, checkinId?: string|number, fearId?: string }} [opts]
  */
 export function studentToolPath(toolCode, opts = {}) {
   const code = String(toolCode || '').trim();
@@ -33,6 +35,10 @@ export function studentToolPath(toolCode, opts = {}) {
   if (from) params.set('from', from);
   if (opts.skill) params.set('skill', String(opts.skill).trim());
   if (opts.mode) params.set('mode', String(opts.mode).trim());
+  if (opts.checkinId != null && opts.checkinId !== '') {
+    params.set('checkin', String(opts.checkinId));
+  }
+  if (opts.fearId) params.set('fear', String(opts.fearId));
   const q = params.toString();
   return `${studentPaths.tools}/${encodeURIComponent(code)}${q ? `?${q}` : ''}`;
 }

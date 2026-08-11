@@ -34,6 +34,9 @@ const COLORS = {
   grid: 'rgba(148,163,184,0.25)',
 };
 
+const tickInk = { fontSize: 11, fill: COLORS.ink };
+const tickInkSm = { fontSize: 10, fill: COLORS.ink };
+
 function ChartCard({ title, meta, children, tall }) {
   return (
     <section className={`mm-org-panel mm-org-chart-card${tall ? ' mm-org-chart-card--tall' : ''}`}>
@@ -113,8 +116,8 @@ export function PillarRadar({ pillars = {} }) {
       <ResponsiveContainer width="100%" height={260}>
         <RadarChart data={rows}>
           <PolarGrid stroke={COLORS.grid} />
-          <PolarAngleAxis dataKey="subject" tick={{ fontSize: 11 }} />
-          <PolarRadiusAxis angle={30} domain={[0, 100]} tick={{ fontSize: 10 }} />
+          <PolarAngleAxis dataKey="subject" tick={tickInk} />
+          <PolarRadiusAxis angle={30} domain={[0, 100]} tick={tickInkSm} />
           <Radar
             name="Cohort"
             dataKey="score"
@@ -144,8 +147,8 @@ export function TestsFunnelChart({ funnel = [] }) {
       <ResponsiveContainer width="100%" height={280}>
         <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
-          <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-          <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+          <XAxis dataKey="name" tick={tickInk} />
+          <YAxis allowDecimals={false} tick={tickInk} />
           <Tooltip
             formatter={(value, key) => [value, key === 'completed' ? 'Completed' : 'Reached']}
             labelFormatter={(_, payload) => payload?.[0]?.payload?.label || ''}
@@ -174,8 +177,8 @@ export function ToolCoverageStacked({ tools = [] }) {
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={data} layout="vertical" margin={{ top: 4, right: 12, left: 8, bottom: 4 }}>
           <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
-          <XAxis type="number" allowDecimals={false} tick={{ fontSize: 11 }} />
-          <YAxis type="category" dataKey="name" width={88} tick={{ fontSize: 10 }} />
+          <XAxis type="number" allowDecimals={false} tick={tickInk} />
+          <YAxis type="category" dataKey="name" width={88} tick={tickInkSm} />
           <Tooltip labelFormatter={(_, p) => p?.[0]?.payload?.full || ''} />
           <Legend />
           <Bar dataKey="completed" stackId="a" name="Done" fill={COLORS.strong} />
@@ -213,7 +216,7 @@ export function GapStrengthBars({ gaps = [], strengths = [] }) {
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={gapData} layout="vertical" margin={{ left: 4, right: 8 }}>
               <XAxis type="number" allowDecimals={false} hide />
-              <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 10 }} />
+              <YAxis type="category" dataKey="name" width={100} tick={tickInkSm} />
               <Tooltip
                 formatter={(v, _, item) => [
                   `${v}${item?.payload?.share != null ? ` (${Math.round(item.payload.share)}% of scored)` : ''}`,
@@ -234,7 +237,7 @@ export function GapStrengthBars({ gaps = [], strengths = [] }) {
           <ResponsiveContainer width="100%" height={220}>
             <BarChart data={strData} layout="vertical" margin={{ left: 4, right: 8 }}>
               <XAxis type="number" allowDecimals={false} hide />
-              <YAxis type="category" dataKey="name" width={100} tick={{ fontSize: 10 }} />
+              <YAxis type="category" dataKey="name" width={100} tick={tickInkSm} />
               <Tooltip
                 formatter={(v, _, item) => [
                   `${v}${item?.payload?.share != null ? ` (${Math.round(item.payload.share)}% of scored)` : ''}`,
@@ -270,8 +273,8 @@ export function DeptCompareChart({ departments = [] }) {
       <ResponsiveContainer width="100%" height={280}>
         <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
           <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
-          <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-          <YAxis domain={[0, 100]} tick={{ fontSize: 11 }} />
+          <XAxis dataKey="name" tick={tickInk} />
+          <YAxis domain={[0, 100]} tick={tickInk} />
           <Tooltip
             formatter={(v, key) => {
               if (key === 'avg') return [v == null ? '—' : `${Math.round(v)}%`, 'Avg readiness'];
@@ -304,8 +307,8 @@ export function ActivityArea({ active = 0, idle = 0, inactive = 0, never = 0 }) 
       <ResponsiveContainer width="100%" height={220}>
         <AreaChart data={data}>
           <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
-          <XAxis dataKey="name" tick={{ fontSize: 10 }} />
-          <YAxis allowDecimals={false} tick={{ fontSize: 11 }} />
+          <XAxis dataKey="name" tick={tickInkSm} />
+          <YAxis allowDecimals={false} tick={tickInk} />
           <Tooltip />
           <Area type="monotone" dataKey="value" stroke={COLORS.accent} fill={COLORS.accent} fillOpacity={0.35} />
         </AreaChart>

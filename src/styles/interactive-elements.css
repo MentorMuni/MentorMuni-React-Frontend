@@ -270,11 +270,29 @@ textarea:not([disabled]):focus {
   a:not([class*="no-underline"]):hover {
     background-color: rgba(0, 0, 0, 0.04);
   }
+
+  .stu-app a:hover,
+  .stu-app button:hover,
+  .mm-org-root a:hover,
+  .mm-org-root button:hover,
+  .mm-pa-root a:hover,
+  .mm-pa-root button:hover {
+    background-color: unset;
+  }
 }
 
 @media (prefers-color-scheme: dark) {
   button:not([disabled]):hover,
   a:not([class*="no-underline"]):hover {
     background-color: rgba(255, 255, 255, 0.08);
+  }
+
+  .stu-app a:hover,
+  .stu-app button:hover,
+  .mm-org-root a:hover,
+  .mm-org-root button:hover,
+  .mm-pa-root a:hover,
+  .mm-pa-root button:hover {
+    background-color: unset;
   }
 }

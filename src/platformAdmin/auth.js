@@ -1,10 +1,17 @@
+/**
+ * Platform admin auth — token + session live in sessionStorage
+ * so closing the browser requires login on the next visit.
+ */
+import { createBrowserSessionStore } from '../lib/browserSessionStore';
 import { platformApi } from './platformApi';
 
 const SESSION_KEY = 'mm-platform-admin-session';
+const TOKEN_KEY = 'mm-platform-admin-token';
+const authStore = createBrowserSessionStore([SESSION_KEY, TOKEN_KEY]);
 
 export function getPlatformSession() {
   try {
-    const raw = localStorage.getItem(SESSION_KEY);
+    const raw = authStore.get(SESSION_KEY);
     return raw ? JSON.parse(raw) : null;
   } catch {
     return null;
@@ -12,7 +19,7 @@ export function getPlatformSession() {
 }
 
 export function setPlatformSession(user) {
-  localStorage.setItem(
+  authStore.set(
     SESSION_KEY,
     JSON.stringify({
       id: user.id,
@@ -27,7 +34,7 @@ export function setPlatformSession(user) {
 }
 
 export function clearPlatformSession() {
-  localStorage.removeItem(SESSION_KEY);
+  authStore.clearAll();
   platformApi.clearToken();
 }
 

@@ -17,6 +17,7 @@ import AccessSettingsPage from './pages/AccessSettingsPage';
 import MyWorkspacePage from './pages/MyWorkspacePage';
 import HodStudentsPage from './pages/HodStudentsPage';
 import HodNotifyPage from './pages/HodNotifyPage';
+import HelpCenterPage from './pages/HelpCenterPage';
 import {
   canAssignPrograms,
   canMutateCampus,
@@ -175,6 +176,14 @@ export default function OrganizationPortalApp() {
           element={
             <RequirePasswordOk>
               <SettingsPage />
+            </RequirePasswordOk>
+          }
+        />
+        <Route
+          path="help"
+          element={
+            <RequirePasswordOk>
+              <HelpCenterPage />
             </RequirePasswordOk>
           }
         />

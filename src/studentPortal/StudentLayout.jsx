@@ -8,7 +8,7 @@
  */
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Navigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { getStudentSession, isStudentAuthenticated } from './auth';
 import { studentPaths } from './paths';
 import { useStudentPortalCanvas, useStudentTheme } from './useStudentTheme.jsx';
@@ -18,13 +18,19 @@ import { StudentShellContext } from './shellContext';
 
 import StudentSidebar from './components/home/StudentSidebar';
 import StudentTopbar from './components/home/StudentTopbar';
+import FearToFearlessInProgress from './components/FearToFearlessInProgress';
+import { studentApiBusy, useApiBusy } from '../lib/apiBusy';
+import { whiteboardApi } from './whiteboardApi';
 
 import './styles/portal.css';
 
 export default function StudentLayout() {
   const session = getStudentSession();
   const authed = isStudentAuthenticated();
+  const location = useLocation();
   const { theme } = useStudentTheme();
+  const onFearToFearless = /fear-to-fearless|know-me/.test(location.pathname || '');
+  const hideGlobalBusy = onFearToFearless || /whiteboard/.test(location.pathname || '');
   const [navOpen, setNavOpen] = useState(false);
 
   const userKey = session?.id || session?.email || 'anon';
@@ -37,6 +43,7 @@ export default function StudentLayout() {
     weekDots: getStreakWeekDots(userKey),
   }));
   const [nextDrive, setNextDrive] = useState(null);
+  const apiBusy = useApiBusy(studentApiBusy);
 
   useStudentPortalCanvas(theme);
 
@@ -61,6 +68,13 @@ export default function StudentLayout() {
       cancelled = true;
     };
   }, [authed]);
+
+  // One morning mentorship per IST day — generated on first portal open, not a cron.
+  useEffect(() => {
+    if (!authed || !session) return undefined;
+    whiteboardApi.ensureMorning(session).catch(() => {});
+    return undefined;
+  }, [authed, session?.id]);
 
   const shell = useMemo(
     () => ({
@@ -99,6 +113,8 @@ export default function StudentLayout() {
           <Outlet />
         </StudentShellContext.Provider>
       </div>
+
+      {apiBusy && !hideGlobalBusy ? <FearToFearlessInProgress session={session} /> : null}
     </div>
   );
 }

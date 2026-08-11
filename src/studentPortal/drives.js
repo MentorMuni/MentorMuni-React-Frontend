@@ -47,7 +47,7 @@ export async function fetchUpcomingDrives() {
   if (isLocalFallbackSession()) return demoResult();
 
   try {
-    const data = await withTimeout(studentApi.get('/student/upcoming-drives'));
+    const data = await withTimeout(studentApi.get('/student/upcoming-drives', { silent: true }));
     const items = (data?.items || []).filter(Boolean);
     const nearest = data?.nearest || items.find((d) => !d.is_past) || items[0] || null;
     if (!nearest) return EMPTY_RESULT;

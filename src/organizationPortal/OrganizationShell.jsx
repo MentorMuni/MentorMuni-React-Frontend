@@ -9,6 +9,7 @@ import {
   LayoutDashboard,
   LogOut,
   NotebookPen,
+  LifeBuoy,
   Settings,
   Shield,
   UserPlus,
@@ -29,6 +30,8 @@ import {
 import { orgPaths } from './paths';
 import { useOrgTheme } from './useOrgTheme';
 import OrgThemeToggle from './OrgThemeToggle';
+import WorkspaceInProgress from './components/WorkspaceInProgress';
+import { orgApiBusy, useApiBusy } from '../lib/apiBusy';
 import './organization-portal.css';
 
 const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
@@ -53,6 +56,7 @@ function navForRole(role) {
       { section: 'Admin', items: [
         { to: orgPaths.access, label: 'HOD access', icon: Shield },
         { to: orgPaths.settings, label: 'Settings', icon: Settings },
+        { to: orgPaths.help, label: 'Help Center', icon: LifeBuoy },
         { to: orgPaths.changePassword, label: 'Change password', icon: KeyRound },
       ]},
     ];
@@ -72,6 +76,7 @@ function navForRole(role) {
       ]},
       { section: 'Account', items: [
         { to: orgPaths.settings, label: 'Settings', icon: Settings },
+        { to: orgPaths.help, label: 'Help Center', icon: LifeBuoy },
         { to: orgPaths.changePassword, label: 'Change password', icon: KeyRound },
       ]},
     ];
@@ -86,6 +91,7 @@ function navForRole(role) {
       ]},
       { section: 'Account', items: [
         { to: orgPaths.settings, label: 'Settings', icon: Settings },
+        { to: orgPaths.help, label: 'Help Center', icon: LifeBuoy },
         { to: orgPaths.changePassword, label: 'Change password', icon: KeyRound },
       ]},
     ];
@@ -97,6 +103,7 @@ function navForRole(role) {
     ]},
     { section: 'Account', items: [
       { to: orgPaths.settings, label: 'Settings', icon: Settings },
+      { to: orgPaths.help, label: 'Help Center', icon: LifeBuoy },
       { to: orgPaths.changePassword, label: 'Change password', icon: KeyRound },
     ]},
   ];
@@ -127,6 +134,7 @@ const TITLES = {
   },
   access: ['HOD access', 'Control what department mentors can do.'],
   settings: ['Settings', 'Organization portal preferences.'],
+  help: ['Help Center', 'Tell MentorMuni if the platform is broken — or send feedback.'],
   'change-password': ['Change password', 'Update your credentials securely.'],
 };
 
@@ -146,6 +154,7 @@ export default function OrganizationShell() {
   const location = useLocation();
   const session = getOrgSession();
   const { theme, toggleTheme } = useOrgTheme();
+  const apiBusy = useApiBusy(orgApiBusy);
   const portalRole = normalizeOrgRole(session?.role);
   const navGroups = navForRole(session?.role);
   const segment = location.pathname.split('/').filter(Boolean).pop() || 'dashboard';
@@ -199,7 +208,7 @@ export default function OrganizationShell() {
                         }
                       >
                         <Icon size={17} strokeWidth={2.2} />
-                        {item.label}
+                        <span>{item.label}</span>
                       </NavLink>
                     </motion.div>
                   );
@@ -277,6 +286,7 @@ export default function OrganizationShell() {
           </main>
         </div>
       </div>
+      {apiBusy ? <WorkspaceInProgress session={session} /> : null}
     </div>
   );
 }

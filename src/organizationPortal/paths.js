@@ -16,4 +16,5 @@ export const orgPaths = {
   access: '/Organization/access',
   settings: '/Organization/settings',
   changePassword: '/Organization/change-password',
+  help: '/Organization/help',
 };

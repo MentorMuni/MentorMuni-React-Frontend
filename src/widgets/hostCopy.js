@@ -7,6 +7,7 @@ export function hostBackLabel(session) {
   if (session.fromPractice) return 'Back to Practice';
   if (session.fromCompanyPrep) return 'Back to Company Prep';
   if (session.fromJourney) return 'Back to your 90-day plan';
+  if (session.fromFearToFearless) return 'Back to Fear → Fearless';
   if (session.fromRoadmap) return 'Back to Week 1 plan';
   if (session.source === 'embed') return 'Done';
   return null;
@@ -26,6 +27,14 @@ export function hostSaveStatusMessage(session, roadmapSave) {
     if (roadmapSave.status === 'saving') return 'Saving to your Week 1 baseline…';
     if (roadmapSave.status === 'saved') {
       return 'Saved to your baseline. The next step is unlocked on your roadmap.';
+    }
+    return roadmapSave.message || null;
+  }
+
+  if (session.fromFearToFearless) {
+    if (roadmapSave.status === 'saving') return 'Saving to your Fear → Fearless plan…';
+    if (roadmapSave.status === 'saved') {
+      return roadmapSave.message || 'Counted — your fear factor updated.';
     }
     return roadmapSave.message || null;
   }

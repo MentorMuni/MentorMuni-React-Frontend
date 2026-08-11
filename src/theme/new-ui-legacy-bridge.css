@@ -297,14 +297,14 @@ html.mm-new-ui [class*="text-red-5"] {
   color: #f87171 !important;
 }
 
-/* Comparison table & pricing cards */
-html.mm-new-ui table thead tr,
-html.mm-new-ui table thead th {
+/* Comparison table & pricing cards — never paint portal tables */
+html.mm-new-ui table thead tr:not(:is(.mm-org-root *, .mm-pa-root *, .stu-app *)),
+html.mm-new-ui table thead th:not(:is(.mm-org-root *, .mm-pa-root *, .stu-app *)) {
   background-color: rgba(30, 41, 59, 0.88) !important;
   color: var(--text-heading) !important;
 }
 
-html.mm-new-ui table tbody tr {
+html.mm-new-ui table tbody tr:not(:is(.mm-org-root *, .mm-pa-root *, .stu-app *)) {
   background-color: rgba(15, 23, 42, 0.62) !important;
 }
 

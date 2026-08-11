@@ -305,7 +305,7 @@ export async function generatePlan() {
   return portalizePlan(data);
 }
 
-export async function fetchPlan() {
+export async function fetchPlan(opts = {}) {
   if (isLocalFallbackSession()) {
     const plan = readLocalPlan();
     if (!plan) {
@@ -314,7 +314,7 @@ export async function fetchPlan() {
     }
     return portalizePlan(plan);
   }
-  const data = await studentApi.get('/student/roadmap/plan');
+  const data = await studentApi.get('/student/roadmap/plan', opts);
   return portalizePlan(data);
 }
 

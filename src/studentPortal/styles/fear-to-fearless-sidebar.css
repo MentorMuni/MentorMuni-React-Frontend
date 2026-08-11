@@ -1,88 +1,86 @@
-/* 🔒 Fear → Fearless Sidebar Styling */
+/* Fear → Fearless sidebar item. Must beat .stu-nav__item + global a:hover wash.
+   Use background-color + background-image (not the shorthand) so Safari
+   cannot interpolate `background` to white on hover/active in light mode. */
 
-/* Divider between main nav and premium features */
 .stu-nav__divider {
   height: 1px;
-  background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.1) 50%, rgba(0, 0, 0, 0) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0) 0%,
+    rgba(0, 0, 0, 0.1) 50%,
+    rgba(0, 0, 0, 0) 100%
+  );
   margin: 12px 0;
 }
 
-/* Premium feature nav item */
-.stu-nav__item--premium {
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium:visited,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium:hover,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium:focus,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium:focus-visible,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium:active,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium.is-active,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium.is-active:hover,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium[aria-current='page'] {
   position: relative;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background-color: #667eea !important;
+  background-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  background-repeat: no-repeat !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
   font-weight: 600;
   border-radius: 8px;
   margin: 0 8px;
   padding: 12px 16px !important;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  overflow: hidden;
+  overflow: visible;
+  filter: none !important;
+  opacity: 1 !important;
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease !important;
 }
 
-/* Hover state with animation */
-.stu-nav__item--premium:hover {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium:hover,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium:focus-visible,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium.is-active,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium.is-active:hover,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium[aria-current='page'] {
+  background-color: #5a67d8 !important;
+  background-image: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
   transform: translateX(4px);
-  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 8px 16px rgba(102, 126, 234, 0.35);
 }
 
-.stu-nav__item--premium:active {
-  transform: translateX(2px);
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium.is-active::before {
+  display: none;
 }
 
-/* Arrow animation on hover */
-.stu-nav__item--premium .stu-nav__arrow {
-  display: inline-block;
-  margin-left: 4px;
-  transition: transform 0.3s ease;
-  animation: pulse-arrow 1.5s ease-in-out infinite;
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium svg,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium:hover svg,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium.is-active svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+  flex-shrink: 0;
 }
 
-@keyframes pulse-arrow {
-  0%, 100% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  50% {
-    transform: translateX(6px);
-    opacity: 0.7;
-  }
-}
-
-.stu-nav__item--premium:hover .stu-nav__arrow {
-  animation: pulse-arrow 0.8s ease-in-out infinite;
-}
-
-/* Icon styling for premium */
-.stu-nav__item--premium svg {
-  color: white;
-  stroke-width: 2;
-}
-
-/* Text styling for premium */
-.stu-nav__item--premium .stu-nav__text {
-  color: white;
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium .stu-nav__text,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium:hover .stu-nav__text,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--premium.is-active .stu-nav__text {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
   font-size: 14px;
   font-weight: 600;
   letter-spacing: 0.3px;
 }
 
-/* Active state for Fear → Fearless */
-.stu-nav__item--premium.is-active {
-  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
-  box-shadow: 0 12px 24px rgba(102, 126, 234, 0.4);
-}
-
-/* Tooltip for Fear → Fearless */
-.stu-nav__item--premium::after {
-  content: '🌟 You can do this!';
+.stu-nav a.stu-nav__item.stu-nav__item--premium::after {
+  content: 'You can do this!';
   position: absolute;
   bottom: -28px;
   left: 50%;
   transform: translateX(-50%);
-  background: #667eea;
-  color: white;
+  background: #5a67d8;
+  color: #ffffff;
   padding: 6px 12px;
   border-radius: 4px;
   font-size: 12px;
@@ -94,41 +92,26 @@
   font-weight: 500;
 }
 
-.stu-nav__item--premium:hover::after {
+.stu-nav a.stu-nav__item.stu-nav__item--premium:hover::after {
   opacity: 1;
 }
 
-/* Mobile responsive */
 @media (max-width: 768px) {
-  .stu-nav__item--premium {
+  .stu-nav a.stu-nav__item.stu-nav__item--premium {
     margin: 0 4px;
     padding: 10px 12px !important;
   }
 
-  .stu-nav__item--premium:hover {
+  .stu-nav a.stu-nav__item.stu-nav__item--premium:hover,
+  .stu-nav a.stu-nav__item.stu-nav__item--premium.is-active:hover {
     transform: translateX(2px);
   }
 
-  .stu-nav__item--premium .stu-nav__text {
+  .stu-nav a.stu-nav__item.stu-nav__item--premium .stu-nav__text {
     font-size: 13px;
   }
 
-  .stu-nav__item--premium::after {
-    display: none; /* Hide tooltip on mobile */
-  }
-}
-
-/* Dark mode support (if applicable) */
-@media (prefers-color-scheme: dark) {
-  .stu-nav__divider {
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 100%);
-  }
-
-  .stu-nav__item--premium {
-    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.2);
-  }
-
-  .stu-nav__item--premium:hover {
-    box-shadow: 0 8px 16px rgba(102, 126, 234, 0.25);
+  .stu-nav a.stu-nav__item.stu-nav__item--premium::after {
+    display: none;
   }
 }

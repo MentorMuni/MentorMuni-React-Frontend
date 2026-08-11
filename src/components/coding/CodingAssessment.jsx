@@ -466,7 +466,7 @@ export default function CodingAssessment() {
         source_code: source,
       });
       const done = await pollUntil(
-        () => studentApi.get(`/api/coding/runs/${queued.id}`),
+        () => studentApi.get(`/api/coding/runs/${queued.id}`, { silent: true }),
         {
           isDone: (r) =>
             r &&
@@ -504,7 +504,7 @@ export default function CodingAssessment() {
         source_code: source,
       });
       const done = await pollUntil(
-        () => studentApi.get(`/api/coding/submissions/${queued.id}`),
+        () => studentApi.get(`/api/coding/submissions/${queued.id}`, { silent: true }),
         {
           isDone: (r) =>
             r &&
@@ -523,7 +523,7 @@ export default function CodingAssessment() {
       setPhase('results');
 
       const a = await pollUntil(
-        () => studentApi.get(`/api/coding/submissions/${queued.id}/analysis`),
+        () => studentApi.get(`/api/coding/submissions/${queued.id}/analysis`, { silent: true }),
         {
           isDone: (r) =>
             r &&

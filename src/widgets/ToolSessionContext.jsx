@@ -21,15 +21,17 @@ function useLegacyUrlSession() {
   const navigate = useNavigate();
   return useMemo(() => {
     const q = getRoadmapQuery();
-    const source = q.fromPractice
-      ? 'practice'
-      : q.fromCompanyPrep
-        ? 'company-prep'
-        : q.fromJourney
-          ? 'journey'
-          : q.fromRoadmap
-            ? 'roadmap'
-            : 'standalone';
+    const source = q.fromFearToFearless
+      ? 'fear-to-fearless'
+      : q.fromPractice
+        ? 'practice'
+        : q.fromCompanyPrep
+          ? 'company-prep'
+          : q.fromJourney
+            ? 'journey'
+            : q.fromRoadmap
+              ? 'roadmap'
+              : 'standalone';
     return createToolSession({
       toolCode: q.toolCode,
       mode: q.mode,
