@@ -2,6 +2,37 @@ import { API_BASE } from '../../config';
 
 const SESSION_PATH = '/interview-ready/voice-interview/session';
 const ANALYZE_PATH = '/interview-ready/voice-interview/analyze';
+/** Same key as studentPortal/auth.js — used for per-user rate limits on campus NAT. */
+const STUDENT_TOKEN_KEY = 'mm-student-token';
+
+function readStudentBearerToken() {
+  try {
+    if (typeof sessionStorage !== 'undefined') {
+      const t = sessionStorage.getItem(STUDENT_TOKEN_KEY);
+      if (t) return t;
+    }
+  } catch {
+    /* ignore */
+  }
+  try {
+    if (typeof localStorage !== 'undefined') {
+      const t = localStorage.getItem(STUDENT_TOKEN_KEY);
+      if (t) return t;
+    }
+  } catch {
+    /* ignore */
+  }
+  return '';
+}
+
+function authHeaders() {
+  const headers = { 'Content-Type': 'application/json' };
+  const apiKey = import.meta.env.VITE_API_KEY || '';
+  if (apiKey) headers['X-API-Key'] = apiKey;
+  const token = readStudentBearerToken();
+  if (token) headers.Authorization = `Bearer ${token}`;
+  return headers;
+}
 
 function formatDetail(detail) {
   if (!detail) return '';
@@ -53,12 +84,12 @@ async function parseError(res) {
 
 /**
  * Mint an ephemeral OpenAI Realtime key for browser WebRTC.
- * @param {{ interview_focus: string, target_role?: string, target_companies?: string, extra_context?: string, voice?: string }} body
+ * @param {{ interview_focus: string, target_role?: string, target_companies?: string, extra_context?: string, duration_minutes?: number, voice?: string }} body
  */
 export async function createVoiceInterviewSession(body) {
   const res = await fetch(`${API_BASE}${SESSION_PATH}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders(),
     body: JSON.stringify(body),
   });
 
@@ -79,7 +110,7 @@ export async function createVoiceInterviewSession(body) {
 export async function analyzeVoiceInterview(body) {
   const res = await fetch(`${API_BASE}${ANALYZE_PATH}`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: authHeaders(),
     body: JSON.stringify(body),
   });
 

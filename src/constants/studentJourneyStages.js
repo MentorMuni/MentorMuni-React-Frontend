@@ -132,7 +132,7 @@ export const STUDENT_JOURNEY_STAGES = [
     painPoint: 'Knowing the answer and performing it while being evaluated are different skills.',
     solution: 'Rehearse technical interviews in a safe pressure room — before a hiring panel.',
     primaryOutcome: 'A scored technical mock with weak spots named',
-    duration: '45 min',
+    duration: '15 min',
     icon: 'Mic2',
     accent: 'rose',
   },

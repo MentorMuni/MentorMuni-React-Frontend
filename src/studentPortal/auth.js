@@ -1,7 +1,7 @@
 /**
  * Student portal auth — separate session from TPO/HOD org portal.
  * Token + session live in sessionStorage so closing the browser requires login.
- * TEMP demo student included; remove when campus student APIs are live.
+ * Demo / local credential paths are DEV-only (or VITE_SHOW_DEMO=true).
  */
 
 import { createBrowserSessionStore } from '../lib/browserSessionStore';
@@ -14,6 +14,12 @@ import { studentPaths } from './paths';
 const SESSION_KEY = 'mm-student-session';
 const TOKEN_KEY = 'mm-student-token';
 const authStore = createBrowserSessionStore([SESSION_KEY, TOKEN_KEY]);
+
+/** Demo + localStorage password fallback — never in production builds unless flagged. */
+const ALLOW_DEMO_LOCAL_AUTH =
+  Boolean(import.meta.env.DEV) ||
+  import.meta.env.VITE_SHOW_DEMO === 'true' ||
+  import.meta.env.VITE_SHOW_DEMO === '1';
 
 export const DEMO_STUDENT = {
   email: 'student@demo.edu',
@@ -106,8 +112,8 @@ export function matchDemoStudent(userId, password) {
 export async function loginStudent(userId, password, organizationCode = '') {
   const code = String(organizationCode || '').trim().toUpperCase();
 
-  // Demo only when campus is DEMO (or unset during local smoke)
-  if (!code || code === DEMO_ORG.code) {
+  // Demo only in DEV / VITE_SHOW_DEMO, and only for DEMO campus
+  if (ALLOW_DEMO_LOCAL_AUTH && (!code || code === DEMO_ORG.code)) {
     const demo = matchDemoStudent(userId, password);
     if (demo) {
       const token = `demo.student.${Date.now()}`;
@@ -132,6 +138,7 @@ export async function loginStudent(userId, password, organizationCode = '') {
   }
 
   const tryLocal = () => {
+    if (!ALLOW_DEMO_LOCAL_AUTH) return null;
     const local = matchLocalStudent(userId, password, organizationCode);
     if (!local) return null;
     const token = `local.student.${Date.now()}`;
@@ -215,13 +222,14 @@ export async function loginStudent(userId, password, organizationCode = '') {
 
     return { ok: true, user, source: 'api' };
   } catch (err) {
-    // Local fallback only for DEMO / missing API — never mask a live 401 with stale local creds
+    // Local fallback only in DEV/demo mode — never mask live 401 with stale local creds
     const missingApi =
       !(err instanceof OrgApiError) ||
       err.status === 0 ||
       err.status === 404 ||
       err.status === 501;
-    const allowLocal = !code || code === DEMO_ORG.code || missingApi;
+    const allowLocal =
+      ALLOW_DEMO_LOCAL_AUTH && (!code || code === DEMO_ORG.code || missingApi);
     if (allowLocal) {
       const localHit = tryLocal();
       if (localHit) return localHit;

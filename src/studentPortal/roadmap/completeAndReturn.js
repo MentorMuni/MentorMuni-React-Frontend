@@ -211,7 +211,7 @@ export async function submitRoadmapResult({ toolCode, result }) {
     const status = err?.status;
     let message = err?.message || 'Could not save to your roadmap.';
     if (status === 409) {
-      message = 'Could not save this step yet. Retry once — locked steps are now accepted by the API.';
+      message = 'This step is locked. Finish earlier Week-1 tools first, then retry.';
     } else if (!status) {
       message = 'Network issue — your result is shown below but was not saved. Retry to save it.';
     }

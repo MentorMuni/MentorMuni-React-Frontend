@@ -19,6 +19,9 @@ function readJson(key, fallback) {
 }
 
 function writeJson(key, value) {
+  if (!(import.meta.env.DEV || import.meta.env.VITE_SHOW_DEMO === 'true' || import.meta.env.VITE_SHOW_DEMO === '1')) {
+    return;
+  }
   localStorage.setItem(key, JSON.stringify(value));
 }
 

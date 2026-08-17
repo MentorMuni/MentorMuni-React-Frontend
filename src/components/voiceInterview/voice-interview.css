@@ -493,6 +493,11 @@ textarea.mm-voice-field {
   background: color-mix(in srgb, var(--bg-card) 80%, transparent);
 }
 
+.mm-voice-live__timer.is-low {
+  color: var(--vi-cta);
+  border-color: color-mix(in srgb, var(--vi-cta) 45%, var(--vi-line));
+}
+
 .mm-voice-status {
   display: inline-flex;
   align-items: center;

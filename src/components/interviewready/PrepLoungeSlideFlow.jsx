@@ -38,6 +38,39 @@ const FLOW_STEPS = [
   { id: 'ready', label: 'Start', short: 'Test' },
 ];
 
+const PORTAL_FLOW_STEPS = [
+  { id: 'generating', label: 'Build', short: 'Questions' },
+  { id: 'ready', label: 'Start', short: 'Test' },
+];
+
+const PORTAL_WAIT_STORIES = [
+  {
+    tag: 'The offer',
+    title: 'That call after the HR round',
+    body: 'Your phone lights up. “We’d like to make you an offer.” That feeling is what this check is for — walking in ready, not hoping.',
+  },
+  {
+    tag: 'Campus round',
+    title: 'How a typical drive actually goes',
+    body: 'Aptitude screen → technical (DSA + your stack) → HR. Panels don’t need a genius. They need someone who stays clear under pressure.',
+  },
+  {
+    tag: 'Prep',
+    title: '60 seconds that win the room',
+    body: 'Present → one proof with a number → what you want next. Practise that intro once before you start. It shows up in almost every interview.',
+  },
+  {
+    tag: 'STAR',
+    title: 'Stories they remember',
+    body: 'Situation, task, action, result. End on impact: “cut load time 40%”, “owned the demo”. Adjectives fade. Outcomes stick.',
+  },
+  {
+    tag: 'Mindset',
+    title: 'You already belong in the drive',
+    body: '3rd and 4th year is the season. This score is a map, not a verdict. Name the gap, then close it with mocks — that’s how offers happen.',
+  },
+];
+
 const PLACEMENT_COMPANIES = ['TCS', 'Infosys', 'Nagarro', 'Persistent', 'Capgemini', 'Accenture'];
 
 const PLACEMENT_POSTERS = [
@@ -105,8 +138,8 @@ function getWaitingTipSlides(mode, isSkillMode, isPro) {
 }
 
 /** Material-style linear stepper with connected track */
-function LinearStepper({ phaseIndex, reduceMotion }) {
-  const progressPct = phaseIndex < 0 ? 0 : ((phaseIndex + 0.5) / FLOW_STEPS.length) * 100;
+function LinearStepper({ phaseIndex, reduceMotion, steps = FLOW_STEPS }) {
+  const progressPct = phaseIndex < 0 ? 0 : ((phaseIndex + 0.5) / steps.length) * 100;
 
   return (
     <nav aria-label="Progress" className="mb-6 w-full">
@@ -122,8 +155,8 @@ function LinearStepper({ phaseIndex, reduceMotion }) {
           aria-valuemax={100}
         />
       </div>
-      <ol className="grid grid-cols-3 gap-2">
-        {FLOW_STEPS.map((step, i) => {
+      <ol className={`grid gap-2 ${steps.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+        {steps.map((step, i) => {
           const done = i < phaseIndex;
           const active = i === phaseIndex;
           return (
@@ -304,6 +337,52 @@ function TipsPanel({
   );
 }
 
+function PortalWaitDeck({ reduceMotion }) {
+  const [idx, setIdx] = useState(0);
+
+  useEffect(() => {
+    const ms = reduceMotion ? 10000 : 6500;
+    const id = window.setInterval(() => setIdx((i) => (i + 1) % PORTAL_WAIT_STORIES.length), ms);
+    return () => window.clearInterval(id);
+  }, [reduceMotion]);
+
+  const story = PORTAL_WAIT_STORIES[idx];
+
+  return (
+    <div className="rounded-xl border border-border bg-secondary/40 p-4 sm:p-5">
+      <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-muted-foreground">While we build your set</p>
+      <AnimatePresence mode="wait">
+        <motion.div
+          key={story.tag}
+          initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={reduceMotion ? undefined : { opacity: 0, y: -6 }}
+          transition={{ duration: 0.28, ease: EASE_STANDARD }}
+        >
+          <span className="mt-3 inline-flex rounded-md bg-white px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-cta shadow-sm">
+            {story.tag}
+          </span>
+          <h3 className="mt-2 text-base font-semibold leading-snug text-foreground sm:text-lg">{story.title}</h3>
+          <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{story.body}</p>
+        </motion.div>
+      </AnimatePresence>
+      <div className="mt-4 flex justify-center gap-1.5" role="tablist" aria-label="Wait stories">
+        {PORTAL_WAIT_STORIES.map((item, i) => (
+          <button
+            key={item.tag}
+            type="button"
+            role="tab"
+            aria-selected={i === idx}
+            aria-label={item.tag}
+            onClick={() => setIdx(i)}
+            className={`h-2 rounded-full transition-all ${i === idx ? 'w-5 bg-cta' : 'w-2 bg-border hover:bg-cta/40'}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function BuildProgressPanel({ planLoading, reduceMotion }) {
   const [pct, setPct] = useState(10);
   const [stageIdx, setStageIdx] = useState(0);
@@ -402,6 +481,7 @@ export default function PrepLoungeSlideFlow({
   isPro,
   mode,
   isSkillMode,
+  skipContactDetails = false,
   onStartTest,
   onRetry,
   onBackEdit,
@@ -412,18 +492,22 @@ export default function PrepLoungeSlideFlow({
   const tipSectionTitle = getTipSectionTitle(mode, isSkillMode);
   const tipSlides = useMemo(() => getWaitingTipSlides(mode, isSkillMode, isPro), [mode, isSkillMode, isPro]);
 
-  const hasRequiredDetails = isPro
-    ? Boolean(profile?.email?.trim() && profile?.contactNumber?.trim())
-    : Boolean(profile?.email?.trim() && profile?.contactNumber?.trim() && profile?.collegeName?.trim());
+  const hasRequiredDetails = skipContactDetails
+    ? true
+    : isPro
+      ? Boolean(profile?.email?.trim() && profile?.contactNumber?.trim())
+      : Boolean(profile?.email?.trim() && profile?.contactNumber?.trim() && profile?.collegeName?.trim());
 
   const [phase, setPhase] = useState(() => {
     if (error) return 'error';
     if (ready) return 'ready';
+    if (skipContactDetails) return 'generating';
     return hasRequiredDetails ? 'generating' : 'details';
   });
   const [tipIndex, setTipIndex] = useState(0);
 
   const validateDetails = useCallback(() => {
+    if (skipContactDetails) return true;
     const nextErrors = {};
     const email = String(profile?.email ?? '').trim();
     const phone = String(profile?.contactNumber ?? '').trim();
@@ -435,7 +519,7 @@ export default function PrepLoungeSlideFlow({
     if (!isPro && !college) nextErrors.collegeName = 'Required';
     setValidationErrors?.(nextErrors);
     return Object.keys(nextErrors).length === 0;
-  }, [profile, isPro, setValidationErrors]);
+  }, [profile, isPro, setValidationErrors, skipContactDetails]);
 
   useEffect(() => {
     if (error) setPhase('error');
@@ -466,12 +550,30 @@ export default function PrepLoungeSlideFlow({
   };
 
   const currentTip = tipSlides[tipIndex % tipSlides.length];
-  const phaseIndex = phase === 'error' ? -1 : phase === 'details' ? 0 : phase === 'generating' ? 1 : 2;
+  const flowSteps = skipContactDetails ? PORTAL_FLOW_STEPS : FLOW_STEPS;
+  const phaseIndex = skipContactDetails
+    ? phase === 'error'
+      ? -1
+      : phase === 'ready'
+        ? 1
+        : 0
+    : phase === 'error'
+      ? -1
+      : phase === 'details'
+        ? 0
+        : phase === 'generating'
+          ? 1
+          : 2;
   const showTips = phase === 'details' || phase === 'generating';
 
   const headlines = {
     details: { title: 'Save your results', sub: 'We’ll email your score and gaps. Your questions are being prepared in parallel.' },
-    generating: { title: 'Preparing your questions', sub: `Personalising your ${READINESS_CHECK_PRODUCT_NOUN} from your profile.` },
+    generating: {
+      title: skipContactDetails ? 'Your questions are on the way' : 'Preparing your questions',
+      sub: skipContactDetails
+        ? 'Use this minute. Campus interviews reward calm, not speed. We’ll ping you when the set is ready.'
+        : `Personalising your ${READINESS_CHECK_PRODUCT_NOUN} from your profile.`,
+    },
     ready: { title: 'You’re ready to begin', sub: `${qCount} questions tailored to you · ~5 min` },
     error: { title: 'Couldn’t prepare your check', sub: 'Please try again or edit your answers.' },
   };
@@ -525,7 +627,9 @@ export default function PrepLoungeSlideFlow({
               ))}
             </div>
 
-            {phase !== 'error' && <LinearStepper phaseIndex={phaseIndex} reduceMotion={reduceMotion} />}
+            {phase !== 'error' && (
+              <LinearStepper phaseIndex={phaseIndex} reduceMotion={reduceMotion} steps={flowSteps} />
+            )}
 
             <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-[0_1px_2px_rgba(0,0,0,0.06),0_8px_24px_rgba(0,0,0,0.06)]">
               <AnimatePresence mode="wait">
@@ -612,6 +716,11 @@ export default function PrepLoungeSlideFlow({
                     className="p-6 sm:p-8"
                   >
                     <BuildProgressPanel planLoading={planLoading} reduceMotion={reduceMotion} />
+                    {skipContactDetails ? (
+                      <div className="mt-6">
+                        <PortalWaitDeck reduceMotion={reduceMotion} />
+                      </div>
+                    ) : null}
                   </motion.div>
                 )}
 
@@ -663,7 +772,7 @@ export default function PrepLoungeSlideFlow({
               onClick={onBackEdit}
               className="mm-focus mt-4 w-full py-2 text-center text-sm font-medium text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
             >
-              Edit assessment answers
+              {skipContactDetails ? 'Change skill / focus' : 'Edit assessment answers'}
             </button>
           </div>
 

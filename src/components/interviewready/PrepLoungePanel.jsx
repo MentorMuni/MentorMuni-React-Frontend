@@ -12,6 +12,7 @@ export default function PrepLoungePanel({
   setProfile,
   validationErrors = {},
   setValidationErrors,
+  skipContactDetails = false,
   onStartTest,
   onRetry,
   onBackEdit,
@@ -35,6 +36,7 @@ export default function PrepLoungePanel({
       isPro={isPro}
       mode={mode}
       isSkillMode={isSkillMode}
+      skipContactDetails={skipContactDetails}
       onStartTest={onStartTest}
       onRetry={onRetry}
       onBackEdit={onBackEdit}

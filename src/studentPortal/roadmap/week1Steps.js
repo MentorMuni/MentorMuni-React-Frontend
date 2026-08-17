@@ -28,14 +28,14 @@ export const WEEK1_STEPS = [
     tool_code: 'skill_mock',
     order: 4,
     title: 'Skill AI mock interview',
-    minutes: 45,
+    minutes: 20,
     href: studentToolPath('skill_mock', { from: 'roadmap' }),
   },
   {
     tool_code: 'project_mock',
     order: 5,
     title: 'Project AI mock interview',
-    minutes: 45,
+    minutes: 20,
     href: studentToolPath('project_mock', { from: 'roadmap' }),
   },
   {
@@ -49,14 +49,14 @@ export const WEEK1_STEPS = [
     tool_code: 'interview_mock',
     order: 7,
     title: 'Interview AI mock',
-    minutes: 45,
+    minutes: 20,
     href: studentToolPath('interview_mock', { from: 'roadmap' }),
   },
   {
     tool_code: 'hr_mock',
     order: 8,
     title: 'HR AI mock interview',
-    minutes: 30,
+    minutes: 20,
     href: studentToolPath('hr_mock', { from: 'roadmap' }),
   },
 ];

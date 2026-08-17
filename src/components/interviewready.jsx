@@ -27,6 +27,7 @@ import { getInterviewReadinessShareUrl, buildWhatsAppChallengeMessage } from '..
 import ReadinessSharePanel from './readiness/ReadinessSharePanel';
 import { useToolSession } from '../widgets/ToolSessionContext';
 import { hostBackLabel, hostSaveStatusMessage, showHostChrome } from '../widgets/hostCopy';
+import { useStudentShell } from '../studentPortal/shellContext';
 
 const FREE_TIER_LIMIT = 3;
 
@@ -412,13 +413,17 @@ function readRoadmapFromSearch() {
 }
 
 /** Aptitude has no year/profile step — back from skills (4) returns to mode picker, not step 2. */
-function getStepBeforeSkillsFocus(profile, fromToolsEntry) {
+function getStepBeforeSkillsFocus(profile, fromToolsEntry, fromPortal) {
+  if (fromPortal) return null;
   if (profile.assessmentMode === ASSESSMENT_FOCUS_APTITUDE) {
     return fromToolsEntry ? 12 : 0;
   }
   if (profile.userCategory === 'professional') return 3;
   return 2;
 }
+
+/** Enrolled 3rd–4th year engineering students — skip public year / professional picker. */
+const PORTAL_STUDENT_CATEGORY = '4th_year';
 
 /** Strong invalid state: obvious red outline + fill (validation is field-first, not essay-first). */
 const MM_FIELD_INVALID =
@@ -1629,6 +1634,8 @@ const InterviewReady = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const session = useToolSession();
+  const { session: studentSession } = useStudentShell();
+  const fromPortal = Boolean(session.fromPortal);
   const [fromToolsEntry] = useState(() => readToolsEntryFromSearch() || session.source === 'embed');
   const roadmapEntry = session;
   const deepLinkMode = useState(() => {
@@ -1656,8 +1663,9 @@ const InterviewReady = () => {
   const { incrementUsage, getUsageInfo } = useFreeUsageTracker('interview_readiness');
 
   // 0: landing, 12: mode (tools entry), 2: role, … — tools skips hero, starts at mode picker
-  // Roadmap deep-link with mode skips mode picker (step 12) into profile/skills flow.
+  // Portal students skip year / personal details and start at skill focus (or aptitude confirm).
   const [step, setStep] = useState(() => {
+    if (fromPortal && deepLinkMode) return 4;
     if (deepLinkMode) {
       if (deepLinkMode === ASSESSMENT_FOCUS_APTITUDE) return 4;
       return 2;
@@ -1694,11 +1702,14 @@ const InterviewReady = () => {
   
   const [profile, setProfile] = useState({
     assessmentMode: deepLinkMode,
-    userCategory: deepLinkMode === ASSESSMENT_FOCUS_APTITUDE ? '4th_year' : '',
+    userCategory:
+      fromPortal || deepLinkMode === ASSESSMENT_FOCUS_APTITUDE ? PORTAL_STUDENT_CATEGORY : '',
     primarySkill: '',
-    email: '',
+    email: fromPortal ? String(studentSession?.email || '').trim() : '',
     contactNumber: '',
-    collegeName: '',
+    collegeName: fromPortal
+      ? String(studentSession?.college_name || studentSession?.college || studentSession?.college_id || '').trim()
+      : '',
     experienceYears: '',
     currentOrganization: '',
     /** Interview readiness (placement) only — step 13; ignored for skill mode API */
@@ -1767,6 +1778,14 @@ const InterviewReady = () => {
       setStep(fromToolsEntry ? 12 : 0);
     }
   }, [step, profile.assessmentMode, fromToolsEntry]);
+
+  /** Portal: never show year picker, professional form, OTP, or placement extras. */
+  useEffect(() => {
+    if (!fromPortal) return;
+    if (step === 1 || step === 2 || step === 3 || step === 13) {
+      setStep(4);
+    }
+  }, [fromPortal, step]);
 
   /** Each in-flow page transition should start from top. */
   useEffect(() => {
@@ -2103,7 +2122,7 @@ const InterviewReady = () => {
       return;
     }
     if (profile.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT) {
-      if (needsInterviewPlacementContextStep(profile.userCategory)) {
+      if (!fromPortal && needsInterviewPlacementContextStep(profile.userCategory)) {
         if (profile.userCategory === 'professional') {
           setProfile((p) => ({
             ...p,
@@ -2127,7 +2146,7 @@ const InterviewReady = () => {
 
     const isSkillMode = profile.assessmentMode === ASSESSMENT_FOCUS_SKILL;
     const isAptitudeMode = profile.assessmentMode === ASSESSMENT_FOCUS_APTITUDE;
-    if (!isSkillMode && !isAptitudeMode && !validatePlacementContext()) {
+    if (!fromPortal && !isSkillMode && !isAptitudeMode && !validatePlacementContext()) {
       scrollFirstInvalidFieldIntoView();
       return;
     }
@@ -2216,6 +2235,10 @@ const InterviewReady = () => {
           profile.placementHasTargetCompany && profile.placementTargetCompanyName?.trim()
             ? profile.placementTargetCompanyName.trim()
             : null;
+      } else if (fromPortal) {
+        interviewReadinessPayload.campus_or_off_campus = 'campus';
+        interviewReadinessPayload.targets_service_mnc = true;
+        interviewReadinessPayload.targets_product_company = true;
       } else if (profile.userCategory !== PLACEMENT_CONTEXT_EARLY_COLLEGE) {
         interviewReadinessPayload.campus_or_off_campus = profile.placementCampusType;
         interviewReadinessPayload.targets_service_mnc = !!profile.placementTargetMnc;
@@ -2239,7 +2262,9 @@ const InterviewReady = () => {
         : interviewReadinessPayload;
 
     const leadSkill = isAptitudeMode ? APTITUDE_SKILLS.join(', ').toLowerCase() : primarySkill;
-    void postAdminLeadCapture(API_BASE, buildAdminLeadsPayload(profile, leadSkill, expParsed, isSkillMode || isAptitudeMode));
+    if (!fromPortal) {
+      void postAdminLeadCapture(API_BASE, buildAdminLeadsPayload(profile, leadSkill, expParsed, isSkillMode || isAptitudeMode));
+    }
 
     try {
       // Fetch directly from API (no caching)
@@ -2468,7 +2493,7 @@ const InterviewReady = () => {
                     }
               );
             });
-          } else {
+          } else if (!fromPortal) {
             const { isLimitReached } = incrementUsage();
             if (isLimitReached) setShowUpgradeModal(true);
           }
@@ -2544,7 +2569,7 @@ const InterviewReady = () => {
 
   const handlePrepLoungeStartTest = () => {
     if (!evaluationData || !Array.isArray(evaluationData) || evaluationData.length === 0) return;
-    if (!validatePersonalContactForTest()) {
+    if (!fromPortal && !validatePersonalContactForTest()) {
       scrollFirstInvalidFieldIntoView();
       return;
     }
@@ -2554,6 +2579,7 @@ const InterviewReady = () => {
     });
     setStep(5);
     setError(null);
+    if (fromPortal) return;
     const leadPrimarySkill =
       profile.assessmentMode === ASSESSMENT_FOCUS_APTITUDE
         ? 'Aptitude'
@@ -2579,7 +2605,9 @@ const InterviewReady = () => {
     setEvaluationData(null);
     setError(null);
     const toPlacementContext =
-      profile.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT && needsInterviewPlacementContextStep(profile.userCategory);
+      !fromPortal &&
+      profile.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT &&
+      needsInterviewPlacementContextStep(profile.userCategory);
     setStep(toPlacementContext ? 13 : 4);
   };
 
@@ -3214,8 +3242,9 @@ const InterviewReady = () => {
     const isSkillFocus = profile.assessmentMode === ASSESSMENT_FOCUS_SKILL;
     const isAptitudeFocus = profile.assessmentMode === ASSESSMENT_FOCUS_APTITUDE;
     const placementGoesStraightToPlan =
-      profile.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT &&
-      !needsInterviewPlacementContextStep(profile.userCategory);
+      fromPortal ||
+      (profile.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT &&
+        !needsInterviewPlacementContextStep(profile.userCategory));
 
     const roleLabel =
       DISPLAY_ROLE_BY_CATEGORY[profile.userCategory] ||
@@ -3225,7 +3254,8 @@ const InterviewReady = () => {
       <div className="min-h-screen mm-site-theme py-10">
         <div className="mm-container mm-container--narrow">
           <div className="mm-surface-panel mm-surface-panel--lg animate-in slide-in-from-bottom-4 duration-500">
-            {/* Progress — matches role step */}
+            {/* Progress — matches role step. Portal skips year/contact so this bar is noise. */}
+            {!fromPortal ? (
             <div className="mb-6">
               <div
                 className="mm-progress-track"
@@ -3241,6 +3271,7 @@ const InterviewReady = () => {
                 />
               </div>
             </div>
+            ) : null}
 
             <div className="mb-6 space-y-4">
               <h2 className="text-2xl font-black tracking-tight text-foreground md:text-3xl">
@@ -3252,17 +3283,23 @@ const InterviewReady = () => {
                     {ASSESSMENT_MODE_LABEL[profile.assessmentMode]}
                   </span>
                 )}
-                {!isAptitudeFocus && (
+                {!isAptitudeFocus && !fromPortal && (
                   <span className="inline-flex items-center rounded-full border border-border bg-surface-muted px-3 py-1 text-[11px] font-semibold text-foreground sm:text-xs">
                     {roleLabel}
                   </span>
                 )}
-                <span
-                  className="inline-flex items-center rounded-full border border-cta-mid/45 bg-warning-bg px-3 py-1 text-[11px] font-bold tabular-nums text-warning-ink-strong sm:text-xs"
-                  title="Free-tier attempts you can still use"
-                >
-                  {usageInfo.remaining_attempts} of {FREE_TIER_LIMIT} attempts left
-                </span>
+                {fromPortal ? (
+                  <span className="inline-flex items-center rounded-full border border-border bg-surface-muted px-3 py-1 text-[11px] font-semibold text-foreground sm:text-xs">
+                    3rd–4th year · campus placement
+                  </span>
+                ) : (
+                  <span
+                    className="inline-flex items-center rounded-full border border-cta-mid/45 bg-warning-bg px-3 py-1 text-[11px] font-bold tabular-nums text-warning-ink-strong sm:text-xs"
+                    title="Free-tier attempts you can still use"
+                  >
+                    {usageInfo.remaining_attempts} of {FREE_TIER_LIMIT} attempts left
+                  </span>
+                )}
               </div>
             </div>
 
@@ -3355,7 +3392,7 @@ const InterviewReady = () => {
                   </div>
                   <button
                     type="button"
-                    disabled={loading || usageInfo.remaining_attempts <= 0}
+                    disabled={loading || (!fromPortal && usageInfo.remaining_attempts <= 0)}
                     onClick={() => handleGetReadinessPlan({ preventDefault() {} })}
                     className="mt-3 w-full rounded-lg border border-red-500/40 bg-red-500/10 py-2 text-xs font-bold text-red-200 transition-colors hover:bg-red-500/20 disabled:opacity-50 sm:w-auto sm:px-4"
                   >
@@ -3367,14 +3404,22 @@ const InterviewReady = () => {
               <div className="flex gap-3 pt-2">
                 <button
                   type="button"
-                  onClick={() => setStep(getStepBeforeSkillsFocus(profile, fromToolsEntry))}
+                  onClick={() => {
+                    if (fromPortal) {
+                      session.returnHome();
+                      return;
+                    }
+                    const prev = getStepBeforeSkillsFocus(profile, fromToolsEntry, fromPortal);
+                    if (prev == null) session.returnHome();
+                    else setStep(prev);
+                  }}
                   className="mm-btn-secondary rounded-xl px-6 py-3 text-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cta"
                 >
                   ← Back
                 </button>
                 <button
                   type="submit"
-                  disabled={loading || usageInfo.remaining_attempts <= 0}
+                  disabled={loading || (!fromPortal && usageInfo.remaining_attempts <= 0)}
                   className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cta to-cta-mid py-3 text-sm font-bold text-white shadow-lg shadow-button-strong transition-all hover:from-cta hover:to-cta-mid active:scale-[0.98] disabled:cursor-not-allowed disabled:from-slate-600 disabled:to-slate-700 disabled:shadow-none"
                 >
                   {loading ? (
@@ -3785,7 +3830,7 @@ const InterviewReady = () => {
                   </div>
                   <button
                     type="button"
-                    disabled={loading || usageInfo.remaining_attempts <= 0}
+                    disabled={loading || (!fromPortal && usageInfo.remaining_attempts <= 0)}
                     onClick={() => handleGetReadinessPlan({ preventDefault() {} })}
                     className="mt-3 w-full rounded-lg border border-red-500/40 bg-red-500/10 py-2 text-xs font-bold text-red-800 transition-colors hover:bg-red-500/15 disabled:opacity-50 sm:w-auto sm:px-4"
                   >
@@ -3807,7 +3852,7 @@ const InterviewReady = () => {
                 </button>
                 <button
                   type="submit"
-                  disabled={loading || usageInfo.remaining_attempts <= 0}
+                  disabled={loading || (!fromPortal && usageInfo.remaining_attempts <= 0)}
                   className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cta to-cta-mid py-3 text-sm font-bold text-white shadow-lg shadow-button-strong transition-all hover:from-cta hover:to-cta-mid active:scale-[0.98] disabled:cursor-not-allowed disabled:from-slate-600 disabled:to-slate-700 disabled:shadow-none"
                 >
                   {loading ? (
@@ -3840,6 +3885,7 @@ const InterviewReady = () => {
         setProfile={setProfile}
         validationErrors={validationErrors}
         setValidationErrors={setValidationErrors}
+        skipContactDetails={fromPortal}
         onStartTest={handlePrepLoungeStartTest}
         onRetry={() => handleGetReadinessPlan({ preventDefault: () => {} })}
         onBackEdit={handlePrepLoungeBack}

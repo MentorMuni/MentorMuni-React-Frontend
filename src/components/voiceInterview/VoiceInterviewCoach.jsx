@@ -19,7 +19,13 @@ import {
 } from 'lucide-react';
 import { analyzeVoiceInterview, messageForHttpStatus } from './voiceInterviewApi';
 import { useRealtimeVoiceSession } from './useRealtimeVoiceSession';
+import {
+  clockCueText,
+  normalizeTimebox,
+  resolveDurationMinutes,
+} from './interviewTimebox';
 import { useToolSession } from '../../widgets/ToolSessionContext';
+import { getToolMeta } from '../../widgets/catalog';
 import { hostBackLabel, hostSaveStatusMessage, showHostChrome } from '../../widgets/hostCopy';
 import ToolChrome from '../../widgets/ToolChrome';
 import './voice-interview.css';
@@ -47,7 +53,7 @@ const MODES = [
     id: 'hr',
     label: 'HR behavioral',
     focus: 'HR behavioral',
-    blurb: 'Tell me about yourself, STAR stories, culture fit',
+    blurb: 'TCS / Infosys / Persistent / Impetus-style HR — intro, STAR, flexibility, joining',
   },
 ];
 
@@ -102,6 +108,7 @@ function prettyFocusLabel(raw) {
   const s = String(raw).trim();
   if (/^projects?\s*only$/i.test(s)) return 'Project interview';
   if (/live technical/i.test(s)) return 'Full live interview';
+  if (/\bhr\b|behavioral|behavioural/i.test(s)) return 'HR round';
   return s;
 }
 
@@ -224,12 +231,29 @@ export default function VoiceInterviewCoach() {
     MODES.find((m) => m.id === initialMode)?.focus || 'Live technical interview'
   );
   const [elapsed, setElapsed] = useState(0);
+  const [roundDurationMin, setRoundDurationMin] = useState(15);
   const [roadmapSave, setRoadmapSave] = useState({ status: 'idle', message: '' });
   const roadmapPayloadRef = useRef(null);
   const transcriptEndRef = useRef(null);
   const endingRef = useRef(false);
   const liveStartedAtRef = useRef(null);
   const composeRef = useRef(null);
+  const durationSecRef = useRef(15 * 60);
+  const timeboxRef = useRef(normalizeTimebox(null, 15));
+  const cueStateRef = useRef({
+    wrap: false,
+    close: false,
+    nudge: false,
+    noAnswerClose: false,
+    lastTickMin: 0,
+    forceEndAt: null,
+  });
+  const lastUserAtRef = useRef(0);
+  const lastAssistantDoneAtRef = useRef(0);
+  const prevAgentSpeakingRef = useRef(false);
+  const agentSpeakingRef = useRef(false);
+  const userSpeakingRef = useRef(false);
+  const finishAndScoreRef = useRef(null);
 
   const {
     status,
@@ -244,9 +268,16 @@ export default function VoiceInterviewCoach() {
     resumeMic,
     endSession,
     reset,
+    injectClockCue,
   } = useRealtimeVoiceSession();
 
   const displayError = uiError || sessionError;
+
+  const plannedDurationMin = resolveDurationMinutes({
+    minutes: searchParams.get('minutes'),
+    toolMinutes: getToolMeta(session.toolCode)?.minutes,
+    modeId,
+  });
 
   const resolveFocus = () => {
     const mode = MODES.find((m) => m.id === modeId) ?? MODES[0];
@@ -269,6 +300,25 @@ export default function VoiceInterviewCoach() {
   }, [transcript.length]);
 
   useEffect(() => {
+    agentSpeakingRef.current = agentSpeaking;
+    const wasSpeaking = prevAgentSpeakingRef.current;
+    prevAgentSpeakingRef.current = agentSpeaking;
+    if (wasSpeaking && !agentSpeaking) {
+      lastAssistantDoneAtRef.current = Date.now();
+    }
+  }, [agentSpeaking]);
+
+  useEffect(() => {
+    userSpeakingRef.current = userSpeaking;
+    if (!userSpeaking) return;
+    lastUserAtRef.current = Date.now();
+    const cues = cueStateRef.current;
+    if (!cues.close && !cues.noAnswerClose) {
+      cues.nudge = false;
+    }
+  }, [userSpeaking]);
+
+  useEffect(() => {
     if (screen !== SCREENS.LIVE || analyzing) return undefined;
     liveStartedAtRef.current = Date.now();
     setElapsed(0);
@@ -278,6 +328,76 @@ export default function VoiceInterviewCoach() {
     }, 1000);
     return () => clearInterval(id);
   }, [screen, analyzing]);
+
+  useEffect(() => {
+    if (screen !== SCREENS.LIVE || analyzing) return undefined;
+    const id = window.setInterval(() => {
+      if (endingRef.current) return;
+      if (status !== 'live' && status !== 'muted') return;
+      const started = liveStartedAtRef.current;
+      if (!started) return;
+      const now = Date.now();
+      const elapsedSec = (now - started) / 1000;
+      const durationSec = durationSecRef.current;
+      const remaining = durationSec - elapsedSec;
+      const tb = timeboxRef.current;
+      const cues = cueStateRef.current;
+
+      const sendCue = (kind, createResponse) => {
+        if (agentSpeakingRef.current) return false;
+        if (createResponse && userSpeakingRef.current) return false;
+        return injectClockCue(
+          clockCueText(kind, {
+            elapsedSec,
+            durationSec,
+            roundKind: modeId === 'hr' ? 'hr' : 'technical',
+          }),
+          { createResponse }
+        );
+      };
+
+      if (remaining <= tb.wrap_up_remaining_seconds && !cues.wrap) {
+        if (sendCue('wrap', true)) cues.wrap = true;
+      }
+      if (remaining <= 20 && !cues.close) {
+        if (sendCue('close', true)) {
+          cues.close = true;
+          cues.forceEndAt = now + 18000;
+        }
+      }
+      if (cues.forceEndAt && now >= cues.forceEndAt && !agentSpeakingRef.current) {
+        finishAndScoreRef.current?.();
+        return;
+      }
+      if (remaining <= -25 && !agentSpeakingRef.current) {
+        finishAndScoreRef.current?.();
+        return;
+      }
+
+      const elapsedMin = Math.floor(elapsedSec / 60);
+      if (!cues.wrap && elapsedMin > 0 && elapsedMin !== cues.lastTickMin) {
+        cues.lastTickMin = elapsedMin;
+        sendCue('tick', false);
+      }
+
+      if (status === 'muted') return;
+      if (cues.wrap || cues.close || cues.noAnswerClose) return;
+      const assistantDone = lastAssistantDoneAtRef.current;
+      if (!assistantDone || agentSpeakingRef.current) return;
+      if (lastUserAtRef.current >= assistantDone) return;
+      const silentSec = (now - assistantDone) / 1000;
+      if (silentSec >= tb.no_answer_nudge_seconds && !cues.nudge) {
+        if (sendCue('nudge', true)) cues.nudge = true;
+      }
+      if (silentSec >= tb.no_answer_close_seconds && !cues.noAnswerClose) {
+        if (sendCue('no_answer_close', true)) {
+          cues.noAnswerClose = true;
+          cues.forceEndAt = now + 18000;
+        }
+      }
+    }, 1000);
+    return () => window.clearInterval(id);
+  }, [screen, analyzing, status, injectClockCue, modeId]);
 
   const runAnalyze = async (turns, focus) => {
     const analysis = await analyzeVoiceInterview({
@@ -362,13 +482,38 @@ export default function VoiceInterviewCoach() {
     setInterviewFocus(resolved.focus);
     setFocusLabel(resolved.label);
     setStarting(true);
+    const durationMinutes = plannedDurationMin;
+    setRoundDurationMin(durationMinutes);
+    durationSecRef.current = durationMinutes * 60;
+    timeboxRef.current = normalizeTimebox(null, durationMinutes);
+    cueStateRef.current = {
+      wrap: false,
+      close: false,
+      nudge: false,
+      noAnswerClose: false,
+      lastTickMin: 0,
+      forceEndAt: null,
+    };
+    lastUserAtRef.current = 0;
+    lastAssistantDoneAtRef.current = 0;
     try {
-      await startSession({
+      const liveSession = await startSession({
         interview_focus: resolved.focus,
         target_role: targetRole.trim() || undefined,
         target_companies: targetCompanies.trim() || undefined,
         extra_context: extraContext.trim() || undefined,
+        duration_minutes: durationMinutes,
       });
+      if (liveSession?.duration_minutes) {
+        setRoundDurationMin(liveSession.duration_minutes);
+        durationSecRef.current = liveSession.duration_minutes * 60;
+      }
+      if (liveSession?.timebox) {
+        timeboxRef.current = normalizeTimebox(
+          liveSession.timebox,
+          liveSession.duration_minutes || durationMinutes
+        );
+      }
       setScreen(SCREENS.LIVE);
       setShowTranscript(false);
     } catch (err) {
@@ -407,6 +552,7 @@ export default function VoiceInterviewCoach() {
       endingRef.current = false;
     }
   };
+  finishAndScoreRef.current = handleEndConfirmed;
 
   const handleRetryAnalyze = async () => {
     if (!pendingTranscript?.length || endingRef.current) return;
@@ -483,7 +629,9 @@ export default function VoiceInterviewCoach() {
                     <button type="button" onClick={scrollToCompose} className="mm-voice-btn-primary">
                       <Play size={17} fill="currentColor" /> Begin your round
                     </button>
-                    <span className="mm-voice-btn-ghost">Mic on · 10–15 min · End for scores</span>
+                    <span className="mm-voice-btn-ghost">
+                      Mic on · {plannedDurationMin} min timed round · natural close
+                    </span>
                   </motion.div>
                 </div>
               </div>
@@ -617,7 +765,7 @@ export default function VoiceInterviewCoach() {
                                 value={targetCompanies}
                                 onChange={(e) => setTargetCompanies(e.target.value)}
                                 maxLength={300}
-                                placeholder="e.g. TCS, Infosys, Wipro, Persistent"
+                                placeholder="e.g. TCS, Infosys, Persistent, Impetus"
                                 className="mm-voice-field"
                               />
                             </label>
@@ -648,8 +796,8 @@ export default function VoiceInterviewCoach() {
 
                     <div className="mt-7 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
                       <p className="max-w-sm text-xs leading-relaxed text-muted-foreground">
-                        Allow mic access. Headphones help with turn-taking. Aim for 10–15 minutes, then End
-                        for your scorecard.
+                        Allow mic access. Headphones help with turn-taking. This round is timed to{' '}
+                        {plannedDurationMin} minutes — the interviewer will wrap up and close on time.
                       </p>
                       <button
                         type="button"
@@ -679,7 +827,7 @@ export default function VoiceInterviewCoach() {
                     <div className="mm-voice-footstrip__item">
                       <span className="mm-voice-footstrip__n">02</span>
                       <p className="mm-voice-footstrip__t">Speak with the coach</p>
-                      <p className="mm-voice-footstrip__d">Pause anytime · End when done</p>
+                      <p className="mm-voice-footstrip__d">Timed round · natural close</p>
                     </div>
                     <div className="mm-voice-footstrip__item">
                       <span className="mm-voice-footstrip__n">03</span>
@@ -705,11 +853,17 @@ export default function VoiceInterviewCoach() {
             <div className="mm-container flex min-h-[calc(100vh-4rem)] flex-col py-8 md:py-10">
               <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <p className="mm-voice-kicker">Live chamber</p>
+                  <p className="mm-voice-kicker">{roundDurationMin} min round</p>
                   <h2 className="mm-voice-display mt-2 text-2xl text-foreground md:text-3xl">{focusLabel}</h2>
                 </div>
                 <div className="mm-voice-live__meta">
-                  <span className="mm-voice-live__timer">{formatElapsed(elapsed)}</span>
+                  <span
+                    className={`mm-voice-live__timer${
+                      roundDurationMin * 60 - elapsed <= 120 ? ' is-low' : ''
+                    }`}
+                  >
+                    {formatElapsed(Math.max(0, roundDurationMin * 60 - elapsed))} left
+                  </span>
                   <StatusMark
                     status={status}
                     agentSpeaking={agentSpeaking}
@@ -766,7 +920,9 @@ export default function VoiceInterviewCoach() {
                           ? 'Coach is speaking — listen carefully'
                           : userSpeaking
                             ? 'We hear you — keep going'
-                            : 'Your turn — answer clearly when ready'}
+                            : roundDurationMin * 60 - elapsed <= 120
+                              ? 'Wrapping up — last question, then a close'
+                              : 'Your turn — answer clearly when ready'}
                   </p>
 
                   <div className="mt-9 flex flex-wrap items-center justify-center gap-3">
@@ -918,6 +1074,11 @@ export default function VoiceInterviewCoach() {
               );
               const band = scoreBand(overall);
               const focusPretty = prettyFocusLabel(results.interview_focus || focusLabel);
+              const isHrRound =
+                modeId === 'hr' ||
+                /\bhr\b|behavioral|behavioural/i.test(
+                  String(results.interview_focus || interviewFocus || '')
+                );
               return (
                 <>
                   <section className="mm-voice-results-hero mm-marketing-hero-backdrop">
@@ -945,9 +1106,12 @@ export default function VoiceInterviewCoach() {
                           <div>
                             <p className="mm-voice-kicker mb-4">Breakdown</p>
                             <div className="space-y-5">
-                              <ScoreBar label="Technical depth" value={results.technical_score} />
                               <ScoreBar
-                                label="Communication"
+                                label={isHrRound ? 'HR fit & substance' : 'Technical depth'}
+                                value={results.technical_score}
+                              />
+                              <ScoreBar
+                                label={isHrRound ? 'Spoken English & presence' : 'Communication'}
                                 value={results.communication_score}
                                 accent="teal"
                               />

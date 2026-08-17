@@ -228,6 +228,7 @@ export function useRealtimeVoiceSession() {
       target_companies,
       extra_context,
       voice,
+      duration_minutes,
       mintSession,
       promptFirstResponse = false,
     } = {}) => {
@@ -245,6 +246,7 @@ export function useRealtimeVoiceSession() {
               ...(target_role ? { target_role } : {}),
               ...(target_companies ? { target_companies } : {}),
               ...(extra_context ? { extra_context } : {}),
+              ...(duration_minutes ? { duration_minutes } : {}),
               ...(voice ? { voice } : {}),
             });
 
@@ -380,6 +382,39 @@ export function useRealtimeVoiceSession() {
     [handleRealtimeEvent, startSpeakingPoll, teardown, trackAudioContext]
   );
 
+  const sendClientEvent = useCallback((event) => {
+    const dc = dcRef.current;
+    if (!dc || dc.readyState !== 'open') return false;
+    try {
+      dc.send(JSON.stringify(event));
+      return true;
+    } catch {
+      return false;
+    }
+  }, []);
+
+  /**
+   * Inject a hidden clock / silence cue. Never shown as candidate speech.
+   * Set createResponse when the interviewer must speak (wrap, close, nudge).
+   */
+  const injectClockCue = useCallback(
+    (text, { createResponse = false } = {}) => {
+      const ok = sendClientEvent({
+        type: 'conversation.item.create',
+        item: {
+          type: 'message',
+          role: 'user',
+          content: [{ type: 'input_text', text }],
+        },
+      });
+      if (ok && createResponse) {
+        sendClientEvent({ type: 'response.create' });
+      }
+      return ok;
+    },
+    [sendClientEvent]
+  );
+
   const setMicEnabled = useCallback((enabled) => {
     const tracks = micStreamRef.current?.getAudioTracks() ?? [];
     tracks.forEach((t) => {
@@ -440,5 +475,6 @@ export function useRealtimeVoiceSession() {
     endSession,
     reset,
     setError,
+    injectClockCue,
   };
 }

@@ -28,10 +28,10 @@ const DEMO_STEPS = [
   { tool_code: '5_sec', order: 1, title: '5-sec snap test', minutes: 5, status: 'done', score: 62 },
   { tool_code: 'aptitude', order: 2, title: 'Aptitude readiness', minutes: 20, status: 'done', score: 54 },
   { tool_code: 'skill_readiness', order: 3, title: 'Skill readiness', minutes: 25, status: 'done', score: 71 },
-  { tool_code: 'skill_mock', order: 4, title: 'Skill AI mock interview', minutes: 45, status: 'current', score: null },
-  { tool_code: 'project_mock', order: 5, title: 'Project AI mock interview', minutes: 45, status: 'locked', score: null },
+  { tool_code: 'skill_mock', order: 4, title: 'Skill AI mock interview', minutes: 15, status: 'current', score: null },
+  { tool_code: 'project_mock', order: 5, title: 'Project AI mock interview', minutes: 15, status: 'locked', score: null },
   { tool_code: 'interview_readiness', order: 6, title: 'Interview readiness', minutes: 25, status: 'locked', score: null },
-  { tool_code: 'interview_mock', order: 7, title: 'Interview AI mock', minutes: 45, status: 'locked', score: null },
+  { tool_code: 'interview_mock', order: 7, title: 'Interview AI mock', minutes: 15, status: 'locked', score: null },
   { tool_code: 'hr_mock', order: 8, title: 'HR AI mock interview', minutes: 30, status: 'locked', score: null },
 ];
 
