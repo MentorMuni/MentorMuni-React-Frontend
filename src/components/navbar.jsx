@@ -112,10 +112,13 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [toolsOpen, setToolsOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [loginOpen, setLoginOpen] = useState(false);
   const toolsRef = useRef(null);
   const moreRef = useRef(null);
+  const loginRef = useRef(null);
   const toolsPanelRef = useRef(null);
   const morePanelRef = useRef(null);
+  const loginPanelRef = useRef(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -124,8 +127,11 @@ const Navbar = () => {
         toolsRef.current?.contains(e.target) || toolsPanelRef.current?.contains(e.target);
       const inMore =
         moreRef.current?.contains(e.target) || morePanelRef.current?.contains(e.target);
+      const inLogin =
+        loginRef.current?.contains(e.target) || loginPanelRef.current?.contains(e.target);
       if (!inTools) setToolsOpen(false);
       if (!inMore) setMoreOpen(false);
+      if (!inLogin) setLoginOpen(false);
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -134,6 +140,7 @@ const Navbar = () => {
   useEffect(() => {
     setToolsOpen(false);
     setMoreOpen(false);
+    setLoginOpen(false);
     setIsOpen(false);
   }, [location.pathname]);
 
@@ -174,7 +181,7 @@ const Navbar = () => {
     return `${base}${active ? ' mm-nav-link--active' : ''}`;
   };
 
-  const navMenuOpen = toolsOpen || moreOpen;
+  const navMenuOpen = toolsOpen || moreOpen || loginOpen;
   const isHomePage = location.pathname === '/';
   const headerScrolled = useScrolledHeader(
     isHomePage ? { enter: 80, exit: 32 } : { enter: 48, exit: 16 },
@@ -330,10 +337,58 @@ const Navbar = () => {
 
           <div className="mm-header-end shrink-0">
             <div data-mm-desktop-cta className="mm-header-cta">
-              <Link to="/Organization/login" className="mm-header-cta__login">
-                <LogIn size={16} strokeWidth={2.25} aria-hidden />
-                Login
-              </Link>
+              <div className="relative" ref={loginRef}>
+                <button
+                  type="button"
+                  className="mm-header-cta__login"
+                  aria-expanded={loginOpen}
+                  aria-haspopup="menu"
+                  onClick={() => {
+                    setLoginOpen((o) => !o);
+                    setToolsOpen(false);
+                    setMoreOpen(false);
+                  }}
+                >
+                  <LogIn size={16} strokeWidth={2.25} aria-hidden />
+                  Login
+                  <ChevronDown
+                    size={14}
+                    strokeWidth={2.5}
+                    aria-hidden
+                    className={`transition-transform ${loginOpen ? 'rotate-180' : ''}`}
+                  />
+                </button>
+                <NavDropdownPortal
+                  open={loginOpen}
+                  anchorRef={loginRef}
+                  panelRef={loginPanelRef}
+                  align="right"
+                  className="w-[min(calc(100vw-2rem),16rem)] py-1.5"
+                >
+                  <Link
+                    to="/studentportal/login"
+                    onClick={() => setLoginOpen(false)}
+                    className="mm-nav-dropdown-item mm-nav-dropdown-item--row px-3 py-2.5 text-[0.9375rem] font-semibold"
+                    role="menuitem"
+                  >
+                    <span className="mm-nav-dropdown-icon mm-nav-dropdown-icon--md">
+                      <GraduationCap size={16} strokeWidth={2} aria-hidden />
+                    </span>
+                    Student Portal
+                  </Link>
+                  <Link
+                    to="/Organization/login"
+                    onClick={() => setLoginOpen(false)}
+                    className="mm-nav-dropdown-item mm-nav-dropdown-item--row px-3 py-2.5 text-[0.9375rem] font-semibold"
+                    role="menuitem"
+                  >
+                    <span className="mm-nav-dropdown-icon mm-nav-dropdown-icon--md">
+                      <Building2 size={16} strokeWidth={2} aria-hidden />
+                    </span>
+                    Organization Portal
+                  </Link>
+                </NavDropdownPortal>
+              </div>
               <Link to="/waitlist" className="mm-header-cta__secondary">
                 Waitlist
               </Link>

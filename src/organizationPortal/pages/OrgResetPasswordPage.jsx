@@ -46,85 +46,90 @@ export default function OrgResetPasswordPage() {
   };
 
   return (
-    <div className="mm-org-login">
-      <div className="mm-org-login__panel" style={{ maxWidth: 420, margin: '48px auto' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 18 }}>
-          <img src={LOGO} alt="MentorMuni" style={{ height: 36 }} />
-          <div>
-            <div style={{ fontWeight: 700 }}>MentorMuni</div>
-            <div style={{ fontSize: 13, opacity: 0.7 }}>Reset password</div>
+    <div className="mm-org-root-login mm-org-root-login--tpo is-light">
+      <div className="mm-org-login mm-org-login--solo">
+        <div className="mm-org-login__form-wrap mm-org-login__form-wrap--solo">
+          <div className="mm-org-login__card">
+            <div className="mm-org-login__card-top">
+              <div className="mm-org-login__card-brand">
+                <img src={LOGO} alt="MentorMuni" className="mm-org-login__logo" />
+                <span>MentorMuni</span>
+              </div>
+              <span className="mm-org-login__badge">Reset password</span>
+            </div>
+
+            {!token ? (
+              <>
+                <h1 className="mm-org-login__card-title">Link expired</h1>
+                <p className="mm-org-login__card-sub">
+                  This reset link is incomplete. Request a new one from the login page.
+                </p>
+                <p className="mm-org-login__activate">
+                  <Link to={orgPaths.forgotPassword}>Request a new link</Link>
+                </p>
+              </>
+            ) : ok ? (
+              <>
+                <h1 className="mm-org-login__card-title">Password updated</h1>
+                <p className="mm-org-login__card-sub">Redirecting to login…</p>
+              </>
+            ) : (
+              <>
+                <h1 className="mm-org-login__card-title">Choose a new password</h1>
+                <p className="mm-org-login__card-sub">
+                  Enter a new password for your MentorMuni account.
+                </p>
+                {error ? (
+                  <div className="mm-org-login__alert mm-org-login__alert--err" role="alert">
+                    {error}
+                  </div>
+                ) : null}
+                <form className="mm-org-login__form" onSubmit={onSubmit} noValidate>
+                  <div>
+                    <label className="mm-org-login__label" htmlFor="org-rp-pass">
+                      New password
+                    </label>
+                    <div className="mm-org-login__field">
+                      <Lock size={16} aria-hidden />
+                      <input
+                        id="org-rp-pass"
+                        type="password"
+                        autoComplete="new-password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        minLength={8}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="mm-org-login__label" htmlFor="org-rp-confirm">
+                      Confirm password
+                    </label>
+                    <div className="mm-org-login__field">
+                      <Lock size={16} aria-hidden />
+                      <input
+                        id="org-rp-confirm"
+                        type="password"
+                        autoComplete="new-password"
+                        value={confirm}
+                        onChange={(e) => setConfirm(e.target.value)}
+                        required
+                        minLength={8}
+                      />
+                    </div>
+                  </div>
+                  <button type="submit" className="mm-org-login__submit" disabled={loading}>
+                    {loading ? 'Saving…' : 'Update password'}
+                  </button>
+                </form>
+                <p className="mm-org-login__activate">
+                  <Link to={orgPaths.login}>Back to sign in</Link>
+                </p>
+              </>
+            )}
           </div>
         </div>
-
-        {!token ? (
-          <>
-            <h1 style={{ margin: '0 0 8px', fontSize: 24 }}>Link expired</h1>
-            <p style={{ margin: '0 0 16px', opacity: 0.75, fontSize: 14 }}>
-              This reset link is incomplete. Request a new one from the login page.
-            </p>
-            <Link to={orgPaths.forgotPassword}>Request a new link</Link>
-          </>
-        ) : ok ? (
-          <>
-            <h1 style={{ margin: '0 0 8px', fontSize: 24 }}>Password updated</h1>
-            <p style={{ margin: 0, opacity: 0.75, fontSize: 14 }}>Redirecting to login…</p>
-          </>
-        ) : (
-          <>
-            <h1 style={{ margin: '0 0 8px', fontSize: 24 }}>Choose a new password</h1>
-            <p style={{ margin: '0 0 18px', opacity: 0.75, fontSize: 14 }}>
-              Enter a new password for your MentorMuni account.
-            </p>
-            {error ? (
-              <div className="mm-org-login__alert mm-org-login__alert--err" role="alert">
-                {error}
-              </div>
-            ) : null}
-            <form className="mm-org-login__form" onSubmit={onSubmit} noValidate>
-              <div>
-                <label className="mm-org-login__label" htmlFor="org-rp-pass">
-                  New password
-                </label>
-                <div className="mm-org-login__field">
-                  <Lock size={16} aria-hidden />
-                  <input
-                    id="org-rp-pass"
-                    type="password"
-                    autoComplete="new-password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    minLength={8}
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="mm-org-login__label" htmlFor="org-rp-confirm">
-                  Confirm password
-                </label>
-                <div className="mm-org-login__field">
-                  <Lock size={16} aria-hidden />
-                  <input
-                    id="org-rp-confirm"
-                    type="password"
-                    autoComplete="new-password"
-                    value={confirm}
-                    onChange={(e) => setConfirm(e.target.value)}
-                    required
-                    minLength={8}
-                  />
-                </div>
-              </div>
-              <button type="submit" className="mm-org-login__submit" disabled={loading}>
-                {loading ? 'Saving…' : 'Update password'}
-              </button>
-            </form>
-          </>
-        )}
-
-        <p style={{ marginTop: 18, fontSize: 14 }}>
-          <Link to={orgPaths.login}>Back to sign in</Link>
-        </p>
       </div>
     </div>
   );

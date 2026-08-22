@@ -139,7 +139,13 @@
   background: var(--interactive);
 }
 
-.stu-nav__text { flex: 1; }
+.stu-nav__text {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .stu-sidebar__foot {
   padding: 13px;
@@ -691,6 +697,20 @@
 
 .stu-app .stu-shell footer.stu-pf__foot p {
   color: var(--ink-3) !important;
+}
+
+/* Marketing remaps (zinc/gray → dark-theme muted) must not flatten light portal ink.
+   Scope narrowly: do not !important-inherit every span (chips/errors need their colors). */
+.stu-app[data-theme='light'] {
+  color: var(--ink);
+  background-color: var(--bg);
+}
+
+.stu-app[data-theme='light'] .stu-shell,
+.stu-app[data-theme='light'] .stu-main,
+.stu-app[data-theme='light'] .stu-home,
+.stu-app[data-theme='light'] .stu-topbar {
+  color: var(--ink);
 }
 
 .stu-portal-fallback {

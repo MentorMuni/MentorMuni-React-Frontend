@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ChevronDown, ArrowRight, LogIn } from 'lucide-react';
+import { ChevronDown, ArrowRight, GraduationCap, Building2 } from 'lucide-react';
 import { goToStartAssessment } from '../../utils/startAssessmentNavigation';
 import { PRIMARY_CTA_LABEL, READINESS_TEST_COUPON_BADGE } from '../../constants/brandCopy';
 import LimitedRewardLabel from '../LimitedRewardLabel';
@@ -206,10 +206,16 @@ export default function MobileNavDrawer({
             </div>
 
             <div className="mm-mobile-nav-panel__footer">
-              <Link to="/Organization/login" onClick={handleNav} className="mm-mobile-nav-cta-login">
-                <LogIn size={16} aria-hidden />
-                Login
-              </Link>
+              <div className="mm-mobile-nav-login-split">
+                <Link to="/studentportal/login" onClick={handleNav} className="mm-mobile-nav-cta-login">
+                  <GraduationCap size={16} aria-hidden />
+                  Student login
+                </Link>
+                <Link to="/Organization/login" onClick={handleNav} className="mm-mobile-nav-cta-login">
+                  <Building2 size={16} aria-hidden />
+                  Organization login
+                </Link>
+              </div>
               <Link to="/waitlist" onClick={handleNav} className="mm-mobile-nav-cta-waitlist">
                 Join waitlist
               </Link>

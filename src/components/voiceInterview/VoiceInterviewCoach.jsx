@@ -940,7 +940,7 @@ export default function VoiceInterviewCoach() {
                       <button
                         type="button"
                         onClick={stopMic}
-                        disabled={analyzing || (status !== 'live' && status !== 'error')}
+                        disabled={analyzing || status !== 'live'}
                         className="mm-voice-ctrl mm-voice-ctrl--secondary"
                       >
                         <MicOff size={17} aria-hidden /> Pause

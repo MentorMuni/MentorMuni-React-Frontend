@@ -383,24 +383,27 @@ function PortalWaitDeck({ reduceMotion }) {
   );
 }
 
-function BuildProgressPanel({ planLoading, reduceMotion }) {
+function BuildProgressPanel({ planLoading, succeeded, reduceMotion }) {
   const [pct, setPct] = useState(10);
   const [stageIdx, setStageIdx] = useState(0);
 
   useEffect(() => {
-    if (!planLoading) {
+    if (planLoading) {
+      setPct(10);
+      setStageIdx(0);
+      const id = window.setInterval(() => {
+        setPct((p) => (p >= 94 ? 94 : p + 4 + Math.random() * 6));
+        setStageIdx((s) => Math.min(BUILD_STAGES.length - 1, s + (Math.random() > 0.65 ? 1 : 0)));
+      }, 900);
+      return () => window.clearInterval(id);
+    }
+    // Only show 100% when the plan actually succeeded — never on failure/idle.
+    if (succeeded) {
       setPct(100);
       setStageIdx(BUILD_STAGES.length - 1);
-      return undefined;
     }
-    setPct(10);
-    setStageIdx(0);
-    const id = window.setInterval(() => {
-      setPct((p) => (p >= 94 ? 94 : p + 4 + Math.random() * 6));
-      setStageIdx((s) => Math.min(BUILD_STAGES.length - 1, s + (Math.random() > 0.65 ? 1 : 0)));
-    }, 900);
-    return () => window.clearInterval(id);
-  }, [planLoading]);
+    return undefined;
+  }, [planLoading, succeeded]);
 
   return (
     <div className="space-y-6">
@@ -420,7 +423,7 @@ function BuildProgressPanel({ planLoading, reduceMotion }) {
 
       <ul className="space-y-3" aria-live="polite">
         {BUILD_STAGES.map((label, i) => {
-          const done = i < stageIdx || (!planLoading && pct >= 100);
+          const done = i < stageIdx || (succeeded && pct >= 100);
           const active = i === stageIdx && planLoading;
           return (
             <li key={label} className="flex items-center gap-3 text-sm">
@@ -523,8 +526,9 @@ export default function PrepLoungeSlideFlow({
 
   useEffect(() => {
     if (error) setPhase('error');
+    else if (planLoading) setPhase('generating');
     else if (ready && phase !== 'details') setPhase('ready');
-  }, [ready, error, phase]);
+  }, [ready, error, phase, planLoading]);
 
   useEffect(() => {
     if (phase !== 'details' && phase !== 'generating') return undefined;
@@ -715,7 +719,11 @@ export default function PrepLoungeSlideFlow({
                     exit={reduceMotion ? undefined : { opacity: 0 }}
                     className="p-6 sm:p-8"
                   >
-                    <BuildProgressPanel planLoading={planLoading} reduceMotion={reduceMotion} />
+                    <BuildProgressPanel
+                      planLoading={planLoading}
+                      succeeded={Boolean(ready && !error)}
+                      reduceMotion={reduceMotion}
+                    />
                     {skipContactDetails ? (
                       <div className="mt-6">
                         <PortalWaitDeck reduceMotion={reduceMotion} />

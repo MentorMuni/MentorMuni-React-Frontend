@@ -503,11 +503,12 @@
 
 .stu-mentor-page .stu-mentor-chat__composer button {
   background: var(--brand, #0e6fa8);
-  color: #fff;
+  color: var(--on-brand, #fff);
 }
 
 .stu-mentor-page .stu-mentor-chat__composer button:hover:not(:disabled) {
   background: var(--brand-600, #1183c4);
+  color: var(--on-brand, #fff);
 }
 
 .stu-app[data-theme='dark'] .stu-mentor-page__title {
@@ -675,11 +676,12 @@
 
 .stu-mentor-page .stu-mentor-voice__start {
   background: var(--brand, #0e6fa8);
-  color: #fff;
+  color: var(--on-brand, #fff);
 }
 
 .stu-mentor-page .stu-mentor-voice__start:hover:not(:disabled) {
   background: var(--brand-600, #1183c4);
+  color: var(--on-brand, #fff);
 }
 
 .stu-mentor-page .stu-mentor-voice__mute,

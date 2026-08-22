@@ -91,10 +91,10 @@ html.mm-new-ui [class*="text-foreground/"] {
 
 /* Marketing / site shell only — do not paint Platform Admin, org/student
    portals, or portaled modals (those own their light/dark ink tokens). */
-html.mm-new-ui p:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *)),
-html.mm-new-ui li:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *)),
-html.mm-new-ui dd:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *)),
-html.mm-new-ui label:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *)),
+html.mm-new-ui p:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *)),
+html.mm-new-ui li:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *)),
+html.mm-new-ui dd:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *)),
+html.mm-new-ui label:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *)),
 html.mm-new-ui .typo-body,
 html.mm-new-ui .typo-body-lg {
   color: var(--text-body);

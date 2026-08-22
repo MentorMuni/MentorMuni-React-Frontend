@@ -223,6 +223,7 @@ export default function DepartmentsPage() {
   const openHistory = (dept) => {
     setActiveId(dept.id);
     setPanel('history');
+    setDeptForm(emptyDeptForm);
     setMsg('');
     setErr('');
   };
@@ -230,6 +231,7 @@ export default function DepartmentsPage() {
   const openView = (dept) => {
     setActiveId(dept.id);
     setPanel('view');
+    setDeptForm(emptyDeptForm);
     setMsg('');
     setErr('');
   };
@@ -475,13 +477,15 @@ export default function DepartmentsPage() {
               <button
                 type="button"
                 className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
-                onClick={() =>
+                onClick={() => {
                   setDeptForm({
                     id: activeDept.id,
                     name: activeDept.name,
                     code: activeDept.code,
-                  })
-                }
+                  });
+                  // Leave view mode so the left create/edit form can render.
+                  setPanel(null);
+                }}
               >
                 <Pencil size={14} /> Edit department
               </button>
@@ -785,6 +789,36 @@ export default function DepartmentsPage() {
                   </div>
                 </form>
               </>
+            ) : panel === 'view' || panel === 'history' ? (
+              <>
+                <div className="mm-org-panel__head">
+                  <div>
+                    <h2 className="mm-org-panel__title">
+                      {panel === 'history' ? 'Mentor history' : 'Department details'}
+                    </h2>
+                    <p className="mm-org-panel__meta">
+                      {activeDept
+                        ? `${activeDept.name} (${activeDept.code}) — use the right panel for actions.`
+                        : 'Select a department from the list.'}
+                    </p>
+                  </div>
+                </div>
+                <div className="mm-org-form-actions">
+                  <button
+                    type="button"
+                    className="mm-org-btn mm-org-btn--primary"
+                    onClick={() => {
+                      setPanel(null);
+                      setDeptForm(emptyDeptForm);
+                    }}
+                  >
+                    <Plus size={15} /> New department
+                  </button>
+                  <button type="button" className="mm-org-btn mm-org-btn--ghost" onClick={closePanels}>
+                    Close
+                  </button>
+                </div>
+              </>
             ) : (
               <>
                 <div className="mm-org-panel__head">
@@ -912,9 +946,11 @@ export default function DepartmentsPage() {
                               <button
                                 type="button"
                                 className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
-                                onClick={() =>
-                                  setDeptForm({ id: d.id, name: d.name, code: d.code })
-                                }
+                                onClick={() => {
+                                  setDeptForm({ id: d.id, name: d.name, code: d.code });
+                                  setPanel(null);
+                                  setActiveId('');
+                                }}
                               >
                                 <Pencil size={14} /> Edit
                               </button>

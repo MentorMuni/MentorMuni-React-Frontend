@@ -78,6 +78,82 @@
   background: #eef3f7;
 }
 
+/* Solo auth pages (forgot / reset) — single centered column */
+.mm-org-login--solo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  grid-template-columns: none;
+  padding: 24px 16px;
+}
+
+.mm-org-login__form-wrap--solo {
+  width: min(440px, 100%);
+  border-left: 0 !important;
+  margin: 0 auto;
+}
+
+.mm-org-login__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 16px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #0e6f9a;
+}
+
+.mm-org-login__back:hover {
+  color: #0c4a6e;
+  text-decoration: underline;
+}
+
+.mm-org-login__reset-link-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.mm-org-login__reset-textarea {
+  width: 100%;
+  min-height: 88px;
+  margin: 0;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(15, 36, 51, 0.12);
+  background: #fff;
+  color: #0f172a;
+  font: inherit;
+  font-size: 0.875rem;
+  resize: vertical;
+}
+
+.mm-org-login__reset-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.mm-org-login__reset-actions .mm-org-login__submit {
+  flex: 1;
+  min-width: 140px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.mm-org-login__submit--link {
+  text-decoration: none;
+  text-align: center;
+}
+
 .mm-org-root-login.is-dark .mm-org-login {
   background: #061018;
 }
@@ -1311,7 +1387,7 @@
 }
 
 .mm-org-root-login.is-dark .mm-org-gate__footnote {
-  color: #64748b;
+  color: #94a3b8;
 }
 
 .mm-org-root-login.is-dark .mm-org-theme-toggle__track {
@@ -1599,6 +1675,9 @@
 .mm-org-root-login.is-light .mm-org-login__tile-title { color: #0f2433; }
 
 .mm-org-login__activate { margin: 14px 0 0; font-size: 12px; color: #94a3b8; }
+.mm-org-root-login.is-light .mm-org-login__activate {
+  color: #475569;
+}
 .mm-org-login__activate a { font-weight: 750; color: #7dd3fc; text-decoration: none; }
 .mm-org-root-login.is-light .mm-org-login__activate a { color: #0e6f9a; }
 .mm-org-login__note {
@@ -1631,7 +1710,7 @@
   transform: translateX(28px); color: #fff; background: linear-gradient(135deg, #1a8fc4, #0e6f9a);
 }
 
-/* Keep 60/40 in one row on all viewports — scale density, never stack */
+/* Keep 60/40 in one row on wide viewports; stack on tablet/phone */
 @media (max-width: 1100px) {
   .mm-org-login__showcase-inner {
     margin-right: 0;
@@ -1643,6 +1722,25 @@
 }
 
 @media (max-width: 900px) {
+  .mm-org-login:not(.mm-org-login--solo) {
+    grid-template-columns: 1fr;
+  }
+
+  .mm-org-login:not(.mm-org-login--solo) .mm-org-login__showcase {
+    min-height: auto;
+    max-height: 38vh;
+    order: -1;
+  }
+
+  .mm-org-login:not(.mm-org-login--solo) .mm-org-login__form-wrap {
+    border-left: 0;
+    border-top: 1px solid rgba(15, 36, 51, 0.08);
+  }
+
+  .mm-org-root-login.is-dark .mm-org-login:not(.mm-org-login--solo) .mm-org-login__form-wrap {
+    border-top-color: rgba(148, 163, 184, 0.16);
+  }
+
   .mm-org-login__brand-name {
     font-size: 0.95rem;
   }

@@ -38,6 +38,9 @@ export function useRealtimeVoiceSession() {
   const mountedRef = useRef(true);
   const lastSpeakUpdateRef = useRef(0);
   const speakingRef = useRef({ agent: false, user: false });
+  const disconnectTimerRef = useRef(null);
+  const iceRestartedRef = useRef(false);
+  const sessionExpiresAtRef = useRef(null);
 
   const appendTurn = useCallback((role, text) => {
     const cleaned = text?.trim();
@@ -163,6 +166,13 @@ export function useRealtimeVoiceSession() {
   const teardown = useCallback(() => {
     stopSpeakingPoll();
 
+    if (disconnectTimerRef.current) {
+      clearTimeout(disconnectTimerRef.current);
+      disconnectTimerRef.current = null;
+    }
+    iceRestartedRef.current = false;
+    sessionExpiresAtRef.current = null;
+
     try {
       dcRef.current?.close();
     } catch {
@@ -232,6 +242,8 @@ export function useRealtimeVoiceSession() {
       mintSession,
       promptFirstResponse = false,
     } = {}) => {
+      // Always clear prior PC/mic before remint — reconnect must not leak tracks.
+      teardown();
       setError(null);
       setTranscript([]);
       transcriptRef.current = [];
@@ -258,16 +270,98 @@ export function useRealtimeVoiceSession() {
           throw new Error('Session response missing client_secret or realtime_calls_url');
         }
 
+        iceRestartedRef.current = false;
+        sessionExpiresAtRef.current =
+          typeof session.expires_at === 'number' ? session.expires_at : null;
+
         const pc = new RTCPeerConnection();
         pcRef.current = pc;
 
-        pc.onconnectionstatechange = () => {
-          const state = pc.connectionState;
-          if (state === 'failed' || state === 'disconnected') {
-            if (mountedRef.current) {
-              setError('Connection lost. End to score what you have, or start a new round.');
-              setStatus('error');
+        const reportConnectionLost = (reason) => {
+          if (!mountedRef.current) return;
+          if (pcRef.current !== pc) return;
+          const expiresAt = sessionExpiresAtRef.current;
+          const nowSec = Math.floor(Date.now() / 1000);
+          const expired = expiresAt != null && nowSec >= expiresAt - 5;
+          let message;
+          if (expired) {
+            message = 'Session expired — start again to continue.';
+          } else if (reason === 'failed') {
+            message =
+              'Network dropped. End to score what you have, or start a new session.';
+          } else {
+            message =
+              'Connection lost. End to score what you have, or start a new session.';
+          }
+          // Tear down media first so mic/PC do not linger in error state.
+          teardown();
+          setError(message);
+          setStatus('error');
+        };
+
+        const scheduleIceWatchdog = () => {
+          if (disconnectTimerRef.current) clearTimeout(disconnectTimerRef.current);
+          disconnectTimerRef.current = setTimeout(() => {
+            disconnectTimerRef.current = null;
+            if (pcRef.current !== pc || !mountedRef.current) return;
+            if (pc.connectionState === 'connected' || pc.connectionState === 'connecting') {
+              return;
             }
+            reportConnectionLost('failed');
+          }, 4000);
+        };
+
+        pc.onconnectionstatechange = () => {
+          // Ignore stale handlers after remint/teardown replaced pcRef.
+          if (pcRef.current !== pc) return;
+          const state = pc.connectionState;
+          if (state === 'connected' || state === 'connecting') {
+            if (disconnectTimerRef.current) {
+              clearTimeout(disconnectTimerRef.current);
+              disconnectTimerRef.current = null;
+            }
+            return;
+          }
+          if (state === 'disconnected') {
+            // Browsers often flicker through disconnected; wait before failing.
+            if (disconnectTimerRef.current) clearTimeout(disconnectTimerRef.current);
+            disconnectTimerRef.current = setTimeout(() => {
+              disconnectTimerRef.current = null;
+              if (pcRef.current !== pc) return;
+              if (!mountedRef.current) return;
+              if (pc.connectionState === 'connected' || pc.connectionState === 'connecting') {
+                return;
+              }
+              if (!iceRestartedRef.current && pc.connectionState === 'disconnected') {
+                iceRestartedRef.current = true;
+                try {
+                  pc.restartIce();
+                  scheduleIceWatchdog();
+                  return;
+                } catch {
+                  /* fall through */
+                }
+              }
+              reportConnectionLost('disconnected');
+            }, 2500);
+            return;
+          }
+          if (state === 'failed') {
+            if (disconnectTimerRef.current) {
+              clearTimeout(disconnectTimerRef.current);
+              disconnectTimerRef.current = null;
+            }
+            if (!iceRestartedRef.current) {
+              iceRestartedRef.current = true;
+              try {
+                pc.restartIce();
+                scheduleIceWatchdog();
+                return;
+              } catch {
+                /* fall through */
+              }
+            }
+            reportConnectionLost('failed');
           }
         };
 

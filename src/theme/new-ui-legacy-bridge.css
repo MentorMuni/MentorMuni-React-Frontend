@@ -2,30 +2,82 @@
  * Legacy class remaps (!important) — shrink as components adopt .mm-surface-* / .mm-choice-tile.
  */
 /* ── Light surfaces → dark glass (legacy; prefer .mm-surface-* in assessment) ─ */
-html.mm-new-ui :not(.mm-assessment-flow):not(.mm-inner-route):not(.mm-marketing-flow):not(.mm-tool-flow) .bg-white,
-html.mm-new-ui :not(.mm-assessment-flow):not(.mm-inner-route):not(.mm-marketing-flow):not(.mm-tool-flow) [class*="bg-white/"] {
+html.mm-new-ui
+  .bg-white:not(
+    :is(
+      .mm-assessment-flow *,
+      .mm-inner-route *,
+      .mm-marketing-flow *,
+      .mm-tool-flow *,
+      .stu-app *,
+      .mm-stu-login-root *,
+      .mm-org-root *,
+      .mm-org-shell *,
+      .mm-pa-root *,
+      .mm-pa-modal-layer *
+    )
+  ),
+html.mm-new-ui
+  [class*="bg-white/"]:not(
+    :is(
+      .mm-assessment-flow *,
+      .mm-inner-route *,
+      .mm-marketing-flow *,
+      .mm-tool-flow *,
+      .stu-app *,
+      .mm-stu-login-root *,
+      .mm-org-root *,
+      .mm-org-shell *,
+      .mm-pa-root *,
+      .mm-pa-modal-layer *
+    )
+  ) {
   background-color: rgba(15, 23, 42, 0.72) !important;
 }
 
 
-html.mm-new-ui [class*="bg-[#FFF4E0]"],
-html.mm-new-ui [class*="bg-[#FFE8C2]"],
-html.mm-new-ui [class*="bg-[#FFF4E6]"],
-html.mm-new-ui [class*="bg-[#e0f0fa]"],
-html.mm-new-ui [class*="bg-[#E0F0FA]"],
-html.mm-new-ui .bg-sky-100,
-html.mm-new-ui [class*="bg-sky-100"],
-html.mm-new-ui .bg-emerald-100,
-html.mm-new-ui [class*="bg-emerald-100"] {
+html.mm-new-ui
+  [class*="bg-[#FFF4E0]"]:not(:is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *)),
+html.mm-new-ui
+  [class*="bg-[#FFE8C2]"]:not(:is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *)),
+html.mm-new-ui
+  [class*="bg-[#FFF4E6]"]:not(:is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *)),
+html.mm-new-ui
+  [class*="bg-[#e0f0fa]"]:not(:is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *)),
+html.mm-new-ui
+  [class*="bg-[#E0F0FA]"]:not(:is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *)),
+html.mm-new-ui
+  .bg-sky-100:not(:is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *)),
+html.mm-new-ui
+  [class*="bg-sky-100"]:not(:is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *)),
+html.mm-new-ui
+  .bg-emerald-100:not(:is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *)),
+html.mm-new-ui
+  [class*="bg-emerald-100"]:not(:is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *)) {
   background-color: rgba(30, 41, 59, 0.72) !important;
   color: var(--text-body);
 }
 
-html.mm-new-ui section.bg-white,
-html.mm-new-ui section[class*="bg-white"],
-html.mm-new-ui section[class*="bg-gradient-to-b"][class*="from-slate"],
-html.mm-new-ui section[class*="bg-gradient-to-b"][class*="from-white"],
-html.mm-new-ui section[class*="bg-gradient-to-b"][class*="via-white"] {
+html.mm-new-ui
+  section.bg-white:not(
+    :is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *, .mm-pa-modal-layer *)
+  ),
+html.mm-new-ui
+  section[class*="bg-white"]:not(
+    :is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *, .mm-pa-modal-layer *)
+  ),
+html.mm-new-ui
+  section[class*="bg-gradient-to-b"][class*="from-slate"]:not(
+    :is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *, .mm-pa-modal-layer *)
+  ),
+html.mm-new-ui
+  section[class*="bg-gradient-to-b"][class*="from-white"]:not(
+    :is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *, .mm-pa-modal-layer *)
+  ),
+html.mm-new-ui
+  section[class*="bg-gradient-to-b"][class*="via-white"]:not(
+    :is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *, .mm-pa-modal-layer *)
+  ) {
   background-color: rgba(12, 18, 34, 0.55) !important;
   background-image: linear-gradient(
     180deg,
@@ -36,32 +88,50 @@ html.mm-new-ui section[class*="bg-gradient-to-b"][class*="via-white"] {
 }
 
 /* ── Hardcoded nav / zinc text ─────────────────────────────────────────── */
-html.mm-new-ui .text-gray-700,
-html.mm-new-ui .text-gray-600,
-html.mm-new-ui .text-slate-600,
-html.mm-new-ui .text-slate-700,
-html.mm-new-ui .text-slate-800,
-html.mm-new-ui .text-slate-900,
-html.mm-new-ui .text-zinc-900,
-html.mm-new-ui .text-zinc-800,
-html.mm-new-ui .text-zinc-700,
-html.mm-new-ui .text-black {
+html.mm-new-ui
+  .text-gray-700:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *)),
+html.mm-new-ui
+  .text-gray-600:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *)),
+html.mm-new-ui
+  .text-slate-600:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *)),
+html.mm-new-ui
+  .text-slate-700:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *)),
+html.mm-new-ui
+  .text-slate-800:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *)),
+html.mm-new-ui
+  .text-slate-900:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *)),
+html.mm-new-ui
+  .text-zinc-900:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *)),
+html.mm-new-ui
+  .text-zinc-800:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *)),
+html.mm-new-ui
+  .text-zinc-700:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *)),
+html.mm-new-ui
+  .text-black:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *)) {
   color: var(--text-secondary) !important;
 }
 
 /* Preserve headline weight — do not flatten hero/card titles to muted gray */
-html.mm-new-ui .text-neutral-900,
-html.mm-new-ui .text-neutral-800 {
+html.mm-new-ui
+  .text-neutral-900:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *)),
+html.mm-new-ui
+  .text-neutral-800:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *)) {
   color: var(--text-heading) !important;
 }
 
-/* ── Brand hex accents → brighter on dark ────────────────────────────────── */
-html.mm-new-ui [class*="text-[#1A8FC4]"],
-html.mm-new-ui [class*="text-[#15799F]"],
-html.mm-new-ui [class*="text-[#1A6FC4]"],
-html.mm-new-ui [class*="text-[#155a9e]"],
-html.mm-new-ui [class*="text-[#0e5e85]"],
-html.mm-new-ui [class*="text-[#0c4a6e]"] {
+/* ── Brand hex accents → brighter on dark (marketing only) ──────────────── */
+html.mm-new-ui
+  [class*="text-[#1A8FC4]"]:not(:is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *)),
+html.mm-new-ui
+  [class*="text-[#15799F]"]:not(:is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *)),
+html.mm-new-ui
+  [class*="text-[#1A6FC4]"]:not(:is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *)),
+html.mm-new-ui
+  [class*="text-[#155a9e]"]:not(:is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *)),
+html.mm-new-ui
+  [class*="text-[#0e5e85]"]:not(:is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *)),
+html.mm-new-ui
+  [class*="text-[#0c4a6e]"]:not(:is(.stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-shell *, .mm-pa-root *)) {
   color: #67e8f9 !important;
 }
 
@@ -193,28 +263,33 @@ html.mm-new-ui .hover\:text-primary:hover {
 }
 
 /* Marketing shell only — portals set their own heading/body ink. */
-html.mm-new-ui strong:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *)),
-html.mm-new-ui b:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *)),
+html.mm-new-ui strong:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *)),
+html.mm-new-ui b:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *)),
 html.mm-new-ui .font-semibold.text-foreground,
 html.mm-new-ui .font-bold.text-foreground {
   color: var(--text-heading);
 }
 
-/* Preserve intentional light copy on gradients / CTA bands */
-html.mm-new-ui .text-white,
-html.mm-new-ui [class*="text-white/"] {
+/* Preserve intentional light copy on gradients / CTA bands (marketing only) */
+html.mm-new-ui
+  .text-white:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-org-shell *)),
+html.mm-new-ui
+  [class*="text-white/"]:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-org-shell *)) {
   color: #ffffff !important;
 }
 
-html.mm-new-ui input:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *)),
-html.mm-new-ui textarea:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *)),
-html.mm-new-ui select:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *)) {
+html.mm-new-ui input:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *)),
+html.mm-new-ui textarea:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *)),
+html.mm-new-ui select:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *)) {
   color: var(--text-heading);
   background-color: rgba(15, 23, 42, 0.85);
   border-color: rgba(148, 163, 184, 0.25);
 }
 
-html.mm-new-ui ::placeholder {
+html.mm-new-ui
+  input:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-org-shell *))::placeholder,
+html.mm-new-ui
+  textarea:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-org-shell *))::placeholder {
   color: var(--text-hint);
   opacity: 1;
 }
@@ -298,13 +373,13 @@ html.mm-new-ui [class*="text-red-5"] {
 }
 
 /* Comparison table & pricing cards — never paint portal tables */
-html.mm-new-ui table thead tr:not(:is(.mm-org-root *, .mm-pa-root *, .stu-app *)),
-html.mm-new-ui table thead th:not(:is(.mm-org-root *, .mm-pa-root *, .stu-app *)) {
+html.mm-new-ui table thead tr:not(:is(.mm-org-root *, .mm-org-root-login *, .mm-pa-root *, .mm-pa-modal-layer *, .stu-app *)),
+html.mm-new-ui table thead th:not(:is(.mm-org-root *, .mm-org-root-login *, .mm-pa-root *, .mm-pa-modal-layer *, .stu-app *)) {
   background-color: rgba(30, 41, 59, 0.88) !important;
   color: var(--text-heading) !important;
 }
 
-html.mm-new-ui table tbody tr:not(:is(.mm-org-root *, .mm-pa-root *, .stu-app *)) {
+html.mm-new-ui table tbody tr:not(:is(.mm-org-root *, .mm-org-root-login *, .mm-pa-root *, .mm-pa-modal-layer *, .stu-app *)) {
   background-color: rgba(15, 23, 42, 0.62) !important;
 }
 
@@ -422,28 +497,41 @@ html.mm-new-ui [class*="to-[#E9DDFF]"] {
 }
 
 /* Gray / zinc / slate text ladder */
-html.mm-new-ui .text-gray-400,
-html.mm-new-ui .text-gray-500 {
+html.mm-new-ui
+  .text-gray-400:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-org-shell *)),
+html.mm-new-ui
+  .text-gray-500:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-org-shell *)) {
   color: var(--text-muted) !important;
 }
 
-html.mm-new-ui .text-gray-800,
-html.mm-new-ui .text-gray-900,
-html.mm-new-ui .text-slate-400,
-html.mm-new-ui .text-slate-500,
-html.mm-new-ui .text-slate-800,
-html.mm-new-ui .text-sky-800 {
+html.mm-new-ui
+  .text-gray-800:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-org-shell *)),
+html.mm-new-ui
+  .text-gray-900:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-org-shell *)),
+html.mm-new-ui
+  .text-slate-400:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-org-shell *)),
+html.mm-new-ui
+  .text-slate-500:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-org-shell *)),
+html.mm-new-ui
+  .text-slate-800:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-org-shell *)),
+html.mm-new-ui
+  .text-sky-800:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-org-shell *)) {
   color: var(--text-secondary) !important;
 }
 
-html.mm-new-ui .text-slate-400 {
+html.mm-new-ui
+  .text-slate-400:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-org-shell *)) {
   color: var(--text-muted) !important;
 }
 
-html.mm-new-ui .text-slate-200,
-html.mm-new-ui .text-slate-300,
-html.mm-new-ui [class*="text-slate-2"],
-html.mm-new-ui [class*="text-slate-3"] {
+html.mm-new-ui
+  .text-slate-200:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-org-shell *)),
+html.mm-new-ui
+  .text-slate-300:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-org-shell *)),
+html.mm-new-ui
+  [class*="text-slate-2"]:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-org-shell *)),
+html.mm-new-ui
+  [class*="text-slate-3"]:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-org-shell *)) {
   color: #cbd5e1 !important;
 }
 

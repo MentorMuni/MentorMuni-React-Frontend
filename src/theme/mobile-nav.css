@@ -234,6 +234,11 @@ body.mm-mobile-nav-open {
   color: var(--accent-hover);
 }
 
+.mm-mobile-nav-login-split {
+  display: grid;
+  gap: 0.5rem;
+}
+
 .mm-mobile-nav-cta-login {
   display: flex;
   min-height: 2.75rem;

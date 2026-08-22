@@ -8,6 +8,7 @@ import {
   KeyRound,
   LayoutDashboard,
   LogOut,
+  Menu,
   NotebookPen,
   LifeBuoy,
   Settings,
@@ -15,7 +16,9 @@ import {
   UserPlus,
   Users,
   BarChart3,
+  X,
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { clearOrgSession, getOrgSession } from '../orgPortal';
 import {
   canMutateCampus,
@@ -155,6 +158,7 @@ export default function OrganizationShell() {
   const session = getOrgSession();
   const { theme, toggleTheme } = useOrgTheme();
   const apiBusy = useApiBusy(orgApiBusy);
+  const [navOpen, setNavOpen] = useState(false);
   const portalRole = normalizeOrgRole(session?.role);
   const navGroups = navForRole(session?.role);
   const segment = location.pathname.split('/').filter(Boolean).pop() || 'dashboard';
@@ -163,6 +167,19 @@ export default function OrganizationShell() {
   const entry = TITLES[segment];
   if (Array.isArray(entry)) [title, sub] = entry;
   else if (entry?.[portalRole]) [title, sub] = entry[portalRole];
+
+  useEffect(() => {
+    setNavOpen(false);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    if (!navOpen) return undefined;
+    const onKey = (e) => {
+      if (e.key === 'Escape') setNavOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [navOpen]);
 
   const brandSub =
     portalRole === ORG_ROLES.TPO
@@ -176,16 +193,34 @@ export default function OrganizationShell() {
           : 'Organization';
 
   return (
-    <div className={`mm-org-root ${theme === 'light' ? 'mm-org-root--light' : ''}`}>
+    <div
+      className={`mm-org-root ${theme === 'light' ? 'mm-org-root--light' : ''}${
+        navOpen ? ' is-nav-open' : ''
+      }`}
+    >
       <Atmosphere />
+      <button
+        type="button"
+        className="mm-org-nav-backdrop"
+        aria-label="Close navigation"
+        onClick={() => setNavOpen(false)}
+      />
       <div className="mm-org-shell">
-        <aside className="mm-org-sidebar">
+        <aside className="mm-org-sidebar" id="mm-org-sidebar">
           <div className="mm-org-brand">
             <img src={LOGO} alt="MentorMuni" />
             <div>
               <div className="mm-org-brand__title">MentorMuni</div>
               <div className="mm-org-brand__sub">{brandSub}</div>
             </div>
+            <button
+              type="button"
+              className="mm-org-sidebar__close"
+              aria-label="Close navigation"
+              onClick={() => setNavOpen(false)}
+            >
+              <X size={18} />
+            </button>
           </div>
 
           <nav className="mm-org-nav" aria-label="Organization modules">
@@ -220,6 +255,16 @@ export default function OrganizationShell() {
 
         <div className="mm-org-main">
           <header className="mm-org-topbar">
+            <button
+              type="button"
+              className="mm-org-nav-toggle"
+              aria-label={navOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={navOpen}
+              aria-controls="mm-org-sidebar"
+              onClick={() => setNavOpen((o) => !o)}
+            >
+              {navOpen ? <X size={20} /> : <Menu size={20} />}
+            </button>
             <div className="mm-org-topbar__titles min-w-0">
               <AnimatePresence mode="wait">
                 <motion.h1

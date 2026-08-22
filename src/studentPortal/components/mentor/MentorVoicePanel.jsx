@@ -60,6 +60,8 @@ export default function MentorVoicePanel({ compact = false }) {
     setUiError('');
     setStarting(true);
     try {
+      // Clear prior failed PC/mic before reminting (Reconnect path).
+      reset();
       await startSession({
         promptFirstResponse: true,
         mintSession: () => createMentorVoiceSession({}),
@@ -174,7 +176,14 @@ export default function MentorVoicePanel({ compact = false }) {
               </>
             ) : (
               <>
-                <Mic size={15} strokeWidth={2.2} aria-hidden /> {compact ? 'Talk' : 'Start voice mentor'}
+                <Mic size={15} strokeWidth={2.2} aria-hidden />{' '}
+                {compact
+                  ? error
+                    ? 'Retry'
+                    : 'Talk'
+                  : error
+                    ? 'Reconnect'
+                    : 'Start voice mentor'}
               </>
             )}
           </button>

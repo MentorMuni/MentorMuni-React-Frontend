@@ -2454,6 +2454,30 @@
   color: var(--stu-ink) !important;
   font-weight: 750;
 }
+.mm-stu-login-root input.mm-stu-input,
+.mm-stu-login-root input[type="text"],
+.mm-stu-login-root input[type="email"],
+.mm-stu-login-root input[type="password"],
+.mm-stu-login-root textarea {
+  color: var(--stu-ink) !important;
+  background-color: var(--stu-panel-solid) !important;
+  -webkit-text-fill-color: var(--stu-ink) !important;
+}
+.mm-stu-login-root input::placeholder,
+.mm-stu-login-root textarea::placeholder {
+  color: var(--stu-muted) !important;
+  opacity: 0.85;
+  -webkit-text-fill-color: var(--stu-muted) !important;
+}
+.mm-stu-login-root.is-dark input.mm-stu-input,
+.mm-stu-login-root.is-dark input[type="text"],
+.mm-stu-login-root.is-dark input[type="email"],
+.mm-stu-login-root.is-dark input[type="password"],
+.mm-stu-login-root.is-dark textarea {
+  color: var(--stu-ink) !important;
+  -webkit-text-fill-color: var(--stu-ink) !important;
+  background-color: var(--stu-panel) !important;
+}
 .mm-stu-selected__name,
 .mm-stu-college-item__name,
 .mm-stu-vibe span {

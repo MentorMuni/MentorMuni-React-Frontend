@@ -21,6 +21,19 @@ import { isDemoSession } from '../demoAuth';
 
 const emptyForm = { text: '', dueDate: '' };
 
+function todayISO() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+function isPastDueDate(value) {
+  if (!value) return false;
+  return value < todayISO();
+}
+
 function formatDue(dueDate) {
   if (!dueDate) return '';
   try {
@@ -51,6 +64,7 @@ export default function MyWorkspacePage() {
   const [filter, setFilter] = useState('open'); // open | done | all
   const [editingId, setEditingId] = useState('');
   const [editForm, setEditForm] = useState(emptyForm);
+  const [editOriginalDueDate, setEditOriginalDueDate] = useState('');
   const [err, setErr] = useState('');
   const [msg, setMsg] = useState('');
   const [loading, setLoading] = useState(true);
@@ -115,6 +129,10 @@ export default function MyWorkspacePage() {
 
   const onAdd = async (e) => {
     e.preventDefault();
+    if (isPastDueDate(form.dueDate)) {
+      flash(false, 'Due date cannot be in the past. Leave blank for a note, or pick today or later.');
+      return;
+    }
     setBusy(true);
     const result = await createWorkspaceItemApi({
       text: form.text,
@@ -134,6 +152,7 @@ export default function MyWorkspacePage() {
   const startEdit = (item) => {
     setEditingId(item.id);
     setEditForm({ text: item.text, dueDate: item.dueDate || '' });
+    setEditOriginalDueDate(item.dueDate || '');
     setErr('');
     setMsg('');
   };
@@ -141,10 +160,17 @@ export default function MyWorkspacePage() {
   const cancelEdit = () => {
     setEditingId('');
     setEditForm(emptyForm);
+    setEditOriginalDueDate('');
   };
 
   const saveEdit = async (e) => {
     e.preventDefault();
+    const dueUnchanged = (editForm.dueDate || '') === (editOriginalDueDate || '');
+    // Allow keeping an existing overdue date; only block newly chosen past dates.
+    if (!dueUnchanged && isPastDueDate(editForm.dueDate)) {
+      flash(false, 'Due date cannot be in the past. Leave blank for a note, or pick today or later.');
+      return;
+    }
     setBusy(true);
     const result = await updateWorkspaceItemApi(editingId, {
       text: editForm.text,
@@ -215,6 +241,7 @@ export default function MyWorkspacePage() {
                 type="date"
                 className="mm-org-input"
                 value={form.dueDate}
+                min={todayISO()}
                 onChange={(e) => setForm((f) => ({ ...f, dueDate: e.target.value }))}
                 disabled={busy}
               />
@@ -282,6 +309,11 @@ export default function MyWorkspacePage() {
                           type="date"
                           className="mm-org-input"
                           value={editForm.dueDate}
+                          min={
+                            editOriginalDueDate && isPastDueDate(editOriginalDueDate)
+                              ? editOriginalDueDate
+                              : todayISO()
+                          }
                           onChange={(e) =>
                             setEditForm((f) => ({ ...f, dueDate: e.target.value }))
                           }
