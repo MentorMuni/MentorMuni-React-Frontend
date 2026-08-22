@@ -19,7 +19,20 @@ export function getRoadmapQuery(search) {
     search || (typeof window !== 'undefined' ? window.location.search : '')
   );
   const from = params.get('from');
-  const tool = params.get('tool');
+  // Portal tool host uses /tools/:toolCode; legacy deep-links used ?tool=
+  let tool = params.get('tool') || '';
+  if (!tool && typeof window !== 'undefined') {
+    const match = String(window.location.pathname || '').match(
+      /\/studentportal\/tools\/([^/?#]+)/i
+    );
+    if (match?.[1]) {
+      try {
+        tool = decodeURIComponent(match[1]);
+      } catch {
+        tool = match[1];
+      }
+    }
+  }
   const fromRoadmap = from === 'roadmap' && Boolean(tool);
   const fromPractice = from === 'practice' && Boolean(tool);
   const fromCompanyPrep = from === 'company-prep' && Boolean(tool);

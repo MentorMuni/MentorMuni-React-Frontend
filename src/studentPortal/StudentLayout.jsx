@@ -9,7 +9,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { getStudentSession, isStudentAuthenticated } from './auth';
+import { getStudentSession, isStudentAuthenticated, studentMustChangePassword } from './auth';
 import { studentPaths } from './paths';
 import { useStudentPortalCanvas, useStudentTheme } from './useStudentTheme.jsx';
 import { getStreakWeekDots, getStudentStreak } from './streak';
@@ -90,6 +90,11 @@ export default function StudentLayout() {
 
   if (!authed || !session) {
     return <Navigate to={studentPaths.login} replace />;
+  }
+
+  const onChangePassword = /\/change-password\/?$/.test(location.pathname || '');
+  if (studentMustChangePassword(session) && !onChangePassword) {
+    return <Navigate to={studentPaths.changePassword} replace />;
   }
 
   return (

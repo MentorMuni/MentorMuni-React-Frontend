@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bell, CalendarDays, GraduationCap, LogOut, Menu, Monitor, Moon, Sun, User } from 'lucide-react';
+import { Bell, CalendarDays, GraduationCap, KeyRound, LogOut, Menu, Monitor, Moon, Sun, User } from 'lucide-react';
 import { clearStudentSession } from '../../auth';
 import { studentPaths } from '../../paths';
 import { useStudentTheme } from '../../useStudentTheme.jsx';
@@ -187,6 +187,14 @@ export default function StudentTopbar({ session, onMenu, nextDrive }) {
                 onClick={() => setMenuOpen(false)}
               >
                 <User size={16} strokeWidth={2} aria-hidden focusable="false" /> Placement profile
+              </Link>
+              <Link
+                className="stu-menu__item"
+                role="menuitem"
+                to={studentPaths.changePassword}
+                onClick={() => setMenuOpen(false)}
+              >
+                <KeyRound size={16} strokeWidth={2} aria-hidden focusable="false" /> Change password
               </Link>
               <div className="stu-menu__sep" />
               <button

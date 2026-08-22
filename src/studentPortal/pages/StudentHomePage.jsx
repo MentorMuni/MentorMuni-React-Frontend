@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useStudentShell } from '../shellContext';
 import {
   fetchAnalysis,
@@ -39,6 +39,7 @@ const TOOL_LABELS = Object.fromEntries(WEEK1_STEPS.map((s) => [s.tool_code, s.ti
 
 export default function StudentHomePage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { session, userKey, streak, weekDots, refreshStreak, nextDrive } = useStudentShell();
 
   const [roadmap, setRoadmap] = useState(null);
@@ -77,6 +78,16 @@ export default function StudentHomePage() {
   useEffect(() => {
     refresh();
   }, [refresh]);
+
+  // Journey tools return to /home#stu-90day-plan — scroll after layout paints.
+  useEffect(() => {
+    const hash = String(location.hash || '').replace(/^#/, '');
+    if (!hash) return undefined;
+    const t = window.setTimeout(() => {
+      document.getElementById(hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+    return () => window.clearTimeout(t);
+  }, [location.hash, roadmap?.week_status, plan?.status]);
 
   useEffect(() => {
     if (roadmap?.week_status !== 'done') return;

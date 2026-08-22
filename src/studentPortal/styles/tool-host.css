@@ -63,3 +63,23 @@
 .stu-tool-host .mm-tool-widget-root {
   min-width: 0;
 }
+
+/* Embedded assessments still use marketing full-viewport shells — compress them. */
+.stu-main--tool .min-h-screen,
+.stu-main--tool .min-h-\[100dvh\] {
+  min-height: 0 !important;
+}
+
+.stu-main--tool .mm-voice-page {
+  background: transparent;
+  padding-bottom: 1.5rem;
+}
+
+.stu-main--tool .mm-voice-stage {
+  min-height: 0;
+  border-radius: 16px;
+}
+
+.stu-journey {
+  scroll-margin-top: calc(64px + var(--space-4));
+}

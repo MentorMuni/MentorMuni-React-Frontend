@@ -19,6 +19,7 @@ export const studentPaths = {
   register: '/studentportal/register',
   enroll: '/studentportal/enroll',
   setPassword: '/studentportal/set-password',
+  changePassword: '/studentportal/change-password',
   tools: '/studentportal/tools',
 };
 
@@ -33,6 +34,8 @@ export function studentToolPath(toolCode, opts = {}) {
   const params = new URLSearchParams();
   const from = opts.from || 'roadmap';
   if (from) params.set('from', from);
+  // Keep ?tool= for legacy getRoadmapQuery / marketing deep-links.
+  params.set('tool', code);
   if (opts.skill) params.set('skill', String(opts.skill).trim());
   if (opts.mode) params.set('mode', String(opts.mode).trim());
   if (opts.checkinId != null && opts.checkinId !== '') {

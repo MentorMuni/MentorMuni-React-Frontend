@@ -4,11 +4,13 @@ import {
   Calendar,
   CheckCircle2,
   GraduationCap,
+  KeyRound,
   Mail,
   Phone,
   Printer,
   ShieldCheck,
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useStudentShell } from '../shellContext';
 import { enterProps, MOTION } from '../motion';
@@ -18,6 +20,7 @@ import {
   SECTION_META,
   TARGET_SCORE,
 } from '../profileApi';
+import { studentPaths } from '../paths';
 import EmptyState from '../components/home/EmptyState';
 
 import '../styles/profile.css';
@@ -139,6 +142,9 @@ export default function StudentProfilePage() {
         <p className="stu-alert stu-alert--bad" role="alert">
           {error}
         </p>
+        <button type="button" className="stu-btn stu-btn--soft" onClick={load}>
+          Try again
+        </button>
       </main>
     );
   }
@@ -356,6 +362,10 @@ export default function StudentProfilePage() {
           <Calendar size={14} strokeWidth={2} aria-hidden focusable="false" />
           Profile generated {formatDate(new Date().toISOString())} · MentorMuni
         </p>
+        <Link className="stu-link-btn" to={studentPaths.changePassword}>
+          <KeyRound size={14} strokeWidth={2} aria-hidden focusable="false" />
+          Change password
+        </Link>
       </footer>
     </main>
   );

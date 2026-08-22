@@ -77,6 +77,23 @@ export function isStudentAuthenticated() {
   return Boolean(getStudentToken() && getStudentSession());
 }
 
+export function studentMustChangePassword(session = getStudentSession()) {
+  return Boolean(
+    session?.mustChangePassword || session?.must_change_password || session?.force_password_change
+  );
+}
+
+/** POST /auth/change-password with the student JWT. */
+export async function changeStudentPassword(currentPassword, newPassword) {
+  const { studentApi } = await import('./studentApi');
+  await studentApi.post('/auth/change-password', {
+    current_password: currentPassword,
+    new_password: newPassword,
+  });
+  const session = getStudentSession();
+  if (session) setStudentSession({ ...session, mustChangePassword: false });
+}
+
 function buildLoginBody(userId, password, organizationCode = '') {
   const id = String(userId || '').trim();
   const payload = { password };

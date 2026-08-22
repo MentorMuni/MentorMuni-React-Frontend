@@ -165,7 +165,8 @@ export function createToolSession(opts = {}) {
         fromRoadmap ||
         fromJourney ||
         fromPractice ||
-        fromCompanyPrep
+        fromCompanyPrep ||
+        fromCoding
       ) {
         roadmapOutcome = await submitRoadmapResult(payload);
       }
@@ -185,6 +186,15 @@ export function createToolSession(opts = {}) {
           ok: true,
           status: 'saved',
           message: 'Counted for today and saved to your readiness record.',
+          roadmap: roadmapOutcome?.roadmap,
+        };
+      }
+
+      if (fromCompanyPrep) {
+        return {
+          ok: true,
+          status: 'saved',
+          message: 'Result saved. Back to Company Prep when you are ready.',
           roadmap: roadmapOutcome?.roadmap,
         };
       }

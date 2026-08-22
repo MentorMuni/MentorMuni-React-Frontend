@@ -21,6 +21,7 @@ import { analyzeVoiceInterview, messageForHttpStatus } from './voiceInterviewApi
 import { useRealtimeVoiceSession } from './useRealtimeVoiceSession';
 import {
   clockCueText,
+  DEFAULT_DURATION_MINUTES,
   normalizeTimebox,
   resolveDurationMinutes,
 } from './interviewTimebox';
@@ -231,15 +232,15 @@ export default function VoiceInterviewCoach() {
     MODES.find((m) => m.id === initialMode)?.focus || 'Live technical interview'
   );
   const [elapsed, setElapsed] = useState(0);
-  const [roundDurationMin, setRoundDurationMin] = useState(15);
+  const [roundDurationMin, setRoundDurationMin] = useState(DEFAULT_DURATION_MINUTES);
   const [roadmapSave, setRoadmapSave] = useState({ status: 'idle', message: '' });
   const roadmapPayloadRef = useRef(null);
   const transcriptEndRef = useRef(null);
   const endingRef = useRef(false);
   const liveStartedAtRef = useRef(null);
   const composeRef = useRef(null);
-  const durationSecRef = useRef(15 * 60);
-  const timeboxRef = useRef(normalizeTimebox(null, 15));
+  const durationSecRef = useRef(DEFAULT_DURATION_MINUTES * 60);
+  const timeboxRef = useRef(normalizeTimebox(null, DEFAULT_DURATION_MINUTES));
   const cueStateRef = useRef({
     wrap: false,
     close: false,

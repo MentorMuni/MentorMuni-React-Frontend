@@ -437,6 +437,11 @@
    ============================================================ */
 
 .stu-pf__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
   padding-top: var(--space-4);
   border-top: 1px solid var(--line);
 }
@@ -447,6 +452,56 @@
   gap: 6px;
   font-size: var(--text-micro);
   color: var(--ink-3);
+}
+
+.stu-pw {
+  max-width: 440px;
+}
+
+.stu-pw__kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.stu-pw__form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0 0 4px;
+}
+
+.stu-pw__label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink-2);
+}
+
+.stu-pw__label input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: inherit;
+  font: inherit;
+}
+
+.stu-pw__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
 }
 
 /* ============================================================

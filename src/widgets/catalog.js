@@ -63,7 +63,7 @@ export const TOOL_CATALOG = Object.freeze({
     title: 'Skill AI mock interview',
     family: 'voice',
     mode: 'skill',
-    minutes: 15,
+    minutes: 20,
     description: 'Live voice round focused on one skill',
   },
   [TOOL_IDS.PROJECT_MOCK]: {
@@ -71,7 +71,7 @@ export const TOOL_CATALOG = Object.freeze({
     title: 'Project AI mock interview',
     family: 'voice',
     mode: 'projects',
-    minutes: 15,
+    minutes: 20,
     description: 'Walk through projects, decisions, and trade-offs',
   },
   [TOOL_IDS.INTERVIEW_MOCK]: {
@@ -79,7 +79,7 @@ export const TOOL_CATALOG = Object.freeze({
     title: 'Interview AI mock',
     family: 'voice',
     mode: 'live',
-    minutes: 15,
+    minutes: 20,
     description: 'Full live technical + communication round',
   },
   [TOOL_IDS.HR_MOCK]: {
@@ -87,7 +87,7 @@ export const TOOL_CATALOG = Object.freeze({
     title: 'HR AI mock interview',
     family: 'voice',
     mode: 'hr',
-    minutes: 30,
+    minutes: 20,
     description: 'HR round like TCS / Infosys / Persistent / Impetus — intro, STAR, flexibility',
   },
   [TOOL_IDS.RESUME_ATS]: {

@@ -2,16 +2,10 @@ import { ArrowRight, Mic } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
 import { enterProps } from '../../motion';
-import { studentPaths } from '../../paths';
+import { studentPaths, studentToolPath } from '../../paths';
 
 /**
  * Voice practice on the student's weakest area.
- *
- * This was a full-bleed "flagship" hero with a decorative orb, two
- * pinging rings, a 28-bar waveform animating for audio that was not
- * playing, and prompt chips that rotated every 3.2s. The CTA had no
- * onClick at all. It is now a callout with static examples and a link
- * that goes somewhere.
  */
 
 const EXAMPLES = ['Check my answer', 'Quick mock: 5 questions', 'What should I practice next?'];
@@ -20,6 +14,9 @@ export default function VoicePracticeCallout({ studentName = 'there', weakest = 
   const reduce = useReducedMotion();
   const firstName = String(studentName || '').split(' ')[0] || 'there';
   const gap = weakest || 'interview communication';
+  const voiceHref = weakest
+    ? studentToolPath('skill_mock', { from: 'practice', skill: String(gap).slice(0, 48) })
+    : studentPaths.mentor;
 
   return (
     <motion.section className="stu-voice" {...enterProps(reduce)}>
@@ -37,15 +34,19 @@ export default function VoicePracticeCallout({ studentName = 'there', weakest = 
         </p>
 
         <div className="stu-voice__actions">
-          <Link className="stu-voice__cta" to={studentPaths.practice}>
+          <Link className="stu-voice__cta" to={voiceHref}>
             <span className="stu-voice__mic" aria-hidden>
               <Mic size={16} strokeWidth={2} focusable="false" />
             </span>
-            Start a voice session
+            {weakest ? 'Start skill voice mock' : 'Open AI Voice Mentor'}
             <ArrowRight size={16} strokeWidth={2} aria-hidden focusable="false" />
           </Link>
 
-          <p className="stu-voice__hint">Around 10 minutes. No booking, no waiting.</p>
+          <p className="stu-voice__hint">
+            {weakest
+              ? 'About 20 minutes. Counts as today’s practice.'
+              : 'Around 10 minutes. No booking, no waiting.'}
+          </p>
         </div>
 
         <ul className="stu-voice__prompts" aria-label="Things you can ask">

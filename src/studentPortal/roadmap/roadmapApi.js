@@ -13,7 +13,10 @@ function portalizeRoadmap(roadmap) {
     ...roadmap,
     steps: roadmap.steps.map((s) => ({
       ...s,
-      href: toPortalToolHref(s.href || s.tool_href, 'roadmap') || s.href,
+      href:
+        studentToolPath(s.tool_code, { from: 'roadmap' }) ||
+        toPortalToolHref(s.href || s.tool_href, 'roadmap') ||
+        s.href,
     })),
   };
 }

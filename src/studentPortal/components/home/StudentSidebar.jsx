@@ -10,8 +10,7 @@ import {
   X,
   Terminal,
   Sparkles,
-  Lock,
-  ArrowRight,
+  Heart,
   LifeBuoy,
   StickyNote,
 } from 'lucide-react';
@@ -34,7 +33,7 @@ const NAV_PRIMARY = [
 
 // Special premium feature - separated with divider
 const PREMIUM_FEATURES = [
-  { icon: Lock, label: 'Fear → Fearless', to: '/studentportal/fear-to-fearless', special: true },
+  { icon: Heart, label: 'Fear → Fearless', to: '/studentportal/fear-to-fearless', special: true },
 ];
 
 const DAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];

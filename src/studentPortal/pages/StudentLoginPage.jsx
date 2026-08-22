@@ -28,6 +28,7 @@ import {
   getStudentSession,
   loginStudent,
   matchDemoStudent,
+  studentMustChangePassword,
 } from '../auth';
 import { DEMO_ORG } from '../../organizationPortal/demoAuth';
 import { studentPaths } from '../paths';
@@ -313,7 +314,10 @@ export default function StudentLoginPage() {
         return;
       }
       saveCollegeCode(code);
-      navigate(studentPaths.home, { replace: true });
+      navigate(
+        studentMustChangePassword(result.user) ? studentPaths.changePassword : studentPaths.home,
+        { replace: true }
+      );
     } catch (err) {
       setError(safeLoginError(err?.message));
     } finally {
@@ -356,7 +360,10 @@ export default function StudentLoginPage() {
         return;
       }
       saveCollegeCode(DEMO_ORG.code);
-      navigate(studentPaths.home, { replace: true });
+      navigate(
+        studentMustChangePassword(result.user) ? studentPaths.changePassword : studentPaths.home,
+        { replace: true }
+      );
     } catch (err) {
       setError(safeLoginError(err?.message));
       setStep('login');
@@ -421,7 +428,14 @@ export default function StudentLoginPage() {
             <button
               type="button"
               className="mm-stu-session-banner__continue"
-              onClick={() => navigate(studentPaths.home, { replace: true })}
+              onClick={() =>
+                navigate(
+                  studentMustChangePassword(activeSession)
+                    ? studentPaths.changePassword
+                    : studentPaths.home,
+                  { replace: true }
+                )
+              }
             >
               Continue to home
             </button>
