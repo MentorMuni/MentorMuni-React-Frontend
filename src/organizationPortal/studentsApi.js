@@ -934,6 +934,7 @@ export async function activateStudentAccount({ token, newPassword }) {
         ok: true,
         message: data?.message || 'Password saved. You can sign in now.',
         email: data?.email || '',
+        organization_code: data?.organization_code || '',
       },
       'api'
     );

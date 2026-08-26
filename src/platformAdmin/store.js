@@ -62,8 +62,15 @@ function normalizeOrganization(row) {
 }
 
 export async function getOrganizations() {
-  const rows = asArray(await platformApi.get('/platform/organizations'), ['organizations']);
-  return rows.map(normalizeOrganization).sort((a, b) => b.id - a.id);
+  // Organizations tab is college-only. Individuals live under /platform/individuals.
+  const rows = asArray(
+    await platformApi.get('/platform/organizations?organization_type=COLLEGE'),
+    ['organizations']
+  );
+  return rows
+    .map(normalizeOrganization)
+    .filter((o) => String(o.organization_type || '').toLowerCase() !== 'public')
+    .sort((a, b) => b.id - a.id);
 }
 
 export async function getOrganizationById(id) {
@@ -75,7 +82,8 @@ export async function createOrganization(payload) {
   const row = await platformApi.post('/platform/organizations', {
     ...payload,
     code: String(payload.code || '').toUpperCase(),
-    organization_type: apiOrgType(payload.organization_type),
+    // Organizations tab never creates PUBLIC — individuals use /platform/individuals.
+    organization_type: 'COLLEGE',
     status: apiStatus(payload.status),
   });
   emitUpdate();
@@ -412,6 +420,38 @@ export async function deactivateTpo(organizationId, userId) {
   );
   emitUpdate();
   return normalizeTpo(row, organizationId) || row;
+}
+
+// ----- Individuals (PUBLIC students) -----
+
+export async function getIndividuals({ q = '', status = '' } = {}) {
+  const params = new URLSearchParams();
+  if (q.trim()) params.set('q', q.trim());
+  if (status.trim()) params.set('status', status.trim());
+  const qs = params.toString();
+  const payload = await platformApi.get(`/platform/individuals${qs ? `?${qs}` : ''}`);
+  return {
+    items: asArray(payload, ['items', 'individuals']),
+    total: Number(payload?.total ?? 0),
+  };
+}
+
+export async function createIndividual(payload) {
+  const row = await platformApi.post('/platform/individuals', payload);
+  emitUpdate();
+  return row;
+}
+
+export async function reinviteIndividual(userId) {
+  const row = await platformApi.post(`/platform/individuals/${userId}/reinvite`);
+  emitUpdate();
+  return row;
+}
+
+export async function blockIndividual(userId) {
+  const row = await platformApi.post(`/platform/individuals/${userId}/block`);
+  emitUpdate();
+  return row;
 }
 
 export async function getPlatformUsers() {

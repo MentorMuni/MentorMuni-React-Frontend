@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   LayoutDashboard,
   Building2,
+  UserRound,
   CreditCard,
   ToggleLeft,
   Users,
@@ -21,6 +22,7 @@ const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
 const NAV = [
   { to: platformAdminPaths.dashboard, label: 'Dashboard', icon: LayoutDashboard },
   { to: platformAdminPaths.organizations, label: 'Organizations', icon: Building2 },
+  { to: platformAdminPaths.individuals, label: 'Individuals', icon: UserRound },
   { to: platformAdminPaths.subscriptions, label: 'Subscriptions', icon: CreditCard },
   { to: platformAdminPaths.features, label: 'Feature Management', icon: ToggleLeft },
   { to: platformAdminPaths.platformUsers, label: 'Platform Users', icon: Users },
@@ -30,7 +32,8 @@ const NAV = [
 
 const TITLES = {
   dashboard: ['Dashboard', 'SaaS metrics across tenants — no student operations.'],
-  organizations: ['Organizations', 'Provision and manage college / public tenants.'],
+  organizations: ['Organizations', 'Provision and manage college tenants.'],
+  individuals: ['Individuals', 'Invite individual students (no college TPO / HOD).'],
   subscriptions: ['Subscriptions', 'History of assigned plans, seat limits, and seats used.'],
   features: ['Feature Management', 'Enable capabilities per organization.'],
   'platform-users': ['Platform Users', 'MentorMuni employees with portal access.'],

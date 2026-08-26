@@ -10,6 +10,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { getStudentSession, isStudentAuthenticated, studentMustChangePassword } from './auth';
+import { isIndividualStudent } from './accountType';
 import { studentPaths } from './paths';
 import { useStudentPortalCanvas, useStudentTheme } from './useStudentTheme.jsx';
 import { getStreakWeekDots, getStudentStreak } from './streak';
@@ -54,12 +55,13 @@ export default function StudentLayout() {
     });
   }, [userKey]);
 
-  // One drive fetch for the whole shell: the topbar chip and the home
-  // page's campus sections read the same result instead of inventing
-  // their own. fetchUpcomingDrives never rejects — a failure resolves
-  // to the demo shape, and surfaces label it as a sample.
+  // Campus drives are college-only. Skip for individual (PUBLIC) students.
   useEffect(() => {
     if (!authed) return undefined;
+    if (isIndividualStudent(session)) {
+      setNextDrive(null);
+      return undefined;
+    }
     let cancelled = false;
     fetchUpcomingDrives().then((drives) => {
       if (!cancelled) setNextDrive(drives.nearest || null);
@@ -67,7 +69,7 @@ export default function StudentLayout() {
     return () => {
       cancelled = true;
     };
-  }, [authed]);
+  }, [authed, session?.organization_type, session?.organization_code, session?.is_individual]);
 
   // One morning mentorship per IST day — generated on first portal open, not a cron.
   useEffect(() => {

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import '../../styles/fear-to-fearless-sidebar.css';
 import '../../styles/whiteboard.css';
+import { isIndividualStudent, studentCampusLabel } from '../../accountType';
 
 const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
 
@@ -90,6 +91,10 @@ export default function StudentSidebar({
     ? weekDots
     : [false, false, false, false, false, false, false];
   const doneCount = dots.filter(Boolean).length;
+  const campus = studentCampusLabel(session);
+  const footerLine = isIndividualStudent(session)
+    ? campus.secondary || campus.primary || 'Individual'
+    : session?.department_name || 'Department';
 
   return (
     <>
@@ -180,8 +185,10 @@ export default function StudentSidebar({
             <span className="stu-sidebar__user-text">
               <strong>{session?.name || 'Student'}</strong>
               <em>
-                {session?.department_name || 'Department'}
-                {session?.year ? ` · ${session.year}` : ''}
+                {footerLine}
+                {session?.year || session?.batch_year
+                  ? ` · ${session.year || session.batch_year}`
+                  : ''}
               </em>
             </span>
             <ChevronRight size={16} strokeWidth={2} aria-hidden focusable="false" />

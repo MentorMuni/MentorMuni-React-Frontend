@@ -57,6 +57,7 @@ export function getRoadmapQuery(search) {
     mode: params.get('mode') || '',
     checkinId: params.get('checkin') || params.get('checkinId') || '',
     fearId: params.get('fear') || params.get('fearId') || '',
+    missionTaskKey: params.get('mission') || '',
   };
 }
 

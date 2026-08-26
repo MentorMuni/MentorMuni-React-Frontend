@@ -40,7 +40,14 @@ export default function StudentSetPasswordPage() {
       return;
     }
     setOk(true);
-    setTimeout(() => navigate(studentPaths.login, { replace: true }), 1200);
+    const org = String(res.organization_code || '').trim().toUpperCase();
+    const loginTo =
+      org === 'PUBLIC'
+        ? `${studentPaths.login}?org=PUBLIC`
+        : org
+          ? `${studentPaths.login}?org=${encodeURIComponent(org)}`
+          : studentPaths.login;
+    setTimeout(() => navigate(loginTo, { replace: true }), 1200);
   };
 
   return (
@@ -66,8 +73,8 @@ export default function StudentSetPasswordPage() {
             <>
               <h1 className="mm-stu-card-title">Link expired</h1>
               <p className="mm-stu-card-sub">
-                This set-password link is missing a token. Ask your HOD or TPO to resend it from the
-                enrollment roster.
+                This set-password link is missing a token. Ask MentorMuni staff (or your college HOD/TPO)
+                to resend the invite.
               </p>
               <Link to={studentPaths.login} className="mm-stu-link">
                 Back to login
@@ -81,15 +88,13 @@ export default function StudentSetPasswordPage() {
             </>
           ) : (
             <>
-              <p className="mm-stu-step-label">
-                {peek?.orgName || peek?.orgCode || 'Campus'} · approved
-              </p>
+              <p className="mm-stu-step-label">MentorMuni · set password</p>
               <h1 className="mm-stu-card-title">Create your password</h1>
               <p className="mm-stu-card-sub">
                 {peek?.name || peek?.email
                   ? `Hi ${peek.name || peek.email}. `
                   : ''}
-                Choose a password (min 8 characters), then sign in with your email or college ID.
+                Choose a password (min 8 characters), then sign in with your email or username.
               </p>
               {error ? (
                 <div className="mm-stu-alert mm-stu-alert--error" role="alert">

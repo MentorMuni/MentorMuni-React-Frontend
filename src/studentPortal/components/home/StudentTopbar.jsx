@@ -5,6 +5,7 @@ import { clearStudentSession } from '../../auth';
 import { studentPaths } from '../../paths';
 import { useStudentTheme } from '../../useStudentTheme.jsx';
 import { driveCountdown, isDriveSoon } from '../../drives';
+import { isIndividualStudent, studentCampusLabel } from '../../accountType';
 
 const THEME_MODES = [
   { id: 'light', label: 'Light', Icon: Sun },
@@ -59,6 +60,8 @@ export default function StudentTopbar({ session, onMenu, nextDrive }) {
   const initials = initialsOf(session?.name);
   const menuRef = useDismissable(menuOpen, () => setMenuOpen(false));
   const notifRef = useDismissable(notifOpen, () => setNotifOpen(false));
+  const individual = isIndividualStudent(session);
+  const campus = studentCampusLabel(session);
 
   const signOut = () => {
     clearStudentSession();
@@ -71,24 +74,22 @@ export default function StudentTopbar({ session, onMenu, nextDrive }) {
         <Menu size={20} strokeWidth={2} aria-hidden />
       </button>
 
-      {/* College + branch: identity sits with the account, not in the
-          greeting row where it competed with the student's own name. */}
-      {session?.organization_name ? (
-        <div className="stu-campus" title={session.organization_name}>
+      {/* College chip for campus students; individual shows college_name or "Individual". */}
+      {campus.primary ? (
+        <div className="stu-campus" title={campus.primary}>
           <span className="stu-campus__mark" aria-hidden>
             <GraduationCap size={16} strokeWidth={2} />
           </span>
           <span className="stu-campus__text">
-            <strong>{session.organization_name}</strong>
-            {session.department_name ? <em>{session.department_name}</em> : null}
+            <strong>{campus.primary}</strong>
+            {campus.secondary ? <em>{campus.secondary}</em> : null}
           </span>
         </div>
       ) : null}
 
       <div className="stu-topbar__right">
-        {/* Only rendered when a drive actually exists — and a sample
-            drive says so rather than passing as a real one. */}
-        {nextDrive ? (
+        {/* Campus drives are college-only — hide for individual students. */}
+        {!individual && nextDrive ? (
           <div
             className={`stu-drive-chip${isDriveSoon(nextDrive) ? ' is-soon' : ''}`}
             title={

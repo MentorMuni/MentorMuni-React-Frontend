@@ -10,6 +10,7 @@ export const platformAdminPaths = {
   login: `${PLATFORM_ADMIN_BASE}/login`,
   dashboard: `${PLATFORM_ADMIN_BASE}/dashboard`,
   organizations: `${PLATFORM_ADMIN_BASE}/organizations`,
+  individuals: `${PLATFORM_ADMIN_BASE}/individuals`,
   subscriptions: `${PLATFORM_ADMIN_BASE}/subscriptions`,
   features: `${PLATFORM_ADMIN_BASE}/features`,
   platformUsers: `${PLATFORM_ADMIN_BASE}/platform-users`,

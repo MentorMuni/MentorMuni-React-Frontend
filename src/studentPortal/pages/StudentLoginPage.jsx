@@ -37,6 +37,14 @@ import '../student-login.css';
 
 const EASE = [0.22, 1, 0.36, 1];
 const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
+const INDIVIDUAL_LOGIN = {
+  id: 'public',
+  name: 'Individual student',
+  code: 'PUBLIC',
+  city: '',
+  state: '',
+  individual: true,
+};
 const SHOW_DEMO =
   import.meta.env.DEV || String(import.meta.env.VITE_SHOW_DEMO || '') === 'true';
 
@@ -171,6 +179,7 @@ export default function StudentLoginPage() {
   const [listOpen, setListOpen] = useState(true);
 
   const orgCode = String(college?.code || '').trim().toUpperCase();
+  const isIndividualLogin = Boolean(college?.individual) || orgCode === 'PUBLIC';
 
   const filteredColleges = useMemo(() => {
     const q = collegeQuery.trim().toLowerCase();
@@ -242,6 +251,21 @@ export default function StudentLoginPage() {
         return;
       }
 
+      const wantIndividual =
+        /^(PUBLIC)$/i.test(
+          String(
+            searchParams.get('org') || searchParams.get('code') || searchParams.get('college') || ''
+          ).trim()
+        ) || /^(1|true|yes|individual)$/i.test(String(searchParams.get('individual') || '').trim());
+
+      if (wantIndividual) {
+        setCollege(INDIVIDUAL_LOGIN);
+        saveCollegeCode('PUBLIC');
+        setListOpen(false);
+        setStep('login');
+        return;
+      }
+
       const initial = pickInitialCollege(list, searchParams);
       if (initial) {
         setCollege(initial);
@@ -282,6 +306,15 @@ export default function StudentLoginPage() {
     setError('');
     setSuccess('');
     setListOpen(false);
+    setStep('login');
+  };
+
+  const chooseIndividual = () => {
+    setCollege(INDIVIDUAL_LOGIN);
+    saveCollegeCode('PUBLIC');
+    setListOpen(false);
+    setError('');
+    setSuccess('');
     setStep('login');
   };
 
@@ -474,6 +507,7 @@ export default function StudentLoginPage() {
                       onClick={() => {
                         setStep('college');
                         setListOpen(false);
+                        if (isIndividualLogin) setCollege(null);
                       }}
                     >
                       Change
@@ -856,6 +890,20 @@ export default function StudentLoginPage() {
                     Continue to placement prep <ArrowRight size={17} />
                   </motion.button>
 
+                  <button
+                    type="button"
+                    className="mm-stu-link mm-stu-submit mm-stu-submit--ghost"
+                    style={{
+                      marginTop: 10,
+                      background: 'transparent',
+                      border: '1px solid rgba(148,163,184,0.35)',
+                      color: 'inherit',
+                    }}
+                    onClick={chooseIndividual}
+                  >
+                    Individual student — continue without a college
+                  </button>
+
                   <p className="mm-stu-card-foot">
                     Not enrolled yet?{' '}
                     <Link
@@ -866,7 +914,7 @@ export default function StudentLoginPage() {
                       }
                       className="mm-stu-link"
                     >
-                      Request enrollment
+                      Request college enrollment
                     </Link>
                     <br />
                     Staff use the{' '}
@@ -889,11 +937,12 @@ export default function StudentLoginPage() {
                     <button
                       type="button"
                       className="mm-stu-gate2__back mm-stu-gate2__back--icon"
-                      aria-label="Back to campus selection"
-                      title="Change campus"
+                      aria-label={isIndividualLogin ? 'Back to sign-in options' : 'Back to campus selection'}
+                      title={isIndividualLogin ? 'Change sign-in type' : 'Change campus'}
                       onClick={() => {
                         setStep('college');
                         setListOpen(false);
+                        if (isIndividualLogin) setCollege(null);
                       }}
                     >
                       <ArrowLeft size={18} strokeWidth={2.4} />
@@ -908,16 +957,25 @@ export default function StudentLoginPage() {
                       Step 2 of 2 · Student sign-in
                     </p>
                     <h2 className="mm-stu-gate2__title">
-                      Ready for <em>drives</em>?
+                      {isIndividualLogin ? (
+                        <>
+                          Ready to <em>prep</em>?
+                        </>
+                      ) : (
+                        <>
+                          Ready for <em>drives</em>?
+                        </>
+                      )}
                     </h2>
                     <p className="mm-stu-gate2__sub">
-                      Sign in for {college?.name || 'your campus'} to pick up readiness, mocks, and
-                      company prep.
+                      {isIndividualLogin
+                        ? 'Sign in with the email MentorMuni invited you with — readiness, mocks, and company prep in one place.'
+                        : `Sign in for ${college?.name || 'your campus'} to pick up readiness, mocks, and company prep.`}
                     </p>
                   </header>
 
                   {college ? (
-                    <div className="mm-stu-duo" aria-label="Campus connection">
+                    <div className="mm-stu-duo" aria-label={isIndividualLogin ? 'Individual sign-in' : 'Campus connection'}>
                       <span className="mm-stu-duo__side">
                         <img src={LOGO} alt="" className="mm-stu-duo__logo" />
                         MentorMuni
@@ -928,7 +986,7 @@ export default function StudentLoginPage() {
                       <span className="mm-stu-duo__side mm-stu-duo__side--campus">
                         <MapPin size={14} aria-hidden />
                         <span className="mm-stu-duo__campus-name">
-                          {college.code || college.name}
+                          {isIndividualLogin ? 'Individual' : college.code || college.name}
                         </span>
                       </span>
                       <button
@@ -937,6 +995,7 @@ export default function StudentLoginPage() {
                         onClick={() => {
                           setStep('college');
                           setListOpen(false);
+                          if (isIndividualLogin) setCollege(null);
                         }}
                       >
                         Change
@@ -1070,26 +1129,34 @@ export default function StudentLoginPage() {
                   </form>
 
                   <p className="mm-stu-gate2__hook">
-                    Measure → practice → clear campus drives with confidence.
+                    {isIndividualLogin
+                      ? 'Measure → practice → interview-ready on your own timeline.'
+                      : 'Measure → practice → clear campus drives with confidence.'}
                   </p>
 
                   <p className="mm-stu-card-foot mm-stu-card-foot--tight">
-                    Not on the roster?{' '}
-                    <Link
-                      to={
-                        college?.code
-                          ? `${studentPaths.enroll}?org=${encodeURIComponent(college.code)}`
-                          : studentPaths.enroll
-                      }
-                      className="mm-stu-link"
-                    >
-                      Enroll
-                    </Link>
-                    {' · '}
-                    Staff?{' '}
-                    <Link to="/Organization/login" className="mm-stu-link">
-                      Organization portal
-                    </Link>
+                    {isIndividualLogin ? (
+                      <>Need an invite? Contact MentorMuni support.</>
+                    ) : (
+                      <>
+                        Not on the roster?{' '}
+                        <Link
+                          to={
+                            college?.code
+                              ? `${studentPaths.enroll}?org=${encodeURIComponent(college.code)}`
+                              : studentPaths.enroll
+                          }
+                          className="mm-stu-link"
+                        >
+                          Enroll
+                        </Link>
+                        {' · '}
+                        Staff?{' '}
+                        <Link to="/Organization/login" className="mm-stu-link">
+                          Organization portal
+                        </Link>
+                      </>
+                    )}
                   </p>
                 </motion.div>
               )}

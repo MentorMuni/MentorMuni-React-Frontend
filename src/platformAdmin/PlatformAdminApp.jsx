@@ -5,6 +5,7 @@ import PlatformAdminLogin from './PlatformAdminLogin';
 import PlatformAdminShell from './PlatformAdminShell';
 import DashboardPage from './pages/DashboardPage';
 import OrganizationsPage from './pages/OrganizationsPage';
+import IndividualsPage from './pages/IndividualsPage';
 import SubscriptionsPage from './pages/SubscriptionsPage';
 import FeatureManagementPage from './pages/FeatureManagementPage';
 import PlatformUsersPage from './pages/PlatformUsersPage';
@@ -61,6 +62,7 @@ export default function PlatformAdminApp() {
       >
         <Route path="dashboard" element={<DashboardPage />} />
         <Route path="organizations" element={<OrganizationsPage />} />
+        <Route path="individuals" element={<IndividualsPage />} />
         <Route path="subscriptions" element={<SubscriptionsPage />} />
         <Route path="features" element={<FeatureManagementPage />} />
         <Route path="platform-users" element={<PlatformUsersPage />} />

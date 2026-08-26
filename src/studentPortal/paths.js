@@ -42,6 +42,8 @@ export function studentToolPath(toolCode, opts = {}) {
     params.set('checkin', String(opts.checkinId));
   }
   if (opts.fearId) params.set('fear', String(opts.fearId));
+  // Lets a tool tick off the mission task that launched it — see completeAndReturn.
+  if (opts.mission) params.set('mission', String(opts.mission).trim());
   const q = params.toString();
   return `${studentPaths.tools}/${encodeURIComponent(code)}${q ? `?${q}` : ''}`;
 }

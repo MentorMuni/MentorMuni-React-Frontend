@@ -22,6 +22,7 @@ import {
 } from '../profileApi';
 import { studentPaths } from '../paths';
 import EmptyState from '../components/home/EmptyState';
+import { isIndividualStudent } from '../accountType';
 
 import '../styles/profile.css';
 
@@ -162,6 +163,13 @@ export default function StudentProfilePage() {
   const lastUpdated = formatDate(readiness.last_updated_at);
 
   const name = student.name || session?.name || 'Student';
+  const individual = isIndividualStudent(session) || isIndividualStudent(student);
+  const orgLine = individual
+    ? [student.college_name || session?.college_name, student.course_or_branch || session?.course_or_branch]
+        .filter(Boolean)
+        .join(' · ') || 'Individual student'
+    : [student.organization_name, student.department_name].filter(Boolean).join(' · ') ||
+      'College not set';
 
   return (
     <main className="stu-main stu-pf">
@@ -178,16 +186,23 @@ export default function StudentProfilePage() {
 
             <p className="stu-pf__org">
               <GraduationCap size={16} strokeWidth={2} aria-hidden focusable="false" />
-              {[student.organization_name, student.department_name].filter(Boolean).join(' · ') ||
-                'College not set'}
-              {student.year ? ` · Year ${student.year}` : ''}
+              {orgLine}
+              {student.year || student.batch_year || session?.batch_year
+                ? ` · Year ${student.year || student.batch_year || session?.batch_year}`
+                : ''}
             </p>
 
             <ul className="stu-pf__meta">
-              {student.college_id ? (
+              {!individual && student.college_id ? (
                 <li>
                   <span className="stu-pf__meta-key">Roll no.</span>
                   {student.college_id}
+                </li>
+              ) : null}
+              {individual && (student.roll_number || session?.roll_number) ? (
+                <li>
+                  <span className="stu-pf__meta-key">Roll no.</span>
+                  {student.roll_number || session?.roll_number}
                 </li>
               ) : null}
               {student.email ? (

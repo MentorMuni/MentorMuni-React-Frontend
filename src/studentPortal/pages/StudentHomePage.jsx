@@ -10,12 +10,14 @@ import {
 } from '../roadmap/roadmapApi';
 import { WEEK1_STEPS } from '../roadmap/week1Steps';
 import { recordStudentSession } from '../streak';
+import { useDailyMission } from '../daily/useDailyMission';
+import { isIndividualStudent } from '../accountType';
 
 import HomeHeader from '../components/home/HomeHeader';
 import PageSection from '../components/home/PageSection';
 import MomentumRow from '../components/home/MomentumRow';
 import PlacementReadinessHero from '../components/home/PlacementReadinessHero';
-import TodaysPlanSection from '../components/home/TodaysPlanSection';
+import DailyMissionSection from '../components/home/DailyMissionSection';
 import BaselineAnalysisPanel from '../components/home/BaselineAnalysisPanel';
 import VoicePracticeCallout from '../components/home/VoicePracticeCallout';
 import PlacementJourneySection from '../components/home/PlacementJourneySection';
@@ -41,6 +43,7 @@ export default function StudentHomePage() {
   const navigate = useNavigate();
   const location = useLocation();
   const { session, userKey, streak, weekDots, refreshStreak, nextDrive } = useStudentShell();
+  const individual = isIndividualStudent(session);
 
   const [roadmap, setRoadmap] = useState(null);
   const [analysis, setAnalysis] = useState(null);
@@ -49,6 +52,18 @@ export default function StudentHomePage() {
   const [loadError, setLoadError] = useState('');
   const pollRef = useRef(null);
   const pollTriesRef = useRef(0);
+
+  // Days 1–7 are the baseline rail; days 8–90 had nothing at all before this.
+  const {
+    mission,
+    loading: missionLoading,
+    error: missionError,
+    budgetMinutes,
+    chooseBudget,
+    completeTask,
+    skipTask,
+    refresh: refreshMission,
+  } = useDailyMission({ plan, roadmap, analysis, drive: nextDrive, userKey });
 
   const refresh = useCallback(async () => {
     try {
@@ -195,11 +210,12 @@ export default function StudentHomePage() {
       const p = await generatePlan();
       setPlan(p);
       if (p.status !== 'generating') refresh();
+      refreshMission({ silent: true });
     } catch (err) {
       setPlan((prev) => (prev ? { ...prev, status: 'failed' } : prev));
       setGenerateError(err?.message || 'Could not start plan generation. Please try again.');
     }
-  }, [refresh]);
+  }, [refresh, refreshMission]);
 
   const steps = roadmap?.steps || [];
   const currentStep = steps.find((s) => s.status === 'current') || null;
@@ -211,6 +227,7 @@ export default function StudentHomePage() {
   const planStatus = plan?.status || roadmap?.plan_status;
   const planReady = planStatus === 'ready';
   const weekSessions = (weekDots || []).filter(Boolean).length;
+
 
   const breakdown = useMemo(
     () =>
@@ -249,14 +266,22 @@ export default function StudentHomePage() {
       <PageSection
         id="stu-today-zone"
         title="Today’s focus"
-        subtitle={
-          baselineDone
-            ? 'Baseline is done. Your next move is the 90-day plan.'
-            : 'One unlocked step. Finish it, then come back tomorrow.'
-        }
+        subtitle="Sized to the time you actually have today."
       >
         <div className={`stu-start-grid${baselineDone ? ' is-baseline-done' : ''}`}>
-          <TodaysPlanSection steps={steps} onStart={handleStart} />
+          <DailyMissionSection
+            mission={mission}
+            loading={missionLoading}
+            error={missionError}
+            budgetMinutes={budgetMinutes}
+            onChooseBudget={chooseBudget}
+            onCompleteTask={completeTask}
+            onSkipTask={skipTask}
+            onGeneratePlan={handleGenerate}
+            generating={planStatus === 'generating'}
+            baselineSteps={steps}
+            onStartBaselineStep={handleStart}
+          />
           {hasScoredBaseline ? (
             <PlacementReadinessHero
               currentReadiness={readiness}
@@ -280,7 +305,7 @@ export default function StudentHomePage() {
         practicedToday={streak.practicedToday}
         weekSessions={weekSessions}
         dayDone={baselineDone}
-        daysToDrive={nextDrive?.days_until ?? null}
+        daysToDrive={individual ? null : (nextDrive?.days_until ?? null)}
         baselineProgress={completedCount}
         baselineTotal={totalCount}
       />
@@ -309,7 +334,7 @@ export default function StudentHomePage() {
               onGenerate={handleGenerate}
               generateError={generateError}
             />
-            {planReady ? <UpcomingSection nextDrive={nextDrive} /> : null}
+            {planReady && !individual ? <UpcomingSection nextDrive={nextDrive} /> : null}
           </div>
         </PageSection>
       ) : null}
@@ -323,7 +348,7 @@ export default function StudentHomePage() {
         </PageSection>
       ) : null}
 
-      {planReady ? (
+      {planReady && !individual ? (
         <PageSection
           title="Campus pulse"
           subtitle="Drives and peer pace — useful once your daily plan is running."

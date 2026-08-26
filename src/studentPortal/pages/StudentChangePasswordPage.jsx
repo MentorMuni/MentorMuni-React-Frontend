@@ -71,7 +71,7 @@ export default function StudentChangePasswordPage() {
             <h1 className="stu-card__title">Change password</h1>
             <p className="stu-card__sub">
               {forced
-                ? 'Your college set a temporary password. Choose one only you know, then continue into the portal.'
+                ? 'Choose a password you will remember, then continue into the portal.'
                 : 'Update the password you use to sign in to the student portal.'}
             </p>
           </div>

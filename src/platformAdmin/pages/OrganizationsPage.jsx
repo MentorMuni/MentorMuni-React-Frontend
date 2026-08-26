@@ -904,7 +904,6 @@ export default function OrganizationsPage() {
               <label className="mm-pa-label">Organization Type</label>
               <select className="mm-pa-select" value={form.organization_type} onChange={(e) => setForm({ ...form, organization_type: e.target.value })}>
                 <option value="College">College</option>
-                <option value="Public">Public (Individual Students)</option>
               </select>
             </div>
             <div>

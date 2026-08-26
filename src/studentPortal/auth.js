@@ -39,6 +39,12 @@ export function getStudentSession() {
 }
 
 export function setStudentSession(user) {
+  const orgType = String(user?.organization_type || '').toUpperCase();
+  const isIndividual =
+    user?.is_individual === true ||
+    user?.isIndividual === true ||
+    orgType === 'PUBLIC' ||
+    String(user?.organization_code || '').toUpperCase() === 'PUBLIC';
   authStore.set(
     SESSION_KEY,
     JSON.stringify({
@@ -46,12 +52,18 @@ export function setStudentSession(user) {
       name: user?.name || '',
       email: user?.email || '',
       username: user?.username || '',
-      college_id: user?.college_id || user?.username || '',
+      college_id: user?.college_id || user?.roll_number || user?.username || '',
       role: 'STUDENT',
       organization_id: user?.organization_id,
       organization_name: user?.organization_name || '',
       organization_code: user?.organization_code || '',
+      organization_type: orgType || (isIndividual ? 'PUBLIC' : 'COLLEGE'),
+      is_individual: isIndividual,
       department_name: user?.department_name || user?.department?.name || '',
+      college_name: user?.college_name || '',
+      course_or_branch: user?.course_or_branch || '',
+      batch_year: user?.batch_year ?? null,
+      roll_number: user?.roll_number || '',
       mustChangePassword: Boolean(
         user?.mustChangePassword || user?.must_change_password || user?.force_password_change
       ),
