@@ -30,6 +30,7 @@ import {
   redirectToCollegePortal,
   tenantPortalPath,
 } from '../../tenant/resolveTenant';
+import { organizationLogoUrl } from '../../tenant/orgLogo';
 import {
   fetchLoginColleges,
   pickInitialCollege,
@@ -45,6 +46,7 @@ import {
 } from '../auth';
 import { DEMO_ORG } from '../../organizationPortal/demoAuth';
 import { studentPaths } from '../paths';
+import { StudentThemeFab, useStudentTheme } from '../useStudentTheme.jsx';
 import './student-login-career.css';
 
 const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
@@ -234,6 +236,7 @@ export default function StudentLoginPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const reduceMotion = useReducedMotion();
+  const { theme, toggle, rootClass } = useStudentTheme();
   const {
     college: tenantCollege,
     organizationCode: tenantOrgCode,
@@ -266,6 +269,12 @@ export default function StudentLoginPage() {
     .toUpperCase();
   const isIndividualLogin = Boolean(activeCollege?.individual) || orgCode === 'PUBLIC';
   const collegeName = activeCollege?.name || '';
+  const collegeLogo =
+    activeCollege?.has_logo && activeCollege?.id
+      ? organizationLogoUrl(activeCollege.id, {
+          updatedAt: activeCollege.logo_updated_at,
+        })
+      : null;
   const collegeHostLabel = activeCollege?.portal_slug
     ? `${activeCollege.portal_slug}.mentormuni.com`
     : activeCollege?.code
@@ -490,7 +499,8 @@ export default function StudentLoginPage() {
   const showLogin = step === 'login';
 
   return (
-    <div className="mm-career-root">
+    <div className={`mm-career-root ${rootClass}`}>
+      <StudentThemeFab theme={theme} onToggle={toggle} />
       {activeSession ? (
         <div className="mm-career-session" role="status">
           <p>
@@ -529,6 +539,15 @@ export default function StudentLoginPage() {
                   <span className="mm-career-brand__dot" aria-hidden>
                     ·
                   </span>
+                  {collegeLogo ? (
+                    <img
+                      className="mm-career-brand__college-logo"
+                      src={collegeLogo}
+                      alt=""
+                      width={22}
+                      height={22}
+                    />
+                  ) : null}
                   <em className="mm-career-brand__college" title={collegeName || undefined}>
                     {collegeName || (tenantLoading ? 'Loading…' : 'Campus portal')}
                   </em>

@@ -23,6 +23,7 @@ import {
 import { studentPaths } from '../paths';
 import EmptyState from '../components/home/EmptyState';
 import { isIndividualStudent } from '../accountType';
+import StudentAvatar from '../components/StudentAvatar';
 
 import '../styles/profile.css';
 
@@ -41,18 +42,6 @@ function formatDate(iso) {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return null;
   return d.toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
-}
-
-function initialsOf(name) {
-  return (
-    String(name || '')
-      .split(' ')
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase() || 'ST'
-  );
 }
 
 function ScoreRow({ section }) {
@@ -176,9 +165,10 @@ export default function StudentProfilePage() {
       {/* ---- Identity: the part someone else reads first ---- */}
       <motion.section className="stu-pf__id" {...enterProps(reduce)}>
         <div className="stu-pf__id-main">
-          <span className="stu-avatar stu-pf__avatar" aria-hidden>
-            {initialsOf(name)}
-          </span>
+          <StudentAvatar
+            student={{ ...student, ...session, name }}
+            className="stu-pf__avatar"
+          />
 
           <div className="stu-pf__id-text">
             <h1 className="stu-pf__name">{name}</h1>

@@ -196,6 +196,8 @@ export async function resolveTenantFromHostname({ force = false } = {}) {
     portal_slug: data.portal_slug || slug,
     portal_url: data.portal_url || collegePortalOrigin(slug),
     status: data.status || 'ACTIVE',
+    has_logo: Boolean(data.has_logo),
+    logo_updated_at: data.logo_updated_at || null,
   };
   writeCache(slug, tenant);
   return tenant;

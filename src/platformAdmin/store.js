@@ -114,6 +114,18 @@ export async function updateOrganization(id, patch) {
   return normalizeOrganization(row);
 }
 
+export async function uploadOrganizationLogo(id, file) {
+  const row = await platformApi.upload(`/platform/organizations/${id}/logo`, file);
+  emitUpdate();
+  return normalizeOrganization(row);
+}
+
+export async function deleteOrganizationLogo(id) {
+  const row = await platformApi.delete(`/platform/organizations/${id}/logo`);
+  emitUpdate();
+  return normalizeOrganization(row);
+}
+
 export async function getSubscriptionPlans() {
   // X-API-Key required; Bearer not required (auth: false still sends API key).
   const rows = asArray(await platformApi.get('/subscription-plans', { auth: false }), ['plans']);

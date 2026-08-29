@@ -2,6 +2,8 @@
  * College subdomain root hub — e.g. medicaps.mentormuni.com /
  * Two clear doors: Student login | College (TPO/HOD) login.
  * Apex localhost / www still serve the marketing homepage.
+ *
+ * Brand lockup: MentorMuni + college logo/name side by side.
  */
 import { Link } from 'react-router-dom';
 import { motion, useReducedMotion } from 'framer-motion';
@@ -23,10 +25,12 @@ import {
 } from 'lucide-react';
 import { CollegeTenantProvider, useCollegeTenantContext } from './CollegeTenantProvider';
 import { CollegeTenantGate } from './UnknownCollegePortalPage';
+import CollegeOrgBrand from './CollegeOrgBrand';
 import { apexOrigin } from './resolveTenant';
+import HeaderThemeToggle from '../components/navbar/HeaderThemeToggle';
 import './college-portal-home.css';
 
-const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
+const MM_LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
 const EASE = [0.22, 1, 0.36, 1];
 
 /** Soft watermark icons — same idea as the reference login backdrop. */
@@ -64,23 +68,50 @@ function CampusHubBackdrop() {
 function CollegePortalHomeInner() {
   const reduceMotion = useReducedMotion();
   const { college, slug } = useCollegeTenantContext();
-  const collegeName = college?.name || slug || 'Your college';
+  const collegeName = college?.name || slug || 'this college';
 
   return (
     <div className="mm-campus-hub">
       <CampusHubBackdrop />
 
+      <div className="mm-campus-hub__theme">
+        <HeaderThemeToggle />
+      </div>
+
+      <motion.div
+        className="mm-campus-hub__intro"
+        initial={reduceMotion ? false : { opacity: 0, y: -8 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: EASE }}
+      >
+        <p className="mm-campus-hub__intro-kicker">Campus placement prep</p>
+        <h1 className="mm-campus-hub__intro-title">
+          Portal for <em>{collegeName}</em>
+        </h1>
+      </motion.div>
+
       <motion.header
-        className="mm-campus-hub__brand"
+        className="mm-campus-hub__brand mm-campus-hub__brand--duo"
         initial={reduceMotion ? false : { opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: EASE }}
+        transition={{ duration: 0.4, ease: EASE, delay: 0.03 }}
       >
-        <img src={LOGO} alt="MentorMuni" />
-        <div>
-          <strong>MentorMuni</strong>
-          <span>Campus portal</span>
+        <div className="mm-campus-hub__duo-mm">
+          <img src={MM_LOGO} alt="MentorMuni" className="mm-campus-hub__duo-mm-logo" />
+          <div className="mm-campus-hub__duo-mm-text">
+            <strong>MentorMuni</strong>
+            <span>Campus portal</span>
+          </div>
         </div>
+
+        <span className="mm-campus-hub__duo-rule" aria-hidden />
+
+        <CollegeOrgBrand
+          college={college}
+          slug={slug}
+          size="md"
+          className="mm-campus-hub__duo-org"
+        />
       </motion.header>
 
       <motion.main
@@ -89,9 +120,7 @@ function CollegePortalHomeInner() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.45, ease: EASE, delay: 0.04 }}
       >
-        <p className="mm-campus-hub__eyebrow">Signed in for this campus</p>
-        <h1>{collegeName}</h1>
-        <p className="mm-campus-hub__lede">
+        <p className="mm-campus-hub__lede mm-campus-hub__lede--lead">
           Choose Student or College staff to continue on this campus.
         </p>
 
@@ -120,7 +149,7 @@ function CollegePortalHomeInner() {
         </div>
 
         <p className="mm-campus-hub__foot">
-          Not this college?{' '}
+          Not {collegeName}?{' '}
           <a href={apexOrigin()}>Go to mentormuni.com</a>
         </p>
       </motion.main>

@@ -121,6 +121,23 @@ async function request(method, path, { body, auth = true } = {}) {
   return parseResponse(res, { auth });
 }
 
+/** Multipart upload (do not set Content-Type — browser sets boundary). */
+async function uploadFile(path, file, { auth = true } = {}) {
+  const token = getToken();
+  const headers = {
+    'X-API-Key': API_KEY,
+    ...(auth && token ? { Authorization: `Bearer ${token}` } : {}),
+  };
+  const form = new FormData();
+  form.append('file', file);
+  const res = await fetch(`${BASE_URL}${path}`, {
+    method: 'POST',
+    headers,
+    body: form,
+  });
+  return parseResponse(res, { auth });
+}
+
 export const platformApi = {
   baseUrl: BASE_URL,
   key: API_KEY,
@@ -131,4 +148,5 @@ export const platformApi = {
   post: (path, body, opts = {}) => request('POST', path, { ...opts, body }),
   put: (path, body, opts = {}) => request('PUT', path, { ...opts, body }),
   delete: (path, opts = {}) => request('DELETE', path, opts),
+  upload: (path, file, opts = {}) => uploadFile(path, file, opts),
 };

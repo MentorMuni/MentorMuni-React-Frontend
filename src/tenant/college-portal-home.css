@@ -5,7 +5,7 @@
 
 .mm-campus-hub {
   --hub-ink: #14212b;
-  --hub-muted: #5a6b78;
+  --hub-muted: #3d4f5c;
   --hub-line: #e4e9ee;
   --hub-card: #ffffff;
   --hub-orange: #f05a00;
@@ -23,7 +23,8 @@
   padding: 32px 18px 40px;
   overflow: hidden;
   box-sizing: border-box;
-  color: var(--hub-ink);
+  /* Isolate from dark marketing theme (html.mm-new-ui near-white text) */
+  color: #14212b !important;
   background: var(--hub-surface);
   font-family:
     'Segoe UI',
@@ -171,13 +172,45 @@
   opacity: 0.3;
 }
 
+.mm-campus-hub__intro {
+  position: relative;
+  z-index: 1;
+  width: min(560px, 100%);
+  text-align: center;
+  margin-bottom: -8px;
+}
+
+.mm-campus-hub__intro-kicker {
+  margin: 0 0 6px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #d94f00 !important;
+}
+
+.mm-campus-hub__intro-title {
+  margin: 0;
+  font-size: clamp(1.35rem, 3.2vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  color: #14212b !important;
+}
+
+.mm-campus-hub__intro-title em {
+  font-style: normal;
+  color: #0e6f9a !important;
+}
+
 .mm-campus-hub__brand {
   position: relative;
   z-index: 1;
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 14px 22px 14px 16px;
+  gap: 18px;
+  width: min(560px, 100%);
+  padding: 16px 20px;
   border-radius: 20px;
   background: #ffffff;
   border: 1.5px solid rgba(240, 90, 0, 0.35);
@@ -185,36 +218,73 @@
     0 8px 24px rgba(20, 33, 43, 0.06),
     0 0 0 10px #f3f5f8,
     0 0 24px 14px #f3f5f8;
+  box-sizing: border-box;
 }
 
-.mm-campus-hub__brand img {
-  height: 72px;
+.mm-campus-hub__brand--duo {
+  justify-content: space-between;
+}
+
+.mm-campus-hub__duo-mm {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  flex: 1 1 0;
+}
+
+.mm-campus-hub__duo-mm-logo {
+  height: 56px;
   width: auto;
+  flex-shrink: 0;
 }
 
-.mm-campus-hub__brand strong {
+.mm-campus-hub__duo-mm-text {
+  min-width: 0;
+}
+
+.mm-campus-hub__duo-mm-text strong {
   display: block;
-  font-size: clamp(1.55rem, 3.2vw, 1.85rem);
+  font-size: clamp(1.15rem, 2.6vw, 1.35rem);
   letter-spacing: -0.03em;
   font-weight: 800;
   line-height: 1.15;
+  color: #14212b !important;
 }
 
-.mm-campus-hub__brand span {
+.mm-campus-hub__duo-mm-text span {
   display: block;
-  margin-top: 4px;
-  font-size: 0.78rem;
+  margin-top: 3px;
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--hub-muted);
+  color: #3d4f5c !important;
+}
+
+.mm-campus-hub__duo-rule {
+  width: 1px;
+  align-self: stretch;
+  min-height: 44px;
+  background: rgba(228, 233, 238, 0.95);
+  flex-shrink: 0;
+}
+
+.mm-campus-hub__duo-org {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.mm-campus-hub__duo-org .mm-org-brand__name {
+  font-size: clamp(1.05rem, 2.4vw, 1.28rem);
+  -webkit-line-clamp: 2;
 }
 
 .mm-campus-hub__card {
   position: relative;
   z-index: 1;
   width: min(560px, 100%);
-  padding: 32px 28px 26px;
+  padding: 28px 28px 26px;
   border-radius: 24px;
   background: var(--hub-card);
   border: 1px solid rgba(228, 233, 238, 0.9);
@@ -224,29 +294,16 @@
   text-align: center;
 }
 
-.mm-campus-hub__eyebrow {
-  margin: 0 0 8px;
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--hub-orange);
-}
-
-.mm-campus-hub__card h1 {
-  margin: 0;
-  font-size: clamp(1.45rem, 3.4vw, 1.9rem);
-  line-height: 1.18;
-  letter-spacing: -0.03em;
-  font-weight: 800;
-}
-
 .mm-campus-hub__lede {
-  margin: 12px auto 0;
+  margin: 0 auto;
   max-width: 40ch;
   font-size: 0.95rem;
-  line-height: 1.5;
-  color: var(--hub-muted);
+  line-height: 1.45;
+  color: #3d4f5c !important;
+}
+
+.mm-campus-hub__lede--lead {
+  margin-bottom: 22px;
 }
 
 .mm-campus-hub__lede em {
@@ -271,7 +328,7 @@
   border: 1px solid var(--hub-line);
   background: #f7f9fb;
   text-decoration: none !important;
-  color: inherit;
+  color: #14212b !important;
   filter: none !important;
   opacity: 1 !important;
   transform: none;
@@ -339,12 +396,13 @@
   font-size: 1.05rem;
   font-weight: 800;
   letter-spacing: -0.02em;
+  color: #14212b !important;
 }
 
 .mm-campus-hub__tile-copy span {
   font-size: 0.84rem;
   line-height: 1.4;
-  color: var(--hub-muted);
+  color: #3d4f5c !important;
 }
 
 .mm-campus-hub__tile-arrow {
@@ -363,11 +421,11 @@
 .mm-campus-hub__foot {
   margin: 20px 0 0;
   font-size: 0.82rem;
-  color: var(--hub-muted);
+  color: #3d4f5c !important;
 }
 
 .mm-campus-hub__foot a {
-  color: #f05a00 !important;
+  color: #d94f00 !important;
   font-weight: 700;
   text-decoration: none !important;
   filter: none !important;
@@ -375,6 +433,125 @@
 
 .mm-campus-hub__foot a:hover {
   text-decoration: underline !important;
+}
+
+.mm-campus-hub__theme {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 2;
+}
+
+.mm-campus-hub__theme .mm-header-theme-toggle {
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 12px;
+  border: 1px solid #d5dde5;
+  background: #ffffff;
+  color: #14212b;
+  box-shadow: 0 6px 16px rgba(20, 33, 43, 0.08);
+  filter: none !important;
+}
+
+.mm-campus-hub__theme .mm-header-theme-toggle:hover {
+  color: #f05a00;
+  border-color: rgba(240, 90, 0, 0.4);
+  background: #fff8f3;
+  filter: none !important;
+}
+
+/* Dark theme (same html.mm-new-ui toggle as the rest of the product) */
+html.mm-new-ui .mm-campus-hub {
+  --hub-ink: #f1f5f9;
+  --hub-muted: #94a3b8;
+  --hub-line: rgba(148, 163, 184, 0.22);
+  --hub-card: rgba(15, 23, 42, 0.92);
+  --hub-surface: #0b1220;
+  color: #f1f5f9 !important;
+  background: #0b1220;
+}
+
+html.mm-new-ui .mm-campus-hub__grid {
+  background-color: #0b1220;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.12) 1px, transparent 1px);
+}
+
+html.mm-new-ui .mm-campus-hub__brand {
+  background: rgba(15, 23, 42, 0.95);
+  border-color: rgba(240, 90, 0, 0.45);
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.35),
+    0 0 0 10px #0b1220,
+    0 0 24px 14px #0b1220;
+}
+
+html.mm-new-ui .mm-campus-hub__intro-title,
+html.mm-new-ui .mm-campus-hub__brand strong,
+html.mm-new-ui .mm-campus-hub__duo-mm-text strong,
+html.mm-new-ui .mm-campus-hub__tile,
+html.mm-new-ui .mm-campus-hub__tile-copy strong {
+  color: #f8fafc !important;
+}
+
+html.mm-new-ui .mm-campus-hub__intro-title em {
+  color: #7dd3fc !important;
+}
+
+html.mm-new-ui .mm-campus-hub__intro-kicker {
+  color: #fb923c !important;
+}
+
+html.mm-new-ui .mm-campus-hub__duo-mm-text span,
+html.mm-new-ui .mm-campus-hub__lede,
+html.mm-new-ui .mm-campus-hub__tile-copy span,
+html.mm-new-ui .mm-campus-hub__foot {
+  color: #94a3b8 !important;
+}
+
+html.mm-new-ui .mm-campus-hub__duo-rule {
+  background: rgba(148, 163, 184, 0.28);
+}
+
+html.mm-new-ui .mm-campus-hub__card {
+  background: rgba(15, 23, 42, 0.94);
+  border-color: rgba(148, 163, 184, 0.2);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+}
+
+html.mm-new-ui .mm-campus-hub__tile {
+  background: rgba(30, 41, 59, 0.72);
+  border-color: rgba(148, 163, 184, 0.2);
+}
+
+html.mm-new-ui .mm-campus-hub__tile--student:hover,
+html.mm-new-ui .mm-campus-hub__tile--student:focus-visible {
+  background: rgba(240, 90, 0, 0.12);
+  border-color: rgba(240, 90, 0, 0.45);
+}
+
+html.mm-new-ui .mm-campus-hub__tile--org:hover,
+html.mm-new-ui .mm-campus-hub__tile--org:focus-visible {
+  background: rgba(14, 111, 154, 0.16);
+  border-color: rgba(56, 189, 248, 0.4);
+}
+
+html.mm-new-ui .mm-campus-hub__foot a {
+  color: #fb923c !important;
+}
+
+html.mm-new-ui .mm-campus-hub__theme .mm-header-theme-toggle {
+  border-color: rgba(148, 163, 184, 0.28);
+  background: rgba(15, 23, 42, 0.92);
+  color: #f8fafc;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
+}
+
+html.mm-new-ui .mm-campus-hub__theme .mm-header-theme-toggle:hover {
+  color: #fb923c;
+  border-color: rgba(251, 146, 60, 0.5);
+  background: rgba(30, 41, 59, 0.95);
 }
 
 @media (max-width: 720px) {
@@ -388,6 +565,29 @@
 @media (max-width: 520px) {
   .mm-campus-hub {
     padding: 24px 14px 32px;
+  }
+
+  .mm-campus-hub__theme {
+    top: 12px;
+    right: 12px;
+  }
+
+  .mm-campus-hub__brand--duo {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  .mm-campus-hub__duo-rule {
+    display: none;
+  }
+
+  .mm-campus-hub__duo-mm,
+  .mm-campus-hub__duo-org {
+    flex: 1 1 100%;
+  }
+
+  .mm-campus-hub__duo-mm-logo {
+    height: 48px;
   }
 
   .mm-campus-hub__card {

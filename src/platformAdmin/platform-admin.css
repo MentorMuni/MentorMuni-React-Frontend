@@ -783,6 +783,62 @@ html.mm-new-ui .mm-pa-root .mm-pa-page-sub,
   background: rgba(14, 165, 233, 0.15);
   color: #7dd3fc;
   flex-shrink: 0;
+  overflow: hidden;
+}
+
+.mm-pa-table__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+}
+
+.mm-pa-logo-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 4px;
+}
+
+.mm-pa-logo-preview {
+  width: 64px;
+  height: 64px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: rgba(14, 165, 233, 0.12);
+  color: #7dd3fc;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.mm-pa-logo-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+}
+
+.mm-pa-logo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.mm-pa-logo-file {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.mm-pa-logo-file input[type='file'] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
 }
 
 .mm-pa-table__title {

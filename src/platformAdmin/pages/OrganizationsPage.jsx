@@ -15,6 +15,8 @@ import {
   createOrganization,
   updateOrganization,
   deleteOrganization,
+  uploadOrganizationLogo,
+  deleteOrganizationLogo,
   assignSubscription,
   cancelSubscription,
   getSubscriptionForOrg,
@@ -37,6 +39,7 @@ import {
 } from '../store';
 import Modal from '../Modal';
 import { collegePortalOrigin } from '../../tenant/resolveTenant';
+import { organizationLogoUrl } from '../../tenant/orgLogo';
 
 function collegePortalDisplay(orgOrSlug) {
   if (orgOrSlug && typeof orgOrSlug === 'object') {
@@ -119,6 +122,8 @@ export default function OrganizationsPage() {
   const [createOpen, setCreateOpen] = useState(false);
   const [editingOrgId, setEditingOrgId] = useState(null);
   const [form, setForm] = useState(emptyOrg);
+  const [logoBusy, setLogoBusy] = useState(false);
+  const [logoPreviewOrg, setLogoPreviewOrg] = useState(null);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [selected, setSelected] = useState(null);
@@ -338,6 +343,7 @@ export default function OrganizationsPage() {
   const openCreate = () => {
     setEditingOrgId(null);
     setForm(emptyOrg);
+    setLogoPreviewOrg(null);
     setError('');
     setSuccess('');
     setCreateOpen(true);
@@ -346,9 +352,44 @@ export default function OrganizationsPage() {
   const openEditOrg = (org) => {
     setEditingOrgId(org.id);
     setForm(orgToForm(org));
+    setLogoPreviewOrg(org);
     setError('');
     setSuccess('');
     setCreateOpen(true);
+  };
+
+  const onLogoFile = async (e) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (!file || !editingOrgId) return;
+    setLogoBusy(true);
+    setError('');
+    try {
+      const row = await uploadOrganizationLogo(editingOrgId, file);
+      setLogoPreviewOrg(row);
+      setOrgs((prev) => prev.map((o) => (o.id === row.id ? { ...o, ...row } : o)));
+      setSuccess('College logo updated.');
+    } catch (err) {
+      setError(err.message || 'Logo upload failed.');
+    } finally {
+      setLogoBusy(false);
+    }
+  };
+
+  const onClearLogo = async () => {
+    if (!editingOrgId) return;
+    setLogoBusy(true);
+    setError('');
+    try {
+      const row = await deleteOrganizationLogo(editingOrgId);
+      setLogoPreviewOrg(row);
+      setOrgs((prev) => prev.map((o) => (o.id === row.id ? { ...o, ...row } : o)));
+      setSuccess('College logo removed.');
+    } catch (err) {
+      setError(err.message || 'Could not remove logo.');
+    } finally {
+      setLogoBusy(false);
+    }
   };
 
   const submitOrg = async (e) => {
@@ -831,7 +872,18 @@ export default function OrganizationsPage() {
                   <td>
                     <div className="flex items-center gap-3">
                       <div className="mm-pa-table__avatar">
-                        <Building2 size={16} />
+                        {org.has_logo ? (
+                          <img
+                            src={organizationLogoUrl(org.id, {
+                              updatedAt: org.logo_updated_at,
+                            })}
+                            alt=""
+                            width={32}
+                            height={32}
+                          />
+                        ) : (
+                          <Building2 size={16} />
+                        )}
                       </div>
                       <div>
                         <p className="mm-pa-table__title">{org.name}</p>
@@ -1014,6 +1066,54 @@ export default function OrganizationsPage() {
               <input className="mm-pa-input" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} />
             </div>
           </div>
+
+          {editingOrgId ? (
+            <>
+              <p className="mm-pa-section-label">Campus logo</p>
+              <div className="mm-pa-logo-row">
+                <div className="mm-pa-logo-preview">
+                  {logoPreviewOrg?.has_logo ? (
+                    <img
+                      src={organizationLogoUrl(logoPreviewOrg.id, {
+                        updatedAt: logoPreviewOrg.logo_updated_at,
+                      })}
+                      alt=""
+                    />
+                  ) : (
+                    <Building2 size={22} />
+                  )}
+                </div>
+                <div className="mm-pa-logo-actions">
+                  <label className="mm-pa-btn mm-pa-btn--ghost mm-pa-logo-file">
+                    {logoBusy ? 'Uploading…' : 'Upload logo'}
+                    <input
+                      type="file"
+                      accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                      disabled={logoBusy}
+                      onChange={onLogoFile}
+                    />
+                  </label>
+                  {logoPreviewOrg?.has_logo ? (
+                    <button
+                      type="button"
+                      className="mm-pa-btn mm-pa-btn--ghost"
+                      disabled={logoBusy}
+                      onClick={onClearLogo}
+                    >
+                      Remove
+                    </button>
+                  ) : null}
+                  <p className="mm-pa-hint">
+                    PNG, JPEG, WebP, or SVG · max 512 KB. Shown on the campus portal (not student photos).
+                  </p>
+                </div>
+              </div>
+            </>
+          ) : (
+            <p className="mm-pa-hint" style={{ marginTop: 12 }}>
+              Save the organization first, then edit it to upload a campus logo.
+            </p>
+          )}
 
           <div className="mt-5 flex justify-end gap-2">
             <button

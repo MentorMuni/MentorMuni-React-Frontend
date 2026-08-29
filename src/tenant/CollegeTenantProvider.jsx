@@ -19,6 +19,8 @@ function toCollege(tenant) {
     portal_slug: tenant.portal_slug,
     portal_url: tenant.portal_url,
     status: tenant.status,
+    has_logo: Boolean(tenant.has_logo),
+    logo_updated_at: tenant.logo_updated_at || null,
   };
 }
 

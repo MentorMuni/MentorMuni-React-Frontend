@@ -17,6 +17,7 @@ import {
 import '../../styles/fear-to-fearless-sidebar.css';
 import '../../styles/whiteboard.css';
 import { isIndividualStudent, studentCampusLabel } from '../../accountType';
+import StudentAvatar from '../StudentAvatar';
 
 const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
 
@@ -78,15 +79,6 @@ export default function StudentSidebar({
   streak = 0,
   weekDots = null,
 }) {
-  const initials =
-    session?.name
-      ?.split(' ')
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase() || 'ST';
-
   const dots = Array.isArray(weekDots) && weekDots.length === 7
     ? weekDots
     : [false, false, false, false, false, false, false];
@@ -183,7 +175,7 @@ export default function StudentSidebar({
             onClick={onClose}
             title="View your placement profile"
           >
-            <span className="stu-avatar stu-avatar--sm">{initials}</span>
+            <StudentAvatar student={session} size="sm" />
             <span className="stu-sidebar__user-text">
               <strong>{session?.name || 'Student'}</strong>
               <em>

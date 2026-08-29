@@ -6,6 +6,7 @@ import { studentPaths } from '../../paths';
 import { useStudentTheme } from '../../useStudentTheme.jsx';
 import { driveCountdown, isDriveSoon } from '../../drives';
 import { isIndividualStudent, studentCampusLabel } from '../../accountType';
+import StudentAvatar from '../StudentAvatar';
 
 const THEME_MODES = [
   { id: 'light', label: 'Light', Icon: Sun },
@@ -16,18 +17,6 @@ const THEME_MODES = [
 /** Demo/local sessions get a synthetic drive; it must not read as real. */
 function isSampleDrive(drive) {
   return String(drive?.id || '').startsWith('demo');
-}
-
-function initialsOf(name) {
-  return (
-    String(name || '')
-      .split(' ')
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((n) => n[0])
-      .join('')
-      .toUpperCase() || 'ST'
-  );
 }
 
 /** Closes a popover on outside click or Escape. */
@@ -57,7 +46,6 @@ export default function StudentTopbar({ session, onMenu, nextDrive }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [notifOpen, setNotifOpen] = useState(false);
 
-  const initials = initialsOf(session?.name);
   const menuRef = useDismissable(menuOpen, () => setMenuOpen(false));
   const notifRef = useDismissable(notifOpen, () => setNotifOpen(false));
   const individual = isIndividualStudent(session);
@@ -164,13 +152,13 @@ export default function StudentTopbar({ session, onMenu, nextDrive }) {
             aria-expanded={menuOpen}
             aria-label="Account menu"
           >
-            <span className="stu-avatar">{initials}</span>
+            <StudentAvatar student={session} />
           </button>
 
           {menuOpen ? (
             <div className="stu-menu" role="menu">
               <div className="stu-menu__head">
-                <span className="stu-avatar">{initials}</span>
+                <StudentAvatar student={session} />
                 <div className="stu-menu__id">
                   <strong>{session?.name || 'Student'}</strong>
                   <em>{session?.email || session?.college_id}</em>

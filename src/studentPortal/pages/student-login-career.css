@@ -98,7 +98,7 @@
 
 .mm-career-brand__title {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   flex-wrap: wrap;
   gap: 6px 8px;
   min-width: 0;
@@ -125,6 +125,16 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: min(420px, 55vw);
+}
+
+.mm-career-brand__college-logo {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  object-fit: contain;
+  background: #fff;
+  border: 1px solid rgba(15, 23, 42, 0.1);
+  flex-shrink: 0;
 }
 
 .mm-career-brand__tag {
@@ -1102,5 +1112,339 @@
 @media (max-width: 380px) {
   .mm-career-stats {
     grid-template-columns: 1fr;
+  }
+}
+
+/* —— Theme fab (shared StudentThemeFab) on career login —— */
+.mm-career-root .mm-stu-theme-fab {
+  --stu-line: var(--mm-line);
+  --stu-panel: var(--mm-card);
+  --stu-ink: var(--mm-ink);
+  --stu-accent: var(--mm-orange);
+  --stu-focus: 0 0 0 3px rgba(240, 90, 0, 0.28);
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 40;
+  filter: none !important;
+}
+
+.mm-career-root.is-light .mm-stu-theme-fab {
+  background: #ffffff;
+  border-color: #d5dde5;
+  color: #14212b !important;
+  box-shadow: 0 8px 24px rgba(20, 33, 43, 0.1);
+}
+
+.mm-career-root.is-dark .mm-stu-theme-fab {
+  background: rgba(15, 23, 42, 0.94);
+  border-color: rgba(148, 163, 184, 0.28);
+  color: #f8fafc !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* —— Dark mode —— */
+.mm-career-root.is-dark {
+  --mm-ink: #f1f5f9;
+  --mm-muted: #94a3b8;
+  --mm-line: rgba(148, 163, 184, 0.22);
+  --mm-surface: #0b1220;
+  --mm-card: #111827;
+  --mm-orange: #fb923c;
+  --mm-orange-hot: #fdba74;
+  --mm-orange-soft: rgba(251, 146, 60, 0.16);
+  --mm-ok: #4ade80;
+  --mm-danger: #f87171;
+  --mm-shadow: 0 18px 48px rgba(0, 0, 0, 0.45);
+  color: #f1f5f9 !important;
+  background: #0b1220;
+}
+
+.mm-career-root.is-dark .mm-career-session {
+  background: rgba(251, 146, 60, 0.12);
+  border-bottom-color: rgba(251, 146, 60, 0.28);
+  color: #f8fafc;
+}
+
+.mm-career-root.is-dark .mm-career-session__actions button.is-ghost {
+  color: #fb923c;
+  border-color: rgba(251, 146, 60, 0.45);
+}
+
+.mm-career-root.is-dark .mm-career-brand__title strong,
+.mm-career-root.is-dark .mm-career-brand__college,
+.mm-career-root.is-dark .mm-career-value h1,
+.mm-career-root.is-dark .mm-career-value h1 em,
+.mm-career-root.is-dark .mm-career-features strong,
+.mm-career-root.is-dark .mm-career-card h2,
+.mm-career-root.is-dark .mm-career-selected__name,
+.mm-career-root.is-dark .mm-career-field > span,
+.mm-career-root.is-dark .mm-career-input input,
+.mm-career-root.is-dark .mm-career-input__stack strong,
+.mm-career-root.is-dark .mm-career-stats__item strong,
+.mm-career-root.is-dark .mm-career-stage__ring-score strong {
+  color: #f8fafc !important;
+}
+
+.mm-career-root.is-dark .mm-career-brand__tag,
+.mm-career-root.is-dark .mm-career-lede,
+.mm-career-root.is-dark .mm-career-features li div span,
+.mm-career-root.is-dark .mm-career-card__sub,
+.mm-career-root.is-dark .mm-career-selected__label,
+.mm-career-root.is-dark .mm-career-selected__meta,
+.mm-career-root.is-dark .mm-career-support,
+.mm-career-root.is-dark .mm-career-foot,
+.mm-career-root.is-dark .mm-career-stats__item span,
+.mm-career-root.is-dark .mm-career-stage__eyebrow,
+.mm-career-root.is-dark .mm-career-stage__hint,
+.mm-career-root.is-dark .mm-career-stage__quote,
+.mm-career-root.is-dark .mm-career-empty,
+.mm-career-root.is-dark .mm-career-input__host {
+  color: #94a3b8 !important;
+}
+
+.mm-career-root.is-dark .mm-career-features__icon {
+  color: #ffffff !important;
+}
+
+.mm-career-root.is-dark .mm-career-badge {
+  background: rgba(251, 146, 60, 0.16);
+  color: #fb923c !important;
+}
+
+.mm-career-root.is-dark .mm-career-card,
+.mm-career-root.is-dark .mm-career-stage__card {
+  background: rgba(17, 24, 39, 0.96);
+  border-color: rgba(148, 163, 184, 0.2);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.4);
+}
+
+.mm-career-root.is-dark .mm-career-stage__glow {
+  background: radial-gradient(circle at 50% 42%, rgba(251, 146, 60, 0.22), transparent 68%);
+}
+
+.mm-career-root.is-dark .mm-career-stage__board {
+  background:
+    linear-gradient(160deg, #1e293b 0%, #111827 55%, #0f172a 100%);
+  border-color: rgba(148, 163, 184, 0.18);
+}
+
+.mm-career-root.is-dark .mm-career-stage__ring-track {
+  stroke: rgba(148, 163, 184, 0.25);
+}
+
+.mm-career-root.is-dark .mm-career-input,
+.mm-career-root.is-dark .mm-career-college-list,
+.mm-career-root.is-dark .mm-career-selected,
+.mm-career-root.is-dark .mm-career-demo {
+  background: rgba(15, 23, 42, 0.85);
+  border-color: rgba(148, 163, 184, 0.22);
+}
+
+.mm-career-root.is-dark .mm-career-input:focus-within,
+.mm-career-root.is-dark .mm-career-input.is-locked {
+  border-color: rgba(251, 146, 60, 0.55);
+}
+
+.mm-career-root.is-dark .mm-career-input input {
+  background: transparent !important;
+  color: #f8fafc !important;
+  -webkit-text-fill-color: #f8fafc;
+}
+
+.mm-career-root.is-dark .mm-career-input input::placeholder {
+  color: #64748b !important;
+}
+
+.mm-career-root.is-dark .mm-career-input input:-webkit-autofill,
+.mm-career-root.is-dark .mm-career-input input:-webkit-autofill:hover,
+.mm-career-root.is-dark .mm-career-input input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #f8fafc;
+  box-shadow: 0 0 0 1000px #0f172a inset;
+  transition: background-color 9999s ease-out;
+}
+
+.mm-career-root.is-dark .mm-career-eye,
+.mm-career-root.is-dark .mm-career-change,
+.mm-career-root.is-dark .mm-career-forgot,
+.mm-career-root.is-dark .mm-career-demo-link,
+.mm-career-root.is-dark .mm-career-link,
+.mm-career-root.is-dark .mm-career-ghost {
+  color: #fb923c !important;
+  filter: none !important;
+}
+
+.mm-career-root.is-dark .mm-career-cta {
+  background: #f05a00;
+  color: #ffffff !important;
+}
+
+.mm-career-root.is-dark .mm-career-cta:hover {
+  background: #ff6a14;
+}
+
+.mm-career-root.is-dark .mm-career-ghost {
+  border-color: rgba(148, 163, 184, 0.28);
+  background: transparent;
+}
+
+.mm-career-root.is-dark .mm-career-alert.is-error {
+  background: rgba(248, 113, 113, 0.12);
+  color: #fecaca !important;
+  border-color: rgba(248, 113, 113, 0.35);
+}
+
+.mm-career-root.is-dark .mm-career-alert.is-ok {
+  background: rgba(74, 222, 128, 0.12);
+  color: #bbf7d0 !important;
+  border-color: rgba(74, 222, 128, 0.3);
+}
+
+.mm-career-root.is-dark .mm-career-college-list button {
+  background: rgba(15, 23, 42, 0.85);
+  border-bottom-color: rgba(148, 163, 184, 0.14);
+  color: #e2e8f0 !important;
+}
+
+.mm-career-root.is-dark .mm-career-college-list strong {
+  color: #f8fafc !important;
+}
+
+.mm-career-root.is-dark .mm-career-college-list span {
+  color: #94a3b8 !important;
+}
+
+.mm-career-root.is-dark .mm-career-college-list button:hover {
+  background: rgba(251, 146, 60, 0.12);
+}
+
+.mm-career-root.is-dark .mm-career-stats__item {
+  background: rgba(17, 24, 39, 0.9);
+  border-color: rgba(148, 163, 184, 0.18);
+}
+
+.mm-career-root.is-dark .mm-career-stage__pill {
+  background: rgba(37, 99, 235, 0.2);
+  color: #93c5fd !important;
+}
+
+.mm-career-root.is-dark .mm-career-stage__pill--warm {
+  background: rgba(251, 146, 60, 0.18);
+  color: #fdba74 !important;
+}
+
+.mm-career-root.is-dark .mm-career-stage__chips span {
+  background: rgba(30, 41, 59, 0.9);
+  color: #cbd5e1 !important;
+  border-color: rgba(148, 163, 184, 0.2);
+}
+
+.mm-career-root.is-dark .mm-career-card__hero-icon {
+  color: #fb923c !important;
+}
+
+/* Light mode: keep ink readable even under html.mm-new-ui */
+.mm-career-root.is-light {
+  --mm-ink: #14212b;
+  --mm-muted: #3d4f5c;
+  --mm-line: #d8dee6;
+  --mm-surface: #f5f6f8;
+  --mm-card: #ffffff;
+  color: #14212b !important;
+  background: #f5f6f8;
+}
+
+.mm-career-root.is-light .mm-career-brand__title strong,
+.mm-career-root.is-light .mm-career-features strong,
+.mm-career-root.is-light .mm-career-features li strong,
+.mm-career-root.is-light .mm-career-card h2,
+.mm-career-root.is-light .mm-career-selected__name,
+.mm-career-root.is-light .mm-career-value h1,
+.mm-career-root.is-light .mm-career-input__stack strong,
+.mm-career-root.is-light .mm-career-stats__item strong,
+.mm-career-root.is-light .mm-career-stage__ring-score strong,
+.mm-career-root.is-light .mm-career-college-list strong {
+  color: #14212b !important;
+}
+
+.mm-career-root.is-light .mm-career-brand__tag,
+.mm-career-root.is-light .mm-career-lede,
+.mm-career-root.is-light .mm-career-card__sub,
+.mm-career-root.is-light .mm-career-card__hero p,
+.mm-career-root.is-light .mm-career-field,
+.mm-career-root.is-light .mm-career-support,
+.mm-career-root.is-light .mm-career-foot,
+.mm-career-root.is-light .mm-career-selected__label,
+.mm-career-root.is-light .mm-career-selected__meta,
+.mm-career-root.is-light .mm-career-stats__item span,
+.mm-career-root.is-light .mm-career-features li div span,
+.mm-career-root.is-light .mm-career-input__host,
+.mm-career-root.is-light .mm-career-stage__eyebrow,
+.mm-career-root.is-light .mm-career-stage__hint,
+.mm-career-root.is-light .mm-career-stage__quote {
+  color: #3d4f5c !important;
+}
+
+.mm-career-root.is-light .mm-career-brand__college {
+  color: #f05a00 !important;
+}
+
+.mm-career-root.is-light .mm-career-input,
+.mm-career-root.is-light .mm-career-input.is-locked,
+.mm-career-root.is-light .mm-career-college-list button {
+  background: #ffffff !important;
+  border-color: #d8dee6 !important;
+  color: #14212b !important;
+}
+
+.mm-career-root.is-light .mm-career-input input {
+  background: transparent !important;
+  color: #14212b !important;
+  -webkit-text-fill-color: #14212b;
+}
+
+.mm-career-root.is-light .mm-career-input input::placeholder {
+  color: #6b7a88 !important;
+  opacity: 1;
+  -webkit-text-fill-color: #6b7a88;
+}
+
+.mm-career-root.is-light .mm-career-input input:-webkit-autofill,
+.mm-career-root.is-light .mm-career-input input:-webkit-autofill:hover,
+.mm-career-root.is-light .mm-career-input input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #14212b;
+  box-shadow: 0 0 0 1000px #ffffff inset;
+  transition: background-color 9999s ease-out;
+}
+
+.mm-career-root.is-light .mm-career-input svg,
+.mm-career-root.is-light .mm-career-eye {
+  color: #5a6b78 !important;
+}
+
+.mm-career-root.is-light .mm-career-card,
+.mm-career-root.is-light .mm-career-stage__card {
+  background: #ffffff !important;
+  border-color: #e6e8ec;
+}
+
+.mm-career-root.is-light .mm-career-support {
+  background: #f5f6f8 !important;
+  color: #3d4f5c !important;
+}
+
+.mm-career-root.is-light .mm-career-link,
+.mm-career-root.is-light .mm-career-forgot,
+.mm-career-root.is-light .mm-career-change,
+.mm-career-root.is-light .mm-career-demo-link {
+  color: #d94f00 !important;
+  filter: none !important;
+}
+
+@media (max-width: 640px) {
+  .mm-career-root .mm-stu-theme-fab {
+    top: auto;
+    bottom: 14px;
+    right: 14px;
   }
 }
