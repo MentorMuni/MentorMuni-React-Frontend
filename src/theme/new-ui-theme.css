@@ -47,9 +47,9 @@ html.mm-new-ui ::selection {
 html.mm-new-ui a:focus-visible,
 html.mm-new-ui button:focus-visible,
 html.mm-new-ui [role="switch"]:focus-visible,
-html.mm-new-ui input:focus-visible,
-html.mm-new-ui select:focus-visible,
-html.mm-new-ui textarea:focus-visible {
+html.mm-new-ui input:focus-visible:not(:is(.mm-career-root *, .mm-stu-login-root *, .mm-org-root-login *, .mm-pa-root *)),
+html.mm-new-ui select:focus-visible:not(:is(.mm-career-root *, .mm-stu-login-root *, .mm-org-root-login *, .mm-pa-root *)),
+html.mm-new-ui textarea:focus-visible:not(:is(.mm-career-root *, .mm-stu-login-root *, .mm-org-root-login *, .mm-pa-root *)) {
   outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
 }
@@ -90,11 +90,12 @@ html.mm-new-ui [class*="text-foreground/"] {
 }
 
 /* Marketing / site shell only — do not paint Platform Admin, org/student
-   portals, or portaled modals (those own their light/dark ink tokens). */
-html.mm-new-ui p:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *)),
-html.mm-new-ui li:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *)),
-html.mm-new-ui dd:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *)),
-html.mm-new-ui label:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *)),
+   portals, campus hub / unknown-college / career login, or portaled modals
+   (those own their light/dark ink tokens). */
+html.mm-new-ui p:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-campus-hub *, .mm-unknown-portal *, .mm-career-root *)),
+html.mm-new-ui li:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-campus-hub *, .mm-unknown-portal *, .mm-career-root *)),
+html.mm-new-ui dd:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-campus-hub *, .mm-unknown-portal *, .mm-career-root *)),
+html.mm-new-ui label:not(:is(.mm-pa-root *, .mm-pa-modal-layer *, .stu-app *, .mm-stu-login-root *, .mm-org-root *, .mm-org-root-login *, .mm-campus-hub *, .mm-unknown-portal *, .mm-career-root *)),
 html.mm-new-ui .typo-body,
 html.mm-new-ui .typo-body-lg {
   color: var(--text-body);

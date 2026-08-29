@@ -1,7 +1,7 @@
 /**
  * Student portal login — light career-accelerator layout.
  * Desktop: value props | product stage | form
- * Tablet/mobile: stacked header → stage → form
+ * Tablet/mobile: stacked header → stage → form (stage hidden on phones)
  * No person illustrations — center stage shows MentorMuni portal offerings.
  */
 import { useEffect, useMemo, useState } from 'react';

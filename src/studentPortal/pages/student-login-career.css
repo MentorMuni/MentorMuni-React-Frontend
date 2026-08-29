@@ -3,7 +3,7 @@
  * Breakpoints match mock:
  *   Desktop ≥1100px — 3 columns + footer stats
  *   Tablet 768–1099 — header → stage → form
- *   Mobile ≤767 — compact stack, readiness only
+ *   Mobile ≤767 — form only (product stage hidden)
  */
 
 .mm-career-root {
@@ -31,6 +31,13 @@
     system-ui,
     -apple-system,
     sans-serif;
+}
+
+/* Kill global orange (#FF9500) focus rings — field ring lives on .mm-career-input */
+.mm-career-root :where(input, textarea, select):focus,
+.mm-career-root :where(input, textarea, select):focus-visible {
+  outline: none !important;
+  outline-offset: 0 !important;
 }
 
 .mm-career-session {
@@ -665,8 +672,8 @@
 }
 
 .mm-career-input:focus-within {
-  border-color: var(--mm-orange);
-  box-shadow: 0 0 0 3px var(--mm-orange-soft);
+  border-color: color-mix(in srgb, var(--mm-orange) 70%, var(--mm-line));
+  box-shadow: 0 0 0 2px var(--mm-orange-soft);
 }
 
 .mm-career-input svg {
@@ -677,13 +684,21 @@
 .mm-career-input input {
   flex: 1;
   border: 0;
-  outline: none;
+  outline: none !important;
+  box-shadow: none !important;
   background: transparent;
   font: inherit;
   font-weight: 600;
   color: var(--mm-ink);
   min-width: 0;
   width: 100%;
+}
+
+.mm-career-input input:focus,
+.mm-career-input input:focus-visible {
+  outline: none !important;
+  outline-offset: 0 !important;
+  box-shadow: none !important;
 }
 
 .mm-career-input.is-locked input {
@@ -1007,7 +1022,8 @@
 
 /* =========================================================
    Mobile: ≤767px
-   Stacked logo + campus → compact stage → form
+   Logo + campus → login form only (hide product stage so
+   the form fits the first viewport without scrolling)
    ========================================================= */
 @media (max-width: 767px) {
   .mm-career-top {
@@ -1035,50 +1051,13 @@
     gap: 4px;
   }
 
+  /* Drop interview readiness / product stage on phones */
   .mm-career-center {
-    min-height: 260px;
-  }
-
-  .mm-career-stage {
-    min-height: 260px;
-    max-width: 100%;
-  }
-
-  .mm-career-stage__board {
-    width: min(200px, 58%);
-    height: min(210px, 58%);
-    top: 48%;
-  }
-
-  .mm-career-stage__card--readiness {
-    top: 8%;
-    width: min(200px, 72%);
-  }
-
-  .mm-career-stage__ring-wrap,
-  .mm-career-stage__ring {
-    width: 100px;
-    height: 100px;
-  }
-
-  .mm-career-stage__ring-score strong {
-    font-size: 1.45rem;
-  }
-
-  /* Mobile mock: only readiness + quote */
-  .mm-career-stage__card--goal,
-  .mm-career-stage__card--mock,
-  .mm-career-stage__card--next,
-  .mm-career-stage__card--drills {
     display: none;
   }
 
-  .mm-career-stage__quote {
-    font-size: 0.72rem;
-    bottom: 4px;
-  }
-
   .mm-career-form-col {
+    order: 1;
     max-width: 100%;
   }
 
@@ -1241,9 +1220,14 @@
   border-color: rgba(148, 163, 184, 0.22);
 }
 
-.mm-career-root.is-dark .mm-career-input:focus-within,
+.mm-career-root.is-dark .mm-career-input:focus-within {
+  border-color: rgba(251, 146, 60, 0.45);
+  box-shadow: 0 0 0 2px rgba(251, 146, 60, 0.12);
+}
+
 .mm-career-root.is-dark .mm-career-input.is-locked {
   border-color: rgba(251, 146, 60, 0.55);
+  box-shadow: none;
 }
 
 .mm-career-root.is-dark .mm-career-input input {

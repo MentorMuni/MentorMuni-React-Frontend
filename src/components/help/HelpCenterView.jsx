@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { LifeBuoy, Paperclip, Send, X } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { LifeBuoy, MessageSquare, Paperclip, Send, X } from 'lucide-react';
 import { attachmentSrc, filesToAttachments } from '../../lib/helpAttachments';
 import './help-center.css';
 
@@ -9,6 +9,15 @@ const CATEGORIES = [
   { id: 'feedback', label: 'Feedback / idea' },
   { id: 'other', label: 'Something else' },
 ];
+
+const EMPTY_COMPOSE = {
+  subject: '',
+  category: 'not_working',
+  body: '',
+  attachments: [],
+};
+
+const EMPTY_REPLY = { body: '', attachments: [] };
 
 function statusLabel(status) {
   if (status === 'CLOSED') return 'Resolved';
@@ -40,25 +49,49 @@ export default function HelpCenterView({
   const [activeId, setActiveId] = useState(null);
   const [thread, setThread] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [threadLoading, setThreadLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
-  const [compose, setCompose] = useState({
-    subject: '',
-    category: 'not_working',
-    body: '',
-    attachments: [],
-  });
-  const [reply, setReply] = useState({ body: '', attachments: [] });
+  const [compose, setCompose] = useState(EMPTY_COMPOSE);
+  const [reply, setReply] = useState(EMPTY_REPLY);
+  const openSeq = useRef(0);
 
   async function refreshList() {
     const data = await api.listTickets();
     setTickets(data?.items || []);
   }
 
+  function clearTicketSelection() {
+    openSeq.current += 1;
+    setActiveId(null);
+    setThread(null);
+    setReply(EMPTY_REPLY);
+    setThreadLoading(false);
+  }
+
   async function openTicket(id) {
+    if (id == null) {
+      clearTicketSelection();
+      return;
+    }
+    const seq = ++openSeq.current;
+    // Selecting another ticket must never keep the previous reply draft / screenshots.
     setActiveId(id);
-    const data = await api.getTicket(id);
-    setThread(data);
+    setReply(EMPTY_REPLY);
+    setError('');
+    setThreadLoading(true);
+    try {
+      const data = await api.getTicket(id);
+      if (seq !== openSeq.current) return;
+      setThread(data);
+    } catch (err) {
+      if (seq !== openSeq.current) return;
+      setThread(null);
+      setActiveId(null);
+      setError(err.message || 'Could not open this request.');
+    } finally {
+      if (seq === openSeq.current) setThreadLoading(false);
+    }
   }
 
   useEffect(() => {
@@ -110,7 +143,8 @@ export default function HelpCenterView({
         source_portal: sourcePortal,
         attachments: compose.attachments,
       });
-      setCompose({ subject: '', category: 'not_working', body: '', attachments: [] });
+      setCompose(EMPTY_COMPOSE);
+      setReply(EMPTY_REPLY);
       await refreshList();
       setActiveId(created.id);
       setThread(created);
@@ -123,7 +157,8 @@ export default function HelpCenterView({
 
   async function submitReply(event) {
     event.preventDefault();
-    if (!activeId || thread?.status === 'CLOSED') return;
+    if (!activeId || !thread || thread.status === 'CLOSED') return;
+    if (thread.id !== activeId) return;
     setSaving(true);
     setError('');
     try {
@@ -131,7 +166,7 @@ export default function HelpCenterView({
         body: reply.body.trim(),
         attachments: reply.attachments,
       });
-      setReply({ body: '', attachments: [] });
+      setReply(EMPTY_REPLY);
       setThread(updated);
       await refreshList();
     } catch (err) {
@@ -148,6 +183,7 @@ export default function HelpCenterView({
     try {
       const updated = await api.closeTicket(activeId);
       setThread(updated);
+      setReply(EMPTY_REPLY);
       await refreshList();
     } catch (err) {
       setError(err.message || 'Could not close this request.');
@@ -171,6 +207,8 @@ export default function HelpCenterView({
     );
   }
 
+  const canReply = Boolean(thread && thread.id === activeId && thread.status !== 'CLOSED');
+
   return (
     <div className="mm-help">
       <header className="mm-help__intro">
@@ -189,8 +227,22 @@ export default function HelpCenterView({
 
       <div className="mm-help__grid">
         <section className="mm-help__panel">
-          <h3>New request</h3>
-          <form onSubmit={submitTicket} className="mm-help__form">
+          <div className="mm-help__panel-head">
+            <h3>New request</h3>
+            {activeId ? (
+              <button type="button" className="mm-help__ghost" onClick={clearTicketSelection}>
+                Writing new — hide ticket
+              </button>
+            ) : null}
+          </div>
+          <form
+            onSubmit={submitTicket}
+            className="mm-help__form"
+            onFocusCapture={() => {
+              // Keep compose screenshots separate from ticket replies.
+              if (activeId) clearTicketSelection();
+            }}
+          >
             <label>
               What is this about?
               <select
@@ -254,6 +306,7 @@ export default function HelpCenterView({
 
         <section className="mm-help__panel">
           <h3>Your requests</h3>
+          <p className="mm-help__hint">Open a ticket to view its conversation and reply there.</p>
           {loading ? <p className="mm-help__muted">Loading…</p> : null}
           {!loading && tickets.length === 0 ? (
             <p className="mm-help__muted">Nothing sent yet. Use the form when something feels off.</p>
@@ -264,9 +317,17 @@ export default function HelpCenterView({
                 <button
                   type="button"
                   className={t.id === activeId ? 'is-on' : ''}
-                  onClick={() => openTicket(t.id).catch((err) => setError(err.message))}
+                  onClick={() => {
+                    if (t.id === activeId) {
+                      clearTicketSelection();
+                      return;
+                    }
+                    openTicket(t.id);
+                  }}
                 >
-                  <strong>#{t.id} · {t.subject}</strong>
+                  <strong>
+                    #{t.id} · {t.subject}
+                  </strong>
                   <span>
                     {statusLabel(t.status)} · {formatWhen(t.updated_at)}
                   </span>
@@ -277,20 +338,46 @@ export default function HelpCenterView({
         </section>
       </div>
 
-      {thread ? (
+      {!activeId && !threadLoading ? (
+        <section className="mm-help__panel mm-help__thread mm-help__thread--empty" aria-live="polite">
+          <MessageSquare size={22} aria-hidden />
+          <div>
+            <h3>No ticket selected</h3>
+            <p className="mm-help__muted">
+              Pick a request on the right to read its thread and leave a reply on that ticket only.
+              Screenshots you add for a reply stay on that ticket — they are not shared with new
+              requests.
+            </p>
+          </div>
+        </section>
+      ) : null}
+
+      {threadLoading ? (
         <section className="mm-help__panel mm-help__thread">
+          <p className="mm-help__muted">Opening ticket…</p>
+        </section>
+      ) : null}
+
+      {thread && thread.id === activeId && !threadLoading ? (
+        <section className="mm-help__panel mm-help__thread" key={thread.id}>
           <div className="mm-help__thread-head">
             <div>
               <p className="mm-help__kicker">
-                #{thread.id} · {statusLabel(thread.status)} · {portalLabel(thread.source_portal)}
+                Ticket #{thread.id} · {statusLabel(thread.status)} ·{' '}
+                {portalLabel(thread.source_portal)}
               </p>
               <h3>{thread.subject}</h3>
             </div>
-            {thread.status !== 'CLOSED' ? (
-              <button type="button" className="mm-help__ghost" onClick={closeMine} disabled={saving}>
-                Mark resolved
+            <div className="mm-help__thread-actions">
+              {thread.status !== 'CLOSED' ? (
+                <button type="button" className="mm-help__ghost" onClick={closeMine} disabled={saving}>
+                  Mark resolved
+                </button>
+              ) : null}
+              <button type="button" className="mm-help__ghost" onClick={clearTicketSelection}>
+                Close panel
               </button>
-            ) : null}
+            </div>
           </div>
 
           <ol className="mm-help__replies">
@@ -303,7 +390,12 @@ export default function HelpCenterView({
                 <p>{r.body}</p>
                 <div className="mm-help__shots">
                   {(r.attachments || []).map((file) => (
-                    <a key={file.filename + file.data_base64.slice(0, 12)} href={attachmentSrc(file)} target="_blank" rel="noreferrer">
+                    <a
+                      key={file.filename + file.data_base64.slice(0, 12)}
+                      href={attachmentSrc(file)}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
                       <img src={attachmentSrc(file)} alt={file.filename} />
                     </a>
                   ))}
@@ -313,22 +405,29 @@ export default function HelpCenterView({
           </ol>
 
           {thread.status === 'CLOSED' ? (
-            <p className="mm-help__muted">This request is closed.</p>
-          ) : (
-            <form onSubmit={submitReply} className="mm-help__form">
+            <p className="mm-help__muted">This request is closed. Open another ticket to continue.</p>
+          ) : canReply ? (
+            <form
+              key={`reply-${thread.id}`}
+              onSubmit={submitReply}
+              className="mm-help__form mm-help__reply"
+            >
+              <p className="mm-help__reply-label">
+                Reply on ticket #{thread.id}
+              </p>
               <label>
-                Reply
+                Your message
                 <textarea
                   value={reply.body}
                   onChange={(e) => setReply((p) => ({ ...p, body: e.target.value }))}
                   rows={3}
                   required
-                  placeholder="Add more detail for MentorMuni…"
+                  placeholder={`Add detail for MentorMuni about “${thread.subject}”…`}
                 />
               </label>
               <label className="mm-help__file">
                 <Paperclip size={15} />
-                Add screenshots
+                Screenshots for this reply only (up to 3)
                 <input
                   type="file"
                   accept="image/png,image/jpeg,image/webp"
@@ -345,12 +444,12 @@ export default function HelpCenterView({
                   }))
                 }
               />
-              <button type="submit" disabled={saving}>
+              <button type="submit" disabled={saving || !reply.body.trim()}>
                 <Send size={15} />
-                Send reply
+                Send reply on #{thread.id}
               </button>
             </form>
-          )}
+          ) : null}
         </section>
       ) : null}
     </div>
@@ -362,7 +461,7 @@ function AttachmentChips({ files, onRemove }) {
   return (
     <ul className="mm-help__chips">
       {files.map((file, i) => (
-        <li key={`${file.filename}-${i}`}>
+        <li key={`${file.filename}-${i}-${file.data_base64?.slice(0, 16) || i}`}>
           <img src={attachmentSrc(file)} alt="" />
           <span>{file.filename}</span>
           <button type="button" onClick={() => onRemove(i)} aria-label="Remove image">
