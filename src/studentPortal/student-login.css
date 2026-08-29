@@ -497,6 +497,41 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+.mm-stu-brand--stack {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+}
+.mm-stu-brand--stack .mm-stu-brand__text {
+  width: 100%;
+}
+.mm-stu-brand__campus-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(10, 99, 128, 0.08);
+  border: 1px solid rgba(10, 99, 128, 0.16);
+}
+.mm-stu-brand__campus-chip strong {
+  font-size: 0.92rem;
+  font-weight: 750;
+  color: var(--stu-ink);
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mm-stu-brand__campus-chip span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--stu-accent);
+}
 .mm-stu-brand__change {
   border: 0;
   background: transparent;

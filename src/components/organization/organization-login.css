@@ -84,20 +84,126 @@
   align-items: center;
   justify-content: center;
   grid-template-columns: none;
-  padding: 24px 16px;
+  padding: 28px 16px;
+  background: #f3f6f9;
 }
 
 .mm-org-login__form-wrap--solo {
   width: min(440px, 100%);
   border-left: 0 !important;
   margin: 0 auto;
+  padding: 0 !important;
+  background: transparent !important;
+}
+
+.mm-org-login__card--solo {
+  padding: 28px 26px 24px;
+}
+
+.mm-org-solo-head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 22px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid rgba(15, 36, 51, 0.08);
+}
+
+.mm-org-solo-head__logo {
+  display: block;
+  height: 36px;
+  width: auto;
+  max-width: 180px;
+  object-fit: contain;
+}
+
+.mm-org-solo-head__product {
+  margin: 0;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #64748b;
+}
+
+.mm-org-solo-head__campus {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: #f0f7fb;
+  border: 1px solid rgba(14, 111, 154, 0.14);
+  box-sizing: border-box;
+}
+
+.mm-org-solo-head__campus svg {
+  flex-shrink: 0;
+  color: #0e6f9a;
+}
+
+.mm-org-solo-head__campus-text {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.mm-org-solo-head__campus-text strong {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #0f172a;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mm-org-solo-head__campus-text span {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #0e6f9a;
+}
+
+.mm-org-solo-head__loading {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+.mm-org-login__card--solo .mm-org-login__card-title {
+  margin-top: 0;
+}
+
+.mm-org-login__card--solo .mm-org-login__card-sub {
+  margin: 8px 0 18px;
+}
+
+.mm-org-login__card--solo .mm-org-login__card-sub strong {
+  color: #0f172a;
+  font-weight: 700;
+}
+
+.mm-org-login__card--solo .mm-org-login__form {
+  margin-top: 0;
+  gap: 14px;
+}
+
+.mm-org-login__card--solo .mm-org-login__activate {
+  margin-top: 18px;
+  text-align: center;
 }
 
 .mm-org-login__back {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  margin: 0 0 16px;
+  margin: 0 0 18px;
   padding: 0;
   border: 0;
   background: transparent;
@@ -132,6 +238,7 @@
   font: inherit;
   font-size: 0.875rem;
   resize: vertical;
+  box-sizing: border-box;
 }
 
 .mm-org-login__reset-actions {
@@ -152,6 +259,21 @@
 .mm-org-login__submit--link {
   text-decoration: none;
   text-align: center;
+}
+
+@media (max-width: 480px) {
+  .mm-org-login--solo {
+    padding: 16px 12px;
+    align-items: flex-start;
+  }
+
+  .mm-org-login__card--solo {
+    padding: 22px 18px 20px;
+  }
+
+  .mm-org-solo-head__campus-text strong {
+    white-space: normal;
+  }
 }
 
 .mm-org-root-login.is-dark .mm-org-login {

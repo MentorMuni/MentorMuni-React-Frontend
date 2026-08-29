@@ -201,13 +201,11 @@ export async function resolveTenantFromHostname({ force = false } = {}) {
   return tenant;
 }
 
-/** Path on current host (preserves college subdomain). */
+/** In-app path on the current host (preserves college subdomain via relative navigation). */
 export function tenantPortalPath(path) {
   const p = String(path || '').trim();
   if (!p) return '/';
-  const normalized = p.startsWith('/') ? p : `/${p}`;
-  if (typeof window === 'undefined') return normalized;
-  return `${window.location.origin}${normalized}`;
+  return p.startsWith('/') ? p : `/${p}`;
 }
 
 /** Apex → college subdomain (full navigation). */

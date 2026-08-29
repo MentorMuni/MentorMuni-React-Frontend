@@ -26,10 +26,25 @@ const NAV = [
   { to: platformAdminPaths.individuals, label: 'Individuals', icon: UserRound },
   { to: platformAdminPaths.subscriptions, label: 'Subscriptions', icon: CreditCard },
   { to: platformAdminPaths.features, label: 'Feature Management', icon: ToggleLeft },
-  { to: platformAdminPaths.platformUsers, label: 'Platform Users', icon: Users },
-  { to: platformAdminPaths.support, label: 'Support Inbox', icon: Inbox },
+  {
+    to: platformAdminPaths.platformUsers,
+    label: 'Platform Users',
+    icon: Users,
+    roles: ['PLATFORM_ADMIN'],
+  },
+  {
+    to: platformAdminPaths.support,
+    label: 'Support Inbox',
+    icon: Inbox,
+    roles: ['PLATFORM_ADMIN', 'SUPPORT', 'OPERATIONS'],
+  },
   { to: platformAdminPaths.settings, label: 'Settings', icon: Settings },
 ];
+
+function navVisibleForRole(item, role) {
+  if (!item.roles) return true;
+  return item.roles.includes(String(role || '').toUpperCase());
+}
 
 const TITLES = {
   dashboard: ['Dashboard', 'SaaS metrics across tenants — no student operations.'],
@@ -58,9 +73,11 @@ export default function PlatformAdminShell() {
   const navigate = useNavigate();
   const location = useLocation();
   const session = getPlatformSession();
+  const role = String(session?.role || 'PLATFORM_ADMIN').toUpperCase();
   const { theme, toggleTheme } = usePlatformTheme();
   const segment = location.pathname.split('/').filter(Boolean).pop() || 'dashboard';
   const [title, sub] = TITLES[segment] || ['MentorMuni Platform', 'Tenant provisioning'];
+  const navItems = NAV.filter((item) => navVisibleForRole(item, role));
 
   const logout = () => {
     clearPlatformSession();
@@ -87,7 +104,7 @@ export default function PlatformAdminShell() {
             </div>
 
             <nav className="flex flex-col gap-1.5" aria-label="Platform modules">
-              {NAV.map(({ to, label, icon: Icon }, i) => (
+              {navItems.map(({ to, label, icon: Icon }, i) => (
                 <motion.div
                   key={to}
                   initial={{ opacity: 0, x: -10 }}

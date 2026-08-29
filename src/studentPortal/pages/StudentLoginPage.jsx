@@ -521,17 +521,23 @@ export default function StudentLoginPage() {
       <header className="mm-career-top">
         <div className="mm-career-brand">
           <img src={LOGO} alt="MentorMuni" />
-          <div>
-            <strong>MentorMuni</strong>
-            <span>Career accelerator platform</span>
+          <div className="mm-career-brand__text">
+            <div className="mm-career-brand__title">
+              <strong>MentorMuni</strong>
+              {(collegeName || tenantLocked) && (
+                <>
+                  <span className="mm-career-brand__dot" aria-hidden>
+                    ·
+                  </span>
+                  <em className="mm-career-brand__college" title={collegeName || undefined}>
+                    {collegeName || (tenantLoading ? 'Loading…' : 'Campus portal')}
+                  </em>
+                </>
+              )}
+            </div>
+            <span className="mm-career-brand__tag">Career accelerator platform</span>
           </div>
         </div>
-        {(collegeName || tenantLocked) && (
-          <div className="mm-career-top__campus" title={collegeName}>
-            <Building2 size={15} aria-hidden />
-            <span>{collegeName || (tenantLoading ? 'Loading campus…' : 'Campus portal')}</span>
-          </div>
-        )}
       </header>
 
       <div className={`mm-career-shell ${showLogin ? 'is-login' : 'is-gate'}`}>
@@ -567,19 +573,12 @@ export default function StudentLoginPage() {
 
         {/* Right — form */}
         <section className="mm-career-form-col">
-          {showLogin && collegeName ? (
-            <p className="mm-career-access">
-              <Building2 size={14} aria-hidden />
-              You are accessing <strong>{collegeName}</strong>
-            </p>
-          ) : null}
-
           <div className="mm-career-card">
             {!showLogin ? (
               <>
                 <h2>Where do you study?</h2>
                 <p className="mm-career-card__sub">
-                  Lock your campus so prep, drives, and roster stay aligned.
+                  Choose your campus so prep, drives, and enrollment stay aligned.
                 </p>
 
                 {SHOW_DEMO && !tenantLocked ? (
@@ -750,8 +749,14 @@ export default function StudentLoginPage() {
                           className="mm-career-change"
                           onClick={() => {
                             setStep('college');
-                            setListOpen(false);
-                            if (isIndividualLogin) setCollege(null);
+                            setCollegeQuery('');
+                            setError('');
+                            if (isIndividualLogin) {
+                              setCollege(null);
+                              setListOpen(true);
+                            } else {
+                              setListOpen(false);
+                            }
                           }}
                         >
                           Change
@@ -838,19 +843,25 @@ export default function StudentLoginPage() {
                   <Headphones size={16} aria-hidden />
                   <span className="mm-career-support__full">
                     Need help? Contact your TPO or{' '}
-                    <a href="mailto:support@mentormuni.com">MentorMuni Support</a>
+                    <a href="mailto:mentormuniteam@gmail.com">MentorMuni Support</a>
                   </span>
                   <span className="mm-career-support__short">
-                    <a href="mailto:support@mentormuni.com">Contact TPO / Support</a>
+                    <a href="mailto:mentormuniteam@gmail.com">Contact TPO / Support</a>
                   </span>
                 </div>
 
                 <p className="mm-career-foot">
                   {isIndividualLogin ? (
-                    <>Need an invite? Contact MentorMuni support.</>
+                    <>
+                      Need an invite?{' '}
+                      <a href="mailto:mentormuniteam@gmail.com" className="mm-career-link">
+                        Contact MentorMuni support
+                      </a>
+                      .
+                    </>
                   ) : (
                     <>
-                      Not on the roster?{' '}
+                      New student?{' '}
                       <Link
                         to={
                           activeCollege?.code
@@ -859,11 +870,11 @@ export default function StudentLoginPage() {
                         }
                         className="mm-career-link"
                       >
-                        Enroll
+                        Create your account
                       </Link>
                       {' · '}
                       Staff?{' '}
-                      <Link to="/Organization/login" className="mm-career-link">
+                      <Link to={tenantPortalPath('/Organization/login')} className="mm-career-link">
                         Organization portal
                       </Link>
                     </>

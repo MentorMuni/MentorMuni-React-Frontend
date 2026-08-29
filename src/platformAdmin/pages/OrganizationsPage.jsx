@@ -312,14 +312,26 @@ export default function OrganizationsPage() {
     return () => window.clearTimeout(timer);
   }, [apiToast]);
 
+  useEffect(() => {
+    if (!success) return undefined;
+    const timer = window.setTimeout(() => setSuccess(''), 4000);
+    return () => window.clearTimeout(timer);
+  }, [success]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (!q) return orgs;
     return orgs.filter(
       (o) =>
-        o.name.toLowerCase().includes(q) ||
-        o.code.toLowerCase().includes(q) ||
-        o.city?.toLowerCase().includes(q)
+        String(o.name || '')
+          .toLowerCase()
+          .includes(q) ||
+        String(o.code || '')
+          .toLowerCase()
+          .includes(q) ||
+        String(o.city || '')
+          .toLowerCase()
+          .includes(q)
     );
   }, [orgs, query]);
 
@@ -882,7 +894,7 @@ export default function OrganizationsPage() {
                         type="button"
                         className="mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs"
                         onClick={() => openDeleteOrg(org)}
-                        title="Delete organization"
+                        title="Soft-delete: suspend org and cancel active plans"
                       >
                         <Trash2 size={13} />
                       </button>
@@ -1564,9 +1576,9 @@ export default function OrganizationsPage() {
         {deleteTarget ? (
           <div className="space-y-4">
             <div className="mm-pa-callout mm-pa-callout--amber">
-              Soft delete only via <code className="mm-pa-code">DELETE /platform/organizations/{deleteTarget.id}</code>.
-              Organization becomes <strong>SUSPENDED</strong>; any ACTIVE subscriptions become{' '}
-              <strong>CANCELLED</strong>. No hard wipe. PUBLIC tenants are blocked by the API.
+              Different from <strong>Make Inactive</strong> (status badge): soft-delete also{' '}
+              <strong>cancels ACTIVE subscriptions</strong>. Organization status becomes{' '}
+              <strong>SUSPENDED</strong>. No hard wipe. PUBLIC tenants are blocked by the API.
             </div>
             <div className="flex flex-wrap justify-end gap-2">
               <button

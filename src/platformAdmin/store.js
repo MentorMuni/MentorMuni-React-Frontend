@@ -504,14 +504,17 @@ export async function getDashboardMetrics() {
     typeof data?.organizations === 'number'
       ? data.organizations
       : organizationsList.length;
-  const totalOrgs = orgCount || 1;
+  const totalOrgs = typeof orgCount === 'number' ? orgCount : 0;
 
   const featureUsageRaw = asArray(data?.feature_usage, ['items', 'data', 'features']);
   const featureUsage = featureUsageRaw.map((f) => ({
     feature_name: f.feature_name || f.name || f.feature_code || 'Feature',
     feature_code: f.feature_code || f.code || String(f.feature_id || f.id || ''),
     orgs_enabled: f.enabled_org_count || f.orgs_enabled || 0,
-    pct: Math.round(((f.enabled_org_count || f.orgs_enabled || 0) / totalOrgs) * 100),
+    pct:
+      totalOrgs > 0
+        ? Math.round(((f.enabled_org_count || f.orgs_enabled || 0) / totalOrgs) * 100)
+        : 0,
   }));
 
   const recentFromDashboard = asArray(data?.recent_organizations || data?.recent_orgs, [

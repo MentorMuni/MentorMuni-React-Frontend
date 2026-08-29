@@ -181,22 +181,38 @@ export default function DashboardPage() {
             </Link>
           </div>
           <div className="space-y-4">
-            {(loading ? Array.from({ length: 4 }, (_, i) => ({ feature_code: `loading-${i}`, feature_name: '', orgs_enabled: 0, pct: 0 })) : metrics.featureUsage).map((f, i) => (
-              <div key={f.feature_code}>
-                <div className="mb-1.5 flex items-center justify-between text-xs">
-                  <span className="mm-pa-feature-row__title">{loading ? 'Loading feature...' : f.feature_name}</span>
-                  <span className="text-slate-400">{loading ? '...' : `${f.orgs_enabled} orgs · ${f.pct}%`}</span>
+            {!loading && metrics.featureUsage.length === 0 ? (
+              <p className="text-sm text-slate-500">No feature usage yet. Enable features on an organization to see coverage here.</p>
+            ) : (
+              (loading
+                ? Array.from({ length: 4 }, (_, i) => ({
+                    feature_code: `loading-${i}`,
+                    feature_name: '',
+                    orgs_enabled: 0,
+                    pct: 0,
+                  }))
+                : metrics.featureUsage
+              ).map((f, i) => (
+                <div key={f.feature_code}>
+                  <div className="mb-1.5 flex items-center justify-between text-xs">
+                    <span className="mm-pa-feature-row__title">
+                      {loading ? 'Loading feature...' : f.feature_name}
+                    </span>
+                    <span className="text-slate-400">
+                      {loading ? '...' : `${f.orgs_enabled} orgs · ${f.pct}%`}
+                    </span>
+                  </div>
+                  <div className="mm-pa-progress">
+                    <motion.div
+                      className="mm-pa-progress__bar"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${loading ? 42 : f.pct}%` }}
+                      transition={{ duration: 0.7, delay: 0.05 * i, ease: EASE }}
+                    />
+                  </div>
                 </div>
-                <div className="mm-pa-progress">
-                  <motion.div
-                    className="mm-pa-progress__bar"
-                    initial={{ width: 0 }}
-                    animate={{ width: `${loading ? 42 : f.pct}%` }}
-                    transition={{ duration: 0.7, delay: 0.05 * i, ease: EASE }}
-                  />
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </motion.section>
 
@@ -213,23 +229,40 @@ export default function DashboardPage() {
             </Link>
           </div>
           <ul className="space-y-3">
-            {(loading ? Array.from({ length: 5 }, (_, i) => ({ id: `loading-org-${i}` })) : metrics.recentOrgs).map((org, i) => (
-              <motion.li
-                key={org.id}
-                className="mm-pa-list-row"
-                initial={{ opacity: 0, x: 8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.22 + i * 0.05 }}
-              >
-                <div>
-                  <p className="mm-pa-table__title">{loading ? 'Loading organization...' : org.name}</p>
-                  <p className="mm-pa-list-row__meta">{loading ? 'Loading...' : `${org.code} · ${String(org.organization_type || '').toUpperCase()}`}</p>
-                </div>
-                <span className={`mm-pa-badge ${isActiveStatus(org.status) ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
-                  {loading ? '...' : statusLabel(org.status)}
-                </span>
-              </motion.li>
-            ))}
+            {!loading && metrics.recentOrgs.length === 0 ? (
+              <li className="text-sm text-slate-500 py-2">No organizations yet. Create one to get started.</li>
+            ) : (
+              (loading
+                ? Array.from({ length: 5 }, (_, i) => ({ id: `loading-org-${i}` }))
+                : metrics.recentOrgs
+              ).map((org, i) => (
+                <motion.li
+                  key={org.id}
+                  className="mm-pa-list-row"
+                  initial={{ opacity: 0, x: 8 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.22 + i * 0.05 }}
+                >
+                  <div>
+                    <p className="mm-pa-table__title">
+                      {loading ? 'Loading organization...' : org.name}
+                    </p>
+                    <p className="mm-pa-list-row__meta">
+                      {loading
+                        ? 'Loading...'
+                        : `${org.code} · ${String(org.organization_type || '').toUpperCase()}`}
+                    </p>
+                  </div>
+                  <span
+                    className={`mm-pa-badge ${
+                      isActiveStatus(org.status) ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'
+                    }`}
+                  >
+                    {loading ? '...' : statusLabel(org.status)}
+                  </span>
+                </motion.li>
+              ))
+            )}
           </ul>
 
           <Link

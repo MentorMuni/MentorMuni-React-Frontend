@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { CollegeTenantProvider } from '../tenant/CollegeTenantProvider';
+import { CollegeTenantGate } from '../tenant/UnknownCollegePortalPage';
 import OrganizationLoginPage from '../components/organization/OrganizationLoginPage';
 import OrgForgotPasswordPage from './pages/OrgForgotPasswordPage';
 import OrgResetPasswordPage from './pages/OrgResetPasswordPage';
@@ -145,7 +146,8 @@ function ProgramsGate({ children }) {
 export default function OrganizationPortalApp() {
   return (
     <CollegeTenantProvider>
-      <Routes>
+      <CollegeTenantGate audience="organization">
+        <Routes>
       <Route path="login" element={<OrganizationLoginPage />} />
       <Route path="forgot-password" element={<OrgForgotPasswordPage />} />
       <Route path="reset-password" element={<OrgResetPasswordPage />} />
@@ -211,7 +213,8 @@ export default function OrganizationPortalApp() {
           />
         }
       />
-      </Routes>
+        </Routes>
+      </CollegeTenantGate>
     </CollegeTenantProvider>
   );
 }

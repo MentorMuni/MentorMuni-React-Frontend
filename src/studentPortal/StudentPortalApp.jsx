@@ -1,6 +1,7 @@
 import { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 import { CollegeTenantProvider } from '../tenant/CollegeTenantProvider';
+import { CollegeTenantGate } from '../tenant/UnknownCollegePortalPage';
 import { isStudentAuthenticated } from './auth';
 import { studentPaths } from './paths';
 import { StudentThemeProvider } from './useStudentTheme.jsx';
@@ -45,113 +46,160 @@ function PortalFallback() {
 export default function StudentPortalApp() {
   return (
     <CollegeTenantProvider>
-      <StudentThemeProvider>
-        <Routes>
-        <Route path="login" element={<StudentLoginPage />} />
-        <Route path="register" element={<StudentRegisterPage />} />
-        <Route path="enroll" element={<StudentEnrollPage />} />
-        <Route path="set-password" element={<StudentSetPasswordPage />} />
-        <Route path="forgot-password" element={<StudentForgotPasswordPage />} />
-        <Route path="reset-password" element={<StudentResetPasswordPage />} />
+      <CollegeTenantGate audience="student">
+        <StudentThemeProvider>
+          <Routes>
+            <Route path="login" element={<StudentLoginPage />} />
+            <Route path="register" element={<StudentRegisterPage />} />
+            <Route path="enroll" element={<StudentEnrollPage />} />
+            <Route path="set-password" element={<StudentSetPasswordPage />} />
+            <Route path="forgot-password" element={<StudentForgotPasswordPage />} />
+            <Route path="reset-password" element={<StudentResetPasswordPage />} />
 
-        <Route element={<StudentLayout />}>
-          <Route path="home" element={
-              <Suspense fallback={<PortalFallback />}>
-                <StudentHomePage />
-              </Suspense>
-            } />
-          <Route path="mentor" element={
-              <Suspense fallback={<PortalFallback />}>
-                <StudentMentorPage />
-              </Suspense>
-            } />
-          <Route path="fear-to-fearless" element={
-              <Suspense fallback={<PortalFallback />}>
-                <StudentKnowMePage />
-              </Suspense>
-            } />
-          <Route path="know-me" element={
-              <Suspense fallback={<PortalFallback />}>
-                <StudentKnowMePage />
-              </Suspense>
-            } />
-          <Route path="practice" element={
-              <Suspense fallback={<PortalFallback />}>
-                <StudentPracticePage />
-              </Suspense>
-            } />
-          <Route path="coding" element={
-              <Suspense fallback={<PortalFallback />}>
-                <StudentCodingRoundPage />
-              </Suspense>
-            } />
-          <Route path="company-prep" element={
-              <Suspense fallback={<PortalFallback />}>
-                <StudentCompanyPrepPage />
-              </Suspense>
-            } />
-          <Route path="companies" element={
-              <Suspense fallback={<PortalFallback />}>
-                <StudentCompaniesPage />
-              </Suspense>
-            } />
-          <Route path="companies/:slug" element={
-              <Suspense fallback={<PortalFallback />}>
-                <StudentCompanyIntelPage />
-              </Suspense>
-            } />
-          <Route path="progress" element={
-              <Suspense fallback={<PortalFallback />}>
-                <StudentProgressPage />
-              </Suspense>
-            } />
-          <Route path="profile" element={
-              <Suspense fallback={<PortalFallback />}>
-                <StudentProfilePage />
-              </Suspense>
-            } />
-          <Route path="change-password" element={
-              <Suspense fallback={<PortalFallback />}>
-                <StudentChangePasswordPage />
-              </Suspense>
-            } />
-          <Route path="help" element={
-              <Suspense fallback={<PortalFallback />}>
-                <StudentHelpCenterPage />
-              </Suspense>
-            } />
-          <Route path="whiteboard" element={
-              <Suspense fallback={<PortalFallback />}>
-                <StudentWhiteboardPage />
-              </Suspense>
-            } />
-          <Route path="tools/:toolCode" element={
-              <Suspense fallback={<PortalFallback />}>
-                <StudentToolPage />
-              </Suspense>
-            } />
-        </Route>
+            <Route element={<StudentLayout />}>
+              <Route
+                path="home"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentHomePage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="mentor"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentMentorPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="fear-to-fearless"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentKnowMePage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="know-me"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentKnowMePage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="practice"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentPracticePage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="coding"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentCodingRoundPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="company-prep"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentCompanyPrepPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="companies"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentCompaniesPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="companies/:slug"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentCompanyIntelPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="progress"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentProgressPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="profile"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentProfilePage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="change-password"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentChangePasswordPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="help"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentHelpCenterPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="whiteboard"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentWhiteboardPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="tools/:toolCode"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentToolPage />
+                  </Suspense>
+                }
+              />
+            </Route>
 
-        <Route
-          index
-          element={
-            <Navigate
-              to={isStudentAuthenticated() ? studentPaths.home : studentPaths.login}
-              replace
+            <Route
+              index
+              element={
+                <Navigate
+                  to={isStudentAuthenticated() ? studentPaths.home : studentPaths.login}
+                  replace
+                />
+              }
             />
-          }
-        />
-        <Route
-          path="*"
-          element={
-            <Navigate
-              to={isStudentAuthenticated() ? studentPaths.home : studentPaths.login}
-              replace
+            <Route
+              path="*"
+              element={
+                <Navigate
+                  to={isStudentAuthenticated() ? studentPaths.home : studentPaths.login}
+                  replace
+                />
+              }
             />
-          }
-        />
-      </Routes>
-      </StudentThemeProvider>
+          </Routes>
+        </StudentThemeProvider>
+      </CollegeTenantGate>
     </CollegeTenantProvider>
   );
 }

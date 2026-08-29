@@ -641,6 +641,22 @@ html.mm-new-ui .mm-pa-root .mm-pa-page-sub,
   margin-bottom: 8px;
 }
 
+/* Individuals invite modal — label wraps control */
+.mm-pa-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  text-align: left;
+}
+
+.mm-pa-field > span {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+}
+
 .mm-pa-login-tile {
   border-radius: 12px;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -1961,6 +1977,11 @@ html.mm-new-ui .mm-pa-root .mm-pa-page-sub,
 }
 
 .mm-pa-root.mm-pa-light .mm-pa-label {
+  color: #475569;
+}
+
+.mm-pa-root.mm-pa-light .mm-pa-field > span,
+.mm-pa-modal-layer--light .mm-pa-field > span {
   color: #475569;
 }
 

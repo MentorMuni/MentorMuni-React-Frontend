@@ -76,8 +76,8 @@ export default function SettingsPage() {
         <h2 className="mm-pa-panel__title mb-2">Organization Admins</h2>
         <p className="mb-4 text-sm text-slate-400">
           Each college can have up to three Org Admins (TPO, Dean, Director) with the same access. Primary is TPO.
-          Use <strong className="mm-pa-strong">Edit</strong> (with password reset) for handover, or{' '}
-          <strong className="mm-pa-strong">Reinvite</strong> if the same person needs a fresh activation link.
+          Use <strong className="mm-pa-strong">Reinvite</strong> here for a fresh activation link, or open{' '}
+          <strong className="mm-pa-strong">Organizations → View Org Admins</strong> to edit details / reset password.
         </p>
         <div className="overflow-x-auto">
           <table className="mm-pa-table min-w-[920px]">

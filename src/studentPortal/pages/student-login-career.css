@@ -70,7 +70,7 @@
 .mm-career-top {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-start;
   gap: 16px;
   padding: 20px 32px 4px;
   max-width: 1440px;
@@ -83,52 +83,58 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .mm-career-brand img {
   height: 42px;
   width: auto;
+  flex-shrink: 0;
 }
 
-.mm-career-brand strong {
-  display: block;
+.mm-career-brand__text {
+  min-width: 0;
+}
+
+.mm-career-brand__title {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+  min-width: 0;
+}
+
+.mm-career-brand__title strong {
   font-size: 1.1rem;
   letter-spacing: -0.02em;
+  font-style: normal;
 }
 
-.mm-career-brand span {
+.mm-career-brand__dot {
+  color: var(--mm-muted);
+  font-weight: 600;
+}
+
+.mm-career-brand__college {
+  font-style: normal;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--mm-orange);
+  letter-spacing: -0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: min(420px, 55vw);
+}
+
+.mm-career-brand__tag {
   display: block;
+  margin-top: 2px;
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: var(--mm-muted);
   font-weight: 700;
-}
-
-/* Campus chip: tablet/mobile only (desktop uses access line above form) */
-.mm-career-top__campus {
-  display: none;
-  align-items: center;
-  gap: 8px;
-  max-width: min(420px, 55vw);
-  padding: 8px 14px;
-  border-radius: 999px;
-  background: #fff;
-  border: 1px solid var(--mm-line);
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--mm-ink);
-}
-
-.mm-career-top__campus span {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.mm-career-top__campus svg {
-  flex-shrink: 0;
-  color: var(--mm-orange);
 }
 
 /* —— Shell —— */
@@ -557,25 +563,6 @@
   padding-top: 4px;
 }
 
-.mm-career-access {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 6px;
-  margin: 0 0 10px;
-  font-size: 0.82rem;
-  color: var(--mm-muted);
-}
-
-.mm-career-access svg {
-  color: var(--mm-orange);
-  flex-shrink: 0;
-}
-
-.mm-career-access strong {
-  color: var(--mm-ink);
-}
-
 .mm-career-card {
   background: var(--mm-card);
   border: 1px solid var(--mm-line);
@@ -951,10 +938,6 @@
     padding: 18px 24px 8px;
   }
 
-  .mm-career-top__campus {
-    display: inline-flex;
-  }
-
   .mm-career-shell {
     grid-template-columns: 1fr;
     gap: 8px;
@@ -982,15 +965,6 @@
     max-width: 520px;
     margin: 0 auto;
     width: 100%;
-  }
-
-  .mm-career-access {
-    justify-content: center;
-  }
-
-  /* On tablet, campus is in header — hide duplicate access line */
-  .mm-career-access {
-    display: none;
   }
 
   .mm-career-stats {
@@ -1027,21 +1001,23 @@
    ========================================================= */
 @media (max-width: 767px) {
   .mm-career-top {
-    flex-direction: column;
-    align-items: center;
+    justify-content: center;
     text-align: center;
     padding: 16px 16px 4px;
-    gap: 10px;
   }
 
   .mm-career-brand {
     flex-direction: column;
-    gap: 6px;
+    gap: 8px;
   }
 
-  .mm-career-top__campus {
-    display: inline-flex;
-    max-width: 100%;
+  .mm-career-brand__title {
+    justify-content: center;
+  }
+
+  .mm-career-brand__college {
+    max-width: 90vw;
+    white-space: normal;
   }
 
   .mm-career-shell {

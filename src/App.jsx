@@ -98,7 +98,29 @@ function LegacyPlatformAdminRedirect() {
 }
 
 function isOrganizationPortalPath(pathname) {
-  return pathname === "/Organization" || pathname.startsWith("/Organization/");
+  const p = String(pathname || "").toLowerCase();
+  return (
+    p === "/organization" ||
+    p.startsWith("/organization/") ||
+    /* common typo — keep chrome-less while redirecting */
+    p === "/organizaton" ||
+    p.startsWith("/organizaton/") ||
+    p === "/organisations" ||
+    p.startsWith("/organisations/") ||
+    p === "/organizations" ||
+    p.startsWith("/organizations/")
+  );
+}
+
+/** Fix common Organization path typos → canonical /Organization/... */
+function OrganizationTypoRedirect() {
+  const { pathname, search } = useLocation();
+  const cleaned = pathname.replace(
+    /^\/(organizaton|organisations|organizations)\/?/i,
+    ""
+  );
+  const target = cleaned ? `/Organization/${cleaned}` : "/Organization/login";
+  return <Navigate to={`${target}${search || ""}`} replace />;
 }
 
 function isStudentPortalPath(pathname) {
@@ -312,6 +334,12 @@ function App() {
               <Route path="/mentormuniplatformadmin" element={<LegacyPlatformAdminRedirect />} />
               <Route path="/mentormuniplatformadmin/*" element={<LegacyPlatformAdminRedirect />} />
               <Route path="/Organization/*" element={<OrganizationPortalApp />} />
+              <Route path="/organizaton/*" element={<OrganizationTypoRedirect />} />
+              <Route path="/organizaton" element={<OrganizationTypoRedirect />} />
+              <Route path="/organisations/*" element={<OrganizationTypoRedirect />} />
+              <Route path="/organisations" element={<OrganizationTypoRedirect />} />
+              <Route path="/organizations/*" element={<OrganizationTypoRedirect />} />
+              <Route path="/organizations" element={<OrganizationTypoRedirect />} />
               <Route path="/studentportal/*" element={<StudentPortalApp />} />
               <Route path="/StudentPortal/*" element={<StudentPortalApp />} />
               <Route path="/" element={<HomePage />} />

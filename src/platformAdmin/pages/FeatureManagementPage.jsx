@@ -16,7 +16,10 @@ export default function FeatureManagementPage() {
   const [loading, setLoading] = useState(true);
 
   const loadFeatures = async (id) => {
-    if (!id) return;
+    if (!id) {
+      setFeatureMap({});
+      return;
+    }
     const rows = await getOrgFeatures(id);
     const map = {};
     rows.forEach((r) => {
@@ -28,27 +31,30 @@ export default function FeatureManagementPage() {
   useEffect(() => {
     const refresh = async () => {
       setLoading(true);
-      const list = await getOrganizations();
-      setOrgs(list);
-      if (!catalog.length) {
-        setCatalog(await getFeatureCatalog());
+      try {
+        const [list, cat] = await Promise.all([getOrganizations(), getFeatureCatalog()]);
+        setOrgs(list);
+        setCatalog(cat);
+        setOrgId((current) => {
+          if (list.find((o) => o.id === Number(current))) return current;
+          return list[0]?.id || '';
+        });
+        setError('');
+      } catch (e) {
+        setError(e.message || 'Failed to load feature management data.');
+      } finally {
+        setLoading(false);
       }
-      if (!list.find((o) => o.id === Number(orgId)) && list[0]) {
-        setOrgId(list[0].id);
-        await loadFeatures(list[0].id);
-      }
-      setLoading(false);
     };
-    refresh().catch((e) => {
-      setError(e.message || 'Failed to load feature management data.');
-      setLoading(false);
-    });
+    refresh();
     window.addEventListener('mm-platform-db-updated', refresh);
     return () => window.removeEventListener('mm-platform-db-updated', refresh);
-  }, [orgId, catalog.length]);
+  }, []);
 
   useEffect(() => {
-    loadFeatures(orgId).catch((e) => setError(e.message || 'Failed to load organization features.'));
+    loadFeatures(orgId).catch((e) =>
+      setError(e.message || 'Failed to load organization features.')
+    );
   }, [orgId]);
 
   useEffect(() => {
@@ -78,7 +84,9 @@ export default function FeatureManagementPage() {
               className="mm-pa-select"
               value={orgId}
               onChange={(e) => setOrgId(Number(e.target.value))}
+              disabled={loading || !orgs.length}
             >
+              {!orgs.length ? <option value="">No organizations</option> : null}
               {orgs.map((o) => (
                 <option key={o.id} value={o.id}>
                   {o.name} ({o.code})
@@ -86,46 +94,58 @@ export default function FeatureManagementPage() {
               ))}
             </select>
           </div>
-          <button type="button" className="mm-pa-btn mm-pa-btn--primary" onClick={save} disabled={!orgId}>
+          <button
+            type="button"
+            className="mm-pa-btn mm-pa-btn--primary"
+            onClick={save}
+            disabled={!orgId || loading}
+          >
             Save Features
           </button>
         </div>
 
         {saved && <div className="mm-pa-success">organization_features updated for this tenant.</div>}
 
-        <div className="grid gap-3 md:grid-cols-2">
-          {(loading ? Array.from({ length: 6 }, (_, i) => ({ id: `loading-feature-${i}` })) : catalog).map((feature) => (
-            <div key={feature.id} className="mm-pa-feature-row">
-              {loading ? (
-                <div className="w-full space-y-2">
-                  <div className="mm-pa-skeleton h-4 w-1/2" />
-                  <div className="mm-pa-skeleton h-3 w-2/3" />
-                  <div className="mm-pa-skeleton h-3 w-full" />
-                </div>
-              ) : (
-                <>
-                  <div>
-                    <p className="mm-pa-feature-row__title">{feature.feature_name}</p>
-                    <p className="mm-pa-feature-row__meta">
-                      {feature.feature_code} · {feature.category}
-                    </p>
-                    <p className="mm-pa-feature-row__desc">{feature.description}</p>
+        {!orgId && !loading ? (
+          <div className="mm-pa-empty">Create an organization first, then enable features here.</div>
+        ) : (
+          <div className="grid gap-3 md:grid-cols-2">
+            {(loading
+              ? Array.from({ length: 6 }, (_, i) => ({ id: `loading-feature-${i}` }))
+              : catalog
+            ).map((feature) => (
+              <div key={feature.id} className="mm-pa-feature-row">
+                {loading ? (
+                  <div className="w-full space-y-2">
+                    <div className="mm-pa-skeleton h-4 w-1/2" />
+                    <div className="mm-pa-skeleton h-3 w-2/3" />
+                    <div className="mm-pa-skeleton h-3 w-full" />
                   </div>
-                  <button
-                    type="button"
-                    className={`mm-pa-toggle ${featureMap[feature.id] ? 'mm-pa-toggle--on' : ''}`}
-                    aria-pressed={Boolean(featureMap[feature.id])}
-                    onClick={() =>
-                      setFeatureMap((m) => ({ ...m, [feature.id]: !m[feature.id] }))
-                    }
-                  >
-                    <span className="mm-pa-toggle__knob" />
-                  </button>
-                </>
-              )}
-            </div>
-          ))}
-        </div>
+                ) : (
+                  <>
+                    <div>
+                      <p className="mm-pa-feature-row__title">{feature.feature_name}</p>
+                      <p className="mm-pa-feature-row__meta">
+                        {feature.feature_code} · {feature.category}
+                      </p>
+                      <p className="mm-pa-feature-row__desc">{feature.description}</p>
+                    </div>
+                    <button
+                      type="button"
+                      className={`mm-pa-toggle ${featureMap[feature.id] ? 'mm-pa-toggle--on' : ''}`}
+                      aria-pressed={Boolean(featureMap[feature.id])}
+                      onClick={() =>
+                        setFeatureMap((m) => ({ ...m, [feature.id]: !m[feature.id] }))
+                      }
+                    >
+                      <span className="mm-pa-toggle__knob" />
+                    </button>
+                  </>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="mm-pa-panel">
@@ -146,15 +166,28 @@ export default function FeatureManagementPage() {
               </tr>
             </thead>
             <tbody>
-              {(loading ? Array.from({ length: 5 }, (_, i) => ({ id: `loading-catalog-${i}` })) : catalog).map((f) => (
+              {(loading
+                ? Array.from({ length: 5 }, (_, i) => ({ id: `loading-catalog-${i}` }))
+                : catalog
+              ).map((f) => (
                 <tr key={f.id}>
                   {loading ? (
                     <>
-                      <td><div className="mm-pa-skeleton h-4 w-12" /></td>
-                      <td><div className="mm-pa-skeleton h-4 w-24" /></td>
-                      <td><div className="mm-pa-skeleton h-4 w-32" /></td>
-                      <td><div className="mm-pa-skeleton h-4 w-24" /></td>
-                      <td><div className="mm-pa-skeleton h-6 w-24" /></td>
+                      <td>
+                        <div className="mm-pa-skeleton h-4 w-12" />
+                      </td>
+                      <td>
+                        <div className="mm-pa-skeleton h-4 w-24" />
+                      </td>
+                      <td>
+                        <div className="mm-pa-skeleton h-4 w-32" />
+                      </td>
+                      <td>
+                        <div className="mm-pa-skeleton h-4 w-24" />
+                      </td>
+                      <td>
+                        <div className="mm-pa-skeleton h-6 w-24" />
+                      </td>
                     </>
                   ) : (
                     <>
@@ -163,7 +196,13 @@ export default function FeatureManagementPage() {
                       <td className="font-semibold">{f.feature_name}</td>
                       <td>{f.category}</td>
                       <td>
-                        <span className={`mm-pa-badge ${String(f.status || '').toUpperCase() === 'ACTIVE' ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
+                        <span
+                          className={`mm-pa-badge ${
+                            String(f.status || '').toUpperCase() === 'ACTIVE'
+                              ? 'mm-pa-badge--active'
+                              : 'mm-pa-badge--suspended'
+                          }`}
+                        >
                           {String(f.status || '').toUpperCase() || 'ACTIVE'}
                         </span>
                       </td>

@@ -50,14 +50,11 @@ export default function OrgResetPasswordPage() {
     <div className="mm-org-root-login mm-org-root-login--tpo is-light">
       <div className="mm-org-login mm-org-login--solo">
         <div className="mm-org-login__form-wrap mm-org-login__form-wrap--solo">
-          <div className="mm-org-login__card">
-            <div className="mm-org-login__card-top">
-              <div className="mm-org-login__card-brand">
-                <img src={LOGO} alt="MentorMuni" className="mm-org-login__logo" />
-                <span>MentorMuni</span>
-              </div>
-              <span className="mm-org-login__badge">Reset password</span>
-            </div>
+          <div className="mm-org-login__card mm-org-login__card--solo">
+            <header className="mm-org-solo-head">
+              <img src={LOGO} alt="MentorMuni" className="mm-org-solo-head__logo" />
+              <p className="mm-org-solo-head__product">Organization portal</p>
+            </header>
 
             {!token ? (
               <>
@@ -78,7 +75,7 @@ export default function OrgResetPasswordPage() {
               <>
                 <h1 className="mm-org-login__card-title">Choose a new password</h1>
                 <p className="mm-org-login__card-sub">
-                  Enter a new password for your MentorMuni account.
+                  Enter a new password for your MentorMuni organization account.
                 </p>
                 {error ? (
                   <div className="mm-org-login__alert mm-org-login__alert--err" role="alert">

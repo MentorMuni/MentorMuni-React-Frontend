@@ -10,6 +10,16 @@ import {
 } from '../store';
 import Modal from '../Modal';
 
+/** Must match API `_PROTECTED_PLATFORM_ADMIN_EMAILS` (seed + production primary). */
+const PROTECTED_PLATFORM_ADMIN_EMAILS = new Set([
+  'admin@mentormuni.com',
+  'mentormuniteam@gmail.com',
+]);
+
+function isProtectedPlatformAdmin(email) {
+  return PROTECTED_PLATFORM_ADMIN_EMAILS.has(String(email || '').trim().toLowerCase());
+}
+
 const emptyForm = {
   name: '',
   email: '',
@@ -151,7 +161,7 @@ export default function PlatformUsersPage() {
                         >
                           <Pencil size={13} /> Edit
                         </button>
-                        {u.email !== 'mentormuniteam@gmail.com' && (
+                        {!isProtectedPlatformAdmin(u.email) && (
                           <>
                             <button
                               type="button"

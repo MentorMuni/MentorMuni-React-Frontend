@@ -211,7 +211,7 @@ export default function StudentEnrollPage() {
             </>
           ) : (
             <>
-              <p className="mm-stu-step-label">Not on the roster yet?</p>
+              <p className="mm-stu-step-label">New student?</p>
               <h1 className="mm-stu-card-title">Enroll with your department</h1>
               <p className="mm-stu-card-sub">
                 Send your details to your HOD. They approve or deny — same queue as invites and

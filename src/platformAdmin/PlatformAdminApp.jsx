@@ -28,6 +28,15 @@ function RequirePlatformAuth({ children }) {
   return children;
 }
 
+function RequirePlatformRoles({ roles, children }) {
+  const session = getPlatformSession();
+  const role = String(session?.role || '').toUpperCase();
+  if (!roles.includes(role)) {
+    return <Navigate to={platformAdminPaths.dashboard} replace />;
+  }
+  return children;
+}
+
 function platformHomePath() {
   const session = getPlatformSession();
   if (!isPlatformAuthenticated()) return platformAdminPaths.login;
@@ -69,8 +78,22 @@ export default function PlatformAdminApp() {
         <Route path="individuals" element={<IndividualsPage />} />
         <Route path="subscriptions" element={<SubscriptionsPage />} />
         <Route path="features" element={<FeatureManagementPage />} />
-        <Route path="platform-users" element={<PlatformUsersPage />} />
-        <Route path="support" element={<SupportInboxPage />} />
+        <Route
+          path="platform-users"
+          element={
+            <RequirePlatformRoles roles={['PLATFORM_ADMIN']}>
+              <PlatformUsersPage />
+            </RequirePlatformRoles>
+          }
+        />
+        <Route
+          path="support"
+          element={
+            <RequirePlatformRoles roles={['PLATFORM_ADMIN', 'SUPPORT', 'OPERATIONS']}>
+              <SupportInboxPage />
+            </RequirePlatformRoles>
+          }
+        />
         <Route path="settings" element={<SettingsPage />} />
         <Route path="change-password" element={<ChangePasswordPage />} />
       </Route>

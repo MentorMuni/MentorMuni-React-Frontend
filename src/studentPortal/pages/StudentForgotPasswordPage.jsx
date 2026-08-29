@@ -140,7 +140,7 @@ export default function StudentForgotPasswordPage() {
             <ArrowLeft size={16} strokeWidth={2.4} /> Back to login
           </button>
 
-          <div className="mm-stu-brand" style={{ marginBottom: 18 }}>
+          <div className="mm-stu-brand mm-stu-brand--stack" style={{ marginBottom: 18 }}>
             <img src={LOGO} alt="MentorMuni" style={{ height: 36 }} />
             <div className="mm-stu-brand__text">
               <span className="mm-stu-brand__name">MentorMuni</span>
@@ -149,14 +149,10 @@ export default function StudentForgotPasswordPage() {
               </span>
             </div>
             {displayCollege?.name ? (
-              <>
-                <span className="mm-stu-brand__sep" aria-hidden>
-                  |
-                </span>
-                <span className="mm-stu-brand__campus-name" title={displayCollege.name}>
-                  {displayCollege.name}
-                </span>
-              </>
+              <div className="mm-stu-brand__campus-chip" title={displayCollege.name}>
+                <strong>{displayCollege.name}</strong>
+                {displayCollege?.code ? <span>{displayCollege.code}</span> : null}
+              </div>
             ) : null}
           </div>
 

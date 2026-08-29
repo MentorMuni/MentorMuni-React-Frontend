@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Copy, Mail } from 'lucide-react';
+import { ArrowLeft, Building2, Copy, Mail } from 'lucide-react';
 import {
   fetchLoginColleges,
   pickInitialCollege,
@@ -124,7 +124,7 @@ export default function OrgForgotPasswordPage() {
     <div className="mm-org-root-login mm-org-root-login--tpo is-light">
       <div className="mm-org-login mm-org-login--solo">
         <div className="mm-org-login__form-wrap mm-org-login__form-wrap--solo">
-          <div className="mm-org-login__card">
+          <div className="mm-org-login__card mm-org-login__card--solo">
             <button
               type="button"
               className="mm-org-login__back"
@@ -133,28 +133,35 @@ export default function OrgForgotPasswordPage() {
               <ArrowLeft size={16} aria-hidden /> Back to login
             </button>
 
-            <div className="mm-org-login__card-top">
-              <div className="mm-org-login__card-brand">
-                <img src={LOGO} alt="MentorMuni" className="mm-org-login__logo" />
-                <span>MentorMuni</span>
-                {displayCollege?.name ? (
-                  <>
-                    <span aria-hidden> · </span>
-                    <span>{displayCollege.name}</span>
-                  </>
-                ) : null}
-              </div>
-              <span className="mm-org-login__badge">Organization</span>
-            </div>
+            <header className="mm-org-solo-head">
+              <img src={LOGO} alt="MentorMuni" className="mm-org-solo-head__logo" />
+              <p className="mm-org-solo-head__product">Organization portal</p>
+              {displayCollege?.name || displayCollege?.code ? (
+                <div className="mm-org-solo-head__campus" title={displayCollege?.name || ''}>
+                  <Building2 size={15} aria-hidden />
+                  <div className="mm-org-solo-head__campus-text">
+                    <strong>{displayCollege?.name || 'Campus portal'}</strong>
+                    {displayCollege?.code ? <span>{displayCollege.code}</span> : null}
+                  </div>
+                </div>
+              ) : tenantLocked && tenantLoading ? (
+                <p className="mm-org-solo-head__loading">Loading campus…</p>
+              ) : null}
+            </header>
 
             <h1 className="mm-org-login__card-title">Forgot password?</h1>
             <p className="mm-org-login__card-sub">
-              {tenantLocked && displayCollege?.name
-                ? `Enter your username or email for ${displayCollege.name}. We’ll send a reset link to the registered email.`
-                : 'Enter your organization and username or email. We’ll send a reset link to the registered email.'}
+              {tenantLocked && displayCollege?.name ? (
+                <>
+                  Enter your username or email for <strong>{displayCollege.name}</strong>. We’ll
+                  send a reset link to the registered email.
+                </>
+              ) : (
+                'Enter your organization and username or email. We’ll send a reset link to the registered email.'
+              )}
             </p>
 
-            {(error || tenantError) ? (
+            {error || tenantError ? (
               <div className="mm-org-login__alert mm-org-login__alert--err" role="alert">
                 {error || tenantError}
               </div>
@@ -182,7 +189,9 @@ export default function OrgForgotPasswordPage() {
                       }}
                       required
                     >
-                      <option value="">{collegesLoading ? 'Loading…' : 'Select organization'}</option>
+                      <option value="">
+                        {collegesLoading ? 'Loading…' : 'Select organization'}
+                      </option>
                       {colleges.map((c) => (
                         <option key={c.code} value={c.code}>
                           {c.name} ({c.code})

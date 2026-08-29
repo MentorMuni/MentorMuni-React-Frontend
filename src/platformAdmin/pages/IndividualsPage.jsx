@@ -25,6 +25,7 @@ export default function IndividualsPage() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [queryDraft, setQueryDraft] = useState('');
   const [query, setQuery] = useState('');
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState(emptyForm);
@@ -52,10 +53,21 @@ export default function IndividualsPage() {
   }, [refresh]);
 
   useEffect(() => {
+    const timer = window.setTimeout(() => {
+      setQuery(queryDraft.trim());
+    }, 350);
+    return () => window.clearTimeout(timer);
+  }, [queryDraft]);
+
+  useEffect(() => {
     if (!error) return undefined;
     const timer = window.setTimeout(() => setError(''), 4000);
     return () => window.clearTimeout(timer);
   }, [error]);
+
+  const runSearch = () => {
+    setQuery(queryDraft.trim());
+  };
 
   const openCreate = () => {
     setForm(emptyForm);
@@ -85,7 +97,7 @@ export default function IndividualsPage() {
       setForm(emptyForm);
       await refresh();
     } catch (err) {
-      setError(err.message || 'Could not create individual.');
+      setError(err.message || 'Invite failed.');
     }
   };
 
@@ -111,7 +123,7 @@ export default function IndividualsPage() {
   };
 
   const onBlock = async (id) => {
-    if (!window.confirm('Block this individual student? They will not be able to log in.')) return;
+    if (!window.confirm('Block this individual? They will not be able to sign in.')) return;
     setBusyId(id);
     setError('');
     try {
@@ -179,13 +191,13 @@ export default function IndividualsPage() {
         <input
           className="mm-pa-input max-w-xs"
           placeholder="Search name, email, college…"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
+          value={queryDraft}
+          onChange={(e) => setQueryDraft(e.target.value)}
           onKeyDown={(e) => {
-            if (e.key === 'Enter') refresh();
+            if (e.key === 'Enter') runSearch();
           }}
         />
-        <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={refresh}>
+        <button type="button" className="mm-pa-btn mm-pa-btn--ghost" onClick={runSearch}>
           <RefreshCw size={14} /> Search
         </button>
       </div>
