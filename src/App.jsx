@@ -15,6 +15,7 @@ import ParticleBackground from "./components/new-ui/ParticleBackground";
 import MuniBot from "./components/MuniBot";
 import WelcomeLaunchOverlay from "./components/WelcomeLaunchOverlay";
 import RouteErrorBoundary from "./components/RouteErrorBoundary";
+import { isCollegeTenantHost } from "./tenant/resolveTenant";
 import "./index.css";
 
 const ASSESSMENT_PATHS = new Set([
@@ -79,6 +80,7 @@ const BlogPost = lazy(() => import("./components/Blog/BlogPost"));
 const GamifiedPlacementPrep = lazy(() => import("./components/GamifiedPlacementPrep"));
 const PlatformAdminApp = lazy(() => import("./platformAdmin/PlatformAdminApp"));
 const StudentPortalApp = lazy(() => import("./studentPortal/StudentPortalApp"));
+const CollegePortalHomePage = lazy(() => import("./tenant/CollegePortalHomePage"));
 
 function isPlatformAdminPath(pathname) {
   return (
@@ -150,8 +152,17 @@ function isChromeLessPath(pathname) {
     isOrganizationPortalPath(pathname) ||
     isStudentPortalPath(pathname) ||
     isAuthStandalonePath(pathname) ||
-    isWidgetsPath(pathname)
+    isWidgetsPath(pathname) ||
+    /* College subdomain root hub — no marketing navbar */
+    (pathname === "/" && isCollegeTenantHost())
   );
+}
+
+function RootEntry() {
+  if (isCollegeTenantHost()) {
+    return <CollegePortalHomePage />;
+  }
+  return <HomePage />;
 }
 
 function PageFallback() {
@@ -342,7 +353,7 @@ function App() {
               <Route path="/organizations" element={<OrganizationTypoRedirect />} />
               <Route path="/studentportal/*" element={<StudentPortalApp />} />
               <Route path="/StudentPortal/*" element={<StudentPortalApp />} />
-              <Route path="/" element={<HomePage />} />
+              <Route path="/" element={<RootEntry />} />
               <Route path="/how-it-works" element={<StudentJourneyPage />} />
               <Route path="/roadmap" element={<RoadmapPage />} />
               <Route path="/gamified-placement-prep" element={<GamifiedPlacementPrep />} />

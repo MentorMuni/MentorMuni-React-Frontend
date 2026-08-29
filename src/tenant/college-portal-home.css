@@ -1,0 +1,421 @@
+/**
+ * College subdomain root hub (student + college login tiles).
+ * Backdrop inspired by light-grid + pastel watermark login screens.
+ */
+
+.mm-campus-hub {
+  --hub-ink: #14212b;
+  --hub-muted: #5a6b78;
+  --hub-line: #e4e9ee;
+  --hub-card: #ffffff;
+  --hub-orange: #f05a00;
+  --hub-teal: #0e6f9a;
+  --hub-surface: #f3f5f8;
+
+  position: relative;
+  min-height: 100dvh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  padding: 32px 18px 40px;
+  overflow: hidden;
+  box-sizing: border-box;
+  color: var(--hub-ink);
+  background: var(--hub-surface);
+  font-family:
+    'Segoe UI',
+    system-ui,
+    -apple-system,
+    sans-serif;
+}
+
+.mm-campus-hub__backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.mm-campus-hub__grid {
+  position: absolute;
+  inset: 0;
+  background-color: #f3f5f8;
+  background-image:
+    linear-gradient(rgba(148, 163, 184, 0.22) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.22) 1px, transparent 1px);
+  background-size: 56px 56px;
+}
+
+.mm-campus-hub__watermarks {
+  position: absolute;
+  inset: 0;
+}
+
+.mm-campus-hub__mark {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  opacity: 0.38;
+}
+
+.mm-campus-hub__mark svg {
+  width: 100%;
+  height: 100%;
+}
+
+.mm-campus-hub__mark--1 {
+  top: 8%;
+  left: 7%;
+  width: 56px;
+  height: 56px;
+  transform: rotate(-12deg);
+}
+
+.mm-campus-hub__mark--2 {
+  top: 6%;
+  left: 42%;
+  width: 64px;
+  height: 64px;
+  opacity: 0.32;
+}
+
+.mm-campus-hub__mark--3 {
+  top: 14%;
+  right: 18%;
+  width: 52px;
+  height: 52px;
+  transform: rotate(18deg);
+}
+
+.mm-campus-hub__mark--4 {
+  top: 28%;
+  left: 12%;
+  width: 48px;
+  height: 48px;
+}
+
+.mm-campus-hub__mark--5 {
+  top: 36%;
+  left: 4%;
+  width: 58px;
+  height: 58px;
+  transform: rotate(-8deg);
+  opacity: 0.3;
+}
+
+.mm-campus-hub__mark--6 {
+  bottom: 18%;
+  left: 10%;
+  width: 50px;
+  height: 50px;
+  transform: rotate(10deg);
+}
+
+.mm-campus-hub__mark--7 {
+  top: 22%;
+  right: 8%;
+  width: 46px;
+  height: 46px;
+  transform: rotate(14deg);
+}
+
+.mm-campus-hub__mark--8 {
+  top: 42%;
+  right: 6%;
+  width: 54px;
+  height: 54px;
+}
+
+.mm-campus-hub__mark--9 {
+  bottom: 28%;
+  right: 12%;
+  width: 60px;
+  height: 60px;
+  transform: rotate(-6deg);
+  opacity: 0.34;
+}
+
+.mm-campus-hub__mark--10 {
+  bottom: 10%;
+  right: 28%;
+  width: 58px;
+  height: 58px;
+}
+
+.mm-campus-hub__mark--11 {
+  bottom: 12%;
+  left: 30%;
+  width: 52px;
+  height: 52px;
+  transform: rotate(-14deg);
+}
+
+.mm-campus-hub__mark--12 {
+  top: 58%;
+  left: 8%;
+  width: 44px;
+  height: 44px;
+  opacity: 0.3;
+}
+
+.mm-campus-hub__mark--13 {
+  top: 62%;
+  right: 22%;
+  width: 48px;
+  height: 48px;
+  transform: rotate(8deg);
+  opacity: 0.3;
+}
+
+.mm-campus-hub__brand {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 22px 14px 16px;
+  border-radius: 20px;
+  background: #ffffff;
+  border: 1.5px solid rgba(240, 90, 0, 0.35);
+  box-shadow:
+    0 8px 24px rgba(20, 33, 43, 0.06),
+    0 0 0 10px #f3f5f8,
+    0 0 24px 14px #f3f5f8;
+}
+
+.mm-campus-hub__brand img {
+  height: 72px;
+  width: auto;
+}
+
+.mm-campus-hub__brand strong {
+  display: block;
+  font-size: clamp(1.55rem, 3.2vw, 1.85rem);
+  letter-spacing: -0.03em;
+  font-weight: 800;
+  line-height: 1.15;
+}
+
+.mm-campus-hub__brand span {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--hub-muted);
+}
+
+.mm-campus-hub__card {
+  position: relative;
+  z-index: 1;
+  width: min(560px, 100%);
+  padding: 32px 28px 26px;
+  border-radius: 24px;
+  background: var(--hub-card);
+  border: 1px solid rgba(228, 233, 238, 0.9);
+  box-shadow:
+    0 24px 60px rgba(15, 23, 42, 0.1),
+    0 2px 8px rgba(15, 23, 42, 0.04);
+  text-align: center;
+}
+
+.mm-campus-hub__eyebrow {
+  margin: 0 0 8px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hub-orange);
+}
+
+.mm-campus-hub__card h1 {
+  margin: 0;
+  font-size: clamp(1.45rem, 3.4vw, 1.9rem);
+  line-height: 1.18;
+  letter-spacing: -0.03em;
+  font-weight: 800;
+}
+
+.mm-campus-hub__lede {
+  margin: 12px auto 0;
+  max-width: 40ch;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--hub-muted);
+}
+
+.mm-campus-hub__lede em {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--hub-teal);
+}
+
+.mm-campus-hub__tiles {
+  display: grid;
+  gap: 12px;
+  margin-top: 24px;
+  text-align: left;
+}
+
+.mm-campus-hub__tile {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 16px 16px 14px;
+  border-radius: 16px;
+  border: 1px solid var(--hub-line);
+  background: #f7f9fb;
+  text-decoration: none !important;
+  color: inherit;
+  filter: none !important;
+  opacity: 1 !important;
+  transform: none;
+  transition:
+    transform 0.15s ease,
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background-color 0.15s ease;
+}
+
+.mm-campus-hub__tile:hover,
+.mm-campus-hub__tile:focus-visible {
+  transform: translateY(-2px);
+  filter: none !important;
+  opacity: 1 !important;
+  text-decoration: none !important;
+  box-shadow: 0 12px 28px rgba(20, 33, 43, 0.08);
+}
+
+.mm-campus-hub__tile:focus-visible {
+  outline: 3px solid rgba(240, 90, 0, 0.35);
+  outline-offset: 2px;
+}
+
+.mm-campus-hub__tile--student:hover,
+.mm-campus-hub__tile--student:focus-visible {
+  border-color: rgba(240, 90, 0, 0.45);
+  background: #fff8f3;
+}
+
+.mm-campus-hub__tile--org:hover,
+.mm-campus-hub__tile--org:focus-visible {
+  border-color: rgba(14, 111, 154, 0.4);
+  background: #f3f9fc;
+}
+
+.mm-campus-hub__tile-icon {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+}
+
+.mm-campus-hub__tile--student .mm-campus-hub__tile-icon {
+  color: #f05a00;
+  background: rgba(240, 90, 0, 0.12);
+}
+
+.mm-campus-hub__tile--org .mm-campus-hub__tile-icon {
+  color: #0e6f9a;
+  background: rgba(14, 111, 154, 0.12);
+}
+
+.mm-campus-hub__tile-copy {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.mm-campus-hub__tile-copy strong {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.mm-campus-hub__tile-copy span {
+  font-size: 0.84rem;
+  line-height: 1.4;
+  color: var(--hub-muted);
+}
+
+.mm-campus-hub__tile-arrow {
+  flex-shrink: 0;
+  color: var(--hub-muted);
+}
+
+.mm-campus-hub__tile--student .mm-campus-hub__tile-arrow {
+  color: #f05a00;
+}
+
+.mm-campus-hub__tile--org .mm-campus-hub__tile-arrow {
+  color: #0e6f9a;
+}
+
+.mm-campus-hub__foot {
+  margin: 20px 0 0;
+  font-size: 0.82rem;
+  color: var(--hub-muted);
+}
+
+.mm-campus-hub__foot a {
+  color: #f05a00 !important;
+  font-weight: 700;
+  text-decoration: none !important;
+  filter: none !important;
+}
+
+.mm-campus-hub__foot a:hover {
+  text-decoration: underline !important;
+}
+
+@media (max-width: 720px) {
+  .mm-campus-hub__mark--5,
+  .mm-campus-hub__mark--12,
+  .mm-campus-hub__mark--13 {
+    display: none;
+  }
+}
+
+@media (max-width: 520px) {
+  .mm-campus-hub {
+    padding: 24px 14px 32px;
+  }
+
+  .mm-campus-hub__card {
+    padding: 26px 18px 20px;
+  }
+
+  .mm-campus-hub__tile {
+    align-items: flex-start;
+  }
+
+  .mm-campus-hub__mark {
+    opacity: 0.26;
+  }
+
+  .mm-campus-hub__mark--3,
+  .mm-campus-hub__mark--8,
+  .mm-campus-hub__mark--11 {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mm-campus-hub__tile {
+    transition: none;
+  }
+
+  .mm-campus-hub__tile:hover,
+  .mm-campus-hub__tile:focus-visible {
+    transform: none;
+  }
+}
