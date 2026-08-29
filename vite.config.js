@@ -12,9 +12,14 @@ export default defineConfig(({ mode }) => {
     plugins: [react()],
     /** Dev: keep this process running — edits to source/CSS hot-reload without restart. */
     server: {
-      port: 5173,
+      /** Honour an assigned PORT (preview/CI runners set it) so a second dev
+          server can run alongside one already holding 5173. Bare `npm run dev`
+          leaves PORT unset and still gets the usual 5173. */
+      port: Number(process.env.PORT) || 5173,
       strictPort: false,
       open: false,
+      /** Allow medicaps.localhost:5173 college-tenant testing */
+      host: true,
       /** Fast refresh + HMR (default on; explicit for clarity) */
       hmr: true,
       watch: {

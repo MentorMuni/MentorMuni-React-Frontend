@@ -12,8 +12,10 @@ import PlatformUsersPage from './pages/PlatformUsersPage';
 import SettingsPage from './pages/SettingsPage';
 import SupportInboxPage from './pages/SupportInboxPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
+import { useAuthGateRerender } from '../lib/sessionGuards';
 
 function RequirePlatformAuth({ children }) {
+  useAuthGateRerender();
   const location = useLocation();
   if (!isPlatformAuthenticated()) {
     return <Navigate to={platformAdminPaths.login} replace />;
@@ -26,6 +28,13 @@ function RequirePlatformAuth({ children }) {
   return children;
 }
 
+function platformHomePath() {
+  const session = getPlatformSession();
+  if (!isPlatformAuthenticated()) return platformAdminPaths.login;
+  if (session?.mustChangePassword) return platformAdminPaths.changePassword;
+  return platformAdminPaths.dashboard;
+}
+
 /**
  * MentorMuni Platform Admin — tenant provisioning portal.
  * Route base: /platform/admin
@@ -36,18 +45,13 @@ export default function PlatformAdminApp() {
     <Routes>
       <Route
         index
-        element={
-          <Navigate
-            to={isPlatformAuthenticated() ? platformAdminPaths.dashboard : platformAdminPaths.login}
-            replace
-          />
-        }
+        element={<Navigate to={platformHomePath()} replace />}
       />
       <Route
         path="login"
         element={
           isPlatformAuthenticated() ? (
-            <Navigate to={platformAdminPaths.dashboard} replace />
+            <Navigate to={platformHomePath()} replace />
           ) : (
             <PlatformAdminLogin />
           )
@@ -72,12 +76,7 @@ export default function PlatformAdminApp() {
       </Route>
       <Route
         path="*"
-        element={
-          <Navigate
-            to={isPlatformAuthenticated() ? platformAdminPaths.dashboard : platformAdminPaths.login}
-            replace
-          />
-        }
+        element={<Navigate to={platformHomePath()} replace />}
       />
     </Routes>
   );

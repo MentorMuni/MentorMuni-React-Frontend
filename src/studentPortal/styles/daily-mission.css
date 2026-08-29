@@ -159,6 +159,61 @@
   border-color: var(--ok);
 }
 
+.stu-mission__check.is-static {
+  cursor: default;
+  pointer-events: none;
+}
+
+.stu-mission__check.is-static-done {
+  cursor: default;
+  pointer-events: none;
+}
+
+.stu-mission__why {
+  margin: 4px 0 0;
+}
+
+.stu-mission__why summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 0.72rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+  color: var(--interactive);
+}
+
+.stu-mission__why summary::-webkit-details-marker {
+  display: none;
+}
+
+.stu-mission__why summary::before {
+  content: '';
+  width: 0;
+  height: 0;
+  border-left: 4px solid currentColor;
+  border-top: 3px solid transparent;
+  border-bottom: 3px solid transparent;
+  transition: transform 0.15s ease;
+}
+
+.stu-mission__why[open] summary::before {
+  transform: rotate(90deg);
+}
+
+.stu-mission__why p {
+  margin: 6px 0 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--interactive) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--interactive) 16%, var(--line));
+  font-size: 0.78rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+
 .stu-mission__body {
   min-width: 0;
 }

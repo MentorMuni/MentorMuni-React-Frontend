@@ -1,45 +1,19 @@
-import { lazy, Suspense } from 'react';
 import { usePageMeta } from '../hooks/usePageMeta';
 import SiteFooter from './layout/SiteFooter';
 import ScrollReveal from './layout/ScrollReveal';
 import ProductFrame from './colleges/ProductFrame';
+import StudentPortalPeek from './colleges/StudentPortalPeek';
+import OrgFlowDiagram from './colleges/OrgFlowDiagram';
 import { ArrowRight, CalendarDays, Phone } from 'lucide-react';
-import '../studentPortal/styles/portal.css';
-import '../studentPortal/styles/home.css';
 import './colleges/colleges-page.css';
 
-/* The real student dashboard sections. These are pure presentational and
-   prop-driven — no auth, no network — so the marketing page renders the same
-   code students see, and can never drift from it. Lazy so the dashboard bundle
-   stays off the critical path. */
-const PlacementReadinessHero = lazy(
-  () => import('../studentPortal/components/home/PlacementReadinessHero')
-);
-const TodaysPlanSection = lazy(
-  () => import('../studentPortal/components/home/TodaysPlanSection')
-);
+/* The student dashboard used to be embedded here as hero artwork, which is
+   why this file imported the portal stylesheets and a frozen set of demo
+   props. The hero now carries OrgFlowDiagram instead, and the real dashboard
+   is shown full-width and interactive by StudentPortalPeek — so the portal
+   CSS (home.css alone is ~36KB) no longer loads on this route. */
 
 const DEMO_URL = 'https://calendly.com/mentormuni';
-
-/* Frozen sample state for the screenshot. TodaysPlanSection takes `steps`;
-   this page used to pass `currentReadiness`, so the marketing shot silently
-   rendered the component's empty state instead of a mission card. */
-const DEMO_STEPS = [
-  { tool_code: '5_sec', order: 1, title: '5-sec snap test', minutes: 5, status: 'done', score: 62 },
-  { tool_code: 'aptitude', order: 2, title: 'Aptitude readiness', minutes: 20, status: 'done', score: 54 },
-  { tool_code: 'skill_readiness', order: 3, title: 'Skill readiness', minutes: 25, status: 'done', score: 71 },
-  { tool_code: 'skill_mock', order: 4, title: 'Skill AI mock interview', minutes: 15, status: 'current', score: null },
-  { tool_code: 'project_mock', order: 5, title: 'Project AI mock interview', minutes: 15, status: 'locked', score: null },
-  { tool_code: 'interview_readiness', order: 6, title: 'Interview readiness', minutes: 25, status: 'locked', score: null },
-  { tool_code: 'interview_mock', order: 7, title: 'Interview AI mock', minutes: 15, status: 'locked', score: null },
-  { tool_code: 'hr_mock', order: 8, title: 'HR AI mock interview', minutes: 30, status: 'locked', score: null },
-];
-
-const DEMO_BREAKDOWN = [
-  { label: 'Aptitude', score: 54, weight: '' },
-  { label: 'Skills', score: 71, weight: '' },
-  { label: 'Communication', score: 38, weight: '' },
-];
 
 /* ══════════════════════════════════════════════════════════════
    HERO — dark, cinematic, product as the light source
@@ -79,24 +53,15 @@ function Hero() {
           </p>
         </div>
 
+        {/* Was a ProductFrame embedding the live student dashboard. At this
+            column's width that component's two-column layout collapsed and its
+            summary text wrapped to one or two words per line, so it read as a
+            broken screenshot. The hero claim is about four roles on one system,
+            which a diagram states directly and a cropped dashboard never did.
+            The real dashboard still appears on this page, at full width and
+            interactive, in the "For the student" band. */}
         <div className="mmc-glow">
-          <ProductFrame url="mentormuni.com/studentportal/home" height={520}>
-            {/* `.stu-app[data-theme]` supplies the dashboard's own token
-                scope. No `--page` modifier: this is artwork, not the page. */}
-            <div className="stu-app" data-theme="light" style={{ padding: 18, background: 'var(--bg)' }}>
-              <Suspense fallback={<div style={{ height: 820 }} />}>
-                <PlacementReadinessHero
-                  currentReadiness={47}
-                  previousReadiness={41}
-                  targetReadiness={85}
-                  estimatedDays={38}
-                  breakdown={DEMO_BREAKDOWN}
-                />
-                <div style={{ height: 18 }} />
-                <TodaysPlanSection steps={DEMO_STEPS} />
-              </Suspense>
-            </div>
-          </ProductFrame>
+          <OrgFlowDiagram />
         </div>
       </div>
     </header>
@@ -795,6 +760,10 @@ export default function CollegesPage() {
       >
         <NotifyPreview />
       </Band>
+
+      {/* TPO → HOD → student: the admin bands above sell the campus view,
+          this one answers "what does my student actually get?". */}
+      <StudentPortalPeek />
 
       <WhoItHelps />
       <WhyDifferent />

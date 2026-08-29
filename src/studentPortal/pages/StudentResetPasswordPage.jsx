@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { resetPasswordWithToken } from '../../orgPortal';
+import { tenantPortalPath } from '../../tenant/resolveTenant';
 import { studentPaths } from '../paths';
 import { StudentThemeFab, useStudentTheme } from '../useStudentTheme.jsx';
 import '../student-login.css';
@@ -38,7 +39,7 @@ export default function StudentResetPasswordPage() {
     try {
       await resetPasswordWithToken({ token, newPassword: password });
       setOk(true);
-      setTimeout(() => navigate(studentPaths.login, { replace: true }), 1200);
+      setTimeout(() => navigate(tenantPortalPath(studentPaths.login), { replace: true }), 1200);
     } catch (err) {
       setError(err?.message || 'Unable to reset password.');
     } finally {
@@ -71,7 +72,7 @@ export default function StudentResetPasswordPage() {
               <p className="mm-stu-card-sub">
                 This reset link is incomplete. Request a new one from student login.
               </p>
-              <Link to={studentPaths.forgotPassword} className="mm-stu-link">
+              <Link to={tenantPortalPath(studentPaths.forgotPassword)} className="mm-stu-link">
                 Request a new link
               </Link>
             </>

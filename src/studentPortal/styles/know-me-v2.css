@@ -389,6 +389,16 @@
 
 .stu-knowme__textarea-wrapper {
   position: relative;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.stu-knowme__field-hint {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.45;
+  color: var(--ink-2);
+  font-weight: 550;
 }
 
 .stu-knowme__char-count {
@@ -783,6 +793,22 @@
   cursor: default;
   text-decoration: none;
   color: #276749;
+}
+
+.stu-app[data-theme='dark'] .stu-knowme__hero {
+  background:
+    radial-gradient(
+      110% 100% at 85% 15%,
+      color-mix(in srgb, var(--accent) 18%, transparent),
+      transparent 60%
+    ),
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--surface) 92%, #0b1220) 0%,
+      color-mix(in srgb, var(--bg) 88%, #102033) 100%
+    );
+  border-color: color-mix(in srgb, var(--interactive) 28%, var(--line));
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.35);
 }
 
 .stu-app[data-theme='dark'] .ftf-meter {

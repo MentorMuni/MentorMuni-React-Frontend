@@ -6,7 +6,7 @@ export function hostBackLabel(session) {
   if (!session) return null;
   if (session.fromPractice) return 'Back to Practice';
   if (session.fromCompanyPrep) return 'Back to Company Prep';
-  if (session.fromJourney) return 'Back to your 90-day plan';
+  if (session.fromJourney) return 'Back to Today';
   if (session.fromFearToFearless) return 'Back to Fear → Fearless';
   if (session.fromRoadmap) return 'Back to Week 1 plan';
   if (session.source === 'embed') return 'Done';

@@ -80,7 +80,17 @@ export function clearOrgSession() {
 }
 
 export function isOrgAuthenticated() {
-  return Boolean(orgApi.getToken() && getOrgSession());
+  const token = orgApi.getToken();
+  const session = getOrgSession();
+  if (!token || !session) return false;
+  if (session.expiresAt) {
+    const expiresMs = new Date(session.expiresAt).getTime();
+    if (Number.isFinite(expiresMs) && Date.now() > expiresMs) {
+      clearOrgSession();
+      return false;
+    }
+  }
+  return true;
 }
 
 export function consumeOrgAuthFlash() {
@@ -218,12 +228,14 @@ export async function loginOrgUser(userId, password, organizationCode = '') {
         };
       }
       if (err.status === 403) {
+        const detail = err.detail && typeof err.detail === 'object' ? err.detail : {};
         return {
           ok: false,
           error: err.message,
-          code: code || 'FORBIDDEN',
+          code: code || detail.code || 'FORBIDDEN',
           status: 403,
-          ux: getSuspendedUx(err.message),
+          portal_url: detail.portal_url || undefined,
+          organization_name: detail.organization_name || undefined,
         };
       }
       return {

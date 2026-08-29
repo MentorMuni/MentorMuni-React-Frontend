@@ -1,0 +1,1516 @@
+<title>The Offer Path</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+<style>
+/* ============================================================
+   THE OFFER PATH — MentorMuni student home
+   Tokens mirror src/studentPortal/styles/tokens.css so this
+   mockup drops into the portal without a palette rewrite.
+   ============================================================ */
+
+:root {
+  /* Brand — cyan→blue mark, amber ring */
+  --brand: #0e6fa8;
+  --brand-600: #1183c4;
+  --accent: #17b6d4;
+  --accent-soft: #e4f4fa;
+  --amber: #e8a33d;
+  --amber-ink: #b45309;
+  --amber-soft: #fdf3e3;
+
+  --interactive: #0e6fa8;
+  --interactive-hover: #0a5480;
+  --on-brand: #ffffff;
+
+  /* Semantic — fill / ink / tint */
+  --ok: #16a34a;  --ok-ink: #12703a;  --ok-soft: #e8f6ed;
+  --warn: #d99400; --warn-ink: #a16207; --warn-soft: #fdf4e3;
+  --alert: #e0701a; --alert-ink: #c2410c; --alert-soft: #fdefe6;
+  --bad: #dc4a3d;  --bad-ink: #b91c1c;  --bad-soft: #fdecea;
+
+  /* Neutrals — cool grey, biased blue under the brand */
+  --bg: #f4f7fa;
+  --surface: #ffffff;
+  --surface-2: #f7fafc;
+  --line: #e3e9ef;
+  --line-strong: #d1dae3;
+  --ink: #0d1720;
+  --ink-2: #2f4253;
+  --ink-3: #55697a;
+  --track: rgba(13, 27, 42, 0.08);
+  --focus: #1183c4;
+
+  /* Always-dark instrument surfaces */
+  --deep-1: #0e5a83;
+  --deep-2: #0d4a6d;
+  --deep-3: #0b3f62;
+  --deep-4: #08202f;
+  --on-dark: #ffffff;
+  --on-dark-2: rgba(255,255,255,0.88);
+  --on-dark-3: rgba(255,255,255,0.78);
+  --on-dark-line: rgba(255,255,255,0.14);
+  --on-dark-fill: rgba(255,255,255,0.08);
+  --on-dark-fill-2: rgba(255,255,255,0.18);
+  --on-dark-ring: #2ecbe8;
+  --on-dark-ok: #34d385;
+  --on-dark-warn: #ffc94d;
+  --on-dark-low: #ff8a6b;
+  --on-dark-accent: #8fe3f5;
+
+  --sh-1: 0 1px 2px rgba(13,27,42,0.05);
+  --sh-2: 0 2px 8px -2px rgba(13,27,42,0.08), 0 1px 3px rgba(13,27,42,0.04);
+  --sh-3: 0 12px 32px -8px rgba(13,27,42,0.16), 0 2px 8px rgba(13,27,42,0.06);
+
+  --r-sm: 10px; --r-md: 14px; --r-lg: 18px; --r-xl: 22px;
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur-fast: 180ms; --dur-base: 320ms; --dur-slow: 480ms; --dur-meter: 640ms;
+
+  --display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d141d;
+    --surface: #161f2b;
+    --surface-2: #1b2634;
+    --line: #293747;
+    --line-strong: #3a4c60;
+    --ink: #eaf1f8;
+    --ink-2: #adbecd;
+    --ink-3: #8397aa;
+    --track: rgba(255,255,255,0.10);
+    --brand: #54b3e5;
+    --brand-600: #68c0ef;
+    --accent: #46d4ee;
+    --accent-soft: #183548;
+    --interactive: #5ad3ee;
+    --interactive-hover: #8ae4f7;
+    --on-brand: #04222c;
+    --ok-ink: #4ade80; --ok-soft: #10291c;
+    --warn-ink: #f5c464; --warn-soft: #2e2413;
+    --alert-ink: #fb9b52; --alert-soft: #2f1e12;
+    --bad-ink: #f87171; --bad-soft: #33191a;
+    --amber-ink: #f0b45e; --amber-soft: #312716;
+    --focus: #5ad3ee;
+    --sh-1: 0 1px 2px rgba(0,0,0,0.4);
+    --sh-2: 0 2px 8px -2px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.3);
+    --sh-3: 0 12px 32px -8px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #0d141d;
+  --surface: #161f2b;
+  --surface-2: #1b2634;
+  --line: #293747;
+  --line-strong: #3a4c60;
+  --ink: #eaf1f8;
+  --ink-2: #adbecd;
+  --ink-3: #8397aa;
+  --track: rgba(255,255,255,0.10);
+  --brand: #54b3e5;
+  --brand-600: #68c0ef;
+  --accent: #46d4ee;
+  --accent-soft: #183548;
+  --interactive: #5ad3ee;
+  --interactive-hover: #8ae4f7;
+  --on-brand: #04222c;
+  --ok-ink: #4ade80; --ok-soft: #10291c;
+  --warn-ink: #f5c464; --warn-soft: #2e2413;
+  --alert-ink: #fb9b52; --alert-soft: #2f1e12;
+  --bad-ink: #f87171; --bad-soft: #33191a;
+  --amber-ink: #f0b45e; --amber-soft: #312716;
+  --focus: #5ad3ee;
+  --sh-1: 0 1px 2px rgba(0,0,0,0.4);
+  --sh-2: 0 2px 8px -2px rgba(0,0,0,0.5), 0 1px 3px rgba(0,0,0,0.3);
+  --sh-3: 0 12px 32px -8px rgba(0,0,0,0.6), 0 2px 8px rgba(0,0,0,0.4);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: 'cv02','cv03','cv04','ss01';
+}
+
+h1, h2, h3, h4, p, ul, ol, li, figure { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+button { font: inherit; color: inherit; cursor: pointer; }
+a { color: inherit; text-decoration: none; }
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--r-sm);
+}
+
+/* ---- shared atoms ---------------------------------------- */
+
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+
+.eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.shell {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ============================================================
+   TOP BAR — identity, quietly
+   ============================================================ */
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: saturate(160%) blur(12px);
+  -webkit-backdrop-filter: saturate(160%) blur(12px);
+  border-bottom: 1px solid var(--line);
+}
+
+.topbar__in {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 12px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.brand { display: flex; align-items: center; gap: 10px; min-width: 0; }
+
+.brand__mark {
+  width: 30px; height: 30px;
+  border-radius: 9px;
+  background: linear-gradient(140deg, var(--accent), var(--brand));
+  display: grid; place-items: center;
+  color: #fff;
+  font-family: var(--display);
+  font-weight: 700;
+  font-size: 16px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.14) inset;
+  flex: none;
+}
+
+.brand__text { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+.brand__name { font-weight: 600; font-size: 14px; letter-spacing: -0.01em; }
+.brand__sub {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.topbar__campus {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  padding-left: 16px;
+  border-left: 1px solid var(--line);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.topbar__spacer { flex: 1; }
+
+.streak-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 5px 11px 5px 9px;
+  border-radius: 999px;
+  background: var(--amber-soft);
+  color: var(--amber-ink);
+  font-size: 12.5px;
+  font-weight: 600;
+  border: 1px solid color-mix(in srgb, var(--amber) 26%, transparent);
+}
+.streak-chip b { font-family: var(--mono); font-weight: 700; }
+
+.avatar {
+  width: 30px; height: 30px; border-radius: 999px;
+  background: linear-gradient(140deg, var(--brand-600), var(--brand));
+  color: #fff;
+  display: grid; place-items: center;
+  font-size: 11.5px; font-weight: 700; letter-spacing: 0.02em;
+  flex: none;
+}
+
+.theme-btn {
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  border-radius: 9px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--ink-2);
+  transition: border-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.theme-btn:hover { border-color: var(--line-strong); color: var(--ink); }
+
+/* ============================================================
+   BEAT 00 — YOU ARE HERE (the instrument slab)
+   ============================================================ */
+
+.here {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(120% 140% at 8% 0%, var(--deep-1) 0%, var(--deep-2) 42%, var(--deep-3) 72%, var(--deep-4) 100%);
+  color: var(--on-dark);
+  border-bottom: 1px solid var(--line);
+}
+
+/* faint measurement grid — the page's one piece of texture */
+.here::before {
+  content: "";
+  position: absolute; inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255,255,255,0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255,255,255,0.045) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(120% 100% at 20% 0%, #000 0%, transparent 72%);
+  -webkit-mask-image: radial-gradient(120% 100% at 20% 0%, #000 0%, transparent 72%);
+  pointer-events: none;
+}
+
+.here__in {
+  position: relative;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 64px 24px 56px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 56px;
+  align-items: center;
+}
+
+.here__eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--on-dark-accent);
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 22px;
+}
+.here__eyebrow::after {
+  content: ""; height: 1px; flex: 1; max-width: 120px;
+  background: linear-gradient(to right, var(--on-dark-line), transparent);
+}
+
+.here__line {
+  font-family: var(--display);
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-size: clamp(30px, 4.2vw, 50px);
+  line-height: 1.1;
+  letter-spacing: -0.022em;
+  text-wrap: balance;
+  max-width: 17ch;
+}
+.here__line em {
+  font-style: normal;
+  color: var(--on-dark-accent);
+}
+
+.here__sub {
+  margin-top: 20px;
+  font-size: 15.5px;
+  line-height: 1.55;
+  color: var(--on-dark-3);
+  max-width: 46ch;
+}
+
+.here__figs {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.fig {
+  background: var(--on-dark-fill);
+  border: 1px solid var(--on-dark-line);
+  border-radius: var(--r-md);
+  padding: 11px 15px;
+  min-width: 118px;
+}
+.fig__k {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--on-dark-3);
+  display: block;
+  margin-bottom: 5px;
+}
+.fig__v {
+  font-family: var(--mono);
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--on-dark);
+  font-variant-numeric: tabular-nums;
+}
+.fig__v small {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--on-dark-3);
+  margin-left: 3px;
+}
+
+/* ---- the readiness instrument ---- */
+
+.dial { position: relative; width: 244px; height: 244px; flex: none; }
+.dial svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.dial__track { fill: none; stroke: rgba(255,255,255,0.11); stroke-width: 12; }
+.dial__target {
+  fill: none;
+  stroke: rgba(255,255,255,0.30);
+  stroke-width: 2;
+  stroke-dasharray: 2 5;
+  stroke-linecap: round;
+}
+.dial__arc {
+  fill: none;
+  stroke: url(#dialGrad);
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke-dasharray: var(--circ) var(--circ);
+  stroke-dashoffset: var(--circ);
+  transition: stroke-dashoffset var(--dur-meter) var(--ease) 180ms;
+}
+.is-lit .dial__arc { stroke-dashoffset: var(--dash); }
+
+.dial__mid {
+  position: absolute; inset: 0;
+  display: grid; place-content: center; text-align: center;
+}
+.dial__num {
+  font-family: var(--mono);
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.045em;
+  font-variant-numeric: tabular-nums;
+  color: var(--on-dark);
+}
+.dial__pct { font-size: 24px; color: var(--on-dark-3); margin-left: 1px; }
+.dial__cap {
+  margin-top: 9px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--on-dark-3);
+}
+.dial__delta {
+  margin-top: 11px;
+  display: inline-flex; align-items: center; gap: 5px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(52,211,133,0.16);
+  border: 1px solid rgba(52,211,133,0.34);
+  color: var(--on-dark-ok);
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+/* ============================================================
+   THE SPINE
+   ============================================================ */
+
+.path { position: relative; padding: 8px 0 0; }
+
+.spine {
+  position: relative;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* rail + drawn progress */
+.rail {
+  position: absolute;
+  left: 24px;
+  top: 40px;
+  bottom: 40px;
+  width: 2px;
+  background: var(--line);
+  border-radius: 2px;
+}
+.rail__fill {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, var(--accent), var(--brand));
+  border-radius: 2px;
+  transform-origin: top;
+  transform: scaleY(var(--p, 0));
+}
+
+.beat {
+  position: relative;
+  padding: 44px 0 44px 72px;
+}
+
+.beat__node {
+  position: absolute;
+  left: 0;
+  top: 50px;
+  width: 50px;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+.beat__dot {
+  width: 13px; height: 13px;
+  border-radius: 999px;
+  background: var(--bg);
+  border: 2px solid var(--line-strong);
+  margin-left: -5.5px;
+  flex: none;
+  transition: border-color var(--dur-base) var(--ease),
+              background-color var(--dur-base) var(--ease),
+              box-shadow var(--dur-base) var(--ease);
+}
+.beat.is-in .beat__dot {
+  border-color: var(--accent);
+  background: var(--accent);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.beat__tick {
+  height: 1px;
+  flex: 1;
+  background: var(--line);
+  margin-left: 6px;
+}
+.beat__no {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--ink-3);
+  margin-left: 7px;
+  transition: color var(--dur-base) var(--ease);
+}
+.beat.is-in .beat__no { color: var(--interactive); }
+
+.beat__head { margin-bottom: 26px; }
+.beat__eyebrow {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  display: block;
+  margin-bottom: 10px;
+}
+.beat__title {
+  font-family: var(--display);
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-size: clamp(24px, 2.7vw, 33px);
+  line-height: 1.16;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-wrap: balance;
+  max-width: 22ch;
+}
+.beat__lede {
+  margin-top: 12px;
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: var(--ink-3);
+  max-width: 62ch;
+}
+.beat__lede strong { color: var(--ink-2); font-weight: 600; }
+
+/* reveal */
+.rise { opacity: 0; transform: translateY(12px); }
+.is-in .rise,
+.rise.is-in {
+  opacity: 1;
+  transform: none;
+  transition: opacity var(--dur-base) var(--ease), transform var(--dur-base) var(--ease);
+}
+.is-in .rise:nth-child(1) { transition-delay: 0ms; }
+.is-in .rise:nth-child(2) { transition-delay: 60ms; }
+.is-in .rise:nth-child(3) { transition-delay: 120ms; }
+.is-in .rise:nth-child(4) { transition-delay: 180ms; }
+
+/* ---- generic card ---- */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-1);
+}
+
+/* ============================================================
+   BEAT 01 — pillar measurements
+   ============================================================ */
+
+.pillars { display: grid; gap: 2px; }
+
+.pillar {
+  display: grid;
+  grid-template-columns: 190px minmax(0,1fr) 54px;
+  align-items: center;
+  gap: 18px;
+  padding: 13px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-bottom-width: 0;
+  transition: background-color var(--dur-fast) var(--ease);
+}
+.pillar:first-child { border-radius: var(--r-lg) var(--r-lg) 0 0; }
+.pillar:last-child { border-radius: 0 0 var(--r-lg) var(--r-lg); border-bottom-width: 1px; }
+.pillar:hover { background: var(--surface-2); }
+
+.pillar--gap { background: var(--bad-soft); border-color: color-mix(in srgb, var(--bad) 26%, var(--line)); }
+.pillar--gap:hover { background: var(--bad-soft); }
+
+.pillar__name { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.pillar__label { font-size: 14px; font-weight: 500; color: var(--ink); white-space: nowrap; }
+.pillar__tag {
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 2px 6px;
+  border-radius: 5px;
+  background: var(--bad);
+  color: #fff;
+  flex: none;
+}
+
+/* `.meter` blockifies as a grid item, but its child does not — without an
+   explicit display the width below is silently dropped on an inline span. */
+.meter { display: block; height: 7px; border-radius: 999px; background: var(--track); overflow: hidden; }
+.meter__fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  width: 0;
+  transition: width var(--dur-meter) var(--ease);
+}
+.is-in .meter__fill { width: var(--w); }
+.meter__fill--ok { background: var(--ok); }
+.meter__fill--warn { background: var(--warn); }
+.meter__fill--bad { background: var(--bad); }
+
+.pillar__score {
+  font-family: var(--mono);
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--ink);
+}
+.pillar__score small { font-size: 10.5px; font-weight: 500; color: var(--ink-3); }
+
+/* the callout that turns a gap into a product surface */
+.gapcall {
+  margin-top: 18px;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: wrap;
+  padding: 18px 20px;
+  border-radius: var(--r-lg);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--bad);
+  box-shadow: var(--sh-1);
+}
+.gapcall__body { flex: 1 1 300px; min-width: 0; }
+.gapcall__t { font-size: 14.5px; font-weight: 600; color: var(--ink); }
+.gapcall__d { margin-top: 4px; font-size: 13.5px; line-height: 1.5; color: var(--ink-3); }
+
+.btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 10px 17px;
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  background: var(--brand);
+  color: var(--on-brand);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  transition: background-color var(--dur-fast) var(--ease), transform var(--dur-fast) var(--ease);
+}
+.btn:hover { background: var(--interactive-hover); }
+.btn:active { transform: translateY(1px); }
+
+.btn--ghost {
+  background: transparent;
+  border-color: var(--line-strong);
+  color: var(--ink-2);
+}
+.btn--ghost:hover { background: var(--surface-2); border-color: var(--ink-3); color: var(--ink); }
+
+.btn__arrow { transition: transform var(--dur-fast) var(--ease); }
+.btn:hover .btn__arrow { transform: translateX(3px); }
+
+/* ============================================================
+   BEAT 02 — today's move
+   ============================================================ */
+
+.today { display: grid; grid-template-columns: minmax(0,1fr) 260px; gap: 20px; align-items: start; }
+
+.mission { padding: 6px 0 8px; }
+
+.mission__bar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 20px 13px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+}
+.mission__title { font-size: 14px; font-weight: 600; color: var(--ink); }
+.mission__grow { flex: 1; }
+
+.budget { display: inline-flex; gap: 3px; padding: 3px; border-radius: 9px; background: var(--surface-2); border: 1px solid var(--line); }
+.budget button {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 5px 11px;
+  border-radius: 6px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-3);
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.budget button:hover { color: var(--ink); }
+.budget button[aria-pressed="true"] { background: var(--surface); color: var(--interactive); box-shadow: var(--sh-1); }
+
+.task {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 15px 20px;
+  border-bottom: 1px solid var(--line);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+.task:last-child { border-bottom: 0; }
+.task:hover { background: var(--surface-2); }
+
+.task__box {
+  width: 20px; height: 20px;
+  border-radius: 6px;
+  border: 1.5px solid var(--line-strong);
+  background: var(--surface);
+  flex: none;
+  margin-top: 1px;
+  display: grid; place-items: center;
+  color: transparent;
+  transition: border-color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+.task__box:hover { border-color: var(--interactive); }
+.task[data-done="1"] .task__box { background: var(--ok); border-color: var(--ok); color: #fff; }
+.task[data-done="1"] .task__t { color: var(--ink-3); text-decoration: line-through; text-decoration-color: var(--line-strong); }
+
+.task__body { flex: 1; min-width: 0; }
+.task__t { font-size: 14.5px; font-weight: 500; color: var(--ink); }
+.task__m { margin-top: 3px; font-size: 12.5px; color: var(--ink-3); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.task__m .dotsep { color: var(--line-strong); }
+.task__gain {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--ok-ink);
+  background: var(--ok-soft);
+  padding: 2px 7px;
+  border-radius: 5px;
+}
+.task__mins {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink-3);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  padding: 3px 8px;
+  border-radius: 6px;
+  flex: none;
+  align-self: center;
+}
+
+/* the side stack: mentor + momentum */
+.side { display: grid; gap: 14px; }
+
+.mentor {
+  padding: 18px;
+  border-radius: var(--r-lg);
+  background: linear-gradient(155deg, var(--deep-1), var(--deep-3) 70%, var(--deep-4));
+  color: var(--on-dark);
+  border: 1px solid var(--on-dark-line);
+  position: relative;
+  overflow: hidden;
+}
+.mentor__live {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--on-dark-accent);
+}
+.pulse {
+  width: 6px; height: 6px; border-radius: 999px;
+  background: var(--on-dark-ok);
+  box-shadow: 0 0 0 0 rgba(52,211,133,0.6);
+  animation: pulse 2.4s var(--ease) infinite;
+}
+@keyframes pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(52,211,133,0.55); }
+  70%  { box-shadow: 0 0 0 8px rgba(52,211,133,0); }
+  100% { box-shadow: 0 0 0 0 rgba(52,211,133,0); }
+}
+.mentor__t {
+  margin-top: 12px;
+  font-family: var(--display);
+  font-weight: 500;
+  font-size: 19px;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+}
+.mentor__d { margin-top: 8px; font-size: 13px; line-height: 1.55; color: var(--on-dark-3); }
+.mentor__btn {
+  margin-top: 14px;
+  width: 100%;
+  justify-content: center;
+  background: var(--on-dark-fill-2);
+  border: 1px solid var(--on-dark-line);
+  color: var(--on-dark);
+}
+.mentor__btn:hover { background: rgba(255,255,255,0.26); }
+
+.momentum { padding: 16px 18px; }
+.momentum__k {
+  font-family: var(--mono);
+  font-size: 10px; letter-spacing: 0.13em; text-transform: uppercase;
+  color: var(--ink-3);
+}
+.week { display: flex; gap: 5px; margin-top: 12px; }
+.week span {
+  flex: 1;
+  height: 30px;
+  border-radius: 7px;
+  background: var(--track);
+  display: grid; place-items: center;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+.week span.on { background: var(--amber); color: #fff; }
+.momentum__n { margin-top: 12px; font-size: 12.5px; color: var(--ink-3); line-height: 1.5; }
+
+/* ============================================================
+   BEAT 03 — the route
+   ============================================================ */
+
+.route { padding: 20px 22px; }
+
+.route__head {
+  display: flex; align-items: baseline; gap: 12px;
+  flex-wrap: wrap;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--line);
+}
+.route__wk { font-family: var(--mono); font-size: 13px; font-weight: 700; color: var(--ink); }
+.route__of { font-size: 12.5px; color: var(--ink-3); }
+.route__grow { flex: 1; }
+
+.stages { display: flex; gap: 6px; margin-top: 18px; }
+.stage { flex: 1; min-width: 0; }
+.stage__bar { height: 5px; border-radius: 999px; background: var(--track); }
+.stage.done .stage__bar { background: var(--ok); }
+.stage.now .stage__bar { background: var(--accent); }
+.stage__l {
+  margin-top: 9px;
+  font-size: 11.5px;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.stage.now .stage__l { color: var(--ink); font-weight: 600; }
+
+.route__rows { margin-top: 22px; display: grid; gap: 1px; }
+.rrow {
+  display: grid;
+  grid-template-columns: 74px minmax(0,1fr) auto;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 2px;
+  border-top: 1px solid var(--line);
+}
+.rrow__wk { font-family: var(--mono); font-size: 11.5px; font-weight: 600; color: var(--ink-3); }
+.rrow__t { font-size: 14px; color: var(--ink); }
+.rrow__s {
+  font-family: var(--mono);
+  font-size: 10.5px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 6px;
+}
+.rrow__s.done { background: var(--ok-soft); color: var(--ok-ink); }
+.rrow__s.now  { background: var(--accent-soft); color: var(--interactive); }
+.rrow__s.next { background: var(--surface-2); color: var(--ink-3); border: 1px solid var(--line); }
+
+/* ============================================================
+   BEAT 04 — the offer surface
+   ============================================================ */
+
+.surface-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(238px, 1fr));
+  gap: 14px;
+}
+
+.cap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  box-shadow: var(--sh-1);
+  overflow: hidden;
+  transition: transform var(--dur-base) var(--ease),
+              box-shadow var(--dur-base) var(--ease),
+              border-color var(--dur-base) var(--ease);
+}
+.cap::before {
+  content: "";
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: var(--cap, var(--accent));
+  transform: scaleY(0.24);
+  transform-origin: top;
+  transition: transform var(--dur-base) var(--ease);
+}
+.cap:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--sh-3);
+  border-color: var(--line-strong);
+}
+.cap:hover::before { transform: scaleY(1); }
+
+.cap__top { display: flex; align-items: center; gap: 10px; margin-bottom: 11px; }
+.cap__ico {
+  width: 32px; height: 32px; border-radius: 9px;
+  display: grid; place-items: center;
+  background: color-mix(in srgb, var(--cap, var(--accent)) 13%, transparent);
+  color: var(--cap, var(--accent));
+  flex: none;
+}
+.cap__n { font-size: 14.5px; font-weight: 600; color: var(--ink); letter-spacing: -0.008em; }
+.cap__state {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.07em; text-transform: uppercase;
+  padding: 3px 7px; border-radius: 5px;
+  background: var(--surface-2);
+  color: var(--ink-3);
+  border: 1px solid var(--line);
+  flex: none;
+}
+.cap__state.new { background: var(--accent-soft); color: var(--interactive); border-color: color-mix(in srgb, var(--accent) 30%, transparent); }
+.cap__state.live { background: var(--ok-soft); color: var(--ok-ink); border-color: color-mix(in srgb, var(--ok) 28%, transparent); }
+
+.cap__d { font-size: 13.2px; line-height: 1.55; color: var(--ink-3); flex: 1; }
+
+.cap__foot {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--line);
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+}
+.cap__metric { font-family: var(--mono); font-size: 12px; font-weight: 600; color: var(--ink-2); }
+.cap__go { font-size: 12.5px; font-weight: 600; color: var(--interactive); display: inline-flex; align-items: center; gap: 5px; }
+.cap:hover .cap__go .btn__arrow { transform: translateX(3px); }
+
+/* ============================================================
+   CLOSE
+   ============================================================ */
+
+.close {
+  margin-top: 24px;
+  padding: 56px 0 30px;
+  border-top: 1px solid var(--line);
+  text-align: center;
+}
+.close__l {
+  font-family: var(--display);
+  font-optical-sizing: auto;
+  font-weight: 500;
+  font-size: clamp(21px, 2.4vw, 28px);
+  line-height: 1.3;
+  letter-spacing: -0.018em;
+  color: var(--ink);
+  max-width: 26ch;
+  margin: 0 auto;
+  text-wrap: balance;
+}
+.close__l em { font-style: normal; color: var(--interactive); }
+.close__m {
+  margin-top: 16px;
+  font-size: 13.5px;
+  color: var(--ink-3);
+}
+
+.foot {
+  padding: 26px 0 44px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; flex-wrap: wrap;
+  font-size: 12.5px;
+  color: var(--ink-3);
+  border-top: 1px solid var(--line);
+  margin-top: 30px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 940px) {
+  .here__in { grid-template-columns: minmax(0,1fr); gap: 38px; padding: 48px 24px 44px; }
+  .dial { width: 208px; height: 208px; }
+  .dial__num { font-size: 55px; }
+  .today { grid-template-columns: minmax(0,1fr); }
+  .pillar { grid-template-columns: 150px minmax(0,1fr) 50px; gap: 14px; }
+}
+
+@media (max-width: 680px) {
+  .beat { padding-left: 46px; padding-top: 36px; padding-bottom: 36px; }
+  .rail { left: 24px; }
+  .beat__node { width: 32px; top: 42px; }
+  .beat__no { display: none; }
+  .topbar__campus { display: none; }
+  .pillar { grid-template-columns: minmax(0,1fr) 50px; row-gap: 9px; }
+  .pillar .meter { grid-column: 1 / -1; }
+  .stages { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .rrow { grid-template-columns: 60px minmax(0,1fr); row-gap: 6px; }
+  .rrow__s { grid-column: 2; justify-self: start; }
+  .here__line { font-size: 30px; max-width: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .rise { opacity: 1; transform: none; }
+  .rail__fill { transform: scaleY(1); }
+}
+</style>
+
+<header class="topbar">
+  <div class="topbar__in">
+    <div class="brand">
+      <span class="brand__mark" aria-hidden="true">M</span>
+      <span class="brand__text">
+        <span class="brand__name">MentorMuni</span>
+        <span class="brand__sub">Placement OS</span>
+      </span>
+    </div>
+    <span class="topbar__campus">IIT Bombay &middot; CSE &middot; Batch 2026</span>
+    <span class="topbar__spacer"></span>
+    <span class="streak-chip"><svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2c1.5 4-2 5-2 8a4 4 0 0 0 8 0c0-1-.3-2-1-3 2.5 1.5 4 4 4 7a7 7 0 1 1-14 0c0-5 5-7 5-12Z"/></svg><b>18</b> days</span>
+    <button class="theme-btn" id="themeBtn" aria-label="Toggle dark mode">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+    </button>
+    <span class="avatar" aria-hidden="true">AR</span>
+  </div>
+</header>
+
+<!-- ============ BEAT 00 · YOU ARE HERE ============ -->
+<section class="here" id="here" aria-labelledby="hereTitle">
+  <div class="here__in">
+    <div>
+      <p class="here__eyebrow">You are here &middot; Thursday, 28 Aug</p>
+      <h1 class="here__line" id="hereTitle">
+        You're <em>47% ready</em>, and the Infosys drive is 62 days out.
+      </h1>
+      <p class="here__sub">
+        That number is measured, not guessed &mdash; it comes from eight scored checks
+        across aptitude, DSA, projects, and three AI mock interviews. Here is
+        exactly what stands between it and 85.
+      </p>
+      <div class="here__figs">
+        <div class="fig">
+          <span class="fig__k">Target</span>
+          <span class="fig__v">85<small>%</small></span>
+        </div>
+        <div class="fig">
+          <span class="fig__k">Next drive</span>
+          <span class="fig__v">62<small>days</small></span>
+        </div>
+        <div class="fig">
+          <span class="fig__k">Plan</span>
+          <span class="fig__v">wk 3<small>of 13</small></span>
+        </div>
+        <div class="fig">
+          <span class="fig__k">Streak</span>
+          <span class="fig__v">18<small>days</small></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="dial" id="dial" role="img" aria-label="Placement readiness 47 percent of a target of 85 percent, up 6 points in the last 7 days">
+      <svg viewBox="0 0 240 240" aria-hidden="true">
+        <defs>
+          <linearGradient id="dialGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#2ecbe8"/>
+            <stop offset="100%" stop-color="#8fe3f5"/>
+          </linearGradient>
+        </defs>
+        <circle class="dial__track" cx="120" cy="120" r="102"/>
+        <circle class="dial__arc" id="dialArc" cx="120" cy="120" r="102"/>
+        <circle class="dial__target" id="dialTarget" cx="120" cy="120" r="118"/>
+      </svg>
+      <div class="dial__mid">
+        <div>
+          <div class="dial__num"><span id="dialNum">0</span><span class="dial__pct">%</span></div>
+          <div class="dial__cap">Readiness</div>
+          <div class="dial__delta">&uarr; 6 in 7 days</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ THE SPINE ============ -->
+<div class="path">
+  <div class="spine">
+    <div class="rail" aria-hidden="true"><div class="rail__fill" id="railFill"></div></div>
+
+    <!-- BEAT 01 -->
+    <section class="beat" data-beat aria-labelledby="b1">
+      <div class="beat__node" aria-hidden="true">
+        <span class="beat__dot"></span><span class="beat__tick"></span><span class="beat__no">01</span>
+      </div>
+      <div class="beat__head">
+        <span class="beat__eyebrow rise">What's in the way</span>
+        <h2 class="beat__title rise" id="b1">Five pillars are fine. One is holding the whole score down.</h2>
+        <p class="beat__lede rise">
+          Readiness is a weighted average of your scored checks. Lift the lowest pillar
+          and the average moves fastest &mdash; <strong>DSA at 38 is costing you roughly 11 points</strong>
+          of overall readiness on its own.
+        </p>
+      </div>
+
+      <div class="pillars rise">
+        <div class="pillar">
+          <span class="pillar__name"><span class="pillar__label">Aptitude</span></span>
+          <span class="meter"><span class="meter__fill meter__fill--warn" style="--w:61%"></span></span>
+          <span class="pillar__score">61<small>/100</small></span>
+        </div>
+        <div class="pillar">
+          <span class="pillar__name"><span class="pillar__label">HR &amp; behavioural</span></span>
+          <span class="meter"><span class="meter__fill meter__fill--warn" style="--w:55%"></span></span>
+          <span class="pillar__score">55<small>/100</small></span>
+        </div>
+        <div class="pillar">
+          <span class="pillar__name"><span class="pillar__label">Core skills</span></span>
+          <span class="meter"><span class="meter__fill meter__fill--warn" style="--w:52%"></span></span>
+          <span class="pillar__score">52<small>/100</small></span>
+        </div>
+        <div class="pillar">
+          <span class="pillar__name"><span class="pillar__label">Projects</span></span>
+          <span class="meter"><span class="meter__fill meter__fill--warn" style="--w:49%"></span></span>
+          <span class="pillar__score">49<small>/100</small></span>
+        </div>
+        <div class="pillar">
+          <span class="pillar__name"><span class="pillar__label">Interview</span></span>
+          <span class="meter"><span class="meter__fill meter__fill--bad" style="--w:44%"></span></span>
+          <span class="pillar__score">44<small>/100</small></span>
+        </div>
+        <div class="pillar pillar--gap">
+          <span class="pillar__name">
+            <span class="pillar__label">DSA &amp; coding</span>
+            <span class="pillar__tag">Your gap</span>
+          </span>
+          <span class="meter"><span class="meter__fill meter__fill--bad" style="--w:38%"></span></span>
+          <span class="pillar__score">38<small>/100</small></span>
+        </div>
+      </div>
+
+      <div class="gapcall rise">
+        <div class="gapcall__body">
+          <p class="gapcall__t">Coding Round &mdash; Judge0-scored, with coaching analysis</p>
+          <p class="gapcall__d">
+            Real compiler, real verdicts, and a written breakdown of where your approach
+            broke down. Arrays and two-pointer are the two topics dragging this pillar.
+          </p>
+        </div>
+        <button class="btn">Open Coding Round <span class="btn__arrow">&rarr;</span></button>
+      </div>
+    </section>
+
+    <!-- BEAT 02 -->
+    <section class="beat" data-beat aria-labelledby="b2">
+      <div class="beat__node" aria-hidden="true">
+        <span class="beat__dot"></span><span class="beat__tick"></span><span class="beat__no">02</span>
+      </div>
+      <div class="beat__head">
+        <span class="beat__eyebrow rise">Today's move</span>
+        <h2 class="beat__title rise" id="b2">Twenty-five minutes, chosen for you.</h2>
+        <p class="beat__lede rise">
+          Your mission is rebuilt every morning from your live scores and how far out
+          the drive is. Tell it how much time you actually have and it resizes.
+        </p>
+      </div>
+
+      <div class="today rise">
+        <div class="card mission">
+          <div class="mission__bar">
+            <span class="mission__title">Today's mission</span>
+            <span class="mission__grow"></span>
+            <div class="budget" role="group" aria-label="Time budget">
+              <button type="button" aria-pressed="false">15m</button>
+              <button type="button" aria-pressed="true">25m</button>
+              <button type="button" aria-pressed="false">45m</button>
+              <button type="button" aria-pressed="false">90m</button>
+            </div>
+          </div>
+
+          <div class="task" data-done="1">
+            <button class="task__box" aria-label="Mark incomplete">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>
+            </button>
+            <div class="task__body">
+              <p class="task__t">Two-pointer drill &mdash; 4 problems</p>
+              <p class="task__m"><span class="task__gain">+1.8 readiness</span><span class="dotsep">&middot;</span><span>Coding Round</span></p>
+            </div>
+            <span class="task__mins">10m</span>
+          </div>
+
+          <div class="task" data-done="0">
+            <button class="task__box" aria-label="Mark complete">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>
+            </button>
+            <div class="task__body">
+              <p class="task__t">HR AI mock &mdash; "walk me through a failure"</p>
+              <p class="task__m"><span class="task__gain">+2.4 readiness</span><span class="dotsep">&middot;</span><span>Voice round</span></p>
+            </div>
+            <span class="task__mins">10m</span>
+          </div>
+
+          <div class="task" data-done="0">
+            <button class="task__box" aria-label="Mark complete">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 13 4 4L19 7"/></svg>
+            </button>
+            <div class="task__body">
+              <p class="task__t">Aptitude &mdash; time, speed &amp; distance</p>
+              <p class="task__m"><span class="task__gain">+0.9 readiness</span><span class="dotsep">&middot;</span><span>Timed drill</span></p>
+            </div>
+            <span class="task__mins">5m</span>
+          </div>
+        </div>
+
+        <div class="side">
+          <div class="mentor">
+            <span class="mentor__live"><span class="pulse" aria-hidden="true"></span> Mentor online</span>
+            <p class="mentor__t">Stuck at 2am? Ask out loud.</p>
+            <p class="mentor__d">
+              Your AI mentor already knows your scores, your plan and the drive you're
+              chasing. No re-explaining where you're at.
+            </p>
+            <button class="btn mentor__btn">Talk to your mentor <span class="btn__arrow">&rarr;</span></button>
+          </div>
+
+          <div class="card momentum">
+            <span class="momentum__k">This week</span>
+            <div class="week" role="img" aria-label="Five of seven days practised this week">
+              <span class="on">S</span><span class="on">M</span><span class="on">T</span>
+              <span class="on">W</span><span class="on">T</span><span>F</span><span>S</span>
+            </div>
+            <p class="momentum__n">5 of 7 days. Two more keeps the 18-day streak alive.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BEAT 03 -->
+    <section class="beat" data-beat aria-labelledby="b3">
+      <div class="beat__node" aria-hidden="true">
+        <span class="beat__dot"></span><span class="beat__tick"></span><span class="beat__no">03</span>
+      </div>
+      <div class="beat__head">
+        <span class="beat__eyebrow rise">The route</span>
+        <h2 class="beat__title rise" id="b3">Today's 25 minutes sit inside a 90-day plan.</h2>
+        <p class="beat__lede rise">
+          Generated once from your baseline, then followed day by day. It reorders itself
+          when a score moves or a drive date changes &mdash; you never re-plan by hand.
+        </p>
+      </div>
+
+      <div class="card route rise">
+        <div class="route__head">
+          <span class="route__wk">Week 3</span>
+          <span class="route__of">of 13 &middot; DSA foundations</span>
+          <span class="route__grow"></span>
+          <button class="btn btn--ghost">View full plan <span class="btn__arrow">&rarr;</span></button>
+        </div>
+
+        <div class="stages">
+          <div class="stage done"><div class="stage__bar"></div><p class="stage__l">Baseline</p></div>
+          <div class="stage done"><div class="stage__bar"></div><p class="stage__l">Fundamentals</p></div>
+          <div class="stage now"><div class="stage__bar"></div><p class="stage__l">DSA depth</p></div>
+          <div class="stage"><div class="stage__bar"></div><p class="stage__l">Mock cycles</p></div>
+          <div class="stage"><div class="stage__bar"></div><p class="stage__l">Company prep</p></div>
+          <div class="stage"><div class="stage__bar"></div><p class="stage__l">Drive ready</p></div>
+        </div>
+
+        <div class="route__rows">
+          <div class="rrow">
+            <span class="rrow__wk">Week 2</span>
+            <span class="rrow__t">Arrays, strings, complexity analysis</span>
+            <span class="rrow__s done">Done</span>
+          </div>
+          <div class="rrow">
+            <span class="rrow__wk">Week 3</span>
+            <span class="rrow__t">Two pointers, sliding window, hashing</span>
+            <span class="rrow__s now">In progress</span>
+          </div>
+          <div class="rrow">
+            <span class="rrow__wk">Week 4</span>
+            <span class="rrow__t">Trees, recursion &amp; a full interview mock</span>
+            <span class="rrow__s next">Next</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BEAT 04 -->
+    <section class="beat" data-beat aria-labelledby="b4">
+      <div class="beat__node" aria-hidden="true">
+        <span class="beat__dot"></span><span class="beat__tick"></span><span class="beat__no">04</span>
+      </div>
+      <div class="beat__head">
+        <span class="beat__eyebrow rise">What you haven't opened</span>
+        <h2 class="beat__title rise" id="b4">The rest of MentorMuni is already paid for and sitting here.</h2>
+        <p class="beat__lede rise">
+          Nine practice tools, three voice interview formats, a Judge0 coding judge,
+          company-shaped drills and a private six-week coaching track.
+          <strong>You've used three of them.</strong>
+        </p>
+      </div>
+
+      <div class="surface-grid rise">
+
+        <a class="cap" href="#" style="--cap:#17b6d4">
+          <span class="cap__top">
+            <span class="cap__ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.9 5.8L4 10.7l5.8 1.9L11.7 19l1.9-5.8L19.4 11l-5.8-1.9z"/></svg></span>
+            <span class="cap__n">AI Mentor</span>
+            <span class="cap__state live">Live</span>
+          </span>
+          <p class="cap__d">Always-on voice and chat coach that already has your scores, plan and drive date in context.</p>
+          <span class="cap__foot"><span class="cap__metric">Used 3&times;</span><span class="cap__go">Open <span class="btn__arrow">&rarr;</span></span></span>
+        </a>
+
+        <a class="cap" href="#" style="--cap:#0e6fa8">
+          <span class="cap__top">
+            <span class="cap__ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/></svg></span>
+            <span class="cap__n">Coding Round</span>
+          </span>
+          <p class="cap__d">Judge0-scored DSA with real verdicts, then a written analysis of where your approach broke.</p>
+          <span class="cap__foot"><span class="cap__metric">12 solved &middot; DSA 38</span><span class="cap__go">Open <span class="btn__arrow">&rarr;</span></span></span>
+        </a>
+
+        <a class="cap" href="#" style="--cap:#e8a33d">
+          <span class="cap__top">
+            <span class="cap__ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1M12 18v4"/></svg></span>
+            <span class="cap__n">Voice mocks</span>
+            <span class="cap__state new">3 formats</span>
+          </span>
+          <p class="cap__d">Skill, project and HR rounds spoken out loud, scored on content and delivery.</p>
+          <span class="cap__foot"><span class="cap__metric">2 of 3 tried</span><span class="cap__go">Practise <span class="btn__arrow">&rarr;</span></span></span>
+        </a>
+
+        <a class="cap" href="#" style="--cap:#5b52d6">
+          <span class="cap__top">
+            <span class="cap__ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 3-3.4 3-5.5A5.5 5.5 0 0 0 12 5.5 5.5 5.5 0 0 0 2 8.5c0 2.1 1.5 4 3 5.5l7 7z"/></svg></span>
+            <span class="cap__n">Fear &rarr; Fearless</span>
+            <span class="cap__state new">Unopened</span>
+          </span>
+          <p class="cap__d">A private six-week track for the part nobody admits to &mdash; freezing up, blanking, going quiet.</p>
+          <span class="cap__foot"><span class="cap__metric">6 weeks &middot; private</span><span class="cap__go">Start <span class="btn__arrow">&rarr;</span></span></span>
+        </a>
+
+        <a class="cap" href="#" style="--cap:#16a34a">
+          <span class="cap__top">
+            <span class="cap__ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V8l7-5 7 5v13M9 21v-5h6v5"/></svg></span>
+            <span class="cap__n">Company Prep</span>
+          </span>
+          <p class="cap__d">Drills shaped like the actual round &mdash; Infosys, TCS, Accenture, Deloitte pattern by pattern.</p>
+          <span class="cap__foot"><span class="cap__metric">Infosys in 62d</span><span class="cap__go">Prepare <span class="btn__arrow">&rarr;</span></span></span>
+        </a>
+
+        <a class="cap" href="#" style="--cap:#d99400">
+          <span class="cap__top">
+            <span class="cap__ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/></svg></span>
+            <span class="cap__n">Practice</span>
+            <span class="cap__state">9 tools</span>
+          </span>
+          <p class="cap__d">The full catalogue, unlocked and non-sequential. One run of each per day, every day.</p>
+          <span class="cap__foot"><span class="cap__metric">3 of 9 opened</span><span class="cap__go">Browse <span class="btn__arrow">&rarr;</span></span></span>
+        </a>
+
+        <a class="cap" href="#" style="--cap:#e0701a">
+          <span class="cap__top">
+            <span class="cap__ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></span>
+            <span class="cap__n">Progress</span>
+          </span>
+          <p class="cap__d">Every score you've ever posted, plotted &mdash; so the 47 has a shape, not just a value.</p>
+          <span class="cap__foot"><span class="cap__metric">+6 in 7 days</span><span class="cap__go">Review <span class="btn__arrow">&rarr;</span></span></span>
+        </a>
+
+        <a class="cap" href="#" style="--cap:#9333ea">
+          <span class="cap__top">
+            <span class="cap__ico"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15.5 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V8.5z"/><path d="M15 3v6h6"/></svg></span>
+            <span class="cap__n">White Board</span>
+            <span class="cap__state new">Unopened</span>
+          </span>
+          <p class="cap__d">Your locker wall. Pin what you keep forgetting, and what you're doing this for.</p>
+          <span class="cap__foot"><span class="cap__metric">0 notes</span><span class="cap__go">Pin one <span class="btn__arrow">&rarr;</span></span></span>
+        </a>
+
+      </div>
+    </section>
+  </div>
+
+  <div class="shell">
+    <div class="close">
+      <p class="close__l">Show up daily. Finish today's step. <em>Walk in ready.</em></p>
+      <p class="close__m">Readiness recalculates the moment you finish a check &mdash; nothing here is a guess.</p>
+    </div>
+    <div class="foot">
+      <span>MentorMuni &middot; Placement OS</span>
+      <span class="mono">IIT01 &middot; secure campus session</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- theme toggle ---- */
+  var btn = document.getElementById('themeBtn');
+  btn.addEventListener('click', function () {
+    var cur = document.documentElement.getAttribute('data-theme');
+    if (!cur) {
+      cur = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    }
+    document.documentElement.setAttribute('data-theme', cur === 'dark' ? 'light' : 'dark');
+  });
+
+  /* ---- readiness dial: draw the arc, count the number ---- */
+  var R = 102, CIRC = 2 * Math.PI * R;
+  var VALUE = 47, TARGET = 85;
+  var dial = document.getElementById('dial');
+  var arc = document.getElementById('dialArc');
+  arc.style.setProperty('--circ', CIRC);
+  arc.style.setProperty('--dash', CIRC - (CIRC * VALUE / 100));
+
+  /* dotted ring shows only the target tick */
+  var tgt = document.getElementById('dialTarget');
+  var TCIRC = 2 * Math.PI * 118;
+  tgt.setAttribute('stroke-dasharray', '3 ' + (TCIRC - 3));
+  tgt.setAttribute('stroke-dashoffset', String(-TCIRC * TARGET / 100));
+
+  var num = document.getElementById('dialNum');
+  function runDial() {
+    dial.classList.add('is-lit');
+    if (reduce) { num.textContent = VALUE; return; }
+    var t0 = null, DUR = 900;
+    function step(ts) {
+      if (t0 === null) t0 = ts;
+      var p = Math.min(1, (ts - t0) / DUR);
+      var eased = 1 - Math.pow(1 - p, 3);
+      num.textContent = Math.round(eased * VALUE);
+      if (p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+  setTimeout(runDial, 240);
+
+  /* ---- beats reveal as they enter ---- */
+  var beats = Array.prototype.slice.call(document.querySelectorAll('[data-beat]'));
+  if (reduce || !('IntersectionObserver' in window)) {
+    beats.forEach(function (b) { b.classList.add('is-in'); });
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '-64px 0px -12% 0px' });
+    beats.forEach(function (b) { io.observe(b); });
+  }
+
+  /* ---- the spine draws itself ---- */
+  var rail = document.querySelector('.rail');
+  var fill = document.getElementById('railFill');
+  var ticking = false;
+  function drawRail() {
+    ticking = false;
+    if (reduce) return;
+    var r = rail.getBoundingClientRect();
+    var mid = window.innerHeight * 0.62;
+    var p = (mid - r.top) / r.height;
+    fill.style.setProperty('--p', Math.max(0, Math.min(1, p)).toFixed(4));
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(drawRail); }
+  }, { passive: true });
+  window.addEventListener('resize', drawRail);
+  drawRail();
+
+  /* ---- tasks are tickable, so the mockup feels like the product ---- */
+  document.querySelectorAll('.task__box').forEach(function (box) {
+    box.addEventListener('click', function () {
+      var task = box.closest('.task');
+      task.setAttribute('data-done', task.getAttribute('data-done') === '1' ? '0' : '1');
+    });
+  });
+
+  /* ---- time budget ---- */
+  document.querySelectorAll('.budget button').forEach(function (b) {
+    b.addEventListener('click', function () {
+      b.parentNode.querySelectorAll('button').forEach(function (x) {
+        x.setAttribute('aria-pressed', String(x === b));
+      });
+    });
+  });
+})();
+</script>

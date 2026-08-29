@@ -58,7 +58,7 @@ const TOOL_LABEL = {
   home: 'Home',
 };
 
-export function toolHref(code, { checkinId, fearId } = {}) {
+export function toolHref(code, { checkinId, fearId, individual = false } = {}) {
   const key = String(code || '').toLowerCase().replace(/[\s-]+/g, '_');
   const canonical = CANONICAL_TOOL[key];
   if (canonical) {
@@ -67,6 +67,9 @@ export function toolHref(code, { checkinId, fearId } = {}) {
       checkinId,
       fearId,
     });
+  }
+  if (individual && (key === 'companies' || key === 'company_prep')) {
+    return studentPaths.home;
   }
   const page = PORTAL_PAGE[key];
   if (!page) return null;

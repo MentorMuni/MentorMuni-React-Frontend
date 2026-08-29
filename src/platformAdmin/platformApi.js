@@ -1,5 +1,7 @@
 import { API_BASE } from '../config';
 import { createBrowserSessionStore } from '../lib/browserSessionStore';
+import { toAppPath } from '../utils/appPaths';
+import { platformAdminPaths } from './paths';
 
 const BASE_URL = API_BASE;
 const API_KEY = import.meta.env.VITE_API_KEY || '';
@@ -13,6 +15,9 @@ const AUTO_LOGOUT_CODES = new Set([
   'TOKEN_MISSING',
   'TOKEN_INVALID',
   'INVALID_API_KEY',
+  'ACCOUNT_INACTIVE',
+  'TOKEN_WRONG_SCOPE',
+  'TOKEN_WRONG_TYPE',
 ]);
 
 export class PlatformApiError extends Error {
@@ -36,7 +41,7 @@ function forceLogoutUnauthorized() {
   authStore.clearAll();
   const path = String(window.location?.pathname || '');
   if (!path.includes('/platform/admin/login')) {
-    window.location.assign('/platform/admin/login');
+    window.location.assign(toAppPath(platformAdminPaths.login));
   }
 }
 
@@ -82,10 +87,15 @@ async function parseResponse(res, { auth = true } = {}) {
   if (!res.ok) {
     const { code, message } = extractDetail(data, text);
 
-    // Auto-logout only for token/API-key failures — not INVALID_CREDENTIALS,
-    // ACCOUNT_INACTIVE, or FORBIDDEN_ROLE.
+    // Auto-logout for unusable sessions (expired/invalid token, inactive account).
+    // Do not logout on INVALID_CREDENTIALS or FORBIDDEN_ROLE.
     if (auth && AUTO_LOGOUT_CODES.has(code)) {
       forceLogoutUnauthorized();
+    } else if (auth && code === 'MUST_CHANGE_PASSWORD') {
+      const path = String(window.location?.pathname || '');
+      if (!path.includes('/change-password')) {
+        window.location.assign(toAppPath(platformAdminPaths.changePassword));
+      }
     } else if (auth && res.status === 401 && !code) {
       // Legacy string responses without structured code
       if (/token|expired|unauthori[sz]ed|invalid api key|missing api/i.test(message || text || '')) {

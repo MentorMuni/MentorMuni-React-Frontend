@@ -12,12 +12,11 @@ import { MOTION, enterProps } from '../../motion';
  * I in the journey" and nothing else.
  */
 
+// Only phases we can drive from current plan state (Mocks/Ready need separate signals).
 const PHASES = [
   { id: 'baseline', label: 'Baseline' },
   { id: 'plan', label: '90-day plan' },
-  { id: 'prep', label: 'Gap prep' },
-  { id: 'mocks', label: 'Mocks' },
-  { id: 'ready', label: 'Ready' },
+  { id: 'prep', label: 'Daily prep' },
 ];
 
 function activePhaseIndex(weekStatus, planStatus) {

@@ -44,13 +44,16 @@ const SKILL_READINESS_PLAN_PATH = '/interview-ready/skill-readiness/plan';
 const APTITUDE_READINESS_PLAN_PATH = '/interview-ready/aptitude-readiness/plan';
 
 /**
- * POST /interview-ready/interview-readiness/plan — PlanRequest.user_type
+ * POST /interview-ready/{category}/plan — PlanRequest.user_type (canonical
+ * values). Written with a braced placeholder, not a `*` glob: the `*` plus
+ * the following slash closes this block comment and breaks the build.
+ * Backend accepts legacy display strings, but portal must send canonical codes.
  */
 const API_USER_TYPE_BY_CATEGORY = {
-  '3rd_year': '3rd Year Student',
-  '4th_year': '4th Year Student',
-  'recent_graduate': 'student',
-  professional: 'working professional',
+  '3rd_year': 'college_student_year_1',
+  '4th_year': 'college_student_year_4',
+  recent_graduate: 'recent_graduate',
+  professional: 'it_professional',
 };
 
 /**
@@ -101,14 +104,29 @@ const PLAN_PRIMARY_SKILL_MAX = 100;
 
 /** Skill readiness — one skill only (no lists; max length for single focus) */
 const SKILL_FOCUS_MAX_CHARS = 15;
+/** Portal / journey can pass topic titles that are longer than the marketing single-token rule. */
+const PORTAL_SKILL_FOCUS_MAX_CHARS = 40;
 
-function shouldPromptSingleSkillInput(value) {
+function shouldPromptSingleSkillInput(value, { fromPortal = false } = {}) {
   const trimmed = String(value ?? '').trim();
   if (!trimmed) return false;
   if (trimmed.includes(',')) return true;
-  if (trimmed.split(/\s+/).filter(Boolean).length > 1) return true;
-  if (trimmed.length > SKILL_FOCUS_MAX_CHARS) return true;
+  const max = fromPortal ? PORTAL_SKILL_FOCUS_MAX_CHARS : SKILL_FOCUS_MAX_CHARS;
+  if (!fromPortal && trimmed.split(/\s+/).filter(Boolean).length > 1) return true;
+  if (trimmed.length > max) return true;
   return false;
+}
+
+/** Turn syllabus topic ids / query topics into a usable primary_skill seed. */
+function skillHintFromLaunch(session, searchParams) {
+  const fromSkill = String(session?.skill || searchParams?.get?.('skill') || '').trim();
+  if (fromSkill) return fromSkill.slice(0, PLAN_PRIMARY_SKILL_MAX);
+  const rawTopics = String(searchParams?.get?.('topics') || '').trim();
+  if (!rawTopics) return '';
+  const first = rawTopics.split(',').map((t) => t.trim()).filter(Boolean)[0] || '';
+  if (!first) return '';
+  const leaf = first.split('.').filter(Boolean).pop() || first;
+  return leaf.replace(/[_-]+/g, ' ').trim().slice(0, PLAN_PRIMARY_SKILL_MAX);
 }
 
 /**
@@ -290,7 +308,8 @@ async function parseResponseJson(res) {
   }
 }
 
-const PLAN_FETCH_TIMEOUT_MS = 60000; // 60 seconds - allows time for LLM to generate questions
+// Match backend llm_timeout_seconds (default 120s) so the client does not abort first.
+const PLAN_FETCH_TIMEOUT_MS = 120000;
 /** Scoring can be slow after idle / cold backend — allow retries */
 const EVALUATE_FETCH_TIMEOUT_MS = 90000;
 
@@ -1704,7 +1723,10 @@ const InterviewReady = () => {
     assessmentMode: deepLinkMode,
     userCategory:
       fromPortal || deepLinkMode === ASSESSMENT_FOCUS_APTITUDE ? PORTAL_STUDENT_CATEGORY : '',
-    primarySkill: '',
+    // Portal / journey: seed from ?skill= or first ?topics= leaf (e.g. dsa.arrays → arrays).
+    primarySkill:
+      skillHintFromLaunch(session, searchParams) ||
+      (fromPortal && deepLinkMode === ASSESSMENT_FOCUS_PLACEMENT ? 'dsa, oops, dbms' : ''),
     email: fromPortal ? String(studentSession?.email || '').trim() : '',
     contactNumber: '',
     collegeName: fromPortal
@@ -2112,7 +2134,7 @@ const InterviewReady = () => {
     setError(null);
     if (
       profile.assessmentMode === ASSESSMENT_FOCUS_SKILL &&
-      shouldPromptSingleSkillInput(profile.primarySkill)
+      shouldPromptSingleSkillInput(profile.primarySkill, { fromPortal })
     ) {
       setShowSkillValidationModal(true);
       return;
@@ -2193,7 +2215,7 @@ const InterviewReady = () => {
     };
 
     const interviewReadinessPayload = {
-      user_type: API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'student',
+      user_type: API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'college_student_year_4',
       experience_years: expParsed,
       question_count: DEFAULT_QUESTION_COUNT,
       target_role: profile.targetRole?.trim() || undefined,
@@ -3315,8 +3337,10 @@ const InterviewReady = () => {
                   ) : isSkillFocus ? (
                     <>
                       Enter <span className="font-semibold text-foreground">one</span> skill for{' '}
-                      <span className="font-semibold text-foreground">in-depth preparation</span> (e.g. React, Java, JavaScript — up to{' '}
-                      {SKILL_FOCUS_MAX_CHARS} characters, no commas or spaces).{' '}
+                      <span className="font-semibold text-foreground">in-depth preparation</span>
+                      {fromPortal
+                        ? ' (e.g. React, Java, Python, or a topic from Today).'
+                        : ` (e.g. React, Java, JavaScript — up to ${SKILL_FOCUS_MAX_CHARS} characters, no commas or spaces).`}{' '}
                       <span className="text-hint">API max {PLAN_PRIMARY_SKILL_MAX} characters.</span>
                     </>
                   ) : (
@@ -3339,20 +3363,22 @@ const InterviewReady = () => {
                     value={profile.primarySkill}
                     onChange={(e) => {
                       const v = e.target.value;
-                      if (isSkillFocus && shouldPromptSingleSkillInput(v)) {
+                      if (isSkillFocus && shouldPromptSingleSkillInput(v, { fromPortal })) {
                         setShowSkillValidationModal(true);
                       }
                       setProfile((prev) => ({ ...prev, primarySkill: v }));
                       setValidationErrors((prev) => (prev.primarySkill ? { ...prev, primarySkill: '' } : prev));
                     }}
                     onBlur={(e) => {
-                      if (isSkillFocus && shouldPromptSingleSkillInput(e.target.value)) {
+                      if (isSkillFocus && shouldPromptSingleSkillInput(e.target.value, { fromPortal })) {
                         setShowSkillValidationModal(true);
                       }
                     }}
                     placeholder={
                       isSkillFocus
-                        ? 'e.g. JavaScript — one skill for in-depth prep (not a list)'
+                        ? fromPortal
+                          ? 'e.g. python, arrays, react — one focus area'
+                          : 'e.g. JavaScript — one skill for in-depth prep (not a list)'
                         : 'e.g. DSA, OOP, DBMS, system design — comma-separated areas'
                     }
                     error={validationErrors.primarySkill}
@@ -3372,8 +3398,11 @@ const InterviewReady = () => {
                     </>
                   ) : isSkillFocus ? (
                     <>
-                      <span className="font-semibold text-muted-foreground">Tip:</span> One skill only (max {SKILL_FOCUS_MAX_CHARS}{' '}
-                      characters) — e.g. React, Java, JavaScript. No commas or multiple skills in one field.
+                      <span className="font-semibold text-muted-foreground">Tip:</span> One skill focus
+                      {fromPortal
+                        ? ` (up to ${PORTAL_SKILL_FOCUS_MAX_CHARS} characters)`
+                        : ` (max ${SKILL_FOCUS_MAX_CHARS} characters, no spaces)`}{' '}
+                      — e.g. React, Java, Python.
                     </>
                   ) : (
                     <>

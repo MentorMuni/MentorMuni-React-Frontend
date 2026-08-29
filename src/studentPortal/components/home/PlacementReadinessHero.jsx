@@ -40,6 +40,7 @@ export default function PlacementReadinessHero({
   const hasExpected = expectedByNow != null && Number.isFinite(expectedByNow);
   const onTrack = hasExpected ? live >= expectedByNow : null;
   const rows = breakdown?.length ? breakdown : [];
+  const hasWeights = rows.some((row) => row.weight);
 
   return (
     <section className="stu-readiness" aria-labelledby="stu-readiness-title">
@@ -135,22 +136,25 @@ export default function PlacementReadinessHero({
       ) : null}
 
       <div className="stu-readiness__foot">
-        <button
-          type="button"
-          className="stu-readiness__toggle"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          disabled={!rows.length}
-        >
-          How this is weighted
-          <ChevronDown
-            size={16}
-            strokeWidth={2}
-            className={open ? 'is-flipped' : ''}
-            aria-hidden
-            focusable="false"
-          />
-        </button>
+        {hasWeights ? (
+          <button
+            type="button"
+            className="stu-readiness__toggle"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+          >
+            How this is weighted
+            <ChevronDown
+              size={16}
+              strokeWidth={2}
+              className={open ? 'is-flipped' : ''}
+              aria-hidden
+              focusable="false"
+            />
+          </button>
+        ) : (
+          <span />
+        )}
         <button
           type="button"
           className="stu-btn stu-btn--on-dark"
@@ -164,7 +168,7 @@ export default function PlacementReadinessHero({
       </div>
 
       <AnimatePresence initial={false}>
-        {open ? (
+        {open && hasWeights ? (
           <motion.div
             className="stu-readiness__panel"
             initial={reduce ? false : { height: 0, opacity: 0 }}

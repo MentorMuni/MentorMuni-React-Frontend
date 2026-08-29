@@ -43,7 +43,7 @@ export default function CompaniesSection({ drives = [], readiness = 0, isDemo = 
           <p className="stu-card__sub">
             {rows.length
               ? `Your ${score}% readiness against the drives your college has posted`
-              : 'Posted by your training &amp; placement office'}
+              : 'Posted by your training & placement office'}
           </p>
         </div>
         {rows.length ? (
@@ -101,7 +101,7 @@ export default function CompaniesSection({ drives = [], readiness = 0, isDemo = 
         </>
       ) : (
         <EmptyState art="drives" title="No drives posted yet">
-          When your training &amp; placement office publishes the campus calendar, each drive shows
+          When your training & placement office publishes the campus calendar, each drive shows
           up here with your readiness against it. You can still browse{' '}
           <Link to={studentPaths.companies}>company hiring intelligence</Link>.
         </EmptyState>

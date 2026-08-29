@@ -11,8 +11,12 @@ import {
   finishPracticeRun,
   goToPortalReturn,
   guardPracticeEntry,
+  submitJourneyMissionResult,
   submitRoadmapResult,
 } from '../studentPortal/roadmap/completeAndReturn';
+import { getStudentSession } from '../studentPortal/auth';
+import { markMissionTaskDone } from '../studentPortal/companyPrep';
+import { recordStudentSession } from '../studentPortal/streak';
 
 /**
  * @param {object} opts
@@ -59,6 +63,25 @@ export function createToolSession(opts = {}) {
     typeof window !== 'undefined' ? new URLSearchParams(window.location.search) : new URLSearchParams();
   const checkinId = opts.checkinId || url.get('checkin') || url.get('checkinId') || '';
   const fearId = opts.fearId || url.get('fear') || url.get('fearId') || '';
+  const missionTaskKey = opts.missionTaskKey || url.get('mission') || '';
+  const planIdRaw = opts.planId ?? url.get('plan');
+  const planId =
+    planIdRaw != null && planIdRaw !== '' && !Number.isNaN(Number(planIdRaw))
+      ? Number(planIdRaw)
+      : null;
+  const topicNodes = (
+    opts.topicNodes ||
+    url.get('topics') ||
+    ''
+  )
+    .toString()
+    .split(',')
+    .map((t) => t.trim())
+    .filter(Boolean);
+  const modality = opts.modality || url.get('modality') || null;
+  const prepTask = opts.prepTask || url.get('prep_task') || '';
+  const prepDriveId = opts.driveId || url.get('drive') || '';
+  const prepDay = opts.prepDay || url.get('prep_day') || '';
   /** Embeds / widgets should skip marketing landings the same way portal deep-links do. */
   const fromHost = fromPortal || source === 'embed';
 
@@ -72,6 +95,7 @@ export function createToolSession(opts = {}) {
     fromPortal,
     checkinId,
     fearId,
+    missionTaskKey,
     toolCode,
     mode,
   };
@@ -157,15 +181,52 @@ export function createToolSession(opts = {}) {
         }
       }
 
+      // Journey missions: tick Today + log attempt — never overwrite Week-1 roadmap.
+      if (fromJourney) {
+        const session = getStudentSession();
+        const userKey = session?.id || session?.email || 'anon';
+        return submitJourneyMissionResult({
+          toolCode: payload.toolCode,
+          result: payload.result,
+          missionTaskKey,
+          userKey,
+          planId,
+          topicNodes,
+          modality,
+        });
+      }
+
+      // Company prep: mark local daily mission on finish — not on Start, and not Week-1 roadmap.
+      if (fromCompanyPrep) {
+        const session = getStudentSession();
+        const userKey = session?.id || session?.email || 'anon';
+        if (prepTask && prepDriveId) {
+          try {
+            markMissionTaskDone(
+              userKey,
+              prepDriveId,
+              prepDay || 1,
+              prepTask
+            );
+            recordStudentSession(userKey);
+          } catch (err) {
+            console.error('Company prep tick failed', err);
+          }
+        }
+        return {
+          ok: true,
+          status: 'saved',
+          message: 'Counted for today’s company prep mission.',
+        };
+      }
+
       // Always try to persist to roadmap when authenticated so HOD/TPO see scores
       // (practice daily lock is additive — not a substitute for org analytics).
       let roadmapOutcome = null;
       if (
         lockMode === 'roadmap-sequential' ||
         fromRoadmap ||
-        fromJourney ||
         fromPractice ||
-        fromCompanyPrep ||
         fromCoding
       ) {
         roadmapOutcome = await submitRoadmapResult(payload);
@@ -186,15 +247,6 @@ export function createToolSession(opts = {}) {
           ok: true,
           status: 'saved',
           message: 'Counted for today and saved to your readiness record.',
-          roadmap: roadmapOutcome?.roadmap,
-        };
-      }
-
-      if (fromCompanyPrep) {
-        return {
-          ok: true,
-          status: 'saved',
-          message: 'Result saved. Back to Company Prep when you are ready.',
           roadmap: roadmapOutcome?.roadmap,
         };
       }

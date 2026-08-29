@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { CollegeTenantProvider } from '../tenant/CollegeTenantProvider';
 import OrganizationLoginPage from '../components/organization/OrganizationLoginPage';
 import OrgForgotPasswordPage from './pages/OrgForgotPasswordPage';
 import OrgResetPasswordPage from './pages/OrgResetPasswordPage';
@@ -28,8 +29,10 @@ import {
   isHodRole,
 } from './roles';
 import { orgPaths } from './paths';
+import { useAuthGateRerender } from '../lib/sessionGuards';
 
 function RequireOrgAuth({ children }) {
+  useAuthGateRerender();
   if (!isOrgAuthenticated()) return <Navigate to={getOrgLoginPath()} replace />;
   return children;
 }
@@ -141,7 +144,8 @@ function ProgramsGate({ children }) {
 
 export default function OrganizationPortalApp() {
   return (
-    <Routes>
+    <CollegeTenantProvider>
+      <Routes>
       <Route path="login" element={<OrganizationLoginPage />} />
       <Route path="forgot-password" element={<OrgForgotPasswordPage />} />
       <Route path="reset-password" element={<OrgResetPasswordPage />} />
@@ -198,7 +202,16 @@ export default function OrganizationPortalApp() {
         <Route path="students" element={<HodPage><HodStudentsPage /></HodPage>} />
         <Route path="notify" element={<HodPage><HodNotifyPage /></HodPage>} />
       </Route>
-      <Route path="*" element={<Navigate to={getOrgLoginPath()} replace />} />
-    </Routes>
+      <Route
+        path="*"
+        element={
+          <Navigate
+            to={isOrgAuthenticated() ? getOrgHomePath() : getOrgLoginPath()}
+            replace
+          />
+        }
+      />
+      </Routes>
+    </CollegeTenantProvider>
   );
 }

@@ -5,6 +5,7 @@ import { fetchDepartments } from '../departmentsApi';
 import {
   addStudentManualApi,
   approveStudentInvite,
+  decideAllInvites,
   deleteStudentApi,
   fetchStudentInvites,
   fetchStudents,
@@ -54,9 +55,12 @@ export default function EnrollmentPage() {
   const [copiedKey, setCopiedKey] = useState('');
   const [deptHodMap, setDeptHodMap] = useState({}); // id → true if any live mentor active
   const [busyId, setBusyId] = useState('');
+  const [actionBusy, setActionBusy] = useState('');
+  const [actionDone, setActionDone] = useState('');
   const [editing, setEditing] = useState(null);
   const [editForm, setEditForm] = useState(EMPTY_EDIT);
   const [editBusy, setEditBusy] = useState(false);
+  const [addOpen, setAddOpen] = useState(false);
 
   const registerUrl = useMemo(
     () => getRegistrationLink(departmentId || departments[0]?.id || ''),
@@ -77,6 +81,14 @@ export default function EnrollmentPage() {
     setMsg('');
     setLastSetupUrl('');
     setCopiedKey('');
+    setActionDone('');
+  };
+
+  const pulseDone = (key) => {
+    setActionDone(key);
+    window.setTimeout(() => {
+      setActionDone((cur) => (cur === key ? '' : cur));
+    }, 2200);
   };
 
   const reload = async (deptFilter = departmentId) => {
@@ -228,7 +240,9 @@ export default function EnrollmentPage() {
       flash(false, 'Add at least one student email.');
       return;
     }
+    setActionBusy('invite');
     const res = await inviteStudentsApi({ emails, departmentId, autoEnroll: true });
+    setActionBusy('');
     if (!res.ok) {
       flash(false, res.error);
       return;
@@ -239,7 +253,9 @@ export default function EnrollmentPage() {
       res.message || `${res.added || 0} student(s) invited onto the roster.`,
       res.setupUrl || ''
     );
+    pulseDone('invite');
     setTab('roster');
+    window.setTimeout(() => setAddOpen(false), 900);
     await reload();
   };
 
@@ -249,14 +265,18 @@ export default function EnrollmentPage() {
       flash(false, 'Select a department.');
       return;
     }
+    setActionBusy('manual');
     const res = await addStudentManualApi({ ...manual, departmentId, autoEnroll: true });
+    setActionBusy('');
     if (!res.ok) {
       flash(false, res.error);
       return;
     }
     setManual({ name: '', email: '', collegeId: '', batchYear: '' });
     flash(true, res.message || 'Student added to roster.', res.setupUrl || '');
+    pulseDone('manual');
     setTab('roster');
+    window.setTimeout(() => setAddOpen(false), 900);
     await reload();
   };
 
@@ -266,23 +286,30 @@ export default function EnrollmentPage() {
       flash(false, 'Select a department for CSV import.');
       return;
     }
+    setActionBusy('csv');
     const res = await importStudentsApi({
       csvText,
       departmentId,
       sendInviteEmail: true,
       autoEnroll: true,
     });
+    setActionBusy('');
     if (!res.ok) {
       flash(false, res.error);
       return;
     }
+    const errN = res.errors?.length || 0;
     flash(
       true,
-      res.message || `Imported ${res.added} · skipped ${res.skipped || 0}.`,
-      res.setupUrl || ''
+      res.message ||
+        `Imported ${res.added} student(s)${res.skipped ? `, skipped ${res.skipped}` : ''}${
+          errN ? `, ${errN} row error(s)` : ''
+        }.`
     );
     setCsvText('');
+    pulseDone('csv');
     setTab('roster');
+    window.setTimeout(() => setAddOpen(false), 900);
     await reload();
   };
 
@@ -301,6 +328,40 @@ export default function EnrollmentPage() {
     } else {
       flash(true, res.message || 'Denied.');
     }
+    await reload();
+  };
+
+  const onDecideAll = async (decision) => {
+    const ids = visiblePending.map((inv) => inv.id).filter(Boolean);
+    if (!ids.length) {
+      flash(false, 'No pending invites to process.');
+      return;
+    }
+    const verb = decision === 'approve' ? 'approve' : 'deny';
+    if (
+      !window.confirm(
+        `${decision === 'approve' ? 'Approve' : 'Deny'} all ${ids.length} pending student(s)?`
+      )
+    ) {
+      return;
+    }
+    setBusyId(`bulk:${decision}`);
+    const res = await decideAllInvites(ids, decision);
+    setBusyId('');
+    if (res.failCount && !res.okCount) {
+      flash(false, res.errors?.[0] || `Could not ${verb} invites.`);
+      await reload();
+      return;
+    }
+    flash(
+      true,
+      res.message ||
+        (decision === 'approve'
+          ? `Approved ${res.okCount} student(s).`
+          : `Denied ${res.okCount} student(s).`),
+      res.setupUrl || ''
+    );
+    if (decision === 'approve' && res.okCount) setTab('roster');
     await reload();
   };
 
@@ -349,10 +410,13 @@ export default function EnrollmentPage() {
       flash(false, res.error);
       return;
     }
-    setEditing(null);
-    setEditForm(EMPTY_EDIT);
+    pulseDone('edit');
     flash(true, 'Student details updated.');
-    await reload();
+    window.setTimeout(async () => {
+      setEditing(null);
+      setEditForm(EMPTY_EDIT);
+      await reload();
+    }, 900);
   };
 
   const onDeleteStudent = async (s) => {
@@ -392,12 +456,22 @@ export default function EnrollmentPage() {
               {loading ? ' · loading' : ''}
             </p>
           </div>
+          <button
+            type="button"
+            className="mm-org-btn mm-org-btn--primary"
+            onClick={() => {
+              clearFlash();
+              setAddOpen(true);
+            }}
+          >
+            <UserPlus size={15} /> Add students
+          </button>
         </div>
 
         {err ? <div className="mm-org-alert mm-org-alert--error mb-3">{err}</div> : null}
         {msg ? <div className="mm-org-alert mm-org-alert--success mb-3">{msg}</div> : null}
         {lastSetupUrl ? (
-          <div className="mm-org-callout mb-4">
+          <div className="mm-org-callout mb-1">
             <p className="mm-org-callout__title">
               Set-password link — share with the student (they choose password; userid = email or
               college ID)
@@ -408,7 +482,9 @@ export default function EnrollmentPage() {
               </code>
               <button
                 type="button"
-                className="mm-org-btn mm-org-btn--sm mm-org-btn--primary"
+                className={`mm-org-btn mm-org-btn--sm ${
+                  copiedKey === 'setup' ? 'mm-org-btn--ok' : 'mm-org-btn--primary'
+                }`}
                 onClick={() => copyText(lastSetupUrl, 'setup')}
               >
                 {copiedKey === 'setup' ? (
@@ -431,195 +507,6 @@ export default function EnrollmentPage() {
             </div>
           </div>
         ) : null}
-
-        <div className="flex flex-wrap gap-2 mb-4">
-          {[
-            ['emails', 'Email list'],
-            ['manual', 'Manual'],
-            ['csv', 'CSV'],
-            ['link', 'Reg link'],
-          ].map(([id, label]) => (
-            <button
-              key={id}
-              type="button"
-              className={`mm-org-btn mm-org-btn--sm ${
-                addMode === id ? 'mm-org-btn--primary' : 'mm-org-btn--ghost'
-              }`}
-              onClick={() => switchAddMode(id)}
-            >
-              {label}
-            </button>
-          ))}
-        </div>
-
-        <div className="mb-4" style={{ maxWidth: 320 }}>
-          <label className="mm-org-label" htmlFor="stu-dept">
-            Department
-          </label>
-          <select
-            id="stu-dept"
-            className="mm-org-select"
-            value={departmentId}
-            onChange={(e) => {
-              clearFlash();
-              setDepartmentId(e.target.value);
-            }}
-          >
-            <option value="">All departments (TPO)</option>
-            {departments.map((d) => (
-              <option key={d.id} value={d.id}>
-                {d.name} ({d.code})
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {addMode === 'emails' ? (
-          <form onSubmit={onEmails}>
-            <label className="mm-org-label" htmlFor="stu-emails">
-              Student emails
-            </label>
-            <textarea
-              id="stu-emails"
-              className="mm-org-textarea"
-              placeholder={'rahul@college.edu\npriya@college.edu'}
-              value={emails}
-              onChange={(e) => setEmails(e.target.value)}
-            />
-            <div className="mm-org-form-actions">
-              <button type="submit" className="mm-org-btn mm-org-btn--primary">
-                <UserPlus size={15} /> Invite to roster
-              </button>
-            </div>
-          </form>
-        ) : null}
-
-        {addMode === 'manual' ? (
-          <form onSubmit={onManual} className="mm-org-form-grid">
-            <div>
-              <label className="mm-org-label">Name</label>
-              <input
-                className="mm-org-input"
-                value={manual.name}
-                onChange={(e) => setManual((m) => ({ ...m, name: e.target.value }))}
-                required
-              />
-            </div>
-            <div>
-              <label className="mm-org-label">Email</label>
-              <input
-                type="email"
-                className="mm-org-input"
-                value={manual.email}
-                onChange={(e) => setManual((m) => ({ ...m, email: e.target.value }))}
-                required
-              />
-            </div>
-            <div>
-              <label className="mm-org-label">College ID</label>
-              <input
-                className="mm-org-input"
-                value={manual.collegeId}
-                onChange={(e) => setManual((m) => ({ ...m, collegeId: e.target.value }))}
-              />
-            </div>
-            <div>
-              <label className="mm-org-label">Batch year</label>
-              <input
-                className="mm-org-input"
-                value={manual.batchYear}
-                onChange={(e) => setManual((m) => ({ ...m, batchYear: e.target.value }))}
-              />
-            </div>
-            <div className="mm-org-form-actions" style={{ gridColumn: '1 / -1' }}>
-              <button type="submit" className="mm-org-btn mm-org-btn--primary">
-                Add to roster
-              </button>
-            </div>
-          </form>
-        ) : null}
-
-        {addMode === 'csv' ? (
-          <form onSubmit={onCsv}>
-            <div className="flex gap-2 mb-3">
-              <label className="mm-org-btn mm-org-btn--sm mm-org-btn--ghost" style={{ cursor: 'pointer' }}>
-                <FileUp size={14} /> Choose CSV
-                <input
-                  type="file"
-                  accept=".csv,text/csv"
-                  hidden
-                  onChange={async (e) => {
-                    const f = e.target.files?.[0];
-                    if (f) setCsvText(await f.text());
-                  }}
-                />
-              </label>
-              <button
-                type="button"
-                className="mm-org-btn mm-org-btn--sm mm-org-btn--ghost"
-                onClick={() => setCsvText(CSV_TEMPLATE)}
-              >
-                Template
-              </button>
-            </div>
-            <textarea
-              className="mm-org-textarea"
-              rows={7}
-              value={csvText}
-              onChange={(e) => setCsvText(e.target.value)}
-              placeholder={CSV_TEMPLATE}
-            />
-            <div className="mm-org-form-actions">
-              <button type="submit" className="mm-org-btn mm-org-btn--primary">
-                Import to roster
-              </button>
-            </div>
-          </form>
-        ) : null}
-
-        {addMode === 'link' ? (
-          <div>
-            <p className="mb-2 text-xs mm-org-text-muted">
-              Students open this link to request enrollment
-              {departmentId
-                ? ' for the selected department'
-                : ' (pick a department above to pre-select it)'}.
-              Uses your org code and lands on <code>/studentportal/enroll</code>.
-            </p>
-            <div className="flex flex-wrap items-center gap-2">
-              <code className="mm-org-code text-xs" style={{ flex: 1 }}>
-                {registerUrl}
-              </code>
-              <button
-                type="button"
-                className="mm-org-btn mm-org-btn--sm mm-org-btn--primary"
-                onClick={() => copyText(registerUrl, 'reg')}
-              >
-                {copiedKey === 'reg' ? (
-                  <>
-                    <Check size={14} /> Copied
-                  </>
-                ) : (
-                  <>
-                    <Copy size={14} /> Copy
-                  </>
-                )}
-              </button>
-              <a
-                className="mm-org-btn mm-org-btn--sm mm-org-btn--ghost"
-                href={registerUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <Link2 size={14} /> Open
-              </a>
-            </div>
-            <p className="mt-3 text-xs mm-org-text-muted">
-              Flow: student opens link → submits details → appears in Approval queue → you Approve →
-              share set-password link → student sets password → logs in with email / college ID.
-            </p>
-          </div>
-        ) : null}
       </section>
 
       <div className="mm-org-toolbar">
@@ -639,6 +526,27 @@ export default function EnrollmentPage() {
             Enrolled roster ({students.length})
           </button>
         </div>
+        <div className="mb-0" style={{ maxWidth: 240 }}>
+          <label className="mm-org-label" htmlFor="stu-dept-filter">
+            Filter department
+          </label>
+          <select
+            id="stu-dept-filter"
+            className="mm-org-select"
+            value={departmentId}
+            onChange={(e) => {
+              clearFlash();
+              setDepartmentId(e.target.value);
+            }}
+          >
+            <option value="">All departments</option>
+            {departments.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.name} ({d.code})
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {tab === 'queue' && pending.length > visiblePending.length ? (
@@ -651,7 +559,40 @@ export default function EnrollmentPage() {
       <section className="mm-org-panel">
         {tab === 'queue' ? (
           visiblePending.length ? (
-            <div className="mm-org-table-wrap">
+            <>
+              <div className="mm-org-panel__head" style={{ marginBottom: 12 }}>
+                <div>
+                  <h2 className="mm-org-panel__title">Approval queue</h2>
+                  <p className="mm-org-panel__meta">
+                    {visiblePending.length} pending · approve or deny one-by-one, or all at once
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    className="mm-org-btn mm-org-btn--primary mm-org-btn--sm"
+                    disabled={Boolean(busyId)}
+                    onClick={() => onDecideAll('approve')}
+                  >
+                    <Check size={14} />{' '}
+                    {busyId === 'bulk:approve'
+                      ? 'Approving all…'
+                      : `Approve all (${visiblePending.length})`}
+                  </button>
+                  <button
+                    type="button"
+                    className="mm-org-btn mm-org-btn--danger mm-org-btn--sm"
+                    disabled={Boolean(busyId)}
+                    onClick={() => onDecideAll('reject')}
+                  >
+                    <X size={14} />{' '}
+                    {busyId === 'bulk:reject'
+                      ? 'Denying all…'
+                      : `Deny all (${visiblePending.length})`}
+                  </button>
+                </div>
+              </div>
+              <div className="mm-org-table-wrap">
               <table className="mm-org-table">
                 <thead>
                   <tr>
@@ -705,6 +646,7 @@ export default function EnrollmentPage() {
                 </tbody>
               </table>
             </div>
+            </>
           ) : (
             <div className="mm-org-empty">
               {loading ? 'Loading queue…' : 'No pending invites for this filter.'}
@@ -831,124 +773,412 @@ export default function EnrollmentPage() {
         )}
       </section>
 
-      {editing ? (
-        <section className="mm-org-panel">
-          <div className="mm-org-panel__head">
-            <div>
-              <h2 className="mm-org-panel__title">Edit student</h2>
-              <p className="mm-org-panel__meta">
-                Fix name, email, phone, roll, or department when the student reports a mistake.
-              </p>
+      {addOpen ? (
+        <div
+          className="mm-org-modal-backdrop"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="enroll-add-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setAddOpen(false);
+          }}
+        >
+          <div className="mm-org-modal mm-org-modal--wide">
+            <div className="mm-org-panel__head" style={{ marginBottom: 12 }}>
+              <div>
+                <h2 id="enroll-add-title" className="mm-org-panel__title">
+                  Add students
+                </h2>
+                <p className="mm-org-panel__meta">
+                  Invite by email, add manually, import CSV, or share a registration link.
+                </p>
+              </div>
+              <button
+                type="button"
+                className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+                onClick={() => setAddOpen(false)}
+              >
+                <X size={14} /> Close
+              </button>
             </div>
-            <button
-              type="button"
-              className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
-              onClick={() => {
-                setEditing(null);
-                setEditForm(EMPTY_EDIT);
-              }}
-            >
-              <X size={14} /> Close
-            </button>
-          </div>
-          <form onSubmit={onSaveEdit} className="mm-org-form-grid">
-            <div>
-              <label className="mm-org-label" htmlFor="enroll-edit-name">
-                Full name
-              </label>
-              <input
-                id="enroll-edit-name"
-                className="mm-org-input"
-                value={editForm.name}
-                onChange={(e) => setEditForm((f) => ({ ...f, name: e.target.value }))}
-                required
-              />
+
+            <div className="flex flex-wrap gap-2 mb-4">
+              {[
+                ['emails', 'Email list'],
+                ['manual', 'Manual'],
+                ['csv', 'CSV'],
+                ['link', 'Reg link'],
+              ].map(([id, label]) => (
+                <button
+                  key={id}
+                  type="button"
+                  className={`mm-org-btn mm-org-btn--sm ${
+                    addMode === id ? 'mm-org-btn--primary' : 'mm-org-btn--ghost'
+                  }`}
+                  onClick={() => switchAddMode(id)}
+                >
+                  {label}
+                </button>
+              ))}
             </div>
-            <div>
-              <label className="mm-org-label" htmlFor="enroll-edit-email">
-                College email
-              </label>
-              <input
-                id="enroll-edit-email"
-                type="email"
-                className="mm-org-input"
-                value={editForm.email}
-                onChange={(e) => setEditForm((f) => ({ ...f, email: e.target.value }))}
-                required
-              />
-            </div>
-            <div>
-              <label className="mm-org-label" htmlFor="enroll-edit-phone">
-                Phone
-              </label>
-              <input
-                id="enroll-edit-phone"
-                className="mm-org-input"
-                value={editForm.phone}
-                onChange={(e) => setEditForm((f) => ({ ...f, phone: e.target.value }))}
-                placeholder="10-digit mobile"
-              />
-            </div>
-            <div>
-              <label className="mm-org-label" htmlFor="enroll-edit-roll">
-                College ID / roll
-              </label>
-              <input
-                id="enroll-edit-roll"
-                className="mm-org-input"
-                value={editForm.collegeId}
-                onChange={(e) => setEditForm((f) => ({ ...f, collegeId: e.target.value }))}
-              />
-            </div>
-            <div>
-              <label className="mm-org-label" htmlFor="enroll-edit-batch">
-                Batch year
-              </label>
-              <input
-                id="enroll-edit-batch"
-                className="mm-org-input"
-                value={editForm.batchYear}
-                onChange={(e) => setEditForm((f) => ({ ...f, batchYear: e.target.value }))}
-                placeholder="2025"
-              />
-            </div>
-            <div>
-              <label className="mm-org-label" htmlFor="enroll-edit-dept">
+
+            <div className="mb-4" style={{ maxWidth: 320 }}>
+              <label className="mm-org-label" htmlFor="stu-dept">
                 Department
               </label>
               <select
-                id="enroll-edit-dept"
+                id="stu-dept"
                 className="mm-org-select"
-                value={editForm.departmentId}
-                onChange={(e) => setEditForm((f) => ({ ...f, departmentId: e.target.value }))}
-                required
+                value={departmentId}
+                onChange={(e) => {
+                  clearFlash();
+                  setDepartmentId(e.target.value);
+                }}
               >
                 <option value="">Select department</option>
                 {departments.map((d) => (
                   <option key={d.id} value={d.id}>
-                    {d.name}
-                    {d.code ? ` (${d.code})` : ''}
+                    {d.name} ({d.code})
                   </option>
                 ))}
               </select>
             </div>
-            <div className="mm-org-form-actions" style={{ gridColumn: '1 / -1' }}>
-              <button type="submit" className="mm-org-btn mm-org-btn--primary" disabled={editBusy}>
-                {editBusy ? 'Saving…' : 'Save changes'}
-              </button>
+
+            {addMode === 'emails' ? (
+              <form onSubmit={onEmails}>
+                <label className="mm-org-label" htmlFor="stu-emails">
+                  Student emails
+                </label>
+                <textarea
+                  id="stu-emails"
+                  className="mm-org-textarea"
+                  placeholder={'rahul@college.edu\npriya@college.edu'}
+                  value={emails}
+                  onChange={(e) => setEmails(e.target.value)}
+                />
+                <div className="mm-org-form-actions">
+                  <button
+                    type="submit"
+                    className={`mm-org-btn ${actionDone === 'invite' ? 'mm-org-btn--ok' : 'mm-org-btn--primary'}`}
+                    disabled={Boolean(actionBusy)}
+                  >
+                    {actionBusy === 'invite' ? (
+                      'Inviting…'
+                    ) : actionDone === 'invite' ? (
+                      <>
+                        <Check size={15} /> Invited
+                      </>
+                    ) : (
+                      <>
+                        <UserPlus size={15} /> Invite to roster
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
+            ) : null}
+
+            {addMode === 'manual' ? (
+              <form onSubmit={onManual} className="mm-org-form-grid">
+                <div>
+                  <label className="mm-org-label">Name</label>
+                  <input
+                    className="mm-org-input"
+                    value={manual.name}
+                    onChange={(e) => setManual((m) => ({ ...m, name: e.target.value }))}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="mm-org-label">Email</label>
+                  <input
+                    type="email"
+                    className="mm-org-input"
+                    value={manual.email}
+                    onChange={(e) => setManual((m) => ({ ...m, email: e.target.value }))}
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="mm-org-label">College ID</label>
+                  <input
+                    className="mm-org-input"
+                    value={manual.collegeId}
+                    onChange={(e) => setManual((m) => ({ ...m, collegeId: e.target.value }))}
+                  />
+                </div>
+                <div>
+                  <label className="mm-org-label">Batch year</label>
+                  <input
+                    className="mm-org-input"
+                    value={manual.batchYear}
+                    onChange={(e) => setManual((m) => ({ ...m, batchYear: e.target.value }))}
+                  />
+                </div>
+                <div className="mm-org-form-actions" style={{ gridColumn: '1 / -1' }}>
+                  <button
+                    type="submit"
+                    className={`mm-org-btn ${actionDone === 'manual' ? 'mm-org-btn--ok' : 'mm-org-btn--primary'}`}
+                    disabled={Boolean(actionBusy)}
+                  >
+                    {actionBusy === 'manual' ? (
+                      'Enrolling…'
+                    ) : actionDone === 'manual' ? (
+                      <>
+                        <Check size={15} /> Enrolled
+                      </>
+                    ) : (
+                      'Add to roster'
+                    )}
+                  </button>
+                </div>
+              </form>
+            ) : null}
+
+            {addMode === 'csv' ? (
+              <form onSubmit={onCsv}>
+                <div className="flex gap-2 mb-3">
+                  <label className="mm-org-btn mm-org-btn--sm mm-org-btn--ghost" style={{ cursor: 'pointer' }}>
+                    <FileUp size={14} /> Choose CSV
+                    <input
+                      type="file"
+                      accept=".csv,text/csv"
+                      hidden
+                      onChange={async (e) => {
+                        const f = e.target.files?.[0];
+                        if (f) setCsvText(await f.text());
+                      }}
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    className="mm-org-btn mm-org-btn--sm mm-org-btn--ghost"
+                    onClick={() => setCsvText(CSV_TEMPLATE)}
+                  >
+                    Template
+                  </button>
+                </div>
+                <textarea
+                  className="mm-org-textarea"
+                  rows={7}
+                  value={csvText}
+                  onChange={(e) => setCsvText(e.target.value)}
+                  placeholder={CSV_TEMPLATE}
+                />
+                <div className="mm-org-form-actions">
+                  <button
+                    type="submit"
+                    className={`mm-org-btn ${actionDone === 'csv' ? 'mm-org-btn--ok' : 'mm-org-btn--primary'}`}
+                    disabled={Boolean(actionBusy)}
+                  >
+                    {actionBusy === 'csv' ? (
+                      'Importing…'
+                    ) : actionDone === 'csv' ? (
+                      <>
+                        <Check size={15} /> Enrolled
+                      </>
+                    ) : (
+                      'Import to roster'
+                    )}
+                  </button>
+                </div>
+              </form>
+            ) : null}
+
+            {addMode === 'link' ? (
+              <div>
+                <p className="mb-2 text-xs mm-org-text-muted">
+                  Students open this link to request enrollment
+                  {departmentId
+                    ? ' for the selected department'
+                    : ' (pick a department above to pre-select it)'}
+                  . Uses your org code and lands on <code>/studentportal/enroll</code>.
+                </p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <code className="mm-org-code text-xs" style={{ flex: 1 }}>
+                    {registerUrl}
+                  </code>
+                  <button
+                    type="button"
+                    className={`mm-org-btn mm-org-btn--sm ${
+                      copiedKey === 'reg' ? 'mm-org-btn--ok' : 'mm-org-btn--primary'
+                    }`}
+                    onClick={() => copyText(registerUrl, 'reg')}
+                  >
+                    {copiedKey === 'reg' ? (
+                      <>
+                        <Check size={14} /> Copied
+                      </>
+                    ) : (
+                      <>
+                        <Copy size={14} /> Copy
+                      </>
+                    )}
+                  </button>
+                  <a
+                    className="mm-org-btn mm-org-btn--sm mm-org-btn--ghost"
+                    href={registerUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <Link2 size={14} /> Open
+                  </a>
+                </div>
+                <p className="mt-3 text-xs mm-org-text-muted">
+                  Flow: student opens link → submits details → appears in Approval queue → you Approve
+                  → share set-password link → student sets password → logs in with email / college ID.
+                </p>
+              </div>
+            ) : null}
+          </div>
+        </div>
+      ) : null}
+
+      {editing ? (
+        <div
+          className="mm-org-modal-backdrop"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="enroll-edit-title"
+          onClick={(e) => {
+            if (e.target === e.currentTarget) {
+              setEditing(null);
+              setEditForm(EMPTY_EDIT);
+            }
+          }}
+        >
+          <div className="mm-org-modal mm-org-modal--wide">
+            <div className="mm-org-panel__head" style={{ marginBottom: 12 }}>
+              <div>
+                <h2 id="enroll-edit-title" className="mm-org-panel__title">
+                  Edit student
+                </h2>
+                <p className="mm-org-panel__meta">
+                  Fix name, email, phone, roll, or department when the student reports a mistake.
+                </p>
+              </div>
               <button
                 type="button"
-                className="mm-org-btn mm-org-btn--ghost"
+                className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
                 onClick={() => {
                   setEditing(null);
                   setEditForm(EMPTY_EDIT);
                 }}
               >
-                Cancel
+                <X size={14} /> Close
               </button>
             </div>
-          </form>
-        </section>
+            <form onSubmit={onSaveEdit} className="mm-org-form-grid">
+              <div>
+                <label className="mm-org-label" htmlFor="enroll-edit-name">
+                  Full name
+                </label>
+                <input
+                  id="enroll-edit-name"
+                  className="mm-org-input"
+                  value={editForm.name}
+                  onChange={(e) => setEditForm((f) => ({ ...f, name: e.target.value }))}
+                  required
+                />
+              </div>
+              <div>
+                <label className="mm-org-label" htmlFor="enroll-edit-email">
+                  College email
+                </label>
+                <input
+                  id="enroll-edit-email"
+                  type="email"
+                  className="mm-org-input"
+                  value={editForm.email}
+                  onChange={(e) => setEditForm((f) => ({ ...f, email: e.target.value }))}
+                  required
+                />
+              </div>
+              <div>
+                <label className="mm-org-label" htmlFor="enroll-edit-phone">
+                  Phone
+                </label>
+                <input
+                  id="enroll-edit-phone"
+                  className="mm-org-input"
+                  value={editForm.phone}
+                  onChange={(e) => setEditForm((f) => ({ ...f, phone: e.target.value }))}
+                  placeholder="10-digit mobile"
+                />
+              </div>
+              <div>
+                <label className="mm-org-label" htmlFor="enroll-edit-roll">
+                  College ID / roll
+                </label>
+                <input
+                  id="enroll-edit-roll"
+                  className="mm-org-input"
+                  value={editForm.collegeId}
+                  onChange={(e) => setEditForm((f) => ({ ...f, collegeId: e.target.value }))}
+                />
+              </div>
+              <div>
+                <label className="mm-org-label" htmlFor="enroll-edit-batch">
+                  Batch year
+                </label>
+                <input
+                  id="enroll-edit-batch"
+                  className="mm-org-input"
+                  value={editForm.batchYear}
+                  onChange={(e) => setEditForm((f) => ({ ...f, batchYear: e.target.value }))}
+                  placeholder="2025"
+                />
+              </div>
+              <div>
+                <label className="mm-org-label" htmlFor="enroll-edit-dept">
+                  Department
+                </label>
+                <select
+                  id="enroll-edit-dept"
+                  className="mm-org-select"
+                  value={editForm.departmentId}
+                  onChange={(e) => setEditForm((f) => ({ ...f, departmentId: e.target.value }))}
+                  required
+                >
+                  <option value="">Select department</option>
+                  {departments.map((d) => (
+                    <option key={d.id} value={d.id}>
+                      {d.name}
+                      {d.code ? ` (${d.code})` : ''}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="mm-org-form-actions" style={{ gridColumn: '1 / -1' }}>
+                <button
+                  type="submit"
+                  className={`mm-org-btn ${actionDone === 'edit' ? 'mm-org-btn--ok' : 'mm-org-btn--primary'}`}
+                  disabled={editBusy || actionDone === 'edit'}
+                >
+                  {editBusy ? (
+                    'Saving…'
+                  ) : actionDone === 'edit' ? (
+                    <>
+                      <Check size={15} /> Saved
+                    </>
+                  ) : (
+                    'Save changes'
+                  )}
+                </button>
+                <button
+                  type="button"
+                  className="mm-org-btn mm-org-btn--ghost"
+                  onClick={() => {
+                    setEditing(null);
+                    setEditForm(EMPTY_EDIT);
+                  }}
+                >
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
       ) : null}
     </div>
   );

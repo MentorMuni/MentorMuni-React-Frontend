@@ -34,6 +34,7 @@ export function normalizeCollege(row) {
   if (!row) return null;
   const code = String(row.code || row.organization_code || '').trim().toUpperCase();
   const name = String(row.name || row.organization_name || code || 'College').trim();
+  const portal_slug = String(row.portal_slug || '').trim().toLowerCase() || '';
   return {
     id: row.id,
     name,
@@ -42,6 +43,8 @@ export function normalizeCollege(row) {
     state: row.state || '',
     status: String(row.status || '').toUpperCase(),
     organization_type: String(row.organization_type || '').toUpperCase(),
+    portal_slug,
+    portal_url: row.portal_url || undefined,
     label: code ? `${name} (${code})` : name,
   };
 }

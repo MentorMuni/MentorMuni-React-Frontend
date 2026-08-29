@@ -22,6 +22,7 @@ import FearToFearlessLanding from './FearToFearlessLanding';
 import FearToFearlessInProgress from '../components/FearToFearlessInProgress';
 import FearToFearlessPlan from '../components/FearToFearlessPlan';
 import { normalizeWeek } from '../knowMe/planUtils';
+import { isIndividualStudent } from '../accountType';
 import { useStudentShell } from '../shellContext';
 import '../styles/know-me-v2.css';
 
@@ -186,7 +187,11 @@ export default function StudentKnowMePage() {
         const week = normalizeWeek(
           sol,
           Math.min(6, Math.max(1, (status.week_current || 0) + 1)),
-          { checkinId: id, fearId: sol.fear_id }
+          {
+            checkinId: id,
+            fearId: sol.fear_id,
+            individual: isIndividualStudent(session),
+          }
         );
         setWeeklyForm((p) => ({ ...p, actions_total: week.days.length || 5 }));
       }
@@ -576,7 +581,7 @@ export default function StudentKnowMePage() {
               {(currentQuestion.response_type === 'free_text_only' ||
                 currentQuestion.response_type === 'multi_select_with_text' ||
                 currentQuestion.free_text_prompt) && (
-                <div className="stu-knowme__textarea-wrap">
+                <div className="stu-knowme__textarea-wrapper">
                   {currentQuestion.free_text_prompt ? (
                     <p className="stu-knowme__field-hint">{currentQuestion.free_text_prompt}</p>
                   ) : null}

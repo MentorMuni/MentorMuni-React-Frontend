@@ -36,6 +36,20 @@ import {
   availableOrgAdminTitles,
 } from '../store';
 import Modal from '../Modal';
+import { collegePortalOrigin } from '../../tenant/resolveTenant';
+
+function collegePortalDisplay(orgOrSlug) {
+  if (orgOrSlug && typeof orgOrSlug === 'object') {
+    if (orgOrSlug.portal_url) return String(orgOrSlug.portal_url).replace(/^https?:\/\//, '');
+    if (orgOrSlug.portal_slug) {
+      return collegePortalOrigin(orgOrSlug.portal_slug).replace(/^https?:\/\//, '');
+    }
+    return '';
+  }
+  const slug = String(orgOrSlug || '').trim().toLowerCase();
+  if (!slug) return '';
+  return collegePortalOrigin(slug).replace(/^https?:\/\//, '');
+}
 
 function defaultUsername(org, title = 'TPO') {
   const code = String(org?.code || '').toLowerCase() || 'org';
@@ -67,6 +81,7 @@ function upsertAdminInList(list, admin) {
 const emptyOrg = {
   name: '',
   code: '',
+  portal_slug: '',
   organization_type: 'College',
   status: 'Active',
   contact_person: '',
@@ -83,6 +98,7 @@ function orgToForm(org) {
   return {
     name: org.name || '',
     code: org.code || '',
+    portal_slug: org.portal_slug || '',
     organization_type: org.organization_type || 'College',
     status: isActiveStatus(org.status) ? 'Active' : 'Inactive',
     contact_person: org.contact_person || '',
@@ -326,12 +342,25 @@ export default function OrganizationsPage() {
   const submitOrg = async (e) => {
     e.preventDefault();
     setError('');
+    const slug = String(form.portal_slug || form.code || '')
+      .trim()
+      .toLowerCase();
+    if (slug && (slug.length < 3 || slug.length > 32)) {
+      setError('Portal slug must be 3–32 characters (letters, numbers, hyphens).');
+      return;
+    }
     try {
       if (editingOrgId) {
-        const row = await updateOrganization(editingOrgId, form);
+        const row = await updateOrganization(editingOrgId, {
+          ...form,
+          portal_slug: slug || form.portal_slug,
+        });
         setSuccess(`Organization updated · ${row.name} (${row.code})`);
       } else {
-        const row = await createOrganization(form);
+        const row = await createOrganization({
+          ...form,
+          portal_slug: slug || undefined,
+        });
         setSuccess(`Organization created · ID ${row.id} · Code ${row.code}`);
         setSelected(row);
       }
@@ -796,6 +825,7 @@ export default function OrganizationsPage() {
                         <p className="mm-pa-table__title">{org.name}</p>
                         <p className="mm-pa-table__meta">
                           {org.code} · ID {org.id}
+                          {org.portal_slug ? ` · ${collegePortalDisplay(org)}` : ''}
                           {sub
                             ? ` · ${sub.plan_name}`
                             : enriching
@@ -899,6 +929,28 @@ export default function OrganizationsPage() {
                 placeholder="MEDICAPS"
                 disabled={Boolean(editingOrgId)}
               />
+            </div>
+            <div>
+              <label className="mm-pa-label">Portal slug</label>
+              <input
+                className="mm-pa-input lowercase"
+                value={form.portal_slug}
+                onChange={(e) =>
+                  setForm({
+                    ...form,
+                    portal_slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''),
+                  })
+                }
+                placeholder="medicaps"
+              />
+              <p className="mm-pa-hint" style={{ marginTop: 4 }}>
+                College portal:{' '}
+                {form.portal_slug
+                  ? collegePortalDisplay(form.portal_slug)
+                  : form.code
+                    ? `${collegePortalDisplay(String(form.code).toLowerCase())} (default from code)`
+                    : '{slug}.mentormuni.com / {slug}.localhost'}
+              </p>
             </div>
             <div>
               <label className="mm-pa-label">Organization Type</label>

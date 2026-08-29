@@ -967,3 +967,138 @@ html.mm-new-ui .mmc-diff__card {
   pointer-events: none;
   background: linear-gradient(to bottom, transparent, var(--bg-primary));
 }
+
+/* ══════════════════════════════════════════════════════════════
+   STUDENT PORTAL PEEK
+
+   The one band on this page whose product surface is interactive:
+   it is a real preview visitors scroll, not artwork. It therefore
+   reuses the .mmc-frame chrome but never the inert stage.
+   ══════════════════════════════════════════════════════════════ */
+
+.mmc-peek {
+  margin-top: 1.75rem;
+}
+
+.mmc-peek__frame {
+  overflow: hidden;
+}
+
+.mmc-peek__iframe {
+  display: block;
+  width: 100%;
+  /* Tall enough that the readiness slab and the first beat both land
+     above the frame's own fold; the rest scrolls inside the frame. */
+  height: min(72vh, 640px);
+  border: 0;
+  background: var(--bg-primary);
+}
+
+@media (max-width: 48em) {
+  .mmc-peek__iframe { height: min(68vh, 520px); }
+}
+
+
+/* ══════════════════════════════════════════════════════════════
+   ORG FLOW DIAGRAM
+
+   Every value resolves through the band tokens (--band-*, --accent),
+   so the drawing follows whatever ground it is placed on instead of
+   needing a dark override. Two colours only, each meaning a
+   direction: --accent travels down (assignments), --accent-cta
+   travels up (evidence).
+   ══════════════════════════════════════════════════════════════ */
+
+.mmc-flow {
+  margin: 0;
+  width: 100%;
+}
+
+.mmc-flow__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.mmc-flow__title {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  fill: var(--accent);
+  opacity: 0.9;
+}
+
+.mmc-flow__card {
+  fill: var(--band-glass, rgba(255, 255, 255, 0.05));
+  stroke: var(--band-hair, rgba(255, 255, 255, 0.14));
+  stroke-width: 1;
+}
+
+.mmc-flow__card--muted { opacity: 0.72; }
+
+.mmc-flow__dot { fill: var(--accent); }
+.mmc-flow__dot--muted { fill: var(--band-mute, rgba(238, 246, 251, 0.62)); }
+
+.mmc-flow__name {
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  fill: var(--band-ink, #eef6fb);
+}
+
+.mmc-flow__name--sm { font-size: 16px; }
+
+.mmc-flow__scope {
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  fill: var(--accent);
+  opacity: 0.85;
+}
+
+.mmc-flow__caps {
+  font-size: 13px;
+  fill: var(--band-mute, rgba(238, 246, 251, 0.62));
+}
+
+.mmc-flow__idx {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  fill: var(--band-mute, rgba(238, 246, 251, 0.62));
+  opacity: 0.5;
+}
+
+/* Direction encodes meaning: down = assigned, up = evidence returning. */
+.mmc-flow__down,
+.mmc-flow__up {
+  stroke-width: 1.5;
+  stroke-linecap: round;
+}
+
+.mmc-flow__down { stroke: var(--accent); }
+.mmc-flow__down-head { fill: var(--accent); }
+
+.mmc-flow__up {
+  stroke: var(--accent-cta, #ff9500);
+  stroke-dasharray: 4 4;
+}
+
+.mmc-flow__up-head { fill: var(--accent-cta, #ff9500); }
+
+.mmc-flow__flow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.mmc-flow__flow--down { fill: var(--accent); }
+.mmc-flow__flow--up { fill: var(--accent-cta, #ff9500); }
+
+/* The labels are the first thing to overrun on a narrow hero column. */
+@media (max-width: 30em) {
+  .mmc-flow__caps { font-size: 12px; }
+  .mmc-flow__flow { font-size: 11px; }
+}

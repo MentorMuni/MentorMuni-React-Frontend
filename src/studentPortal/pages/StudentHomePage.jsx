@@ -12,6 +12,7 @@ import { WEEK1_STEPS } from '../roadmap/week1Steps';
 import { recordStudentSession } from '../streak';
 import { useDailyMission } from '../daily/useDailyMission';
 import { isIndividualStudent } from '../accountType';
+import { fetchStudentReadiness } from '../readiness/readinessApi';
 
 import HomeHeader from '../components/home/HomeHeader';
 import PageSection from '../components/home/PageSection';
@@ -47,6 +48,7 @@ export default function StudentHomePage() {
 
   const [roadmap, setRoadmap] = useState(null);
   const [analysis, setAnalysis] = useState(null);
+  const [intelReadiness, setIntelReadiness] = useState(null);
   const [plan, setPlan] = useState(null);
   const [generateError, setGenerateError] = useState('');
   const [loadError, setLoadError] = useState('');
@@ -72,6 +74,18 @@ export default function StudentHomePage() {
       setAnalysis(an);
       setLoadError('');
 
+      try {
+        const intel = await fetchStudentReadiness({
+          roadmap: rm,
+          userKey,
+          target: TARGET_READINESS,
+          silent: true,
+        });
+        setIntelReadiness(intel);
+      } catch (err) {
+        console.error('Readiness fetch failed', err);
+      }
+
       if (rm.week_status === 'done') {
         try {
           const p = await fetchPlan();
@@ -88,7 +102,7 @@ export default function StudentHomePage() {
       console.error(err);
       setLoadError(err?.message || 'Could not load roadmap');
     }
-  }, []);
+  }, [userKey]);
 
   useEffect(() => {
     refresh();
@@ -219,7 +233,10 @@ export default function StudentHomePage() {
 
   const steps = roadmap?.steps || [];
   const currentStep = steps.find((s) => s.status === 'current') || null;
-  const readiness = analysis?.overall_score ?? 0;
+  const readiness =
+    intelReadiness?.overall != null
+      ? intelReadiness.overall
+      : analysis?.overall_score ?? 0;
   const completedCount = roadmap?.completed_count || 0;
   const totalCount = roadmap?.total_count || WEEK1_STEPS.length;
   const hasScoredBaseline = completedCount > 0 || readiness > 0;
@@ -229,15 +246,22 @@ export default function StudentHomePage() {
   const weekSessions = (weekDots || []).filter(Boolean).length;
 
 
-  const breakdown = useMemo(
-    () =>
-      Object.entries(analysis?.scores_by_tool || {}).map(([code, score]) => ({
-        label: TOOL_LABELS[code] || code.replace(/_/g, ' '),
-        score: Math.round(score),
-        weight: '',
-      })),
-    [analysis?.scores_by_tool]
-  );
+  const breakdown = useMemo(() => {
+    if (intelReadiness?.pillars) {
+      return Object.entries(intelReadiness.pillars)
+        .filter(([, p]) => p?.hasData)
+        .map(([code, p]) => ({
+          label: p.label || TOOL_LABELS[code] || code,
+          score: Math.round(p.score),
+          weight: '',
+        }));
+    }
+    return Object.entries(analysis?.scores_by_tool || {}).map(([code, score]) => ({
+      label: TOOL_LABELS[code] || code.replace(/_/g, ' '),
+      score: Math.round(score),
+      weight: '',
+    }));
+  }, [intelReadiness?.pillars, analysis?.scores_by_tool]);
 
   const weakest = (analysis?.top_weaknesses || [])[0] || null;
 
@@ -286,13 +310,23 @@ export default function StudentHomePage() {
             <PlacementReadinessHero
               currentReadiness={readiness}
               previousReadiness={null}
-              targetReadiness={TARGET_READINESS}
+              targetReadiness={intelReadiness?.target ?? TARGET_READINESS}
               estimatedDays={
-                baselineDone ? PLAN_HORIZON_DAYS : Math.max(1, totalCount - completedCount)
+                intelReadiness?.eta_days != null
+                  ? intelReadiness.eta_days
+                  : baselineDone
+                    ? PLAN_HORIZON_DAYS
+                    : Math.max(1, totalCount - completedCount)
               }
               todayGain={0}
               expectedByNow={null}
-              weekLabel={baselineDone ? 'after baseline' : 'baseline week'}
+              weekLabel={
+                intelReadiness?.focus_pillar
+                  ? `focus · ${intelReadiness.focus_pillar}`
+                  : baselineDone
+                    ? 'after baseline'
+                    : 'baseline week'
+              }
               breakdown={breakdown.length ? breakdown : undefined}
             />
           ) : null}

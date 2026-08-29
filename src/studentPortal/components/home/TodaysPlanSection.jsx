@@ -21,9 +21,9 @@ export default function TodaysPlanSection({ steps = [], onStart }) {
       <section className="stu-card stu-today">
         <header className="stu-card__head">
           <div>
-            <h2 className="stu-card__title">Today’s focus</h2>
+            <h2 className="stu-card__title">Baseline complete</h2>
             <p className="stu-card__sub">
-              Week 1 baseline is complete. Generate your 90-day plan next.
+              Week 1 baseline is done. Generate your 90-day plan next.
             </p>
           </div>
           <span className="stu-plan__count">
@@ -58,7 +58,7 @@ export default function TodaysPlanSection({ steps = [], onStart }) {
       <section className="stu-card stu-today">
         <header className="stu-card__head">
           <div>
-            <h2 className="stu-card__title">Today’s focus</h2>
+            <h2 className="stu-card__title">Next check</h2>
           </div>
         </header>
         <EmptyState art="complete" title="Nothing queued yet">
@@ -79,7 +79,7 @@ export default function TodaysPlanSection({ steps = [], onStart }) {
     <section className="stu-card stu-today">
       <header className="stu-card__head">
         <div>
-          <h2 className="stu-card__title">Today’s focus</h2>
+          <h2 className="stu-card__title">Do this now</h2>
           <p className="stu-card__sub">
             One step, about {current.minutes} minutes. Finish it to unlock the next.
           </p>

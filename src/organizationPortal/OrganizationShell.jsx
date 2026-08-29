@@ -19,7 +19,7 @@ import {
   X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { clearOrgSession, getOrgSession } from '../orgPortal';
+import { clearOrgSession, getOrgSession, isOrgAuthenticated } from '../orgPortal';
 import {
   canMutateCampus,
   canViewAnalytics,
@@ -34,6 +34,7 @@ import { orgPaths } from './paths';
 import { useOrgTheme } from './useOrgTheme';
 import OrgThemeToggle from './OrgThemeToggle';
 import WorkspaceInProgress from './components/WorkspaceInProgress';
+import IdleSessionGuard from '../components/IdleSessionGuard';
 import { orgApiBusy, useApiBusy } from '../lib/apiBusy';
 import './organization-portal.css';
 
@@ -193,11 +194,17 @@ export default function OrganizationShell() {
           : 'Organization';
 
   return (
-    <div
-      className={`mm-org-root ${theme === 'light' ? 'mm-org-root--light' : ''}${
-        navOpen ? ' is-nav-open' : ''
-      }`}
+    <IdleSessionGuard
+      isAuthenticated={isOrgAuthenticated}
+      clearSession={clearOrgSession}
+      loginPath={getOrgLoginPath()}
+      portalLabel="organization portal"
     >
+      <div
+        className={`mm-org-root ${theme === 'light' ? 'mm-org-root--light' : ''}${
+          navOpen ? ' is-nav-open' : ''
+        }`}
+      >
       <Atmosphere />
       <button
         type="button"
@@ -333,5 +340,6 @@ export default function OrganizationShell() {
       </div>
       {apiBusy ? <WorkspaceInProgress session={session} /> : null}
     </div>
+    </IdleSessionGuard>
   );
 }

@@ -589,6 +589,47 @@ export async function rejectStudentInvite(id) {
   }
 }
 
+/**
+ * Approve or deny many pending invites one-by-one (no bulk API yet).
+ * Returns counts + last setup URL from a successful approve that exposed one.
+ */
+export async function decideAllInvites(ids = [], decision = 'approve') {
+  const list = (Array.isArray(ids) ? ids : []).map((id) => String(id)).filter(Boolean);
+  let okCount = 0;
+  let failCount = 0;
+  const errors = [];
+  let lastSetupUrl = '';
+  let lastMessage = '';
+
+  for (const id of list) {
+    const res =
+      decision === 'approve' ? await approveStudentInvite(id) : await rejectStudentInvite(id);
+    if (res?.ok) {
+      okCount += 1;
+      lastMessage = res.message || lastMessage;
+      if (res.setupUrl) lastSetupUrl = res.setupUrl;
+    } else {
+      failCount += 1;
+      errors.push(res?.error || `Failed for invite ${id}`);
+    }
+  }
+
+  const verb = decision === 'approve' ? 'Approved' : 'Denied';
+  let message = `${verb} ${okCount} of ${list.length}.`;
+  if (failCount) message += ` ${failCount} failed.`;
+  if (lastMessage && okCount === 1 && failCount === 0) message = lastMessage;
+
+  return {
+    ok: failCount === 0 && okCount > 0,
+    okCount,
+    failCount,
+    total: list.length,
+    errors,
+    setupUrl: lastSetupUrl,
+    message,
+  };
+}
+
 export async function patchStudent(id, patch = {}) {
   if (allowLocalFallback()) {
     try {

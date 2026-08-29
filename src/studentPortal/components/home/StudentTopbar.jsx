@@ -177,8 +177,16 @@ export default function StudentTopbar({ session, onMenu, nextDrive }) {
                 </div>
               </div>
               <div className="stu-menu__meta">
-                <span>{session?.organization_name || 'Your college'}</span>
-                {session?.department_name ? <span>{session.department_name}</span> : null}
+                <span>
+                  {individual
+                    ? campus.primary || 'Individual student'
+                    : session?.organization_name || 'Your college'}
+                </span>
+                {!individual && session?.department_name ? (
+                  <span>{session.department_name}</span>
+                ) : individual && campus.secondary ? (
+                  <span>{campus.secondary}</span>
+                ) : null}
               </div>
               <div className="stu-menu__sep" />
               <Link

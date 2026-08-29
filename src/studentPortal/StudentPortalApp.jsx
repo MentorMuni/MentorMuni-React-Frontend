@@ -1,5 +1,6 @@
 import { Suspense, lazy } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
+import { CollegeTenantProvider } from '../tenant/CollegeTenantProvider';
 import { isStudentAuthenticated } from './auth';
 import { studentPaths } from './paths';
 import { StudentThemeProvider } from './useStudentTheme.jsx';
@@ -43,8 +44,9 @@ function PortalFallback() {
  */
 export default function StudentPortalApp() {
   return (
-    <StudentThemeProvider>
-      <Routes>
+    <CollegeTenantProvider>
+      <StudentThemeProvider>
+        <Routes>
         <Route path="login" element={<StudentLoginPage />} />
         <Route path="register" element={<StudentRegisterPage />} />
         <Route path="enroll" element={<StudentEnrollPage />} />
@@ -149,7 +151,8 @@ export default function StudentPortalApp() {
           }
         />
       </Routes>
-    </StudentThemeProvider>
+      </StudentThemeProvider>
+    </CollegeTenantProvider>
   );
 }
 

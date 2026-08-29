@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { Lock } from 'lucide-react';
 import { resetPasswordWithToken } from '../../orgPortal';
+import { tenantPortalPath } from '../../tenant/resolveTenant';
 import { orgPaths } from '../paths';
 import '../../components/organization/organization-login.css';
 
@@ -37,7 +38,7 @@ export default function OrgResetPasswordPage() {
     try {
       await resetPasswordWithToken({ token, newPassword: password });
       setOk(true);
-      setTimeout(() => navigate(orgPaths.login, { replace: true }), 1200);
+      setTimeout(() => navigate(tenantPortalPath(orgPaths.login), { replace: true }), 1200);
     } catch (err) {
       setError(err?.message || 'Unable to reset password.');
     } finally {
@@ -65,7 +66,7 @@ export default function OrgResetPasswordPage() {
                   This reset link is incomplete. Request a new one from the login page.
                 </p>
                 <p className="mm-org-login__activate">
-                  <Link to={orgPaths.forgotPassword}>Request a new link</Link>
+                  <Link to={tenantPortalPath(orgPaths.forgotPassword)}>Request a new link</Link>
                 </p>
               </>
             ) : ok ? (
@@ -124,7 +125,7 @@ export default function OrgResetPasswordPage() {
                   </button>
                 </form>
                 <p className="mm-org-login__activate">
-                  <Link to={orgPaths.login}>Back to sign in</Link>
+                  <Link to={tenantPortalPath(orgPaths.login)}>Back to sign in</Link>
                 </p>
               </>
             )}

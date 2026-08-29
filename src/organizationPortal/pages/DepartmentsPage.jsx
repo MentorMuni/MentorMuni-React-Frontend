@@ -400,7 +400,11 @@ export default function DepartmentsPage() {
               <code className="mm-org-code mm-org-code--block" style={{ flex: 1 }}>
                 {linkInfo.url}
               </code>
-              <button type="button" className="mm-org-btn mm-org-btn--primary" onClick={copyLink}>
+              <button
+                type="button"
+                className={`mm-org-btn ${copied ? 'mm-org-btn--ok' : 'mm-org-btn--primary'}`}
+                onClick={copyLink}
+              >
                 {copied ? <Check size={15} /> : <Copy size={15} />}
                 {copied ? 'Copied' : 'Copy link'}
               </button>

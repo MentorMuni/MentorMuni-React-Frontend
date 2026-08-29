@@ -20,7 +20,7 @@ function returnPathFor(from, search) {
   if (from === 'practice') return studentPaths.practice;
   if (from === 'coding') return studentPaths.coding;
   if (from === 'company-prep') return studentPaths.companyPrep;
-  if (from === 'journey') return `${studentPaths.home}#stu-90day-plan`;
+  if (from === 'journey') return `${studentPaths.home}#stu-today-zone`;
   if (from === 'fear-to-fearless') {
     const checkin = search?.get?.('checkin') || '';
     const q = new URLSearchParams({ open: 'plan' });
@@ -59,7 +59,7 @@ export default function StudentToolPage() {
     if (from === 'practice') return 'Back to Practice';
     if (from === 'coding') return 'Back to Coding Round';
     if (from === 'company-prep') return 'Back to Company Prep';
-    if (from === 'journey') return 'Back to your 90-day plan';
+    if (from === 'journey') return 'Back to Today';
     if (from === 'fear-to-fearless') return 'Back to Fear → Fearless';
     if (from === 'roadmap') return 'Back to Home';
     return 'Back to Home';
@@ -101,7 +101,7 @@ export default function StudentToolPage() {
                   : from === 'company-prep'
                     ? 'Company Prep'
                     : from === 'journey'
-                      ? '90-day journey'
+                      ? 'Today’s mission'
                       : from === 'fear-to-fearless'
                         ? 'Fear → Fearless'
                         : from === 'roadmap'

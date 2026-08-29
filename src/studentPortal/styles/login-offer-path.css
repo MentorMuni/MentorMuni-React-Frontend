@@ -1,0 +1,524 @@
+/* ============================================================
+   Student login — "Offer Path" design language
+
+   Loaded AFTER student-login.css, so equal-specificity rules here
+   win on source order. Two things happen in this file:
+
+   1. The `--stu-*` tokens declared by student-login.css are retuned
+      to the portal palette in tokens.css (cyan→blue brand, amber
+      ring, deep-navy instrument surfaces). Because all 2600 lines
+      of the base stylesheet resolve through those tokens, the
+      palette moves without editing any of them.
+
+   2. The showcase panel is rebuilt as the pre-login half of the
+      Offer Path: proposition → what it measures → the three beats
+      → the surface a student actually gets. Those use `op-` classes
+      and are self-contained.
+
+   THE RULE from tokens.css still holds: no raw hex outside the
+   token blocks below.
+   ============================================================ */
+
+.mm-stu-login-root {
+  /* ---- Form side — light, cool grey biased blue -------------- */
+  --stu-ink: #0d1720;
+  --stu-muted: #55697a;
+  --stu-line: rgba(13, 27, 42, 0.12);
+  --stu-panel: #ffffff;
+  --stu-panel-solid: #ffffff;
+  --stu-accent: #0e6fa8;
+  --stu-accent-2: #17b6d4;
+  --stu-accent-soft: rgba(23, 182, 212, 0.1);
+  --stu-warm: #b45309;
+  --stu-danger: #b91c1c;
+  --stu-ok: #12703a;
+  --stu-surface: #f4f7fa;
+  --stu-focus: 0 0 0 3px rgba(17, 131, 196, 0.26);
+  --stu-shadow-card:
+    0 1px 0 rgba(255, 255, 255, 0.6) inset,
+    0 12px 32px -8px rgba(13, 27, 42, 0.16),
+    0 2px 8px rgba(13, 27, 42, 0.06);
+
+  /* ---- Showcase — the always-dark instrument slab ------------
+     This is the login page's equivalent of the readiness hero:
+     one deep surface carrying the whole proposition, with the
+     light form card beside it doing the contrast. */
+  --stu-show-ink: #ffffff;
+  --stu-show-muted: rgba(255, 255, 255, 0.78);
+  --stu-show-panel: rgba(255, 255, 255, 0.08);
+  --stu-show-line: rgba(255, 255, 255, 0.14);
+  --stu-show-chip: rgba(255, 255, 255, 0.08);
+  --stu-show-em: linear-gradient(100deg, #8fe3f5 0%, #2ecbe8 60%, #46d4ee 100%);
+  --stu-show-bg:
+    radial-gradient(120% 140% at 8% 0%, #0e5a83 0%, #0d4a6d 42%, #0b3f62 72%, #08202f 100%);
+
+  /* Offer Path additions */
+  --op-accent: #8fe3f5;
+  --op-ring: #2ecbe8;
+  --op-ok: #34d385;
+  --op-warn: #ffc94d;
+  --op-low: #ff8a6b;
+  --op-amber: #e8a33d;
+  --op-display: 'Fraunces', Georgia, 'Times New Roman', serif;
+  --op-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --op-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.mm-stu-login-root.is-dark {
+  --stu-ink: #eaf1f8;
+  --stu-muted: #8397aa;
+  --stu-line: rgba(255, 255, 255, 0.12);
+  --stu-panel: #161f2b;
+  --stu-panel-solid: #161f2b;
+  --stu-accent: #5ad3ee;
+  --stu-accent-2: #46d4ee;
+  --stu-accent-soft: rgba(90, 211, 238, 0.12);
+  --stu-warm: #f0b45e;
+  --stu-danger: #f87171;
+  --stu-ok: #4ade80;
+  --stu-surface: #0d141d;
+  --stu-focus: 0 0 0 3px rgba(90, 211, 238, 0.3);
+  --stu-shadow-card:
+    0 1px 0 rgba(255, 255, 255, 0.04) inset,
+    0 12px 32px -8px rgba(0, 0, 0, 0.6),
+    0 2px 8px rgba(0, 0, 0, 0.4);
+
+  /* The showcase slab is theme-independent — it is an always-dark
+     instrument surface in both themes, exactly like --deep-* in
+     tokens.css. These MUST be repeated here: the base stylesheet
+     declares its own --stu-show-* under this same `.is-dark`
+     selector, which outranks the single-class block above, so
+     omitting them silently restores the old teal panel in dark. */
+  --stu-show-ink: #ffffff;
+  --stu-show-muted: rgba(255, 255, 255, 0.78);
+  --stu-show-panel: rgba(255, 255, 255, 0.08);
+  --stu-show-line: rgba(255, 255, 255, 0.14);
+  --stu-show-chip: rgba(255, 255, 255, 0.08);
+  --stu-show-em: linear-gradient(100deg, #8fe3f5 0%, #2ecbe8 60%, #46d4ee 100%);
+  --stu-show-bg:
+    radial-gradient(120% 140% at 8% 0%, #0e5a83 0%, #0d4a6d 42%, #0b3f62 72%, #08202f 100%);
+}
+
+/* ============================================================
+   TYPOGRAPHY — Fraunces for statements, mono for measurements
+   ============================================================ */
+
+.mm-stu-login-root .mm-stu-headline,
+.mm-stu-login-root .mm-stu-gate2__title,
+.mm-stu-login-root .mm-stu-card-title {
+  font-family: var(--op-display);
+  font-optical-sizing: auto;
+  font-weight: 500;
+  letter-spacing: -0.022em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+.mm-stu-login-root .mm-stu-headline em,
+.mm-stu-login-root .mm-stu-gate2__title em {
+  font-style: normal;
+  font-weight: 600;
+}
+
+/* Uppercase labels read as instrument legends, not shouting. */
+.mm-stu-login-root .mm-stu-eyebrow,
+.mm-stu-login-root .mm-stu-step-label,
+.mm-stu-login-root .mm-stu-dream__label {
+  font-family: var(--op-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+/* Codes and credentials are data — set them as data. */
+.mm-stu-login-root .mm-stu-demo__line code,
+.mm-stu-login-root .mm-stu-college-item__mark,
+.mm-stu-login-root .mm-stu-duo__side {
+  font-family: var(--op-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ============================================================
+   PAGE ATMOSPHERE
+
+   The base stylesheet paints these with literal teal/sky values,
+   which now read as a different product beside the blue slab.
+   Retoned to the brand ramp; deliberately quiet, because the
+   showcase slab is where this page spends its contrast.
+   ============================================================ */
+
+.mm-stu-login-root .mm-stu-atm__mesh {
+  background-image:
+    linear-gradient(rgba(14, 111, 168, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(14, 111, 168, 0.05) 1px, transparent 1px);
+}
+
+.mm-stu-login-root .mm-stu-atm__blob--a { background: #17b6d4; }
+.mm-stu-login-root .mm-stu-atm__blob--b { background: #0e6fa8; }
+/* The amber ring from the logo, barely there — warmth, not a third hue. */
+.mm-stu-login-root .mm-stu-atm__blob--c { background: #e8a33d; opacity: 0.1; }
+
+/* ============================================================
+   SHOWCASE — the Offer Path panel
+   ============================================================ */
+
+.mm-stu-login-root .mm-stu-showcase {
+  background: var(--stu-show-bg);
+  color: var(--stu-show-ink);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Faint measurement grid — the panel's only texture. */
+.mm-stu-login-root .mm-stu-showcase::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(120% 100% at 20% 0%, #000 0%, transparent 72%);
+  -webkit-mask-image: radial-gradient(120% 100% at 20% 0%, #000 0%, transparent 72%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.mm-stu-login-root .mm-stu-showcase > * {
+  position: relative;
+  z-index: 1;
+}
+
+.mm-stu-login-root .mm-stu-showcase .mm-stu-brand__name,
+.mm-stu-login-root .mm-stu-showcase .mm-stu-brand__campus-name {
+  color: var(--stu-show-ink);
+}
+
+.mm-stu-login-root .mm-stu-showcase .mm-stu-brand__tag {
+  font-family: var(--op-mono);
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--stu-show-muted);
+}
+
+.mm-stu-login-root .mm-stu-eyebrow {
+  color: var(--op-accent);
+}
+
+/* ---- proposition ---- */
+
+.op-lede {
+  margin-top: 14px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--stu-show-muted);
+  max-width: 48ch;
+}
+
+.op-lede strong {
+  color: var(--stu-show-ink);
+  font-weight: 600;
+}
+
+/* ---- the instrument: dial + figures ---- */
+
+.op-instrument {
+  margin-top: 26px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.op-dial {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  flex: none;
+}
+
+.op-dial svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.op-dial__track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.12);
+  stroke-width: 9;
+}
+
+.op-dial__arc {
+  fill: none;
+  stroke: var(--op-ring);
+  stroke-width: 9;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 900ms var(--op-ease);
+}
+
+.op-dial__mid {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+}
+
+.op-dial__num {
+  font-family: var(--op-mono);
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+  color: var(--stu-show-ink);
+}
+
+.op-dial__cap {
+  margin-top: 6px;
+  font-family: var(--op-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--stu-show-muted);
+}
+
+.op-figs {
+  display: grid;
+  gap: 8px;
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.op-fig {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding: 9px 13px;
+  border-radius: 12px;
+  background: var(--stu-show-panel);
+  border: 1px solid var(--stu-show-line);
+}
+
+.op-fig__v {
+  font-family: var(--op-mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--stu-show-ink);
+  font-variant-numeric: tabular-nums;
+  flex: none;
+  min-width: 46px;
+}
+
+.op-fig__k {
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--stu-show-muted);
+}
+
+/* ---- the three beats ---- */
+
+.op-path {
+  margin-top: 22px;
+  display: grid;
+  gap: 0;
+  border-top: 1px solid var(--stu-show-line);
+}
+
+.op-path__item {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding: 11px 2px;
+  border-bottom: 1px solid var(--stu-show-line);
+}
+
+.op-path__n {
+  font-family: var(--op-mono);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: var(--op-accent);
+  flex: none;
+  min-width: 22px;
+}
+
+.op-path__label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--stu-show-ink);
+  flex: none;
+  min-width: 74px;
+}
+
+.op-path__hint {
+  font-size: 13px;
+  color: var(--stu-show-muted);
+  line-height: 1.45;
+}
+
+/* ---- the surface a student gets ---- */
+
+.op-caps {
+  margin-top: 22px;
+}
+
+.op-caps__label {
+  font-family: var(--op-mono);
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--stu-show-muted);
+  margin-bottom: 11px;
+}
+
+.op-caps__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+.op-cap {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: var(--stu-show-panel);
+  border: 1px solid var(--stu-show-line);
+  transition: background-color 200ms var(--op-ease), border-color 200ms var(--op-ease);
+}
+
+.op-cap:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: rgba(255, 255, 255, 0.26);
+}
+
+.op-cap__ico {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--op-accent);
+  flex: none;
+}
+
+.op-cap__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+}
+
+.op-cap__n {
+  font-size: 12.8px;
+  font-weight: 600;
+  color: var(--stu-show-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.op-cap__d {
+  font-size: 10.5px;
+  color: var(--stu-show-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- company marquee, retoned for the dark slab ---- */
+
+.mm-stu-login-root .mm-stu-marquee__chip {
+  background: var(--stu-show-chip);
+  border: 1px solid var(--stu-show-line);
+  color: var(--stu-show-muted);
+  font-size: 12.5px;
+}
+
+.mm-stu-login-root .mm-stu-showcase__foot {
+  color: var(--stu-show-muted);
+  border-top: 1px solid var(--stu-show-line);
+}
+
+.mm-stu-login-root .mm-stu-showcase__foot strong {
+  color: var(--stu-show-ink);
+}
+
+/* ============================================================
+   FORM CARD — quiet beside the slab
+   ============================================================ */
+
+.mm-stu-login-root .mm-stu-gate2__live {
+  font-family: var(--op-mono);
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.mm-stu-login-root .mm-stu-gate2__cta,
+.mm-stu-login-root .mm-stu-submit {
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+
+/* The base file paints every solid fill with a literal teal ramp, which
+   reads as a different product beside the blue slab. This ramp stops at
+   #0e6fa8 rather than running up into the cyan: white label text measures
+   5.4:1 on the lightest stop, where a cyan end would drop it to 4.2:1. */
+.mm-stu-login-root .mm-stu-gate2__cta,
+.mm-stu-login-root .mm-stu-submit,
+.mm-stu-login-root .mm-stu-session-banner__continue {
+  background-image: linear-gradient(105deg, #0a5480 0%, #0e6fa8 100%);
+}
+
+.mm-stu-login-root .mm-stu-selected__mark,
+.mm-stu-login-root .mm-stu-college-item.is-selected .mm-stu-college-item__mark {
+  background-image: linear-gradient(145deg, #0a5480, #0e6fa8);
+}
+
+/* Feature tiles echo the capability cards rather than the old pills. */
+.mm-stu-login-root .mm-stu-gate2__tile strong {
+  font-size: 13.5px;
+  letter-spacing: -0.008em;
+}
+
+.mm-stu-login-root .mm-stu-gate2__tile span {
+  font-size: 11.5px;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+/* The base stylesheet splits this panel into copy + a decorative stage
+   column at desktop. The stage is gone — the offer surface below the
+   headline now runs the full width instead. */
+@media (min-width: 1100px) {
+  .mm-stu-login-root .mm-stu-showcase__body {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
+@media (max-width: 1080px) {
+  .op-caps__grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+}
+
+@media (max-width: 720px) {
+  .op-instrument { gap: 18px; }
+  .op-dial { width: 108px; height: 108px; }
+  .op-dial__num { font-size: 28px; }
+  .op-caps__grid { grid-template-columns: 1fr 1fr; }
+  .op-path__label { min-width: 62px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .op-dial__arc { transition: none; }
+}

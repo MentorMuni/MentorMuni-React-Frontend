@@ -8,6 +8,8 @@ import {
   saveCollegeCode,
 } from '../../orgPortal';
 import { DEMO_ORG } from '../../organizationPortal/demoAuth';
+import { useCollegeTenantContext } from '../../tenant/CollegeTenantProvider';
+import { tenantPortalPath } from '../../tenant/resolveTenant';
 import {
   fetchPublicDepartments,
   registerStudentPublic,
@@ -26,6 +28,12 @@ export default function StudentEnrollPage() {
   const [params] = useSearchParams();
   const navigate = useNavigate();
   const { theme, toggle, rootClass } = useStudentTheme();
+  const {
+    college: tenantCollege,
+    organizationCode: tenantOrgCode,
+    locked: tenantLocked,
+    loading: tenantLoading,
+  } = useCollegeTenantContext();
   const presetDept = String(params.get('dept') || '').trim();
 
   const [colleges, setColleges] = useState([]);
@@ -46,6 +54,15 @@ export default function StudentEnrollPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (tenantLocked) {
+      if (tenantCollege?.code) {
+        setCollege(tenantCollege);
+        setColleges([tenantCollege]);
+      }
+      setCollegesLoading(tenantLoading);
+      return undefined;
+    }
+
     let cancelled = false;
     (async () => {
       setCollegesLoading(true);
@@ -62,12 +79,15 @@ export default function StudentEnrollPage() {
     return () => {
       cancelled = true;
     };
-  }, [params]);
+  }, [params, tenantLocked, tenantCollege, tenantLoading]);
 
-  const orgCode = useMemo(
-    () => String(college?.code || '').trim().toUpperCase(),
-    [college]
-  );
+  const orgCode = useMemo(() => {
+    if (tenantLocked) return tenantOrgCode;
+    return String(college?.code || '').trim().toUpperCase();
+  }, [tenantLocked, tenantOrgCode, college]);
+
+  const displayCollege = tenantLocked ? tenantCollege : college;
+  const loginPath = tenantPortalPath(studentPaths.login);
 
   const deptsLoading = Boolean(orgCode) && deptLoadFor !== orgCode;
 
@@ -153,7 +173,7 @@ export default function StudentEnrollPage() {
             type="button"
             className="mm-stu-gate2__back"
             style={{ marginBottom: 16 }}
-            onClick={() => navigate(studentPaths.login)}
+            onClick={() => navigate(loginPath)}
           >
             <ArrowLeft size={16} strokeWidth={2.4} /> Back to login
           </button>
@@ -182,7 +202,7 @@ export default function StudentEnrollPage() {
                 <li>Set password, then sign in with email or roll</li>
               </ul>
               <Link
-                to={studentPaths.login}
+                to={loginPath}
                 className="mm-stu-submit"
                 style={{ textDecoration: 'none' }}
               >
@@ -211,24 +231,31 @@ export default function StudentEnrollPage() {
               >
                 <label className="mm-stu-label">
                   College
-                  <select
-                    className="mm-stu-field-input"
-                    value={college?.code || ''}
-                    disabled={collegesLoading}
-                    onChange={(e) => {
-                      const next = colleges.find((c) => c.code === e.target.value) || null;
-                      setCollege(next);
-                      setError('');
-                    }}
-                    required
-                  >
-                    <option value="">{collegesLoading ? 'Loading…' : 'Select college'}</option>
-                    {colleges.map((c) => (
-                      <option key={c.code} value={c.code}>
-                        {c.name} ({c.code})
-                      </option>
-                    ))}
-                  </select>
+                  {tenantLocked && displayCollege?.name ? (
+                    <div className="mm-stu-field-input" style={{ padding: '12px 14px' }}>
+                      {displayCollege.name}
+                      {displayCollege.code ? ` (${displayCollege.code})` : ''}
+                    </div>
+                  ) : (
+                    <select
+                      className="mm-stu-field-input"
+                      value={college?.code || ''}
+                      disabled={collegesLoading}
+                      onChange={(e) => {
+                        const next = colleges.find((c) => c.code === e.target.value) || null;
+                        setCollege(next);
+                        setError('');
+                      }}
+                      required
+                    >
+                      <option value="">{collegesLoading ? 'Loading…' : 'Select college'}</option>
+                      {colleges.map((c) => (
+                        <option key={c.code} value={c.code}>
+                          {c.name} ({c.code})
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </label>
 
                 <label className="mm-stu-label">
@@ -322,11 +349,7 @@ export default function StudentEnrollPage() {
               <p className="mm-stu-card-foot">
                 Already approved?{' '}
                 <Link
-                  to={
-                    orgCode
-                      ? `${studentPaths.login}?org=${encodeURIComponent(orgCode)}`
-                      : studentPaths.login
-                  }
+                  to={tenantLocked ? loginPath : orgCode ? `${studentPaths.login}?org=${encodeURIComponent(orgCode)}` : studentPaths.login}
                   className="mm-stu-link"
                 >
                   Sign in

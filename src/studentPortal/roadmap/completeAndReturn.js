@@ -13,6 +13,8 @@ import { studentPaths } from '../paths';
 import { completeRoadmapStep } from './roadmapApi';
 import { isPracticeLockedToday, markPracticeCompleted } from '../practiceDailyLock';
 import { recordStudentSession } from '../streak';
+import { completeMissionTask } from '../daily/dailyApi';
+import { postStudentAttempt } from '../readiness/attemptApi';
 
 export function getRoadmapQuery(search) {
   const params = new URLSearchParams(
@@ -106,6 +108,12 @@ export function goToCodingHome(navigate) {
   else if (typeof window !== 'undefined') window.location.assign(home);
 }
 
+export function goToTodayMission(navigate) {
+  const path = `${roadmapHomePath()}#stu-today-zone`;
+  if (typeof navigate === 'function') navigate(path);
+  else if (typeof window !== 'undefined') window.location.assign(path);
+}
+
 export function fearToFearlessReturnPath(launchQuery) {
   const q = new URLSearchParams({ open: 'plan' });
   if (launchQuery?.checkinId) q.set('checkin', String(launchQuery.checkinId));
@@ -123,7 +131,8 @@ export function goToPortalReturn(navigate, launchQuery) {
   else if (launchQuery?.fromCoding) goToCodingHome(navigate);
   else if (launchQuery?.fromCompanyPrep) goToCompanyPrepHome(navigate);
   else if (launchQuery?.fromPractice) goToPracticeHome(navigate);
-  else goToRoadmapHome(navigate); // roadmap + journey → home (90-day section)
+  else if (launchQuery?.fromJourney) goToTodayMission(navigate);
+  else goToRoadmapHome(navigate);
 }
 
 /**
@@ -231,4 +240,75 @@ export async function submitRoadmapResult({ toolCode, result }) {
     }
     return { ok: false, reason: 'api', error: err, message };
   }
+}
+
+/**
+ * Journey / daily-mission tool finish: tick the mission + log an intelligence attempt.
+ * Does NOT call Week-1 roadmap complete (that would overwrite baseline scores).
+ */
+export async function submitJourneyMissionResult({
+  toolCode,
+  result,
+  missionTaskKey,
+  userKey = 'anon',
+  planId = null,
+  topicNodes = [],
+  modality = null,
+}) {
+  const body = normalizeToolResultForRoadmap(result || {});
+  const score = body.score != null ? Number(body.score) : null;
+  const topics = Array.isArray(topicNodes)
+    ? topicNodes.filter(Boolean)
+    : String(topicNodes || '')
+        .split(',')
+        .map((t) => t.trim())
+        .filter(Boolean);
+
+  if (missionTaskKey) {
+    try {
+      await completeMissionTask(
+        missionTaskKey,
+        {
+          score,
+          source: 'tool',
+          text_hash: null,
+        },
+        { userKey, planId }
+      );
+    } catch (err) {
+      console.error('Mission complete failed', err);
+    }
+  }
+
+  if (toolCode && isStudentAuthenticated()) {
+    try {
+      await postStudentAttempt({
+        tool_code: toolCode,
+        score,
+        accuracy: score != null ? Math.min(1, Math.max(0, score / 100)) : null,
+        technical_score: body.technical_score != null ? Number(body.technical_score) : null,
+        communication_score:
+          body.communication_score != null ? Number(body.communication_score) : null,
+        modality: modality || null,
+        topic_nodes: topics,
+        within_time: true,
+      });
+    } catch (err) {
+      console.error('Attempt log failed', err);
+    }
+  }
+
+  try {
+    recordStudentSession(userKey);
+  } catch {
+    /* ignore */
+  }
+
+  return {
+    ok: true,
+    status: 'saved',
+    message: missionTaskKey
+      ? 'Counted for today’s mission.'
+      : 'Result saved.',
+  };
 }

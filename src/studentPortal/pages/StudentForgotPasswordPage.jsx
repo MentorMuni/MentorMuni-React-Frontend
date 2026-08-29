@@ -8,6 +8,8 @@ import {
 } from '../../orgPortal';
 import { requestStudentPasswordResetApi } from '../../organizationPortal/studentsApi';
 import { DEMO_ORG } from '../../organizationPortal/demoAuth';
+import { useCollegeTenantContext } from '../../tenant/CollegeTenantProvider';
+import { tenantPortalPath } from '../../tenant/resolveTenant';
 import { studentPaths } from '../paths';
 import { StudentThemeFab, useStudentTheme } from '../useStudentTheme.jsx';
 import '../student-login.css';
@@ -17,9 +19,17 @@ const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
 export default function StudentForgotPasswordPage() {
   const navigate = useNavigate();
   const { theme, toggle, rootClass } = useStudentTheme();
+  const {
+    college: tenantCollege,
+    organizationCode: tenantOrgCode,
+    locked: tenantLocked,
+    loading: tenantLoading,
+    error: tenantError,
+  } = useCollegeTenantContext();
+
   const [colleges, setColleges] = useState([]);
   const [college, setCollege] = useState(null);
-  const [collegesLoading, setCollegesLoading] = useState(true);
+  const [collegesLoading, setCollegesLoading] = useState(!tenantLocked);
   const [userId, setUserId] = useState('');
   const [error, setError] = useState('');
   const [setupUrl, setSetupUrl] = useState('');
@@ -27,7 +37,15 @@ export default function StudentForgotPasswordPage() {
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const loginPath = tenantPortalPath(studentPaths.login);
+
   useEffect(() => {
+    if (tenantLocked) {
+      setCollege(tenantCollege);
+      setCollegesLoading(tenantLoading);
+      return undefined;
+    }
+
     let cancelled = false;
     (async () => {
       setCollegesLoading(true);
@@ -47,12 +65,12 @@ export default function StudentForgotPasswordPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [tenantLocked, tenantCollege, tenantLoading]);
 
-  const orgCode = useMemo(
-    () => String(college?.code || '').trim().toUpperCase(),
-    [college]
-  );
+  const orgCode = useMemo(() => {
+    if (tenantLocked) return tenantOrgCode;
+    return String(college?.code || '').trim().toUpperCase();
+  }, [tenantLocked, tenantOrgCode, college]);
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -60,8 +78,12 @@ export default function StudentForgotPasswordPage() {
     setSetupUrl('');
     setAccountHint('');
     setCopied(false);
+    if (tenantError) {
+      setError(tenantError);
+      return;
+    }
     if (!orgCode) {
-      setError('Select your college.');
+      setError(tenantLocked ? 'College portal is still loading.' : 'Select your college.');
       return;
     }
     if (!userId.trim()) {
@@ -96,6 +118,8 @@ export default function StudentForgotPasswordPage() {
     }
   };
 
+  const displayCollege = tenantLocked ? tenantCollege : college;
+
   return (
     <div className={`mm-stu-login-root ${rootClass}`}>
       <StudentThemeFab theme={theme} onToggle={toggle} />
@@ -111,7 +135,7 @@ export default function StudentForgotPasswordPage() {
             type="button"
             className="mm-stu-gate2__back"
             style={{ marginBottom: 16 }}
-            onClick={() => navigate(studentPaths.login)}
+            onClick={() => navigate(loginPath)}
           >
             <ArrowLeft size={16} strokeWidth={2.4} /> Back to login
           </button>
@@ -124,18 +148,29 @@ export default function StudentForgotPasswordPage() {
                 Password reset
               </span>
             </div>
+            {displayCollege?.name ? (
+              <>
+                <span className="mm-stu-brand__sep" aria-hidden>
+                  |
+                </span>
+                <span className="mm-stu-brand__campus-name" title={displayCollege.name}>
+                  {displayCollege.name}
+                </span>
+              </>
+            ) : null}
           </div>
 
           <p className="mm-stu-step-label">Student portal</p>
           <h1 className="mm-stu-card-title">Forgot password?</h1>
           <p className="mm-stu-card-sub">
-            Enter your campus and college ID or email. We’ll send a reset link to your
-            registered email.
+            {tenantLocked && displayCollege?.name
+              ? `Enter your college ID or email for ${displayCollege.name}. We’ll send a reset link to your registered email.`
+              : 'Enter your campus and college ID or email. We’ll send a reset link to your registered email.'}
           </p>
 
-          {error ? (
+          {(error || tenantError) ? (
             <div className="mm-stu-alert mm-stu-alert--error" role="alert">
-              {error}
+              {error || tenantError}
             </div>
           ) : null}
 
@@ -158,26 +193,28 @@ export default function StudentForgotPasswordPage() {
               style={{ display: 'flex', flexDirection: 'column', gap: 12 }}
               noValidate
             >
-              <label className="mm-stu-label">
-                College
-                <select
-                  className="mm-stu-field-input"
-                  value={college?.code || ''}
-                  disabled={collegesLoading}
-                  onChange={(e) => {
-                    const next = colleges.find((c) => c.code === e.target.value) || null;
-                    setCollege(next);
-                  }}
-                  required
-                >
-                  <option value="">{collegesLoading ? 'Loading…' : 'Select college'}</option>
-                  {colleges.map((c) => (
-                    <option key={c.code} value={c.code}>
-                      {c.name} ({c.code})
-                    </option>
-                  ))}
-                </select>
-              </label>
+              {!tenantLocked ? (
+                <label className="mm-stu-label">
+                  College
+                  <select
+                    className="mm-stu-field-input"
+                    value={college?.code || ''}
+                    disabled={collegesLoading}
+                    onChange={(e) => {
+                      const next = colleges.find((c) => c.code === e.target.value) || null;
+                      setCollege(next);
+                    }}
+                    required
+                  >
+                    <option value="">{collegesLoading ? 'Loading…' : 'Select college'}</option>
+                    {colleges.map((c) => (
+                      <option key={c.code} value={c.code}>
+                        {c.name} ({c.code})
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : null}
 
               <label className="mm-stu-label">
                 College ID or email
@@ -191,7 +228,11 @@ export default function StudentForgotPasswordPage() {
                 />
               </label>
 
-              <button type="submit" className="mm-stu-submit" disabled={loading}>
+              <button
+                type="submit"
+                className="mm-stu-submit"
+                disabled={loading || (tenantLocked && (tenantLoading || !orgCode))}
+              >
                 <Mail size={16} style={{ marginRight: 6 }} />
                 {loading ? 'Sending…' : 'Send reset link'}
               </button>
@@ -257,7 +298,7 @@ export default function StudentForgotPasswordPage() {
 
           <p className="mm-stu-card-foot">
             Remember it?{' '}
-            <Link to={studentPaths.login} className="mm-stu-link">
+            <Link to={loginPath} className="mm-stu-link">
               Back to sign in
             </Link>
           </p>

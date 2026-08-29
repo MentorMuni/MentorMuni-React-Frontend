@@ -68,6 +68,7 @@ export function setStudentSession(user) {
         user?.mustChangePassword || user?.must_change_password || user?.force_password_change
       ),
       demo: Boolean(user?.demo),
+      localEnrollment: Boolean(user?.localEnrollment),
       loggedInAt: new Date().toISOString(),
     })
   );
@@ -275,6 +276,8 @@ export async function loginStudent(userId, password, organizationCode = '') {
           ux: getSuspendedUx(err.message),
         };
       }
+      const detail = err.detail && typeof err.detail === 'object' ? err.detail : {};
+      const code = String(err.code || detail.code || '').toUpperCase();
       if (err.status === 401) {
         return {
           ok: false,
@@ -283,7 +286,14 @@ export async function loginStudent(userId, password, organizationCode = '') {
           status: 401,
         };
       }
-      return { ok: false, error: err.message || 'Unable to sign in.', status: err.status };
+      return {
+        ok: false,
+        error: err.message || 'Unable to sign in.',
+        status: err.status,
+        code: code || undefined,
+        portal_url: detail.portal_url || undefined,
+        organization_name: detail.organization_name || undefined,
+      };
     }
     return { ok: false, error: err?.message || 'Unable to sign in.' };
   }

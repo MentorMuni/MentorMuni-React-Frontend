@@ -7,6 +7,8 @@ import {
   requestPasswordReset,
   saveCollegeCode,
 } from '../../orgPortal';
+import { useCollegeTenantContext } from '../../tenant/CollegeTenantProvider';
+import { tenantPortalPath } from '../../tenant/resolveTenant';
 import { orgPaths } from '../paths';
 import '../../components/organization/organization-login.css';
 
@@ -14,9 +16,17 @@ const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
 
 export default function OrgForgotPasswordPage() {
   const navigate = useNavigate();
+  const {
+    college: tenantCollege,
+    organizationCode: tenantOrgCode,
+    locked: tenantLocked,
+    loading: tenantLoading,
+    error: tenantError,
+  } = useCollegeTenantContext();
+
   const [colleges, setColleges] = useState([]);
   const [college, setCollege] = useState(null);
-  const [collegesLoading, setCollegesLoading] = useState(true);
+  const [collegesLoading, setCollegesLoading] = useState(!tenantLocked);
   const [userId, setUserId] = useState('');
   const [error, setError] = useState('');
   const [hint, setHint] = useState('');
@@ -24,7 +34,15 @@ export default function OrgForgotPasswordPage() {
   const [copied, setCopied] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const loginPath = tenantPortalPath(orgPaths.login);
+
   useEffect(() => {
+    if (tenantLocked) {
+      setCollege(tenantCollege);
+      setCollegesLoading(tenantLoading);
+      return undefined;
+    }
+
     let cancelled = false;
     (async () => {
       setCollegesLoading(true);
@@ -43,12 +61,14 @@ export default function OrgForgotPasswordPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [tenantLocked, tenantCollege, tenantLoading]);
 
-  const orgCode = useMemo(
-    () => String(college?.code || '').trim().toUpperCase(),
-    [college]
-  );
+  const orgCode = useMemo(() => {
+    if (tenantLocked) return tenantOrgCode;
+    return String(college?.code || '').trim().toUpperCase();
+  }, [tenantLocked, tenantOrgCode, college]);
+
+  const displayCollege = tenantLocked ? tenantCollege : college;
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -56,8 +76,12 @@ export default function OrgForgotPasswordPage() {
     setHint('');
     setResetUrl('');
     setCopied(false);
+    if (tenantError) {
+      setError(tenantError);
+      return;
+    }
     if (!orgCode) {
-      setError('Select your organization.');
+      setError(tenantLocked ? 'College portal is still loading.' : 'Select your organization.');
       return;
     }
     if (!userId.trim()) {
@@ -104,7 +128,7 @@ export default function OrgForgotPasswordPage() {
             <button
               type="button"
               className="mm-org-login__back"
-              onClick={() => navigate(orgPaths.login)}
+              onClick={() => navigate(loginPath)}
             >
               <ArrowLeft size={16} aria-hidden /> Back to login
             </button>
@@ -113,19 +137,26 @@ export default function OrgForgotPasswordPage() {
               <div className="mm-org-login__card-brand">
                 <img src={LOGO} alt="MentorMuni" className="mm-org-login__logo" />
                 <span>MentorMuni</span>
+                {displayCollege?.name ? (
+                  <>
+                    <span aria-hidden> · </span>
+                    <span>{displayCollege.name}</span>
+                  </>
+                ) : null}
               </div>
               <span className="mm-org-login__badge">Organization</span>
             </div>
 
             <h1 className="mm-org-login__card-title">Forgot password?</h1>
             <p className="mm-org-login__card-sub">
-              Enter your organization and username or email. We’ll send a reset link to the
-              registered email.
+              {tenantLocked && displayCollege?.name
+                ? `Enter your username or email for ${displayCollege.name}. We’ll send a reset link to the registered email.`
+                : 'Enter your organization and username or email. We’ll send a reset link to the registered email.'}
             </p>
 
-            {error ? (
+            {(error || tenantError) ? (
               <div className="mm-org-login__alert mm-org-login__alert--err" role="alert">
-                {error}
+                {error || tenantError}
               </div>
             ) : null}
             {hint && !error ? (
@@ -136,28 +167,30 @@ export default function OrgForgotPasswordPage() {
 
             {!resetUrl ? (
               <form className="mm-org-login__form" onSubmit={onSubmit} noValidate>
-                <div>
-                  <label className="mm-org-login__label" htmlFor="org-fp-college">
-                    Organization
-                  </label>
-                  <select
-                    id="org-fp-college"
-                    className="mm-org-gate__select"
-                    value={college?.code || ''}
-                    disabled={collegesLoading}
-                    onChange={(e) => {
-                      setCollege(colleges.find((c) => c.code === e.target.value) || null);
-                    }}
-                    required
-                  >
-                    <option value="">{collegesLoading ? 'Loading…' : 'Select organization'}</option>
-                    {colleges.map((c) => (
-                      <option key={c.code} value={c.code}>
-                        {c.name} ({c.code})
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {!tenantLocked ? (
+                  <div>
+                    <label className="mm-org-login__label" htmlFor="org-fp-college">
+                      Organization
+                    </label>
+                    <select
+                      id="org-fp-college"
+                      className="mm-org-gate__select"
+                      value={college?.code || ''}
+                      disabled={collegesLoading}
+                      onChange={(e) => {
+                        setCollege(colleges.find((c) => c.code === e.target.value) || null);
+                      }}
+                      required
+                    >
+                      <option value="">{collegesLoading ? 'Loading…' : 'Select organization'}</option>
+                      {colleges.map((c) => (
+                        <option key={c.code} value={c.code}>
+                          {c.name} ({c.code})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ) : null}
 
                 <div>
                   <label className="mm-org-login__label" htmlFor="org-fp-user">
@@ -177,7 +210,11 @@ export default function OrgForgotPasswordPage() {
                   </div>
                 </div>
 
-                <button type="submit" className="mm-org-login__submit" disabled={loading}>
+                <button
+                  type="submit"
+                  className="mm-org-login__submit"
+                  disabled={loading || (tenantLocked && (tenantLoading || !orgCode))}
+                >
                   {loading ? 'Sending…' : 'Send reset link'}
                 </button>
               </form>
@@ -205,7 +242,7 @@ export default function OrgForgotPasswordPage() {
             )}
 
             <p className="mm-org-login__activate">
-              Remember it? <Link to={orgPaths.login}>Back to sign in</Link>
+              Remember it? <Link to={loginPath}>Back to sign in</Link>
             </p>
           </div>
         </div>

@@ -1,17 +1,14 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Building2, Check, Flame, Play } from 'lucide-react';
-import { recordStudentSession } from '../streak';
 import { practiceUserKey } from '../roadmap/completeAndReturn';
 import { useStudentShell } from '../shellContext';
 import { fetchUpcomingDrives } from '../drives';
 import {
   COMPANY_PREP_TASKS,
   codingPrepHref,
-  demoNearestDrive,
   ensurePrepDay,
   getMissionCompletion,
-  markMissionTaskDone,
   missionTotalMinutes,
 } from '../companyPrep';
 
@@ -31,37 +28,40 @@ export default function StudentCompanyPrepPage() {
   const { refreshStreak } = useStudentShell();
   const userKey = practiceUserKey();
 
-  const seed = useMemo(() => {
-    const demo = demoNearestDrive();
-    return withPrepState(userKey, demo);
-  }, [userKey]);
-
-  const [drives, setDrives] = useState(() => [seed.drive]);
-  const [nearest, setNearest] = useState(() => seed.drive);
-  const [isDemo, setIsDemo] = useState(true);
-  const [prepDay, setPrepDay] = useState(() => seed.prepDay);
-  const [doneMap, setDoneMap] = useState(() => seed.doneMap);
+  const [drives, setDrives] = useState([]);
+  const [nearest, setNearest] = useState(null);
+  const [isDemo, setIsDemo] = useState(false);
+  const [prepDay, setPrepDay] = useState(1);
+  const [doneMap, setDoneMap] = useState({});
   const [loading, setLoading] = useState(true);
+  const [empty, setEmpty] = useState(false);
 
   const refresh = useCallback(async () => {
     setLoading(true);
     try {
       const data = await fetchUpcomingDrives();
-      const near = data.nearest || demoNearestDrive();
+      const near = data.nearest || null;
+      if (!near) {
+        setDrives([]);
+        setNearest(null);
+        setEmpty(true);
+        setIsDemo(false);
+        setDoneMap({});
+        return;
+      }
       const next = withPrepState(userKey, near);
+      setEmpty(false);
       setDrives(data.items?.length ? data.items : [near]);
       setNearest(next.drive);
       setPrepDay(next.prepDay);
       setDoneMap(next.doneMap);
       setIsDemo(Boolean(data.demo) || String(near.id).startsWith('demo'));
     } catch {
-      const demo = demoNearestDrive();
-      const next = withPrepState(userKey, demo);
-      setDrives([demo]);
-      setNearest(next.drive);
-      setPrepDay(next.prepDay);
-      setDoneMap(next.doneMap);
-      setIsDemo(true);
+      setDrives([]);
+      setNearest(null);
+      setEmpty(true);
+      setIsDemo(false);
+      setDoneMap({});
     } finally {
       refreshStreak();
       setLoading(false);
@@ -92,6 +92,7 @@ export default function StudentCompanyPrepPage() {
       setNearest(next.drive);
       setPrepDay(next.prepDay);
       setDoneMap(next.doneMap);
+      setEmpty(false);
       setIsDemo(String(drive.id).startsWith('demo'));
     },
     [userKey]
@@ -100,13 +101,14 @@ export default function StudentCompanyPrepPage() {
   const startTask = useCallback(
     (task) => {
       if (!nearest || !task?.href) return;
-      markMissionTaskDone(userKey, nearest.id, prepDay, task.id);
-      setDoneMap(getMissionCompletion(userKey, nearest.id, prepDay));
-      recordStudentSession(userKey);
-      refreshStreak();
-      navigate(task.href);
+      // Tick on tool finish (createToolSession), not on Start — abandon must not count.
+      const url = new URL(task.href, typeof window !== 'undefined' ? window.location.origin : 'http://local');
+      url.searchParams.set('prep_task', task.id);
+      url.searchParams.set('drive', String(nearest.id));
+      url.searchParams.set('prep_day', String(prepDay));
+      navigate(`${url.pathname}${url.search}`);
     },
-    [navigate, nearest, prepDay, userKey, refreshStreak]
+    [navigate, nearest, prepDay]
   );
 
   const startMission = useCallback(() => {
@@ -121,18 +123,28 @@ export default function StudentCompanyPrepPage() {
                 <Flame size={16} strokeWidth={2.4} aria-hidden /> Day {prepDay}
               </p>
               <h1 className="stu-cprep__title" id="stu-cprep-title">
-                {company} Drive: {daysLeft} {daysLeft === 1 ? 'Day' : 'Days'}
+                {empty
+                  ? 'Company Prep'
+                  : `${company} Drive: ${daysLeft} ${daysLeft === 1 ? 'Day' : 'Days'}`}
               </h1>
               <p className="stu-cprep__sub">
-                Short daily mission until the drive
-                {nearest?.drive_date
-                  ? ` · ${new Date(`${nearest.drive_date}T12:00:00`).toLocaleDateString()}`
-                  : ''}
-                . Finish all blocks — about {totalMinutes} minutes.
+                {empty
+                  ? 'When your TPO publishes a campus drive, a short daily mission will appear here.'
+                  : `Short daily mission until the drive${
+                      nearest?.drive_date
+                        ? ` · ${new Date(`${nearest.drive_date}T12:00:00`).toLocaleDateString()}`
+                        : ''
+                    }. Finish all blocks — about ${totalMinutes} minutes.`}
               </p>
             </header>
 
-            {drives.length > 1 ? (
+            {empty ? (
+              <p className="stu-cprep__note">
+                {loading ? 'Loading campus drives…' : 'No upcoming campus drives yet.'}
+              </p>
+            ) : null}
+
+            {!empty && drives.length > 1 ? (
               <div className="stu-cprep__drives" role="list" aria-label="Upcoming drives">
                 {drives
                   .filter((d) => !d.is_past)
@@ -153,7 +165,7 @@ export default function StudentCompanyPrepPage() {
               </div>
             ) : null}
 
-            {isDemo ? (
+            {!empty && isDemo ? (
               <p className="stu-cprep__note">
                 {loading
                   ? 'Loading campus drives…'
@@ -161,6 +173,7 @@ export default function StudentCompanyPrepPage() {
               </p>
             ) : null}
 
+            {!empty ? (
             <div className="stu-cprep__card">
               <div className="stu-cprep__today-label">Today</div>
 
@@ -215,6 +228,7 @@ export default function StudentCompanyPrepPage() {
                 </button>
               </div>
             </div>
+            ) : null}
           </section>
     </main>
   );

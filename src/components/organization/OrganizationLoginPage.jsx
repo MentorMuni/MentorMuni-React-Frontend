@@ -26,6 +26,12 @@ import {
   pickInitialCollege,
   saveCollegeCode,
 } from '../../orgPortal';
+import {
+  collegePortalOrigin,
+  redirectToCollegePortal,
+  tenantPortalPath,
+} from '../../tenant/resolveTenant';
+import { useCollegeTenantContext } from '../../tenant/CollegeTenantProvider';
 import { getOrgHomePath } from '../../organizationPortal/roles';
 import { DEMO_ORG, DEMO_USERS, matchDemoUser } from '../../organizationPortal/demoAuth';
 import { useOrgTheme } from '../../organizationPortal/useOrgTheme';
@@ -103,8 +109,16 @@ export default function OrganizationLoginPage() {
   const [searchParams] = useSearchParams();
   const reduceMotion = useReducedMotion();
   const { theme, toggleTheme } = useOrgTheme();
+  const {
+    college: tenantCollege,
+    organizationCode: tenantOrgCode,
+    locked: tenantLockedFromHost,
+    loading: tenantLoading,
+    error: tenantError,
+    isTenantHost: collegeHost,
+  } = useCollegeTenantContext();
 
-  const [step, setStep] = useState('college'); // college | login
+  const [step, setStep] = useState(() => (collegeHost ? 'login' : 'college')); // college | login
   const [roleId, setRoleId] = useState('tpo');
   const [colleges, setColleges] = useState([]);
   const [college, setCollege] = useState(null);
@@ -113,7 +127,7 @@ export default function OrganizationLoginPage() {
   const [collegesSource, setCollegesSource] = useState('');
   const [collegeQuery, setCollegeQuery] = useState('');
   /** When false and a college is chosen, show selected card + Change. */
-  const [pickingCollege, setPickingCollege] = useState(true);
+  const [pickingCollege, setPickingCollege] = useState(() => !collegeHost);
   const [userId, setUserId] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -122,10 +136,19 @@ export default function OrganizationLoginPage() {
   const [errorKind, setErrorKind] = useState('');
   const [cta, setCta] = useState('');
   const [success, setSuccess] = useState('');
+  const [portalLink, setPortalLink] = useState('');
 
+  const tenantLocked = tenantLockedFromHost || collegeHost;
+  const displayCollege = tenantLocked ? tenantCollege || college : college;
   const activeRole = ROLES.find((r) => r.id === roleId) || ROLES[0];
   const RoleIcon = activeRole.icon;
-  const orgCode = String(college?.code || '').trim().toUpperCase();
+  const orgCode = String(
+    displayCollege?.code || (tenantLocked ? tenantOrgCode : '') || ''
+  )
+    .trim()
+    .toUpperCase();
+  const hideCollegePicker = tenantLocked;
+  const showCampusGate = step === 'college' && !hideCollegePicker;
 
   const filteredColleges = useMemo(() => {
     const q = collegeQuery.trim().toLowerCase();
@@ -158,9 +181,29 @@ export default function OrganizationLoginPage() {
   }, []);
 
   useEffect(() => {
+    if (!tenantLocked || !tenantCollege?.code) return;
+    setCollege(tenantCollege);
+    setColleges([tenantCollege]);
+    saveCollegeCode(tenantCollege.code);
+    setPickingCollege(false);
+    setStep('login');
+    setCollegesLoading(tenantLoading);
+    setCollegesSource('tenant');
+    if (tenantError) setCollegesWarning(tenantError);
+  }, [tenantLocked, tenantCollege, tenantLoading, tenantError]);
+
+  useEffect(() => {
     let cancelled = false;
     (async () => {
+      if (tenantLocked) {
+        setCollegesLoading(tenantLoading);
+        if (tenantError) setCollegesWarning(tenantError);
+        return;
+      }
+
       setCollegesLoading(true);
+      setPortalLink('');
+
       const result = await fetchLoginColleges();
       if (cancelled) return;
       setCollegesLoading(false);
@@ -178,8 +221,25 @@ export default function OrganizationLoginPage() {
         allowSaved: Boolean(preferredOrg),
       });
       if (initial) {
+        if (
+          typeof window !== 'undefined' &&
+          (initial.portal_url || initial.portal_slug)
+        ) {
+          const host = window.location.hostname.toLowerCase();
+          if (
+            host.endsWith('mentormuni.com') ||
+            host === 'localhost' ||
+            host.endsWith('.localhost')
+          ) {
+            window.location.assign(
+              `${initial.portal_url || collegePortalOrigin(initial.portal_slug)}/Organization/login`
+            );
+            return;
+          }
+        }
         setCollege(initial);
         setPickingCollege(false);
+        setStep('login');
       } else if (preferredOrg) {
         setError(
           `College code “${preferredOrg}” was not found in the active list. Confirm the organization is ACTIVE, then refresh.`
@@ -192,7 +252,7 @@ export default function OrganizationLoginPage() {
     return () => {
       cancelled = true;
     };
-  }, [searchParams]);
+  }, [searchParams, tenantLocked, tenantLoading, tenantError]);
 
   useEffect(() => {
     const flash = consumeOrgAuthFlash();
@@ -234,6 +294,7 @@ export default function OrganizationLoginPage() {
 
   // Login step requires a locked college — send users back to the gate if missing.
   useEffect(() => {
+    if (hideCollegePicker) return;
     if (step !== 'login' || collegesLoading) return;
     if (college?.code && !pickingCollege) return;
     const initial = pickInitialCollege(colleges, searchParams, { allowSaved: true });
@@ -244,10 +305,24 @@ export default function OrganizationLoginPage() {
     }
     setStep('college');
     setPickingCollege(true);
-  }, [step, college, colleges, collegesLoading, searchParams, pickingCollege]);
+  }, [step, college, colleges, collegesLoading, searchParams, pickingCollege, hideCollegePicker]);
 
   const confirmCollege = () => {
     if (!canContinue) return;
+    if (
+      typeof window !== 'undefined' &&
+      (college.portal_url || college.portal_slug) &&
+      !tenantLocked
+    ) {
+      const host = window.location.hostname.toLowerCase();
+      if (host.endsWith('mentormuni.com') || host === 'localhost' || host.endsWith('.localhost')) {
+        redirectToCollegePortal(
+          college.portal_slug,
+          '/Organization/login'
+        );
+        return;
+      }
+    }
     saveCollegeCode(college.code);
     setError('');
     setErrorKind('');
@@ -258,17 +333,27 @@ export default function OrganizationLoginPage() {
     e.preventDefault();
     if (!userId.trim() || !password) return;
     const demoMatch = matchDemoUser(userId, password);
+    if (demoMatch && tenantLocked && orgCode && orgCode !== DEMO_ORG.code) {
+      setError('Sample credentials are only for the DEMO campus. Use your college account here.');
+      setErrorKind('credentials');
+      return;
+    }
     if (!demoMatch && !orgCode) return;
     setError('');
     setErrorKind('');
     setCta('');
     setSuccess('');
+    setPortalLink('');
     setLoading(true);
     try {
       const code = demoMatch ? DEMO_ORG.code : orgCode;
       const result = await loginOrgUser(userId, password, code);
       if (!result.ok) {
-        if (result.code === 'ORG_SUSPENDED' || result.status === 403) {
+        if (result.code === 'WRONG_TENANT' || result.code === 'PUBLIC_ON_COLLEGE') {
+          setError(result.error);
+          setErrorKind('credentials');
+          if (result.portal_url) setPortalLink(result.portal_url);
+        } else if (result.code === 'ORG_SUSPENDED' || result.status === 403) {
           setError(result.error);
           setErrorKind('suspended');
           setCta(result.ux?.cta || 'Please contact MentorMuni support.');
@@ -307,7 +392,7 @@ export default function OrganizationLoginPage() {
       />
 
       <AnimatePresence mode="wait">
-        {step === 'college' ? (
+        {showCampusGate ? (
           <motion.div
             key="college-gate"
             className="mm-org-gate"
@@ -423,18 +508,20 @@ export default function OrganizationLoginPage() {
                             {college.code ? ` · ${college.code}` : ''}
                           </small>
                         </div>
-                        <button
-                          type="button"
-                          className="mm-org-gate__change"
-                          onClick={() => {
-                            setPickingCollege(true);
-                            setCollegeQuery('');
-                            setError('');
-                            setErrorKind('');
-                          }}
-                        >
-                          Change
-                        </button>
+                        {!hideCollegePicker ? (
+                          <button
+                            type="button"
+                            className="mm-org-gate__change"
+                            onClick={() => {
+                              setPickingCollege(true);
+                              setCollegeQuery('');
+                              setError('');
+                              setErrorKind('');
+                            }}
+                          >
+                            Change
+                          </button>
+                        ) : null}
                       </div>
                     ) : (
                       <div className="mm-org-college-picker">
@@ -577,7 +664,7 @@ export default function OrganizationLoginPage() {
 
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={`${roleId}-${college?.code}`}
+                    key={`${roleId}-${displayCollege?.code}`}
                     initial={reduceMotion ? false : { opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={reduceMotion ? undefined : { opacity: 0, y: -8 }}
@@ -586,7 +673,9 @@ export default function OrganizationLoginPage() {
                     <button
                       type="button"
                       className="mm-org-login__campus-chip is-button"
+                      disabled={hideCollegePicker}
                       onClick={() => {
+                        if (hideCollegePicker) return;
                         setStep('college');
                         setPickingCollege(true);
                         setCollegeQuery('');
@@ -594,10 +683,12 @@ export default function OrganizationLoginPage() {
                     >
                       <MapPin size={13} aria-hidden />
                       <span className="mm-org-login__campus-copy">
-                        <strong>{college?.name || 'College'}</strong>
-                        {college?.code ? <em>{college.code}</em> : null}
+                        <strong>{displayCollege?.name || (tenantLoading ? 'Loading campus…' : 'College')}</strong>
+                        {displayCollege?.code ? <em>{displayCollege.code}</em> : null}
                       </span>
-                      <span className="mm-org-login__change">Change</span>
+                      {!hideCollegePicker ? (
+                        <span className="mm-org-login__change">Change</span>
+                      ) : null}
                     </button>
 
                     <p className="mm-org-login__pill">
@@ -606,7 +697,7 @@ export default function OrganizationLoginPage() {
                     </p>
                     <h1 className="mm-org-login__headline">{activeRole.headline}</h1>
                     <p className="mm-org-login__accent">{activeRole.accent}</p>
-                    <p className="mm-org-login__lede">{activeRole.body(college)}</p>
+                    <p className="mm-org-login__lede">{activeRole.body(displayCollege)}</p>
 
                     <ul className="mm-org-login__value" aria-label="Role benefits">
                       {activeRole.highlights.map((item) => {
@@ -634,25 +725,26 @@ export default function OrganizationLoginPage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, ease: EASE, delay: 0.05 }}
               >
-                <div className="mm-org-login__progress" aria-hidden>
-                  <span />
-                  <span className="is-active" />
-                </div>
-                <p className="mm-org-login__step-label">Step 2 of 2</p>
-
                 <div className="mm-org-login__card-top">
                   <div className="mm-org-login__card-brand">
                     <img src={LOGO} alt="MentorMuni" className="mm-org-login__logo" />
                     <span>MentorMuni</span>
+                    {displayCollege?.name ? (
+                      <>
+                        <span aria-hidden> · </span>
+                        <span title={displayCollege.name}>{displayCollege.name}</span>
+                      </>
+                    ) : null}
                   </div>
                   <span className="mm-org-login__badge">
-                    <span className="mm-org-login__live" /> {college?.code || 'College'}
+                    <span className="mm-org-login__live" />{' '}
+                    {displayCollege?.code || (tenantLoading ? '…' : 'College')}
                   </span>
                 </div>
 
                 <h2 className="mm-org-login__card-title">Login</h2>
                 <p className="mm-org-login__card-sub">
-                  Continue as TPO or HOD for {college?.name || 'your college'}.
+                  Continue as TPO or HOD for {displayCollege?.name || 'your college'}.
                 </p>
 
                 <div className="mm-org-login__tabs" role="tablist" aria-label="Sign-in role">
@@ -689,6 +781,13 @@ export default function OrganizationLoginPage() {
                   </motion.p>
                 </AnimatePresence>
 
+                {(tenantError || collegesWarning) && tenantLocked ? (
+                  <div className="mm-org-login__alert mm-org-login__alert--err" role="alert">
+                    <p>{tenantError || collegesWarning}</p>
+                  </div>
+                ) : null}
+
+                {!tenantLocked ? (
                 <div className="mm-org-login__demo" role="note">
                   <p className="mm-org-login__demo-title">Temp demo credentials (remove later)</p>
                   <p className="mm-org-login__demo-line">
@@ -727,6 +826,7 @@ export default function OrganizationLoginPage() {
                     Fill {roleId === 'hod' ? 'HOD' : 'TPO'} demo
                   </button>
                 </div>
+                ) : null}
 
                 <form className="mm-org-login__form" onSubmit={handleSubmit} noValidate>
                   {success ? (
@@ -743,6 +843,11 @@ export default function OrganizationLoginPage() {
                     >
                       <p>{error}</p>
                       {errorKind === 'suspended' && cta ? <span>{cta}</span> : null}
+                      {portalLink ? (
+                        <p style={{ marginTop: 8 }}>
+                          <a href={portalLink}>Go to your college portal</a>
+                        </p>
+                      ) : null}
                     </div>
                   ) : null}
 
@@ -811,7 +916,7 @@ export default function OrganizationLoginPage() {
                 </form>
 
                 <p className="mm-org-login__activate" style={{ marginTop: 12 }}>
-                  <Link to="/Organization/forgot-password">Forgot password?</Link>
+                  <Link to={tenantPortalPath('/Organization/forgot-password')}>Forgot password?</Link>
                 </p>
 
                 <p className="mm-org-login__activate">

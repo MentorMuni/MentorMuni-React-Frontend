@@ -79,9 +79,11 @@ export async function getOrganizationById(id) {
 }
 
 export async function createOrganization(payload) {
+  const slug = String(payload.portal_slug || '').trim().toLowerCase();
   const row = await platformApi.post('/platform/organizations', {
     ...payload,
     code: String(payload.code || '').toUpperCase(),
+    portal_slug: slug || undefined,
     // Organizations tab never creates PUBLIC — individuals use /platform/individuals.
     organization_type: 'COLLEGE',
     status: apiStatus(payload.status),
@@ -94,9 +96,19 @@ export async function updateOrganization(id, patch) {
   const body = {
     ...patch,
     ...(patch.code != null ? { code: String(patch.code).toUpperCase() } : {}),
+    // Empty slug is omitted (backend ignores null and would silently keep old slug).
+    ...(patch.portal_slug != null && String(patch.portal_slug).trim()
+      ? { portal_slug: String(patch.portal_slug).trim().toLowerCase() }
+      : patch.portal_slug != null
+        ? {}
+        : {}),
     ...(patch.organization_type ? { organization_type: apiOrgType(patch.organization_type) } : {}),
     ...(patch.status ? { status: apiStatus(patch.status) } : {}),
   };
+  // Avoid sending blank portal_slug that previously became null and no-oped.
+  if (Object.prototype.hasOwnProperty.call(body, 'portal_slug') && !body.portal_slug) {
+    delete body.portal_slug;
+  }
   const row = await platformApi.put(`/platform/organizations/${id}`, body);
   emitUpdate();
   return normalizeOrganization(row);

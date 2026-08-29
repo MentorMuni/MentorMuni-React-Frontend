@@ -49,6 +49,13 @@ function modeCopy(mission) {
       return { kicker: 'Paused', sub: 'Your plan is on hold. One short thing if you want it.' };
     case 'complete':
       return { kicker: 'Maintenance', sub: 'Ninety days done. Keep the edge.' };
+    case 'intelligence':
+      return {
+        kicker: mission.focus_pillar
+          ? `Focus · ${mission.focus_pillar}`
+          : 'Today',
+        sub: 'Picked from your coverage map — not a generic list.',
+      };
     default:
       return { kicker: 'Today', sub: 'One focused session.' };
   }
@@ -110,16 +117,27 @@ export default function DailyMissionSection({
       return;
     }
     if (!task.tool_code) return;
+    const topicNodes = task.topic_nodes || task.widget_spec?.topic_nodes || [];
+    const topicSkill = Array.isArray(topicNodes) && topicNodes[0]
+      ? String(topicNodes[0]).split('.').filter(Boolean).pop()?.replace(/[_-]+/g, ' ')
+      : '';
     navigate(
       studentToolPath(task.tool_code, {
         from: 'journey',
         mission: task.task_key,
-        skill: task.weak_topic_id ? task.title.replace(/^Re-test:\s*/, '') : undefined,
+        planId: mission.planId ?? mission.plan_id ?? undefined,
+        topics: topicNodes.length ? topicNodes : undefined,
+        skill:
+          task.weak_topic_id
+            ? task.title.replace(/^Re-test:\s*/, '')
+            : topicSkill || undefined,
       })
     );
   };
 
-  const pending = mission.tasks.filter((t) => t.status === 'todo');
+  const pending = mission.tasks.filter(
+    (t) => t.status !== 'done' && t.status !== 'skipped'
+  );
   const doneCount = mission.tasks.filter((t) => t.status === 'done').length;
   const progressPct = mission.tasks.length
     ? Math.round((doneCount / mission.tasks.length) * 100)
@@ -141,7 +159,7 @@ export default function DailyMissionSection({
         {mission.planDay ? (
           <span className="stu-mission__day">
             <CalendarClock size={13} strokeWidth={2} aria-hidden focusable="false" />
-            Day {mission.planDay} of {PLAN_HORIZON_DAYS}
+            Day {mission.planDay} of {mission.deep_prep_days || PLAN_HORIZON_DAYS}
             {mission.weekTheme ? <em> · {mission.weekTheme}</em> : null}
           </span>
         ) : null}

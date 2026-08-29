@@ -1524,6 +1524,10 @@
   flex: 1;
   min-width: 120px;
 }
+.mm-stu-duo__change:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
 .mm-stu-duo__logo {
   height: 18px;
   width: auto;
@@ -1908,6 +1912,27 @@
   animation: none;
   opacity: 0;
 }
+
+.mm-stu-submit--ghost {
+  margin-top: 10px;
+  background: transparent;
+  background-image: none;
+  color: var(--stu-ink, inherit);
+  border: 1px solid color-mix(in srgb, var(--stu-line, #94a3b8) 55%, transparent);
+  box-shadow: none;
+  font-weight: 650;
+}
+
+.mm-stu-submit--ghost::after {
+  display: none;
+}
+
+.mm-stu-submit--ghost:hover:not(:disabled) {
+  filter: none;
+  background: color-mix(in srgb, var(--stu-accent-soft, rgba(13, 148, 136, 0.12)) 80%, transparent);
+  transform: translateY(-1px);
+}
+
 .mm-stu-submit__spin {
   width: 18px;
   height: 18px;

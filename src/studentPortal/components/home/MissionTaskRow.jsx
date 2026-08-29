@@ -12,23 +12,37 @@ export default function MissionTaskRow({ task, onStart, onToggle, onDefer }) {
   const done = task.status === 'done';
   const skipped = task.status === 'skipped';
   const isTool = task.kind === 'tool' || task.kind === 'retest' || task.kind === 'action';
+  const canToggle = !isTool && !done;
 
   return (
     <li
       className={`stu-mission__row${done ? ' is-done' : ''}${skipped ? ' is-skipped' : ''}`}
     >
-      <button
-        type="button"
-        className="stu-mission__check"
-        aria-pressed={done}
-        aria-label={done ? `Mark "${task.title}" not done` : `Mark "${task.title}" done`}
-        onClick={() => onToggle?.(task)}
-      >
-        {done ? <Check size={13} strokeWidth={3} aria-hidden focusable="false" /> : null}
-      </button>
+      {canToggle ? (
+        <button
+          type="button"
+          className="stu-mission__check"
+          aria-pressed={done}
+          aria-label={`Mark "${task.title}" done`}
+          onClick={() => onToggle?.(task)}
+        />
+      ) : (
+        <span
+          className={`stu-mission__check${done ? ' is-static-done' : ' is-static'}`}
+          aria-hidden
+        >
+          {done ? <Check size={13} strokeWidth={3} focusable="false" /> : null}
+        </span>
+      )}
 
       <div className="stu-mission__body">
         <p className="stu-mission__title">{task.title}</p>
+        {task.why_this ? (
+          <details className="stu-mission__why">
+            <summary>Why this?</summary>
+            <p>{task.why_this}</p>
+          </details>
+        ) : null}
         <p className="stu-mission__meta">
           <span>{task.minutes} min</span>
           {task.origin === 'weakness' ? (

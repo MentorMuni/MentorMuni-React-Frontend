@@ -1,15 +1,6 @@
-/**
- * Shared chrome for every authenticated portal page.
- *
- * Before this existed, Home / Practice / Progress / Company Prep each
- * rendered their own sidebar, topbar and theme state, and each
- * imported the whole stylesheet — four copies of the shell that could
- * drift apart. They now render only their page body into <Outlet/>.
- */
-
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { getStudentSession, isStudentAuthenticated, studentMustChangePassword } from './auth';
+import { clearStudentSession, getStudentSession, isStudentAuthenticated, studentMustChangePassword } from './auth';
 import { isIndividualStudent } from './accountType';
 import { studentPaths } from './paths';
 import { useStudentPortalCanvas, useStudentTheme } from './useStudentTheme.jsx';
@@ -19,13 +10,16 @@ import { StudentShellContext } from './shellContext';
 
 import StudentSidebar from './components/home/StudentSidebar';
 import StudentTopbar from './components/home/StudentTopbar';
-import FearToFearlessInProgress from './components/FearToFearlessInProgress';
+import StudentPortalBusy from './components/StudentPortalBusy';
+import IdleSessionGuard from '../components/IdleSessionGuard';
 import { studentApiBusy, useApiBusy } from '../lib/apiBusy';
+import { useAuthGateRerender } from '../lib/sessionGuards';
 import { whiteboardApi } from './whiteboardApi';
 
 import './styles/portal.css';
 
 export default function StudentLayout() {
+  useAuthGateRerender();
   const session = getStudentSession();
   const authed = isStudentAuthenticated();
   const location = useLocation();
@@ -78,6 +72,21 @@ export default function StudentLayout() {
     return undefined;
   }, [authed, session?.id]);
 
+  // Mobile drawer: Escape closes; lock body scroll while open.
+  useEffect(() => {
+    if (!navOpen) return undefined;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const onKey = (e) => {
+      if (e.key === 'Escape') setNavOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = prevOverflow;
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [navOpen]);
+
   const shell = useMemo(
     () => ({
       session,
@@ -99,29 +108,47 @@ export default function StudentLayout() {
     return <Navigate to={studentPaths.changePassword} replace />;
   }
 
-  return (
-    <div className="stu-app stu-app--page" data-theme={theme}>
-      <StudentSidebar
-        session={session}
-        open={navOpen}
-        onClose={() => setNavOpen(false)}
-        streak={streakState.streak.consecutiveDays}
-        weekDots={streakState.weekDots}
-      />
+  // Campus drives / company intel are college-only — block deep-links for individuals.
+  if (isIndividualStudent(session)) {
+    const path = location.pathname || '';
+    if (
+      path.includes('/studentportal/companies') ||
+      path.includes('/studentportal/company-prep')
+    ) {
+      return <Navigate to={studentPaths.home} replace />;
+    }
+  }
 
-      <div className="stu-shell">
-        <StudentTopbar
+  return (
+    <IdleSessionGuard
+      isAuthenticated={isStudentAuthenticated}
+      clearSession={clearStudentSession}
+      loginPath={studentPaths.login}
+      portalLabel="student portal"
+    >
+      <div className="stu-app stu-app--page" data-theme={theme}>
+        <StudentSidebar
           session={session}
-          onMenu={() => setNavOpen(true)}
-          nextDrive={nextDrive}
+          open={navOpen}
+          onClose={() => setNavOpen(false)}
+          streak={streakState.streak.consecutiveDays}
+          weekDots={streakState.weekDots}
         />
 
-        <StudentShellContext.Provider value={shell}>
-          <Outlet />
-        </StudentShellContext.Provider>
-      </div>
+        <div className="stu-shell">
+          <StudentTopbar
+            session={session}
+            onMenu={() => setNavOpen(true)}
+            nextDrive={nextDrive}
+          />
 
-      {apiBusy && !hideGlobalBusy ? <FearToFearlessInProgress session={session} /> : null}
-    </div>
+          <StudentShellContext.Provider value={shell}>
+            <Outlet />
+          </StudentShellContext.Provider>
+        </div>
+
+        {apiBusy && !hideGlobalBusy ? <StudentPortalBusy /> : null}
+      </div>
+    </IdleSessionGuard>
   );
 }

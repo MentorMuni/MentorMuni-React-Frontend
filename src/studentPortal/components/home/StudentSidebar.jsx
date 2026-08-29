@@ -26,8 +26,8 @@ const NAV_PRIMARY = [
   { icon: StickyNote, label: 'White Board', to: '/studentportal/whiteboard', wall: true },
   { icon: Code2, label: 'Practice', to: '/studentportal/practice' },
   { icon: Terminal, label: 'Coding Round', to: '/studentportal/coding' },
-  { icon: Briefcase, label: 'Companies', to: '/studentportal/companies' },
-  { icon: Building2, label: 'Company Prep', to: '/studentportal/company-prep' },
+  { icon: Briefcase, label: 'Companies', to: '/studentportal/companies', collegeOnly: true },
+  { icon: Building2, label: 'Company Prep', to: '/studentportal/company-prep', collegeOnly: true },
   { icon: TrendingUp, label: 'Progress', to: '/studentportal/progress' },
   { icon: LifeBuoy, label: 'Help Center', to: '/studentportal/help' },
 ];
@@ -92,7 +92,9 @@ export default function StudentSidebar({
     : [false, false, false, false, false, false, false];
   const doneCount = dots.filter(Boolean).length;
   const campus = studentCampusLabel(session);
-  const footerLine = isIndividualStudent(session)
+  const individual = isIndividualStudent(session);
+  const primaryNav = NAV_PRIMARY.filter((item) => !item.collegeOnly || !individual);
+  const footerLine = individual
     ? campus.secondary || campus.primary || 'Individual'
     : session?.department_name || 'Department';
 
@@ -119,7 +121,7 @@ export default function StudentSidebar({
         </div>
 
         <nav className="stu-nav">
-          <NavGroup items={NAV_PRIMARY} onNavigate={onClose} />
+          <NavGroup items={primaryNav} onNavigate={onClose} />
           
           {/* Divider for premium feature */}
           <div className="stu-nav__divider" />

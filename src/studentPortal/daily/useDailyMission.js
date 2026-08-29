@@ -47,9 +47,10 @@ export function useDailyMission({
 
   // Guards a late response from overwriting a newer one.
   const requestRef = useRef(0);
+  const syncingRef = useRef(0);
 
   const weakTopics = useMemo(() => deriveWeakTopics(analysis), [analysis]);
-  const planId = plan?.id ?? null;
+  const planIdFromPlan = plan?.id ?? null;
 
   const load = useCallback(
     async ({ silent = false } = {}) => {
@@ -91,7 +92,7 @@ export function useDailyMission({
     const sync = () => {
       const now = todayKey();
       if (now !== today) setToday(now);
-      else load({ silent: true });
+      else if (syncingRef.current === 0) load({ silent: true });
     };
     const onVisible = () => {
       if (document.visibilityState === 'visible') sync();
@@ -128,15 +129,28 @@ export function useDailyMission({
   const completeTask = useCallback(
     async (task, { score = null } = {}) => {
       if (!task?.task_key) return;
-      patchTask(task.task_key, {
-        status: 'done',
-        score,
-        completed_at: new Date().toISOString(),
+      const planId = mission?.planId ?? mission?.plan_id ?? planIdFromPlan;
+      setMission((prev) => {
+        if (!prev) return prev;
+        const tasks = prev.tasks.map((t) =>
+          t.task_key === task.task_key
+            ? {
+                ...t,
+                status: 'done',
+                score,
+                completed_at: new Date().toISOString(),
+              }
+            : t
+        );
+        const doneCount = tasks.filter((t) => t.status === 'done').length;
+        const requiredCount = tasks.filter((t) => t.required).length;
+        recordDailyActivity(userKey, today, {
+          tasksDone: doneCount,
+          tasksTotal: requiredCount,
+        });
+        return { ...prev, tasks, doneCount, requiredCount };
       });
-      recordDailyActivity(userKey, today, {
-        tasksDone: (mission?.doneCount ?? 0) + 1,
-        tasksTotal: mission?.requiredCount ?? 0,
-      });
+      syncingRef.current += 1;
       try {
         await completeMissionTask(
           task.task_key,
@@ -151,18 +165,21 @@ export function useDailyMission({
           { userKey, planId }
         );
       } catch (err) {
-        // Local ledger already holds it; flag the sync, keep the tick.
         console.error('Task sync failed', err);
         patchTask(task.task_key, { pending_sync: true });
+      } finally {
+        syncingRef.current = Math.max(0, syncingRef.current - 1);
       }
     },
-    [patchTask, userKey, today, planId, mission?.doneCount, mission?.requiredCount]
+    [patchTask, userKey, today, planIdFromPlan, mission?.planId, mission?.plan_id]
   );
 
   const skipTask = useCallback(
     async (task, reason = 'manual') => {
       if (!task?.task_key) return;
+      const planId = mission?.planId ?? mission?.plan_id ?? planIdFromPlan;
       patchTask(task.task_key, { status: 'skipped' });
+      syncingRef.current += 1;
       try {
         await skipMissionTask(
           task.task_key,
@@ -171,9 +188,11 @@ export function useDailyMission({
         );
       } catch (err) {
         console.error('Task skip sync failed', err);
+      } finally {
+        syncingRef.current = Math.max(0, syncingRef.current - 1);
       }
     },
-    [patchTask, userKey, today, planId]
+    [patchTask, userKey, today, planIdFromPlan, mission?.planId, mission?.plan_id]
   );
 
   const chooseBudget = useCallback(

@@ -44,6 +44,15 @@ export function studentToolPath(toolCode, opts = {}) {
   if (opts.fearId) params.set('fear', String(opts.fearId));
   // Lets a tool tick off the mission task that launched it — see completeAndReturn.
   if (opts.mission) params.set('mission', String(opts.mission).trim());
+  if (opts.planId != null && opts.planId !== '') params.set('plan', String(opts.planId));
+  if (opts.topics) {
+    const list = Array.isArray(opts.topics) ? opts.topics : String(opts.topics).split(',');
+    const joined = list.map((t) => String(t).trim()).filter(Boolean).join(',');
+    if (joined) params.set('topics', joined);
+  }
+  if (opts.prepTask) params.set('prep_task', String(opts.prepTask).trim());
+  if (opts.driveId != null && opts.driveId !== '') params.set('drive', String(opts.driveId));
+  if (opts.prepDay != null && opts.prepDay !== '') params.set('prep_day', String(opts.prepDay));
   const q = params.toString();
   return `${studentPaths.tools}/${encodeURIComponent(code)}${q ? `?${q}` : ''}`;
 }

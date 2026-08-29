@@ -1,6 +1,8 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, Heart, Sparkles } from 'lucide-react';
 import { canonicalToolCode, fearWeightLabel, isScoreableTool, normalizeWeek } from '../knowMe/planUtils';
+import { isIndividualStudent } from '../accountType';
+import { getStudentSession } from '../auth';
 import FearFactorMeter from './FearFactorMeter';
 
 export default function FearToFearlessPlan({
@@ -26,10 +28,12 @@ export default function FearToFearlessPlan({
     solutions.find((s) => String(s.fear_id) === String(weeklyFearId)) || solutions[0];
   const fearMeta = fears.find((f) => String(f.fear_id) === String(active?.fear_id)) || fears[0];
   const weekNumber = Math.min(6, Math.max(1, (intervention?.week_current || 0) + 1));
+  const individual = isIndividualStudent(getStudentSession());
   const week = active
     ? normalizeWeek(active, weekNumber, {
         checkinId: intervention?.checkin_id,
         fearId: active.fear_id,
+        individual,
       })
     : null;
   const done = Number(weeklyForm.actions_completed) || 0;
