@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 import { getOrgSession } from '../../orgPortal';
 import { getHodWorkspaceSnapshot, resolveHodDepartment } from '../hodScope';
-import { fetchDepartments } from '../departmentsApi';
+import { fetchDepartmentOptions } from '../departmentsApi';
 import { subscribeOrgDb } from '../store';
 import {
   addStudentManualApi,
@@ -112,7 +112,7 @@ export default function HodStudentsPage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const res = await fetchDepartments();
+      const res = await fetchDepartmentOptions();
       if (cancelled) return;
       const list = (res.departments || []).map((d) => ({
         id: d.id,

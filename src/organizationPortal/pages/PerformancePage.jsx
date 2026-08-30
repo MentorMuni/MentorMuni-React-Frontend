@@ -4,7 +4,7 @@ import { Download, Sparkles, Trophy, AlertTriangle, Filter } from 'lucide-react'
 import { getOrgSession } from '../../orgPortal';
 import { isHodRole } from '../roles';
 import { resolveHodDepartment } from '../hodScope';
-import { fetchDepartments } from '../departmentsApi';
+import { fetchDepartmentOptions } from '../departmentsApi';
 import {
   AREA_OPTIONS,
   fetchBranchInsight,
@@ -152,13 +152,16 @@ export default function PerformancePage() {
         ...(deptId ? { departmentId: deptId } : {}),
         boardLimit: limit || boardLimit,
       };
-      const [summary, cards] = await Promise.all([
-        fetchPerformanceSummary(opts),
-        fetchPerformanceScorecards(deptId ? { departmentId: deptId } : {}),
-      ]);
+      const summary = await fetchPerformanceSummary(opts);
       const ui = summaryToUiMetrics(summary);
       setMetrics(ui);
-      setStudents(scorecardsToUiRows(cards));
+      let cardPayload = { items: summary?.scorecards || [] };
+      if (!cardPayload.items.length) {
+        cardPayload = await fetchPerformanceScorecards(
+          deptId ? { departmentId: deptId } : {}
+        ).catch(() => ({ items: [] }));
+      }
+      setStudents(scorecardsToUiRows(cardPayload));
       setDataSource('api');
       setLoadError('');
       return ui;
@@ -174,7 +177,7 @@ export default function PerformancePage() {
       try {
         let deptId = null;
         if (hod) {
-          const deptRes = await fetchDepartments();
+          const deptRes = await fetchDepartmentOptions();
           if (cancelled) return;
           const dept = resolveHodDepartment(getOrgSession(), deptRes.departments || []);
           setHodDept(dept);
@@ -190,7 +193,7 @@ export default function PerformancePage() {
             return;
           }
         } else {
-          const deptRes = await fetchDepartments().catch(() => ({ departments: [] }));
+          const deptRes = await fetchDepartmentOptions().catch(() => ({ departments: [] }));
           if (cancelled) return;
           setDeptOptions(
             (deptRes.departments || []).map((d) => ({ id: String(d.id), name: d.name, code: d.code }))

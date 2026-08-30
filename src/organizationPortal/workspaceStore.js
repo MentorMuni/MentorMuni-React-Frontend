@@ -80,12 +80,15 @@ export function createWorkspaceItem({ text, dueDate = '', kind = 'note' } = {}) 
 }
 
 export function updateWorkspaceItem(id, patch = {}) {
+  if (id == null || id === '') throw new Error('Missing item id.');
+  const target = String(id);
+  let found = null;
   const next = getItems().map((item) => {
-    if (item.id !== id) return item;
+    if (String(item.id) !== target) return item;
     const text =
       patch.text !== undefined ? String(patch.text).trim() : item.text;
     if (!text) throw new Error('Text cannot be empty.');
-    return {
+    found = {
       ...item,
       text,
       dueDate: patch.dueDate !== undefined ? patch.dueDate || '' : item.dueDate,
@@ -93,9 +96,11 @@ export function updateWorkspaceItem(id, patch = {}) {
       done: patch.done !== undefined ? Boolean(patch.done) : item.done,
       updatedAt: new Date().toISOString(),
     };
+    return found;
   });
+  if (!found) throw new Error('Item not found.');
   setItems(next);
-  return next.find((x) => x.id === id) || null;
+  return found;
 }
 
 export function toggleWorkspaceItem(id) {
@@ -105,7 +110,9 @@ export function toggleWorkspaceItem(id) {
 }
 
 export function removeWorkspaceItem(id) {
-  setItems(getItems().filter((x) => x.id !== id));
+  if (id == null || id === '') return false;
+  const target = String(id);
+  setItems(getItems().filter((item) => String(item.id) !== target));
   return true;
 }
 

@@ -948,11 +948,15 @@
 }
 .mm-org-root--light .mm-org-input::placeholder,
 .mm-org-root--light .mm-org-textarea::placeholder {
-  color: #64748b;
+  color: #94a3b8;
+  -webkit-text-fill-color: #94a3b8;
+  opacity: 0.85;
 }
 .mm-org-root:not(.mm-org-root--light) .mm-org-input::placeholder,
 .mm-org-root:not(.mm-org-root--light) .mm-org-textarea::placeholder {
   color: #7a92a3;
+  -webkit-text-fill-color: #7a92a3;
+  opacity: 0.7;
 }
 
 /* Setup / share callouts — theme-safe (never hardcode dark ink) */
@@ -1344,24 +1348,21 @@ html.mm-new-ui .mm-org-root:not(.mm-org-root--light) {
 .mm-org-workspace__item.is-overdue:not(.is-done) {
   border-color: rgba(234, 179, 8, 0.45);
 }
-.mm-org-workspace__check {
+.mm-org-workspace__bullet {
   flex-shrink: 0;
-  width: 22px;
-  height: 22px;
+  width: 1rem;
   margin-top: 2px;
-  border-radius: 7px;
-  border: 1.5px solid var(--org-line);
-  background: transparent;
-  color: var(--org-on-accent);
-  display: grid;
-  place-items: center;
-  cursor: pointer;
-  padding: 0;
+  text-align: center;
+  font-size: 1.15rem;
+  line-height: 1.35;
+  font-weight: 700;
+  color: var(--org-accent);
+  user-select: none;
+  pointer-events: none;
 }
-.mm-org-workspace__check.is-on {
-  background: linear-gradient(135deg, var(--org-accent), var(--org-accent-2));
-  border-color: transparent;
-  color: var(--org-on-accent);
+.mm-org-workspace__item.is-done .mm-org-workspace__bullet {
+  color: var(--org-muted);
+  opacity: 0.7;
 }
 .mm-org-workspace__text {
   margin: 0;
@@ -1862,8 +1863,6 @@ html.mm-new-ui .mm-org-root:not(.mm-org-root--light) {
 .mm-org-root .mm-org-area-tab,
 .mm-org-root .mm-org-area-tab:hover,
 .mm-org-root .mm-org-area-tab:focus,
-.mm-org-root .mm-org-workspace__check,
-.mm-org-root .mm-org-workspace__check:hover,
 .mm-org-root .mm-org-toggle,
 .mm-org-root .mm-org-toggle:hover {
   filter: none !important;
@@ -1920,18 +1919,9 @@ html.mm-new-ui .mm-org-root:not(.mm-org-root--light) {
   background-color: rgba(26, 143, 196, 0.1) !important;
 }
 
-.mm-org-root .mm-org-workspace__check {
-  color: var(--org-on-accent);
-  -webkit-text-fill-color: var(--org-on-accent);
-  background: transparent !important;
-  background-color: transparent !important;
-}
-
-.mm-org-root .mm-org-workspace__check.is-on,
-.mm-org-root .mm-org-workspace__check.is-on:hover {
-  color: var(--org-on-accent) !important;
-  -webkit-text-fill-color: var(--org-on-accent);
-  background: linear-gradient(135deg, var(--org-accent), var(--org-accent-2)) !important;
+.mm-org-root .mm-org-workspace__bullet {
+  color: var(--org-accent);
+  -webkit-text-fill-color: var(--org-accent);
 }
 
 .mm-org-root .mm-org-page-title {
@@ -1946,6 +1936,27 @@ html.mm-new-ui .mm-org-root:not(.mm-org-root--light) {
   color: var(--org-ink);
   -webkit-text-fill-color: var(--org-ink);
   caret-color: var(--org-ink);
+}
+
+/* Placeholders must stay watermark-like — ink fill above would make them look typed-in. */
+.mm-org-root .mm-org-input::placeholder,
+.mm-org-root .mm-org-textarea::placeholder {
+  color: var(--org-muted) !important;
+  -webkit-text-fill-color: var(--org-muted) !important;
+  opacity: 0.55;
+  font-weight: 400;
+}
+.mm-org-root--light .mm-org-input::placeholder,
+.mm-org-root--light .mm-org-textarea::placeholder {
+  color: #94a3b8 !important;
+  -webkit-text-fill-color: #94a3b8 !important;
+  opacity: 0.85;
+}
+.mm-org-root:not(.mm-org-root--light) .mm-org-input::placeholder,
+.mm-org-root:not(.mm-org-root--light) .mm-org-textarea::placeholder {
+  color: #7a92a3 !important;
+  -webkit-text-fill-color: #7a92a3 !important;
+  opacity: 0.7;
 }
 
 .mm-org-root--light .mm-org-input[type='date'],

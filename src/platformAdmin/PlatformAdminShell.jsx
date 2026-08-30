@@ -53,7 +53,10 @@ const TITLES = {
   subscriptions: ['Subscriptions', 'History of assigned plans, seat limits, and seats used.'],
   features: ['Feature Management', 'Enable capabilities per organization.'],
   'platform-users': ['Platform Users', 'MentorMuni employees with portal access.'],
-  support: ['Support Inbox', 'Campus tickets — organization and portal only, no reporter names.'],
+  support: [
+    'Support Inbox',
+    'Staff replies for Help Center tickets from student and organization portals. Organization and portal only — no reporter names.',
+  ],
   settings: ['Settings', 'Platform preferences and data tools.'],
   'change-password': ['Change Password', 'Update platform admin credentials securely.'],
 };

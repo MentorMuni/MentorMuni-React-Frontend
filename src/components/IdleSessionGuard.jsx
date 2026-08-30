@@ -6,9 +6,9 @@ import './IdleSessionGuard.css';
 /**
  * Idle auto-logout + back/forward session lock for authenticated shells.
  *
- * - 20 min idle → “Still active?” warning
+ * - 10 min idle → “Still using this portal?” warning
+ * - Confirm or use the app within 60s → stay signed in (idle timer resets)
  * - No response within 60s → clear session and replace-navigate to login
- * - Responding keeps the session and resets the idle timer
  * - After logout, popstate / pageshow / focus re-check keeps protected UI closed
  */
 export default function IdleSessionGuard({
@@ -85,17 +85,22 @@ export default function IdleSessionGuard({
         >
           <div className="mm-idle-modal">
             <p className="mm-idle-kicker">Session timeout</p>
-            <h2 id="mm-idle-title">Are you still there?</h2>
+            <h2 id="mm-idle-title">Are you still using this portal?</h2>
             <p id="mm-idle-desc" className="mm-idle-desc">
-              Your {portalLabel} session has been idle. Confirm within{' '}
+              Your {portalLabel} session has been idle for 10 minutes. Confirm within{' '}
               <strong>{secondsLeft}s</strong> to stay signed in, or you will be
               logged out automatically.
             </p>
             <div className="mm-idle-actions">
               <button type="button" className="mm-idle-btn mm-idle-btn--primary" onClick={stayLoggedIn}>
-                Yes, stay logged in
+                Yes, still using it
               </button>
-              <button type="button" className="mm-idle-btn mm-idle-btn--ghost" onClick={logoutNow}>
+              <button
+                type="button"
+                className="mm-idle-btn mm-idle-btn--ghost"
+                data-idle-logout
+                onClick={logoutNow}
+              >
                 Log out now
               </button>
             </div>

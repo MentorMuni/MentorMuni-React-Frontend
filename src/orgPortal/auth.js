@@ -347,6 +347,32 @@ export function getRegistrationErrorMessage(err) {
 }
 
 /**
+ * GET /platform/auth/activate-tpo/preview?token=
+ * API key only — college + invite context for the activation page.
+ */
+export async function previewTpoActivation(token) {
+  try {
+    const data = await orgApi.get(
+      `/platform/auth/activate-tpo/preview?token=${encodeURIComponent(String(token || '').trim())}`,
+      { auth: false }
+    );
+    return {
+      ok: true,
+      organizationName: data?.organization_name || data?.organizationName || '',
+      organizationCode: extractOrgCode(data),
+      portalSlug: data?.portal_slug || data?.portalSlug || '',
+      title: data?.title || 'TPO',
+      email: data?.email || '',
+      firstName: data?.first_name || data?.firstName || '',
+      data,
+    };
+  } catch (err) {
+    if (err instanceof OrgApiError) return friendlyActivateError(err);
+    return { ok: false, error: err?.message || 'Unable to load invite details.' };
+  }
+}
+
+/**
  * POST /platform/auth/activate-tpo
  * API key only — no platform JWT. Used by /activate-tpo?token=...
  * Success: { message, organization_code }; must_change_password is false after activate.
@@ -365,6 +391,7 @@ export async function activateTpoAccount(token, newPassword) {
       ok: true,
       message: data?.message || 'Password set. You can log in to the Organization Portal.',
       organizationCode: extractOrgCode(data),
+      organizationName: data?.organization_name || data?.organizationName || '',
       data,
     };
   } catch (err) {

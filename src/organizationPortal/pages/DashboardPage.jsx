@@ -29,7 +29,7 @@ import {
   listPrograms,
   subscribeOrgDb,
 } from '../store';
-import { fetchDepartments } from '../departmentsApi';
+import { fetchDepartmentOptions } from '../departmentsApi';
 import { fetchStudentInvites, fetchStudents } from '../studentsApi';
 import AssignToStudentModal from './AssignToStudentModal';
 import {
@@ -128,7 +128,7 @@ export default function DashboardPage() {
     if (normalizeOrgRole(session?.role) !== ORG_ROLES.HOD) return undefined;
     let cancelled = false;
     (async () => {
-      const deptRes = await fetchDepartments();
+      const deptRes = await fetchDepartmentOptions();
       if (cancelled) return;
       const list = deptRes.departments || [];
       const snap = getHodWorkspaceSnapshot(getOrgSession(), list);

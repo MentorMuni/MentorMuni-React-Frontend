@@ -54,6 +54,15 @@ function collegePortalDisplay(orgOrSlug) {
   return collegePortalOrigin(slug).replace(/^https?:\/\//, '');
 }
 
+/** Always show public production host in the create/edit form hint. */
+function collegePortalPublicHint(slugOrCode) {
+  const s = String(slugOrCode || '')
+    .trim()
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, '');
+  return s ? `${s}.mentormuni.com` : '{slug}.mentormuni.com';
+}
+
 function defaultUsername(org, title = 'TPO') {
   const code = String(org?.code || '').toLowerCase() || 'org';
   const suffix = String(title || 'TPO').toLowerCase();
@@ -124,6 +133,8 @@ export default function OrganizationsPage() {
   const [form, setForm] = useState(emptyOrg);
   const [logoBusy, setLogoBusy] = useState(false);
   const [logoPreviewOrg, setLogoPreviewOrg] = useState(null);
+  const [pendingLogoFile, setPendingLogoFile] = useState(null);
+  const [pendingLogoUrl, setPendingLogoUrl] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [selected, setSelected] = useState(null);
@@ -340,10 +351,19 @@ export default function OrganizationsPage() {
     );
   }, [orgs, query]);
 
+  const clearPendingLogo = () => {
+    setPendingLogoFile(null);
+    setPendingLogoUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return '';
+    });
+  };
+
   const openCreate = () => {
     setEditingOrgId(null);
-    setForm(emptyOrg);
+    setForm({ ...emptyOrg, country: 'India' });
     setLogoPreviewOrg(null);
+    clearPendingLogo();
     setError('');
     setSuccess('');
     setCreateOpen(true);
@@ -351,8 +371,9 @@ export default function OrganizationsPage() {
 
   const openEditOrg = (org) => {
     setEditingOrgId(org.id);
-    setForm(orgToForm(org));
+    setForm({ ...orgToForm(org), country: 'India' });
     setLogoPreviewOrg(org);
+    clearPendingLogo();
     setError('');
     setSuccess('');
     setCreateOpen(true);
@@ -361,9 +382,19 @@ export default function OrganizationsPage() {
   const onLogoFile = async (e) => {
     const file = e.target.files?.[0];
     e.target.value = '';
-    if (!file || !editingOrgId) return;
-    setLogoBusy(true);
+    if (!file) return;
     setError('');
+
+    if (!editingOrgId) {
+      setPendingLogoUrl((prev) => {
+        if (prev) URL.revokeObjectURL(prev);
+        return URL.createObjectURL(file);
+      });
+      setPendingLogoFile(file);
+      return;
+    }
+
+    setLogoBusy(true);
     try {
       const row = await uploadOrganizationLogo(editingOrgId, file);
       setLogoPreviewOrg(row);
@@ -377,7 +408,10 @@ export default function OrganizationsPage() {
   };
 
   const onClearLogo = async () => {
-    if (!editingOrgId) return;
+    if (!editingOrgId) {
+      clearPendingLogo();
+      return;
+    }
     setLogoBusy(true);
     setError('');
     try {
@@ -402,23 +436,50 @@ export default function OrganizationsPage() {
       setError('Portal slug must be 3–32 characters (letters, numbers, hyphens).');
       return;
     }
+    const logoToUpload = pendingLogoFile;
     try {
       if (editingOrgId) {
         const row = await updateOrganization(editingOrgId, {
           ...form,
+          country: 'India',
           portal_slug: slug || form.portal_slug,
         });
+        setCreateOpen(false);
+        setEditingOrgId(null);
+        clearPendingLogo();
         setSuccess(`Organization updated · ${row.name} (${row.code})`);
-      } else {
-        const row = await createOrganization({
-          ...form,
-          portal_slug: slug || undefined,
-        });
-        setSuccess(`Organization created · ID ${row.id} · Code ${row.code}`);
-        setSelected(row);
+        await refresh();
+        return;
       }
+
+      const row = await createOrganization({
+        ...form,
+        country: 'India',
+        portal_slug: slug || undefined,
+      });
+
+      // Close immediately, then finish logo + list refresh in the background.
       setCreateOpen(false);
       setEditingOrgId(null);
+      clearPendingLogo();
+      setSelected(row);
+      setSuccess(
+        row?.name
+          ? `Your organization is added · ${row.name} (${row.code})`
+          : 'Your organization is added'
+      );
+
+      if (logoToUpload) {
+        try {
+          await uploadOrganizationLogo(row.id, logoToUpload);
+        } catch (logoErr) {
+          setApiToast(
+            `Organization saved, but logo upload failed: ${
+              logoErr.message || 'open Edit to upload again'
+            }`
+          );
+        }
+      }
       await refresh();
     } catch (err) {
       setError(err.message || 'Failed to save organization.');
@@ -819,7 +880,11 @@ export default function OrganizationsPage() {
 
   return (
     <div className="space-y-5">
-      {success && <div className="mm-pa-success">{success}</div>}
+      {success ? (
+        <div className="mm-pa-success mm-pa-success--toast" role="status" aria-live="polite">
+          {success}
+        </div>
+      ) : null}
       {apiToast && <div className="mm-pa-inline-toast mm-pa-inline-toast--error">{apiToast}</div>}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -966,6 +1031,7 @@ export default function OrganizationsPage() {
         onClose={() => {
           setCreateOpen(false);
           setEditingOrgId(null);
+          clearPendingLogo();
         }}
         title={editingOrgId ? 'Edit Organization' : 'Create Organization'}
         sub={
@@ -990,7 +1056,9 @@ export default function OrganizationsPage() {
                 required
                 value={form.code}
                 onChange={(e) => setForm({ ...form, code: e.target.value.toUpperCase() })}
-                placeholder="MEDICAPS"
+                placeholder="e.g. ORG001"
+                autoComplete="off"
+                spellCheck={false}
                 disabled={Boolean(editingOrgId)}
               />
             </div>
@@ -1005,15 +1073,14 @@ export default function OrganizationsPage() {
                     portal_slug: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''),
                   })
                 }
-                placeholder="medicaps"
+                placeholder="e.g. your-college"
+                autoComplete="off"
+                spellCheck={false}
               />
               <p className="mm-pa-hint" style={{ marginTop: 4 }}>
                 College portal:{' '}
-                {form.portal_slug
-                  ? collegePortalDisplay(form.portal_slug)
-                  : form.code
-                    ? `${collegePortalDisplay(String(form.code).toLowerCase())} (default from code)`
-                    : '{slug}.mentormuni.com / {slug}.localhost'}
+                {collegePortalPublicHint(form.portal_slug || form.code)}
+                {!form.portal_slug && form.code ? ' (default from code)' : ''}
               </p>
             </div>
             <div>
@@ -1063,57 +1130,55 @@ export default function OrganizationsPage() {
             </div>
             <div>
               <label className="mm-pa-label">Country</label>
-              <input className="mm-pa-input" value={form.country} onChange={(e) => setForm({ ...form, country: e.target.value })} />
+              <div className="mm-pa-input mm-pa-input--locked" aria-readonly="true">
+                India
+              </div>
+              <input type="hidden" name="country" value="India" />
             </div>
           </div>
 
-          {editingOrgId ? (
-            <>
-              <p className="mm-pa-section-label">Campus logo</p>
-              <div className="mm-pa-logo-row">
-                <div className="mm-pa-logo-preview">
-                  {logoPreviewOrg?.has_logo ? (
-                    <img
-                      src={organizationLogoUrl(logoPreviewOrg.id, {
-                        updatedAt: logoPreviewOrg.logo_updated_at,
-                      })}
-                      alt=""
-                    />
-                  ) : (
-                    <Building2 size={22} />
-                  )}
-                </div>
-                <div className="mm-pa-logo-actions">
-                  <label className="mm-pa-btn mm-pa-btn--ghost mm-pa-logo-file">
-                    {logoBusy ? 'Uploading…' : 'Upload logo'}
-                    <input
-                      type="file"
-                      accept="image/png,image/jpeg,image/webp,image/svg+xml"
-                      disabled={logoBusy}
-                      onChange={onLogoFile}
-                    />
-                  </label>
-                  {logoPreviewOrg?.has_logo ? (
-                    <button
-                      type="button"
-                      className="mm-pa-btn mm-pa-btn--ghost"
-                      disabled={logoBusy}
-                      onClick={onClearLogo}
-                    >
-                      Remove
-                    </button>
-                  ) : null}
-                  <p className="mm-pa-hint">
-                    PNG, JPEG, WebP, or SVG · max 512 KB. Shown on the campus portal (not student photos).
-                  </p>
-                </div>
-              </div>
-            </>
-          ) : (
-            <p className="mm-pa-hint" style={{ marginTop: 12 }}>
-              Save the organization first, then edit it to upload a campus logo.
-            </p>
-          )}
+          <p className="mm-pa-section-label">Campus logo</p>
+          <div className="mm-pa-logo-row">
+            <div className="mm-pa-logo-preview">
+              {editingOrgId && logoPreviewOrg?.has_logo ? (
+                <img
+                  src={organizationLogoUrl(logoPreviewOrg.id, {
+                    updatedAt: logoPreviewOrg.logo_updated_at,
+                  })}
+                  alt=""
+                />
+              ) : pendingLogoUrl ? (
+                <img src={pendingLogoUrl} alt="" />
+              ) : (
+                <Building2 size={22} />
+              )}
+            </div>
+            <div className="mm-pa-logo-actions">
+              <label className="mm-pa-btn mm-pa-btn--ghost mm-pa-logo-file">
+                {logoBusy ? 'Uploading…' : pendingLogoFile || logoPreviewOrg?.has_logo ? 'Replace logo' : 'Upload logo'}
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp,image/svg+xml"
+                  disabled={logoBusy}
+                  onChange={onLogoFile}
+                />
+              </label>
+              {(editingOrgId && logoPreviewOrg?.has_logo) || pendingLogoFile ? (
+                <button
+                  type="button"
+                  className="mm-pa-btn mm-pa-btn--ghost"
+                  disabled={logoBusy}
+                  onClick={onClearLogo}
+                >
+                  Remove
+                </button>
+              ) : null}
+              <p className="mm-pa-hint">
+                PNG, JPEG, WebP, or SVG · max 512 KB. Shown on the campus portal
+                {editingOrgId ? '.' : ' — uploaded when you save the organization.'}
+              </p>
+            </div>
+          </div>
 
           <div className="mt-5 flex justify-end gap-2">
             <button
@@ -1122,6 +1187,7 @@ export default function OrganizationsPage() {
               onClick={() => {
                 setCreateOpen(false);
                 setEditingOrgId(null);
+                clearPendingLogo();
               }}
             >
               Cancel

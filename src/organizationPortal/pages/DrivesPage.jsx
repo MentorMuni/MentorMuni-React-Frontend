@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Bell, Loader2, Trash2 } from 'lucide-react';
-import { fetchDepartments } from '../departmentsApi';
+import { fetchDepartmentOptions } from '../departmentsApi';
 import {
   createNotification,
   deleteNotification,
@@ -60,7 +60,7 @@ export default function DrivesPage() {
     setLoading(true);
     const [notes, depts] = await Promise.all([
       fetchNotifications(),
-      fetchDepartments().catch(() => ({ ok: false, departments: listDepartments() })),
+      fetchDepartmentOptions().catch(() => ({ ok: false, departments: listDepartments() })),
     ]);
     setItems(notes.notifications || []);
     if (depts?.departments?.length) setDepartments(depts.departments);

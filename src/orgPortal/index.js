@@ -8,6 +8,7 @@ export {
   isOrgAuthenticated,
   consumeOrgAuthFlash,
   getRegistrationErrorMessage,
+  previewTpoActivation,
   activateTpoAccount,
   activateHodAccount,
   changeOrgPassword,

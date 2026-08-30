@@ -273,7 +273,7 @@ function apiUnavailableError(action) {
   };
 }
 
-export async function fetchDepartments() {
+export async function fetchDepartments({ include = 'full' } = {}) {
   // Demo HOD/TPO use local store only — calling the real API with a fake token
   // returns 401 and previously auto-logged the user out.
   if (allowLocalFallback()) {
@@ -281,7 +281,12 @@ export async function fetchDepartments() {
   }
 
   try {
-    const data = await orgApi.get('/organizations/departments');
+    const mode = String(include || 'full').toLowerCase();
+    const qs =
+      mode === 'full' || mode === ''
+        ? ''
+        : `?include=${encodeURIComponent(mode === 'options' ? 'light' : mode)}`;
+    const data = await orgApi.get(`/organizations/departments${qs}`);
     const list = Array.isArray(data) ? data : data?.departments || data?.items || [];
     return withSource(
       { ok: true, departments: list.map(normalizeDepartment).filter(Boolean) },
@@ -303,6 +308,11 @@ export async function fetchDepartments() {
       source: 'unavailable',
     };
   }
+}
+
+/** Dropdown / filter rows — skips mentors + history on the API. */
+export async function fetchDepartmentOptions() {
+  return fetchDepartments({ include: 'light' });
 }
 
 function saveDepartmentLocal(input) {

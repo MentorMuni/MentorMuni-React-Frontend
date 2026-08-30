@@ -1,10 +1,10 @@
 /**
  * Idle session: after IDLE_MS of no interaction, show a warning.
- * If the user does not confirm within WARN_MS, force logout.
+ * If the user does not confirm (or use the app) within WARN_MS, force logout.
  */
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-export const IDLE_MS = 20 * 60 * 1000;
+export const IDLE_MS = 10 * 60 * 1000;
 export const WARN_MS = 60 * 1000;
 
 const ACTIVITY_EVENTS = [
@@ -111,13 +111,26 @@ export function useIdleTimeout({
     armIdle();
   }, [armIdle, clearTimers, warnMs]);
 
-  const noteActivity = useCallback(() => {
-    if (!enabled || warningRef.current) return;
-    const now = Date.now();
-    if (now - lastActivity.current < 1000) return;
-    lastActivity.current = now;
-    armIdle();
-  }, [armIdle, enabled]);
+  const noteActivity = useCallback(
+    (event) => {
+      if (!enabled) return;
+      // Explicit "Log out now" must not count as continued use.
+      if (event?.target?.closest?.('[data-idle-logout]')) return;
+
+      if (warningRef.current) {
+        // Hover alone should not dismiss — require deliberate use.
+        if (event?.type === 'mousemove') return;
+        stayLoggedIn();
+        return;
+      }
+
+      const now = Date.now();
+      if (now - lastActivity.current < 1000) return;
+      lastActivity.current = now;
+      armIdle();
+    },
+    [armIdle, enabled, stayLoggedIn]
+  );
 
   useEffect(() => {
     if (!enabled) {

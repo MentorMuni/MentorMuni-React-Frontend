@@ -365,23 +365,15 @@ function extractOrgAdminRows(payload) {
 export async function getOrgAdmins() {
   const payload = await platformApi.get('/platform/tpo');
   const rows = asArray(payload, ['tpos', 'users', 'org_admins', 'items', 'data']);
-  let orgById = {};
-  try {
-    const orgs = await getOrganizations();
-    orgById = Object.fromEntries(orgs.map((o) => [String(o.id), o]));
-  } catch {
-    // list still usable without org name enrichment
-  }
 
   return rows
     .map((row) => {
       const normalized = normalizeTpo(row);
       if (!normalized) return null;
-      const org = orgById[String(normalized.organization_id)];
       return {
         ...normalized,
-        organization_name: normalized.organization_name || org?.name || '',
-        organization_code: normalized.organization_code || org?.code || '',
+        organization_name: normalized.organization_name || '',
+        organization_code: normalized.organization_code || '',
       };
     })
     .filter(Boolean)
@@ -511,12 +503,8 @@ export async function deletePlatformUser(id) {
 
 export async function getDashboardMetrics() {
   const data = await platformApi.get('/platform/dashboard');
-  const organizationsList = await getOrganizations();
-  const orgCount =
-    typeof data?.organizations === 'number'
-      ? data.organizations
-      : organizationsList.length;
-  const totalOrgs = typeof orgCount === 'number' ? orgCount : 0;
+  const orgCount = typeof data?.organizations === 'number' ? data.organizations : 0;
+  const totalOrgs = orgCount;
 
   const featureUsageRaw = asArray(data?.feature_usage, ['items', 'data', 'features']);
   const featureUsage = featureUsageRaw.map((f) => ({
@@ -529,9 +517,12 @@ export async function getDashboardMetrics() {
         : 0,
   }));
 
-  const recentFromDashboard = asArray(data?.recent_organizations || data?.recent_orgs, [
+  const recentOrgs = asArray(data?.recent_organizations || data?.recent_orgs, [
     'organizations',
-  ]).map(normalizeOrganization);
+  ])
+    .map(normalizeOrganization)
+    .filter(Boolean)
+    .slice(0, 5);
 
   return {
     organizations: orgCount,
@@ -540,6 +531,6 @@ export async function getDashboardMetrics() {
     activePlans: data?.active_plans || 0,
     expiringThisMonth: data?.expiring_this_month || 0,
     featureUsage,
-    recentOrgs: (recentFromDashboard.length ? recentFromDashboard : organizationsList).slice(0, 5),
+    recentOrgs,
   };
 }

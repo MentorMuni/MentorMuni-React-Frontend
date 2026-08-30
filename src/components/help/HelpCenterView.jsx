@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { LifeBuoy, MessageSquare, Paperclip, Send, X } from 'lucide-react';
+import { CheckCircle2, LifeBuoy, MessageSquare, Paperclip, Send, X } from 'lucide-react';
 import { attachmentSrc, filesToAttachments } from '../../lib/helpAttachments';
 import './help-center.css';
 
@@ -216,8 +216,8 @@ export default function HelpCenterView({
         <div>
           <h2>Help Center</h2>
           <p>
-            Tell MentorMuni if something is broken, or send product feedback. We see your{' '}
-            <strong>{organizationName || 'organization'}</strong> and that this came from the{' '}
+            Report a platform issue or send product feedback. MentorMuni sees your{' '}
+            <strong>{organizationName || 'organization'}</strong> and the{' '}
             <strong>{portalLabel(sourcePortal)}</strong> — not your name.
           </p>
         </div>
@@ -370,11 +370,24 @@ export default function HelpCenterView({
             </div>
             <div className="mm-help__thread-actions">
               {thread.status !== 'CLOSED' ? (
-                <button type="button" className="mm-help__ghost" onClick={closeMine} disabled={saving}>
+                <button
+                  type="button"
+                  className="mm-help__btn mm-help__btn--danger"
+                  onClick={closeMine}
+                  disabled={saving}
+                >
+                  <CheckCircle2 size={15} strokeWidth={2.2} aria-hidden />
                   Mark resolved
                 </button>
               ) : null}
-              <button type="button" className="mm-help__ghost" onClick={clearTicketSelection}>
+              <button
+                type="button"
+                className="mm-help__btn mm-help__btn--quiet"
+                onClick={clearTicketSelection}
+                aria-label="Close panel"
+                title="Close panel"
+              >
+                <X size={15} strokeWidth={2.2} aria-hidden />
                 Close panel
               </button>
             </div>

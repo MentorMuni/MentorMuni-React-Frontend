@@ -12,6 +12,7 @@ import {
   createWorkspaceItemApi,
   deleteWorkspaceItemApi,
   fetchWorkspaceItems,
+  sameWorkspaceId,
   toggleWorkspaceItemApi,
   updateWorkspaceItemApi,
 } from '../workspaceApi';
@@ -70,15 +71,15 @@ export default function MyWorkspacePage() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
 
-  const refresh = async () => {
-    setLoading(true);
+  const refresh = async ({ silent = false } = {}) => {
+    if (!silent) setLoading(true);
     const result = await fetchWorkspaceItems();
     setItems(result.items || []);
     if (!result.ok && result.error) {
       setErr(result.error);
       setMsg('');
     }
-    setLoading(false);
+    if (!silent) setLoading(false);
   };
 
   useEffect(() => {
@@ -188,24 +189,60 @@ export default function MyWorkspacePage() {
   };
 
   const onToggle = async (item) => {
-    const result = await toggleWorkspaceItemApi(item.id, !item.done);
+    if (item?.id == null || item.id === '') {
+      flash(false, 'Could not update this item. Refresh the page and try again.');
+      return;
+    }
+    if (busy) return;
+    const targetId = item.id;
+    const nextDone = !item.done;
+    setBusy(true);
+    setItems((prev) =>
+      prev.map((row) =>
+        sameWorkspaceId(row.id, targetId) ? { ...row, done: nextDone } : row
+      )
+    );
+
+    const result = await toggleWorkspaceItemApi(targetId, nextDone);
+    setBusy(false);
     if (!result.ok) {
+      setItems((prev) =>
+        prev.map((row) =>
+          sameWorkspaceId(row.id, targetId) ? { ...row, done: Boolean(item.done) } : row
+        )
+      );
       flash(false, result.error || 'Unable to update.');
       return;
     }
-    flash(true, item.done ? 'Marked open.' : 'Marked done.');
-    await refresh();
+    if (result.item && result.item.id != null) {
+      setItems((prev) =>
+        prev.map((row) =>
+          sameWorkspaceId(row.id, targetId)
+            ? { ...row, ...result.item, done: Boolean(result.item.done) }
+            : row
+        )
+      );
+    } else {
+      await refresh({ silent: true });
+    }
+    flash(true, nextDone ? 'Marked done.' : 'Marked open.');
   };
 
   const onRemove = async (item) => {
-    const result = await deleteWorkspaceItemApi(item.id);
+    if (item?.id == null || item.id === '') {
+      flash(false, 'Could not remove this item. Refresh the page and try again.');
+      return;
+    }
+    if (!window.confirm(`Remove “${item.text}”? This cannot be undone.`)) return;
+    const targetId = item.id;
+    const result = await deleteWorkspaceItemApi(targetId);
     if (!result.ok) {
       flash(false, result.error || 'Unable to remove.');
       return;
     }
-    if (editingId === item.id) cancelEdit();
+    if (sameWorkspaceId(editingId, targetId)) cancelEdit();
+    setItems((prev) => prev.filter((row) => !sameWorkspaceId(row.id, targetId)));
     flash(true, 'Removed.');
-    await refresh();
   };
 
   return (
@@ -289,7 +326,7 @@ export default function MyWorkspacePage() {
               const editing = editingId === item.id;
               return (
                 <li
-                  key={item.id}
+                  key={`ws-${item.id}`}
                   className={`mm-org-workspace__item ${item.done ? 'is-done' : ''} ${
                     isOverdue(item) ? 'is-overdue' : ''
                   }`}
@@ -340,14 +377,9 @@ export default function MyWorkspacePage() {
                     </form>
                   ) : (
                     <>
-                      <button
-                        type="button"
-                        className={`mm-org-workspace__check ${item.done ? 'is-on' : ''}`}
-                        aria-label={item.done ? 'Mark as open' : 'Mark as done'}
-                        onClick={() => onToggle(item)}
-                      >
-                        {item.done ? <Check size={14} /> : null}
-                      </button>
+                      <span className="mm-org-workspace__bullet" aria-hidden>
+                        •
+                      </span>
                       <div className="mm-org-workspace__body min-w-0">
                         <p className="mm-org-workspace__text">{item.text}</p>
                         {item.dueDate ? (
@@ -359,6 +391,16 @@ export default function MyWorkspacePage() {
                         ) : null}
                       </div>
                       <div className="mm-org-workspace__actions">
+                        <button
+                          type="button"
+                          className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+                          onClick={() => onToggle(item)}
+                          disabled={busy}
+                          title={item.done ? 'Mark as open' : 'Mark as done'}
+                        >
+                          <Check size={14} />
+                          {item.done ? 'Reopen' : 'Done'}
+                        </button>
                         <button
                           type="button"
                           className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"

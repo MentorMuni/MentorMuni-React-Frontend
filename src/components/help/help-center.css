@@ -110,10 +110,27 @@
   font-weight: 700;
 }
 
+/* Platform Support Inbox — use full content width */
+.mm-pa-root .mm-help--inbox,
+.mm-help.mm-help--inbox {
+  max-width: none !important;
+  width: 100%;
+}
+
+.mm-pa-root .mm-pa-content > div {
+  max-width: none;
+  width: 100%;
+}
+
 .mm-help__grid {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
   gap: 16px;
+}
+
+.mm-help__grid--inbox {
+  grid-template-columns: minmax(260px, 320px) minmax(0, 1fr);
+  align-items: start;
 }
 
 .mm-help__panel {
@@ -124,7 +141,143 @@
   color: var(--help-ink);
 }
 
-.mm-help__panel h3 {
+.mm-help__panel--thread {
+  min-height: 420px;
+}
+
+.mm-help__ticket-head {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin: 0 0 20px;
+  padding: 0 0 18px;
+  border-bottom: 1px solid var(--help-line);
+}
+
+.mm-help__ticket-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.mm-help__ticket-topline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.mm-help__ticket-id {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--help-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.mm-help__status {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--help-muted);
+}
+
+.mm-help__status.is-open {
+  border-color: color-mix(in srgb, var(--help-accent) 28%, var(--help-line));
+  background: color-mix(in srgb, var(--help-accent) 10%, transparent);
+  color: var(--help-accent);
+}
+
+.mm-help__status.is-closed {
+  border-color: color-mix(in srgb, var(--help-danger-ink) 22%, var(--help-line));
+  background: color-mix(in srgb, var(--help-danger-ink) 8%, transparent);
+  color: var(--help-danger-ink);
+}
+
+/* Primary issue — the one thing staff must see first */
+.mm-help__ticket-subject {
+  margin: 0;
+  padding: 14px 16px 14px 18px;
+  font-size: clamp(1.45rem, 2.2vw, 1.85rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.22;
+  color: var(--help-ink);
+  overflow-wrap: anywhere;
+  border-left: 4px solid var(--help-accent);
+  border-radius: 0 12px 12px 0;
+  background: color-mix(in srgb, var(--help-accent) 9%, var(--help-bg));
+}
+
+.mm-help__ticket-facts {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 6px;
+  margin: 0;
+  max-width: 52rem;
+}
+
+.mm-help__ticket-facts > div {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  column-gap: 12px;
+  align-items: baseline;
+}
+
+.mm-help__ticket-facts dt {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--help-muted);
+}
+
+.mm-help__ticket-facts dd {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--help-ink);
+  overflow-wrap: anywhere;
+}
+
+.mm-help__ticket-code {
+  font-weight: 600;
+  color: var(--help-muted);
+}
+
+@media (max-width: 1100px) {
+  .mm-help__grid--inbox {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .mm-help__ticket-toolbar {
+    align-items: flex-start;
+  }
+
+  .mm-help__ticket-toolbar .mm-help__thread-actions {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .mm-help__ticket-subject {
+    font-size: 1.3rem;
+    padding: 12px 14px;
+  }
+}
+
+.mm-help__panel h3:not(.mm-help__ticket-subject) {
   margin: 0 0 12px;
   font-size: 1rem;
   color: var(--help-ink);
@@ -151,9 +304,92 @@
 
 .mm-help__thread-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  align-items: center;
   gap: 8px;
-  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.mm-help__btn,
+.mm-help__btn:hover,
+.mm-help__btn:focus-visible,
+.mm-help__btn:active {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 0;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+  transform: none !important;
+  filter: none !important;
+  opacity: 1 !important;
+  box-shadow: none !important;
+  outline: none;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+
+.mm-help__btn:focus-visible {
+  outline: 2px solid var(--help-focus);
+  outline-offset: 2px;
+}
+
+.mm-help__btn:disabled {
+  opacity: 0.55 !important;
+  cursor: not-allowed;
+}
+
+.mm-help__btn svg {
+  flex-shrink: 0;
+}
+
+/* Resolve / close the ticket itself */
+.mm-help__btn--danger,
+.mm-help__btn--danger:hover,
+.mm-help__btn--danger:focus-visible,
+.mm-help__btn--danger:active {
+  border: 1px solid color-mix(in srgb, var(--help-danger-ink) 35%, var(--help-line));
+  background: var(--help-danger-bg) !important;
+  background-color: var(--help-danger-bg) !important;
+  color: var(--help-danger-ink) !important;
+  -webkit-text-fill-color: var(--help-danger-ink);
+}
+
+.mm-help__btn--danger:hover:not(:disabled),
+.mm-help__btn--danger:focus-visible:not(:disabled) {
+  border-color: var(--help-danger-ink);
+  background: color-mix(in srgb, var(--help-danger-ink) 14%, var(--help-panel)) !important;
+  background-color: color-mix(in srgb, var(--help-danger-ink) 14%, var(--help-panel)) !important;
+}
+
+/* Dismiss the open panel only — not the ticket */
+.mm-help__btn--quiet,
+.mm-help__btn--quiet:hover,
+.mm-help__btn--quiet:focus-visible,
+.mm-help__btn--quiet:active {
+  border: 1px solid var(--help-line);
+  background: var(--help-panel) !important;
+  background-color: var(--help-panel) !important;
+  color: var(--help-muted) !important;
+  -webkit-text-fill-color: var(--help-muted);
+}
+
+.mm-help__btn--quiet:hover:not(:disabled),
+.mm-help__btn--quiet:focus-visible:not(:disabled) {
+  border-color: var(--help-accent);
+  color: var(--help-ink) !important;
+  -webkit-text-fill-color: var(--help-ink);
+  background: var(--help-bg) !important;
+  background-color: var(--help-bg) !important;
 }
 
 .mm-help__thread--empty {
@@ -351,6 +587,17 @@
   margin-bottom: 12px;
 }
 
+.mm-help__thread-head > div:first-child {
+  min-width: 0;
+  flex: 1;
+}
+
+.mm-help__thread-head h3 {
+  margin: 0;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
 .mm-help__thread-head select {
   min-width: 160px;
 }
@@ -374,6 +621,7 @@
   padding: 8px 12px;
   cursor: pointer;
   filter: none !important;
+  transform: none !important;
 }
 
 .mm-help__ghost:hover {

@@ -32,6 +32,7 @@ import {
   tenantPortalPath,
 } from '../../tenant/resolveTenant';
 import { useCollegeTenantContext } from '../../tenant/CollegeTenantProvider';
+import { organizationLogoUrl } from '../../tenant/orgLogo';
 import { getOrgHomePath } from '../../organizationPortal/roles';
 import { DEMO_ORG, DEMO_USERS, matchDemoUser } from '../../organizationPortal/demoAuth';
 import { useOrgTheme } from '../../organizationPortal/useOrgTheme';
@@ -140,6 +141,12 @@ export default function OrganizationLoginPage() {
 
   const tenantLocked = tenantLockedFromHost || collegeHost;
   const displayCollege = tenantLocked ? tenantCollege || college : college;
+  const displayCollegeLogo =
+    displayCollege?.has_logo && displayCollege?.id
+      ? organizationLogoUrl(displayCollege.id, {
+          updatedAt: displayCollege.logo_updated_at,
+        })
+      : null;
   const activeRole = ROLES.find((r) => r.id === roleId) || ROLES[0];
   const RoleIcon = activeRole.icon;
   const orgCode = String(
@@ -681,7 +688,17 @@ export default function OrganizationLoginPage() {
                         setCollegeQuery('');
                       }}
                     >
-                      <MapPin size={13} aria-hidden />
+                      {displayCollegeLogo ? (
+                        <img
+                          className="mm-org-login__campus-logo"
+                          src={displayCollegeLogo}
+                          alt=""
+                          width={28}
+                          height={28}
+                        />
+                      ) : (
+                        <MapPin size={13} aria-hidden />
+                      )}
                       <span className="mm-org-login__campus-copy">
                         <strong>{displayCollege?.name || (tenantLoading ? 'Loading campus…' : 'College')}</strong>
                         {displayCollege?.code ? <em>{displayCollege.code}</em> : null}
@@ -732,6 +749,15 @@ export default function OrganizationLoginPage() {
                     {displayCollege?.name ? (
                       <>
                         <span aria-hidden> · </span>
+                        {displayCollegeLogo ? (
+                          <img
+                            className="mm-org-login__college-logo"
+                            src={displayCollegeLogo}
+                            alt=""
+                            width={22}
+                            height={22}
+                          />
+                        ) : null}
                         <span title={displayCollege.name}>{displayCollege.name}</span>
                       </>
                     ) : null}

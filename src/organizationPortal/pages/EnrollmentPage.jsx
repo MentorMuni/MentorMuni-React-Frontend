@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Check, Copy, FileUp, Link2, Pencil, Trash2, UserPlus, X } from 'lucide-react';
 import { listDepartments, subscribeOrgDb } from '../store';
-import { fetchDepartments } from '../departmentsApi';
+import { fetchDepartmentOptions } from '../departmentsApi';
 import {
   addStudentManualApi,
   approveStudentInvite,
@@ -108,7 +108,7 @@ export default function EnrollmentPage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      const res = await fetchDepartments();
+      const res = await fetchDepartmentOptions();
       if (cancelled) return;
       if (res.ok && res.departments?.length) {
         setDepartments(
@@ -137,7 +137,7 @@ export default function EnrollmentPage() {
 
   useEffect(() => {
     const unsub = subscribeOrgDb(() => {
-      fetchDepartments().then((res) => {
+      fetchDepartmentOptions().then((res) => {
         if (res.ok && res.departments?.length) {
           setDepartments(
             res.departments.map((d) => ({

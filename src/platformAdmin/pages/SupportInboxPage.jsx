@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { Inbox, Paperclip, Send, X } from 'lucide-react';
+import { CheckCircle2, Inbox, Paperclip, Send, X } from 'lucide-react';
 import { attachmentSrc, filesToAttachments } from '../../lib/helpAttachments';
 import { platformSupportApi } from '../supportApi';
 import '../../components/help/help-center.css';
@@ -155,21 +155,10 @@ export default function SupportInboxPage() {
   }
 
   return (
-    <div className="mm-help">
-      <header className="mm-help__intro">
-        <Inbox size={22} />
-        <div>
-          <h2>Support Inbox</h2>
-          <p>
-            Campus issues and feedback. You see organization name and which portal it came from —
-            never the student or HOD name.
-          </p>
-        </div>
-      </header>
-
+    <div className="mm-help mm-help--inbox">
       {error ? <p className="mm-help__error">{error}</p> : null}
 
-      <div className="mm-help__grid">
+      <div className="mm-help__grid mm-help__grid--inbox">
         <section className="mm-help__panel">
           <div className="mm-help__thread-head">
             <h3>Queue</h3>
@@ -181,7 +170,7 @@ export default function SupportInboxPage() {
               <option value="CLOSED">Closed</option>
             </select>
           </div>
-          <p className="mm-help__hint">Open one ticket to reply. Screenshots stay on that ticket only.</p>
+          <p className="mm-help__hint">Select a ticket to open the thread and reply.</p>
           {loading ? <p className="mm-help__muted">Loading…</p> : null}
           {!loading && tickets.length === 0 ? (
             <p className="mm-help__muted">No tickets in this view.</p>
@@ -207,7 +196,7 @@ export default function SupportInboxPage() {
           </ul>
         </section>
 
-        <section className="mm-help__panel">
+        <section className="mm-help__panel mm-help__panel--thread">
           {threadLoading ? <p className="mm-help__muted">Opening ticket…</p> : null}
 
           {!thread && !threadLoading ? (
@@ -216,8 +205,7 @@ export default function SupportInboxPage() {
               <div>
                 <h3>No ticket selected</h3>
                 <p className="mm-help__muted">
-                  Pick a ticket from the queue to read the thread and send a resolution on that
-                  ticket only.
+                  Pick a ticket from the queue to read the conversation and send a resolution.
                 </p>
               </div>
             </div>
@@ -225,29 +213,64 @@ export default function SupportInboxPage() {
 
           {thread && !threadLoading ? (
             <>
-              <div className="mm-help__thread-head">
-                <div>
-                  <p className="mm-help__kicker">
-                    Ticket #{thread.id} · {thread.organization_name} ({thread.organization_code}) ·{' '}
-                    {portalLabel(thread.source_portal)} · {thread.reporter_role_label}
-                  </p>
-                  <h3>{thread.subject}</h3>
-                </div>
-                <div className="mm-help__thread-actions">
-                  {thread.status !== 'CLOSED' ? (
+              <div className="mm-help__ticket-head">
+                <div className="mm-help__ticket-toolbar">
+                  <div className="mm-help__ticket-topline">
+                    <span className="mm-help__ticket-id">Ticket #{thread.id}</span>
+                    <span
+                      className={`mm-help__status ${
+                        thread.status === 'CLOSED' ? 'is-closed' : 'is-open'
+                      }`}
+                    >
+                      {statusLabel(thread.status)}
+                    </span>
+                  </div>
+                  <div className="mm-help__thread-actions">
+                    {thread.status !== 'CLOSED' ? (
+                      <button
+                        type="button"
+                        className="mm-help__btn mm-help__btn--danger"
+                        onClick={closeTicket}
+                        disabled={saving}
+                      >
+                        <CheckCircle2 size={15} strokeWidth={2.2} aria-hidden />
+                        Close ticket
+                      </button>
+                    ) : null}
                     <button
                       type="button"
-                      className="mm-help__ghost"
-                      onClick={closeTicket}
-                      disabled={saving}
+                      className="mm-help__btn mm-help__btn--quiet"
+                      onClick={clearSelection}
+                      aria-label="Close panel"
+                      title="Close panel"
                     >
-                      Close ticket
+                      <X size={15} strokeWidth={2.2} aria-hidden />
+                      Close panel
                     </button>
-                  ) : null}
-                  <button type="button" className="mm-help__ghost" onClick={clearSelection}>
-                    Close panel
-                  </button>
+                  </div>
                 </div>
+
+                <h3 className="mm-help__ticket-subject">{thread.subject}</h3>
+
+                <dl className="mm-help__ticket-facts">
+                  <div>
+                    <dt>College</dt>
+                    <dd>
+                      {thread.organization_name}
+                      {thread.organization_code ? (
+                        <span className="mm-help__ticket-code"> ({thread.organization_code})</span>
+                      ) : null}
+                    </dd>
+                  </div>
+                  <div>
+                    <dt>Portal</dt>
+                    <dd>{portalLabel(thread.source_portal)}</dd>
+                  </div>
+                  <div>
+                    <dt>Role</dt>
+                    <dd>{thread.reporter_role_label}</dd>
+                  </div>
+                </dl>
               </div>
 
               <ol className="mm-help__replies">

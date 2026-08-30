@@ -265,6 +265,23 @@
   box-sizing: border-box;
 }
 
+/*
+ * html.mm-new-ui footer paints every <footer> with dark marketing chrome
+ * (!important). That looks correct in dark mode and broken in light mode.
+ * Same isolation pattern as .stu-app .stu-shell footer.
+ */
+.mm-career-root footer.mm-career-stats {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-top-color: transparent !important;
+  color: inherit;
+  --text-heading: inherit;
+  --text-body: inherit;
+  --text-secondary: inherit;
+  --text-muted: inherit;
+  --text-hint: inherit;
+}
+
 .mm-career-stats__item {
   display: flex;
   flex-direction: column;
@@ -672,13 +689,27 @@
 }
 
 .mm-career-input:focus-within {
-  border-color: color-mix(in srgb, var(--mm-orange) 70%, var(--mm-line));
-  box-shadow: 0 0 0 2px var(--mm-orange-soft);
+  border-color: var(--mm-orange);
+  box-shadow: 0 0 0 3px var(--mm-orange-soft);
+}
+
+.mm-career-input:focus-within svg {
+  color: var(--mm-orange);
+}
+
+/* College chip stays static — only ID / password highlight on focus */
+.mm-career-input.is-locked:focus-within {
+  box-shadow: none;
+}
+
+.mm-career-input.is-locked:focus-within svg {
+  color: var(--mm-muted);
 }
 
 .mm-career-input svg {
   color: var(--mm-muted);
   flex-shrink: 0;
+  transition: color 0.15s ease;
 }
 
 .mm-career-input input {
@@ -1221,13 +1252,24 @@
 }
 
 .mm-career-root.is-dark .mm-career-input:focus-within {
-  border-color: rgba(251, 146, 60, 0.45);
-  box-shadow: 0 0 0 2px rgba(251, 146, 60, 0.12);
+  border-color: #fb923c !important;
+  background: rgba(251, 146, 60, 0.06);
+  box-shadow: 0 0 0 3px rgba(251, 146, 60, 0.22);
 }
 
-.mm-career-root.is-dark .mm-career-input.is-locked {
-  border-color: rgba(251, 146, 60, 0.55);
+.mm-career-root.is-dark .mm-career-input:focus-within svg {
+  color: #fb923c;
+}
+
+.mm-career-root.is-dark .mm-career-input.is-locked,
+.mm-career-root.is-dark .mm-career-input.is-locked:focus-within {
+  border-color: rgba(251, 146, 60, 0.55) !important;
+  background: rgba(15, 23, 42, 0.85);
   box-shadow: none;
+}
+
+.mm-career-root.is-dark .mm-career-input.is-locked:focus-within svg {
+  color: #64748b;
 }
 
 .mm-career-root.is-dark .mm-career-input input {
@@ -1345,10 +1387,19 @@
 .mm-career-root.is-light .mm-career-selected__name,
 .mm-career-root.is-light .mm-career-value h1,
 .mm-career-root.is-light .mm-career-input__stack strong,
-.mm-career-root.is-light .mm-career-stats__item strong,
 .mm-career-root.is-light .mm-career-stage__ring-score strong,
 .mm-career-root.is-light .mm-career-college-list strong {
   color: #14212b !important;
+}
+
+.mm-career-root.is-light .mm-career-stats__item {
+  background: #ffffff !important;
+  border-color: #d8dee6 !important;
+  box-shadow: 0 4px 14px rgba(26, 26, 26, 0.04);
+}
+
+.mm-career-root.is-light .mm-career-stats__item strong {
+  color: #f05a00 !important;
 }
 
 .mm-career-root.is-light .mm-career-brand__tag,
@@ -1379,6 +1430,16 @@
   background: #ffffff !important;
   border-color: #d8dee6 !important;
   color: #14212b !important;
+}
+
+.mm-career-root.is-light .mm-career-input:focus-within {
+  border-color: #f05a00 !important;
+  box-shadow: 0 0 0 3px rgba(240, 90, 0, 0.16);
+}
+
+.mm-career-root.is-light .mm-career-input.is-locked:focus-within {
+  border-color: #d8dee6 !important;
+  box-shadow: none;
 }
 
 .mm-career-root.is-light .mm-career-input input {

@@ -33,9 +33,7 @@ import {
 import { orgPaths } from './paths';
 import { useOrgTheme } from './useOrgTheme';
 import OrgThemeToggle from './OrgThemeToggle';
-import WorkspaceInProgress from './components/WorkspaceInProgress';
 import IdleSessionGuard from '../components/IdleSessionGuard';
-import { orgApiBusy, useApiBusy } from '../lib/apiBusy';
 import './organization-portal.css';
 
 const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
@@ -158,7 +156,6 @@ export default function OrganizationShell() {
   const location = useLocation();
   const session = getOrgSession();
   const { theme, toggleTheme } = useOrgTheme();
-  const apiBusy = useApiBusy(orgApiBusy);
   const [navOpen, setNavOpen] = useState(false);
   const portalRole = normalizeOrgRole(session?.role);
   const navGroups = navForRole(session?.role);
@@ -338,7 +335,6 @@ export default function OrganizationShell() {
           </main>
         </div>
       </div>
-      {apiBusy ? <WorkspaceInProgress session={session} /> : null}
     </div>
     </IdleSessionGuard>
   );

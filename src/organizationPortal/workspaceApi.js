@@ -35,8 +35,10 @@ function withSource(result, source) {
 export function normalizeWorkspaceItem(row = {}) {
   if (!row || typeof row !== 'object') return null;
   const kind = String(row.kind || 'todo').toLowerCase();
+  const rawId = row.id ?? row.item_id ?? row.workspace_item_id;
+  if (rawId == null || rawId === '') return null;
   return {
-    id: row.id,
+    id: rawId,
     text: String(row.text || row.body || row.content || '').trim(),
     dueDate: row.due_date || row.dueDate || '',
     kind: ['todo', 'note', 'reminder'].includes(kind) ? kind : 'todo',
@@ -45,6 +47,12 @@ export function normalizeWorkspaceItem(row = {}) {
     updatedAt: row.updated_at || row.updatedAt || '',
     raw: row,
   };
+}
+
+/** Strict id match — never treat missing ids as equal (that marked every row done). */
+export function sameWorkspaceId(a, b) {
+  if (a == null || b == null || a === '' || b === '') return false;
+  return String(a) === String(b);
 }
 
 function toApiBody(input = {}) {

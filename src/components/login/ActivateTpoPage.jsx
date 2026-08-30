@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   ArrowRight,
@@ -11,7 +11,8 @@ import {
   Lock,
   ShieldCheck,
 } from 'lucide-react';
-import { activateTpoAccount } from '../../orgPortal';
+import { activateTpoAccount, previewTpoActivation } from '../../orgPortal';
+import { resolveTenantFromHostname } from '../../tenant/resolveTenant';
 import './activate-account.css';
 
 const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
@@ -26,6 +27,13 @@ function passwordStrength(value) {
   if (/\d/.test(pwd) || /[^A-Za-z0-9]/.test(pwd)) score += 1;
   const labels = ['', 'Weak', 'Fair', 'Good', 'Strong'];
   return { score, label: labels[score] || '' };
+}
+
+function titleLabel(title) {
+  const code = String(title || 'TPO').toUpperCase();
+  if (code === 'DEAN') return 'Dean';
+  if (code === 'DIRECTOR') return 'Director';
+  return 'TPO';
 }
 
 /**
@@ -43,10 +51,58 @@ export default function ActivateTpoPage() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [collegeName, setCollegeName] = useState('');
+  const [collegeCode, setCollegeCode] = useState('');
+  const [inviteTitle, setInviteTitle] = useState('TPO');
+  const [previewLoading, setPreviewLoading] = useState(Boolean(token));
 
   const strength = useMemo(() => passwordStrength(password), [password]);
   const passwordsMatch = Boolean(password && confirm && password === confirm);
   const meterTone = strength.score <= 1 ? 'is-weak' : strength.score === 2 ? 'is-fair' : '';
+  const roleName = titleLabel(inviteTitle);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadCollege() {
+      if (!token) {
+        setPreviewLoading(false);
+        return;
+      }
+      setPreviewLoading(true);
+
+      // Prefer invite preview (works on apex + college hosts).
+      const preview = await previewTpoActivation(token);
+      if (cancelled) return;
+
+      if (preview.ok) {
+        setCollegeName(preview.organizationName || '');
+        setCollegeCode(preview.organizationCode || '');
+        setInviteTitle(preview.title || 'TPO');
+        setPreviewLoading(false);
+        return;
+      }
+
+      // Fallback: college subdomain host (e.g. lnct.mentormuni.com).
+      try {
+        const tenant = await resolveTenantFromHostname();
+        if (cancelled) return;
+        if (tenant?.name) {
+          setCollegeName(tenant.name);
+          setCollegeCode(tenant.code || '');
+        }
+      } catch {
+        /* ignore — page still works without college name */
+      } finally {
+        if (!cancelled) setPreviewLoading(false);
+      }
+    }
+
+    loadCollege();
+    return () => {
+      cancelled = true;
+    };
+  }, [token]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,7 +128,9 @@ export default function ActivateTpoPage() {
         setError(result.error || 'Unable to activate account.');
         return;
       }
-      const orgCode = String(result.organizationCode || '').trim().toUpperCase();
+      const orgCode = String(result.organizationCode || collegeCode || '')
+        .trim()
+        .toUpperCase();
       const loginPath = orgCode
         ? `/Organization/login?org=${encodeURIComponent(orgCode)}`
         : '/Organization/login';
@@ -104,15 +162,21 @@ export default function ActivateTpoPage() {
 
         <div className="mm-activate__brand-mid">
           <p className="mm-activate__eyebrow">College leadership access</p>
+          {collegeName ? (
+            <p className="mm-activate__college">{collegeName}</p>
+          ) : null}
           <h1 className="mm-activate__headline">Welcome to your campus portal</h1>
           <p className="mm-activate__lede">
-            Set a secure password to activate your Org Admin account. You&apos;ll use this
-            to lead placement readiness for your institution.
+            {collegeName
+              ? `Set a secure password to activate your ${roleName} account for ${collegeName}.`
+              : `Set a secure password to activate your ${roleName} account. You'll use this to lead placement readiness for your institution.`}
           </p>
           <ul className="mm-activate__roles" aria-label="Roles this access covers">
-            <li className="mm-activate__role">TPO</li>
-            <li className="mm-activate__role">Dean</li>
-            <li className="mm-activate__role">Director</li>
+            <li className={`mm-activate__role${inviteTitle === 'TPO' ? ' is-on' : ''}`}>TPO</li>
+            <li className={`mm-activate__role${inviteTitle === 'DEAN' ? ' is-on' : ''}`}>Dean</li>
+            <li className={`mm-activate__role${inviteTitle === 'DIRECTOR' ? ' is-on' : ''}`}>
+              Director
+            </li>
           </ul>
         </div>
 
@@ -142,15 +206,36 @@ export default function ActivateTpoPage() {
               <KeyRound size={22} />
             </div>
             <div>
-              <p className="mm-activate__panel-kicker">Account activation</p>
+              <p className="mm-activate__panel-kicker">Account activation · {roleName}</p>
               <h2 className="mm-activate__panel-title">Create your password</h2>
             </div>
           </div>
 
-          <p className="mm-activate__panel-sub">
-            This is your first step into MentorMuni. After this, you&apos;ll sign in to the
-            Organization Portal.
-          </p>
+          {collegeName ? (
+            <div className="mm-activate__college-chip">
+              <Building2 size={15} aria-hidden />
+              <div>
+                <span>College</span>
+                <strong>
+                  {collegeName}
+                  {collegeCode ? ` (${collegeCode})` : ''}
+                </strong>
+              </div>
+            </div>
+          ) : previewLoading ? (
+            <p className="mm-activate__panel-sub">Loading college details…</p>
+          ) : (
+            <p className="mm-activate__panel-sub">
+              This is your first step into MentorMuni. After this, you&apos;ll sign in to the
+              Organization Portal.
+            </p>
+          )}
+
+          {collegeName ? (
+            <p className="mm-activate__panel-sub">
+              After activation you&apos;ll sign in to the Organization Portal for this campus.
+            </p>
+          ) : null}
 
           <div className="mm-activate__steps" aria-label="Activation steps">
             <span className="mm-activate__step is-active">
@@ -280,7 +365,14 @@ export default function ActivateTpoPage() {
 
               <p className="mm-activate__footer">
                 Already activated?{' '}
-                <Link to="/Organization/login" className="mm-activate__link">
+                <Link
+                  to={
+                    collegeCode
+                      ? `/Organization/login?org=${encodeURIComponent(collegeCode)}`
+                      : '/Organization/login'
+                  }
+                  className="mm-activate__link"
+                >
                   Sign in to your college portal
                 </Link>
               </p>

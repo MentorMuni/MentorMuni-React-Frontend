@@ -16,6 +16,7 @@ import MuniBot from "./components/MuniBot";
 import WelcomeLaunchOverlay from "./components/WelcomeLaunchOverlay";
 import RouteErrorBoundary from "./components/RouteErrorBoundary";
 import { isCollegeTenantHost } from "./tenant/resolveTenant";
+import PlatformApexOnly from "./platformAdmin/PlatformApexOnly";
 import "./index.css";
 
 const ASSESSMENT_PATHS = new Set([
@@ -341,9 +342,30 @@ function App() {
       <RouteTitle />
       <AppChrome>
         <Routes>
-              <Route path="/platform/admin/*" element={<PlatformAdminApp />} />
-              <Route path="/mentormuniplatformadmin" element={<LegacyPlatformAdminRedirect />} />
-              <Route path="/mentormuniplatformadmin/*" element={<LegacyPlatformAdminRedirect />} />
+              <Route
+                path="/platform/admin/*"
+                element={
+                  <PlatformApexOnly>
+                    <PlatformAdminApp />
+                  </PlatformApexOnly>
+                }
+              />
+              <Route
+                path="/mentormuniplatformadmin"
+                element={
+                  <PlatformApexOnly>
+                    <LegacyPlatformAdminRedirect />
+                  </PlatformApexOnly>
+                }
+              />
+              <Route
+                path="/mentormuniplatformadmin/*"
+                element={
+                  <PlatformApexOnly>
+                    <LegacyPlatformAdminRedirect />
+                  </PlatformApexOnly>
+                }
+              />
               <Route path="/Organization/*" element={<OrganizationPortalApp />} />
               <Route path="/organizaton/*" element={<OrganizationTypoRedirect />} />
               <Route path="/organizaton" element={<OrganizationTypoRedirect />} />
