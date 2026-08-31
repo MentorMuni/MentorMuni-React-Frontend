@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Bell, Loader2, Trash2 } from 'lucide-react';
 import { fetchDepartmentOptions } from '../departmentsApi';
 import {
@@ -46,9 +47,10 @@ function deliveryLabel(status) {
 export default function DrivesPage() {
   const session = getOrgSession();
   const demo = isDemoSession(session);
+  const location = useLocation();
 
   const [items, setItems] = useState([]);
-  const [departments, setDepartments] = useState(() => listDepartments());
+  const [departments, setDepartments] = useState(() => (demo ? listDepartments() : []));
   const [form, setForm] = useState(empty);
   const [err, setErr] = useState('');
   const [msg, setMsg] = useState('');
@@ -60,7 +62,7 @@ export default function DrivesPage() {
     setLoading(true);
     const [notes, depts] = await Promise.all([
       fetchNotifications(),
-      fetchDepartmentOptions().catch(() => ({ ok: false, departments: listDepartments() })),
+      fetchDepartmentOptions().catch(() => ({ ok: false, departments: demo ? listDepartments() : [] })),
     ]);
     setItems(notes.notifications || []);
     if (depts?.departments?.length) setDepartments(depts.departments);
@@ -93,7 +95,7 @@ export default function DrivesPage() {
       unsub();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [demo]);
+  }, [demo, location.key]);
 
   const onSubmit = async (e) => {
     e.preventDefault();

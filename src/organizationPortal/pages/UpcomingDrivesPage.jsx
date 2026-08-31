@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Briefcase, Loader2, Pencil, Plus, Trash2, X } from 'lucide-react';
 import {
   createUpcomingDrive,
@@ -32,6 +33,7 @@ function formatDate(iso) {
 export default function UpcomingDrivesPage() {
   const session = getOrgSession();
   const demo = isDemoSession(session);
+  const location = useLocation();
 
   const [items, setItems] = useState([]);
   const [form, setForm] = useState(empty);
@@ -64,7 +66,7 @@ export default function UpcomingDrivesPage() {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [demo]);
+  }, [demo, location.key]);
 
   const onSubmit = async (e) => {
     e.preventDefault();

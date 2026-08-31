@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   Building2,
@@ -21,6 +21,7 @@ function formatNumber(n) {
 }
 
 export default function DashboardPage() {
+  const location = useLocation();
   const [metrics, setMetrics] = useState({
     organizations: 0,
     studentsPurchased: 0,
@@ -49,7 +50,7 @@ export default function DashboardPage() {
     refresh();
     window.addEventListener('mm-platform-db-updated', refresh);
     return () => window.removeEventListener('mm-platform-db-updated', refresh);
-  }, []);
+  }, [location.key]);
 
   useEffect(() => {
     if (!error) return undefined;

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Check,
   Copy,
@@ -11,6 +12,7 @@ import {
   X,
 } from 'lucide-react';
 import { getOrgSession } from '../../orgPortal';
+import { isDemoSession } from '../demoAuth';
 import { getHodWorkspaceSnapshot, resolveHodDepartment } from '../hodScope';
 import { fetchDepartmentOptions } from '../departmentsApi';
 import { subscribeOrgDb } from '../store';
@@ -44,6 +46,8 @@ function sourceLabel(source) {
 
 export default function HodStudentsPage() {
   const session = getOrgSession();
+  const demo = isDemoSession(session);
+  const location = useLocation();
   const [snap, setSnap] = useState(() => getHodWorkspaceSnapshot(session));
   const [students, setStudents] = useState([]);
   const [pending, setPending] = useState([]);
@@ -133,17 +137,16 @@ export default function HodStudentsPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [location.key]);
 
-  useEffect(
-    () =>
-      subscribeOrgDb(() => {
-        const s = getOrgSession();
-        const deptFromSession = resolveHodDepartment(s);
-        setSnap(getHodWorkspaceSnapshot(s, deptFromSession ? [deptFromSession] : undefined));
-      }),
-    []
-  );
+  useEffect(() => {
+    if (!demo) return undefined;
+    return subscribeOrgDb(() => {
+      const s = getOrgSession();
+      const deptFromSession = resolveHodDepartment(s);
+      setSnap(getHodWorkspaceSnapshot(s, deptFromSession ? [deptFromSession] : undefined));
+    });
+  }, [demo]);
 
   useEffect(() => {
     let cancelled = false;
@@ -163,7 +166,7 @@ export default function HodStudentsPage() {
     return () => {
       cancelled = true;
     };
-  }, [deptId, scopeReady]);
+  }, [deptId, scopeReady, location.key]);
 
   const flash = (ok, text, setupUrl = '') => {
     setErr(ok ? '' : text);

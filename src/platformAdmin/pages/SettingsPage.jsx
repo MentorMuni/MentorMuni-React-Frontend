@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { getOrgAdmins, reinviteTpo, orgAdminTitleLabel } from '../store';
+import { getOrgAdmins, reinviteTpo, orgAdminTitleLabel, liveOrgAdmins } from '../store';
 import { platformAdminPaths } from '../paths';
 
 export default function SettingsPage() {
@@ -14,7 +14,7 @@ export default function SettingsPage() {
     const load = async () => {
       try {
         setLoading(true);
-        setTpos(await getOrgAdmins());
+        setTpos(liveOrgAdmins(await getOrgAdmins()));
         setError('');
       } catch (e) {
         setError(e.message || 'Unable to load Org Admin accounts.');
@@ -46,7 +46,7 @@ export default function SettingsPage() {
     try {
       await reinviteTpo(admin.organization_id, userId);
       setMsg(`Fresh activation queued for ${admin.email || admin.username || 'Org Admin'}.`);
-      setTpos(await getOrgAdmins());
+      setTpos(liveOrgAdmins(await getOrgAdmins()));
     } catch (e) {
       setError(e.message || 'Failed to reinvite Org Admin.');
     } finally {

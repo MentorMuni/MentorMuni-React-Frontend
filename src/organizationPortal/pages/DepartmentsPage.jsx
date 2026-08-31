@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Check,
   Copy,
@@ -166,6 +167,7 @@ function ModalShell({ title, meta, onClose, wide, children, labelledBy }) {
 
 export default function DepartmentsPage() {
   const session = getOrgSession();
+  const location = useLocation();
   const canEdit = canMutateCampus(session?.role);
 
   const [departments, setDepartments] = useState([]);
@@ -219,7 +221,7 @@ export default function DepartmentsPage() {
       cancelled = true;
       unsub();
     };
-  }, [session?.demo]);
+  }, [session?.demo, location.key]);
 
   const activeDept = useMemo(
     () => departments.find((d) => d.id === activeId) || null,

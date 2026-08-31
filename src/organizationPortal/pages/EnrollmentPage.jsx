@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Check, Copy, FileUp, Link2, Pencil, Trash2, UserPlus, X } from 'lucide-react';
+import { getOrgSession } from '../../orgPortal';
+import { isDemoSession } from '../demoAuth';
 import { listDepartments, subscribeOrgDb } from '../store';
 import { fetchDepartmentOptions } from '../departmentsApi';
 import {
@@ -38,7 +41,10 @@ function sourceLabel(source) {
 }
 
 export default function EnrollmentPage() {
-  const [departments, setDepartments] = useState(() => listDepartments());
+  const session = getOrgSession();
+  const demo = isDemoSession(session);
+  const location = useLocation();
+  const [departments, setDepartments] = useState(() => (demo ? listDepartments() : []));
   const [students, setStudents] = useState([]);
   const [pending, setPending] = useState([]);
   const [dataSource, setDataSource] = useState('');
@@ -126,16 +132,17 @@ export default function EnrollmentPage() {
           map[String(d.id)] = hodOk || coordOk;
         });
         setDeptHodMap(map);
-      } else {
+      } else if (demo) {
         setDepartments(listDepartments());
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [demo, location.key]);
 
   useEffect(() => {
+    if (!demo) return undefined;
     const unsub = subscribeOrgDb(() => {
       fetchDepartmentOptions().then((res) => {
         if (res.ok && res.departments?.length) {
@@ -160,7 +167,7 @@ export default function EnrollmentPage() {
       });
     });
     return unsub;
-  }, []);
+  }, [demo]);
 
   useEffect(() => {
     let cancelled = false;
@@ -178,7 +185,7 @@ export default function EnrollmentPage() {
     return () => {
       cancelled = true;
     };
-  }, [departmentId]);
+  }, [departmentId, location.key]);
 
   const flash = (ok, text, setupUrl = '') => {
     setErr(ok ? '' : text);

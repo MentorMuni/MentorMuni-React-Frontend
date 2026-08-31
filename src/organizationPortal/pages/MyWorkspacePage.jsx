@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import {
   Calendar,
   Check,
@@ -59,6 +60,7 @@ function isOverdue(item) {
 export default function MyWorkspacePage() {
   const session = getOrgSession();
   const demo = isDemoSession(session);
+  const location = useLocation();
 
   const [items, setItems] = useState([]);
   const [form, setForm] = useState(emptyForm);
@@ -106,7 +108,7 @@ export default function MyWorkspacePage() {
       unsub();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [demo]);
+  }, [demo, location.key]);
 
   const visible = useMemo(() => {
     if (filter === 'open') return items.filter((i) => !i.done);

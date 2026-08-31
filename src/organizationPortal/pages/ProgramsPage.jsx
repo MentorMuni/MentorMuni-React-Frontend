@@ -1,8 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Plus, Trash2 } from 'lucide-react';
 import { getOrgSession } from '../../orgPortal';
+import { isDemoSession } from '../demoAuth';
 import { isHodRole, normalizeOrgRole, ORG_ROLES } from '../roles';
 import { resolveHodDepartment } from '../hodScope';
+import { fetchDepartmentOptions } from '../departmentsApi';
+import { fetchStudents } from '../studentsApi';
 import {
   PROGRAM_TYPES,
   createProgram,
@@ -29,13 +33,15 @@ function typeLabel(id) {
 
 export default function ProgramsPage() {
   const session = getOrgSession();
+  const demo = isDemoSession(session);
+  const location = useLocation();
   const role = normalizeOrgRole(session?.role);
   const hod = isHodRole(session?.role);
-  const hodDept = hod ? resolveHodDepartment(session) : null;
+  const [hodDept, setHodDept] = useState(() => (hod ? resolveHodDepartment(session) : null));
 
   const [programs, setPrograms] = useState(() => listPrograms());
-  const [departments, setDepartments] = useState(() => listDepartments());
-  const [students, setStudents] = useState(() => listStudents());
+  const [departments, setDepartments] = useState(() => (demo ? listDepartments() : []));
+  const [students, setStudents] = useState(() => (demo ? listStudents() : []));
   const [access, setAccess] = useState(() => getHodAccess());
   const [form, setForm] = useState(() =>
     hod && hodDept
@@ -45,16 +51,43 @@ export default function ProgramsPage() {
   const [err, setErr] = useState('');
   const [msg, setMsg] = useState('');
 
-  useEffect(
-    () =>
-      subscribeOrgDb(() => {
-        setPrograms(listPrograms());
-        setDepartments(listDepartments());
-        setStudents(listStudents());
-        setAccess(getHodAccess());
-      }),
-    []
-  );
+  useEffect(() => {
+    if (!demo) return undefined;
+    return subscribeOrgDb(() => {
+      setPrograms(listPrograms());
+      setDepartments(listDepartments());
+      setStudents(listStudents());
+      setAccess(getHodAccess());
+    });
+  }, [demo]);
+
+  // Live mode: hydrate departments + student roster from API for accurate pickers
+  useEffect(() => {
+    if (demo) return undefined;
+    let cancelled = false;
+    (async () => {
+      const deptRes = await fetchDepartmentOptions();
+      if (cancelled) return;
+      const deptList = deptRes.departments || [];
+      setDepartments(
+        deptList.map((d) => ({ id: d.id, name: d.name, code: d.code || '' }))
+      );
+      if (hod) {
+        const dept = resolveHodDepartment(getOrgSession(), deptList);
+        setHodDept(dept);
+        if (dept?.id) {
+          const roster = await fetchStudents({ departmentId: dept.id });
+          if (!cancelled) setStudents(roster.students || []);
+        }
+      } else {
+        const roster = await fetchStudents();
+        if (!cancelled) setStudents(roster.students || []);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [demo, hod, location.key, session?.department_id]);
 
   const branchStudents = useMemo(() => {
     if (hod && hodDept) {

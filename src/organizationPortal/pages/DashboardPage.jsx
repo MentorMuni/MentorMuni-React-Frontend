@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -35,8 +35,10 @@ import AssignToStudentModal from './AssignToStudentModal';
 import {
   fetchBranchInsight,
   fetchCampusInsight,
+  fetchPerformanceScorecards,
   fetchPerformanceSummary,
   mapInsight,
+  scorecardsToUiRows,
   summaryToUiMetrics,
 } from '../performanceApi';
 import {
@@ -48,11 +50,44 @@ import {
   PillarBars,
   ToolCoverageBars,
 } from '../components/PerformanceCharts';
+import PrepSnapshot from '../components/PrepSnapshot';
+import DeptReadinessTable from '../components/DeptReadinessTable';
+import AtRiskPanel from '../components/AtRiskPanel';
 
 const EASE = [0.22, 1, 0.36, 1];
 
+/** Merge live performance API fields into TPO dashboard metrics without clobbering dept count. */
+function mergeTpoApiMetrics(prev, ui, { departmentCount } = {}) {
+  if (!ui) return prev;
+  return {
+    ...prev,
+    ...ui,
+    departments: departmentCount ?? ui.byDept?.length ?? prev.departments,
+    activePrograms: prev.activePrograms,
+    recentPrograms: prev.recentPrograms,
+    recentDrives: prev.recentDrives,
+    programCoverage: prev.programCoverage,
+  };
+}
+
+/** Layer performance summary onto HOD roster metrics (roster counts win for students/pending). */
+function mergeHodApiMetrics(rosterMetrics, perfUi, { pendingInvites, programsCount } = {}) {
+  const base = { ...(rosterMetrics || {}), ...(perfUi || {}) };
+  return {
+    ...base,
+    students: rosterMetrics?.students ?? perfUi?.students ?? 0,
+    pendingInvites: pendingInvites ?? rosterMetrics?.pendingInvites ?? perfUi?.pendingInvites ?? 0,
+    activePrograms: programsCount ?? rosterMetrics?.activePrograms ?? perfUi?.activePrograms ?? 0,
+    leaders: perfUi?.leaders?.length ? perfUi.leaders : rosterMetrics?.leaders || [],
+    atRisk: perfUi?.atRisk?.length ? perfUi.atRisk : rosterMetrics?.atRisk || [],
+    topGaps: perfUi?.topGaps?.length ? perfUi.topGaps : rosterMetrics?.topGaps || [],
+    topStrengths: perfUi?.topStrengths?.length ? perfUi.topStrengths : rosterMetrics?.topStrengths || [],
+  };
+}
+
 export default function DashboardPage() {
   const session = getOrgSession();
+  const location = useLocation();
   const role = normalizeOrgRole(session?.role);
   const canEdit = canMutateCampus(session?.role);
   const viewer = isViewerRole(session?.role);
@@ -60,6 +95,8 @@ export default function DashboardPage() {
   const [aiBusy, setAiBusy] = useState(false);
   const [insight, setInsight] = useState(() => buildLocalCampusInsight(getTpoMetrics()));
   const [hodSnap, setHodSnap] = useState(() => getHodWorkspaceSnapshot(session));
+  const [hodStudents, setHodStudents] = useState(() => getHodWorkspaceSnapshot(session).students || []);
+  const [hodScorecards, setHodScorecards] = useState([]);
   const [hodMetrics, setHodMetrics] = useState(() => getHodWorkspaceSnapshot(session).metrics);
   const [hodInsight, setHodInsight] = useState(() =>
     buildLocalBranchInsight(getHodWorkspaceSnapshot(session).metrics)
@@ -79,39 +116,30 @@ export default function DashboardPage() {
       }
       const hs = getHodWorkspaceSnapshot(getOrgSession());
       setHodSnap(hs);
+      setHodStudents(hs.students || []);
       setHodMetrics(hs.metrics);
       setHodInsight(buildLocalBranchInsight(hs.metrics));
       setHodDataSource('local');
     });
   }, []);
 
-  // Live campus / branch performance from roadmap scores
+  // Live TPO / Viewer dashboard — performance + department count from API
   useEffect(() => {
     if (session?.demo) return undefined;
+    const roleNow = normalizeOrgRole(session?.role);
+    if (roleNow !== ORG_ROLES.TPO && !isViewerRole(session?.role)) return undefined;
     let cancelled = false;
     (async () => {
       try {
-        const summary = await fetchPerformanceSummary();
-        if (cancelled || !summary) return;
-        const ui = summaryToUiMetrics(summary);
-        if (normalizeOrgRole(session?.role) === ORG_ROLES.HOD) {
-          setHodMetrics((prev) => ({
-            ...(prev || {}),
-            ...ui,
-            activePrograms: prev?.activePrograms ?? 0,
-            pendingInvites: ui.pendingInvites ?? prev?.pendingInvites ?? 0,
-          }));
-          setHodDataSource('api');
-        } else {
-          setMetrics((prev) => ({
-            ...prev,
-            ...ui,
-            departments: prev.departments,
-            activePrograms: prev.activePrograms,
-            recentPrograms: prev.recentPrograms,
-            recentDrives: prev.recentDrives,
-            programCoverage: prev.programCoverage,
-          }));
+        const [summary, deptRes] = await Promise.all([
+          fetchPerformanceSummary(),
+          fetchDepartmentOptions(),
+        ]);
+        if (cancelled) return;
+        const ui = summary ? summaryToUiMetrics(summary) : null;
+        const departmentCount = (deptRes.departments || []).length;
+        if (ui) {
+          setMetrics((prev) => mergeTpoApiMetrics(prev, ui, { departmentCount }));
           setPerfSource('api');
         }
       } catch {
@@ -121,9 +149,9 @@ export default function DashboardPage() {
     return () => {
       cancelled = true;
     };
-  }, [session?.role, session?.demo, session?.department_id]);
+  }, [session?.role, session?.demo, location.key]);
 
-  // Live HOD dashboard: students + pending from API for this department
+  // Live HOD dashboard — roster, invites, and branch-scoped performance from API
   useEffect(() => {
     if (normalizeOrgRole(session?.role) !== ORG_ROLES.HOD) return undefined;
     let cancelled = false;
@@ -134,61 +162,48 @@ export default function DashboardPage() {
       const snap = getHodWorkspaceSnapshot(getOrgSession(), list);
       setHodSnap(snap);
       const deptId = snap.departmentId;
-      if (!deptId) return;
+      if (!deptId) {
+        setHodStudents([]);
+        return;
+      }
       if (session?.demo) {
+        setHodStudents(snap.students || []);
         setHodMetrics(snap.metrics);
         setHodInsight(buildLocalBranchInsight(snap.metrics));
         setHodDataSource('local');
         return;
       }
-      const [roster, queue] = await Promise.all([
+      const [roster, queue, summary, cards] = await Promise.all([
         fetchStudents({ departmentId: deptId }),
         fetchStudentInvites({ status: 'pending', departmentId: deptId }),
+        fetchPerformanceSummary({ departmentId: deptId }),
+        fetchPerformanceScorecards({ departmentId: deptId }).catch(() => ({ items: [] })),
       ]);
       if (cancelled) return;
+      const students = roster.students || [];
+      setHodStudents(students);
+      setHodScorecards(scorecardsToUiRows(cards));
       const programsCount = listPrograms().filter(
         (p) =>
           p.audience === 'all' ||
           (p.audience === 'department' && String(p.departmentId) === String(deptId))
       ).length;
-      const live = buildBranchMetricsFromApi({
-        students: roster.students || [],
-        pendingCount: (queue.invitations || []).length,
+      const pendingInvites = (queue.invitations || []).length;
+      const rosterMetrics = buildBranchMetricsFromApi({
+        students,
+        pendingCount: pendingInvites,
         programsCount,
       });
-      setHodMetrics((prev) => ({
-        // Live roster counts first, then layer performance summary fields that roster lacks
-        ...live,
-        pillars: prev?.pillars || live.pillars,
-        areaLeaders: prev?.areaLeaders?.length ? prev.areaLeaders : live.areaLeaders,
-        atRisk: prev?.atRisk?.length ? prev.atRisk : live.atRisk,
-        topGaps: prev?.topGaps?.length ? prev.topGaps : live.topGaps,
-        topStrengths: prev?.topStrengths?.length ? prev.topStrengths : live.topStrengths,
-        bands: prev?.bands || live.bands,
-        strong: prev?.strong ?? live.strong,
-        mid: prev?.mid ?? live.mid,
-        weak: prev?.weak ?? live.weak,
-        unscored: prev?.unscored ?? live.unscored,
-        avgReadiness: prev?.avgReadiness ?? live.avgReadiness,
-        coveragePct: prev?.coveragePct ?? live.coveragePct,
-        driveReadyPct: prev?.driveReadyPct ?? live.driveReadyPct,
-        driveReadyOfScoredPct: prev?.driveReadyOfScoredPct ?? live.driveReadyOfScoredPct,
-        clarity: prev?.clarity || live.clarity,
-        toolCoverage: prev?.toolCoverage?.length ? prev.toolCoverage : live.toolCoverage,
-        leaders: prev?.leaders?.length ? prev.leaders : live.leaders,
-        active7d: prev?.active7d ?? live.active7d,
-        idleCount: prev?.idleCount ?? live.idleCount,
-        inactive14d: prev?.inactive14d ?? live.inactive14d,
-        neverStarted: prev?.neverStarted ?? live.neverStarted,
-        activePrograms: programsCount,
-        pendingInvites: (queue.invitations || []).length,
-      }));
+      const perfUi = summary ? summaryToUiMetrics(summary) : null;
+      const merged = mergeHodApiMetrics(rosterMetrics, perfUi, { pendingInvites, programsCount });
+      setHodMetrics(merged);
+      setHodInsight(buildLocalBranchInsight(merged));
       setHodDataSource(roster.source || 'api');
     })();
     return () => {
       cancelled = true;
     };
-  }, [session?.role, session?.demo, session?.department_id]);
+  }, [session?.role, session?.demo, session?.department_id, location.key]);
 
   const runInsight = async () => {
     setAiBusy(true);
@@ -199,15 +214,12 @@ export default function DashboardPage() {
           fetchPerformanceSummary(),
         ]);
         if (summary) {
-          setMetrics((prev) => ({
-            ...prev,
-            ...summaryToUiMetrics(summary),
-            departments: prev.departments,
-            activePrograms: prev.activePrograms,
-            recentPrograms: prev.recentPrograms,
-            recentDrives: prev.recentDrives,
-            programCoverage: prev.programCoverage,
-          }));
+          const deptRes = await fetchDepartmentOptions();
+          setMetrics((prev) =>
+            mergeTpoApiMetrics(prev, summaryToUiMetrics(summary), {
+              departmentCount: (deptRes.departments || []).length,
+            })
+          );
         }
         setInsight(mapInsight(res) || buildLocalCampusInsight(getTpoMetrics()));
         setPerfSource(res?.source === 'openai' ? 'api+ai' : 'api');
@@ -225,18 +237,20 @@ export default function DashboardPage() {
     setAiBusy(true);
     try {
       if (!session?.demo) {
+        const deptId = hodSnap.departmentId;
         const [res, summary] = await Promise.all([
           fetchBranchInsight({ include_leaderboard: true, max_actions: 5 }),
-          fetchPerformanceSummary(),
+          fetchPerformanceSummary(deptId ? { departmentId: deptId } : {}),
         ]);
         setHodInsight(mapInsight(res) || buildLocalBranchInsight(hodMetrics));
         if (summary) {
-          setHodMetrics((prev) => ({
-            ...(prev || {}),
-            ...summaryToUiMetrics(summary),
-            activePrograms: prev?.activePrograms ?? 0,
-            pendingInvites: summaryToUiMetrics(summary).pendingInvites ?? prev?.pendingInvites ?? 0,
-          }));
+          const perfUi = summaryToUiMetrics(summary);
+          setHodMetrics((prev) =>
+            mergeHodApiMetrics(prev, perfUi, {
+              pendingInvites: prev?.pendingInvites,
+              programsCount: prev?.activePrograms,
+            })
+          );
         }
       } else {
         setHodInsight(buildLocalBranchInsight(hodMetrics));
@@ -376,6 +390,12 @@ export default function DashboardPage() {
           })}
         </div>
 
+        <PrepSnapshot
+          scope="campus"
+          scopeLabel={session?.organization_name || 'Campus'}
+          metrics={metrics}
+        />
+
         <section className="mm-org-panel">
           <div className="mm-org-panel__head">
             <div>
@@ -492,48 +512,28 @@ export default function DashboardPage() {
         </section>
 
         <div className="grid gap-5 lg:grid-cols-5">
-          <section className="mm-org-panel lg:col-span-3">
+          <section className="mm-org-panel lg:col-span-5">
             <div className="mm-org-panel__head">
               <div>
-                <h2 className="mm-org-panel__title">Department readiness</h2>
-                <p className="mm-org-panel__meta">Average score by branch</p>
+                <h2 className="mm-org-panel__title">Branch comparison</h2>
+                <p className="mm-org-panel__meta">
+                  Readiness, coverage, bands, and mentor status — weakest branches first
+                </p>
               </div>
               <Link to={orgPaths.departments} className="mm-org-link text-xs">
-                {canEdit ? 'Manage →' : 'View →'}
+                {canEdit ? 'Manage departments →' : 'View departments →'}
               </Link>
             </div>
-            {metrics.byDept.length ? (
-              <div className="space-y-4">
-                {metrics.byDept.map((d, i) => (
-                  <div key={d.id}>
-                    <div className="mb-1.5 flex items-center justify-between text-xs">
-                      <span className="font-bold mm-org-text">
-                        {d.name} <span className="mm-org-text-muted">({d.code})</span>
-                      </span>
-                      <span className="mm-org-text-muted">
-                        {d.students} students ·{' '}
-                        {d.avgReadiness == null ? 'no scores' : `${Math.round(d.avgReadiness)}%`}
-                      </span>
-                    </div>
-                    <div className="mm-org-progress">
-                      <motion.div
-                        className="mm-org-progress__bar"
-                        initial={{ width: 0 }}
-                        animate={{ width: `${d.avgReadiness == null ? 0 : d.avgReadiness}%` }}
-                        transition={{ duration: 0.7, delay: 0.04 * i, ease: EASE }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div className="mm-org-empty">
-                No departments yet. Create CSE, ECE, and more to start tracking.
-              </div>
-            )}
+            <DeptReadinessTable departments={metrics.byDept || []} />
           </section>
+        </div>
 
-          <section className="mm-org-panel lg:col-span-2">
+        <div className="grid gap-5 lg:grid-cols-2">
+          <AtRiskPanel
+            students={metrics.atRisk || []}
+            scopeLabel="campus-wide"
+          />
+          <section className="mm-org-panel">
             <div className="mm-org-panel__head">
               <div>
                 <h2 className="mm-org-panel__title">Leaderboard</h2>
@@ -551,6 +551,7 @@ export default function DashboardPage() {
                       </p>
                       <p className="m-0 truncate text-xs mm-org-text-muted">
                         {s.departmentName || 'Unassigned'}
+                        {s.testsDone != null ? ` · ${s.testsDone} tests` : ''}
                       </p>
                     </div>
                     <span className="mm-org-badge mm-org-badge--active">{s.readiness}%</span>
@@ -658,11 +659,32 @@ export default function DashboardPage() {
 
     const cards = [
       { label: 'Students', value: hm?.students ?? 0, icon: Users, hint: dept.name },
-      { label: 'Avg readiness', value: hm?.avgReadiness == null ? '—' : `${Math.round(hm.avgReadiness)}%`, icon: BarChart3, hint: 'Among scored' },
-      { label: 'Less prepared', value: hm?.weak ?? 0, icon: AlertTriangle, hint: '< 50%' },
-      { label: 'Active programs', value: hm?.activePrograms ?? 0, icon: ClipboardList, hint: 'Assigned' },
-      { label: 'Pending invites', value: hm?.pendingInvites ?? 0, icon: UserPlus, hint: 'Queue' },
+      {
+        label: 'Scored',
+        value: `${hm?.studentsScored ?? Math.max(0, (hm?.students ?? 0) - (hm?.unscored ?? 0))}/${hm?.students ?? 0}`,
+        icon: BarChart3,
+        hint: `${Math.round(hm?.coveragePct ?? 0)}% coverage`,
+      },
+      {
+        label: 'Drive-ready',
+        value: hm?.strong ?? hm?.bands?.strong ?? 0,
+        icon: Sparkles,
+        hint: '≥75% readiness',
+      },
+      { label: 'Less prepared', value: hm?.weak ?? hm?.bands?.weak ?? 0, icon: AlertTriangle, hint: '< 50%' },
+      { label: 'Pending invites', value: hm?.pendingInvites ?? 0, icon: UserPlus, hint: 'Enrollment queue' },
     ];
+
+    const branchRoster =
+      hodScorecards.length > 0
+        ? hodScorecards
+        : hodStudents.map((s) => ({
+            ...s,
+            testsDone: s.testsDone ?? 0,
+            testsRemaining: s.testsRemaining ?? 8,
+            progressLevel: s.progressLevel ?? 0,
+            activityStatus: s.activityStatus || 'never',
+          }));
 
     return (
       <div className="space-y-6">
@@ -717,6 +739,12 @@ export default function DashboardPage() {
             );
           })}
         </div>
+
+        <PrepSnapshot
+          scope="branch"
+          scopeLabel={dept.name}
+          metrics={hm}
+        />
 
         <div className="grid gap-5 lg:grid-cols-5">
           <section className="mm-org-panel lg:col-span-2">
@@ -933,98 +961,46 @@ export default function DashboardPage() {
           </section>
         </div>
 
-        <section className="mm-org-panel">
-          <div className="mm-org-panel__head">
-            <div>
-              <h2 className="mm-org-panel__title">Deep analysis</h2>
-              <p className="mm-org-panel__meta">Strengths, gaps, and AI mentor insight</p>
-            </div>
-          </div>
-
-          <div className="grid gap-5 lg:grid-cols-2 mb-5">
-            <div>
-              <p className="mm-org-stat__label mb-2">Branch preparation gaps</p>
-              {(hm?.topGaps || []).length ? (
-                <div className="space-y-3">
-                  {hm.topGaps.map((g, i) => (
-                    <div key={g.label}>
-                      <div className="mb-1 flex justify-between text-xs">
-                        <span className="mm-org-band-label">{g.label}</span>
-                        <span className="mm-org-text-muted">{g.count} students</span>
-                      </div>
-                      <div className="mm-org-progress">
-                        <motion.div
-                          className="mm-org-progress__bar"
-                          initial={{ width: 0 }}
-                          animate={{
-                            width: `${Math.min(100, Math.round((g.count / hTotal) * 100))}%`,
-                          }}
-                          transition={{ duration: 0.6, delay: 0.05 * i, ease: EASE }}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="m-0 text-sm mm-org-text-muted">
-                  Gap themes appear after students have scorecards.
+        {(hm?.toolCoverage || []).length ? (
+          <section className="mm-org-panel">
+            <div className="mm-org-panel__head">
+              <div>
+                <h2 className="mm-org-panel__title">Week-1 tool progress</h2>
+                <p className="mm-org-panel__meta">
+                  Baseline assessments completed across {dept.name}
                 </p>
-              )}
+              </div>
             </div>
-            <div>
-              <p className="mm-org-stat__label mb-2">Branch strengths</p>
-              {(hm?.topStrengths || []).length ? (
-                <ul className="m-0 list-none space-y-2 p-0">
-                  {hm.topStrengths.map((s) => (
-                    <li
-                      key={s.label}
-                      className="mm-org-list-card text-sm"
-                    >
-                      <span className="font-bold mm-org-text">{s.label}</span>
-                      <span className="mm-org-badge mm-org-badge--active">{s.count}</span>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <p className="m-0 text-sm mm-org-text-muted">
-                  Strength signals appear after scorecards load.
-                </p>
-              )}
-            </div>
-          </div>
+            <ToolCoverageBars tools={hm.toolCoverage} />
+          </section>
+        ) : null}
 
-          <div className="mm-org-ai-box">
-            <p className="mm-org-ai-box__title">
-              <Sparkles size={14} /> AI deep analysis
-            </p>
-            <p className="mm-org-ai-box__body">
-              Coming next: OpenAI-backed branch analysis — who needs English vs technical drills,
-              recommended mock interviews per student, and a weekly mentoring plan for {dept.name}.
-            </p>
-            <p className="mm-org-ai-box__meta">
-              Placeholder only. Heuristic brief above works today; wire{' '}
-              <code className="mm-org-code">POST /organizations/ai/branch-insight</code> when live
-              scores exist.
-            </p>
-          </div>
-        </section>
+        <AtRiskPanel
+          students={hm?.atRisk || []}
+          scopeLabel={dept.name}
+          showAssign
+          onAssign={(s) => {
+            setAssignFlash('');
+            setAssignStudent(s);
+          }}
+        />
 
         <section className="mm-org-panel">
           <div className="mm-org-panel__head">
             <div>
-              <h2 className="mm-org-panel__title">Student details</h2>
+              <h2 className="mm-org-panel__title">Student scorecards</h2>
               <p className="mm-org-panel__meta">
-                Full roster — assign any assessment or program to a student from here
+                Live readiness from student portal activity — assign mocks from here
               </p>
             </div>
-            <Link to={orgPaths.students} className="mm-org-link text-xs">
-              Manage roster →
+            <Link to={orgPaths.performance} className="mm-org-link text-xs">
+              Full analytics →
             </Link>
           </div>
           {assignFlash ? (
             <div className="mm-org-alert mm-org-alert--success mb-3">{assignFlash}</div>
           ) : null}
-          {hodSnap.students?.length ? (
+          {branchRoster?.length ? (
             <div className="mm-org-table-wrap">
               <table className="mm-org-table">
                 <thead>
@@ -1032,6 +1008,8 @@ export default function DashboardPage() {
                     <th>Student</th>
                     <th>Readiness</th>
                     <th>Mock</th>
+                    <th>Tests</th>
+                    <th>Level</th>
                     <th>Strength</th>
                     <th>Prep gap</th>
                     <th>Activity</th>
@@ -1039,8 +1017,8 @@ export default function DashboardPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {[...hodSnap.students]
-                    .sort((a, b) => (b.readiness || 0) - (a.readiness || 0))
+                  {[...branchRoster]
+                    .sort((a, b) => (Number(b.readiness) || 0) - (Number(a.readiness) || 0))
                     .map((s) => (
                       <tr key={s.id}>
                         <td>
@@ -1050,20 +1028,24 @@ export default function DashboardPage() {
                         <td>
                           <span
                             className={`mm-org-badge ${
-                              s.readiness >= 75
+                              (s.readiness ?? 0) >= 75
                                 ? 'mm-org-badge--active'
-                                : s.readiness < 50
+                                : (s.readiness ?? 0) < 50
                                   ? 'mm-org-badge--danger'
                                   : 'mm-org-badge--pending'
                             }`}
                           >
-                            {s.readiness}%
+                            {s.readiness == null ? '—' : `${Math.round(s.readiness)}%`}
                           </span>
                         </td>
-                        <td>{s.mockScore ?? '—'}</td>
+                        <td>{s.mockScore == null ? '—' : `${Math.round(s.mockScore)}%`}</td>
+                        <td className="mm-org-text-muted">
+                          {s.testsDone ?? 0}/{((s.testsDone || 0) + (s.testsRemaining || 0)) || 8}
+                        </td>
+                        <td>L{s.progressLevel || 0}</td>
                         <td className="mm-org-text">{s.strength || '—'}</td>
                         <td className="mm-org-text">{s.weakness || '—'}</td>
-                        <td className="mm-org-text-muted">{s.activities ?? 0}</td>
+                        <td className="mm-org-text-muted">{s.activityStatus || (s.activities ?? 0)}</td>
                         <td>
                           <button
                             type="button"
@@ -1079,7 +1061,7 @@ export default function DashboardPage() {
                                 : 'Assignment disabled by TPO'
                             }
                           >
-                            <Plus size={14} /> Assign
+                            Assign
                           </button>
                         </td>
                       </tr>

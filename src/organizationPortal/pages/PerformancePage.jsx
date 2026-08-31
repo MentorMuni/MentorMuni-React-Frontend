@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Download, Sparkles, Trophy, AlertTriangle, Filter } from 'lucide-react';
 import { getOrgSession } from '../../orgPortal';
@@ -119,6 +120,7 @@ function RankList({ title, items, tone }) {
 
 export default function PerformancePage() {
   const session = getOrgSession();
+  const location = useLocation();
   const hod = isHodRole(session?.role);
   const [hodDept, setHodDept] = useState(() => (hod ? resolveHodDepartment(session) : null));
   const [metrics, setMetrics] = useState(() =>
@@ -126,7 +128,7 @@ export default function PerformancePage() {
       ? getHodMetrics(resolveHodDepartment(session).id)
       : getTpoMetrics()
   );
-  const [students, setStudents] = useState(() => listStudents());
+  const [students, setStudents] = useState(() => (session?.demo ? listStudents() : []));
   const [insight, setInsight] = useState(() =>
     hod
       ? buildLocalBranchInsight(
@@ -245,7 +247,7 @@ export default function PerformancePage() {
     };
     // areaFocus only affects AI brief refresh via button / boardLimit+dept reload
     // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: area tab switches local board, not full reload
-  }, [hod, session?.demo, session?.department_id, scopeFilterKey, boardLimit, reloadKey, loadLive]);
+  }, [hod, session?.demo, session?.department_id, scopeFilterKey, boardLimit, reloadKey, loadLive, location.key]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();

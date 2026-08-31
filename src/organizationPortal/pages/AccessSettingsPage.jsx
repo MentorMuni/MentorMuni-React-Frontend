@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { getOrgSession } from '../../orgPortal';
+import { isDemoSession } from '../demoAuth';
 import { getHodAccess, subscribeOrgDb, updateHodAccess } from '../store';
 
 const TOGGLES = [
@@ -30,14 +32,20 @@ const TOGGLES = [
 ];
 
 export default function AccessSettingsPage() {
+  const session = getOrgSession();
+  const demo = isDemoSession(session);
   const [access, setAccess] = useState(() => getHodAccess());
   const [msg, setMsg] = useState('');
 
-  useEffect(() => subscribeOrgDb(() => setAccess(getHodAccess())), []);
+  useEffect(() => {
+    if (!demo) return undefined;
+    return subscribeOrgDb(() => setAccess(getHodAccess()));
+  }, [demo]);
 
   const toggle = (key) => {
+    if (!demo) return;
     updateHodAccess({ [key]: !access[key] });
-    setMsg('HOD access updated for this organization.');
+    setMsg('HOD access updated for this organization (demo).');
   };
 
   return (
@@ -46,11 +54,16 @@ export default function AccessSettingsPage() {
         <div>
           <h2 className="mm-org-panel__title">What HODs can do</h2>
           <p className="mm-org-panel__meta">
-            Legal / operational boundaries for department mentors. Applies org-wide for now;
-            per-department overrides come with personalization.
+            Legal / operational boundaries for department mentors.
           </p>
         </div>
       </div>
+      {!demo ? (
+        <div className="mm-org-alert mm-org-alert--error mb-3" role="status">
+          Live organizations use server permissions for HOD access. These toggles apply in demo
+          mode only — contact engineering to change live HOD permissions.
+        </div>
+      ) : null}
       {msg ? <div className="mm-org-alert mm-org-alert--success mb-3">{msg}</div> : null}
       {TOGGLES.map((t) => (
         <div key={t.key} className="mm-org-switch-row">
@@ -60,12 +73,13 @@ export default function AccessSettingsPage() {
           </div>
           <button
             type="button"
-            className={`mm-org-toggle ${access[t.key] ? 'is-on' : ''}`}
-            aria-pressed={!!access[t.key]}
-            aria-label={t.title}
+            role="switch"
+            aria-checked={Boolean(access[t.key])}
+            className={`mm-org-switch ${access[t.key] ? 'is-on' : ''}`}
             onClick={() => toggle(t.key)}
+            disabled={!demo}
           >
-            <span className="mm-org-toggle__knob" />
+            <span className="mm-org-switch__thumb" />
           </button>
         </div>
       ))}

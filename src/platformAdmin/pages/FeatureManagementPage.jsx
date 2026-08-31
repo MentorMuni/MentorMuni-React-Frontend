@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   getOrganizations,
   getOrgFeatures,
@@ -14,6 +14,8 @@ export default function FeatureManagementPage() {
   const [saved, setSaved] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
+  const orgIdRef = useRef(orgId);
+  orgIdRef.current = orgId;
 
   const loadFeatures = async (id) => {
     if (!id) {
@@ -40,6 +42,10 @@ export default function FeatureManagementPage() {
           return list[0]?.id || '';
         });
         setError('');
+        const selected = orgIdRef.current;
+        if (selected && list.find((o) => o.id === Number(selected))) {
+          await loadFeatures(selected);
+        }
       } catch (e) {
         setError(e.message || 'Failed to load feature management data.');
       } finally {
