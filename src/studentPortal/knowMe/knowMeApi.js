@@ -27,21 +27,64 @@ export async function saveStepResponse(checkin_id, body) {
 
 /**
  * Generate elder-brother insight after check-in complete.
- * Backend also auto-creates 6-week solutions + schedules notifications.
+ * Solutions are built in the background on the server; poll intervention or call generateSolutions.
  */
 export async function generateInsight(checkin_id) {
-  return studentApi.post(`${BASE}/insight/${checkin_id}`, {});
+  const controller = new AbortController();
+  const timer = window.setTimeout(() => controller.abort(), 180_000);
+  try {
+    return await studentApi.post(`${BASE}/insight/${checkin_id}`, {}, { signal: controller.signal });
+  } finally {
+    window.clearTimeout(timer);
+  }
 }
 
 /**
  * Explicitly generate / fetch solutions for a check-in.
- * If fears omitted, backend uses stored blockers / defaults.
+ * fast=true uses instant heuristic plans (reliable on submit).
  */
-export async function generateSolutions(checkin_id, fears = []) {
-  return studentApi.post(`${BASE}/generate-solutions`, {
-    checkin_id,
-    fears,
-  });
+export async function generateSolutions(checkin_id, fears = [], { fast = true } = {}) {
+  const controller = new AbortController();
+  const timer = window.setTimeout(() => controller.abort(), 90_000);
+  try {
+    return await studentApi.post(
+      `${BASE}/generate-solutions`,
+      { checkin_id, fears, fast },
+      { signal: controller.signal, silent: true }
+    );
+  } finally {
+    window.clearTimeout(timer);
+  }
+}
+
+function interventionReady(status) {
+  if (!status) return false;
+  if (status.status === 'awaiting_solutions') return false;
+  return Boolean((status.solutions?.length ?? 0) > 0 || (status.fears?.length ?? 0) > 0);
+}
+
+/**
+ * Poll until the 6-week plan exists (background task or fast generate).
+ */
+export async function waitForInterventionPlan(checkin_id, { attempts = 12, delayMs = 1500 } = {}) {
+  let last = null;
+  for (let i = 0; i < attempts; i += 1) {
+    last = await getInterventionStatus(checkin_id);
+    if (interventionReady(last)) return last;
+    if (i === 0 || i === 3) {
+      try {
+        await generateSolutions(checkin_id, [], { fast: true });
+        last = await getInterventionStatus(checkin_id);
+        if (interventionReady(last)) return last;
+      } catch {
+        /* background task may already be running */
+      }
+    }
+    if (i < attempts - 1) {
+      await new Promise((resolve) => window.setTimeout(resolve, delayMs));
+    }
+  }
+  return last;
 }
 
 /**

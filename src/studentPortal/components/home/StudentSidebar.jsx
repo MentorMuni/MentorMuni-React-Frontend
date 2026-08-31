@@ -24,7 +24,6 @@ const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
 const NAV_PRIMARY = [
   { icon: Home, label: 'Home', to: '/studentportal/home', end: true },
   { icon: Sparkles, label: 'AI Mentor', to: '/studentportal/mentor' },
-  { icon: StickyNote, label: 'White Board', to: '/studentportal/whiteboard', wall: true },
   { icon: Code2, label: 'Practice', to: '/studentportal/practice' },
   { icon: Terminal, label: 'Coding Round', to: '/studentportal/coding' },
   { icon: Briefcase, label: 'Companies', to: '/studentportal/companies', collegeOnly: true },
@@ -33,10 +32,16 @@ const NAV_PRIMARY = [
   { icon: LifeBuoy, label: 'Help Center', to: '/studentportal/help' },
 ];
 
-// Special premium feature - separated with divider
 const PREMIUM_FEATURES = [
   { icon: Heart, label: 'Fear → Fearless', to: '/studentportal/fear-to-fearless', special: true },
 ];
+
+const WHITEBOARD_NAV = {
+  icon: StickyNote,
+  label: 'White Board',
+  to: '/studentportal/whiteboard',
+  wall: true,
+};
 
 const DAY_LABELS = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
 
@@ -118,8 +123,8 @@ export default function StudentSidebar({
           {/* Divider for premium feature */}
           <div className="stu-nav__divider" />
           
-          {/* Fear → Fearless premium feature */}
-          <div className="stu-nav__group">
+          {/* Fear → Fearless — signature feature */}
+          <div className="stu-nav__group stu-nav__group--spotlight">
             <ul className="stu-nav__list">
               {PREMIUM_FEATURES.map((item) => {
                 const Icon = item.icon;
@@ -133,12 +138,36 @@ export default function StudentSidebar({
                       }
                       title="Your private 6-week AI coaching journey"
                     >
-                      <Icon size={16} strokeWidth={2} aria-hidden focusable="false" />
+                      <span className="stu-nav__premium-icon" aria-hidden>
+                        <Icon size={16} strokeWidth={2} />
+                      </span>
                       <span className="stu-nav__text">{item.label}</span>
+                      <span className="stu-nav__premium-badge" aria-hidden>
+                        Signature
+                      </span>
                     </NavLink>
                   </li>
                 );
               })}
+            </ul>
+          </div>
+
+          {/* White Board — playful wall at the bottom */}
+          <div className="stu-nav__group stu-nav__group--wall">
+            <ul className="stu-nav__list">
+              <li>
+                <NavLink
+                  to={WHITEBOARD_NAV.to}
+                  onClick={onClose}
+                  className={({ isActive }) =>
+                    `stu-nav__item stu-nav__item--wall no-underline${isActive ? ' is-active' : ''}`
+                  }
+                  title="Sticky notes, morning drops, and your placement wall"
+                >
+                  <StickyNote size={16} strokeWidth={2} aria-hidden focusable="false" />
+                  <span className="stu-nav__text">{WHITEBOARD_NAV.label}</span>
+                </NavLink>
+              </li>
             </ul>
           </div>
         </nav>

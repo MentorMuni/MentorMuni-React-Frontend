@@ -1,5 +1,5 @@
 /**
- * Upcoming placement drives — Org Admin (TPO/Dean/Director) only.
+ * Upcoming placement drives — Org Admin (TPO/Dean/Director) manage; HOD can list.
  *
  * GET    /organizations/upcoming-drives
  * POST   /organizations/upcoming-drives
@@ -12,6 +12,20 @@ import { getOrgSession } from '../orgPortal/auth';
 import { isDemoSession } from './demoAuth';
 
 const LOCAL_KEY = 'mm-org-upcoming-drives-v1';
+
+export function todayISO() {
+  const d = new Date();
+  const y = d.getFullYear();
+  const m = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${y}-${m}-${day}`;
+}
+
+/** Today or future (YYYY-MM-DD). */
+export function isUpcomingDate(iso) {
+  if (!iso) return false;
+  return String(iso).slice(0, 10) >= todayISO();
+}
 
 function allowLocalFallback() {
   const session = getOrgSession();
@@ -111,21 +125,36 @@ function sortDrives(list) {
     });
 }
 
+function onlyUpcoming(list) {
+  return sortDrives((list || []).filter((d) => isUpcomingDate(d?.driveDate)));
+}
+
 function withSource(result, source) {
   return { ...result, source };
+}
+
+function rejectPastDate(driveDate) {
+  if (!driveDate) return 'Drive date is required.';
+  if (!isUpcomingDate(driveDate)) {
+    return 'Pick today or a future date for the drive.';
+  }
+  return null;
 }
 
 export async function fetchUpcomingDrives() {
   if (allowLocalFallback()) {
     return withSource(
-      { ok: true, items: sortDrives(readLocal().map(normalizeDrive).filter(Boolean)) },
+      {
+        ok: true,
+        items: onlyUpcoming(readLocal().map(normalizeDrive).filter(Boolean)),
+      },
       'local'
     );
   }
 
   try {
     const data = await orgApi.get('/organizations/upcoming-drives');
-    const items = sortDrives(
+    const items = onlyUpcoming(
       extractList(data).map(normalizeDrive).filter(Boolean)
     );
     return withSource({ ok: true, items }, 'api');
@@ -157,7 +186,8 @@ export async function createUpcomingDrive(input) {
   if (!eligibilityCriteria) {
     return { ok: false, error: 'Eligibility criteria is required.' };
   }
-  if (!driveDate) return { ok: false, error: 'Drive date is required.' };
+  const dateErr = rejectPastDate(driveDate);
+  if (dateErr) return { ok: false, error: dateErr };
 
   if (allowLocalFallback()) {
     const now = new Date().toISOString();
@@ -193,6 +223,11 @@ export async function createUpcomingDrive(input) {
 
 export async function updateUpcomingDrive(id, patch) {
   if (id == null || id === '') return { ok: false, error: 'Missing drive id.' };
+
+  if (patch?.driveDate !== undefined) {
+    const dateErr = rejectPastDate(patch.driveDate);
+    if (dateErr) return { ok: false, error: dateErr };
+  }
 
   if (allowLocalFallback()) {
     const next = readLocal().map((row) => {

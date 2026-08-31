@@ -154,8 +154,10 @@ export default function MyWorkspacePage() {
 
   const startEdit = (item) => {
     setEditingId(item.id);
-    setEditForm({ text: item.text, dueDate: item.dueDate || '' });
-    setEditOriginalDueDate(item.dueDate || '');
+    // Past dates can't be re-selected — clear so calendar min=today stays valid.
+    const due = item.dueDate && !isPastDueDate(item.dueDate) ? item.dueDate : '';
+    setEditForm({ text: item.text, dueDate: due });
+    setEditOriginalDueDate(due);
     setErr('');
     setMsg('');
   };
@@ -168,9 +170,7 @@ export default function MyWorkspacePage() {
 
   const saveEdit = async (e) => {
     e.preventDefault();
-    const dueUnchanged = (editForm.dueDate || '') === (editOriginalDueDate || '');
-    // Allow keeping an existing overdue date; only block newly chosen past dates.
-    if (!dueUnchanged && isPastDueDate(editForm.dueDate)) {
+    if (isPastDueDate(editForm.dueDate)) {
       flash(false, 'Due date cannot be in the past. Leave blank for a note, or pick today or later.');
       return;
     }
@@ -348,11 +348,7 @@ export default function MyWorkspacePage() {
                           type="date"
                           className="mm-org-input"
                           value={editForm.dueDate}
-                          min={
-                            editOriginalDueDate && isPastDueDate(editOriginalDueDate)
-                              ? editOriginalDueDate
-                              : todayISO()
-                          }
+                          min={todayISO()}
                           onChange={(e) =>
                             setEditForm((f) => ({ ...f, dueDate: e.target.value }))
                           }

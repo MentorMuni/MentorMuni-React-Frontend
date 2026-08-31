@@ -8,13 +8,19 @@ import { resolveHodDepartment } from '../hodScope';
 import { fetchDepartmentOptions } from '../departmentsApi';
 import { fetchStudents } from '../studentsApi';
 import {
+  createProgramApi,
+  deleteProgramApi,
+  fetchPrograms,
+} from '../programsApi';
+import DepartmentMultiSelect from '../components/DepartmentMultiSelect';
+import { useTableQuery } from '../../hooks/useTableQuery';
+import { TableToolbar } from '../../components/table/TableToolbar';
+import { SortableTh } from '../../components/table/SortableTh';
+import {
   PROGRAM_TYPES,
-  createProgram,
   getHodAccess,
   listDepartments,
-  listPrograms,
   listStudents,
-  removeProgram,
   subscribeOrgDb,
 } from '../store';
 
@@ -23,6 +29,7 @@ const empty = {
   type: 'readiness',
   audience: 'all',
   departmentId: '',
+  departmentIds: [],
   studentIds: [],
   dueInDays: 7,
 };
@@ -39,27 +46,42 @@ export default function ProgramsPage() {
   const hod = isHodRole(session?.role);
   const [hodDept, setHodDept] = useState(() => (hod ? resolveHodDepartment(session) : null));
 
-  const [programs, setPrograms] = useState(() => listPrograms());
+  const [programs, setPrograms] = useState([]);
   const [departments, setDepartments] = useState(() => (demo ? listDepartments() : []));
   const [students, setStudents] = useState(() => (demo ? listStudents() : []));
   const [access, setAccess] = useState(() => getHodAccess());
   const [form, setForm] = useState(() =>
     hod && hodDept
-      ? { ...empty, audience: 'department', departmentId: hodDept.id }
+      ? { ...empty, audience: 'department', departmentId: hodDept.id, departmentIds: [String(hodDept.id)] }
       : empty
   );
   const [err, setErr] = useState('');
   const [msg, setMsg] = useState('');
+  const [busy, setBusy] = useState(false);
+  const [dataSource, setDataSource] = useState('');
+  const [warning, setWarning] = useState('');
+
+  const reloadPrograms = async () => {
+    const res = await fetchPrograms();
+    setPrograms(res.programs || []);
+    setDataSource(res.source || '');
+    setWarning(res.warning || '');
+    if (!res.ok && res.error) {
+      setErr(res.error);
+      setWarning('');
+    }
+  };
 
   useEffect(() => {
+    reloadPrograms();
     if (!demo) return undefined;
     return subscribeOrgDb(() => {
-      setPrograms(listPrograms());
+      reloadPrograms();
       setDepartments(listDepartments());
       setStudents(listStudents());
       setAccess(getHodAccess());
     });
-  }, [demo]);
+  }, [demo, location.key]);
 
   // Live mode: hydrate departments + student roster from API for accurate pickers
   useEffect(() => {
@@ -91,31 +113,42 @@ export default function ProgramsPage() {
 
   const branchStudents = useMemo(() => {
     if (hod && hodDept) {
-      return students.filter((s) => s.departmentId === hodDept.id);
+      return students.filter((s) => String(s.departmentId) === String(hodDept.id));
     }
     return students;
   }, [students, hod, hodDept]);
 
   const visiblePrograms = useMemo(() => {
     if (!hod || !hodDept) return programs;
-    const ids = new Set(branchStudents.map((s) => s.id));
+    const ids = new Set(branchStudents.map((s) => String(s.id)));
     return programs.filter((p) => {
       if (p.audience === 'all') return true;
-      if (p.audience === 'department') return p.departmentId === hodDept.id;
+      if (p.audience === 'department') {
+        const ids = p.departmentIds?.length
+          ? p.departmentIds
+          : p.departmentId
+            ? [p.departmentId]
+            : [];
+        return ids.some((id) => String(id) === String(hodDept.id));
+      }
       if (p.audience === 'student') {
-        return (p.studentIds || []).some((id) => ids.has(id));
+        return (p.studentIds || []).some((id) => ids.has(String(id)));
       }
       return false;
     });
   }, [programs, hod, hodDept, branchStudents]);
 
   const selectableStudents = useMemo(() => {
+    if (form.audience === 'department' && form.departmentIds.length) {
+      const allowed = new Set(form.departmentIds.map(String));
+      return students.filter((s) => allowed.has(String(s.departmentId)));
+    }
     if (form.audience === 'department' && form.departmentId) {
-      return students.filter((s) => s.departmentId === form.departmentId);
+      return students.filter((s) => String(s.departmentId) === String(form.departmentId));
     }
     if (hod && hodDept) return branchStudents;
     return students;
-  }, [students, form.audience, form.departmentId, hod, hodDept, branchStudents]);
+  }, [students, form.audience, form.departmentId, form.departmentIds, hod, hodDept, branchStudents]);
 
   const canAssign = !hod || access.canAssignPrograms;
   const mockTypes = new Set(['mock_ai', 'mock_hr']);
@@ -126,16 +159,17 @@ export default function ProgramsPage() {
   };
 
   const toggleStudent = (id) => {
+    const key = String(id);
     setForm((f) => {
-      const has = f.studentIds.includes(id);
+      const has = f.studentIds.map(String).includes(key);
       return {
         ...f,
-        studentIds: has ? f.studentIds.filter((x) => x !== id) : [...f.studentIds, id],
+        studentIds: has ? f.studentIds.filter((x) => String(x) !== key) : [...f.studentIds, key],
       };
     });
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
     setErr('');
     setMsg('');
@@ -162,20 +196,24 @@ export default function ProgramsPage() {
         payload = { ...payload, audience: 'department', departmentId: hodDept.id };
       }
       if (payload.audience === 'department') {
-        payload = { ...payload, departmentId: hodDept.id };
-      }
-      if (payload.audience === 'student') {
-        const allowed = new Set(branchStudents.map((s) => s.id));
         payload = {
           ...payload,
           departmentId: hodDept.id,
-          studentIds: payload.studentIds.filter((id) => allowed.has(id)),
+          departmentIds: [String(hodDept.id)],
+        };
+      }
+      if (payload.audience === 'student') {
+        const allowed = new Set(branchStudents.map((s) => String(s.id)));
+        payload = {
+          ...payload,
+          departmentId: hodDept.id,
+          studentIds: payload.studentIds.filter((id) => allowed.has(String(id))),
         };
       }
     }
 
-    if (payload.audience === 'department' && !payload.departmentId) {
-      setErr('Pick a department for department-scoped programs.');
+    if (payload.audience === 'department' && !hod && !payload.departmentIds?.length) {
+      setErr('Select at least one department.');
       return;
     }
     if (payload.audience === 'student' && !payload.studentIds.length) {
@@ -183,30 +221,84 @@ export default function ProgramsPage() {
       return;
     }
 
-    createProgram({
-      ...payload,
-      studentIds: payload.audience === 'student' ? payload.studentIds : [],
-    });
-    setForm(
-      hod && hodDept
-        ? { ...empty, audience: 'department', departmentId: hodDept.id }
-        : empty
-    );
-    setMsg(
-      hod
-        ? 'Assessment assigned to your branch. Student inbox wires when notifications API is live.'
-        : 'Program assigned. Delivery / student inbox wires when notifications API is live.'
-    );
+    setBusy(true);
+    try {
+      const res = await createProgramApi({
+        ...payload,
+        studentIds: payload.audience === 'student' ? payload.studentIds : [],
+      });
+      if (!res.ok) {
+        setErr(res.error || 'Unable to assign program.');
+        return;
+      }
+      await reloadPrograms();
+      setForm(
+        hod && hodDept
+          ? {
+              ...empty,
+              audience: 'department',
+              departmentId: hodDept.id,
+              departmentIds: [String(hodDept.id)],
+            }
+          : empty
+      );
+      const n = res.recipientsEstimated;
+      setMsg(
+        res.message ||
+          (n != null
+            ? `Program assigned to ~${n} student(s).`
+            : 'Program assigned.')
+      );
+      if (res.warning) setWarning(typeof res.warning === 'string' ? res.warning : res.message);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const onRemove = async (id) => {
+    setErr('');
+    const res = await deleteProgramApi(id);
+    if (!res.ok) {
+      setErr(res.error || 'Unable to remove program.');
+      return;
+    }
+    await reloadPrograms();
   };
 
   const audienceLabel = (p) => {
     if (p.audience === 'all') return 'All students';
     if (p.audience === 'department') {
-      return departments.find((d) => d.id === p.departmentId)?.name || 'Department';
+      const ids = p.departmentIds?.length
+        ? p.departmentIds
+        : p.departmentId
+          ? [p.departmentId]
+          : [];
+      const names = ids
+        .map((id) => departments.find((d) => String(d.id) === String(id))?.name)
+        .filter(Boolean);
+      if (!names.length) return 'Department';
+      if (names.length === 1) return names[0];
+      if (names.length <= 3) return names.join(', ');
+      return `${names.slice(0, 2).join(', ')} +${names.length - 2} more`;
     }
     const n = (p.studentIds || []).length;
-    return `${n} selected student${n === 1 ? '' : 's'}`;
+    if (n > 0) return `${n} selected student${n === 1 ? '' : 's'}`;
+    if (p.recipientsEstimated != null) return `~${p.recipientsEstimated} students`;
+    return 'Selected students';
   };
+
+  const programsTable = useTableQuery(visiblePrograms, {
+    searchFn: (row, q) => {
+      const hay = [row.title, typeLabel(row.type), audienceLabel(row)].join(' ').toLowerCase();
+      return hay.includes(q);
+    },
+    getSortValue: (row, key) => {
+      if (key === 'program') return (row.title || '').toLowerCase();
+      if (key === 'audience') return audienceLabel(row);
+      if (key === 'timeline') return row.dueInDays;
+      return row[key];
+    },
+  });
 
   const assessmentTypes = PROGRAM_TYPES.filter((t) => t.group === 'Assessment' || t.group === 'Interview');
   const otherTypes = PROGRAM_TYPES.filter((t) => t.group === 'Engagement');
@@ -224,10 +316,24 @@ export default function ProgramsPage() {
 
   return (
     <div className="space-y-5">
-      <div className="mm-org-alert mm-org-alert--error" role="status">
-        Demo only for now — programs save in this browser. Student delivery / inbox waits on the
-        programs API.
-      </div>
+      {demo ? (
+        <div className="mm-org-alert mm-org-alert--error" role="status">
+          Demo mode — programs save in this browser only (not delivered to students).
+        </div>
+      ) : dataSource === 'api' ? (
+        <div className="mm-org-alert mm-org-alert--success" role="status">
+          Live assignments — students receive programs in their MentorMuni inbox and email queue.
+        </div>
+      ) : dataSource === 'unavailable' || dataSource === 'error' ? (
+        <div className="mm-org-alert mm-org-alert--error" role="status">
+          {err || warning || 'Could not reach the programs API. Deploy the latest API and refresh.'}
+        </div>
+      ) : warning ? (
+        <div className="mm-org-alert mm-org-alert--error" role="status">
+          {warning}
+        </div>
+      ) : null}
+
       <div className="mm-org-toolbar">
         <p className="m-0 text-sm mm-org-text-muted">
           {hod
@@ -252,7 +358,7 @@ export default function ProgramsPage() {
               <p className="mm-org-panel__meta">
                 {hod
                   ? 'Choose type, due date, and audience within your branch.'
-                  : 'Timeline + audience. Product modules link when catalog API is live.'}
+                  : 'Timeline + audience. Delivered to the student inbox when assigned.'}
               </p>
             </div>
           </div>
@@ -268,7 +374,7 @@ export default function ProgramsPage() {
                   placeholder={hod ? 'CSE aptitude baseline · week 3' : 'Pre-drive readiness sprint'}
                   value={form.title}
                   onChange={(e) => setForm((f) => ({ ...f, title: e.target.value }))}
-                  disabled={!canAssign}
+                  disabled={!canAssign || busy}
                 />
               </div>
               <div>
@@ -278,7 +384,7 @@ export default function ProgramsPage() {
                   className="mm-org-select"
                   value={form.type}
                   onChange={(e) => setForm((f) => ({ ...f, type: e.target.value }))}
-                  disabled={!canAssign}
+                  disabled={!canAssign || busy}
                 >
                   <optgroup label="Assessments & interviews">
                     {assessmentTypes.map((t) => (
@@ -304,7 +410,7 @@ export default function ProgramsPage() {
                   className="mm-org-input"
                   value={form.dueInDays}
                   onChange={(e) => setForm((f) => ({ ...f, dueInDays: e.target.value }))}
-                  disabled={!canAssign}
+                  disabled={!canAssign || busy}
                 />
               </div>
               <div>
@@ -326,19 +432,34 @@ export default function ProgramsPage() {
                             : '',
                     }))
                   }
-                  disabled={!canAssign}
+                  disabled={!canAssign || busy}
                 >
                   {!hod ? <option value="all">All students</option> : null}
                   <option value="department">
-                    {hod ? `Entire ${hodDept?.name || 'department'}` : 'One department'}
+                    {hod ? `Entire ${hodDept?.name || 'department'}` : 'Selected department(s)'}
                   </option>
                   <option value="student">Specific students</option>
                 </select>
               </div>
-              {!hod && (form.audience === 'department' || form.audience === 'student') ? (
+              {!hod && form.audience === 'department' ? (
+                <div style={{ gridColumn: '1 / -1' }}>
+                  <DepartmentMultiSelect
+                    label="Department(s)"
+                    hint="Pick one or more departments for this assignment."
+                    departments={departments}
+                    value={form.departmentIds}
+                    onChange={(departmentIds) =>
+                      setForm((f) => ({ ...f, departmentIds, departmentId: departmentIds[0] || '' }))
+                    }
+                    disabled={!canAssign || busy}
+                    min={1}
+                  />
+                </div>
+              ) : null}
+              {!hod && form.audience === 'student' ? (
                 <div>
                   <label className="mm-org-label" htmlFor="prg-dept">
-                    {form.audience === 'student' ? 'Filter by department (optional)' : 'Department'}
+                    Filter by department (optional)
                   </label>
                   <select
                     id="prg-dept"
@@ -347,9 +468,9 @@ export default function ProgramsPage() {
                     onChange={(e) =>
                       setForm((f) => ({ ...f, departmentId: e.target.value, studentIds: [] }))
                     }
-                    disabled={!canAssign}
+                    disabled={!canAssign || busy}
                   >
-                    <option value="">{form.audience === 'student' ? 'All departments' : 'Select…'}</option>
+                    <option value="">All departments</option>
                     {departments.map((d) => (
                       <option key={d.id} value={d.id}>{d.name}</option>
                     ))}
@@ -367,9 +488,9 @@ export default function ProgramsPage() {
                       <button
                         key={s.id}
                         type="button"
-                        className={`mm-org-chip ${form.studentIds.includes(s.id) ? 'is-on' : ''}`}
+                        className={`mm-org-chip ${form.studentIds.map(String).includes(String(s.id)) ? 'is-on' : ''}`}
                         onClick={() => toggleStudent(s.id)}
-                        disabled={!canAssign}
+                        disabled={!canAssign || busy}
                       >
                         {s.name}
                         <span className="mm-org-text-muted">{s.readiness}%</span>
@@ -389,12 +510,15 @@ export default function ProgramsPage() {
             <p className="mt-3 text-xs mm-org-text-muted">
               {hod
                 ? `${branchStudents.length} student(s) in your branch.`
-                : `${students.length} enrolled student(s) available.`}{' '}
-              Types map to MentorMuni product features when the catalog API is connected.
+                : `${students.length} enrolled student(s) available.`}
             </p>
             <div className="mm-org-form-actions">
-              <button type="submit" className="mm-org-btn mm-org-btn--primary" disabled={!canAssign}>
-                <Plus size={15} /> {hod ? 'Assign assessment' : 'Assign program'}
+              <button
+                type="submit"
+                className="mm-org-btn mm-org-btn--primary"
+                disabled={!canAssign || busy}
+              >
+                <Plus size={15} /> {busy ? 'Assigning…' : hod ? 'Assign assessment' : 'Assign program'}
               </button>
             </div>
           </form>
@@ -408,18 +532,26 @@ export default function ProgramsPage() {
             </div>
           </div>
           {visiblePrograms.length ? (
+            <>
+            <TableToolbar
+              query={programsTable.query}
+              onQueryChange={programsTable.setQuery}
+              placeholder="Search program, type, audience…"
+              count={programsTable.count}
+              total={programsTable.total}
+            />
             <div className="mm-org-table-wrap">
               <table className="mm-org-table">
                 <thead>
                   <tr>
-                    <th>Program</th>
-                    <th>Audience</th>
-                    <th>Timeline</th>
+                    <SortableTh label="Program" sortKey="program" sort={programsTable.sort} onSort={programsTable.toggleSort} />
+                    <SortableTh label="Audience" sortKey="audience" sort={programsTable.sort} onSort={programsTable.toggleSort} />
+                    <SortableTh label="Timeline" sortKey="timeline" sort={programsTable.sort} onSort={programsTable.toggleSort} />
                     <th />
                   </tr>
                 </thead>
                 <tbody>
-                  {visiblePrograms.map((p) => (
+                  {programsTable.rows.length ? programsTable.rows.map((p) => (
                     <tr key={p.id}>
                       <td>
                         <p className="mm-org-table__title">{p.title}</p>
@@ -434,17 +566,24 @@ export default function ProgramsPage() {
                           <button
                             type="button"
                             className="mm-org-btn mm-org-btn--danger mm-org-btn--sm"
-                            onClick={() => removeProgram(p.id)}
+                            onClick={() => onRemove(p.id)}
                           >
                             <Trash2 size={14} />
                           </button>
                         ) : null}
                       </td>
                     </tr>
-                  ))}
+                  )) : (
+                    <tr>
+                      <td colSpan={4}>
+                        <div className="mm-org-empty">No programs match this search.</div>
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
+            </>
           ) : (
             <div className="mm-org-empty">
               {hod ? 'No assessments assigned to your branch yet.' : 'No programs assigned yet.'}

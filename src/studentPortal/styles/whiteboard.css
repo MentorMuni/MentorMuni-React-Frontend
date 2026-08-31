@@ -3,10 +3,107 @@
    Tokens only. Immersive page, candy stickies, torn morning drop.
    ============================================================ */
 
+@keyframes stu-wb-nav-wobble {
+  0%,
+  100% {
+    transform: rotate(-0.6deg);
+  }
+  50% {
+    transform: rotate(0.8deg);
+  }
+}
+
+@keyframes stu-wb-nav-tape {
+  0%,
+  100% {
+    opacity: 0.85;
+    transform: translateX(-50%) rotate(-2deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translateX(-50%) rotate(1deg);
+  }
+}
+
+@keyframes stu-wb-nav-spark {
+  0%,
+  100% {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--wb-tape-ink) 12%, transparent),
+      2px 3px 0 color-mix(in srgb, var(--wb-note-coral) 35%, transparent);
+  }
+  50% {
+    box-shadow:
+      inset 0 0 0 1px color-mix(in srgb, var(--wb-tape-ink) 18%, transparent),
+      3px 5px 0 color-mix(in srgb, var(--wb-note-canary) 45%, transparent);
+  }
+}
+
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--wall {
+  position: relative;
+  margin: 0 8px 4px;
+  padding: 11px 14px !important;
+  border-radius: 4px 14px 6px 12px;
+  background: linear-gradient(
+    145deg,
+    color-mix(in srgb, var(--wb-note-canary) 88%, var(--surface)) 0%,
+    color-mix(in srgb, var(--wb-note-lilac) 42%, var(--surface)) 100%
+  ) !important;
+  color: var(--wb-tape-ink) !important;
+  -webkit-text-fill-color: var(--wb-tape-ink) !important;
+  font-family: var(--wb-hand, var(--font-sans));
+  font-weight: 700;
+  animation: stu-wb-nav-wobble 4.5s ease-in-out infinite, stu-wb-nav-spark 3.2s ease-in-out infinite;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--wall::before {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 50%;
+  width: 34px;
+  height: 10px;
+  border-radius: 1px;
+  background: color-mix(in srgb, var(--wb-tape) 90%, white);
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--wb-tape-ink) 10%, transparent);
+  animation: stu-wb-nav-tape 3.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--wall:hover,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--wall:focus-visible {
+  transform: translateY(-2px) rotate(0.5deg) !important;
+  color: var(--wb-tape-ink) !important;
+}
+
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--wall svg {
+  color: var(--wb-note-coral) !important;
+  stroke: var(--wb-note-coral) !important;
+}
+
 .stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--wall.is-active,
 .stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--wall[aria-current='page'] {
-  background: var(--wb-nav-active);
-  color: var(--ink);
+  background: var(--wb-nav-active) !important;
+  color: var(--ink) !important;
+  -webkit-text-fill-color: var(--ink) !important;
+  animation: none;
+  transform: rotate(-1deg);
+}
+
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--wall.is-active::before,
+.stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--wall[aria-current='page']::before {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--wall {
+    animation: none;
+  }
+
+  .stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--wall::before {
+    animation: none;
+  }
 }
 
 .stu-main.wb-page {

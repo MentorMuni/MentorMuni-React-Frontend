@@ -1,102 +1,82 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Download, Sparkles, Trophy, AlertTriangle, Filter } from 'lucide-react';
+import { Download, FileText, Filter } from 'lucide-react';
 import { getOrgSession } from '../../orgPortal';
 import { isHodRole } from '../roles';
 import { resolveHodDepartment } from '../hodScope';
 import { fetchDepartmentOptions } from '../departmentsApi';
 import {
-  AREA_OPTIONS,
-  fetchBranchInsight,
-  fetchCampusInsight,
   fetchPerformanceScorecards,
   fetchPerformanceSummary,
-  mapInsight,
+  fetchPerformanceTrends,
   readinessTone,
   formatPct,
   scorecardsToUiRows,
   summaryToUiMetrics,
+  trendsToUiSeries,
   OrgApiError,
 } from '../performanceApi';
-import { ClarityBoard } from '../components/PerformanceCharts';
+import { exportPerformanceCsv, exportPerformancePdf } from '../performanceExport';
+import { filterStudentsByDrill } from '../hodPerformanceUtils';
 import {
-  ActivityArea,
   ChartCard,
+  ActivityEngagementPie,
+  CoverageDonut,
   DeptCompareChart,
   DeptPillarCompareChart,
-  GapStrengthBars,
-  PillarRadar,
+  DeptReadinessRankChart,
+  DriveReadyByDeptChart,
+  ExecutivePillarKpis,
+  ExecutivePillarRadar,
+  GapStrengthPieCharts,
+  PillarComparisonBars,
+  PillarRadialChart,
+  PerformanceTrendChart,
+  ReadinessDistributionChart,
   ReadinessPie,
+  TestsCompletionChart,
   TestsFunnelChart,
   ToolCoverageStacked,
 } from '../components/AnalyticsCharts';
-import BranchInsightsPanel from '../components/BranchInsightsPanel';
+import DrillableChartCard from '../components/DrillableChartCard';
+import ChartDrilldownModal from '../components/ChartDrilldownModal';
+import HodAiResearchPanel from '../components/HodAiResearchPanel';
+import HodAreaBoardsPanel from '../components/HodAreaBoardsPanel';
+import DeptReadinessTable from '../components/DeptReadinessTable';
 import StudentScorecardDrawer from '../components/StudentScorecardDrawer';
+import { useTableQuery } from '../../hooks/useTableQuery';
+import { TableToolbar } from '../../components/table/TableToolbar';
+import { SortableTh } from '../../components/table/SortableTh';
 import {
-  buildLocalBranchInsight,
-  buildLocalCampusInsight,
   getHodMetrics,
   getTpoMetrics,
   listStudents,
 } from '../store';
 
 const EASE = [0.22, 1, 0.36, 1];
-const TOP_N_OPTIONS = [5, 10, 20, 50];
 
-function exportScorecardsCsv(rows, filenamePrefix = 'mentormuni-scorecards') {
-  const header = [
-    'Name',
-    'Email',
-    'Department',
-    'Readiness',
-    'Shortlist',
-    'Mock',
-    'Best area',
-    'Strength',
-    'Prep gap',
-    'Tests done',
-    'Tests remaining',
-    'Level',
-    'Attempts',
-    'Activity',
-  ];
-  const lines = [header.join(',')];
-  rows.forEach((s) => {
-    const cells = [
-      s.name,
-      s.email,
-      s.departmentName || '',
-      s.readiness,
-      s.shortlistScore,
-      s.mockScore,
-      s.bestArea || '',
-      s.strength,
-      s.weakness,
-      s.testsDone,
-      s.testsRemaining,
-      s.progressLevel,
-      s.attempts,
-      s.activityStatus,
-    ].map((v) => `"${String(v ?? '').replace(/"/g, '""')}"`);
-    lines.push(cells.join(','));
-  });
-  const blob = new Blob([lines.join('\n')], { type: 'text/csv;charset=utf-8' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = `${filenamePrefix}-${new Date().toISOString().slice(0, 10)}.csv`;
-  a.click();
-  URL.revokeObjectURL(url);
+function SectionHead({ title, meta }) {
+  return (
+    <div className="mm-org-perf-section__head">
+      <h2 className="mm-org-perf-section__title">{title}</h2>
+      {meta ? <p className="mm-org-perf-section__meta">{meta}</p> : null}
+    </div>
+  );
 }
 
 function RankList({ title, items, tone, onSelectStudent }) {
   if (!items?.length) {
-    return <div className="mm-org-empty">No ranked students in this slice yet.</div>;
+    return (
+      <section className="mm-org-panel mm-org-panel--rank">
+        <h2 className="mm-org-panel__title">{title}</h2>
+        <div className="mm-org-empty">No ranked students in this slice yet.</div>
+      </section>
+    );
   }
   return (
-    <div>
-      <p className="mm-org-stat__label mb-2">{title}</p>
+    <section className="mm-org-panel mm-org-panel--rank">
+      <h2 className="mm-org-panel__title">{title}</h2>
       <ul className="m-0 list-none space-y-2 p-0">
         {items.map((s) => (
           <li key={`${tone}-${s.id}`}>
@@ -123,7 +103,7 @@ function RankList({ title, items, tone, onSelectStudent }) {
           </li>
         ))}
       </ul>
-    </div>
+    </section>
   );
 }
 
@@ -138,25 +118,145 @@ export default function PerformancePage() {
       : getTpoMetrics()
   );
   const [students, setStudents] = useState(() => (session?.demo ? listStudents() : []));
-  const [insight, setInsight] = useState(() =>
-    hod
-      ? buildLocalBranchInsight(
-          resolveHodDepartment(session)
-            ? getHodMetrics(resolveHodDepartment(session).id)
-            : getTpoMetrics()
-        )
-      : buildLocalCampusInsight(getTpoMetrics())
-  );
   const [dataSource, setDataSource] = useState('local');
-  const [aiBusy, setAiBusy] = useState(false);
   const [loadError, setLoadError] = useState('');
-  const [query, setQuery] = useState('');
   const [deptFilter, setDeptFilter] = useState(() => (hod ? resolveHodDepartment(session)?.id || '' : ''));
   const [deptOptions, setDeptOptions] = useState([]);
-  const [boardLimit, setBoardLimit] = useState(10);
-  const [areaFocus, setAreaFocus] = useState('overall');
   const [reloadKey, setReloadKey] = useState(0);
   const [selectedStudent, setSelectedStudent] = useState(null);
+  const [loading, setLoading] = useState(!session?.demo);
+  const [trendPoints, setTrendPoints] = useState([]);
+  const [drilldown, setDrilldown] = useState(null);
+
+  const openDrill = useCallback((config) => {
+    setDrilldown(config);
+  }, []);
+
+  const closeDrill = useCallback(() => setDrilldown(null), []);
+
+  const drillStudents = useMemo(() => {
+    if (!drilldown?.drill) return students;
+    return filterStudentsByDrill(students, drilldown.drill);
+  }, [students, drilldown]);
+
+  const renderDrillChart = useCallback(
+    (chartKey) => {
+      switch (chartKey) {
+        case 'readiness':
+          return (
+            <ReadinessPie
+              bands={metrics.bands || metrics}
+              avgReadiness={metrics.avgReadiness}
+              onSliceClick={
+                hod
+                  ? (drill) =>
+                      openDrill({
+                        title: 'Who is placement-ready?',
+                        meta: 'Readiness band breakdown',
+                        chartKey: 'readiness',
+                        drill,
+                      })
+                  : undefined
+              }
+            />
+          );
+        case 'activity':
+          return (
+            <ActivityEngagementPie
+              active={metrics.active7d}
+              idle={metrics.idleCount}
+              inactive={metrics.inactive14d}
+              never={metrics.neverStarted}
+              onSliceClick={
+                hod
+                  ? (drill) =>
+                      openDrill({
+                        title: 'Who is actively preparing?',
+                        meta: 'Activity in the last 2 weeks',
+                        chartKey: 'activity',
+                        drill,
+                      })
+                  : undefined
+              }
+            />
+          );
+        case 'distribution':
+          return (
+            <ReadinessDistributionChart
+              students={students}
+              onBarClick={
+                hod
+                  ? (drill) =>
+                      openDrill({
+                        title: 'Score spread',
+                        meta: 'Readiness distribution',
+                        chartKey: 'distribution',
+                        drill,
+                      })
+                  : undefined
+              }
+            />
+          );
+        case 'gaps':
+          return (
+            <GapStrengthPieCharts
+              gaps={metrics.topGaps || []}
+              strengths={metrics.topStrengths || []}
+              onSliceClick={
+                hod
+                  ? (drill) =>
+                      openDrill({
+                        title: 'Top strengths & gaps',
+                        meta: drill?.type === 'gap' ? 'Preparation gap theme' : 'Strength theme',
+                        chartKey: 'gaps',
+                        drill,
+                      })
+                  : undefined
+              }
+            />
+          );
+        case 'trends':
+          return <PerformanceTrendChart points={trendPoints} />;
+        case 'toolCoverage':
+          return <ToolCoverageStacked tools={metrics.toolCoverage || []} />;
+        case 'funnel':
+          return <TestsFunnelChart funnel={metrics.levelFunnel || []} />;
+        default:
+          return null;
+      }
+    },
+    [hod, metrics, students, trendPoints, openDrill]
+  );
+
+  const ChartShell = useCallback(
+    ({ title, meta, chartKey, drill, children, tall }) => {
+      if (!hod) {
+        return (
+          <ChartCard title={title} meta={meta} tall={tall}>
+            {children}
+          </ChartCard>
+        );
+      }
+      return (
+        <DrillableChartCard
+          title={title}
+          meta={meta}
+          tall={tall}
+          onDrillDown={() =>
+            openDrill({
+              title,
+              meta,
+              chartKey,
+              drill: drill || { type: 'all' },
+            })
+          }
+        >
+          {children}
+        </DrillableChartCard>
+      );
+    },
+    [hod, openDrill]
+  );
 
   const openStudent = useCallback(
     (row) => {
@@ -166,30 +266,50 @@ export default function PerformancePage() {
     [students]
   );
 
-  const loadLive = useCallback(
-    async (deptId, limit) => {
-      const opts = {
-        ...(deptId ? { departmentId: deptId } : {}),
-        boardLimit: limit || boardLimit,
-      };
-      const summary = await fetchPerformanceSummary(opts);
-      const ui = summaryToUiMetrics(summary);
-      setMetrics(ui);
-      let cardPayload = { items: summary?.scorecards || [] };
-      if (!cardPayload.items.length) {
-        cardPayload = await fetchPerformanceScorecards(
-          deptId ? { departmentId: deptId } : {}
-        ).catch(() => ({ items: [] }));
-      }
-      setStudents(scorecardsToUiRows(cardPayload));
-      setDataSource('api');
-      setLoadError('');
-      return ui;
-    },
-    [boardLimit]
-  );
+  const loadLive = useCallback(async (deptId, opts = {}) => {
+    const boardLimit = opts.boardLimit ?? 10;
+    const loadOpts = {
+      ...(deptId ? { departmentId: deptId } : {}),
+      boardLimit,
+    };
+    const summary = await fetchPerformanceSummary(loadOpts);
+    const ui = summaryToUiMetrics(summary);
+    if (!ui) {
+      throw new OrgApiError('Performance summary returned empty data.', { status: 502 });
+    }
+    setMetrics(ui);
+    let cardPayload = { items: summary?.scorecards || [] };
+    if (!cardPayload.items.length) {
+      cardPayload = await fetchPerformanceScorecards(deptId ? { departmentId: deptId } : {}).catch(() => ({
+        items: [],
+      }));
+    }
+    setStudents(scorecardsToUiRows(cardPayload));
+    setDataSource('api');
+    setLoadError('');
+    return ui;
+  }, []);
 
   const scopeFilterKey = hod ? 'hod' : String(deptFilter || '');
+
+  const applyLocalFallback = useCallback(() => {
+    const filterId = hod ? hodDept?.id || deptFilter : deptFilter || null;
+    if (hod && filterId) {
+      setMetrics(getHodMetrics(filterId));
+      setStudents(
+        listStudents().filter((s) => String(s.departmentId) === String(filterId))
+      );
+    } else {
+      setMetrics(getTpoMetrics(filterId || null));
+      const all = listStudents();
+      setStudents(
+        filterId
+          ? all.filter((s) => String(s.departmentId) === String(filterId))
+          : all
+      );
+    }
+    setDataSource('local');
+  }, [hod, hodDept?.id, deptFilter]);
 
   useEffect(() => {
     if (hod) return;
@@ -201,6 +321,7 @@ export default function PerformancePage() {
     let cancelled = false;
     (async () => {
       try {
+        setLoading(true);
         let deptId = null;
         if (hod) {
           const deptRes = await fetchDepartmentOptions();
@@ -211,10 +332,15 @@ export default function PerformancePage() {
           deptId = dept.id;
           setDeptFilter((prev) => (String(prev) === String(dept.id) ? prev : dept.id));
           if (session?.demo) {
-            const m = getHodMetrics(dept.id);
+            const filterId = hod ? deptId : deptFilter || null;
+            const m = hod ? getHodMetrics(deptId) : getTpoMetrics(filterId || null);
+            const all = listStudents();
             setMetrics(m);
-            setStudents(listStudents().filter((s) => String(s.departmentId) === String(dept.id)));
-            setInsight(buildLocalBranchInsight(m));
+            setStudents(
+              filterId
+                ? all.filter((s) => String(s.departmentId) === String(filterId))
+                : all
+            );
             setDataSource('local');
             return;
           }
@@ -225,108 +351,65 @@ export default function PerformancePage() {
             (deptRes.departments || []).map((d) => ({ id: String(d.id), name: d.name, code: d.code }))
           );
           if (session?.demo) {
-            const m = getTpoMetrics();
-            setMetrics(m);
-            setStudents(listStudents());
-            setInsight(buildLocalCampusInsight(m));
+            const filterId = deptFilter || null;
+            setMetrics(getTpoMetrics(filterId || null));
+            const all = listStudents();
+            setStudents(
+              filterId
+                ? all.filter((s) => String(s.departmentId) === String(filterId))
+                : all
+            );
             setDataSource('local');
             return;
           }
           deptId = deptFilter || null;
         }
 
-        const ui = await loadLive(deptId, boardLimit);
-        if (cancelled) return;
-
-        try {
-          setAiBusy(true);
-          const res = hod
-            ? await fetchBranchInsight({
-                include_leaderboard: true,
-                max_actions: 5,
-                focus_area: areaFocus,
-              })
-            : await fetchCampusInsight({
-                include_leaderboard: true,
-                max_actions: 5,
-                department_id: deptId ? Number(deptId) : undefined,
-                focus_area: areaFocus,
-              });
-          if (!cancelled) setInsight(mapInsight(res));
-        } catch {
-          if (!cancelled) {
-            setInsight(hod ? buildLocalBranchInsight(ui) : buildLocalCampusInsight(ui));
+        await loadLive(deptId, { boardLimit: hod ? 25 : 10 });
+        if (hod && deptId && !session?.demo) {
+          try {
+            const trends = await fetchPerformanceTrends({ departmentId: deptId, days: 30 });
+            if (!cancelled) setTrendPoints(trendsToUiSeries(trends));
+          } catch {
+            if (!cancelled) setTrendPoints([]);
           }
-        } finally {
-          if (!cancelled) setAiBusy(false);
         }
       } catch (err) {
         if (cancelled) return;
         setLoadError(err instanceof OrgApiError ? err.message : 'Could not load live performance.');
-        setDataSource('local');
+        applyLocalFallback();
+      } finally {
+        if (!cancelled) setLoading(false);
       }
     })();
     return () => {
       cancelled = true;
     };
-    // areaFocus only affects AI brief refresh via button / boardLimit+dept reload
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional: area tab switches local board, not full reload
-  }, [hod, session?.demo, session?.department_id, scopeFilterKey, boardLimit, reloadKey, loadLive, location.key]);
+  }, [hod, session?.demo, session?.department_id, scopeFilterKey, reloadKey, loadLive, location.key, applyLocalFallback]);
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    return students
-      .filter(
-        (s) =>
-          !q ||
-          s.name.toLowerCase().includes(q) ||
-          (s.email || '').toLowerCase().includes(q) ||
-          (s.departmentName || '').toLowerCase().includes(q)
-      )
-      .sort((a, b) => {
-        if (a.readiness == null && b.readiness != null) return 1;
-        if (a.readiness != null && b.readiness == null) return -1;
-        return (Number(b.readiness) || 0) - (Number(a.readiness) || 0);
-      });
-  }, [students, query]);
-
-  const activeBoard = useMemo(() => {
-    const boards = metrics.areaBoards || [];
-    return boards.find((b) => b.area === areaFocus) || boards.find((b) => b.area === 'overall') || null;
-  }, [metrics.areaBoards, areaFocus]);
+  const scorecardTable = useTableQuery(students, {
+    searchKeys: ['name', 'email', 'departmentName'],
+    initialSort: { key: 'readiness', direction: 'desc' },
+    getSortValue: (row, key) => {
+      if (key === 'name') return (row.name || row.email || '').toLowerCase();
+      if (key === 'department') return row.departmentName || '';
+      if (key === 'readiness') return row.readiness;
+      if (key === 'shortlist') return row.shortlistScore;
+      if (key === 'bestArea') return row.bestArea;
+      if (key === 'strength') return row.strength;
+      if (key === 'weakness') return row.weakness;
+      if (key === 'tests') return row.testsDone;
+      if (key === 'level') return row.progressLevel;
+      if (key === 'activity') return row.activityStatus;
+      return row[key];
+    },
+  });
 
   const resolvedDeptOptions = useMemo(() => {
     if (hod) return [];
     if (deptOptions.length) return deptOptions;
     return (metrics.byDept || []).map((d) => ({ id: String(d.id), name: d.name, code: d.code }));
   }, [deptOptions, metrics.byDept, hod]);
-
-  async function refreshInsight() {
-    setAiBusy(true);
-    try {
-      if (session?.demo) {
-        setInsight(hod ? buildLocalBranchInsight(metrics) : buildLocalCampusInsight(metrics));
-        return;
-      }
-      const res = hod
-        ? await fetchBranchInsight({
-            include_leaderboard: true,
-            max_actions: 5,
-            focus_area: areaFocus,
-          })
-        : await fetchCampusInsight({
-            include_leaderboard: true,
-            max_actions: 5,
-            department_id: deptFilter ? Number(deptFilter) : undefined,
-            focus_area: areaFocus,
-          });
-      setInsight(mapInsight(res));
-    } catch {
-      setInsight(hod ? buildLocalBranchInsight(metrics) : buildLocalCampusInsight(metrics));
-    } finally {
-      setAiBusy(false);
-    }
-  }
 
   if (hod && !hodDept) {
     return (
@@ -345,15 +428,20 @@ export default function PerformancePage() {
       ? resolvedDeptOptions.find((d) => String(d.id) === String(deptFilter))?.name || 'Department'
       : session?.organization_name || 'Campus';
 
-  const tests = metrics.tests || {};
+  const exportScopeSlug = hod ? hodDept.code || 'branch' : scopeLabel;
 
   return (
-    <div className="space-y-5 mm-org-perf">
+    <div className={`space-y-5 mm-org-perf mm-org-perf--exec${hod ? ' mm-org-perf--hod' : ''}`} id="mm-org-performance-report">
       <div className="mm-org-toolbar">
         <div>
-          <h1 className="m-0 text-xl font-bold mm-org-text">Deep performance analysis</h1>
+          <h1 className="m-0 text-xl font-bold mm-org-text">
+            {hod ? 'Branch deep analytics' : 'Performance dashboard'}
+          </h1>
           <p className="m-0 mt-1 text-sm mm-org-text-muted">
-            {scopeLabel} · scores, strengths/gaps, test progress, rankings & shortlisting
+            {scopeLabel} ·{' '}
+            {hod
+              ? 'Deep department analysis with drill-down & AI research'
+              : 'Readiness for leadership, dean & HR partners'}
             {dataSource === 'api' ? ' · Live' : ' · Demo / local'}
           </p>
         </div>
@@ -376,38 +464,35 @@ export default function PerformancePage() {
               </select>
             </label>
           ) : null}
-          <label className="mm-org-filter">
-            Top / less prepared N
-            <select
-              className="mm-org-select"
-              value={boardLimit}
-              onChange={(e) => setBoardLimit(Number(e.target.value))}
-            >
-              {TOP_N_OPTIONS.map((n) => (
-                <option key={n} value={n}>
-                  {n}
-                </option>
-              ))}
-            </select>
-          </label>
-          <button type="button" className="mm-org-btn mm-org-btn--ghost" disabled={aiBusy} onClick={refreshInsight}>
-            <Sparkles size={15} /> {aiBusy ? 'Analyzing…' : 'AI brief'}
-          </button>
           <button type="button" className="mm-org-btn mm-org-btn--ghost" onClick={() => setReloadKey((k) => k + 1)}>
             Reload
           </button>
           <button
             type="button"
-            className="mm-org-btn mm-org-btn--primary"
-            disabled={!filtered.length}
+            className="mm-org-btn mm-org-btn--ghost"
+            disabled={!students.length}
             onClick={() =>
-              exportScorecardsCsv(
-                filtered,
-                hod ? `mentormuni-${hodDept.code || 'branch'}-scorecards` : 'mentormuni-scorecards'
-              )
+              exportPerformanceCsv(students, {
+                filenamePrefix: 'mentormuni-readiness',
+                scopeLabel: exportScopeSlug,
+              })
             }
           >
-            <Download size={15} /> CSV
+            <Download size={15} /> Export CSV
+          </button>
+          <button
+            type="button"
+            className="mm-org-btn mm-org-btn--primary"
+            onClick={() =>
+              exportPerformancePdf({
+                metrics: metrics,
+                scopeLabel,
+                organizationName: session?.organization_name,
+                generatedAt: metrics.generatedAt,
+              })
+            }
+          >
+            <FileText size={15} /> Export PDF
           </button>
         </div>
       </div>
@@ -418,58 +503,97 @@ export default function PerformancePage() {
         </div>
       ) : null}
 
-      <ClarityBoard clarity={metrics.clarity} insight={insight} />
+      {loading ? (
+        <div className="mm-org-panel mm-org-panel--loading" aria-busy="true">
+          <p className="m-0 text-sm mm-org-text-muted">Loading readiness analytics…</p>
+        </div>
+      ) : null}
 
-      {insight?.summary ? (
-        <section className="mm-org-panel">
-          <div className="mm-org-panel__head">
-            <div>
-              <h2 className="mm-org-panel__title">
-                <Sparkles size={16} className="inline mr-1" /> Executive + shortlist brief
-              </h2>
-              <p className="mm-org-panel__meta">
-                {insight.source === 'openai' ? 'OpenAI' : 'Heuristic'} · focus: {areaFocus}
-              </p>
-            </div>
+      <div className={loading ? 'mm-org-perf__content mm-org-perf__content--loading' : 'mm-org-perf__content'}>
+      {hod ? (
+        <HodAiResearchPanel
+          metrics={metrics}
+          demo={session?.demo || dataSource === 'local'}
+          departmentId={hodDept?.id}
+          scopeLabel={scopeLabel}
+        />
+      ) : null}
+
+      {hod ? (
+        <HodAreaBoardsPanel
+          boards={metrics.areaBoards || []}
+          onSelectStudent={openStudent}
+          onDrillArea={(areaDrill) =>
+            openDrill({
+              title: areaDrill.title,
+              meta: areaDrill.label,
+              chartKey: null,
+              drill: {
+                type: 'area_board',
+                tier: areaDrill.tier,
+                studentIds: areaDrill.studentIds,
+                title: areaDrill.title,
+              },
+            })
+          }
+        />
+      ) : null}
+
+      {hod ? (
+        <section className="mm-org-perf-section" aria-label="Branch trends and coverage">
+          <SectionHead
+            title="Branch trends & tool coverage"
+            meta="30-day readiness trend plus per-check completion across your department"
+          />
+          <div className="grid gap-5 lg:grid-cols-2">
+            <ChartShell title="Readiness trend (30 days)" meta="Avg readiness, coverage, and drive-ready %" chartKey="trends">
+              <PerformanceTrendChart points={trendPoints} />
+            </ChartShell>
+            <ChartShell
+              title="Tool completion by check"
+              meta="Done vs in-progress vs not started — per baseline tool"
+              chartKey="toolCoverage"
+              drill={{ type: 'all' }}
+            >
+              <ToolCoverageStacked tools={metrics.toolCoverage || []} />
+            </ChartShell>
           </div>
-          <p className="mm-org-ai-box__body m-0">{insight.summary}</p>
-          {(insight.shortlistNotes || []).length ? (
-            <ul className="mt-3 mb-0 list-disc space-y-1 pl-5 text-sm mm-org-text">
-              {insight.shortlistNotes.map((n) => (
-                <li key={n}>{n}</li>
-              ))}
-            </ul>
+          {(metrics.levelFunnel || []).length ? (
+            <div className="mt-5">
+              <ChartShell
+                title="Roadmap level funnel"
+                meta="How many students reached each roadmap level"
+                chartKey="funnel"
+                drill={{ type: 'all' }}
+              >
+                <TestsFunnelChart funnel={metrics.levelFunnel || []} />
+              </ChartShell>
+            </div>
           ) : null}
         </section>
       ) : null}
 
-      <div className="mm-org-stat-grid mm-org-stat-grid--6">
+      <div className="mm-org-stat-grid mm-org-stat-grid--exec">
         {[
           {
-            label: 'Avg readiness',
+            label: 'Overall readiness',
             value: formatPct(metrics.avgReadiness),
-            hint: metrics.studentsScored ? 'Among scored' : 'No scores yet',
-          },
-          {
-            label: 'Score coverage',
-            value: `${Math.round(metrics.coveragePct || 0)}%`,
-            hint: `${metrics.studentsScored || 0}/${metrics.students || 0}`,
-          },
-          {
-            label: 'Avg tests done',
-            value: `${tests.avgTestsDone ?? 0}/${tests.toolsTotal || 8}`,
-            hint: `${tests.studentsNoneDone || 0} none · ${tests.studentsAllDone || 0} all done`,
+            hint: `${metrics.studentsScored || 0} students scored`,
           },
           {
             label: 'Drive-ready',
             value: `${Math.round(metrics.driveReadyOfScoredPct || 0)}%`,
-            hint: `${metrics.strong || 0} of scored ≥75%`,
+            hint: `${metrics.strong || 0} at ≥75%`,
           },
-          { label: 'Less prepared', value: metrics.weak || 0, hint: 'Scored & <50%' },
           {
-            label: 'Remaining tests',
-            value: tests.totalRemaining ?? 0,
-            hint: `Across ${metrics.students || 0} students`,
+            label: 'Score coverage',
+            value: `${Math.round(metrics.coveragePct || 0)}%`,
+            hint: `${metrics.studentsScored || 0}/${metrics.students || 0} roster`,
+          },
+          {
+            label: 'Voice AI mock',
+            value: formatPct(metrics.avgMock),
+            hint: 'Skill + interview mocks',
           },
         ].map((c, i) => (
           <motion.div
@@ -486,143 +610,255 @@ export default function PerformancePage() {
         ))}
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-3">
-        <ChartCard title="Readiness mix" meta="Drive-ready · developing · less prepared · unscored">
-          <ReadinessPie bands={metrics.bands || metrics} avgReadiness={metrics.avgReadiness} />
-        </ChartCard>
-        <ChartCard title="Pillar radar" meta="Aptitude · skills · interview · shortlist">
-          <PillarRadar pillars={metrics.pillars || {}} />
-        </ChartCard>
-        <ChartCard title="Activity pulse" meta="Who is practicing vs stuck">
-          <ActivityArea
-            active={metrics.active7d || 0}
-            idle={metrics.idleCount || 0}
-            inactive={metrics.inactive14d || 0}
-            never={metrics.neverStarted || 0}
+      <section className="mm-org-panel mm-org-panel--exec-pillars">
+        <div className="mm-org-panel__head">
+          <div>
+            <h2 className="mm-org-panel__title">Readiness pillars</h2>
+            <p className="mm-org-panel__meta">
+              Aptitude · skills · interview · voice AI mock · communication (campus average)
+            </p>
+          </div>
+        </div>
+        <ExecutivePillarKpis pillars={metrics.pillars || {}} avgMock={metrics.avgMock} />
+      </section>
+
+      <section className="mm-org-perf-section" aria-label="Cohort visual analytics">
+        <SectionHead
+          title="Cohort snapshot"
+          meta="Readiness mix, assessment coverage, and student activity at a glance"
+        />
+        <div className="mm-org-chart-grid mm-org-chart-grid--3">
+          <ChartShell
+            title="Who is placement-ready?"
+            meta="Share of students in each readiness band — click a slice to drill down"
+            chartKey="readiness"
+            drill={{ type: 'all' }}
+          >
+            <ReadinessPie
+              bands={metrics.bands || metrics}
+              avgReadiness={metrics.avgReadiness}
+              onSliceClick={
+                hod
+                  ? (drill) =>
+                      openDrill({
+                        title: 'Who is placement-ready?',
+                        meta: 'Readiness band',
+                        chartKey: 'readiness',
+                        drill,
+                      })
+                  : undefined
+              }
+            />
+          </ChartShell>
+          <ChartCard title="Who has been assessed?" meta="Students with at least one readiness score">
+            <CoverageDonut
+              studentsScored={metrics.studentsScored}
+              students={metrics.students}
+              coveragePct={metrics.coveragePct}
+            />
+          </ChartCard>
+          <ChartShell
+            title="Who is actively preparing?"
+            meta="Login and practice activity — click a slice for student list"
+            chartKey="activity"
+            drill={{ type: 'all' }}
+          >
+            <ActivityEngagementPie
+              active={metrics.active7d}
+              idle={metrics.idleCount}
+              inactive={metrics.inactive14d}
+              never={metrics.neverStarted}
+              onSliceClick={
+                hod
+                  ? (drill) =>
+                      openDrill({
+                        title: 'Who is actively preparing?',
+                        meta: 'Activity band',
+                        chartKey: 'activity',
+                        drill,
+                      })
+                  : undefined
+              }
+            />
+          </ChartShell>
+        </div>
+      </section>
+
+      <section className="mm-org-perf-section" aria-label="Pillar visual analytics">
+        <SectionHead
+          title="Pillar analysis"
+          meta="Compare aptitude, skills, interview, voice mock, and communication"
+        />
+        <div className="grid gap-5 lg:grid-cols-2">
+          <ChartCard title="Skill balance" meta="Bigger shape = more even strengths across all five areas">
+            <ExecutivePillarRadar pillars={metrics.pillars || {}} avgMock={metrics.avgMock} />
+          </ChartCard>
+          <ChartCard title="Which skills lead?" meta="Easiest chart — higher bar = stronger campus average">
+            <PillarComparisonBars pillars={metrics.pillars || {}} avgMock={metrics.avgMock} />
+          </ChartCard>
+        </div>
+        <div className="grid gap-5 lg:grid-cols-2 mt-5">
+          <ChartCard title="Pillar scores (ranked)" meta="Exact percentages — best for presentations">
+            <PillarRadialChart pillars={metrics.pillars || {}} avgMock={metrics.avgMock} />
+          </ChartCard>
+          <ChartCard title="Baseline checks completed" meta="Average roadmap progress per student (8 checks total)">
+            <TestsCompletionChart tests={metrics.tests} studentsScored={metrics.studentsScored} />
+          </ChartCard>
+        </div>
+      </section>
+
+      <section className="mm-org-perf-section" aria-label="Student distribution">
+        <SectionHead title="Student insights" meta="Distribution and preparation themes" />
+        <div className="grid gap-5 lg:grid-cols-2">
+          <ChartShell
+            title="Score spread"
+            meta="Click a bar to see students in that range"
+            chartKey="distribution"
+            drill={{ type: 'all' }}
+          >
+            <ReadinessDistributionChart
+              students={students}
+              onBarClick={
+                hod
+                  ? (drill) =>
+                      openDrill({
+                        title: 'Score spread',
+                        meta: 'Readiness range',
+                        chartKey: 'distribution',
+                        drill,
+                      })
+                  : undefined
+              }
+            />
+          </ChartShell>
+          <ChartShell
+            title="Top strengths & gaps"
+            meta="Click a slice to list students with that theme"
+            chartKey="gaps"
+            drill={{ type: 'all' }}
+          >
+            <GapStrengthPieCharts
+              gaps={metrics.topGaps || []}
+              strengths={metrics.topStrengths || []}
+              onSliceClick={
+                hod
+                  ? (drill) =>
+                      openDrill({
+                        title: 'Top strengths & gaps',
+                        meta: drill?.type === 'gap' ? 'Preparation gap' : 'Strength',
+                        chartKey: 'gaps',
+                        drill,
+                      })
+                  : undefined
+              }
+            />
+          </ChartShell>
+        </div>
+      </section>
+
+      {(metrics.byDept || []).length > 0 ? (
+        <section className="mm-org-perf-section" aria-label="Department comparison">
+          <SectionHead
+            title="Department comparison"
+            meta={hod ? 'Your branch vs campus pillars' : 'Branch-wise readiness for dean, director & HR'}
           />
-        </ChartCard>
-      </div>
+          <div className="grid gap-5 lg:grid-cols-2">
+            <ChartCard
+              title="Skills by branch"
+              meta="Compare aptitude, interview, mocks & communication across departments"
+            >
+              <DeptPillarCompareChart departments={metrics.byDept || []} showExecutive />
+            </ChartCard>
+            <ChartCard title="Students per band" meta="Count of drive-ready, developing, and needs-support per branch">
+              <DeptCompareChart departments={metrics.byDept || []} />
+            </ChartCard>
+          </div>
+          {!hod || (metrics.byDept || []).length > 1 ? (
+            <div className="grid gap-5 lg:grid-cols-2 mt-5">
+              <ChartCard title="Branch leaderboard" meta="Highest average readiness at the top">
+                <DeptReadinessRankChart departments={metrics.byDept || []} />
+              </ChartCard>
+              <ChartCard title="Placement-ready %" meta="% of assessed students at 75%+ in each branch">
+                <DriveReadyByDeptChart departments={metrics.byDept || []} />
+              </ChartCard>
+            </div>
+          ) : null}
+        </section>
+      ) : null}
 
-      <div className="grid gap-5 lg:grid-cols-2">
-        <ChartCard title="Test level funnel" meta="How far the cohort has progressed (L1→L8)" tall>
-          <TestsFunnelChart funnel={metrics.levelFunnel || []} />
-        </ChartCard>
-        <ChartCard title="Tests given vs remaining" meta="Done · in progress · remaining by tool" tall>
-          <ToolCoverageStacked tools={metrics.toolCoverage || []} />
-        </ChartCard>
-      </div>
-
-      <ChartCard title="Strengths & preparation gaps" meta="% share among scored students">
-        <GapStrengthBars gaps={metrics.topGaps || []} strengths={metrics.topStrengths || []} />
-      </ChartCard>
-
-      {!hod && (metrics.byDept || []).length > 1 ? (
+      {!hod && (metrics.byDept || []).length > 0 ? (
         <section className="mm-org-panel">
           <div className="mm-org-panel__head">
             <div>
-              <h2 className="mm-org-panel__title">Branch insights — aptitude · skills · interview</h2>
-              <p className="mm-org-panel__meta">
-                Which branch leads each pillar, where to intervene, and drill into students below
-              </p>
+              <h2 className="mm-org-panel__title">Department summary</h2>
+              <p className="mm-org-panel__meta">Branch-wise readiness for dean, director & HR review</p>
             </div>
           </div>
-          <BranchInsightsPanel
-            rankings={metrics.branchPillarRankings || {}}
-            byDept={metrics.byDept || []}
+          <DeptReadinessTable
+            departments={metrics.byDept || []}
+            onSelectDept={(d) => setDeptFilter(String(d.id))}
           />
         </section>
       ) : null}
 
-      <div className="grid gap-5 lg:grid-cols-2">
-        {!hod || (metrics.byDept || []).length > 1 ? (
-          <ChartCard title="Branch pillar comparison" meta="Avg aptitude, skills, interview by branch">
-            <DeptPillarCompareChart departments={metrics.byDept || []} />
-          </ChartCard>
-        ) : null}
-        {!hod || (metrics.byDept || []).length > 1 ? (
-          <ChartCard title="Department band mix" meta="Compare branches — least prepared first">
-            <DeptCompareChart departments={metrics.byDept || []} />
-          </ChartCard>
-        ) : null}
-      </div>
-
-      <section className="mm-org-panel">
-        <div className="mm-org-panel__head">
-          <div>
-            <h2 className="mm-org-panel__title">
-              <Trophy size={16} className="inline mr-1" /> Area rankings & shortlisting
-            </h2>
-            <p className="mm-org-panel__meta">
-              Select area · top {boardLimit} and less prepared {boardLimit}
-              {activeBoard?.avgScore != null
-                ? ` · area avg ${Math.round(activeBoard.avgScore)}% (${activeBoard.studentsScored} scored)`
-                : ''}
-            </p>
-          </div>
-        </div>
-        <div className="mm-org-area-tabs">
-          {AREA_OPTIONS.map((a) => (
-            <button
-              key={a.id}
-              type="button"
-              className={`mm-org-area-tab${areaFocus === a.id ? ' is-active' : ''}`}
-              onClick={() => setAreaFocus(a.id)}
-            >
-              {a.label}
-            </button>
-          ))}
-        </div>
-        {activeBoard?.description ? (
-          <p className="mt-2 mb-3 text-sm mm-org-text-muted">{activeBoard.description}</p>
-        ) : null}
+      {(metrics.leaders?.length || metrics.atRisk?.length) ? (
         <div className="grid gap-5 lg:grid-cols-2">
-          <RankList title={`Top ${boardLimit} — shortlist candidates`} items={activeBoard?.top} tone="top" onSelectStudent={openStudent} />
           <RankList
-            title={`Less prepared ${boardLimit} — focus practice`}
-            items={activeBoard?.lessPrepared}
+            title="Top performers"
+            items={(metrics.leaders || []).map((s, i) => ({
+              ...s,
+              rank: i + 1,
+              score: s.readiness,
+            }))}
+            tone="top"
+            onSelectStudent={openStudent}
+          />
+          <RankList
+            title="Needs support"
+            items={(metrics.atRisk || []).map((s, i) => ({
+              ...s,
+              rank: i + 1,
+              score: s.readiness,
+            }))}
             tone="prep"
             onSelectStudent={openStudent}
           />
         </div>
-      </section>
+      ) : null}
 
       <section className="mm-org-panel">
         <div className="mm-org-panel__head">
           <div>
             <h2 className="mm-org-panel__title">Student scorecards</h2>
             <p className="mm-org-panel__meta">
-              {filtered.length} shown · readiness, shortlist, tests done/remaining, level, gaps
+              {scorecardTable.count} of {scorecardTable.total} · click a row for pillar breakdown
             </p>
           </div>
         </div>
-        <div className="mb-3">
-          <input
-            className="mm-org-input"
-            style={{ minWidth: 240 }}
-            placeholder="Search name, email, department"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </div>
+        <TableToolbar
+          query={scorecardTable.query}
+          onQueryChange={scorecardTable.setQuery}
+          placeholder="Search name, email, department…"
+          count={scorecardTable.count}
+          total={scorecardTable.total}
+        />
         <div className="mm-org-table-wrap">
           <table className="mm-org-table">
             <thead>
               <tr>
-                <th>Student</th>
-                <th>Dept</th>
-                <th>Readiness</th>
-                <th>Shortlist</th>
-                <th>Best area</th>
-                <th>Strength</th>
-                <th>Prep gap</th>
-                <th>Tests</th>
-                <th>Level</th>
-                <th>Activity</th>
+                <SortableTh label="Student" sortKey="name" sort={scorecardTable.sort} onSort={scorecardTable.toggleSort} />
+                {!hod ? (
+                  <SortableTh label="Dept" sortKey="department" sort={scorecardTable.sort} onSort={scorecardTable.toggleSort} />
+                ) : null}
+                <SortableTh label="Readiness" sortKey="readiness" sort={scorecardTable.sort} onSort={scorecardTable.toggleSort} />
+                <SortableTh label="Strength" sortKey="strength" sort={scorecardTable.sort} onSort={scorecardTable.toggleSort} />
+                <SortableTh label="Prep gap" sortKey="weakness" sort={scorecardTable.sort} onSort={scorecardTable.toggleSort} />
+                <SortableTh label="Tests" sortKey="tests" sort={scorecardTable.sort} onSort={scorecardTable.toggleSort} />
               </tr>
             </thead>
             <tbody>
-              {filtered.length ? (
-                filtered.map((s) => (
+              {scorecardTable.rows.length ? (
+                scorecardTable.rows.map((s) => (
                   <tr
                     key={s.id}
                     className="mm-org-table-row--clickable"
@@ -640,7 +876,7 @@ export default function PerformancePage() {
                       <div className="font-semibold">{s.name}</div>
                       <div className="text-xs mm-org-text-muted">{s.email}</div>
                     </td>
-                    <td>{s.departmentName || '—'}</td>
+                    {!hod ? <td>{s.departmentName || '—'}</td> : null}
                     <td>
                       {s.readiness == null ? (
                         <span className="mm-org-score-chip mm-org-score-chip--none">Not scored</span>
@@ -650,34 +886,16 @@ export default function PerformancePage() {
                         </span>
                       )}
                     </td>
-                    <td>
-                      {s.shortlistScore == null ? '—' : (
-                        <span className={`mm-org-score-chip mm-org-score-chip--${readinessTone(s.shortlistScore)}`}>
-                          {Math.round(s.shortlistScore)}%
-                        </span>
-                      )}
-                    </td>
-                    <td>{s.bestArea || '—'}</td>
                     <td>{s.strength || '—'}</td>
                     <td>{s.weakness || '—'}</td>
                     <td>
                       {s.testsDone ?? 0}/{((s.testsDone || 0) + (s.testsRemaining || 0) + (s.testsInProgress || 0)) || 8}
-                      <div className="text-xs mm-org-text-muted">
-                        {s.testsRemaining || 0} left
-                        {s.testsInProgress ? ` · ${s.testsInProgress} current` : ''}
-                      </div>
-                    </td>
-                    <td>L{s.progressLevel || 0}</td>
-                    <td>
-                      <span className={`mm-org-badge mm-org-badge--${s.activityStatus || 'never'}`}>
-                        {s.activityStatus}
-                      </span>
                     </td>
                   </tr>
                 ))
               ) : (
                 <tr>
-                  <td colSpan={10} className="mm-org-text-muted">
+                  <td colSpan={hod ? 5 : 6} className="mm-org-text-muted">
                     No scorecards match this filter.
                   </td>
                 </tr>
@@ -687,11 +905,31 @@ export default function PerformancePage() {
         </div>
       </section>
 
-      <p className="m-0 text-xs mm-org-text-muted flex items-center gap-1">
-        <AlertTriangle size={12} /> Pillar & area averages are among students who completed that area — not the full roster.
+      <p className="m-0 text-xs mm-org-text-muted">
+        Pillar averages are among students who completed each assessment. Export PDF for dean, director, or HR meetings.
       </p>
 
-      <StudentScorecardDrawer student={selectedStudent} onClose={() => setSelectedStudent(null)} />
+      <StudentScorecardDrawer
+        student={selectedStudent}
+        onClose={() => setSelectedStudent(null)}
+        enableAiInsight={hod}
+        demo={session?.demo || dataSource === 'local'}
+      />
+
+      <ChartDrilldownModal
+        open={Boolean(drilldown)}
+        title={drilldown?.title || 'Chart detail'}
+        meta={drilldown?.meta}
+        drill={drilldown?.drill}
+        students={drillStudents}
+        chart={drilldown?.chartKey ? renderDrillChart(drilldown.chartKey) : null}
+        onClose={closeDrill}
+        onSelectStudent={(s) => {
+          closeDrill();
+          openStudent(s);
+        }}
+      />
+      </div>
     </div>
   );
 }

@@ -104,6 +104,23 @@
   color: var(--ink-3);
 }
 
+.stu-onboard__label--spaced {
+  margin-top: 18px;
+}
+
+.stu-onboard__linkish {
+  margin-top: 14px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--interactive);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .stu-onboard__choices {
   display: grid;
   gap: 10px;

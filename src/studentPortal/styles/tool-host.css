@@ -61,13 +61,68 @@
 }
 
 .stu-tool-host .mm-tool-widget-root {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
   min-width: 0;
+}
+
+/* Flex height chain — quiz/prep lounge need a bounded parent (not collapsed to 0). */
+.stu-tool-host .mm-assessment-flow {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+}
+
+.stu-tool-host .mm-assessment-flow--quiz {
+  flex: 1 1 auto;
+  min-height: min(68vh, 52rem);
+  overflow: visible;
+}
+
+.stu-tool-host .mm-assessment-quiz-shell,
+.stu-tool-host .mm-assessment-quiz-page {
+  flex: 1 1 auto;
+  min-height: min(68vh, 52rem);
+}
+
+.stu-tool-host .mm-assessment-quiz-page .mm-quiz-panel-card {
+  min-height: min(60vh, 48rem);
+}
+
+.stu-tool-host .mm-assessment-quiz-page .mm-quiz-scroll {
+  min-height: 12rem;
+}
+
+/* Prep lounge — keep readable ink on light panels inside themed widgets */
+.stu-tool-host .mm-site-theme [class*='bg-white'] {
+  color: var(--text-body);
+}
+
+.stu-tool-host .mm-site-theme [class*='bg-white'] .text-foreground {
+  color: var(--text-heading);
+}
+
+.stu-tool-host .mm-site-theme [class*='bg-white'] .text-muted-foreground {
+  color: var(--text-secondary);
+}
+
+.mm-tab-change-warning {
+  color: var(--text-body);
 }
 
 /* Embedded assessments still use marketing full-viewport shells — compress them. */
 .stu-main--tool .min-h-screen,
 .stu-main--tool .min-h-\[100dvh\] {
   min-height: 0 !important;
+}
+
+/* Prep lounge minimum height in portal (not full viewport marketing shell) */
+.stu-main--tool .mm-site-theme.min-h-\[calc\(100dvh-4rem\)\] {
+  min-height: min(72vh, 52rem) !important;
 }
 
 .stu-main--tool .mm-voice-page {

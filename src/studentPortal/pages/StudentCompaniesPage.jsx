@@ -10,6 +10,8 @@ import {
 import { studentPaths } from '../paths';
 import { companyLogo, companyMonogram } from '../companyLogos';
 import '../styles/company-intel.css';
+import { useTableQuery } from '../../hooks/useTableQuery';
+import { TableToolbar } from '../../components/table/TableToolbar';
 
 function Mark({ name }) {
   const logo = companyLogo(name);
@@ -48,6 +50,16 @@ export default function StudentCompaniesPage() {
   }, [params]);
 
   const tiles = useMemo(() => catalog || COMPANY_INTEL_CATALOG, [catalog]);
+
+  const catalogTable = useTableQuery(tiles, {
+    searchKeys: ['company', 'role', 'sector'],
+    initialSort: { key: 'company', direction: 'asc' },
+    getSortValue: (row, key) => {
+      if (key === 'company') return (row.company || '').toLowerCase();
+      if (key === 'role') return (row.role || '').toLowerCase();
+      return row[key];
+    },
+  });
 
   const openIntel = async (target) => {
     const c = (target.company || company).trim();
@@ -134,8 +146,16 @@ export default function StudentCompaniesPage() {
               <p className="stu-card__sub">Open any company to see how they typically evaluate students</p>
             </div>
           </header>
+          <TableToolbar
+            variant="stu"
+            query={catalogTable.query}
+            onQueryChange={catalogTable.setQuery}
+            placeholder="Filter companies…"
+            count={catalogTable.count}
+            total={catalogTable.total}
+          />
           <ul className="stu-ci__grid">
-            {tiles.map((c) => (
+            {catalogTable.rows.length ? catalogTable.rows.map((c) => (
               <li key={`${c.company}-${c.role}`}>
                 <button
                   type="button"
@@ -155,7 +175,9 @@ export default function StudentCompaniesPage() {
                   <ArrowRight size={16} aria-hidden />
                 </button>
               </li>
-            ))}
+            )) : (
+              <li className="stu-ci__empty">No companies match this filter.</li>
+            )}
           </ul>
         </section>
       </div>

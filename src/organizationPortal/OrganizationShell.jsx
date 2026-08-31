@@ -11,8 +11,8 @@ import {
   Menu,
   NotebookPen,
   LifeBuoy,
-  Settings,
   Shield,
+  User,
   UserPlus,
   Users,
   BarChart3,
@@ -33,7 +33,9 @@ import {
 import { orgPaths } from './paths';
 import { useOrgTheme } from './useOrgTheme';
 import OrgThemeToggle from './OrgThemeToggle';
+import OrgAccountIdentity from './components/OrgAccountIdentity';
 import IdleSessionGuard from '../components/IdleSessionGuard';
+import '../components/table/table-query.css';
 import './organization-portal.css';
 
 const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
@@ -44,7 +46,7 @@ function navForRole(role) {
       { section: 'Overview', items: [
         { to: orgPaths.dashboard, label: 'Dashboard', icon: LayoutDashboard },
         { to: orgPaths.workspace, label: 'My workspace', icon: NotebookPen },
-        { to: orgPaths.performance, label: 'Performance', icon: BarChart3 },
+        { to: orgPaths.performance, label: 'Performance dashboard', icon: BarChart3 },
       ]},
       { section: 'Campus', items: [
         { to: orgPaths.departments, label: 'Departments', icon: Building2 },
@@ -57,9 +59,7 @@ function navForRole(role) {
       ]},
       { section: 'Admin', items: [
         { to: orgPaths.access, label: 'HOD access', icon: Shield },
-        { to: orgPaths.settings, label: 'Settings', icon: Settings },
         { to: orgPaths.help, label: 'Help Center', icon: LifeBuoy },
-        { to: orgPaths.changePassword, label: 'Change password', icon: KeyRound },
       ]},
     ];
   }
@@ -69,17 +69,16 @@ function navForRole(role) {
       { section: 'Overview', items: [
         { to: orgPaths.dashboard, label: 'Dashboard', icon: LayoutDashboard },
         { to: orgPaths.workspace, label: 'My workspace', icon: NotebookPen },
-        { to: orgPaths.performance, label: 'Performance', icon: BarChart3 },
+        { to: orgPaths.performance, label: 'Performance dashboard', icon: BarChart3 },
       ]},
       { section: 'My branch', items: [
         { to: orgPaths.students, label: 'Students', icon: Users },
         { to: orgPaths.programs, label: 'Programs & assessments', icon: ClipboardList },
-        { to: orgPaths.notify, label: 'Notify branch', icon: Bell },
+        { to: orgPaths.drives, label: 'Notify branch', icon: Bell },
+        { to: orgPaths.upcomingDrives, label: 'Upcoming drives', icon: Briefcase },
       ]},
       { section: 'Account', items: [
-        { to: orgPaths.settings, label: 'Settings', icon: Settings },
         { to: orgPaths.help, label: 'Help Center', icon: LifeBuoy },
-        { to: orgPaths.changePassword, label: 'Change password', icon: KeyRound },
       ]},
     ];
   }
@@ -88,13 +87,11 @@ function navForRole(role) {
     return [
       { section: 'Analytics', items: [
         { to: orgPaths.dashboard, label: 'Dashboard', icon: LayoutDashboard },
-        { to: orgPaths.performance, label: 'Performance', icon: BarChart3 },
+        { to: orgPaths.performance, label: 'Performance dashboard', icon: BarChart3 },
         { to: orgPaths.departments, label: 'Departments', icon: Building2 },
       ]},
       { section: 'Account', items: [
-        { to: orgPaths.settings, label: 'Settings', icon: Settings },
         { to: orgPaths.help, label: 'Help Center', icon: LifeBuoy },
-        { to: orgPaths.changePassword, label: 'Change password', icon: KeyRound },
       ]},
     ];
   }
@@ -104,9 +101,7 @@ function navForRole(role) {
       { to: orgPaths.dashboard, label: 'Dashboard', icon: LayoutDashboard },
     ]},
     { section: 'Account', items: [
-      { to: orgPaths.settings, label: 'Settings', icon: Settings },
       { to: orgPaths.help, label: 'Help Center', icon: LifeBuoy },
-      { to: orgPaths.changePassword, label: 'Change password', icon: KeyRound },
     ]},
   ];
 }
@@ -121,21 +116,22 @@ const TITLES = {
   workspace: ['My workspace', 'Your private todos, reminders, and notes — stay on this platform.'],
   departments: ['Departments', 'Branches, HOD, and optional Placement Coordinator.'],
   enrollment: ['Student enrollment', 'Invite students, approve requests, assign departments.'],
-  students: ['Branch students', 'Roster, invites, and readiness for your department.'],
+  students: ['Branch students', 'Enrolled students, invites, and readiness for your department.'],
   programs: {
     [ORG_ROLES.TPO]: ['Programs & tests', 'Assign readiness tests, mocks, competitions, and timelines.'],
     [ORG_ROLES.HOD]: ['Programs & assessments', 'Assign skill, aptitude, English, technical, and mock interviews.'],
   },
-  drives: ['Notify events', 'Events, workshops, and announcements — campus, department, or HODs.'],
+  drives: ['Notify events', 'Events, workshops, and announcements — all students, selected departments, or HODs.'],
   'upcoming-drives': ['Upcoming drives', 'Company drives — eligibility, date, and remarks for Org Admins.'],
   notify: ['Notify branch', 'Announcements and reminders for your department only.'],
   performance: {
-    [ORG_ROLES.TPO]: ['Performance', 'Leaderboards, strengths, gaps — student and department.'],
+    [ORG_ROLES.TPO]: ['Performance dashboard', 'Executive readiness for dean, director & HR — pillars, charts, PDF export.'],
     [ORG_ROLES.HOD]: ['Branch performance', 'Scorecards and gaps for your department students.'],
-    [ORG_ROLES.VIEWER]: ['Performance', 'Leaderboards, strengths, gaps — student and department.'],
+    [ORG_ROLES.VIEWER]: ['Performance dashboard', 'Campus readiness pillars, departments, and export for leadership.'],
   },
   access: ['HOD access', 'Control what department mentors can do.'],
-  settings: ['Settings', 'Organization portal preferences.'],
+  profile: ['Profile', 'Your account — name, email, and college.'],
+  settings: ['Profile', 'Your account — name, email, and college.'],
   help: ['Help Center', 'Tell MentorMuni if the platform is broken — or send feedback.'],
   'change-password': ['Change password', 'Update your credentials securely.'],
 };
@@ -165,6 +161,10 @@ export default function OrganizationShell() {
   const entry = TITLES[segment];
   if (Array.isArray(entry)) [title, sub] = entry;
   else if (entry?.[portalRole]) [title, sub] = entry[portalRole];
+  if (segment === 'help') {
+    const org = session?.organization_name || session?.organization_code || 'your college';
+    sub = `Report a platform issue or send product feedback. MentorMuni sees ${org} and the Organization Portal — not your name.`;
+  }
 
   useEffect(() => {
     setNavOpen(false);
@@ -255,6 +255,41 @@ export default function OrganizationShell() {
               </div>
             ))}
           </nav>
+
+          <div className="mm-org-sidebar__foot">
+            <OrgAccountIdentity session={session} align="left" />
+            <div className="mm-org-sidebar__foot-links">
+              <NavLink
+                to={orgPaths.profile}
+                className={({ isActive }) =>
+                  `mm-org-sidebar__foot-link ${isActive ? 'is-active' : ''}`
+                }
+              >
+                <User size={15} />
+                <span>Profile</span>
+              </NavLink>
+              <NavLink
+                to={orgPaths.changePassword}
+                className={({ isActive }) =>
+                  `mm-org-sidebar__foot-link ${isActive ? 'is-active' : ''}`
+                }
+              >
+                <KeyRound size={15} />
+                <span>Change password</span>
+              </NavLink>
+            </div>
+            <button
+              type="button"
+              className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm mm-org-sidebar__signout"
+              onClick={() => {
+                clearOrgSession();
+                navigate(getOrgLoginPath(), { replace: true });
+              }}
+            >
+              <LogOut size={15} />
+              <span>Sign out</span>
+            </button>
+          </div>
         </aside>
 
         <div className="mm-org-main">
@@ -294,18 +329,7 @@ export default function OrganizationShell() {
                     : 'Live · Campus ops'}
               </span>
               <div className="mm-org-account" title="Signed-in account">
-                <div className="mm-org-account__meta">
-                  <p className="mm-org-account__name">
-                    {session?.name || sessionDisplayRole(session)}
-                  </p>
-                  <p className="mm-org-account__email">
-                    {session?.email || session?.username || '—'}
-                  </p>
-                  <p className="mm-org-account__role">
-                    {isViewerRole(session?.role) ? 'Viewer' : sessionDisplayRole(session)}
-                    {session?.organization_name ? ` · ${session.organization_name}` : ''}
-                  </p>
-                </div>
+                <OrgAccountIdentity session={session} align="right" />
                 <button
                   type="button"
                   className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm mm-org-account__signout"

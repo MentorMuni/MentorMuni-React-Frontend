@@ -1,18 +1,18 @@
 import { useEffect, useRef, useState } from 'react';
-import { CheckCircle2, LifeBuoy, MessageSquare, Paperclip, Send, X } from 'lucide-react';
-import { attachmentSrc, filesToAttachments } from '../../lib/helpAttachments';
+import { CheckCircle2, LifeBuoy, MessageSquare, Send, X } from 'lucide-react';
+import { attachmentSrc, filesToAttachments, HELP_ATTACHMENT_HINT, sanitizeAttachments } from '../../lib/helpAttachments';
 import './help-center.css';
 
 const CATEGORIES = [
-  { id: 'not_working', label: 'Platform not working' },
-  { id: 'feature_broken', label: 'A feature is broken' },
-  { id: 'feedback', label: 'Feedback / idea' },
-  { id: 'other', label: 'Something else' },
+  { id: 'feature_broken', label: "Something I tried didn't work" },
+  { id: 'not_working', label: "Can't sign in or open a page" },
+  { id: 'feedback', label: 'I have a suggestion' },
+  { id: 'other', label: 'General question' },
 ];
 
 const EMPTY_COMPOSE = {
   subject: '',
-  category: 'not_working',
+  category: 'feature_broken',
   body: '',
   attachments: [],
 };
@@ -30,10 +30,74 @@ function portalLabel(portal) {
   return portal === 'organization' ? 'Organization Portal' : 'Student Portal';
 }
 
+function formatHelpError(err) {
+  const raw = String(err?.message || err || '').trim();
+  if (!raw) return 'Could not complete that action. Try again.';
+  if (/field required/i.test(raw)) {
+    return 'Fill in the subject and description before sending. Screenshots are optional.';
+  }
+  return raw;
+}
+
+function validateTicketCompose(compose) {
+  const subject = String(compose.subject || '').trim();
+  const body = String(compose.body || '').trim();
+  if (subject.length < 4) {
+    return 'Subject is required (at least 4 characters).';
+  }
+  if (body.length < 8) {
+    return 'Description is required (at least 8 characters). Screenshots alone are not enough.';
+  }
+  return '';
+}
+
+function ScreenshotField({ id, attachments, onPick, onRemove, hint = HELP_ATTACHMENT_HINT }) {
+  const count = attachments?.length || 0;
+  return (
+    <div className="mm-help__file-block">
+      <label className="mm-help__file-label" htmlFor={id}>
+        Screenshots <span className="mm-help__optional">(optional)</span>
+      </label>
+      <p className="mm-help__file-hint">{hint}</p>
+      <input
+        id={id}
+        type="file"
+        className="mm-help__file-input"
+        accept="image/png,image/jpeg,image/jpg,image/webp,.png,.jpg,.jpeg,.webp"
+        multiple
+        onChange={onPick}
+      />
+      {count > 0 ? (
+        <p className="mm-help__file-status" role="status">
+          {count} image{count === 1 ? '' : 's'} attached — preview below, sent with your message.
+        </p>
+      ) : (
+        <p className="mm-help__file-status mm-help__file-status--empty">
+          No images attached yet.
+        </p>
+      )}
+      <AttachmentChips files={attachments} onRemove={onRemove} />
+    </div>
+  );
+}
+
 function formatWhen(iso) {
   if (!iso) return '';
   try {
     return new Date(iso).toLocaleString();
+  } catch {
+    return iso;
+  }
+}
+
+function formatShortWhen(iso) {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleDateString('en-IN', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    });
   } catch {
     return iso;
   }
@@ -44,6 +108,7 @@ export default function HelpCenterView({
   organizationName,
   api,
   disabledReason = '',
+  hideTitle = false,
 }) {
   const [tickets, setTickets] = useState([]);
   const [activeId, setActiveId] = useState(null);
@@ -114,16 +179,19 @@ export default function HelpCenterView({
     };
   }, [disabledReason]);
 
-  function onPickFiles(setter) {
+  function onPickFiles(setter, getExistingCount) {
     return async (event) => {
+      setError('');
       try {
-        const extra = await filesToAttachments(event.target.files);
+        const existingCount =
+          typeof getExistingCount === 'function' ? getExistingCount() : 0;
+        const extra = await filesToAttachments(event.target.files, { existingCount });
         setter((prev) => ({
           ...prev,
-          attachments: [...(prev.attachments || []), ...extra].slice(0, 3),
+          attachments: sanitizeAttachments([...(prev.attachments || []), ...extra]),
         }));
       } catch (err) {
-        setError(err.message);
+        setError(formatHelpError(err));
       } finally {
         event.target.value = '';
       }
@@ -133,15 +201,21 @@ export default function HelpCenterView({
   async function submitTicket(event) {
     event.preventDefault();
     if (disabledReason) return;
+    const validationErr = validateTicketCompose(compose);
+    if (validationErr) {
+      setError(validationErr);
+      return;
+    }
     setSaving(true);
     setError('');
     try {
+      const attachments = sanitizeAttachments(compose.attachments);
       const created = await api.createTicket({
         subject: compose.subject.trim(),
         body: compose.body.trim(),
         category: compose.category,
         source_portal: sourcePortal,
-        attachments: compose.attachments,
+        attachments,
       });
       setCompose(EMPTY_COMPOSE);
       setReply(EMPTY_REPLY);
@@ -149,7 +223,7 @@ export default function HelpCenterView({
       setActiveId(created.id);
       setThread(created);
     } catch (err) {
-      setError(err.message || 'Could not send this to MentorMuni.');
+      setError(formatHelpError(err));
     } finally {
       setSaving(false);
     }
@@ -159,18 +233,23 @@ export default function HelpCenterView({
     event.preventDefault();
     if (!activeId || !thread || thread.status === 'CLOSED') return;
     if (thread.id !== activeId) return;
+    const body = reply.body.trim();
+    if (!body) {
+      setError('Type a message before sending your reply.');
+      return;
+    }
     setSaving(true);
     setError('');
     try {
       const updated = await api.replyTicket(activeId, {
-        body: reply.body.trim(),
-        attachments: reply.attachments,
+        body,
+        attachments: sanitizeAttachments(reply.attachments),
       });
       setReply(EMPTY_REPLY);
       setThread(updated);
       await refreshList();
     } catch (err) {
-      setError(err.message || 'Could not send reply.');
+      setError(formatHelpError(err));
     } finally {
       setSaving(false);
     }
@@ -195,13 +274,15 @@ export default function HelpCenterView({
   if (disabledReason) {
     return (
       <div className="mm-help">
-        <header className="mm-help__intro">
-          <LifeBuoy size={22} />
-          <div>
-            <h2>Help Center</h2>
-            <p>Message the MentorMuni team about platform issues or feedback.</p>
-          </div>
-        </header>
+        {!hideTitle ? (
+          <header className="mm-help__intro">
+            <LifeBuoy size={22} />
+            <div>
+              <h2>Help Center</h2>
+              <p>Message the MentorMuni team about platform issues or feedback.</p>
+            </div>
+          </header>
+        ) : null}
         <p className="mm-help__note">{disabledReason}</p>
       </div>
     );
@@ -211,17 +292,19 @@ export default function HelpCenterView({
 
   return (
     <div className="mm-help">
-      <header className="mm-help__intro">
-        <LifeBuoy size={22} />
-        <div>
-          <h2>Help Center</h2>
-          <p>
-            Report a platform issue or send product feedback. MentorMuni sees your{' '}
-            <strong>{organizationName || 'organization'}</strong> and the{' '}
-            <strong>{portalLabel(sourcePortal)}</strong> — not your name.
-          </p>
-        </div>
-      </header>
+      {!hideTitle ? (
+        <header className="mm-help__intro">
+          <LifeBuoy size={22} />
+          <div>
+            <h2>Help Center</h2>
+            <p>
+              Report a platform issue or send product feedback. MentorMuni sees your{' '}
+              <strong>{organizationName || 'organization'}</strong> and the{' '}
+              <strong>{portalLabel(sourcePortal)}</strong> — not your name.
+            </p>
+          </div>
+        </header>
+      ) : null}
 
       {error ? <p className="mm-help__error">{error}</p> : null}
 
@@ -238,13 +321,14 @@ export default function HelpCenterView({
           <form
             onSubmit={submitTicket}
             className="mm-help__form"
+            noValidate
             onFocusCapture={() => {
               // Keep compose screenshots separate from ticket replies.
               if (activeId) clearTicketSelection();
             }}
           >
             <label>
-              What is this about?
+              What do you need help with?
               <select
                 value={compose.category}
                 onChange={(e) => setCompose((p) => ({ ...p, category: e.target.value }))}
@@ -257,39 +341,29 @@ export default function HelpCenterView({
               </select>
             </label>
             <label>
-              Subject
+              Subject <span className="mm-help__required">(required)</span>
               <input
                 value={compose.subject}
                 onChange={(e) => setCompose((p) => ({ ...p, subject: e.target.value }))}
                 placeholder="e.g. Drive dates are not saving"
-                required
                 minLength={4}
                 maxLength={255}
               />
             </label>
             <label>
-              Describe what happened
+              Describe what happened <span className="mm-help__required">(required)</span>
               <textarea
                 value={compose.body}
                 onChange={(e) => setCompose((p) => ({ ...p, body: e.target.value }))}
                 rows={5}
                 placeholder="What did you try, what did you expect, and what went wrong?"
-                required
                 minLength={8}
               />
             </label>
-            <label className="mm-help__file">
-              <Paperclip size={15} />
-              Optional screenshots (up to 3)
-              <input
-                type="file"
-                accept="image/png,image/jpeg,image/webp"
-                multiple
-                onChange={onPickFiles(setCompose)}
-              />
-            </label>
-            <AttachmentChips
-              files={compose.attachments}
+            <ScreenshotField
+              id="help-compose-screenshots"
+              attachments={compose.attachments}
+              onPick={onPickFiles(setCompose, () => compose.attachments?.length || 0)}
               onRemove={(i) =>
                 setCompose((p) => ({
                   ...p,
@@ -306,7 +380,7 @@ export default function HelpCenterView({
 
         <section className="mm-help__panel">
           <h3>Your requests</h3>
-          <p className="mm-help__hint">Open a ticket to view its conversation and reply there.</p>
+          <p className="mm-help__hint">Select a request on the right to read messages and reply there.</p>
           {loading ? <p className="mm-help__muted">Loading…</p> : null}
           {!loading && tickets.length === 0 ? (
             <p className="mm-help__muted">Nothing sent yet. Use the form when something feels off.</p>
@@ -325,11 +399,9 @@ export default function HelpCenterView({
                     openTicket(t.id);
                   }}
                 >
-                  <strong>
-                    #{t.id} · {t.subject}
-                  </strong>
+                  <strong>{t.subject}</strong>
                   <span>
-                    {statusLabel(t.status)} · {formatWhen(t.updated_at)}
+                    {statusLabel(t.status)} · {formatShortWhen(t.updated_at)}
                   </span>
                 </button>
               </li>
@@ -342,11 +414,10 @@ export default function HelpCenterView({
         <section className="mm-help__panel mm-help__thread mm-help__thread--empty" aria-live="polite">
           <MessageSquare size={22} aria-hidden />
           <div>
-            <h3>No ticket selected</h3>
+            <h3>No request selected</h3>
             <p className="mm-help__muted">
-              Pick a request on the right to read its thread and leave a reply on that ticket only.
-              Screenshots you add for a reply stay on that ticket — they are not shared with new
-              requests.
+              Select a request on the right to read the conversation and reply. Screenshots you add
+              for a reply stay on that request — they are not shared with new ones.
             </p>
           </div>
         </section>
@@ -354,7 +425,7 @@ export default function HelpCenterView({
 
       {threadLoading ? (
         <section className="mm-help__panel mm-help__thread">
-          <p className="mm-help__muted">Opening ticket…</p>
+          <p className="mm-help__muted">Opening conversation…</p>
         </section>
       ) : null}
 
@@ -363,8 +434,7 @@ export default function HelpCenterView({
           <div className="mm-help__thread-head">
             <div>
               <p className="mm-help__kicker">
-                Ticket #{thread.id} · {statusLabel(thread.status)} ·{' '}
-                {portalLabel(thread.source_portal)}
+                {statusLabel(thread.status)} · Updated {formatShortWhen(thread.updated_at)}
               </p>
               <h3>{thread.subject}</h3>
             </div>
@@ -418,38 +488,28 @@ export default function HelpCenterView({
           </ol>
 
           {thread.status === 'CLOSED' ? (
-            <p className="mm-help__muted">This request is closed. Open another ticket to continue.</p>
+            <p className="mm-help__muted">This request is closed. Send a new request if you need more help.</p>
           ) : canReply ? (
             <form
               key={`reply-${thread.id}`}
               onSubmit={submitReply}
               className="mm-help__form mm-help__reply"
+              noValidate
             >
-              <p className="mm-help__reply-label">
-                Reply on ticket #{thread.id}
-              </p>
+              <p className="mm-help__reply-label">Add a reply to this request</p>
               <label>
-                Your message
+                Your message <span className="mm-help__required">(required)</span>
                 <textarea
                   value={reply.body}
                   onChange={(e) => setReply((p) => ({ ...p, body: e.target.value }))}
                   rows={3}
-                  required
                   placeholder={`Add detail for MentorMuni about “${thread.subject}”…`}
                 />
               </label>
-              <label className="mm-help__file">
-                <Paperclip size={15} />
-                Screenshots for this reply only (up to 3)
-                <input
-                  type="file"
-                  accept="image/png,image/jpeg,image/webp"
-                  multiple
-                  onChange={onPickFiles(setReply)}
-                />
-              </label>
-              <AttachmentChips
-                files={reply.attachments}
+              <ScreenshotField
+                id={`help-reply-screenshots-${thread.id}`}
+                attachments={reply.attachments}
+                onPick={onPickFiles(setReply, () => reply.attachments?.length || 0)}
                 onRemove={(i) =>
                   setReply((p) => ({
                     ...p,
@@ -459,7 +519,7 @@ export default function HelpCenterView({
               />
               <button type="submit" disabled={saving || !reply.body.trim()}>
                 <Send size={15} />
-                Send reply on #{thread.id}
+                Send reply
               </button>
             </form>
           ) : null}
@@ -472,11 +532,11 @@ export default function HelpCenterView({
 function AttachmentChips({ files, onRemove }) {
   if (!files?.length) return null;
   return (
-    <ul className="mm-help__chips">
+    <ul className="mm-help__chips" aria-label="Attached screenshots">
       {files.map((file, i) => (
         <li key={`${file.filename}-${i}-${file.data_base64?.slice(0, 16) || i}`}>
-          <img src={attachmentSrc(file)} alt="" />
-          <span>{file.filename}</span>
+          <img src={attachmentSrc(file)} alt={file.filename || `Screenshot ${i + 1}`} />
+          <span>{file.filename || `Image ${i + 1}`}</span>
           <button type="button" onClick={() => onRemove(i)} aria-label="Remove image">
             <X size={12} />
           </button>

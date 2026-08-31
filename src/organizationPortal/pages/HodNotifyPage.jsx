@@ -11,6 +11,9 @@ import {
   fetchNotifications,
 } from '../notificationsApi';
 import { createDrive, removeDrive, subscribeOrgDb } from '../store';
+import { useTableQuery } from '../../hooks/useTableQuery';
+import { TableToolbar } from '../../components/table/TableToolbar';
+import { SortableTh } from '../../components/table/SortableTh';
 
 export default function HodNotifyPage() {
   const session = getOrgSession();
@@ -40,6 +43,15 @@ export default function HodNotifyPage() {
         String(n.departmentId) === String(deptId)
     );
   }, [demo, snap.drives, items, deptId]);
+
+  const noticesTable = useTableQuery(branchNotices, {
+    searchKeys: ['title', 'company', 'deliveryStatus', 'status'],
+    getSortValue: (row, key) => {
+      if (key === 'notice') return (row.title || row.company || '').toLowerCase();
+      if (key === 'status') return row.deliveryStatus || row.status || '';
+      return row[key];
+    },
+  });
 
   const refresh = async () => {
     setLoading(true);
@@ -260,17 +272,25 @@ export default function HodNotifyPage() {
               <Loader2 size={16} className="animate-spin" /> Loading…
             </div>
           ) : branchNotices.length ? (
+            <>
+            <TableToolbar
+              query={noticesTable.query}
+              onQueryChange={noticesTable.setQuery}
+              placeholder="Search notice, company, status…"
+              count={noticesTable.count}
+              total={noticesTable.total}
+            />
             <div className="mm-org-table-wrap">
               <table className="mm-org-table">
                 <thead>
                   <tr>
-                    <th>Notice</th>
-                    <th>Status</th>
+                    <SortableTh label="Notice" sortKey="notice" sort={noticesTable.sort} onSort={noticesTable.toggleSort} />
+                    <SortableTh label="Status" sortKey="status" sort={noticesTable.sort} onSort={noticesTable.toggleSort} />
                     <th />
                   </tr>
                 </thead>
                 <tbody>
-                  {branchNotices.map((d) => (
+                  {noticesTable.rows.length ? noticesTable.rows.map((d) => (
                     <tr key={d.id}>
                       <td>
                         <p className="mm-org-table__title">{d.title || d.company}</p>
@@ -292,10 +312,17 @@ export default function HodNotifyPage() {
                         </button>
                       </td>
                     </tr>
-                  ))}
+                  )) : (
+                    <tr>
+                      <td colSpan={3}>
+                        <div className="mm-org-empty">No notices match this search.</div>
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
+            </>
           ) : (
             <div className="mm-org-empty">No branch announcements yet.</div>
           )}

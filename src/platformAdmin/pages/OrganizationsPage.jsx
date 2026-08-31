@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   Plus,
-  Search,
   Building2,
   UserPlus,
   UserCheck,
@@ -39,6 +38,9 @@ import {
 } from '../store';
 import Modal from '../Modal';
 import { collegePortalOrigin } from '../../tenant/resolveTenant';
+import { useTableQuery } from '../../hooks/useTableQuery';
+import { TableToolbar } from '../../components/table/TableToolbar';
+import { SortableTh } from '../../components/table/SortableTh';
 import { organizationLogoUrl } from '../../tenant/orgLogo';
 
 function collegePortalDisplay(orgOrSlug) {
@@ -127,7 +129,6 @@ export default function OrganizationsPage() {
   const [orgs, setOrgs] = useState([]);
   const [plans, setPlans] = useState([]);
   const [featureCatalog, setFeatureCatalog] = useState([]);
-  const [query, setQuery] = useState('');
   const [createOpen, setCreateOpen] = useState(false);
   const [editingOrgId, setEditingOrgId] = useState(null);
   const [form, setForm] = useState(emptyOrg);
@@ -334,22 +335,17 @@ export default function OrganizationsPage() {
     return () => window.clearTimeout(timer);
   }, [success]);
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return orgs;
-    return orgs.filter(
-      (o) =>
-        String(o.name || '')
-          .toLowerCase()
-          .includes(q) ||
-        String(o.code || '')
-          .toLowerCase()
-          .includes(q) ||
-        String(o.city || '')
-          .toLowerCase()
-          .includes(q)
-    );
-  }, [orgs, query]);
+  const orgTable = useTableQuery(orgs, {
+    searchKeys: ['name', 'code', 'city', 'contact_name', 'contact_email'],
+    getSortValue: (row, key) => {
+      if (key === 'organization') return (row.name || '').toLowerCase();
+      if (key === 'type') return row.type || '';
+      if (key === 'contact') return `${row.contact_name || ''} ${row.contact_email || ''}`.toLowerCase();
+      if (key === 'location') return `${row.city || ''} ${row.state || ''}`.toLowerCase();
+      if (key === 'status') return row.status || '';
+      return row[key];
+    },
+  });
 
   const clearPendingLogo = () => {
     setPendingLogoFile(null);
@@ -888,16 +884,16 @@ export default function OrganizationsPage() {
       {apiToast && <div className="mm-pa-inline-toast mm-pa-inline-toast--error">{apiToast}</div>}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <div className="relative w-full max-w-md">
-          <Search size={15} className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500" />
-          <input
-            className="mm-pa-input mm-pa-input--icon-left"
-            placeholder="Search by name, code, or city…"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </div>
-        <button type="button" className="mm-pa-btn mm-pa-btn--primary" onClick={openCreate}>
+        <TableToolbar
+          variant="pa"
+          query={orgTable.query}
+          onQueryChange={orgTable.setQuery}
+          placeholder="Search by name, code, or city…"
+          count={orgTable.count}
+          total={orgTable.total}
+          className="mb-0 flex-1"
+        />
+        <button type="button" className="mm-pa-btn mm-pa-btn--primary shrink-0" onClick={openCreate}>
           <Plus size={16} /> Create Organization
         </button>
       </div>
@@ -906,16 +902,16 @@ export default function OrganizationsPage() {
         <table className="mm-pa-table min-w-[880px]">
           <thead>
             <tr>
-              <th>Organization</th>
-              <th>Type</th>
-              <th>Contact</th>
-              <th>Location</th>
-              <th>Status</th>
+              <SortableTh label="Organization" sortKey="organization" sort={orgTable.sort} onSort={orgTable.toggleSort} />
+              <SortableTh label="Type" sortKey="type" sort={orgTable.sort} onSort={orgTable.toggleSort} />
+              <SortableTh label="Contact" sortKey="contact" sort={orgTable.sort} onSort={orgTable.toggleSort} />
+              <SortableTh label="Location" sortKey="location" sort={orgTable.sort} onSort={orgTable.toggleSort} />
+              <SortableTh label="Status" sortKey="status" sort={orgTable.sort} onSort={orgTable.toggleSort} />
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {(loading ? Array.from({ length: 5 }, (_, i) => ({ id: `loading-org-${i}` })) : filtered).map((org) => {
+            {(loading ? Array.from({ length: 5 }, (_, i) => ({ id: `loading-org-${i}` })) : orgTable.rows).map((org) => {
               if (loading) {
                 return (
                   <tr key={org.id}>

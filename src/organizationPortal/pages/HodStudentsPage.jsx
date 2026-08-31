@@ -31,6 +31,9 @@ import {
   resendStudentSetupLink,
 } from '../studentsApi';
 import AssignToStudentModal from './AssignToStudentModal';
+import { useTableQuery } from '../../hooks/useTableQuery';
+import { TableToolbar } from '../../components/table/TableToolbar';
+import { SortableTh } from '../../components/table/SortableTh';
 
 const CSV_TEMPLATE = `email,name,college_id,batch_year
 rahul.sharma@college.edu,Rahul Sharma,CSE2024A01,2025
@@ -82,6 +85,28 @@ export default function HodStudentsPage() {
   const [editBusy, setEditBusy] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
   const [busyId, setBusyId] = useState('');
+
+  const queueTable = useTableQuery(pending, {
+    searchKeys: ['name', 'email', 'collegeId', 'phone'],
+    getSortValue: (row, key) => {
+      if (key === 'name') return (row.name || row.email || '').toLowerCase();
+      if (key === 'source') return sourceLabel(row.source);
+      if (key === 'queued') return row.createdAt || '';
+      return row[key];
+    },
+  });
+
+  const rosterTable = useTableQuery(students, {
+    searchKeys: ['name', 'email', 'collegeId', 'phone'],
+    initialSort: { key: 'readiness', direction: 'desc' },
+    getSortValue: (row, key) => {
+      if (key === 'name') return (row.name || row.email || '').toLowerCase();
+      if (key === 'login') return row.authStatus;
+      if (key === 'readiness') return row.readiness;
+      if (key === 'mock') return row.mockScore ?? row.testsDone;
+      return row[key];
+    },
+  });
 
   const canInvite = snap.access?.canInviteStudents !== false;
   const dept = snap.department;
@@ -481,7 +506,7 @@ export default function HodStudentsPage() {
           ) : null}
           {[
             ['queue', `Queue (${pending.length})`],
-            ['roster', 'Roster'],
+            ['roster', 'Enrolled students'],
           ].map(([id, label]) => (
             <button
               key={id}
@@ -824,18 +849,26 @@ export default function HodStudentsPage() {
             ) : null}
           </div>
           {pending.length ? (
+            <>
+            <TableToolbar
+              query={queueTable.query}
+              onQueryChange={queueTable.setQuery}
+              placeholder="Search student, email…"
+              count={queueTable.count}
+              total={queueTable.total}
+            />
             <div className="mm-org-table-wrap">
               <table className="mm-org-table">
                 <thead>
                   <tr>
-                    <th>Student</th>
-                    <th>Source</th>
-                    <th>Queued</th>
+                    <SortableTh label="Student" sortKey="name" sort={queueTable.sort} onSort={queueTable.toggleSort} />
+                    <SortableTh label="Source" sortKey="source" sort={queueTable.sort} onSort={queueTable.toggleSort} />
+                    <SortableTh label="Queued" sortKey="queued" sort={queueTable.sort} onSort={queueTable.toggleSort} />
                     <th />
                   </tr>
                 </thead>
                 <tbody>
-                  {pending.map((inv) => (
+                  {queueTable.rows.length ? queueTable.rows.map((inv) => (
                     <tr key={inv.id}>
                       <td>
                         <p className="mm-org-table__title">{inv.name || inv.email}</p>
@@ -876,10 +909,17 @@ export default function HodStudentsPage() {
                         </div>
                       </td>
                     </tr>
-                  ))}
+                  )) : (
+                    <tr>
+                      <td colSpan={4}>
+                        <div className="mm-org-empty">No pending invites match this search.</div>
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
+            </>
           ) : (
             <div className="mm-org-empty">
               {loading ? 'Loading…' : 'No pending invites for your branch.'}
@@ -892,27 +932,32 @@ export default function HodStudentsPage() {
         <section className="mm-org-panel">
           <div className="mm-org-panel__head">
             <div>
-              <h2 className="mm-org-panel__title">Branch roster</h2>
+              <h2 className="mm-org-panel__title">Enrolled students</h2>
               <p className="mm-org-panel__meta">Live from API when available</p>
             </div>
           </div>
           {students.length ? (
+            <>
+            <TableToolbar
+              query={rosterTable.query}
+              onQueryChange={rosterTable.setQuery}
+              placeholder="Search name, email…"
+              count={rosterTable.count}
+              total={rosterTable.total}
+            />
             <div className="mm-org-table-wrap">
               <table className="mm-org-table">
                 <thead>
                   <tr>
-                    <th>Student</th>
-                    <th>Login</th>
-                    <th>Readiness</th>
-                    <th>Mock</th>
+                    <SortableTh label="Student" sortKey="name" sort={rosterTable.sort} onSort={rosterTable.toggleSort} />
+                    <SortableTh label="Login" sortKey="login" sort={rosterTable.sort} onSort={rosterTable.toggleSort} />
+                    <SortableTh label="Readiness" sortKey="readiness" sort={rosterTable.sort} onSort={rosterTable.toggleSort} />
+                    <SortableTh label="Mock" sortKey="mock" sort={rosterTable.sort} onSort={rosterTable.toggleSort} />
                     <th />
                   </tr>
                 </thead>
                 <tbody>
-                  {students
-                    .slice()
-                    .sort((a, b) => (b.readiness || 0) - (a.readiness || 0))
-                    .map((s) => (
+                  {rosterTable.rows.length ? rosterTable.rows.map((s) => (
                       <tr key={s.id}>
                         <td>
                           <p className="mm-org-table__title">{s.name}</p>
@@ -1011,10 +1056,17 @@ export default function HodStudentsPage() {
                           </div>
                         </td>
                       </tr>
-                    ))}
+                    )) : (
+                      <tr>
+                        <td colSpan={5}>
+                          <div className="mm-org-empty">No students match this search.</div>
+                        </td>
+                      </tr>
+                    )}
                 </tbody>
               </table>
             </div>
+            </>
           ) : (
             <div className="mm-org-empty">
               {loading

@@ -19,6 +19,7 @@ import { studentApiBusy, useApiBusy } from '../lib/apiBusy';
 import { useAuthGateRerender } from '../lib/sessionGuards';
 import { whiteboardApi } from './whiteboardApi';
 
+import '../components/table/table-query.css';
 import './styles/portal.css';
 import './styles/placement-onboarding.css';
 

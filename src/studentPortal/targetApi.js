@@ -78,7 +78,10 @@ export async function fetchStudentTarget({ userKey = 'anon' } = {}) {
   }
 }
 
-export async function saveStudentTarget(body = {}, { userKey = 'anon' } = {}) {
+export async function saveStudentTarget(
+  body = {},
+  { userKey = 'anon', timeoutMs = 12000, silent = false } = {}
+) {
   const local = getPlacementProfile(userKey);
   const payload = normalizeTarget({
     target_companies: body.target_companies ?? local?.targetCompanies ?? [],
@@ -91,14 +94,24 @@ export async function saveStudentTarget(body = {}, { userKey = 'anon' } = {}) {
       body.onboarding_completed ?? Boolean(local?.completedAt) ?? false,
   });
 
+  // Always persist locally first so onboarding can close even if the network hangs.
   mirrorToLocal(userKey, payload);
 
   if (isLocalFallbackSession()) {
     return payload;
   }
 
+  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+  const timer =
+    controller && timeoutMs > 0
+      ? window.setTimeout(() => controller.abort(), timeoutMs)
+      : 0;
+
   try {
-    const data = await studentApi.post('/student/target', payload);
+    const data = await studentApi.post('/student/target', payload, {
+      silent,
+      signal: controller?.signal,
+    });
     const saved = normalizeTarget(data);
     mirrorToLocal(userKey, saved);
     return saved;
@@ -106,6 +119,12 @@ export async function saveStudentTarget(body = {}, { userKey = 'anon' } = {}) {
     if (err instanceof StudentApiError && MISSING.has(err.status)) {
       return payload;
     }
+    // Timeout / network: keep local profile so the student is not stuck.
+    if (err?.name === 'AbortError' || err?.status === 0) {
+      return payload;
+    }
     throw err;
+  } finally {
+    if (timer) window.clearTimeout(timer);
   }
 }

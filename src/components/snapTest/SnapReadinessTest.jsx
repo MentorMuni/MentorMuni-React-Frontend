@@ -12,6 +12,7 @@ import {
   Calculator,
   FolderGit2,
   Bot,
+  Database,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { goToStartAssessment } from '../../utils/startAssessmentNavigation';
@@ -69,6 +70,7 @@ const SNAP_PREVIEW_PILLS = [
   'Real project',
   'AI tools',
   'Tech stack',
+  'SQL & DB basics',
   'Mock pressure',
   'Aptitude depth',
 ];
@@ -99,8 +101,15 @@ const SNAP_NEXT_STEPS = [
     id: 'project',
     icon: FolderGit2,
     title: 'Project deep dive',
-    body: 'Prepare architecture, database, APIs, tradeoffs, edge cases, and your exact contribution.',
+    body: 'Prepare architecture, APIs, tradeoffs, edge cases, and your exact contribution.',
     relatedGaps: ['own_project', 'stack_ready'],
+  },
+  {
+    id: 'database',
+    icon: Database,
+    title: 'SQL & database prep',
+    body: 'Practice JOINs, aggregations, keys, indexes, normalization, and schema tradeoffs.',
+    relatedGaps: ['db_queries_concepts'],
   },
   {
     id: 'ai',
@@ -448,7 +457,7 @@ export default function SnapReadinessTest() {
                 <div className="flex items-center justify-between gap-3 text-left">
                   <div>
                     <p className="text-xs font-semibold uppercase tracking-wide text-cta">
-                      6-tap readiness radar
+                      7-tap readiness radar
                     </p>
                     <p className="mt-1 text-sm font-medium leading-snug text-muted-foreground">
                       Quick signals only — no long form, no typing.

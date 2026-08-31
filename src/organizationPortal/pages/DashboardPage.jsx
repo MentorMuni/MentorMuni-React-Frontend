@@ -60,17 +60,17 @@ const EASE = [0.22, 1, 0.36, 1];
 
 /** Merge live performance API fields into TPO dashboard metrics without clobbering dept count. */
 function mergeTpoApiMetrics(prev, ui, { departmentCount, enrollment } = {}) {
-  if (!ui) return prev;
-  return {
-    ...prev,
-    ...ui,
-    departments: departmentCount ?? ui.byDept?.length ?? prev.departments,
-    enrollment: enrollment ?? prev.enrollment,
-    activePrograms: prev.activePrograms,
-    recentPrograms: prev.recentPrograms,
-    recentDrives: prev.recentDrives,
-    programCoverage: prev.programCoverage,
-  };
+  const next = ui ? { ...prev, ...ui } : { ...prev };
+  if (departmentCount != null) next.departments = departmentCount;
+  else if (ui?.byDept?.length) next.departments = ui.byDept.length;
+  if (enrollment != null) next.enrollment = enrollment;
+  if (ui) {
+    next.activePrograms = prev.activePrograms;
+    next.recentPrograms = prev.recentPrograms;
+    next.recentDrives = prev.recentDrives;
+    next.programCoverage = prev.programCoverage;
+  }
+  return next;
 }
 
 /** Layer performance summary onto HOD roster metrics (roster counts win for students/pending). */
@@ -134,27 +134,28 @@ export default function DashboardPage() {
     if (roleNow !== ORG_ROLES.TPO && !isViewerRole(session?.role)) return undefined;
     let cancelled = false;
     (async () => {
-      try {
-        const [summary, deptRes, roster, queue] = await Promise.all([
-          fetchPerformanceSummary(),
-          fetchDepartmentOptions(),
-          fetchStudents().catch(() => ({ students: [] })),
-          fetchStudentInvites({ status: 'pending' }).catch(() => ({ invitations: [] })),
-        ]);
-        if (cancelled) return;
-        const ui = summary ? summaryToUiMetrics(summary) : null;
-        const departmentCount = (deptRes.departments || []).length;
-        const enrollment = computeRosterCounts(
-          roster.students || [],
-          (queue.invitations || []).length
-        );
-        if (ui) {
-          setMetrics((prev) => mergeTpoApiMetrics(prev, ui, { departmentCount, enrollment }));
-          setPerfSource('api');
-        }
-      } catch {
-        /* keep local heuristics */
-      }
+      const [summaryRes, deptRes, rosterRes, queueRes] = await Promise.allSettled([
+        fetchPerformanceSummary(),
+        fetchDepartmentOptions(),
+        fetchStudents(),
+        fetchStudentInvites({ status: 'pending' }),
+      ]);
+      if (cancelled) return;
+
+      const summary = summaryRes.status === 'fulfilled' ? summaryRes.value : null;
+      const deptList =
+        deptRes.status === 'fulfilled' ? deptRes.value?.departments || [] : [];
+      const students =
+        rosterRes.status === 'fulfilled' ? rosterRes.value?.students || [] : [];
+      const invites =
+        queueRes.status === 'fulfilled' ? queueRes.value?.invitations || [] : [];
+
+      const ui = summary ? summaryToUiMetrics(summary) : null;
+      const departmentCount = deptList.length;
+      const enrollment = computeRosterCounts(students, invites.length);
+      setMetrics((prev) => mergeTpoApiMetrics(prev, ui, { departmentCount, enrollment }));
+      if (ui) setPerfSource('api');
+      else if (summaryRes.status === 'rejected') setPerfSource('roster');
     })();
     return () => {
       cancelled = true;
@@ -166,49 +167,65 @@ export default function DashboardPage() {
     if (normalizeOrgRole(session?.role) !== ORG_ROLES.HOD) return undefined;
     let cancelled = false;
     (async () => {
-      const deptRes = await fetchDepartmentOptions();
-      if (cancelled) return;
-      const list = deptRes.departments || [];
-      const snap = getHodWorkspaceSnapshot(getOrgSession(), list);
-      setHodSnap(snap);
-      const deptId = snap.departmentId;
-      if (!deptId) {
-        setHodStudents([]);
-        return;
+      try {
+        const deptRes = await fetchDepartmentOptions();
+        if (cancelled) return;
+        const list = deptRes.departments || [];
+        const snap = getHodWorkspaceSnapshot(getOrgSession(), list);
+        setHodSnap(snap);
+        const deptId = snap.departmentId;
+        if (!deptId) {
+          setHodStudents([]);
+          return;
+        }
+        if (session?.demo) {
+          setHodStudents(snap.students || []);
+          setHodMetrics(snap.metrics);
+          setHodInsight(buildLocalBranchInsight(snap.metrics));
+          setHodDataSource('local');
+          return;
+        }
+
+        const [rosterRes, queueRes, summaryRes, cardsRes] = await Promise.allSettled([
+          fetchStudents({ departmentId: deptId }),
+          fetchStudentInvites({ status: 'pending', departmentId: deptId }),
+          fetchPerformanceSummary({ departmentId: deptId }),
+          fetchPerformanceScorecards({ departmentId: deptId }),
+        ]);
+        if (cancelled) return;
+
+        const roster = rosterRes.status === 'fulfilled' ? rosterRes.value : { students: [] };
+        const queue =
+          queueRes.status === 'fulfilled' ? queueRes.value : { invitations: [] };
+        const summary = summaryRes.status === 'fulfilled' ? summaryRes.value : null;
+        const cards =
+          cardsRes.status === 'fulfilled' ? cardsRes.value : { items: [] };
+
+        const students = roster.students || [];
+        setHodStudents(students);
+        setHodScorecards(scorecardsToUiRows(cards));
+        const programsCount = listPrograms().filter(
+          (p) =>
+            p.audience === 'all' ||
+            (p.audience === 'department' && String(p.departmentId) === String(deptId))
+        ).length;
+        const pendingInvites = (queue.invitations || []).length;
+        const rosterMetrics = buildBranchMetricsFromApi({
+          students,
+          pendingCount: pendingInvites,
+          programsCount,
+        });
+        const perfUi = summary ? summaryToUiMetrics(summary) : null;
+        const merged = mergeHodApiMetrics(rosterMetrics, perfUi, {
+          pendingInvites,
+          programsCount,
+        });
+        setHodMetrics(merged);
+        setHodInsight(buildLocalBranchInsight(merged));
+        setHodDataSource(roster.source || 'api');
+      } catch {
+        /* keep local HOD snapshot */
       }
-      if (session?.demo) {
-        setHodStudents(snap.students || []);
-        setHodMetrics(snap.metrics);
-        setHodInsight(buildLocalBranchInsight(snap.metrics));
-        setHodDataSource('local');
-        return;
-      }
-      const [roster, queue, summary, cards] = await Promise.all([
-        fetchStudents({ departmentId: deptId }),
-        fetchStudentInvites({ status: 'pending', departmentId: deptId }),
-        fetchPerformanceSummary({ departmentId: deptId }),
-        fetchPerformanceScorecards({ departmentId: deptId }).catch(() => ({ items: [] })),
-      ]);
-      if (cancelled) return;
-      const students = roster.students || [];
-      setHodStudents(students);
-      setHodScorecards(scorecardsToUiRows(cards));
-      const programsCount = listPrograms().filter(
-        (p) =>
-          p.audience === 'all' ||
-          (p.audience === 'department' && String(p.departmentId) === String(deptId))
-      ).length;
-      const pendingInvites = (queue.invitations || []).length;
-      const rosterMetrics = buildBranchMetricsFromApi({
-        students,
-        pendingCount: pendingInvites,
-        programsCount,
-      });
-      const perfUi = summary ? summaryToUiMetrics(summary) : null;
-      const merged = mergeHodApiMetrics(rosterMetrics, perfUi, { pendingInvites, programsCount });
-      setHodMetrics(merged);
-      setHodInsight(buildLocalBranchInsight(merged));
-      setHodDataSource(roster.source || 'api');
     })();
     return () => {
       cancelled = true;
@@ -302,12 +319,12 @@ export default function DashboardPage() {
           : 'Active in analytics',
       },
       {
-        label: 'Roster total',
+        label: 'Enrolled students',
         value: enrollment ? enrollment.pipelineTotal : metrics.students + (metrics.pendingInvites || 0),
         icon: UserPlus,
         hint: enrollment
-          ? `${enrollment.rosterTotal} on roster + ${enrollment.pending} in queue`
-          : 'Roster + queue',
+          ? `${enrollment.rosterTotal} enrolled · ${enrollment.pending} in queue`
+          : 'Enrolled + queue',
       },
       { label: 'Active programs', value: metrics.activePrograms, icon: ClipboardList, hint: 'Assigned work' },
       { label: 'Upcoming notices', value: metrics.upcomingDrives, icon: Bell, hint: 'Events & workshops' },

@@ -60,17 +60,20 @@ export function resolveHodDepartment(session = getOrgSession(), departments) {
   return null;
 }
 
-/** Live API HODs are not blocked by local AccessSettings toggles. */
+/** Live API HODs use server permissions; demo uses local Access Settings toggles. */
 export function resolveHodAccess(session = getOrgSession()) {
   const local = getHodAccess();
   if (session?.demo) return local;
   const perms = Array.isArray(session?.permissions) ? session.permissions : [];
+  const has = (code) => perms.includes(code);
   const denyInvite = perms.some((p) => /deny.*invite|invite.*deny/i.test(String(p)));
   const denyAssign = perms.some((p) => /deny.*assign|assign.*deny/i.test(String(p)));
   return {
     ...local,
-    canInviteStudents: !denyInvite,
-    canAssignPrograms: !denyAssign,
+    canInviteStudents: has('UPLOAD_STUDENTS') || has('APPROVE_STUDENT') ? !denyInvite : local.canInviteStudents,
+    canAssignPrograms: has('ASSIGN_PROGRAM') ? !denyAssign : local.canAssignPrograms,
+    canNotifyDepartment: has('SEND_NOTIFICATION') || local.canNotifyDepartment,
+    canViewAllScores: has('VIEW_REPORTS') || has('VIEW_DEPARTMENT_STUDENTS') || local.canViewAllScores,
   };
 }
 

@@ -11,6 +11,7 @@ export default function HelpCenterPage() {
       sourcePortal="organization"
       organizationName={session?.organization_name || session?.organization_code}
       api={orgHelpApi}
+      hideTitle
       disabledReason={
         demo
           ? 'Help Center needs a live campus account. Demo Organization sessions stay on this device.'

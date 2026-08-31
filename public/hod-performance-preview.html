@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MentorMuni — HOD Branch Deep Analytics Preview</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; }
+    body {
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      background: #f8fbff;
+      color: #18181b;
+      padding: 20px;
+    }
+    .shell {
+      max-width: 1320px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 220px 1fr;
+      border: 1px solid rgba(26,143,196,.16);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 20px 60px rgba(26,143,196,.12);
+    }
+    .side {
+      background: linear-gradient(180deg, #fff, #f8fbff);
+      border-right: 1px solid rgba(26,143,196,.14);
+      padding: 20px 14px;
+    }
+    .logo { font-weight: 800; color: #1a8fc4; font-size: 14px; margin-bottom: 20px; }
+    .nav-item { padding: 8px 12px; border-radius: 10px; font-size: 13px; color: #64748b; margin-bottom: 4px; }
+    .nav-item.active { background: rgba(26,143,196,.12); color: #0e5e85; font-weight: 700; }
+    .main { padding: 20px 24px 32px; background: #f8fbff; }
+    .toolbar { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; margin-bottom: 16px; flex-wrap: wrap; }
+    h1 { font-size: 20px; font-weight: 800; }
+    .sub { font-size: 13px; color: #64748b; margin-top: 4px; }
+    .btns { display: flex; gap: 8px; flex-wrap: wrap; }
+    .btn { border: 1px solid rgba(26,143,196,.2); background: #fff; padding: 8px 14px; border-radius: 10px; font-size: 12px; font-weight: 600; }
+    .btn.primary { background: #1a8fc4; color: #fff; border-color: #1a8fc4; }
+    .panel, .stat {
+      background: #fff;
+      border: 1px solid rgba(26,143,196,.14);
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-bottom: 14px;
+    }
+    .panel h2 { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+    .panel p.meta { font-size: 12px; color: #64748b; margin-bottom: 12px; }
+    .ai-box {
+      background: linear-gradient(135deg, rgba(14,165,233,.06), rgba(20,184,166,.08));
+      border: 1px solid rgba(14,165,233,.2);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .ai-title { font-size: 12px; font-weight: 800; color: #0e7490; text-transform: uppercase; letter-spacing: .04em; margin-bottom: 8px; }
+    .ai-body { font-size: 13px; line-height: 1.55; }
+    .ai-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; font-size: 12px; }
+    .ai-cols ul { padding-left: 18px; margin: 4px 0 0; }
+    .stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 14px; }
+    .stat label { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: #64748b; font-weight: 700; }
+    .stat strong { display: block; font-size: 28px; color: #1a8fc4; margin: 4px 0; font-weight: 850; }
+    .stat span { font-size: 11px; color: #64748b; }
+    .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+    .tab { padding: 7px 14px; border-radius: 999px; border: 1px solid #e2e8f0; font-size: 12px; font-weight: 600; background: #fff; }
+    .tab.on { background: rgba(14,165,233,.12); border-color: rgba(14,165,233,.4); color: #0369a1; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .grid3 { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+    .chart-card { background: #fff; border: 1px solid rgba(26,143,196,.14); border-radius: 14px; padding: 14px 16px; }
+    .chart-card h3 { font-size: 14px; font-weight: 800; margin-bottom: 2px; }
+    .chart-card .cm { font-size: 11px; color: #64748b; margin-bottom: 8px; }
+    .expand-btn {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 8px;
+      padding: 6px 10px; border: 1px solid #e2e8f0; border-radius: 8px;
+      font-size: 11px; font-weight: 600; color: #0ea5e9; background: #f8fafc;
+    }
+    .section-title { font-size: 16px; font-weight: 800; margin: 6px 0 4px; }
+    .section-meta { font-size: 12px; color: #64748b; margin-bottom: 12px; }
+    .pillars { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; }
+    .pillar { border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px; }
+    .pillar label { font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase; }
+    .pillar .val { font-size: 22px; font-weight: 800; margin: 6px 0 8px; }
+    .bar { height: 6px; background: #e2e8f0; border-radius: 99px; overflow: hidden; }
+    .bar i { display: block; height: 100%; border-radius: inherit; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th, td { border-bottom: 1px solid #e2e8f0; padding: 8px 10px; text-align: left; }
+    th { color: #64748b; font-size: 11px; text-transform: uppercase; }
+    .chip { display: inline-block; padding: 2px 8px; border-radius: 99px; font-size: 11px; font-weight: 700; }
+    .chip.good { background: #d1fae5; color: #047857; }
+    .chip.mid { background: #fef3c7; color: #b45309; }
+    .chip.bad { background: #ffe4e6; color: #be123c; }
+    .legend { display: flex; flex-wrap: wrap; gap: 10px; font-size: 11px; margin-top: 8px; color: #64748b; }
+    .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; margin-right: 4px; }
+    .rank-list { list-style: none; padding: 0; }
+    .rank-list li {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 8px 10px; border: 1px solid #e2e8f0; border-radius: 10px; margin-bottom: 6px; font-size: 12px;
+    }
+    .badge-hod { font-size: 10px; background: #dbeafe; color: #1d4ed8; padding: 2px 8px; border-radius: 99px; font-weight: 700; margin-left: 8px; }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside class="side">
+      <div class="logo">MentorMuni</div>
+      <div class="nav-item">Dashboard</div>
+      <div class="nav-item">My workspace</div>
+      <div class="nav-item active">Performance dashboard</div>
+      <div class="nav-item">Students</div>
+      <div class="nav-item">Notify</div>
+    </aside>
+    <main class="main">
+      <div class="toolbar">
+        <div>
+          <h1>Branch deep analytics <span class="badge-hod">HOD</span></h1>
+          <p class="sub">Computer Science &amp; Engineering · Deep department analysis with drill-down &amp; AI research · Demo / local</p>
+        </div>
+        <div class="btns">
+          <div class="btn">Reload</div>
+          <div class="btn">Export CSV</div>
+          <div class="btn primary">Export PDF</div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>AI branch research</h2>
+        <p class="meta">Deep analysis of CSE — strengths, risks, and coaching priorities</p>
+        <div class="ai-box">
+          <div class="ai-title">✦ Executive summary</div>
+          <p class="ai-body">CSE avg readiness is <b>74%</b>. 22 drive-ready, 8 less prepared. Top prep gap: <b>System design</b>. Interview mocks trail aptitude — schedule HR + technical mocks for the developing cohort before the TCS drive.</p>
+          <div class="ai-cols">
+            <div>
+              <b>Going well</b>
+              <ul>
+                <li>22 drive-ready students in branch</li>
+                <li>Strength: Aptitude fundamentals</li>
+                <li>74% avg readiness vs campus 68%</li>
+              </ul>
+            </div>
+            <div>
+              <b>Watch closely</b>
+              <ul>
+                <li>8 students are less prepared (&lt;50%)</li>
+                <li>Top prep gap: System design (12 students)</li>
+                <li>14 students inactive 2+ weeks</li>
+              </ul>
+            </div>
+          </div>
+          <p class="ai-body" style="margin-top:12px"><b>Recommended actions:</b> Pull 8 less-prepared into aptitude drill · Run system design workshop for 12 students · Nominate 22 drive-ready for next company drive</p>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Area deep-dive</h2>
+        <p class="meta">Per-skill leaders and students who need coaching</p>
+        <div class="tabs">
+          <span class="tab on">Aptitude 76%</span>
+          <span class="tab">Skills 72%</span>
+          <span class="tab">Interview 69%</span>
+          <span class="tab">Voice mock 71%</span>
+          <span class="tab">Communication 65%</span>
+        </div>
+        <div class="grid2">
+          <div>
+            <b style="font-size:13px">Top performers</b>
+            <ul class="rank-list" style="margin-top:8px">
+              <li><span>#1 Priya Sharma · 4 tests</span><span class="chip good">92%</span></li>
+              <li><span>#2 Arjun Patel · 5 tests</span><span class="chip good">89%</span></li>
+              <li><span>#3 Sneha Reddy · 4 tests</span><span class="chip good">87%</span></li>
+            </ul>
+          </div>
+          <div>
+            <b style="font-size:13px">Needs coaching</b>
+            <ul class="rank-list" style="margin-top:8px">
+              <li><span>#1 Rahul K · gap: Aptitude</span><span class="chip bad">38%</span></li>
+              <li><span>#2 Vikram S · gap: HR round</span><span class="chip bad">42%</span></li>
+              <li><span>#3 Ananya M · gap: Coding</span><span class="chip mid">47%</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="section-title">Branch trends &amp; tool coverage</div>
+      <div class="section-meta">30-day readiness trend plus per-check completion</div>
+      <div class="grid2" style="margin-bottom:14px">
+        <div class="chart-card">
+          <h3>Readiness trend (30 days)</h3>
+          <div class="cm">Avg readiness, coverage, drive-ready %</div>
+          <svg viewBox="0 0 400 140" width="100%">
+            <polyline fill="none" stroke="#0ea5e9" stroke-width="2.5" points="20,95 70,88 120,82 170,78 220,74 270,72 320,70 370,68"/>
+            <polyline fill="none" stroke="#059669" stroke-width="2" points="20,100 70,96 120,90 170,86 220,82 270,80 320,78 370,76"/>
+            <polyline fill="none" stroke="#14b8a6" stroke-width="2" points="20,110 70,105 120,98 170,92 220,88 270,85 320,82 370,80"/>
+            <text x="20" y="130" font-size="9" fill="#64748b">Week 1</text>
+            <text x="170" y="130" font-size="9" fill="#64748b">Week 2</text>
+            <text x="320" y="130" font-size="9" fill="#64748b">Week 4</text>
+          </svg>
+          <div class="legend"><span><i style="background:#0ea5e9"></i>Avg readiness</span><span><i style="background:#059669"></i>Coverage</span><span><i style="background:#14b8a6"></i>Drive-ready</span></div>
+          <span class="expand-btn">⤢ Expand &amp; see students</span>
+        </div>
+        <div class="chart-card">
+          <h3>Tool completion by check</h3>
+          <div class="cm">Done vs in-progress vs not started</div>
+          <svg viewBox="0 0 400 140" width="100%">
+            <text x="8" y="28" font-size="9" fill="#64748b">Aptitude</text>
+            <rect x="90" y="18" width="180" height="12" rx="3" fill="#059669"/><rect x="270" y="18" width="40" height="12" rx="3" fill="#0ea5e9"/><rect x="312" y="18" width="28" height="12" rx="3" fill="#e2e8f0"/>
+            <text x="8" y="52" font-size="9" fill="#64748b">Skill mock</text>
+            <rect x="90" y="42" width="140" height="12" rx="3" fill="#059669"/><rect x="232" y="42" width="50" height="12" rx="3" fill="#0ea5e9"/><rect x="284" y="42" width="56" height="12" rx="3" fill="#e2e8f0"/>
+            <text x="8" y="76" font-size="9" fill="#64748b">Interview</text>
+            <rect x="90" y="66" width="120" height="12" rx="3" fill="#059669"/><rect x="212" y="66" width="45" height="12" rx="3" fill="#0ea5e9"/><rect x="259" y="66" width="81" height="12" rx="3" fill="#e2e8f0"/>
+            <text x="8" y="100" font-size="9" fill="#64748b">HR mock</text>
+            <rect x="90" y="90" width="95" height="12" rx="3" fill="#059669"/><rect x="187" y="90" width="35" height="12" rx="3" fill="#0ea5e9"/><rect x="224" y="90" width="116" height="12" rx="3" fill="#e2e8f0"/>
+          </svg>
+          <span class="expand-btn">⤢ Expand &amp; see students</span>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat"><label>Overall readiness</label><strong>74%</strong><span>48 students scored</span></div>
+        <div class="stat"><label>Drive-ready</label><strong>46%</strong><span>22 at ≥75%</span></div>
+        <div class="stat"><label>Score coverage</label><strong>96%</strong><span>48/50 roster</span></div>
+        <div class="stat"><label>Voice AI mock</label><strong>71%</strong><span>Skill + interview mocks</span></div>
+      </div>
+
+      <div class="panel">
+        <h2>Readiness pillars</h2>
+        <p class="meta">Aptitude · skills · interview · voice AI mock · communication (branch average)</p>
+        <div class="pillars">
+          <div class="pillar"><label>Aptitude</label><div class="val" style="color:#0ea5e9">76%</div><div class="bar"><i style="width:76%;background:#0ea5e9"></i></div></div>
+          <div class="pillar"><label>Skills</label><div class="val" style="color:#14b8a6">72%</div><div class="bar"><i style="width:72%;background:#14b8a6"></i></div></div>
+          <div class="pillar"><label>Interview</label><div class="val" style="color:#8b5cf6">69%</div><div class="bar"><i style="width:69%;background:#8b5cf6"></i></div></div>
+          <div class="pillar"><label>Voice AI mock</label><div class="val" style="color:#f59e0b">71%</div><div class="bar"><i style="width:71%;background:#f59e0b"></i></div></div>
+          <div class="pillar"><label>Communication</label><div class="val" style="color:#ec4899">65%</div><div class="bar"><i style="width:65%;background:#ec4899"></i></div></div>
+        </div>
+      </div>
+
+      <div class="section-title">Cohort snapshot</div>
+      <div class="section-meta">Click a slice to drill into student list</div>
+      <div class="grid3" style="margin-bottom:14px">
+        <div class="chart-card">
+          <h3>Who is placement-ready?</h3>
+          <svg viewBox="0 0 200 120" width="100%"><circle cx="100" cy="60" r="42" fill="none" stroke="#e2e8f0" stroke-width="22"/><path d="M100 18 A42 42 0 0 1 141 82" fill="none" stroke="#059669" stroke-width="22"/><path d="M141 82 A42 42 0 0 1 72 95" fill="none" stroke="#d97706" stroke-width="22"/><path d="M72 95 A42 42 0 0 1 59 38" fill="none" stroke="#e11d48" stroke-width="22"/><text x="100" y="58" text-anchor="middle" font-size="18" font-weight="800">74%</text><text x="100" y="74" text-anchor="middle" font-size="9" fill="#64748b">branch avg</text></svg>
+          <div class="legend"><span><i style="background:#059669"></i>Drive-ready 22</span><span><i style="background:#d97706"></i>Developing 18</span><span><i style="background:#e11d48"></i>Needs coaching 8</span></div>
+          <span class="expand-btn">⤢ Expand &amp; see students</span>
+        </div>
+        <div class="chart-card">
+          <h3>Who has been assessed?</h3>
+          <svg viewBox="0 0 200 120" width="100%"><circle cx="100" cy="60" r="42" fill="none" stroke="#94a3b8" stroke-width="22"/><path d="M100 18 A42 42 0 1 1 99 18" fill="none" stroke="#059669" stroke-width="22"/><text x="100" y="58" text-anchor="middle" font-size="18" font-weight="800">96%</text></svg>
+          <div class="legend"><span><i style="background:#059669"></i>Scored 48</span><span><i style="background:#94a3b8"></i>Not scored 2</span></div>
+        </div>
+        <div class="chart-card">
+          <h3>Who is actively preparing?</h3>
+          <svg viewBox="0 0 200 120" width="100%"><circle cx="100" cy="60" r="42" fill="none" stroke="#0ea5e9" stroke-width="18"/><path d="M100 18 A42 42 0 0 1 130 45" fill="none" stroke="#059669" stroke-width="18"/><path d="M130 45 A42 42 0 0 1 115 95" fill="none" stroke="#d97706" stroke-width="18"/><path d="M115 95 A42 42 0 1 1 100 18" fill="none" stroke="#94a3b8" stroke-width="18"/></svg>
+          <div class="legend"><span><i style="background:#059669"></i>Active 28</span><span><i style="background:#d97706"></i>Quiet 8</span><span><i style="background:#94a3b8"></i>Inactive 14</span></div>
+          <span class="expand-btn">⤢ Expand &amp; see students</span>
+        </div>
+      </div>
+
+      <div class="section-title">Student insights</div>
+      <div class="grid2" style="margin-bottom:14px">
+        <div class="chart-card">
+          <h3>Score spread</h3>
+          <svg viewBox="0 0 320 130" width="100%">
+            <rect x="30" y="70" width="40" height="40" rx="4" fill="#047857"/><text x="50" y="65" text-anchor="middle" font-size="10">8</text>
+            <rect x="90" y="50" width="40" height="60" rx="4" fill="#059669"/><text x="110" y="45" text-anchor="middle" font-size="10">14</text>
+            <rect x="150" y="35" width="40" height="75" rx="4" fill="#d97706"/><text x="170" y="30" text-anchor="middle" font-size="10">18</text>
+            <rect x="210" y="75" width="40" height="35" rx="4" fill="#e11d48"/><text x="230" y="70" text-anchor="middle" font-size="10">8</text>
+            <text x="50" y="125" font-size="9" fill="#64748b">90+</text>
+            <text x="110" y="125" font-size="9" fill="#64748b">75–89</text>
+            <text x="170" y="125" font-size="9" fill="#64748b">50–74</text>
+            <text x="230" y="125" font-size="9" fill="#64748b">&lt;50</text>
+          </svg>
+          <span class="expand-btn">⤢ Expand &amp; see students</span>
+        </div>
+        <div class="chart-card">
+          <h3>Top strengths &amp; gaps</h3>
+          <div class="grid2" style="gap:8px">
+            <svg viewBox="0 0 120 100" width="100%"><circle cx="60" cy="50" r="35" fill="none" stroke="#fecdd3" stroke-width="16"/><path d="M60 15 A35 35 0 0 1 88 72" fill="none" stroke="#e11d48" stroke-width="16"/></svg>
+            <svg viewBox="0 0 120 100" width="100%"><circle cx="60" cy="50" r="35" fill="none" stroke="#a7f3d0" stroke-width="16"/><path d="M60 15 A35 35 0 0 1 92 68" fill="none" stroke="#059669" stroke-width="16"/></svg>
+          </div>
+          <div class="legend"><span>System design (12)</span><span>Coding speed (9)</span><span>Aptitude (strength)</span></div>
+          <span class="expand-btn">⤢ Expand &amp; see students</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Student scorecards</h2>
+        <p class="meta">50 students · click a row for pillar breakdown + AI coaching brief</p>
+        <table>
+          <thead><tr><th>Student</th><th>Readiness</th><th>Strength</th><th>Prep gap</th><th>Tests</th></tr></thead>
+          <tbody>
+            <tr><td><b>Priya Sharma</b><br><small>priya@cse.demo</small></td><td><span class="chip good">92%</span></td><td>Aptitude</td><td>—</td><td>4/8</td></tr>
+            <tr><td><b>Arjun Patel</b><br><small>arjun@cse.demo</small></td><td><span class="chip good">89%</span></td><td>Interview</td><td>—</td><td>5/8</td></tr>
+            <tr><td><b>Sneha Reddy</b><br><small>sneha@cse.demo</small></td><td><span class="chip good">87%</span></td><td>Skills</td><td>—</td><td>4/8</td></tr>
+            <tr><td><b>Karthik N</b><br><small>karthik@cse.demo</small></td><td><span class="chip mid">68%</span></td><td>Communication</td><td>Coding speed</td><td>3/8</td></tr>
+            <tr><td><b>Rahul K</b><br><small>rahul@cse.demo</small></td><td><span class="chip bad">38%</span></td><td>—</td><td>Aptitude</td><td>1/8</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

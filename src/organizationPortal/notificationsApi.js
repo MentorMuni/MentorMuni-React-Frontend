@@ -29,23 +29,40 @@ function withSource(result, source) {
   return { ...result, source };
 }
 
+function parseDepartmentIds(row = {}) {
+  const meta = row.metadata || row.metadata_json || row.raw?.metadata || {};
+  const fromMeta = Array.isArray(meta.department_ids) ? meta.department_ids : [];
+  const fromField = Array.isArray(row.department_ids)
+    ? row.department_ids
+    : Array.isArray(row.departmentIds)
+      ? row.departmentIds
+      : [];
+  const merged = [...fromField, ...fromMeta];
+  if (merged.length) {
+    return [...new Set(merged.map((id) => String(id)).filter(Boolean))];
+  }
+  const single = row.department_id ?? row.departmentId;
+  return single != null && single !== '' ? [String(single)] : [];
+}
+
 /** Normalize API / local row to UI shape. */
 export function normalizeNotification(row = {}) {
   if (!row || typeof row !== 'object') return null;
   const kind = String(row.kind || 'event').toLowerCase();
   const audience = String(row.audience || 'all').toLowerCase();
   const title = String(row.title || row.company || '').trim();
-  const departmentId = row.department_id ?? row.departmentId ?? '';
+  const departmentIds = parseDepartmentIds(row);
 
   return {
     id: row.id,
     kind: ['event', 'workshop', 'announcement'].includes(kind) ? kind : 'event',
     title,
     company: title, // legacy field for older metrics/UI
-    message: String(row.message || '').trim(),
-    date: row.date || '',
+    message: String(row.message || row.body || '').trim(),
+    date: row.date || row.event_date || '',
     audience: ['all', 'department', 'hods'].includes(audience) ? audience : 'all',
-    departmentId: departmentId === null || departmentId === undefined ? '' : String(departmentId),
+    departmentId: departmentIds[0] || '',
+    departmentIds,
     deliveryStatus: String(row.delivery_status || row.deliveryStatus || row.status || 'scheduled').toLowerCase(),
     recipientsEstimated:
       row.recipients_estimated ?? row.recipientsEstimated ?? null,
@@ -58,8 +75,18 @@ export function normalizeNotification(row = {}) {
 
 function toApiBody(input) {
   const audience = String(input.audience || 'all').toLowerCase();
-  const departmentId =
-    audience === 'department' ? Number(input.departmentId || input.department_id) || null : null;
+  const departmentIds = (input.departmentIds || input.department_ids || [])
+    .map((id) => Number(id))
+    .filter((id) => Number.isFinite(id) && id > 0);
+  const legacyId = Number(input.departmentId || input.department_id) || null;
+  const ids =
+    audience === 'department'
+      ? departmentIds.length
+        ? departmentIds
+        : legacyId
+          ? [legacyId]
+          : []
+      : [];
 
   return {
     kind: String(input.kind || 'event').toLowerCase(),
@@ -67,7 +94,8 @@ function toApiBody(input) {
     message: String(input.message || '').trim(),
     date: input.date || null,
     audience,
-    department_id: departmentId,
+    department_id: ids[0] || null,
+    department_ids: ids.length ? ids : undefined,
   };
 }
 
@@ -116,8 +144,15 @@ export async function createNotification(input) {
   if (!body.message) {
     return { ok: false, error: 'Message is required.' };
   }
-  if (body.audience === 'department' && !body.department_id) {
-    return { ok: false, error: 'Select a department.' };
+  if (body.audience === 'department' && !(body.department_ids || []).length) {
+    return { ok: false, error: 'Select at least one department.' };
+  }
+  if (body.date) {
+    const d = new Date();
+    const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    if (String(body.date).slice(0, 10) < today) {
+      return { ok: false, error: 'Pick today or a future date.' };
+    }
   }
 
   if (allowLocalFallback()) {
@@ -128,6 +163,7 @@ export async function createNotification(input) {
       date: body.date || '',
       audience: body.audience,
       departmentId: body.department_id ? String(body.department_id) : '',
+      departmentIds: (body.department_ids || []).map(String),
     });
     const latest = normalizeNotification(local.listDrives()[0]);
     return withSource(
@@ -148,6 +184,7 @@ export async function createNotification(input) {
       ...body,
       ...row,
       department_id: body.department_id,
+      department_ids: body.department_ids,
     });
     return withSource(
       {

@@ -1,5 +1,6 @@
-import { X, Check, Lock, Clock } from 'lucide-react';
-import { activityStatusLabel, readinessTone } from '../performanceApi';
+import { useCallback, useState } from 'react';
+import { Sparkles, X, Check, Lock, Clock } from 'lucide-react';
+import { activityStatusLabel, fetchStudentInsight, mapInsight, readinessTone } from '../performanceApi';
 
 const TOOL_META = [
   { code: '5_sec', label: 'Snap test', order: 1 },
@@ -30,10 +31,57 @@ function statusIcon(status) {
   return <Lock size={11} strokeWidth={2.5} aria-hidden />;
 }
 
+function buildLocalStudentInsight(student) {
+  const gaps = student.weaknesses?.length ? student.weaknesses : student.weakness ? [student.weakness] : [];
+  const strengths = student.strengths?.length ? student.strengths : student.strength ? [student.strength] : [];
+  return {
+    summary: `${student.name} is at ${student.readiness != null ? `${Math.round(student.readiness)}%` : 'unscored'} overall readiness.${
+      gaps[0] ? ` Focus coaching on ${gaps[0]}.` : ''
+    }`,
+    goingWell: strengths.slice(0, 3),
+    concerns: gaps.slice(0, 3),
+    actions: [
+      gaps[0] ? `Assign a targeted drill for ${gaps[0]}` : 'Complete baseline aptitude and skill checks',
+      (student.testsRemaining || 0) > 0 ? `Finish ${student.testsRemaining} remaining roadmap checks` : 'Schedule an AI mock interview',
+      student.activityStatus === 'inactive' || student.activityStatus === 'never'
+        ? 'Send a nudge to resume practice this week'
+        : 'Maintain weekly mock interview rhythm',
+    ],
+    source: 'heuristic',
+  };
+}
+
 /**
  * Deep-dive drawer for a single student scorecard (TPO / HOD).
  */
-export default function StudentScorecardDrawer({ student, onClose }) {
+export default function StudentScorecardDrawer({ student, onClose, enableAiInsight = false, demo = false }) {
+  const [aiInsight, setAiInsight] = useState(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState('');
+
+  const loadAiInsight = useCallback(async () => {
+    if (!student?.id) return;
+    if (demo) {
+      setAiInsight(buildLocalStudentInsight(student));
+      setAiError('');
+      return;
+    }
+    setAiLoading(true);
+    setAiError('');
+    try {
+      const res = await fetchStudentInsight(student.id, {
+        max_actions: 5,
+        include_dept_context: true,
+      });
+      setAiInsight(mapInsight(res) || buildLocalStudentInsight(student));
+    } catch (err) {
+      setAiError(err?.message || 'Could not generate student insight.');
+      setAiInsight(buildLocalStudentInsight(student));
+    } finally {
+      setAiLoading(false);
+    }
+  }, [student, demo]);
+
   if (!student) return null;
 
   const scores = student.scoresByTool || {};
@@ -93,6 +141,43 @@ export default function StudentScorecardDrawer({ student, onClose }) {
             <strong>{activityStatusLabel(student.activityStatus)}</strong>
           </div>
         </div>
+
+        {enableAiInsight ? (
+          <section className="mm-org-drawer__section">
+            <div className="flex items-center justify-between gap-2 mb-2">
+              <h3 className="m-0">AI coaching brief</h3>
+              <button
+                type="button"
+                className="mm-org-btn mm-org-btn--ghost text-xs"
+                onClick={loadAiInsight}
+                disabled={aiLoading}
+              >
+                <Sparkles size={13} />
+                {aiLoading ? 'Analyzing…' : aiInsight ? 'Refresh' : 'Generate'}
+              </button>
+            </div>
+            {aiError ? <p className="text-xs mm-org-text-warn mb-2">{aiError}</p> : null}
+            {aiInsight ? (
+              <div className="mm-org-ai-box mm-org-ai-box--compact">
+                <p className="mm-org-ai-box__body text-sm">{aiInsight.summary}</p>
+                {(aiInsight.actions || []).length ? (
+                  <ul className="m-0 mt-2 list-disc space-y-1 pl-5 text-xs mm-org-text">
+                    {aiInsight.actions.map((a) => (
+                      <li key={a}>{a}</li>
+                    ))}
+                  </ul>
+                ) : null}
+                <p className="mm-org-ai-box__meta">
+                  {aiInsight.source === 'heuristic' ? 'Heuristic brief' : 'OpenAI research'}
+                </p>
+              </div>
+            ) : (
+              <p className="text-sm mm-org-text-muted m-0">
+                Generate a personalized coaching plan comparing this student to branch averages.
+              </p>
+            )}
+          </section>
+        ) : null}
 
         <section className="mm-org-drawer__section">
           <h3>Pillar scores</h3>

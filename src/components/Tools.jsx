@@ -16,7 +16,7 @@ const Tools = () => {
       id: 0,
       title: '5-second snap readiness test',
       description:
-        'Six taps in under 7 seconds — see your pulse score, selection chance vs 100 students, and top gaps. Then unlock the full readiness check.',
+        'Seven taps in under 7 seconds — see your pulse score, selection chance vs 100 students, and top gaps. Then unlock the full readiness check.',
       icon: Zap,
       color: 'purple',
       href: '/snap-test',

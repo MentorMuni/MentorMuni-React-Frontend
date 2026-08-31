@@ -14,7 +14,8 @@ export const orgPaths = {
   notify: '/Organization/notify',
   performance: '/Organization/performance',
   access: '/Organization/access',
-  settings: '/Organization/settings',
+  profile: '/Organization/profile',
+  settings: '/Organization/profile',
   changePassword: '/Organization/change-password',
   help: '/Organization/help',
 };

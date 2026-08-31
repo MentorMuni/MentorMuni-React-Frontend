@@ -1581,6 +1581,11 @@ export function createProgram(input) {
       type: input.type || 'custom',
       audience: input.audience || 'all', // all | department | student
       departmentId: input.departmentId || '',
+      departmentIds: Array.isArray(input.departmentIds)
+        ? input.departmentIds.map(String)
+        : input.departmentId
+          ? [String(input.departmentId)]
+          : [],
       studentIds: input.studentIds || [],
       dueInDays: Number(input.dueInDays) || 7,
       status: 'active',
@@ -1617,6 +1622,11 @@ export function createDrive(input) {
       message: input.message?.trim() || '',
       audience: input.audience || 'all', // all | department | hods
       departmentId: input.departmentId || '',
+      departmentIds: Array.isArray(input.departmentIds)
+        ? input.departmentIds.map(String)
+        : input.departmentId
+          ? [String(input.departmentId)]
+          : [],
       status: 'scheduled',
       notifiedAt: new Date().toISOString(),
     });
@@ -1646,76 +1656,162 @@ export function updateHodAccess(patch) {
 
 /* ── Dashboard metrics ───────────────────────────────────── */
 
-export function getTpoMetrics() {
+function metricsMean(vals) {
+  const nums = (vals || []).filter((v) => v != null && !Number.isNaN(Number(v))).map(Number);
+  if (!nums.length) return null;
+  return Math.round(nums.reduce((a, b) => a + b, 0) / nums.length);
+}
+
+/** Demo/local pillar estimates from readiness + mock scores. */
+function estimateStudentPillars(s) {
+  const r = Number(s.readiness) || 0;
+  const m = s.mockScore != null ? Number(s.mockScore) : r;
+  const commBoost = String(s.strength || '').toLowerCase().includes('communication') ? 8 : 0;
+  return {
+    aptitude: Math.min(100, Math.round(r * 0.94)),
+    skills: Math.min(100, Math.round(r * 0.9)),
+    interview: Math.min(100, Math.round(m * 0.92) || Math.round(r * 0.86)),
+    communication: Math.min(100, Math.round(r * 0.82 + commBoost)),
+  };
+}
+
+function aggregatePillars(studentList) {
+  const scored = (studentList || []).filter((s) => (s.readiness ?? 0) > 0);
+  const buckets = { aptitude: [], skills: [], interview: [], communication: [] };
+  scored.forEach((s) => {
+    const p = estimateStudentPillars(s);
+    buckets.aptitude.push(p.aptitude);
+    buckets.skills.push(p.skills);
+    buckets.interview.push(p.interview);
+    buckets.communication.push(p.communication);
+  });
+  return {
+    aptitude: metricsMean(buckets.aptitude),
+    skills: metricsMean(buckets.skills),
+    interview: metricsMean(buckets.interview),
+    communication: metricsMean(buckets.communication),
+  };
+}
+
+function themeListFromStudents(students, field, limit = 6) {
+  const scored = (students || []).filter((s) => (s.readiness ?? 0) > 0);
+  const counts = {};
+  scored.forEach((s) => {
+    const label = s[field];
+    if (label && label !== '—') counts[label] = (counts[label] || 0) + 1;
+  });
+  return Object.entries(counts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, limit)
+    .map(([label, count]) => ({
+      label,
+      count,
+      sharePct: scored.length ? Math.round((count / scored.length) * 100) : 0,
+    }));
+}
+
+function buildDeptPerformanceRow(d, deptStudents) {
+  const scored = deptStudents.filter((s) => (s.readiness ?? 0) > 0);
+  const strong = scored.filter((s) => s.readiness >= 75).length;
+  const mid = scored.filter((s) => s.readiness >= 50 && s.readiness < 75).length;
+  const weak = scored.filter((s) => s.readiness < 50).length;
+  const gaps = themeListFromStudents(deptStudents, 'weakness', 1);
+  const pillars = aggregatePillars(deptStudents);
+  const avg =
+    scored.length
+      ? Math.round(scored.reduce((s, x) => s + (x.readiness || 0), 0) / scored.length)
+      : null;
+  return {
+    id: d.id,
+    name: d.name,
+    code: d.code,
+    students: deptStudents.length || d.studentCount || 0,
+    scoredStudents: scored.length,
+    coveragePct: deptStudents.length ? Math.round((scored.length / deptStudents.length) * 100) : 0,
+    avgReadiness: avg,
+    avgMock: metricsMean(scored.map((s) => s.mockScore)),
+    pillars,
+    strong,
+    mid,
+    weak,
+    topGap: gaps[0]?.label || null,
+    hodStatus: d.hodStatus,
+  };
+}
+
+export function getTpoMetrics(departmentId = null) {
   const data = getOrgWorkspace();
-  const students = data.students;
-  const avgReadiness = students.length
-    ? Math.round(students.reduce((s, x) => s + (x.readiness || 0), 0) / students.length)
+  const allStudents = data.students;
+  const students = departmentId
+    ? allStudents.filter((s) => String(s.departmentId) === String(departmentId))
+    : allStudents;
+  const scored = students.filter((s) => (s.readiness ?? 0) > 0);
+  const avgReadiness = scored.length
+    ? Math.round(scored.reduce((s, x) => s + (x.readiness || 0), 0) / scored.length)
     : 0;
-  const strong = students.filter((s) => (s.readiness || 0) >= 75).length;
-  const weak = students.filter((s) => (s.readiness || 0) < 50).length;
+  const strong = scored.filter((s) => (s.readiness || 0) >= 75).length;
+  const weak = scored.filter((s) => (s.readiness || 0) < 50).length;
+  const mid = scored.filter((s) => (s.readiness || 0) >= 50 && (s.readiness || 0) < 75).length;
+  const unscored = students.length - scored.length;
   const pendingInvites = data.invitations.filter((i) => i.status === 'pending').length;
   const activePrograms = data.programs.filter((p) => p.status === 'active').length;
   const upcomingDrives = data.drives.filter((d) => d.status === 'scheduled').length;
 
-  const byDept = data.departments.map((d) => {
-    const deptStudents = students.filter((s) => s.departmentId === d.id);
-    const avg = deptStudents.length
-      ? Math.round(deptStudents.reduce((s, x) => s + (x.readiness || 0), 0) / deptStudents.length)
-      : 0;
-    return {
-      id: d.id,
-      name: d.name,
-      code: d.code,
-      students: deptStudents.length || d.studentCount || 0,
-      avgReadiness: avg,
-      hodStatus: d.hodStatus,
-    };
+  const byDept = (departmentId
+    ? data.departments.filter((d) => String(d.id) === String(departmentId))
+    : data.departments
+  ).map((d) => {
+    const deptStudents = students.filter((s) => String(s.departmentId) === String(d.id));
+    return buildDeptPerformanceRow(d, deptStudents);
   });
 
-  const leaders = [...students]
+  const leaders = [...scored]
     .sort((a, b) => (b.readiness || 0) - (a.readiness || 0))
     .slice(0, 8);
 
-  const bands = {
-    strong: students.filter((s) => (s.readiness || 0) >= 75).length,
-    mid: students.filter((s) => (s.readiness || 0) >= 50 && (s.readiness || 0) < 75).length,
-    weak: students.filter((s) => (s.readiness || 0) < 50).length,
-  };
+  const atRisk = [...scored]
+    .filter((s) => (s.readiness || 0) < 50)
+    .sort((a, b) => (a.readiness || 0) - (b.readiness || 0))
+    .slice(0, 8);
 
-  const weaknessCount = {};
-  const strengthCount = {};
-  students.forEach((s) => {
-    if (s.weakness) weaknessCount[s.weakness] = (weaknessCount[s.weakness] || 0) + 1;
-    if (s.strength) strengthCount[s.strength] = (strengthCount[s.strength] || 0) + 1;
-  });
-  const topGaps = Object.entries(weaknessCount)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
-    .map(([label, count]) => ({ label, count }));
-  const topStrengths = Object.entries(strengthCount)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
-    .map(([label, count]) => ({ label, count }));
+  const bands = { strong, mid, weak, unscored };
+
+  const topGaps = themeListFromStudents(students, 'weakness', 6);
+  const topStrengths = themeListFromStudents(students, 'strength', 6);
 
   const programCoverage = data.programs.length
     ? Math.min(100, Math.round((students.length ? activePrograms * 20 : 0)))
     : 0;
 
   const enrollment = computeRosterCounts(students, pendingInvites);
+  const pillars = aggregatePillars(students);
+  const avgMock = metricsMean(scored.map((s) => s.mockScore));
+  const avgTestsDone = scored.length
+    ? Math.round(
+        scored.reduce((s, x) => s + (x.testsDone ?? Math.min(8, Math.round((x.readiness || 0) / 10))), 0) /
+          scored.length
+      )
+    : 0;
 
   return {
     departments: data.departments.length,
     students: enrollment.active || students.length,
+    studentsScored: scored.length,
+    coveragePct: students.length ? Math.round((scored.length / students.length) * 100) : 0,
+    driveReadyOfScoredPct: scored.length ? Math.round((strong / scored.length) * 100) : 0,
     pendingInvites,
     enrollment,
     activePrograms,
     upcomingDrives,
     avgReadiness,
+    avgMock,
+    pillars,
     strong,
+    mid,
     weak,
     byDept,
     leaders,
+    atRisk,
     recentPrograms: data.programs.slice(0, 5),
     recentDrives: data.drives.slice(0, 4),
     bands,
@@ -1723,6 +1819,15 @@ export function getTpoMetrics() {
     topStrengths,
     programCoverage,
     hodGaps: data.departments.filter((d) => d.hodStatus !== 'invited' && d.hodStatus !== 'active').length,
+    active7d: students.filter((s) => (s.activities || 0) >= 5).length,
+    idleCount: students.filter((s) => (s.activities || 0) >= 2 && (s.activities || 0) < 5).length,
+    inactive14d: students.filter((s) => (s.activities || 0) === 1).length,
+    neverStarted: students.filter((s) => !(s.activities || 0)).length,
+    tests: {
+      toolsTotal: 8,
+      avgTestsDone,
+      avgTestsRemaining: Math.max(0, 8 - avgTestsDone),
+    },
   };
 }
 
@@ -1731,14 +1836,16 @@ export function getHodMetrics(departmentId) {
   const data = getOrgWorkspace();
   const dept = data.departments.find((d) => d.id === departmentId);
   const students = data.students.filter((s) => s.departmentId === departmentId);
-  const avgReadiness = students.length
-    ? Math.round(students.reduce((s, x) => s + (x.readiness || 0), 0) / students.length)
+  const scored = students.filter((s) => (s.readiness ?? 0) > 0);
+  const avgReadiness = scored.length
+    ? Math.round(scored.reduce((s, x) => s + (x.readiness || 0), 0) / scored.length)
     : 0;
-  const strong = students.filter((s) => (s.readiness || 0) >= 75).length;
-  const weak = students.filter((s) => (s.readiness || 0) < 50).length;
-  const mid = students.filter(
+  const strong = scored.filter((s) => (s.readiness || 0) >= 75).length;
+  const weak = scored.filter((s) => (s.readiness || 0) < 50).length;
+  const mid = scored.filter(
     (s) => (s.readiness || 0) >= 50 && (s.readiness || 0) < 75
   ).length;
+  const unscored = students.length - scored.length;
   const pendingInvites = data.invitations.filter(
     (i) => i.status === 'pending' && i.departmentId === departmentId
   ).length;
@@ -1759,51 +1866,63 @@ export function getHodMetrics(departmentId) {
       (!d.departmentId || d.departmentId === departmentId || d.audience === 'all')
   ).length;
 
-  const leaders = [...students]
+  const leaders = [...scored]
     .sort((a, b) => (b.readiness || 0) - (a.readiness || 0))
     .slice(0, 8);
 
-  const atRisk = [...students]
+  const atRisk = [...scored]
     .filter((s) => (s.readiness || 0) < 50)
     .sort((a, b) => (a.readiness || 0) - (b.readiness || 0))
     .slice(0, 8);
 
-  const bands = { strong, mid, weak };
+  const bands = { strong, mid, weak, unscored };
 
-  const weaknessCount = {};
-  const strengthCount = {};
-  students.forEach((s) => {
-    if (s.weakness) weaknessCount[s.weakness] = (weaknessCount[s.weakness] || 0) + 1;
-    if (s.strength) strengthCount[s.strength] = (strengthCount[s.strength] || 0) + 1;
-  });
-  const topGaps = Object.entries(weaknessCount)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 4)
-    .map(([label, count]) => ({ label, count }));
-  const topStrengths = Object.entries(strengthCount)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 4)
-    .map(([label, count]) => ({ label, count }));
+  const topGaps = themeListFromStudents(students, 'weakness', 6);
+  const topStrengths = themeListFromStudents(students, 'strength', 6);
+  const pillars = aggregatePillars(students);
+  const avgMock = metricsMean(scored.map((s) => s.mockScore));
+  const byDept = dept ? [buildDeptPerformanceRow(dept, students)] : [];
+  const avgTestsDone = scored.length
+    ? Math.round(
+        scored.reduce((s, x) => s + (x.testsDone ?? Math.min(8, Math.round((x.readiness || 0) / 10))), 0) /
+          scored.length
+      )
+    : 0;
 
   return {
     departmentId,
     departmentName: dept?.name || 'Department',
     departmentCode: dept?.code || '',
     students: students.length,
+    studentsScored: scored.length,
+    coveragePct: students.length ? Math.round((scored.length / students.length) * 100) : 0,
+    driveReadyOfScoredPct: scored.length ? Math.round((strong / scored.length) * 100) : 0,
     pendingInvites,
     activePrograms,
     upcomingDrives,
     avgReadiness,
+    avgMock,
+    pillars,
     strong,
     mid,
     weak,
     leaders,
     atRisk,
     bands,
+    byDept,
     topGaps,
     topStrengths,
     recentPrograms: programs.slice(0, 5),
     driveReadyPct: students.length ? Math.round((strong / students.length) * 100) : 0,
+    active7d: students.filter((s) => (s.activities || 0) >= 5).length,
+    idleCount: students.filter((s) => (s.activities || 0) >= 2 && (s.activities || 0) < 5).length,
+    inactive14d: students.filter((s) => (s.activities || 0) === 1).length,
+    neverStarted: students.filter((s) => !(s.activities || 0)).length,
+    tests: {
+      toolsTotal: 8,
+      avgTestsDone,
+      avgTestsRemaining: Math.max(0, 8 - avgTestsDone),
+    },
   };
 }
 

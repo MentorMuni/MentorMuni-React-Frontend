@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ArrowRight, ArrowLeft, Loader, AlertCircle, Zap } from 'lucide-react';
 import {
   startCheckIn,
   saveStepResponse,
   generateInsight,
+  waitForInterventionPlan,
   getProgress,
   getInterventionStatus,
   submitWeeklyProgress,
@@ -77,6 +78,7 @@ export default function StudentKnowMePage() {
   const [weeklyResult, setWeeklyResult] = useState(null);
   const [notifications, setNotifications] = useState([]);
   const [celebration, setCelebration] = useState(null);
+  const submittingRef = useRef(false);
 
   useEffect(() => {
     let cancelled = false;
@@ -95,7 +97,7 @@ export default function StudentKnowMePage() {
           return;
         }
 
-        if ((wantPlan || historyId) && active?.insight && active?.intervention) {
+        if ((wantPlan || historyId) && active?.insight) {
           openPlanFromActive(active);
           return;
         }
@@ -127,6 +129,26 @@ export default function StudentKnowMePage() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (state !== 'result' || !checkinId) return undefined;
+    const needsPlan =
+      !intervention ||
+      intervention.status === 'awaiting_solutions' ||
+      !((intervention.solutions?.length ?? 0) > 0 || (intervention.fears?.length ?? 0) > 0);
+    if (!needsPlan) return undefined;
+
+    let cancelled = false;
+    (async () => {
+      const status = await waitForInterventionPlan(checkinId, { attempts: 10, delayMs: 2000 });
+      if (cancelled || !status) return;
+      await loadIntervention(checkinId);
+    })();
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state, checkinId, intervention?.status]);
 
   function restoreFormFromCache(cached, cachedQuestions) {
     setCheckinId(cached.checkin_id);
@@ -263,7 +285,7 @@ export default function StudentKnowMePage() {
     try {
       const active = await getActiveJourney(id || undefined);
       setActiveJourney(active);
-      if (active?.insight && active?.intervention) {
+      if (active?.insight) {
         openPlanFromActive(active);
         setSearchParams((prev) => {
           const next = new URLSearchParams(prev);
@@ -336,28 +358,63 @@ export default function StudentKnowMePage() {
   }
 
   async function handleNextStep() {
+    if (submittingRef.current) return;
     if (stepIndex >= questions.length) return;
     const q = questions[stepIndex];
+    if (!checkinId) {
+      setError('Your session expired. Go back and start the check-in again.');
+      return;
+    }
+    if (!q?.key) {
+      setError('This question could not be loaded. Refresh the page and try again.');
+      return;
+    }
+
     setError('');
     setLoading(true);
+    submittingRef.current = true;
     const lastStep = stepIndex + 1 >= questions.length;
     const waitStarted = Date.now();
     if (lastStep) setWaitKind('building');
     try {
-      await saveStepResponse(checkinId, {
-        question_key: q.key,
-        response_type: q.response_type,
-        selected_ids: currentResponses.selected_ids || [],
-        free_text: currentResponses.free_text || '',
-      });
+      try {
+        await saveStepResponse(checkinId, {
+          question_key: q.key,
+          response_type: q.response_type || 'free_text_only',
+          selected_ids: currentResponses.selected_ids || [],
+          free_text: currentResponses.free_text || '',
+        });
+      } catch (err) {
+        const msg =
+          err instanceof StudentApiError
+            ? err.message
+            : err?.message || 'Check your connection and try again.';
+        throw new Error(`Could not save your answer: ${msg}`);
+      }
+
       const newResponses = new Map(responses);
       newResponses.set(q.key, currentResponses);
       setResponses(newResponses);
 
       if (lastStep) {
-        const insightData = await generateInsight(checkinId);
+        let insightData;
+        try {
+          insightData = await generateInsight(checkinId);
+        } catch (err) {
+          const msg =
+            err instanceof StudentApiError
+              ? err.message
+              : err?.message || 'This can take up to a minute — please try again.';
+          throw new Error(`Could not build your reflection: ${msg}`);
+        }
+        if (!insightData?.headline) {
+          throw new Error('Could not build your reflection. Please try again.');
+        }
         setInsight(insightData);
+
+        await waitForInterventionPlan(checkinId);
         await loadIntervention(checkinId);
+
         await loadNotifications();
         try {
           const active = await getActiveJourney(checkinId);
@@ -374,8 +431,9 @@ export default function StudentKnowMePage() {
       }
     } catch (err) {
       console.error('Error in handleNextStep:', err);
-      setError(err instanceof StudentApiError ? err.message : 'Error saving response.');
+      setError(err?.message || 'Something went wrong. Please try again.');
     } finally {
+      submittingRef.current = false;
       if (lastStep) {
         const remain = Math.max(0, 2600 - (Date.now() - waitStarted));
         if (remain) await new Promise((resolve) => window.setTimeout(resolve, remain));

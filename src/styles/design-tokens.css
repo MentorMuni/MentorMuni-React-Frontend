@@ -12,6 +12,7 @@
 @import "../theme/semantic-tokens.css";
 @import "../theme/new-ui-theme.css";
 @import "../theme/new-ui-assessment.css";
+@import "../theme/assessment-widget-theme.css";
 @import "../theme/new-ui-semantic-scopes.css";
 @import "../theme/munibot.css";
 @import "../theme/welcome-overlay.css";

@@ -16,7 +16,7 @@ export const SNAP_QUESTIONS = [
     label: 'Checked your resume ATS score?',
     hint: 'Keywords, format, gaps recruiters never see',
     type: 'yes_no',
-    weight: 12,
+    weight: 10,
     gapLabel: 'Resume / ATS',
   },
   {
@@ -24,7 +24,7 @@ export const SNAP_QUESTIONS = [
     label: 'Built a project on your own?',
     hint: 'Not copy-paste — something you can explain',
     type: 'yes_no',
-    weight: 18,
+    weight: 16,
     gapLabel: 'Own project',
   },
   {
@@ -40,15 +40,23 @@ export const SNAP_QUESTIONS = [
     label: 'Comfortable in a stack?',
     hint: 'Java, Python, frontend, or backend',
     type: 'yes_no',
-    weight: 20,
+    weight: 18,
     gapLabel: 'Core stack',
+  },
+  {
+    id: 'db_queries_concepts',
+    label: 'SQL & DB concepts ready?',
+    hint: 'JOINs, keys, indexes, normalization — can you query under pressure',
+    type: 'scale',
+    weight: 12,
+    gapLabel: 'SQL & databases',
   },
   {
     id: 'mock_interview',
     label: 'Done mock interviews?',
     hint: 'Technical or HR — under real pressure',
     type: 'yes_no',
-    weight: 20,
+    weight: 18,
     gapLabel: 'Mock interviews',
   },
   {
@@ -56,7 +64,7 @@ export const SNAP_QUESTIONS = [
     label: 'Aptitude + deep concepts ready?',
     hint: 'Quant, logic, and "why" behind answers',
     type: 'scale',
-    weight: 20,
+    weight: 16,
     gapLabel: 'Aptitude & concepts',
   },
 ];
@@ -93,7 +101,7 @@ export function computeSnapScore(answers) {
 
 /**
  * Readiness stages — qualitative, honest positioning (NOT a computed score).
- * A 6-tap self-report can place you in a stage; it cannot produce a defensible
+ * A 7-tap self-report can place you in a stage; it cannot produce a defensible
  * out-of-100 number. The real score is intentionally withheld for the full check.
  */
 export const SNAP_STAGES = [
@@ -172,7 +180,7 @@ export function snapGapsFromAnswers(answers) {
 }
 
 /**
- * How many of the 6 self-report signals came back "ready".
+ * How many of the 7 self-report signals came back "ready".
  * Honest, concrete number the user can trust (unlike a fabricated /100 score).
  * @param {Record<string, boolean | number>} answers
  */

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, Check, Sparkles, Target, Timer } from 'lucide-react';
+import { ArrowRight, Check, Sparkles } from 'lucide-react';
 import {
   COMPANY_OPTIONS,
   savePlacementProfile,
@@ -10,7 +10,8 @@ import { saveStudentTarget } from '../targetApi';
 import { setTodayBudget, TIME_BUDGETS, BUDGET_LABELS } from '../daily/timeBudget';
 import '../styles/placement-onboarding.css';
 
-const STEPS = ['path', 'companies', 'time', 'level'];
+/** Two short steps — keep it under a minute. */
+const STEPS = ['basics', 'level'];
 
 export default function PlacementOnboarding({ userKey = 'anon', onComplete }) {
   const [step, setStep] = useState(0);
@@ -20,6 +21,7 @@ export default function PlacementOnboarding({ userKey = 'anon', onComplete }) {
   const [startingLevel, setStartingLevel] = useState('some_experience');
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
+  const [showCompanies, setShowCompanies] = useState(false);
 
   const toggleCompany = (name) => {
     setCompanies((prev) =>
@@ -28,20 +30,21 @@ export default function PlacementOnboarding({ userKey = 'anon', onComplete }) {
   };
 
   const finish = async () => {
+    if (busy) return;
     setBusy(true);
     setErr('');
+
+    const body = {
+      target_tier: targetTier,
+      target_companies: companies,
+      target_readiness: 85,
+      starting_level: startingLevel,
+      daily_budget_minutes: budgetMinutes,
+      onboarding_completed: true,
+    };
+
     try {
-      await saveStudentTarget(
-        {
-          target_tier: targetTier,
-          target_companies: companies,
-          target_readiness: 85,
-          starting_level: startingLevel,
-          daily_budget_minutes: budgetMinutes,
-          onboarding_completed: true,
-        },
-        { userKey }
-      );
+      // Local-first so we never trap the student on "Saving…" if the API is slow.
       setTodayBudget(budgetMinutes, userKey);
       savePlacementProfile(userKey, {
         targetTier,
@@ -50,11 +53,12 @@ export default function PlacementOnboarding({ userKey = 'anon', onComplete }) {
         startingLevel,
         completedAt: new Date().toISOString(),
       });
-      onComplete?.();
-    } catch (e) {
-      setErr(e?.message || 'Could not save your profile. Try again.');
+      await saveStudentTarget(body, { userKey, timeoutMs: 10000, silent: true });
+    } catch {
+      // Keep going — profile is already on this device.
     } finally {
       setBusy(false);
+      onComplete?.();
     }
   };
 
@@ -67,16 +71,13 @@ export default function PlacementOnboarding({ userKey = 'anon', onComplete }) {
       <div className="stu-onboard__card">
         <header className="stu-onboard__head">
           <p className="stu-onboard__eyebrow">
-            <Sparkles size={14} aria-hidden /> Personalize MentorMuni
+            <Sparkles size={14} aria-hidden /> Quick setup
           </p>
           <h2 id="stu-onboard-title" className="stu-onboard__title">
-            Let&apos;s tailor your placement journey
+            Personalize your placement plan
           </h2>
           <p className="stu-onboard__sub">
-            Two minutes now — then a <strong>3-day assessment week</strong> (8 checks across
-            calendar days). After that, MentorMuni builds your own <strong>30–45 day plan</strong>{' '}
-            from your strengths and gaps. Your TPO and HOD see your progress as each check
-            completes.
+            About 30 seconds. Then you start a short assessment week — we build your plan from the results.
           </p>
           <ol className="stu-onboard__steps" aria-label="Setup progress">
             {STEPS.map((id, i) => (
@@ -90,11 +91,9 @@ export default function PlacementOnboarding({ userKey = 'anon', onComplete }) {
           </ol>
         </header>
 
-        {stepId === 'path' ? (
+        {stepId === 'basics' ? (
           <div className="stu-onboard__body">
-            <p className="stu-onboard__label">
-              <Target size={14} aria-hidden /> What kind of roles are you targeting?
-            </p>
+            <p className="stu-onboard__label">What are you aiming for?</p>
             <div className="stu-onboard__choices">
               {TARGET_TIERS.map((t) => (
                 <button
@@ -108,33 +107,8 @@ export default function PlacementOnboarding({ userKey = 'anon', onComplete }) {
                 </button>
               ))}
             </div>
-          </div>
-        ) : null}
 
-        {stepId === 'companies' ? (
-          <div className="stu-onboard__body">
-            <p className="stu-onboard__label">Dream companies (pick any)</p>
-            <div className="stu-onboard__chips">
-              {COMPANY_OPTIONS.map((name) => (
-                <button
-                  key={name}
-                  type="button"
-                  className={`stu-onboard__chip${companies.includes(name) ? ' is-on' : ''}`}
-                  onClick={() => toggleCompany(name)}
-                >
-                  {name}
-                </button>
-              ))}
-            </div>
-            <p className="stu-onboard__hint">Optional — helps gates and mentor context later.</p>
-          </div>
-        ) : null}
-
-        {stepId === 'time' ? (
-          <div className="stu-onboard__body">
-            <p className="stu-onboard__label">
-              <Timer size={14} aria-hidden /> Realistic daily time for prep?
-            </p>
+            <p className="stu-onboard__label stu-onboard__label--spaced">Daily prep time</p>
             <div className="stu-onboard__budgets">
               {TIME_BUDGETS.map((m) => (
                 <button
@@ -148,9 +122,28 @@ export default function PlacementOnboarding({ userKey = 'anon', onComplete }) {
                 </button>
               ))}
             </div>
-            <p className="stu-onboard__hint">
-              Today&apos;s mission will be sized to this — change anytime on Home.
-            </p>
+
+            <button
+              type="button"
+              className="stu-onboard__linkish"
+              onClick={() => setShowCompanies((v) => !v)}
+            >
+              {showCompanies ? 'Hide companies' : 'Add dream companies (optional)'}
+            </button>
+            {showCompanies ? (
+              <div className="stu-onboard__chips">
+                {COMPANY_OPTIONS.map((name) => (
+                  <button
+                    key={name}
+                    type="button"
+                    className={`stu-onboard__chip${companies.includes(name) ? ' is-on' : ''}`}
+                    onClick={() => toggleCompany(name)}
+                  >
+                    {name}
+                  </button>
+                ))}
+              </div>
+            ) : null}
           </div>
         ) : null}
 
@@ -207,7 +200,7 @@ export default function PlacementOnboarding({ userKey = 'anon', onComplete }) {
               onClick={finish}
               disabled={busy}
             >
-              {busy ? 'Saving…' : 'Start my journey'}
+              {busy ? 'Starting…' : 'Start my journey'}
               {!busy ? <ArrowRight size={15} /> : null}
             </button>
           )}

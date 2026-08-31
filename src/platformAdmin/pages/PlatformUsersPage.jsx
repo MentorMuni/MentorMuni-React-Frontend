@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Pencil, Plus } from 'lucide-react';
 import {
   getPlatformUsers,
@@ -9,6 +9,9 @@ import {
   PLATFORM_ROLES,
 } from '../store';
 import Modal from '../Modal';
+import { useTableQuery } from '../../hooks/useTableQuery';
+import { TableToolbar } from '../../components/table/TableToolbar';
+import { SortableTh } from '../../components/table/SortableTh';
 
 /** Must match API `_PROTECTED_PLATFORM_ADMIN_EMAILS` (seed + production primary). */
 const PROTECTED_PLATFORM_ADMIN_EMAILS = new Set([
@@ -35,6 +38,18 @@ export default function PlatformUsersPage() {
   const [error, setError] = useState('');
   const [form, setForm] = useState(emptyForm);
   const [loading, setLoading] = useState(true);
+
+  const usersTable = useTableQuery(users, {
+    searchKeys: ['name', 'email', 'role', 'status'],
+    getSortValue: (row, key) => {
+      if (key === 'name') return (row.name || '').toLowerCase();
+      if (key === 'email') return (row.email || '').toLowerCase();
+      if (key === 'role') return row.role || '';
+      if (key === 'status') return row.status || '';
+      if (key === 'created') return row.created_at || '';
+      return row[key];
+    },
+  });
 
   useEffect(() => {
     const refresh = async () => {
@@ -114,19 +129,29 @@ export default function PlatformUsersPage() {
         <p className="mb-4 text-sm text-slate-400">
           MentorMuni employees only. Separate from organization users. Roles: Platform Admin, Support, Sales, Operations.
         </p>
+        {!loading ? (
+          <TableToolbar
+            variant="pa"
+            query={usersTable.query}
+            onQueryChange={usersTable.setQuery}
+            placeholder="Search name, email, role…"
+            count={usersTable.count}
+            total={usersTable.total}
+          />
+        ) : null}
         <table className="mm-pa-table min-w-[760px]">
           <thead>
             <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Created</th>
+              <SortableTh label="Name" sortKey="name" sort={usersTable.sort} onSort={usersTable.toggleSort} />
+              <SortableTh label="Email" sortKey="email" sort={usersTable.sort} onSort={usersTable.toggleSort} />
+              <SortableTh label="Role" sortKey="role" sort={usersTable.sort} onSort={usersTable.toggleSort} />
+              <SortableTh label="Status" sortKey="status" sort={usersTable.sort} onSort={usersTable.toggleSort} />
+              <SortableTh label="Created" sortKey="created" sort={usersTable.sort} onSort={usersTable.toggleSort} />
               <th />
             </tr>
           </thead>
           <tbody>
-            {(loading ? Array.from({ length: 5 }, (_, i) => ({ id: `loading-user-${i}` })) : users).map((u) => (
+            {(loading ? Array.from({ length: 5 }, (_, i) => ({ id: `loading-user-${i}` })) : usersTable.rows).map((u) => (
               <tr key={u.id}>
                 {loading ? (
                   <>

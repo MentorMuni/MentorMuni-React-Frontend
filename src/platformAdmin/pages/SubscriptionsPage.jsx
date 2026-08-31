@@ -1,5 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { getOrganizations, getSubscriptions } from '../store';
+import { useTableQuery } from '../../hooks/useTableQuery';
+import { TableToolbar } from '../../components/table/TableToolbar';
+import { SortableTh } from '../../components/table/SortableTh';
 
 function formatDate(d) {
   if (!d) return '—';
@@ -22,6 +25,35 @@ export default function SubscriptionsPage() {
     });
     return map;
   }, [orgList]);
+
+  const enrichedRows = useMemo(
+    () =>
+      rows.map((s) => ({
+        ...s,
+        orgName: orgs[s.organization_id]?.name || '',
+        orgCode: orgs[s.organization_id]?.code || '',
+      })),
+    [rows, orgs]
+  );
+
+  const subsTable = useTableQuery(enrichedRows, {
+    searchKeys: ['orgName', 'orgCode', 'plan_name', 'status'],
+    getSortValue: (row, key) => {
+      if (key === 'organization') return (row.orgName || '').toLowerCase();
+      if (key === 'plan') return row.plan_name || '';
+      if (key === 'seatLimit') return Number(row.student_limit || 0);
+      if (key === 'seatsUsed') return Number(row.used_students || 0);
+      if (key === 'seatsLeft') return Math.max(0, Number(row.student_limit || 0) - Number(row.used_students || 0));
+      if (key === 'utilization') {
+        const limit = Number(row.student_limit || 0);
+        return limit ? Number(row.used_students || 0) / limit : 0;
+      }
+      if (key === 'start') return row.start_date || '';
+      if (key === 'end') return row.end_date || '';
+      if (key === 'status') return row.status || '';
+      return row[key];
+    },
+  });
 
   useEffect(() => {
     const refresh = async () => {
@@ -55,23 +87,34 @@ export default function SubscriptionsPage() {
           many student seats are filled versus the seat limit.
         </p>
 
+        {!loading ? (
+          <TableToolbar
+            variant="pa"
+            query={subsTable.query}
+            onQueryChange={subsTable.setQuery}
+            placeholder="Search organization, plan, status…"
+            count={subsTable.count}
+            total={subsTable.total}
+          />
+        ) : null}
+
         <div className="overflow-x-auto">
           <table className="mm-pa-table min-w-[900px]">
             <thead>
               <tr>
-                <th>Organization</th>
-                <th>Plan</th>
-                <th>Seat Limit</th>
-                <th>Seats Used</th>
-                <th>Seats Left</th>
-                <th>Utilization</th>
-                <th>Start</th>
-                <th>End</th>
-                <th>Status</th>
+                <SortableTh label="Organization" sortKey="organization" sort={subsTable.sort} onSort={subsTable.toggleSort} />
+                <SortableTh label="Plan" sortKey="plan" sort={subsTable.sort} onSort={subsTable.toggleSort} />
+                <SortableTh label="Seat Limit" sortKey="seatLimit" sort={subsTable.sort} onSort={subsTable.toggleSort} />
+                <SortableTh label="Seats Used" sortKey="seatsUsed" sort={subsTable.sort} onSort={subsTable.toggleSort} />
+                <SortableTh label="Seats Left" sortKey="seatsLeft" sort={subsTable.sort} onSort={subsTable.toggleSort} />
+                <SortableTh label="Utilization" sortKey="utilization" sort={subsTable.sort} onSort={subsTable.toggleSort} />
+                <SortableTh label="Start" sortKey="start" sort={subsTable.sort} onSort={subsTable.toggleSort} />
+                <SortableTh label="End" sortKey="end" sort={subsTable.sort} onSort={subsTable.toggleSort} />
+                <SortableTh label="Status" sortKey="status" sort={subsTable.sort} onSort={subsTable.toggleSort} />
               </tr>
             </thead>
             <tbody>
-              {(loading ? Array.from({ length: 5 }, (_, i) => ({ id: `loading-sub-${i}` })) : rows).map((s) => {
+              {(loading ? Array.from({ length: 5 }, (_, i) => ({ id: `loading-sub-${i}` })) : subsTable.rows).map((s) => {
                 if (loading) {
                   return (
                     <tr key={s.id}>

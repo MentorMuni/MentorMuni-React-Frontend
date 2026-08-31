@@ -27,7 +27,7 @@ import { READINESS_CHECK_PRODUCT_NOUN, HERO_PROOF_STAT } from '../../constants/b
 const MM_FIELD_INVALID =
   'mm-focus w-full rounded-xl border-2 border-red-500 bg-red-50 py-3.5 pl-11 pr-4 text-sm outline-none ring-2 ring-red-500/25 focus:border-red-600 focus:ring-2 focus:ring-red-500/35';
 const MM_FIELD_VALID =
-  'mm-focus w-full rounded-xl border border-border bg-white px-4 py-3.5 pl-11 text-sm text-foreground outline-none transition-[border-color,box-shadow] hover:border-border focus:border-cta focus:ring-2 focus:ring-cta/25';
+  'mm-focus mm-surface-input w-full rounded-xl border border-border px-4 py-3.5 pl-11 text-sm text-foreground outline-none transition-[border-color,box-shadow] hover:border-border focus:border-cta focus:ring-2 focus:ring-cta/25';
 
 const ASSESSMENT_FOCUS_APTITUDE = 'aptitude';
 const ASSESSMENT_FOCUS_SKILL = 'skill';
@@ -198,7 +198,7 @@ function PlacementInspirationPanel({ reduceMotion, phaseIndex, planLoading }) {
   const poster = PLACEMENT_POSTERS[posterIdx];
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-white shadow-sm">
+    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-sm">
       <div className="relative aspect-[16/10] shrink-0 overflow-hidden bg-secondary">
         <AnimatePresence mode="wait">
           <motion.img
@@ -272,7 +272,7 @@ function TipsPanel({
   return (
     <section
       aria-label={tipSectionTitle}
-      className={`flex flex-col rounded-2xl border border-border bg-white shadow-sm ${compact ? 'p-4' : 'sticky top-24 p-5'}`}
+      className={`flex flex-col rounded-2xl border border-border bg-card shadow-sm ${compact ? 'p-4' : 'sticky top-24 p-5'}`}
     >
       <div className="mb-3 flex items-center justify-between gap-2">
         <h3 className="text-sm font-semibold text-foreground">{tipSectionTitle}</h3>
@@ -600,7 +600,7 @@ export default function PrepLoungeSlideFlow({
         {/* Page header — clear hierarchy */}
         <header className="mb-6 lg:mb-8">
           <div className="flex flex-wrap items-center justify-center gap-2 lg:justify-start">
-            <span className="inline-flex items-center rounded-full border border-border bg-white px-3 py-1 text-xs font-semibold text-foreground shadow-sm">
+            <span className="inline-flex items-center rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold text-foreground shadow-sm">
               {modeLabel}
             </span>
             <span className="hidden items-center gap-1 text-xs text-muted-foreground sm:inline-flex">
@@ -625,7 +625,7 @@ export default function PrepLoungeSlideFlow({
             {/* Mobile companies */}
             <div className="mb-4 flex gap-2 overflow-x-auto pb-1 lg:hidden" aria-hidden>
               {PLACEMENT_COMPANIES.map((name) => (
-                <span key={name} className="shrink-0 rounded-full border border-border bg-white px-3 py-1 text-xs font-medium text-foreground">
+                <span key={name} className="shrink-0 rounded-full border border-border bg-card px-3 py-1 text-xs font-medium text-foreground">
                   {name}
                 </span>
               ))}
@@ -635,7 +635,7 @@ export default function PrepLoungeSlideFlow({
               <LinearStepper phaseIndex={phaseIndex} reduceMotion={reduceMotion} steps={flowSteps} />
             )}
 
-            <div className="overflow-hidden rounded-2xl border border-border bg-white shadow-[0_1px_2px_rgba(0,0,0,0.06),0_8px_24px_rgba(0,0,0,0.06)]">
+            <div className="overflow-hidden rounded-2xl border border-border bg-card shadow-[0_1px_2px_rgba(0,0,0,0.06),0_8px_24px_rgba(0,0,0,0.06)]">
               <AnimatePresence mode="wait">
                 {phase === 'details' && (
                   <motion.div
@@ -788,7 +788,7 @@ export default function PrepLoungeSlideFlow({
             {showTips ? (
               <TipsPanel {...tipsPanelProps} />
             ) : (
-              <div className="sticky top-24 rounded-2xl border border-border bg-white p-5 shadow-sm">
+              <div className="sticky top-24 rounded-2xl border border-border bg-card p-5 shadow-sm">
                 <CheckCircle2 className="h-8 w-8 text-emerald-600" aria-hidden />
                 <p className="mt-3 text-sm font-semibold text-foreground">Ready when you are</p>
                 <p className="mt-1 text-xs text-muted-foreground">Your set is personalised from your profile.</p>

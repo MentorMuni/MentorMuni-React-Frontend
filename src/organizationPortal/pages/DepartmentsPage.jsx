@@ -33,6 +33,9 @@ import {
   saveDepartment,
 } from '../departmentsApi';
 import { subscribeOrgDb } from '../store';
+import { useTableQuery } from '../../hooks/useTableQuery';
+import { TableToolbar } from '../../components/table/TableToolbar';
+import { SortableTh } from '../../components/table/SortableTh';
 
 const emptyDeptForm = { id: '', name: '', code: '' };
 const emptyHodForm = { name: '', email: '', reason: '' };
@@ -184,6 +187,17 @@ export default function DepartmentsPage() {
   const [msg, setMsg] = useState('');
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
+
+  const deptTable = useTableQuery(departments, {
+    searchKeys: ['name', 'code', 'hodName', 'hodEmail', 'coordinatorName', 'coordinatorEmail'],
+    getSortValue: (row, key) => {
+      if (key === 'department') return (row.name || row.code || '').toLowerCase();
+      if (key === 'hod') return (row.hodName || row.hodEmail || '').toLowerCase();
+      if (key === 'coordinator') return (row.coordinatorName || row.coordinatorEmail || '').toLowerCase();
+      if (key === 'students') return row.studentCount || 0;
+      return row[key];
+    },
+  });
 
   const refresh = async () => {
     setLoading(true);
@@ -560,19 +574,27 @@ export default function DepartmentsPage() {
         {loading ? (
           <div className="mm-org-empty">Loading departments…</div>
         ) : departments.length ? (
+          <>
+            <TableToolbar
+              query={deptTable.query}
+              onQueryChange={deptTable.setQuery}
+              placeholder="Search department, HOD, coordinator…"
+              count={deptTable.count}
+              total={deptTable.total}
+            />
           <div className="mm-org-table-wrap">
             <table className="mm-org-table">
               <thead>
                 <tr>
-                  <th>Department</th>
-                  <th>HOD</th>
-                  <th>Coordinator</th>
-                  <th>Students</th>
+                  <SortableTh label="Department" sortKey="department" sort={deptTable.sort} onSort={deptTable.toggleSort} />
+                  <SortableTh label="HOD" sortKey="hod" sort={deptTable.sort} onSort={deptTable.toggleSort} />
+                  <SortableTh label="Coordinator" sortKey="coordinator" sort={deptTable.sort} onSort={deptTable.toggleSort} />
+                  <SortableTh label="Students" sortKey="students" sort={deptTable.sort} onSort={deptTable.toggleSort} />
                   <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {departments.map((d) => (
+                {deptTable.rows.length ? deptTable.rows.map((d) => (
                   <tr key={d.id}>
                     <td>
                       <p className="mm-org-table__title">{d.name}</p>
@@ -709,10 +731,17 @@ export default function DepartmentsPage() {
                       </div>
                     </td>
                   </tr>
-                ))}
+                )) : (
+                  <tr>
+                    <td colSpan={5}>
+                      <div className="mm-org-empty">No departments match this search.</div>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
+          </>
         ) : (
           <div className="mm-org-empty">
             {canEdit

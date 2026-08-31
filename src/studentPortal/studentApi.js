@@ -114,15 +114,24 @@ async function parseResponse(res, { auth = true } = {}) {
   return data;
 }
 
-async function request(method, path, { body, auth = true, silent = false } = {}) {
+async function request(method, path, { body, auth = true, silent = false, signal } = {}) {
   if (!silent) studentApiBusy.begin();
   try {
     const res = await fetch(`${BASE_URL}${path}`, {
       method,
       headers: buildHeaders(auth),
       body: body !== undefined ? JSON.stringify(body) : undefined,
+      signal,
     });
     return await parseResponse(res, { auth });
+  } catch (err) {
+    if (err?.name === 'AbortError') {
+      throw new StudentApiError('Request timed out. Please try again.', {
+        status: 0,
+        code: 'TIMEOUT',
+      });
+    }
+    throw err;
   } finally {
     if (!silent) studentApiBusy.end();
   }

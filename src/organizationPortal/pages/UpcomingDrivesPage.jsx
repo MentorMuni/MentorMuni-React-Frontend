@@ -1,14 +1,19 @@
 import { useEffect, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { Briefcase, Loader2, Pencil, Plus, Trash2, X } from 'lucide-react';
+import { useTableQuery } from '../../hooks/useTableQuery';
+import { TableToolbar } from '../../components/table/TableToolbar';
+import { SortableTh } from '../../components/table/SortableTh';
 import {
   createUpcomingDrive,
   deleteUpcomingDrive,
   fetchUpcomingDrives,
+  todayISO,
   updateUpcomingDrive,
 } from '../upcomingDrivesApi';
 import { getOrgSession } from '../../orgPortal';
 import { isDemoSession } from '../demoAuth';
+import { canMutateCampus, isHodRole } from '../roles';
 
 const empty = {
   companyName: '',
@@ -34,6 +39,8 @@ export default function UpcomingDrivesPage() {
   const session = getOrgSession();
   const demo = isDemoSession(session);
   const location = useLocation();
+  const canManage = canMutateCampus(session?.role) && !isHodRole(session?.role);
+  const minDate = todayISO();
 
   const [items, setItems] = useState([]);
   const [form, setForm] = useState(empty);
@@ -44,6 +51,18 @@ export default function UpcomingDrivesPage() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [deletingId, setDeletingId] = useState(null);
+
+  const drivesTable = useTableQuery(items, {
+    searchKeys: ['companyName', 'eligibilityCriteria', 'remark', 'driveDate'],
+    initialSort: { key: 'date', direction: 'asc' },
+    getSortValue: (row, key) => {
+      if (key === 'company') return (row.companyName || '').toLowerCase();
+      if (key === 'date') return row.driveDate || '';
+      if (key === 'eligibility') return row.eligibilityCriteria || '';
+      if (key === 'remark') return row.remark || '';
+      return row[key];
+    },
+  });
 
   const refresh = async () => {
     setLoading(true);
@@ -133,12 +152,13 @@ export default function UpcomingDrivesPage() {
 
   return (
     <div className="mm-org-split">
+      {canManage ? (
       <section className="mm-org-panel">
         <div className="mm-org-panel__head">
           <div>
             <h2 className="mm-org-panel__title">Add upcoming drive</h2>
             <p className="mm-org-panel__meta">
-              Shared with TPO / Dean / Director in this college.
+              Shared with TPO / Dean / Director / HODs in this college. Past dates are not listed.
             </p>
           </div>
           <Briefcase size={18} className="mm-org-icon-accent" />
@@ -168,6 +188,7 @@ export default function UpcomingDrivesPage() {
                 type="date"
                 className="mm-org-input"
                 value={form.driveDate}
+                min={minDate}
                 onChange={(e) => setForm((f) => ({ ...f, driveDate: e.target.value }))}
                 disabled={busy}
                 required
@@ -216,33 +237,59 @@ export default function UpcomingDrivesPage() {
           </div>
         </form>
       </section>
+      ) : (
+        <section className="mm-org-panel">
+          <div className="mm-org-panel__head">
+            <div>
+              <h2 className="mm-org-panel__title">Campus drives</h2>
+              <p className="mm-org-panel__meta">
+                Read-only for HOD — TPO publishes company drives (today &amp; future only).
+              </p>
+            </div>
+            <Briefcase size={18} className="mm-org-icon-accent" />
+          </div>
+          {err ? <div className="mm-org-alert mm-org-alert--error mb-3">{err}</div> : null}
+        </section>
+      )}
 
       <section className="mm-org-panel">
         <div className="mm-org-panel__head">
           <div>
             <h2 className="mm-org-panel__title">Upcoming drives</h2>
             <p className="mm-org-panel__meta">
-              {loading ? 'Loading…' : `${items.length} drive(s)`}
+              {loading ? 'Loading…' : `${items.length} upcoming drive(s)`}
             </p>
           </div>
         </div>
 
+        {!canManage && msg ? (
+          <div className="mm-org-alert mm-org-alert--success mb-3">{msg}</div>
+        ) : null}
+
         {loading ? (
           <div className="mm-org-empty">Loading drives…</div>
         ) : items.length ? (
+          <>
+            <TableToolbar
+              query={drivesTable.query}
+              onQueryChange={drivesTable.setQuery}
+              placeholder="Search company, eligibility, remark…"
+              count={drivesTable.count}
+              total={drivesTable.total}
+            />
           <div className="mm-org-table-wrap">
             <table className="mm-org-table">
               <thead>
                 <tr>
-                  <th>Company</th>
-                  <th>Date</th>
-                  <th>Eligibility</th>
-                  <th>Remark</th>
+                  <SortableTh label="Company" sortKey="company" sort={drivesTable.sort} onSort={drivesTable.toggleSort} />
+                  <SortableTh label="Date" sortKey="date" sort={drivesTable.sort} onSort={drivesTable.toggleSort} />
+                  <SortableTh label="Eligibility" sortKey="eligibility" sort={drivesTable.sort} onSort={drivesTable.toggleSort} />
+                  <SortableTh label="Remark" sortKey="remark" sort={drivesTable.sort} onSort={drivesTable.toggleSort} />
                   <th aria-label="Actions" />
                 </tr>
               </thead>
               <tbody>
-                {items.map((item) => {
+                {drivesTable.rows.length ? drivesTable.rows.map((item) => {
                   const editing = editingId === item.id;
                   if (editing) {
                     return (
@@ -263,6 +310,7 @@ export default function UpcomingDrivesPage() {
                               type="date"
                               className="mm-org-input"
                               value={editForm.driveDate}
+                              min={minDate}
                               onChange={(e) =>
                                 setEditForm((f) => ({ ...f, driveDate: e.target.value }))
                               }
@@ -332,39 +380,52 @@ export default function UpcomingDrivesPage() {
                         </span>
                       </td>
                       <td>
-                        <div className="flex gap-1 justify-end">
-                          <button
-                            type="button"
-                            className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
-                            onClick={() => startEdit(item)}
-                            disabled={busy || deletingId === item.id}
-                            aria-label="Edit"
-                          >
-                            <Pencil size={14} />
-                          </button>
-                          <button
-                            type="button"
-                            className="mm-org-btn mm-org-btn--danger mm-org-btn--sm"
-                            onClick={() => onDelete(item.id)}
-                            disabled={deletingId === item.id}
-                            aria-label="Delete"
-                          >
-                            {deletingId === item.id ? (
-                              <Loader2 size={14} className="animate-spin" />
-                            ) : (
-                              <Trash2 size={14} />
-                            )}
-                          </button>
-                        </div>
+                        {canManage ? (
+                          <div className="flex gap-1 justify-end">
+                            <button
+                              type="button"
+                              className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm"
+                              onClick={() => startEdit(item)}
+                              disabled={busy || deletingId === item.id}
+                              aria-label="Edit"
+                            >
+                              <Pencil size={14} />
+                            </button>
+                            <button
+                              type="button"
+                              className="mm-org-btn mm-org-btn--danger mm-org-btn--sm"
+                              onClick={() => onDelete(item.id)}
+                              disabled={deletingId === item.id}
+                              aria-label="Delete"
+                            >
+                              {deletingId === item.id ? (
+                                <Loader2 size={14} className="animate-spin" />
+                              ) : (
+                                <Trash2 size={14} />
+                              )}
+                            </button>
+                          </div>
+                        ) : null}
                       </td>
                     </tr>
                   );
-                })}
+                }) : (
+                  <tr>
+                    <td colSpan={5}>
+                      <div className="mm-org-empty">No drives match this search.</div>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
+          </>
         ) : (
-          <div className="mm-org-empty">No upcoming drives yet. Add one on the left.</div>
+          <div className="mm-org-empty">
+            {canManage
+              ? 'No upcoming drives yet. Add one on the left (today or a future date).'
+              : 'No upcoming drives scheduled. Ask TPO when the next company drive is posted.'}
+          </div>
         )}
       </section>
     </div>

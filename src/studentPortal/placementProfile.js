@@ -10,13 +10,13 @@ const PROFILE_KEY = 'mm-student-placement-profile-v1';
 export const TARGET_TIERS = [
   {
     id: 'mass_recruiter',
-    label: 'Mass recruiter drives',
-    hint: 'TCS, Infosys, Wipro, Accenture — aptitude + communication weighted higher',
+    label: 'Campus / mass recruiters',
+    hint: 'TCS, Infosys, Wipro, Accenture',
   },
   {
     id: 'product',
-    label: 'Product / high-growth',
-    hint: 'Microsoft, Amazon, startups — coding + technical depth weighted higher',
+    label: 'Product companies',
+    hint: 'Microsoft, Amazon, startups',
   },
 ];
 
@@ -24,17 +24,17 @@ export const STARTING_LEVELS = [
   {
     id: 'beginner',
     label: 'Starting fresh',
-    hint: 'Haven’t done mocks or campus tests yet — build foundations first',
+    hint: 'No mocks yet — start with basics',
   },
   {
     id: 'some_experience',
     label: 'Some prep done',
-    hint: 'Attended a drive or finished a few online tests',
+    hint: 'A few tests or one campus drive',
   },
   {
     id: 'strong_coding',
     label: 'Strong in coding',
-    hint: 'Comfortable with DSA — focus more on mocks and HR',
+    hint: 'DSA is fine — focus on mocks & HR',
   },
 ];
 

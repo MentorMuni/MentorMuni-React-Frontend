@@ -3,7 +3,7 @@
 export const SNAP_TEST_EYEBROW = '5-second snap test';
 export const SNAP_TEST_HEADLINE = 'How interview-ready are you — really?';
 export const SNAP_TEST_SUB =
-  'Six taps. No signup. See where you stand vs 100 students walking into the same drive.';
+  'Seven taps. No signup. See where you stand vs 100 students walking into the same drive.';
 export const SNAP_TEST_CTA_START = 'Start snap test';
 export const SNAP_TEST_TIMER_LABEL = 'Tap fast — under 7 sec';
 
@@ -14,7 +14,7 @@ export const SNAP_RESULT_SUB =
 
 export const SNAP_STAGE_LABEL = 'Your readiness stage';
 export const SNAP_SIGNALS_LABEL = 'Ready signals';
-export const SNAP_SIGNALS_SUFFIX = 'of 6 boxes ticked';
+export const SNAP_SIGNALS_SUFFIX = 'of 7 boxes ticked';
 
 export const SNAP_LOCKED_SCORE_LABEL = 'Your real readiness score';
 export const SNAP_LOCKED_SCORE_HINT = 'Locked — unlocks in the full check';
@@ -23,7 +23,7 @@ export const SNAP_RESULT_GAP_HEADLINE = 'Gaps to fix next';
 export const SNAP_RESULT_NO_GAP =
   'No obvious gaps — but panels test depth you cannot self-report. Verify it.';
 
-export const SNAP_NEXT_STEPS_HEADLINE = 'Your next 5 moves';
+export const SNAP_NEXT_STEPS_HEADLINE = 'Your next 6 moves';
 export const SNAP_NEXT_STEPS_SUB =
   'Start here before the full check. These are the areas that usually decide shortlists.';
 
@@ -41,6 +41,6 @@ export const SNAP_ANNOUNCEMENT_BAR =
 export const SNAP_QUICK_NAME = '5-Sec Test';
 export const SNAP_QUICK_BADGE = '~7 sec';
 export const SNAP_QUICK_PROMPT = 'Not ready for the 5-min check?';
-export const SNAP_QUICK_TAGLINE = '6 taps · no signup · instant readiness pulse';
+export const SNAP_QUICK_TAGLINE = '7 taps · no signup · instant readiness pulse';
 /** Compact meta line for hero secondary CTA */
 export const SNAP_HERO_CTA_META = '~7 sec · free · no signup';

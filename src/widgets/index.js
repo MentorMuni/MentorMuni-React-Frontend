@@ -3,5 +3,8 @@ export { createToolSession } from './createToolSession';
 export { ToolSessionProvider, useToolSession, useToolSessionOptional } from './ToolSessionContext';
 export { default as ToolChrome } from './ToolChrome';
 export { default as MmToolWidget } from './MmToolWidget';
+export { default as ToolTabGuard } from './ToolTabGuard';
+export { default as TabChangeWarningBanner } from './TabChangeWarningBanner';
+export { useTabChangeWarning } from './useTabChangeWarning';
 export { createPortalToolSession } from './adapters/portalHandlers';
 export { hostBackLabel, hostSaveStatusMessage, showHostChrome } from './hostCopy';

@@ -1,0 +1,278 @@
+/**
+ * Readiness widgets (aptitude / skill / interview) — theme resolution.
+ *
+ * Global site theme: html.mm-new-ui (dark) vs classic :root (light).
+ * Student portal: .stu-app[data-theme] overrides the global schedule.
+ *
+ * Widgets use mentorMuni CSS variables (--bg-card, --text-heading, …).
+ * Re-map those on the widget root so light/dark toggles work in every host.
+ */
+
+/* ── Light token scope ─────────────────────────────────────────────────── */
+html:not(.mm-new-ui) .mm-tool-widget-root,
+.stu-app[data-theme='light'] .mm-tool-widget-root {
+  color-scheme: light;
+
+  --bg-primary: #f8fbff;
+  --bg-secondary: #eef6fb;
+  --bg-card: #ffffff;
+  --bg-soft-peach: #e0f0fa;
+  --bg-tint-subtle: #fffcf7;
+
+  --text-primary: #18181b;
+  --text-secondary: #52525b;
+  --text-muted: #71717a;
+  --text-hint: #a1a1aa;
+  --text-body: #3f3f46;
+  --text-heading: #18181b;
+  --nav-ink: #333333;
+  --text-icon-muted: #999999;
+
+  --border: #d8e8f0;
+  --surface-track: #dbe8f2;
+  --surface-muted: #fafafa;
+
+  --warning-bg: #fff4e0;
+  --warning-text: #cc7000;
+  --warning-ink-strong: #7c2d12;
+  --semantic-cyan-ink: #0e7490;
+
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.05);
+  --shadow-cta-hover-lift: 0 24px 48px -12px rgba(255, 149, 0, 0.35);
+
+  color: var(--text-body);
+}
+
+/* ── Dark token scope (portal dark while global classic, or global dark) ─ */
+html.mm-new-ui .mm-tool-widget-root,
+.stu-app[data-theme='dark'] .mm-tool-widget-root {
+  color-scheme: dark;
+
+  --bg-primary: #060a12;
+  --bg-secondary: #0b1220;
+  --bg-card: rgba(17, 28, 48, 0.72);
+  --bg-soft-peach: rgba(24, 36, 58, 0.65);
+  --bg-tint-subtle: rgba(14, 22, 38, 0.55);
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #cbd5e1;
+  --text-muted: #a8b8cc;
+  --text-hint: #a8b8cc;
+  --text-body: #e2e8f0;
+  --text-heading: #ffffff;
+  --nav-ink: #e2e8f0;
+  --text-icon-muted: #94a3b8;
+
+  --border: rgba(148, 163, 184, 0.18);
+  --surface-track: rgba(51, 65, 85, 0.5);
+  --surface-muted: rgba(15, 23, 42, 0.6);
+
+  --warning-bg: rgba(245, 158, 11, 0.12);
+  --warning-text: #fbbf24;
+  --warning-ink-strong: #fdba74;
+  --semantic-cyan-ink: #22d3ee;
+
+  --shadow-card: 0 8px 32px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  --shadow-cta-hover-lift: 0 24px 48px -12px rgba(99, 102, 241, 0.35);
+
+  color: var(--text-body);
+}
+
+/* Portal light wins over global dark (night schedule + student light toggle) */
+.stu-app[data-theme='light'] .mm-tool-widget-root {
+  color-scheme: light;
+
+  --bg-primary: #f8fbff;
+  --bg-secondary: #eef6fb;
+  --bg-card: #ffffff;
+  --bg-soft-peach: #e0f0fa;
+  --bg-tint-subtle: #fffcf7;
+
+  --text-primary: #18181b;
+  --text-secondary: #52525b;
+  --text-muted: #71717a;
+  --text-hint: #a1a1aa;
+  --text-body: #3f3f46;
+  --text-heading: #18181b;
+  --nav-ink: #333333;
+  --text-icon-muted: #999999;
+
+  --border: #d8e8f0;
+  --surface-track: #dbe8f2;
+  --surface-muted: #fafafa;
+
+  --warning-bg: #fff4e0;
+  --warning-text: #cc7000;
+  --warning-ink-strong: #7c2d12;
+  --semantic-cyan-ink: #0e7490;
+
+  --shadow-card: 0 2px 12px rgba(0, 0, 0, 0.05);
+  --shadow-cta-hover-lift: 0 24px 48px -12px rgba(255, 149, 0, 0.35);
+
+  color: var(--text-body);
+}
+
+/* ── Assessment flow — light surfaces & tiles ──────────────────────────── */
+html:not(.mm-new-ui) .mm-assessment-flow .mm-surface-panel,
+html:not(.mm-new-ui) .mm-assessment-flow .mm-surface-panel--lg,
+html:not(.mm-new-ui) .mm-assessment-flow .mm-surface-panel--md,
+html:not(.mm-new-ui) .mm-assessment-flow .mm-surface-panel--quiz,
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-surface-panel,
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-surface-panel--lg,
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-surface-panel--md,
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-surface-panel--quiz {
+  box-shadow: var(--shadow-card);
+}
+
+html:not(.mm-new-ui) .mm-assessment-flow .mm-choice-tile,
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-choice-tile {
+  background-color: var(--bg-card);
+  border-color: var(--border);
+}
+
+html:not(.mm-new-ui) .mm-assessment-flow .mm-choice-tile:hover:not(:disabled),
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-choice-tile:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  background-color: color-mix(in srgb, var(--bg-secondary) 70%, var(--bg-card));
+}
+
+html:not(.mm-new-ui) .mm-assessment-flow .mm-choice-tile--selected,
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-choice-tile--selected {
+  background-color: color-mix(in srgb, var(--accent-cta) 10%, var(--bg-card));
+  border-color: var(--accent-cta);
+}
+
+html:not(.mm-new-ui) .mm-assessment-flow .mm-progress-track,
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-progress-track {
+  background-color: var(--surface-track);
+}
+
+html:not(.mm-new-ui) .mm-assessment-flow .mm-surface-input,
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-surface-input {
+  background-color: var(--bg-card);
+  border-color: var(--border);
+  color: var(--text-heading);
+}
+
+html:not(.mm-new-ui) .mm-assessment-flow .mm-btn-secondary:hover,
+html:not(.mm-new-ui) .mm-assessment-flow .mm-btn-ghost:hover,
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-btn-secondary:hover,
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-btn-ghost:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  background-color: var(--bg-secondary);
+  color: var(--text-heading);
+}
+
+html:not(.mm-new-ui) .mm-assessment-flow .mm-quiz-panel-card.mm-surface-panel--quiz,
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-quiz-panel-card.mm-surface-panel--quiz {
+  background-color: var(--bg-card);
+}
+
+/* Mode icons — light palette (classic + portal light) */
+html:not(.mm-new-ui) .mm-assessment-flow .mm-assessment-mode-icon,
+html:not(.mm-new-ui) .mm-assessment-flow .mm-profile-role-icon,
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-assessment-mode-icon,
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-profile-role-icon {
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+
+html:not(.mm-new-ui) .mm-assessment-flow .mm-assessment-mode-icon--skill,
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-assessment-mode-icon--skill {
+  background: linear-gradient(145deg, #e0f2fe 0%, #ecfeff 100%);
+  border-color: rgba(14, 165, 233, 0.22);
+  color: #0369a1;
+}
+
+html:not(.mm-new-ui) .mm-assessment-flow .mm-assessment-mode-icon--placement,
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-assessment-mode-icon--placement {
+  background: linear-gradient(145deg, #fff7ed 0%, #ffedd5 100%);
+  border-color: rgba(234, 88, 12, 0.2);
+  color: #c2410c;
+}
+
+html:not(.mm-new-ui) .mm-assessment-flow .mm-assessment-mode-icon--aptitude,
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-assessment-mode-icon--aptitude {
+  background: linear-gradient(145deg, #ede9fe 0%, #f5f3ff 100%);
+  border-color: rgba(124, 58, 237, 0.2);
+  color: #6d28d9;
+}
+
+/* ── Assessment flow — dark surfaces (portal dark + global dark) ───────── */
+.stu-app[data-theme='dark'] .mm-assessment-flow .mm-surface-panel,
+.stu-app[data-theme='dark'] .mm-assessment-flow .mm-surface-panel--lg,
+.stu-app[data-theme='dark'] .mm-assessment-flow .mm-surface-panel--md,
+.stu-app[data-theme='dark'] .mm-assessment-flow .mm-surface-panel--quiz {
+  box-shadow:
+    0 16px 48px -12px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+.stu-app[data-theme='dark'] .mm-assessment-flow .mm-choice-tile {
+  background-color: rgba(17, 28, 48, 0.85);
+  border-color: rgba(148, 163, 184, 0.25);
+}
+
+.stu-app[data-theme='dark'] .mm-assessment-flow .mm-choice-tile:hover:not(:disabled) {
+  border-color: rgba(56, 189, 248, 0.4);
+  background-color: rgba(24, 38, 62, 0.9);
+}
+
+.stu-app[data-theme='dark'] .mm-assessment-flow .mm-choice-tile--selected {
+  background-color: rgba(245, 158, 11, 0.12);
+  border-color: var(--accent-cta);
+}
+
+.stu-app[data-theme='dark'] .mm-assessment-flow .mm-progress-track {
+  background-color: rgba(51, 65, 85, 0.45);
+}
+
+.stu-app[data-theme='dark'] .mm-assessment-flow .mm-surface-input {
+  background-color: rgba(15, 23, 42, 0.85);
+  border-color: rgba(148, 163, 184, 0.25);
+  color: var(--text-heading);
+}
+
+.stu-app[data-theme='dark'] .mm-assessment-flow .mm-btn-secondary:hover,
+.stu-app[data-theme='dark'] .mm-assessment-flow .mm-btn-ghost:hover {
+  border-color: rgba(56, 189, 248, 0.45);
+  background-color: rgba(24, 38, 62, 0.95);
+  color: var(--text-heading);
+}
+
+.stu-app[data-theme='dark'] .mm-assessment-flow .mm-quiz-panel-card.mm-surface-panel--quiz {
+  background-color: rgba(14, 22, 38, 0.95);
+}
+
+.stu-app[data-theme='dark'] .mm-assessment-flow .mm-assessment-mode-icon--skill {
+  background: linear-gradient(145deg, rgba(14, 116, 144, 0.38), rgba(8, 47, 73, 0.55));
+  border-color: rgba(56, 189, 248, 0.32);
+  color: #7dd3fc;
+}
+
+.stu-app[data-theme='dark'] .mm-assessment-flow .mm-assessment-mode-icon--placement {
+  background: linear-gradient(145deg, rgba(154, 52, 18, 0.32), rgba(67, 20, 7, 0.45));
+  border-color: rgba(251, 146, 60, 0.3);
+  color: #fdba74;
+}
+
+.stu-app[data-theme='dark'] .mm-assessment-flow .mm-assessment-mode-icon--aptitude {
+  background: linear-gradient(145deg, rgba(91, 33, 182, 0.32), rgba(46, 16, 101, 0.48));
+  border-color: rgba(167, 139, 250, 0.3);
+  color: #c4b5fd;
+}
+
+/* Error banners — readable in both themes */
+html:not(.mm-new-ui) .mm-assessment-flow .mm-assessment-error,
+.stu-app[data-theme='light'] .mm-assessment-flow .mm-assessment-error {
+  color: #b91c1c;
+}
+
+html.mm-new-ui .mm-assessment-flow .mm-assessment-error,
+.stu-app[data-theme='dark'] .mm-assessment-flow .mm-assessment-error {
+  color: #fecaca;
+}
+
+/* Embedded in portal — transparent shell so host background shows */
+.stu-app .mm-assessment-flow .mm-site-theme {
+  background: transparent;
+}

@@ -357,9 +357,25 @@ export default function OrganizationLoginPage() {
       const result = await loginOrgUser(userId, password, code);
       if (!result.ok) {
         if (result.code === 'WRONG_TENANT' || result.code === 'PUBLIC_ON_COLLEGE') {
-          setError(result.error);
-          setErrorKind('credentials');
-          if (result.portal_url) setPortalLink(result.portal_url);
+          // On a locked college host, wrong-campus credentials should look like a
+          // normal login miss — not a redirect to another college.
+          if (tenantLocked) {
+            setError(
+              result.code === 'PUBLIC_ON_COLLEGE'
+                ? 'Individual MentorMuni accounts sign in at mentormuni.com, not this college portal.'
+                : 'Incorrect email or password for this college. Use the TPO/HOD account for this campus.'
+            );
+            setErrorKind('credentials');
+            setPortalLink('');
+          } else {
+            setError(
+              result.code === 'PUBLIC_ON_COLLEGE'
+                ? result.error
+                : 'Those credentials belong to a different college. Open that college’s MentorMuni portal to sign in.'
+            );
+            setErrorKind('credentials');
+            if (result.portal_url) setPortalLink(result.portal_url);
+          }
         } else if (result.code === 'ORG_SUSPENDED' || result.status === 403) {
           setError(result.error);
           setErrorKind('suspended');
@@ -869,9 +885,11 @@ export default function OrganizationLoginPage() {
                     >
                       <p>{error}</p>
                       {errorKind === 'suspended' && cta ? <span>{cta}</span> : null}
-                      {portalLink ? (
+                      {portalLink && !tenantLocked ? (
                         <p style={{ marginTop: 8 }}>
-                          <a href={portalLink}>Go to your college portal</a>
+                          <a href={`${String(portalLink).replace(/\/$/, '')}/Organization/login`}>
+                            Go to that college portal
+                          </a>
                         </p>
                       ) : null}
                     </div>

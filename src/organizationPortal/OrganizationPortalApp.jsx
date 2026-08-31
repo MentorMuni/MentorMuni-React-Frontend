@@ -8,7 +8,7 @@ import { getOrgSession, isOrgAuthenticated } from '../orgPortal';
 import OrganizationShell from './OrganizationShell';
 import DashboardPage from './pages/DashboardPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
-import SettingsPage from './pages/SettingsPage';
+import ProfilePage from './pages/ProfilePage';
 import DepartmentsPage from './pages/DepartmentsPage';
 import EnrollmentPage from './pages/EnrollmentPage';
 import ProgramsPage from './pages/ProgramsPage';
@@ -18,7 +18,6 @@ import PerformancePage from './pages/PerformancePage';
 import AccessSettingsPage from './pages/AccessSettingsPage';
 import MyWorkspacePage from './pages/MyWorkspacePage';
 import HodStudentsPage from './pages/HodStudentsPage';
-import HodNotifyPage from './pages/HodNotifyPage';
 import HelpCenterPage from './pages/HelpCenterPage';
 import {
   canAssignPrograms,
@@ -63,6 +62,15 @@ function RequireWorkspace({ children }) {
   return children;
 }
 
+/** TPO manages drives; HOD can view upcoming list. */
+function RequireUpcomingDrives({ children }) {
+  const session = getOrgSession();
+  if (!canMutateCampus(session?.role) && !isHodRole(session?.role)) {
+    return <Navigate to={getOrgHomePath()} replace />;
+  }
+  return children;
+}
+
 function RequireHod({ children }) {
   const session = getOrgSession();
   if (!isHodRole(session?.role)) {
@@ -95,6 +103,15 @@ function RequirePrograms({ children }) {
   return children;
 }
 
+/** TPO or HOD — campus / branch notifications. */
+function RequireNotify({ children }) {
+  const session = getOrgSession();
+  if (!canMutateCampus(session?.role) && !isHodRole(session?.role)) {
+    return <Navigate to={getOrgHomePath()} replace />;
+  }
+  return children;
+}
+
 function TpoPage({ children }) {
   return (
     <RequirePasswordOk>
@@ -107,6 +124,22 @@ function WorkspacePage({ children }) {
   return (
     <RequirePasswordOk>
       <RequireWorkspace>{children}</RequireWorkspace>
+    </RequirePasswordOk>
+  );
+}
+
+function UpcomingDrivesGate({ children }) {
+  return (
+    <RequirePasswordOk>
+      <RequireUpcomingDrives>{children}</RequireUpcomingDrives>
+    </RequirePasswordOk>
+  );
+}
+
+function NotifyPage({ children }) {
+  return (
+    <RequirePasswordOk>
+      <RequireNotify>{children}</RequireNotify>
     </RequirePasswordOk>
   );
 }
@@ -178,13 +211,14 @@ export default function OrganizationPortalApp() {
         />
         <Route path="change-password" element={<ChangePasswordPage />} />
         <Route
-          path="settings"
+          path="profile"
           element={
             <RequirePasswordOk>
-              <SettingsPage />
+              <ProfilePage />
             </RequirePasswordOk>
           }
         />
+        <Route path="settings" element={<Navigate to={orgPaths.profile} replace />} />
         <Route
           path="help"
           element={
@@ -197,12 +231,12 @@ export default function OrganizationPortalApp() {
         <Route path="performance" element={<AnalyticsPage><PerformancePage /></AnalyticsPage>} />
         <Route path="enrollment" element={<TpoPage><EnrollmentPage /></TpoPage>} />
         <Route path="programs" element={<ProgramsGate><ProgramsPage /></ProgramsGate>} />
-        <Route path="drives" element={<TpoPage><DrivesPage /></TpoPage>} />
-        <Route path="upcoming-drives" element={<TpoPage><UpcomingDrivesPage /></TpoPage>} />
+        <Route path="drives" element={<NotifyPage><DrivesPage /></NotifyPage>} />
+        <Route path="upcoming-drives" element={<UpcomingDrivesGate><UpcomingDrivesPage /></UpcomingDrivesGate>} />
         <Route path="workspace" element={<WorkspacePage><MyWorkspacePage /></WorkspacePage>} />
         <Route path="access" element={<TpoPage><AccessSettingsPage /></TpoPage>} />
         <Route path="students" element={<HodPage><HodStudentsPage /></HodPage>} />
-        <Route path="notify" element={<HodPage><HodNotifyPage /></HodPage>} />
+        <Route path="notify" element={<Navigate to={orgPaths.drives} replace />} />
       </Route>
       <Route
         path="*"

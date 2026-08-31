@@ -25,8 +25,9 @@ import { fetchWithDeduplication } from '../utils/apiOptimization';
 import { toAppAbsoluteUrl } from '../utils/appPaths';
 import { getInterviewReadinessShareUrl, buildWhatsAppChallengeMessage } from '../utils/readinessShare';
 import ReadinessSharePanel from './readiness/ReadinessSharePanel';
-import { useToolSession } from '../widgets/ToolSessionContext';
+import { useToolSession, useToolSessionOptional } from '../widgets/ToolSessionContext';
 import { hostBackLabel, hostSaveStatusMessage, showHostChrome } from '../widgets/hostCopy';
+import ToolTabGuard from '../widgets/ToolTabGuard';
 import { useStudentShell } from '../studentPortal/shellContext';
 
 const FREE_TIER_LIMIT = 3;
@@ -250,9 +251,15 @@ const TEXT_WORD_LIMIT = 50;
 const countWords = (value) => String(value || '').trim().split(/\s+/).filter(Boolean).length;
 
 const ASSESSMENT_MODE_LABEL = {
-  [ASSESSMENT_FOCUS_SKILL]: 'Skill preparation score',
-  [ASSESSMENT_FOCUS_PLACEMENT]: 'Interview readiness score',
-  [ASSESSMENT_FOCUS_APTITUDE]: 'Aptitude preparation score',
+  [ASSESSMENT_FOCUS_SKILL]: 'Skill readiness',
+  [ASSESSMENT_FOCUS_PLACEMENT]: 'Interview readiness',
+  [ASSESSMENT_FOCUS_APTITUDE]: 'Aptitude readiness',
+};
+
+const ASSESSMENT_MODE_STEP_HINT = {
+  [ASSESSMENT_FOCUS_SKILL]: 'One skill · deep preparation',
+  [ASSESSMENT_FOCUS_PLACEMENT]: 'Broad interview check',
+  [ASSESSMENT_FOCUS_APTITUDE]: 'Quant · logical · verbal',
 };
 
 function interviewPlanValidationError(plan) {
@@ -810,7 +817,7 @@ const ASSESSMENT_MODE_OPTIONS = [
     Icon: Brain,
     iconTone: 'aptitude',
     title: ASSESSMENT_MODE_LABEL[ASSESSMENT_FOCUS_APTITUDE],
-    badge: 'Engineering aptitude',
+    badge: 'Quant · logical · verbal',
     compactHint: 'Quantitative, logical, and verbal reasoning.',
     details: [
       'Mixed aptitude set across quantitative, logical, and verbal reasoning',
@@ -1533,6 +1540,14 @@ function ReadinessQuizPanel({ evaluationPlan, answers, setAnswers, profile, onSu
             </header>
 
             <div className="mm-quiz-questions space-y-4">
+            {items.length === 0 ? (
+              <div className="rounded-xl border border-amber-500/35 bg-amber-500/10 p-4 text-sm text-foreground">
+                <p className="font-semibold">No questions loaded yet</p>
+                <p className="mt-1 text-muted-foreground">
+                  Go back and tap &quot;Appear for test&quot; again, or regenerate your question set.
+                </p>
+              </div>
+            ) : null}
             {items.map((item, i) => {
               const qText = typeof item?.question === 'string' ? item.question : String(item?.question ?? '');
               const kind = inferPlanQuestionKind(item, { inferMcqFromOptions: isAptitudeQuiz });
@@ -1653,6 +1668,7 @@ const InterviewReady = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const session = useToolSession();
+  const embeddedToolSession = useToolSessionOptional();
   const { session: studentSession } = useStudentShell();
   const fromPortal = Boolean(session.fromPortal);
   const [fromToolsEntry] = useState(() => readToolsEntryFromSearch() || session.source === 'embed');
@@ -1684,6 +1700,7 @@ const InterviewReady = () => {
   // 0: landing, 12: mode (tools entry), 2: role, … — tools skips hero, starts at mode picker
   // Portal students skip year / personal details and start at skill focus (or aptitude confirm).
   const [step, setStep] = useState(() => {
+    if (fromPortal && deepLinkMode === ASSESSMENT_FOCUS_APTITUDE) return 14;
     if (fromPortal && deepLinkMode) return 4;
     if (deepLinkMode) {
       if (deepLinkMode === ASSESSMENT_FOCUS_APTITUDE) return 4;
@@ -1691,6 +1708,7 @@ const InterviewReady = () => {
     }
     return readToolsEntryFromSearch() || roadmapEntry.fromPortal ? 12 : 0;
   });
+  const portalAptitudePlanStartedRef = useRef(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
@@ -2208,6 +2226,7 @@ const InterviewReady = () => {
       user_type: SKILL_API_USER_TYPE_BY_CATEGORY[profile.userCategory] ?? 'college_student_year_4',
       primary_skill: APTITUDE_PRIMARY_SKILL_API,
       experience_years: expParsed,
+      question_count: DEFAULT_QUESTION_COUNT,
       target_role: profile.targetRole?.trim() || APTITUDE_DEFAULT_TARGET_ROLE,
       target_company_type: 'both',
       email: profile.email?.trim() || undefined,
@@ -2368,6 +2387,16 @@ const InterviewReady = () => {
       setPlanLoading(false);
     }
   };
+
+  /** Portal aptitude: skip confirm screen — generate the 15-question set immediately. */
+  useEffect(() => {
+    if (!fromPortal || profile.assessmentMode !== ASSESSMENT_FOCUS_APTITUDE) return;
+    if (portalAptitudePlanStartedRef.current) return;
+    portalAptitudePlanStartedRef.current = true;
+    handleGetReadinessPlan({ preventDefault() {} });
+    // Intentionally mount-only — portal deep-link should not re-fetch on every render.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleEvalSubmit = async () => {
     if (!Array.isArray(evaluationData) || evaluationData.length === 0) {
@@ -2626,6 +2655,10 @@ const InterviewReady = () => {
     setPlanLoading(false);
     setEvaluationData(null);
     setError(null);
+    if (fromPortal && profile.assessmentMode === ASSESSMENT_FOCUS_APTITUDE) {
+      session.returnHome();
+      return;
+    }
     const toPlacementContext =
       !fromPortal &&
       profile.assessmentMode === ASSESSMENT_FOCUS_PLACEMENT &&
@@ -2635,7 +2668,7 @@ const InterviewReady = () => {
 
   const stepContent = (() => {
   // Score card must win over loading: after evaluate(), step becomes 6 while `loading` may still be true for one frame.
-  if (loading && step !== 7 && step !== 8 && step !== 9 && !(step === 6 && result)) {
+  if (loading && step !== 7 && step !== 8 && step !== 9 && step !== 14 && !(step === 6 && result)) {
     if (step === 5) {
       return <EvaluatingAnswersLoader />;
     }
@@ -2743,7 +2776,7 @@ const InterviewReady = () => {
 
           {/* Reward — below CTAs */}
           <div className="mx-auto mt-6 w-full max-w-2xl sm:mt-8">
-            <div className="flex items-start gap-3 rounded-2xl border border-orange-200/60 bg-gradient-to-r from-secondary to-white px-4 py-3 shadow-sm">
+            <div className="flex items-start gap-3 rounded-2xl border border-orange-200/60 bg-gradient-to-r from-secondary to-[color:var(--bg-card)] px-4 py-3 shadow-sm">
               <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-cta to-amber-600 text-white shadow-md">
                 <Gift size={18} strokeWidth={2} />
               </span>
@@ -3297,12 +3330,12 @@ const InterviewReady = () => {
 
             <div className="mb-6 space-y-4">
               <h2 className="text-2xl font-black tracking-tight text-foreground md:text-3xl">
-                {isAptitudeFocus ? 'Aptitude round focus' : isSkillFocus ? 'Your skill focus' : 'Interview focus areas'}
+                {ASSESSMENT_MODE_LABEL[profile.assessmentMode] || 'Readiness check'}
               </h2>
               <div className="flex flex-wrap items-center gap-2">
                 {profile.assessmentMode && (
                   <span className="inline-flex items-center rounded-full border border-cyan-500/30 bg-cyan-500/[0.12] px-3 py-1 text-[11px] font-semibold uppercase tracking-wide text-semantic-cyan-ink sm:text-xs">
-                    {ASSESSMENT_MODE_LABEL[profile.assessmentMode]}
+                    {ASSESSMENT_MODE_STEP_HINT[profile.assessmentMode]}
                   </span>
                 )}
                 {!isAptitudeFocus && !fromPortal && (
@@ -3414,16 +3447,16 @@ const InterviewReady = () => {
               </div>
 
               {error && (
-                <div className="rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm font-medium text-red-300">
+                <div className="mm-assessment-error rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-sm font-medium">
                   <div className="flex items-start gap-3">
-                    <AlertCircle size={18} className="mt-0.5 flex-shrink-0 text-red-400" />
+                    <AlertCircle size={18} className="mt-0.5 flex-shrink-0 text-red-500" />
                     <div className="min-w-0 flex-1 leading-relaxed">{error}</div>
                   </div>
                   <button
                     type="button"
                     disabled={loading || (!fromPortal && usageInfo.remaining_attempts <= 0)}
                     onClick={() => handleGetReadinessPlan({ preventDefault() {} })}
-                    className="mt-3 w-full rounded-lg border border-red-500/40 bg-red-500/10 py-2 text-xs font-bold text-red-200 transition-colors hover:bg-red-500/20 disabled:opacity-50 sm:w-auto sm:px-4"
+                    className="mm-assessment-error mt-3 w-full rounded-lg border border-red-500/40 bg-red-500/10 py-2 text-xs font-bold transition-colors hover:bg-red-500/20 disabled:opacity-50 sm:w-auto sm:px-4"
                   >
                     Try again
                   </button>
@@ -3903,29 +3936,46 @@ const InterviewReady = () => {
 
   // ========== STEP 14: PREP LOUNGE (plan API + gamified wait) ==========
   if (step === 14) {
+    const tabGuardLabel =
+      ASSESSMENT_MODE_LABEL[profile.assessmentMode] || 'this assessment';
     return (
-      <PrepLoungePanel
-        planLoading={planLoading}
-        evaluationPlan={evaluationData}
-        error={error}
-        prepLounge={prepLounge}
-        setPrepLounge={setPrepLounge}
-        profile={profile}
-        setProfile={setProfile}
-        validationErrors={validationErrors}
-        setValidationErrors={setValidationErrors}
-        skipContactDetails={fromPortal}
-        onStartTest={handlePrepLoungeStartTest}
-        onRetry={() => handleGetReadinessPlan({ preventDefault: () => {} })}
-        onBackEdit={handlePrepLoungeBack}
-      />
+      <>
+        {!embeddedToolSession ? (
+          <ToolTabGuard enabled label={tabGuardLabel} className="mm-container mb-2 pt-2" />
+        ) : null}
+        <PrepLoungePanel
+          planLoading={planLoading}
+          evaluationPlan={evaluationData}
+          error={error}
+          prepLounge={prepLounge}
+          setPrepLounge={setPrepLounge}
+          profile={profile}
+          setProfile={setProfile}
+          validationErrors={validationErrors}
+          setValidationErrors={setValidationErrors}
+          skipContactDetails={fromPortal}
+          onStartTest={handlePrepLoungeStartTest}
+          onRetry={() => handleGetReadinessPlan({ preventDefault: () => {} })}
+          onBackEdit={handlePrepLoungeBack}
+        />
+      </>
     );
   }
 
   // ========== STEP 5: QUIZ ==========
   if (step === 5) {
+    const tabGuardLabel =
+      ASSESSMENT_MODE_LABEL[profile.assessmentMode] || 'this assessment';
     return (
       <div className="mm-assessment-quiz-shell">
+        {!embeddedToolSession ? (
+          <ToolTabGuard
+            enabled
+            label={tabGuardLabel}
+            className="mx-auto mb-2 w-full max-w-4xl px-2"
+            sticky={false}
+          />
+        ) : null}
         <ReadinessQuizPanel
           evaluationPlan={evaluationData}
           answers={answers}

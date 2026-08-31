@@ -26,6 +26,9 @@ import {
   mergeRosterWithScorecards,
   readinessTone,
 } from '../performanceApi';
+import { useTableQuery } from '../../hooks/useTableQuery';
+import { TableToolbar } from '../../components/table/TableToolbar';
+import { SortableTh } from '../../components/table/SortableTh';
 
 const CSV_TEMPLATE = `email,name,college_id,batch_year
 rahul.sharma@college.edu,Rahul Sharma,CSE2024A01,2025
@@ -75,6 +78,46 @@ export default function EnrollmentPage() {
   const [editBusy, setEditBusy] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
 
+  /** Self-register pending is owned by branch mentors when HOD or coordinator is active */
+  const visiblePending = useMemo(() => {
+    return pending.filter((inv) => {
+      if (inv.source !== 'self_register') return true;
+      const hasActiveMentor = deptHodMap[String(inv.departmentId || '')];
+      return !hasActiveMentor;
+    });
+  }, [pending, deptHodMap]);
+
+  const rosterSortValue = (row, key) => {
+    if (key === 'name') return (row.name || row.email || '').toLowerCase();
+    if (key === 'department') {
+      return (
+        row.departmentName ||
+        departments.find((d) => String(d.id) === String(row.departmentId || ''))?.name ||
+        ''
+      );
+    }
+    if (key === 'readiness') return row.readiness;
+    if (key === 'tests') return row.testsDone;
+    if (key === 'activity') return row.activityStatus;
+    if (key === 'login') return row.authStatus;
+    return row[key];
+  };
+
+  const queueTable = useTableQuery(visiblePending, {
+    searchKeys: ['name', 'email', 'departmentName'],
+    getSortValue: (row, key) => {
+      if (key === 'name') return (row.name || row.email || '').toLowerCase();
+      if (key === 'source') return sourceLabel(row.source);
+      if (key === 'department') return row.departmentName;
+      return row[key];
+    },
+  });
+
+  const rosterTable = useTableQuery(students, {
+    searchKeys: ['name', 'email', 'departmentName', 'collegeId', 'phone'],
+    getSortValue: rosterSortValue,
+  });
+
   const rosterSummary = useMemo(
     () => computeRosterCounts(students, visiblePending.length),
     [students, visiblePending.length]
@@ -84,15 +127,6 @@ export default function EnrollmentPage() {
     () => getRegistrationLink(departmentId || departments[0]?.id || ''),
     [departmentId, departments]
   );
-
-  /** Self-register pending is owned by branch mentors when HOD or coordinator is active */
-  const visiblePending = useMemo(() => {
-    return pending.filter((inv) => {
-      if (inv.source !== 'self_register') return true;
-      const hasActiveMentor = deptHodMap[String(inv.departmentId || '')];
-      return !hasActiveMentor;
-    });
-  }, [pending, deptHodMap]);
 
   const clearFlash = () => {
     setErr('');
@@ -205,38 +239,55 @@ export default function EnrollmentPage() {
 
   useEffect(() => {
     let cancelled = false;
+    setLoading(true);
     const deptFilter = departmentId || undefined;
     const fetches = [
-      fetchStudents({ departmentId: deptFilter }),
-      fetchStudentInvites({ status: 'pending', departmentId: deptFilter }),
+      fetchStudents({ departmentId: deptFilter }).catch((e) => ({
+        ok: false,
+        students: [],
+        error: e?.message || 'Unable to load students.',
+      })),
+      fetchStudentInvites({ status: 'pending', departmentId: deptFilter }).catch((e) => ({
+        ok: false,
+        invitations: [],
+        error: e?.message || 'Unable to load invites.',
+      })),
     ];
     if (!demo) {
       fetches.push(
         fetchPerformanceScorecards({ departmentId: deptFilter }).catch(() => ({ items: [] }))
       );
     }
-    Promise.all(fetches).then((results) => {
-      if (cancelled) return;
-      const roster = results[0];
-      const queue = results[1];
-      let list = roster.students || [];
-      if (!demo && results[2]) {
-        list = mergeRosterWithScorecards(list, results[2]);
-      } else if (demo) {
-        list = list.map((s) => ({
-          ...s,
-          readiness: s.readiness != null && s.readiness > 0 ? s.readiness : null,
-          testsDone: s.testsDone ?? Math.min(8, s.activities || 0),
-          testsRemaining: s.testsRemaining ?? Math.max(0, 8 - (s.activities || 0)),
-          activityStatus:
-            s.activityStatus || ((s.activities || 0) >= 3 ? 'active' : 'never'),
-        }));
-      }
-      setStudents(list);
-      setPending(queue.invitations || []);
-      setDataSource(roster.source || queue.source || '');
-      setLoading(false);
-    });
+    Promise.all(fetches)
+      .then((results) => {
+        if (cancelled) return;
+        const roster = results[0];
+        const queue = results[1];
+        let list = roster.students || [];
+        if (!demo && results[2]) {
+          list = mergeRosterWithScorecards(list, results[2]);
+        } else if (demo) {
+          list = list.map((s) => ({
+            ...s,
+            readiness: s.readiness != null && s.readiness > 0 ? s.readiness : null,
+            testsDone: s.testsDone ?? Math.min(8, s.activities || 0),
+            testsRemaining: s.testsRemaining ?? Math.max(0, 8 - (s.activities || 0)),
+            activityStatus:
+              s.activityStatus || ((s.activities || 0) >= 3 ? 'active' : 'never'),
+          }));
+        }
+        setStudents(list);
+        setPending(queue.invitations || []);
+        setDataSource(roster.source || queue.source || '');
+        if (!roster.ok && roster.error) setErr(roster.error);
+        else if (!queue.ok && queue.error) setErr(queue.error);
+        setLoading(false);
+      })
+      .catch((e) => {
+        if (cancelled) return;
+        setErr(e?.message || 'Unable to load enrollment data.');
+        setLoading(false);
+      });
     return () => {
       cancelled = true;
     };
@@ -585,7 +636,7 @@ export default function EnrollmentPage() {
             className={`mm-org-btn mm-org-btn--sm ${tab === 'roster' ? 'mm-org-btn--primary' : 'mm-org-btn--ghost'}`}
             onClick={() => switchTab('roster')}
           >
-            Enrolled roster ({students.length})
+            Enrolled students ({students.length})
           </button>
         </div>
         <div className="mb-0" style={{ maxWidth: 240 }}>
@@ -620,7 +671,7 @@ export default function EnrollmentPage() {
 
       {tab === 'roster' && students.length ? (
         <div className="mm-org-roster-summary" role="status">
-          <strong>Roster:</strong> {rosterSummary.active} active · {rosterSummary.invited} awaiting
+          <strong>Enrolled:</strong> {rosterSummary.active} active · {rosterSummary.invited} awaiting
           password · {rosterSummary.pending} pending approval
           {rosterSummary.blocked ? ` · ${rosterSummary.blocked} blocked` : ''}
           <span className="mm-org-roster-summary__note">
@@ -665,18 +716,25 @@ export default function EnrollmentPage() {
                   </button>
                 </div>
               </div>
+              <TableToolbar
+                query={queueTable.query}
+                onQueryChange={queueTable.setQuery}
+                placeholder="Search student, email, department…"
+                count={queueTable.count}
+                total={queueTable.total}
+              />
               <div className="mm-org-table-wrap">
               <table className="mm-org-table">
                 <thead>
                   <tr>
-                    <th>Student</th>
-                    <th>Source</th>
-                    <th>Department</th>
+                    <SortableTh label="Student" sortKey="name" sort={queueTable.sort} onSort={queueTable.toggleSort} />
+                    <SortableTh label="Source" sortKey="source" sort={queueTable.sort} onSort={queueTable.toggleSort} />
+                    <SortableTh label="Department" sortKey="department" sort={queueTable.sort} onSort={queueTable.toggleSort} />
                     <th>Decision</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {visiblePending.map((inv) => (
+                  {queueTable.rows.map((inv) => (
                     <tr key={inv.id}>
                       <td>
                         <p className="mm-org-table__title">{inv.name || inv.email}</p>
@@ -726,21 +784,29 @@ export default function EnrollmentPage() {
             </div>
           )
         ) : students.length ? (
+          <>
+          <TableToolbar
+            query={rosterTable.query}
+            onQueryChange={rosterTable.setQuery}
+            placeholder="Search name, email, department…"
+            count={rosterTable.count}
+            total={rosterTable.total}
+          />
           <div className="mm-org-table-wrap">
             <table className="mm-org-table">
               <thead>
                 <tr>
-                  <th>Student</th>
-                  <th>Department</th>
-                  <th>Readiness</th>
-                  <th>Tests</th>
-                  <th>Activity</th>
-                  <th>Login</th>
+                  <SortableTh label="Student" sortKey="name" sort={rosterTable.sort} onSort={rosterTable.toggleSort} />
+                  <SortableTh label="Department" sortKey="department" sort={rosterTable.sort} onSort={rosterTable.toggleSort} />
+                  <SortableTh label="Readiness" sortKey="readiness" sort={rosterTable.sort} onSort={rosterTable.toggleSort} />
+                  <SortableTh label="Tests" sortKey="tests" sort={rosterTable.sort} onSort={rosterTable.toggleSort} />
+                  <SortableTh label="Activity" sortKey="activity" sort={rosterTable.sort} onSort={rosterTable.toggleSort} />
+                  <SortableTh label="Login" sortKey="login" sort={rosterTable.sort} onSort={rosterTable.toggleSort} />
                   <th />
                 </tr>
               </thead>
               <tbody>
-                {students.map((s) => (
+                {rosterTable.rows.length ? rosterTable.rows.map((s) => (
                   <tr key={s.id}>
                     <td>
                       <p className="mm-org-table__title">{s.name}</p>
@@ -863,10 +929,17 @@ export default function EnrollmentPage() {
                       </div>
                     </td>
                   </tr>
-                ))}
+                )) : (
+                  <tr>
+                    <td colSpan={7}>
+                      <div className="mm-org-empty">No students match this search.</div>
+                    </td>
+                  </tr>
+                )}
               </tbody>
             </table>
           </div>
+          </>
         ) : (
           <div className="mm-org-empty">
             {loading

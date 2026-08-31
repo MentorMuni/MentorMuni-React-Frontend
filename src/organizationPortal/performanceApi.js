@@ -33,6 +33,31 @@ export async function fetchBranchInsight(body = {}) {
   return orgApi.post('/organizations/ai/branch-insight', body);
 }
 
+export async function fetchStudentInsight(studentId, body = {}) {
+  return orgApi.post(
+    `/organizations/ai/student-insight/${encodeURIComponent(studentId)}`,
+    body
+  );
+}
+
+export async function fetchPerformanceTrends(params = {}) {
+  const qs = new URLSearchParams();
+  if (params.departmentId) qs.set('department_id', String(params.departmentId));
+  if (params.days) qs.set('days', String(params.days));
+  const q = qs.toString();
+  return orgApi.get(`/organizations/performance/trends${q ? `?${q}` : ''}`);
+}
+
+export function trendsToUiSeries(payload) {
+  return (payload?.points || []).map((p) => ({
+    date: p.date,
+    avgReadiness: p.avg_readiness,
+    coveragePct: p.coverage_pct,
+    driveReadyPct: p.drive_ready_of_scored_pct,
+    studentsScored: p.students_scored,
+  }));
+}
+
 export function mapInsight(res) {
   if (!res) return null;
   return {
@@ -222,7 +247,15 @@ export function summaryToUiMetrics(summary) {
       lessPrepared: mapRanked(b.less_prepared),
     })),
     boardLimit: summary.board_limit || 10,
-    pillars: summary.pillars || {},
+    pillars: {
+      aptitude: summary.pillars?.aptitude ?? null,
+      skills: summary.pillars?.skills ?? null,
+      interview: summary.pillars?.interview ?? null,
+      snap: summary.pillars?.snap ?? null,
+      communication: summary.pillars?.communication ?? null,
+      technical: summary.pillars?.technical ?? null,
+      shortlist: summary.pillars?.shortlist ?? null,
+    },
     clarity: {
       goingWell: clarity.going_well || [],
       concerns: clarity.concerns || [],

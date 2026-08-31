@@ -16,6 +16,7 @@ import { platformAdminPaths } from './paths';
 import { usePlatformTheme } from './usePlatformTheme';
 import PlatformThemeToggle from './PlatformThemeToggle';
 import IdleSessionGuard from '../components/IdleSessionGuard';
+import '../components/table/table-query.css';
 import './platform-admin.css';
 
 const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;

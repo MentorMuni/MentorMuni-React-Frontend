@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { getToolMeta, resolveToolMode } from './catalog';
 import { createToolSession } from './createToolSession';
 import { ToolSessionProvider } from './ToolSessionContext';
+import ToolTabGuard from './ToolTabGuard';
 
 const SnapReadinessTest = lazy(() => import('../components/snapTest/SnapReadinessTest'));
 const InterviewReady = lazy(() => import('../components/interviewready'));
@@ -112,6 +113,7 @@ export default function MmToolWidget({
         data-mm-tool={tool}
         data-mm-family={meta.family}
       >
+        <ToolTabGuard enabled label={meta.title || 'this tool'} />
         <Suspense fallback={<WidgetFallback />}>
           <Comp />
         </Suspense>
