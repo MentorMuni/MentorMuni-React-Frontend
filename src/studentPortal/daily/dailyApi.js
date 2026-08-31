@@ -108,6 +108,7 @@ function localMission(context) {
     drive,
     day0Complete,
     pause,
+    personalization: context.personalization || null,
   });
 
   // Compression is a decision, not a display: persist the skips so the same

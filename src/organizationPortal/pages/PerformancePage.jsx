@@ -24,12 +24,15 @@ import {
   ActivityArea,
   ChartCard,
   DeptCompareChart,
+  DeptPillarCompareChart,
   GapStrengthBars,
   PillarRadar,
   ReadinessPie,
   TestsFunnelChart,
   ToolCoverageStacked,
 } from '../components/AnalyticsCharts';
+import BranchInsightsPanel from '../components/BranchInsightsPanel';
+import StudentScorecardDrawer from '../components/StudentScorecardDrawer';
 import {
   buildLocalBranchInsight,
   buildLocalCampusInsight,
@@ -87,7 +90,7 @@ function exportScorecardsCsv(rows, filenamePrefix = 'mentormuni-scorecards') {
   URL.revokeObjectURL(url);
 }
 
-function RankList({ title, items, tone }) {
+function RankList({ title, items, tone, onSelectStudent }) {
   if (!items?.length) {
     return <div className="mm-org-empty">No ranked students in this slice yet.</div>;
   }
@@ -96,21 +99,27 @@ function RankList({ title, items, tone }) {
       <p className="mm-org-stat__label mb-2">{title}</p>
       <ul className="m-0 list-none space-y-2 p-0">
         {items.map((s) => (
-          <li key={`${tone}-${s.id}`} className="mm-org-list-card text-sm">
-            <div className="min-w-0">
-              <p className="m-0 truncate font-bold mm-org-text">
-                #{s.rank} {s.name}
-              </p>
-              <p className="m-0 truncate text-xs mm-org-text-muted">
-                {s.departmentName || '—'}
-                {s.testsDone != null ? ` · ${s.testsDone} tests` : ''}
-                {s.weakness && tone === 'prep' ? ` · gap: ${s.weakness}` : ''}
-                {s.strength && tone === 'top' ? ` · ${s.strength}` : ''}
-              </p>
-            </div>
-            <span className={`mm-org-score-chip mm-org-score-chip--${readinessTone(s.score)}`}>
-              {s.score == null ? '—' : `${Math.round(s.score)}%`}
-            </span>
+          <li key={`${tone}-${s.id}`}>
+            <button
+              type="button"
+              className="mm-org-list-card text-sm mm-org-list-card--btn w-full text-left"
+              onClick={() => onSelectStudent?.(s)}
+            >
+              <div className="min-w-0">
+                <p className="m-0 truncate font-bold mm-org-text">
+                  #{s.rank} {s.name}
+                </p>
+                <p className="m-0 truncate text-xs mm-org-text-muted">
+                  {s.departmentName || '—'}
+                  {s.testsDone != null ? ` · ${s.testsDone} tests` : ''}
+                  {s.weakness && tone === 'prep' ? ` · gap: ${s.weakness}` : ''}
+                  {s.strength && tone === 'top' ? ` · ${s.strength}` : ''}
+                </p>
+              </div>
+              <span className={`mm-org-score-chip mm-org-score-chip--${readinessTone(s.score)}`}>
+                {s.score == null ? '—' : `${Math.round(s.score)}%`}
+              </span>
+            </button>
           </li>
         ))}
       </ul>
@@ -147,6 +156,15 @@ export default function PerformancePage() {
   const [boardLimit, setBoardLimit] = useState(10);
   const [areaFocus, setAreaFocus] = useState('overall');
   const [reloadKey, setReloadKey] = useState(0);
+  const [selectedStudent, setSelectedStudent] = useState(null);
+
+  const openStudent = useCallback(
+    (row) => {
+      const full = students.find((s) => String(s.id) === String(row.id));
+      setSelectedStudent(full || row);
+    },
+    [students]
+  );
 
   const loadLive = useCallback(
     async (deptId, limit) => {
@@ -172,6 +190,12 @@ export default function PerformancePage() {
   );
 
   const scopeFilterKey = hod ? 'hod' : String(deptFilter || '');
+
+  useEffect(() => {
+    if (hod) return;
+    const dept = new URLSearchParams(location.search).get('dept');
+    if (dept) setDeptFilter(dept);
+  }, [location.search, hod]);
 
   useEffect(() => {
     let cancelled = false;
@@ -492,11 +516,35 @@ export default function PerformancePage() {
         <GapStrengthBars gaps={metrics.topGaps || []} strengths={metrics.topStrengths || []} />
       </ChartCard>
 
-      {!hod || (metrics.byDept || []).length > 1 ? (
-        <ChartCard title="Department band mix" meta="Compare branches — least prepared first">
-          <DeptCompareChart departments={metrics.byDept || []} />
-        </ChartCard>
+      {!hod && (metrics.byDept || []).length > 1 ? (
+        <section className="mm-org-panel">
+          <div className="mm-org-panel__head">
+            <div>
+              <h2 className="mm-org-panel__title">Branch insights — aptitude · skills · interview</h2>
+              <p className="mm-org-panel__meta">
+                Which branch leads each pillar, where to intervene, and drill into students below
+              </p>
+            </div>
+          </div>
+          <BranchInsightsPanel
+            rankings={metrics.branchPillarRankings || {}}
+            byDept={metrics.byDept || []}
+          />
+        </section>
       ) : null}
+
+      <div className="grid gap-5 lg:grid-cols-2">
+        {!hod || (metrics.byDept || []).length > 1 ? (
+          <ChartCard title="Branch pillar comparison" meta="Avg aptitude, skills, interview by branch">
+            <DeptPillarCompareChart departments={metrics.byDept || []} />
+          </ChartCard>
+        ) : null}
+        {!hod || (metrics.byDept || []).length > 1 ? (
+          <ChartCard title="Department band mix" meta="Compare branches — least prepared first">
+            <DeptCompareChart departments={metrics.byDept || []} />
+          </ChartCard>
+        ) : null}
+      </div>
 
       <section className="mm-org-panel">
         <div className="mm-org-panel__head">
@@ -528,11 +576,12 @@ export default function PerformancePage() {
           <p className="mt-2 mb-3 text-sm mm-org-text-muted">{activeBoard.description}</p>
         ) : null}
         <div className="grid gap-5 lg:grid-cols-2">
-          <RankList title={`Top ${boardLimit} — shortlist candidates`} items={activeBoard?.top} tone="top" />
+          <RankList title={`Top ${boardLimit} — shortlist candidates`} items={activeBoard?.top} tone="top" onSelectStudent={openStudent} />
           <RankList
             title={`Less prepared ${boardLimit} — focus practice`}
             items={activeBoard?.lessPrepared}
             tone="prep"
+            onSelectStudent={openStudent}
           />
         </div>
       </section>
@@ -574,7 +623,19 @@ export default function PerformancePage() {
             <tbody>
               {filtered.length ? (
                 filtered.map((s) => (
-                  <tr key={s.id}>
+                  <tr
+                    key={s.id}
+                    className="mm-org-table-row--clickable"
+                    onClick={() => openStudent(s)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        openStudent(s);
+                      }
+                    }}
+                    tabIndex={0}
+                    role="button"
+                  >
                     <td>
                       <div className="font-semibold">{s.name}</div>
                       <div className="text-xs mm-org-text-muted">{s.email}</div>
@@ -629,6 +690,8 @@ export default function PerformancePage() {
       <p className="m-0 text-xs mm-org-text-muted flex items-center gap-1">
         <AlertTriangle size={12} /> Pillar & area averages are among students who completed that area — not the full roster.
       </p>
+
+      <StudentScorecardDrawer student={selectedStudent} onClose={() => setSelectedStudent(null)} />
     </div>
   );
 }

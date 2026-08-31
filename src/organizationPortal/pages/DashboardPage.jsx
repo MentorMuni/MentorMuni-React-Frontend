@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
   ArrowRight,
@@ -30,6 +30,7 @@ import {
   subscribeOrgDb,
 } from '../store';
 import { fetchDepartmentOptions } from '../departmentsApi';
+import { computeRosterCounts } from '../enrollmentMetrics';
 import { fetchStudentInvites, fetchStudents } from '../studentsApi';
 import AssignToStudentModal from './AssignToStudentModal';
 import {
@@ -52,17 +53,19 @@ import {
 } from '../components/PerformanceCharts';
 import PrepSnapshot from '../components/PrepSnapshot';
 import DeptReadinessTable from '../components/DeptReadinessTable';
+import BranchInsightsPanel from '../components/BranchInsightsPanel';
 import AtRiskPanel from '../components/AtRiskPanel';
 
 const EASE = [0.22, 1, 0.36, 1];
 
 /** Merge live performance API fields into TPO dashboard metrics without clobbering dept count. */
-function mergeTpoApiMetrics(prev, ui, { departmentCount } = {}) {
+function mergeTpoApiMetrics(prev, ui, { departmentCount, enrollment } = {}) {
   if (!ui) return prev;
   return {
     ...prev,
     ...ui,
     departments: departmentCount ?? ui.byDept?.length ?? prev.departments,
+    enrollment: enrollment ?? prev.enrollment,
     activePrograms: prev.activePrograms,
     recentPrograms: prev.recentPrograms,
     recentDrives: prev.recentDrives,
@@ -88,6 +91,7 @@ function mergeHodApiMetrics(rosterMetrics, perfUi, { pendingInvites, programsCou
 export default function DashboardPage() {
   const session = getOrgSession();
   const location = useLocation();
+  const navigate = useNavigate();
   const role = normalizeOrgRole(session?.role);
   const canEdit = canMutateCampus(session?.role);
   const viewer = isViewerRole(session?.role);
@@ -131,15 +135,21 @@ export default function DashboardPage() {
     let cancelled = false;
     (async () => {
       try {
-        const [summary, deptRes] = await Promise.all([
+        const [summary, deptRes, roster, queue] = await Promise.all([
           fetchPerformanceSummary(),
           fetchDepartmentOptions(),
+          fetchStudents().catch(() => ({ students: [] })),
+          fetchStudentInvites({ status: 'pending' }).catch(() => ({ invitations: [] })),
         ]);
         if (cancelled) return;
         const ui = summary ? summaryToUiMetrics(summary) : null;
         const departmentCount = (deptRes.departments || []).length;
+        const enrollment = computeRosterCounts(
+          roster.students || [],
+          (queue.invitations || []).length
+        );
         if (ui) {
-          setMetrics((prev) => mergeTpoApiMetrics(prev, ui, { departmentCount }));
+          setMetrics((prev) => mergeTpoApiMetrics(prev, ui, { departmentCount, enrollment }));
           setPerfSource('api');
         }
       } catch {
@@ -209,15 +219,22 @@ export default function DashboardPage() {
     setAiBusy(true);
     try {
       if (!session?.demo) {
-        const [res, summary] = await Promise.all([
+        const [res, summary, roster, queue] = await Promise.all([
           fetchCampusInsight({ include_leaderboard: true, max_actions: 5 }),
           fetchPerformanceSummary(),
+          fetchStudents().catch(() => ({ students: [] })),
+          fetchStudentInvites({ status: 'pending' }).catch(() => ({ invitations: [] })),
         ]);
         if (summary) {
           const deptRes = await fetchDepartmentOptions();
+          const enrollment = computeRosterCounts(
+            roster.students || [],
+            (queue.invitations || []).length
+          );
           setMetrics((prev) =>
             mergeTpoApiMetrics(prev, summaryToUiMetrics(summary), {
               departmentCount: (deptRes.departments || []).length,
+              enrollment,
             })
           );
         }
@@ -273,10 +290,25 @@ export default function DashboardPage() {
   );
 
   if (role === ORG_ROLES.TPO || viewer) {
+    const enrollment = metrics.enrollment;
     const cards = [
       { label: 'Departments', value: metrics.departments, icon: Building2, hint: 'Branches' },
-      { label: 'Students', value: metrics.students, icon: Users, hint: 'Enrolled' },
-      { label: 'Pending invites', value: metrics.pendingInvites, icon: UserPlus, hint: 'Enrollment queue' },
+      {
+        label: 'Students',
+        value: enrollment ? enrollment.active : metrics.students,
+        icon: Users,
+        hint: enrollment
+          ? `${enrollment.invited} awaiting password · ${enrollment.pending} pending`
+          : 'Active in analytics',
+      },
+      {
+        label: 'Roster total',
+        value: enrollment ? enrollment.pipelineTotal : metrics.students + (metrics.pendingInvites || 0),
+        icon: UserPlus,
+        hint: enrollment
+          ? `${enrollment.rosterTotal} on roster + ${enrollment.pending} in queue`
+          : 'Roster + queue',
+      },
       { label: 'Active programs', value: metrics.activePrograms, icon: ClipboardList, hint: 'Assigned work' },
       { label: 'Upcoming notices', value: metrics.upcomingDrives, icon: Bell, hint: 'Events & workshops' },
     ];
@@ -515,6 +547,26 @@ export default function DashboardPage() {
           <section className="mm-org-panel lg:col-span-5">
             <div className="mm-org-panel__head">
               <div>
+                <h2 className="mm-org-panel__title">Branch insights</h2>
+                <p className="mm-org-panel__meta">
+                  Aptitude, skills, and interview by branch — click a row to drill into students
+                </p>
+              </div>
+              <Link to={orgPaths.performance} className="mm-org-link text-xs">
+                Full analytics →
+              </Link>
+            </div>
+            <BranchInsightsPanel
+              rankings={metrics.branchPillarRankings || {}}
+              byDept={metrics.byDept || []}
+            />
+          </section>
+        </div>
+
+        <div className="grid gap-5 lg:grid-cols-5">
+          <section className="mm-org-panel lg:col-span-5">
+            <div className="mm-org-panel__head">
+              <div>
                 <h2 className="mm-org-panel__title">Branch comparison</h2>
                 <p className="mm-org-panel__meta">
                   Readiness, coverage, bands, and mentor status — weakest branches first
@@ -524,7 +576,10 @@ export default function DashboardPage() {
                 {canEdit ? 'Manage departments →' : 'View departments →'}
               </Link>
             </div>
-            <DeptReadinessTable departments={metrics.byDept || []} />
+            <DeptReadinessTable
+              departments={metrics.byDept || []}
+              onSelectDept={(d) => navigate(`${orgPaths.performance}?dept=${d.id}`)}
+            />
           </section>
         </div>
 
@@ -965,7 +1020,7 @@ export default function DashboardPage() {
           <section className="mm-org-panel">
             <div className="mm-org-panel__head">
               <div>
-                <h2 className="mm-org-panel__title">Week-1 tool progress</h2>
+                <h2 className="mm-org-panel__title">Assessment week progress</h2>
                 <p className="mm-org-panel__meta">
                   Baseline assessments completed across {dept.name}
                 </p>

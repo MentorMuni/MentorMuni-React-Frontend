@@ -38,6 +38,7 @@ export function useDailyMission({
   drive = null,
   userKey = 'anon',
   day0Complete = true,
+  personalization = null,
 } = {}) {
   const [mission, setMission] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -66,6 +67,7 @@ export function useDailyMission({
           drive,
           day0Complete,
           today,
+          personalization,
           silent: true,
         });
         if (ticket !== requestRef.current) return;
@@ -79,7 +81,7 @@ export function useDailyMission({
         if (ticket === requestRef.current) setLoading(false);
       }
     },
-    [userKey, plan, roadmap, weakTopics, budgetMinutes, drive, day0Complete, today]
+    [userKey, plan, roadmap, weakTopics, budgetMinutes, drive, day0Complete, today, personalization]
   );
 
   useEffect(() => {

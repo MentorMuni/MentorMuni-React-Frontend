@@ -6,11 +6,19 @@ const HOD_STATUS = {
   unassigned: { label: 'No HOD', className: 'mm-org-badge--danger' },
 };
 
+function PillarCell({ value }) {
+  if (value == null) return <span className="mm-org-text-muted">—</span>;
+  return (
+    <span className={`mm-org-score-chip mm-org-score-chip--${readinessTone(value)}`}>
+      {Math.round(value)}%
+    </span>
+  );
+}
+
 /**
- * TPO campus view — compare every branch in one table.
- * @param {{ departments?: object[] }} props
+ * TPO campus view — compare branches with pillar scores and drill-down.
  */
-export default function DeptReadinessTable({ departments = [] }) {
+export default function DeptReadinessTable({ departments = [], onSelectDept }) {
   const rows = [...(departments || [])].sort((a, b) => {
     const aAvg = a.avgReadiness ?? -1;
     const bAvg = b.avgReadiness ?? -1;
@@ -31,14 +39,14 @@ export default function DeptReadinessTable({ departments = [] }) {
         <thead>
           <tr>
             <th>Branch</th>
-            <th>Students</th>
             <th>Scored</th>
-            <th>Avg readiness</th>
+            <th>Readiness</th>
+            <th>Aptitude</th>
+            <th>Skills</th>
+            <th>Interview</th>
             <th>Drive-ready</th>
-            <th>Developing</th>
             <th>Less prepared</th>
             <th>Top gap</th>
-            <th>Active 7d</th>
             <th>Mentor</th>
           </tr>
         </thead>
@@ -51,14 +59,32 @@ export default function DeptReadinessTable({ departments = [] }) {
             };
             const avg = d.avgReadiness;
             return (
-              <tr key={d.id || d.code}>
+              <tr
+                key={d.id || d.code}
+                className={onSelectDept ? 'mm-org-table-row--clickable' : ''}
+                onClick={onSelectDept ? () => onSelectDept(d) : undefined}
+                onKeyDown={
+                  onSelectDept
+                    ? (e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          onSelectDept(d);
+                        }
+                      }
+                    : undefined
+                }
+                tabIndex={onSelectDept ? 0 : undefined}
+                role={onSelectDept ? 'button' : undefined}
+              >
                 <td>
                   <p className="mm-org-table__title">{d.name}</p>
-                  <p className="mm-org-table__meta">{d.code}</p>
+                  <p className="mm-org-table__meta">
+                    {d.code}
+                    {d.bestPillar ? ` · strong in ${d.bestPillar}` : ''}
+                  </p>
                 </td>
-                <td>{d.students ?? 0}</td>
                 <td>
-                  {d.scoredStudents ?? '—'}
+                  {d.scoredStudents ?? 0}
                   {d.coveragePct != null ? (
                     <span className="mm-org-table__meta block">{Math.round(d.coveragePct)}%</span>
                   ) : null}
@@ -72,11 +98,18 @@ export default function DeptReadinessTable({ departments = [] }) {
                     </span>
                   )}
                 </td>
+                <td>
+                  <PillarCell value={d.pillars?.aptitude} />
+                </td>
+                <td>
+                  <PillarCell value={d.pillars?.skills} />
+                </td>
+                <td>
+                  <PillarCell value={d.pillars?.interview} />
+                </td>
                 <td className="mm-org-text-good">{d.strong ?? 0}</td>
-                <td>{d.mid ?? 0}</td>
                 <td className="mm-org-text-bad">{d.weak ?? 0}</td>
                 <td className="mm-org-text">{d.topGap || '—'}</td>
-                <td>{d.active7d ?? 0}</td>
                 <td>
                   <span className={`mm-org-badge ${hod.className}`}>{hod.label}</span>
                 </td>

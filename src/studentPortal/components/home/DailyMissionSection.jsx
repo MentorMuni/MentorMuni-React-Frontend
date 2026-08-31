@@ -23,9 +23,15 @@ function modeCopy(mission) {
     case 'day0':
       return { kicker: 'Start here', sub: 'Twelve minutes to your plan.' };
     case 'baseline':
-      return { kicker: 'Baseline', sub: 'One check at a time. Finish it to unlock the next.' };
+      return {
+        kicker: 'Assessment week',
+        sub: '3-day sprint — finish today’s batch; tomorrow unlocks the next.',
+      };
     case 'awaiting_plan':
-      return { kicker: 'Ready', sub: 'Your baseline is done — build the plan from it.' };
+      return {
+        kicker: 'Ready',
+        sub: 'Assessment week is done — we’ll build a 30–45 day plan unique to your gaps.',
+      };
     case 'drive_sprint':
       return {
         kicker: 'Drive sprint',
@@ -49,6 +55,11 @@ function modeCopy(mission) {
       return { kicker: 'Paused', sub: 'Your plan is on hold. One short thing if you want it.' };
     case 'complete':
       return { kicker: 'Maintenance', sub: 'Ninety days done. Keep the edge.' };
+    case 'plan':
+      return {
+        kicker: 'Your AI plan',
+        sub: 'Tasks from your personalized placement roadmap — sized to today.',
+      };
     case 'intelligence':
       return {
         kicker: mission.focus_pillar
@@ -74,6 +85,8 @@ export default function DailyMissionSection({
   // Baseline passthrough — TodaysPlanSection owns that experience.
   baselineSteps = [],
   onStartBaselineStep,
+  baselinePath = null,
+  baselineSprintState = null,
 }) {
   const navigate = useNavigate();
 
@@ -102,7 +115,12 @@ export default function DailyMissionSection({
   if (mission.mode === 'baseline') {
     return (
       <div className="stu-mission stu-mission--baseline">
-        <TodaysPlanSection steps={baselineSteps} onStart={onStartBaselineStep} />
+        <TodaysPlanSection
+          steps={baselineSteps}
+          onStart={onStartBaselineStep}
+          baselinePath={baselinePath}
+          sprintState={baselineSprintState}
+        />
       </div>
     );
   }

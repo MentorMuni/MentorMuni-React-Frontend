@@ -1483,3 +1483,251 @@
   .stu-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .stu-today__rail { flex-wrap: wrap; }
 }
+
+/* ============================================================
+   YOUR JOURNEY — three-phase map + assessment calendar days
+   ============================================================ */
+
+.stu-journey {
+  margin-bottom: var(--space-5);
+}
+
+.stu-journey__phases {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stu-journey__phase {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-4);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  min-height: 100%;
+}
+
+.stu-journey__phase.is-current {
+  border-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+  background: color-mix(in srgb, var(--accent) 6%, var(--surface));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 12%, transparent);
+}
+
+.stu-journey__phase.is-done {
+  border-color: color-mix(in srgb, var(--good) 35%, var(--line));
+  background: color-mix(in srgb, var(--good) 5%, var(--surface));
+}
+
+.stu-journey__phase.is-locked {
+  opacity: 0.72;
+}
+
+.stu-journey__phase-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  color: var(--interactive);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+
+.stu-journey__phase.is-done .stu-journey__phase-icon {
+  color: var(--good);
+  background: color-mix(in srgb, var(--good) 12%, var(--surface));
+}
+
+.stu-journey__phase.is-locked .stu-journey__phase-icon {
+  color: var(--ink-3);
+  background: var(--surface);
+}
+
+.stu-journey__phase-title {
+  font-size: var(--text-body);
+  font-weight: 650;
+  color: var(--ink);
+  line-height: var(--leading-tight);
+}
+
+.stu-journey__phase-sub {
+  font-size: var(--text-small);
+  color: var(--ink-2);
+  line-height: var(--leading-body);
+}
+
+.stu-journey__phase-meta {
+  font-size: var(--text-micro);
+  font-weight: 600;
+  letter-spacing: var(--tracking-label);
+  color: var(--ink-3);
+  text-transform: uppercase;
+}
+
+.stu-journey__phase-arrow {
+  display: none;
+}
+
+.stu-journey__days {
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--line);
+}
+
+.stu-journey__days-kicker {
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-small);
+  font-weight: 650;
+  color: var(--ink);
+}
+
+.stu-journey__day-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stu-journey__day {
+  padding: var(--space-3);
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+}
+
+.stu-journey__day.is-today {
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+}
+
+.stu-journey__day.is-tomorrow {
+  border-style: dashed;
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--line));
+}
+
+.stu-journey__day.is-done,
+.stu-journey__day.is-past {
+  opacity: 0.88;
+}
+
+.stu-journey__day-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+}
+
+.stu-journey__day-badge {
+  display: inline-flex;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: var(--text-micro);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.stu-journey__day-badge.is-today {
+  color: var(--interactive);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
+}
+
+.stu-journey__day-badge.is-tomorrow {
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--accent) 25%, var(--line));
+}
+
+.stu-journey__day-badge.is-today-done {
+  color: var(--good);
+  border-color: color-mix(in srgb, var(--good) 35%, var(--line));
+}
+
+.stu-journey__day-range {
+  font-size: var(--text-micro);
+  color: var(--ink-3);
+  white-space: nowrap;
+}
+
+.stu-journey__day-label {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-small);
+  font-weight: 550;
+  color: var(--ink-2);
+  line-height: var(--leading-body);
+}
+
+.stu-journey__checks {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.stu-journey__check {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: var(--text-micro);
+  color: var(--ink-2);
+  line-height: 1.35;
+}
+
+.stu-journey__check.is-done {
+  color: var(--ink);
+}
+
+.stu-journey__check.is-locked {
+  color: var(--ink-3);
+}
+
+.stu-journey__check-dot {
+  flex-shrink: 0;
+  width: 8px;
+  height: 8px;
+  margin-top: 3px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.stu-journey__day-note {
+  margin: var(--space-2) 0 0;
+  font-size: var(--text-micro);
+  color: var(--ink-3);
+  line-height: var(--leading-body);
+}
+
+.stu-journey__day-note.is-highlight {
+  color: var(--interactive);
+  font-weight: 550;
+}
+
+.stu-journey__foot {
+  margin: var(--space-4) 0 0;
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+  font-size: var(--text-small);
+  color: var(--ink-2);
+  line-height: var(--leading-body);
+}
+
+@media (max-width: 900px) {
+  .stu-journey__phases,
+  .stu-journey__day-list {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

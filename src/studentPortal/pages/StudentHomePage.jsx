@@ -6,6 +6,7 @@ import {
   fetchPlan,
   fetchRoadmap,
   generatePlan,
+  applyBaselinePath,
   StudentApiError,
 } from '../roadmap/roadmapApi';
 import { WEEK1_STEPS } from '../roadmap/week1Steps';
@@ -13,8 +14,18 @@ import { recordStudentSession } from '../streak';
 import { useDailyMission } from '../daily/useDailyMission';
 import { isIndividualStudent } from '../accountType';
 import { fetchStudentReadiness } from '../readiness/readinessApi';
+import { resolveBand, getPlacementProfile } from '../placementProfile';
+import { fetchStudentTarget } from '../targetApi';
+import { getBaselinePath, shouldPromptBaselinePath } from '../baselineAdaptive';
+import {
+  canStartBaselineStep,
+  ensureSprintStart,
+  resolveBaselineSprint,
+} from '../baselineSprint';
 
 import HomeHeader from '../components/home/HomeHeader';
+import YourJourneyCard from '../components/home/YourJourneyCard';
+import BaselinePathChooser from '../components/BaselinePathChooser';
 import PageSection from '../components/home/PageSection';
 import MomentumRow from '../components/home/MomentumRow';
 import PlacementReadinessHero from '../components/home/PlacementReadinessHero';
@@ -36,7 +47,7 @@ const POLL_MAX_TRIES = 60;
 
 /** Product defaults, not fetched values. Change here, not at call sites. */
 const TARGET_READINESS = 85;
-const PLAN_HORIZON_DAYS = 90;
+import { planHorizonFromPlan, planHorizonDays } from '../journeyPlan';
 
 const TOOL_LABELS = Object.fromEntries(WEEK1_STEPS.map((s) => [s.tool_code, s.title]));
 
@@ -52,20 +63,11 @@ export default function StudentHomePage() {
   const [plan, setPlan] = useState(null);
   const [generateError, setGenerateError] = useState('');
   const [loadError, setLoadError] = useState('');
+  const [showPathChooser, setShowPathChooser] = useState(false);
+  const [pathBusy, setPathBusy] = useState(false);
+  const [sprintStartKey, setSprintStartKey] = useState(null);
   const pollRef = useRef(null);
   const pollTriesRef = useRef(0);
-
-  // Days 1–7 are the baseline rail; days 8–90 had nothing at all before this.
-  const {
-    mission,
-    loading: missionLoading,
-    error: missionError,
-    budgetMinutes,
-    chooseBudget,
-    completeTask,
-    skipTask,
-    refresh: refreshMission,
-  } = useDailyMission({ plan, roadmap, analysis, drive: nextDrive, userKey });
 
   const refresh = useCallback(async () => {
     try {
@@ -75,10 +77,18 @@ export default function StudentHomePage() {
       setLoadError('');
 
       try {
+        const target = await fetchStudentTarget({ userKey }).catch(() => null);
+        if (target?.baseline_sprint_start_date) {
+          setSprintStartKey(target.baseline_sprint_start_date);
+        } else if (target?.onboarding_completed) {
+          setSprintStartKey(ensureSprintStart(userKey));
+        }
         const intel = await fetchStudentReadiness({
           roadmap: rm,
           userKey,
           target: TARGET_READINESS,
+          targetTier: target?.target_tier,
+          targetCompanies: target?.target_companies,
           silent: true,
         });
         setIntelReadiness(intel);
@@ -196,40 +206,16 @@ export default function StudentHomePage() {
   const handleStart = useCallback(
     (step) => {
       if (!step?.href || step.status === 'locked') return;
+      const profile = getPlacementProfile(userKey);
+      const start =
+        sprintStartKey || profile?.baselineSprintStart || ensureSprintStart(userKey);
+      if (step.status !== 'done' && !canStartBaselineStep(step, start)) return;
       recordStudentSession(userKey);
       refreshStreak();
       navigate(step.href);
     },
-    [navigate, userKey, refreshStreak]
+    [navigate, userKey, refreshStreak, sprintStartKey]
   );
-
-  const handleGenerate = useCallback(async () => {
-    setGenerateError('');
-    setPlan((prev) =>
-      prev
-        ? { ...prev, status: 'generating', error_message: null }
-        : {
-            id: null,
-            status: 'generating',
-            prompt_version: null,
-            model: null,
-            summary: null,
-            plan: null,
-            error_message: null,
-            created_at: null,
-            completed_at: null,
-          }
-    );
-    try {
-      const p = await generatePlan();
-      setPlan(p);
-      if (p.status !== 'generating') refresh();
-      refreshMission({ silent: true });
-    } catch (err) {
-      setPlan((prev) => (prev ? { ...prev, status: 'failed' } : prev));
-      setGenerateError(err?.message || 'Could not start plan generation. Please try again.');
-    }
-  }, [refresh, refreshMission]);
 
   const steps = roadmap?.steps || [];
   const currentStep = steps.find((s) => s.status === 'current') || null;
@@ -264,6 +250,102 @@ export default function StudentHomePage() {
   }, [intelReadiness?.pillars, analysis?.scores_by_tool]);
 
   const weakest = (analysis?.top_weaknesses || [])[0] || null;
+  const readinessBandInfo = hasScoredBaseline ? resolveBand(readiness) : null;
+  const baselinePath = getBaselinePath(userKey);
+  const placementProfile = getPlacementProfile(userKey);
+
+  const baselineSprintState = useMemo(() => {
+    const start =
+      sprintStartKey ||
+      placementProfile?.baselineSprintStart ||
+      (placementProfile?.completedAt ? ensureSprintStart(userKey) : null);
+    return resolveBaselineSprint({ steps, sprintStartKey: start });
+  }, [steps, sprintStartKey, placementProfile?.baselineSprintStart, placementProfile?.completedAt, userKey]);
+
+  const missionPersonalization = useMemo(
+    () => ({
+      bandKey: readinessBandInfo?.key || 'building',
+      baselinePath,
+      startingLevel: placementProfile?.startingLevel || 'some_experience',
+    }),
+    [readinessBandInfo?.key, baselinePath, placementProfile?.startingLevel]
+  );
+
+  const {
+    mission,
+    loading: missionLoading,
+    error: missionError,
+    budgetMinutes,
+    chooseBudget,
+    completeTask,
+    skipTask,
+    refresh: refreshMission,
+  } = useDailyMission({
+    plan,
+    roadmap,
+    analysis,
+    drive: nextDrive,
+    userKey,
+    personalization: missionPersonalization,
+  });
+
+  useEffect(() => {
+    if (!roadmap?.steps?.length) return;
+    setShowPathChooser(shouldPromptBaselinePath(roadmap.steps, userKey));
+  }, [roadmap?.steps, userKey]);
+
+  const handleBaselinePath = useCallback(
+    async (path) => {
+      setPathBusy(true);
+      try {
+        const rm = await applyBaselinePath(path, { userKey });
+        setRoadmap(rm);
+        setShowPathChooser(false);
+        const an = await fetchAnalysis();
+        setAnalysis(an);
+        refreshMission({ silent: true });
+      } catch (err) {
+        console.error(err);
+        setLoadError(err?.message || 'Could not apply baseline path.');
+      } finally {
+        setPathBusy(false);
+      }
+    },
+    [userKey, refreshMission]
+  );
+
+  const handleGenerate = useCallback(async () => {
+    setGenerateError('');
+    setPlan((prev) =>
+      prev
+        ? { ...prev, status: 'generating', error_message: null }
+        : {
+            id: null,
+            status: 'generating',
+            prompt_version: null,
+            model: null,
+            summary: null,
+            plan: null,
+            error_message: null,
+            created_at: null,
+            completed_at: null,
+          }
+    );
+    try {
+      const p = await generatePlan();
+      setPlan(p);
+      if (p.status !== 'generating') refresh();
+      refreshMission({ silent: true });
+    } catch (err) {
+      setPlan((prev) => (prev ? { ...prev, status: 'failed' } : prev));
+      setGenerateError(err?.message || 'Could not start plan generation. Please try again.');
+    }
+  }, [refresh, refreshMission]);
+
+  const planHorizon =
+    planReady || plan?.status === 'ready'
+      ? planHorizonFromPlan(plan)
+      : planHorizonDays(readinessBandInfo?.key || 'balanced');
 
   return (
     <main className="stu-main">
@@ -271,6 +353,15 @@ export default function StudentHomePage() {
         <p className="stu-alert stu-alert--bad" role="alert">
           {loadError}
         </p>
+      ) : null}
+
+      {showPathChooser ? (
+        <BaselinePathChooser
+          steps={steps}
+          userKey={userKey}
+          busy={pathBusy}
+          onChoose={handleBaselinePath}
+        />
       ) : null}
 
       <HomeHeader
@@ -283,9 +374,23 @@ export default function StudentHomePage() {
         onStart={handleStart}
         onGenerate={handleGenerate}
         generating={generating}
+        readiness={hasScoredBaseline ? readiness : null}
+        readinessBand={readinessBandInfo}
+        weakest={weakest}
+        baselineSprintState={baselineSprintState}
       />
 
       <MentorAlwaysOn />
+
+      <YourJourneyCard
+        onboardingDone={Boolean(placementProfile?.completedAt)}
+        steps={steps}
+        sprintState={baselineSprintState}
+        baselineDone={baselineDone}
+        planReady={planReady}
+        planGenerating={generating}
+        planHorizonDays={planHorizon}
+      />
 
       <PageSection
         id="stu-today-zone"
@@ -305,6 +410,8 @@ export default function StudentHomePage() {
             generating={planStatus === 'generating'}
             baselineSteps={steps}
             onStartBaselineStep={handleStart}
+            baselinePath={baselinePath}
+            baselineSprintState={baselineSprintState}
           />
           {hasScoredBaseline ? (
             <PlacementReadinessHero
@@ -315,7 +422,7 @@ export default function StudentHomePage() {
                 intelReadiness?.eta_days != null
                   ? intelReadiness.eta_days
                   : baselineDone
-                    ? PLAN_HORIZON_DAYS
+                    ? planHorizonFromPlan(plan)
                     : Math.max(1, totalCount - completedCount)
               }
               todayGain={0}
@@ -324,8 +431,8 @@ export default function StudentHomePage() {
                 intelReadiness?.focus_pillar
                   ? `focus · ${intelReadiness.focus_pillar}`
                   : baselineDone
-                    ? 'after baseline'
-                    : 'baseline week'
+                    ? 'after assessment week'
+                    : 'assessment week'
               }
               breakdown={breakdown.length ? breakdown : undefined}
             />
@@ -342,6 +449,8 @@ export default function StudentHomePage() {
         daysToDrive={individual ? null : (nextDrive?.days_until ?? null)}
         baselineProgress={completedCount}
         baselineTotal={totalCount}
+        sprintDay={baselineSprintState?.sprintDay}
+        sprintBlocked={baselineSprintState?.blockedUntilTomorrow}
       />
 
       {hasScoredBaseline ? (

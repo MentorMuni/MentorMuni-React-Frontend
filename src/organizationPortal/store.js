@@ -13,6 +13,8 @@ import {
   upsertLocalStudentCredential,
 } from '../studentPortal/localStudentAuth';
 
+import { computeRosterCounts } from './enrollmentMetrics';
+
 const DB_KEY = 'mm-org-tpo-db-v1';
 const CODE_INDEX_KEY = 'mm-org-code-index-v1';
 const EVENT = 'mm-org-db-updated';
@@ -1700,10 +1702,13 @@ export function getTpoMetrics() {
     ? Math.min(100, Math.round((students.length ? activePrograms * 20 : 0)))
     : 0;
 
+  const enrollment = computeRosterCounts(students, pendingInvites);
+
   return {
     departments: data.departments.length,
-    students: students.length,
+    students: enrollment.active || students.length,
     pendingInvites,
+    enrollment,
     activePrograms,
     upcomingDrives,
     avgReadiness,

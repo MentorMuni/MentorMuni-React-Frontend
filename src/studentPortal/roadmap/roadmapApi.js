@@ -4,6 +4,15 @@
 
 import { getStudentSession } from '../auth';
 import { studentApi, StudentApiError } from '../studentApi';
+import {
+  BASELINE_PATHS,
+  earlyBaselineAverage,
+  FAST_TRACK_DAY1_WAIVE_TOOLS,
+  FAST_TRACK_DEFER_WAIVE_TOOLS,
+  saveBaselinePath,
+} from '../baselineAdaptive';
+import { allowedMaxOrder, ensureSprintStart } from '../baselineSprint';
+import { getPlacementProfile } from '../placementProfile';
 import { PLAN_STORAGE_KEY, ROADMAP_STORAGE_KEY, WEEK1_STEPS } from './week1Steps';
 import { studentToolPath, toPortalToolHref } from '../paths';
 
@@ -109,15 +118,117 @@ function writeLocalPlan(plan) {
   }
 }
 
+function localUserKey() {
+  return getStudentSession()?.userKey || 'anon';
+}
+
+function applyDeferredFastTrack(roadmap, userKey, sprintStartKey) {
+  const profile = getPlacementProfile(userKey);
+  if (profile?.baselinePath !== BASELINE_PATHS.FAST_TRACK) return;
+  const allowed = allowedMaxOrder(sprintStartKey);
+  const inferred = Math.max(70, earlyBaselineAverage(roadmap.steps) || 70);
+  const now = new Date().toISOString();
+  for (const code of FAST_TRACK_DEFER_WAIVE_TOOLS) {
+    const step = roadmap.steps.find((s) => s.tool_code === code);
+    if (!step || step.status === 'done') continue;
+    if (step.order > allowed) continue;
+    step.status = 'done';
+    step.score = inferred;
+    step.label = 'Fast-track waived';
+    step.completed_at = now;
+    step.strengths = step.strengths?.length ? step.strengths : ['Inferred from early baseline'];
+    step.weaknesses = step.weaknesses || [];
+  }
+}
+
+function syncLocalSprint(roadmap, userKey = localUserKey()) {
+  const sprintStart = ensureSprintStart(userKey);
+  applyDeferredFastTrack(roadmap, userKey, sprintStart);
+  recomputeLocalWeek(roadmap, sprintStart);
+  writeLocalRoadmap(roadmap);
+  return roadmap;
+}
+
+function recomputeLocalWeek(roadmap, sprintStartKey) {
+  for (const s of roadmap.steps) {
+    if (s.status === 'current') s.status = 'locked';
+  }
+  const allowed = allowedMaxOrder(sprintStartKey);
+  const firstOpen = roadmap.steps.find((s) => s.status !== 'done');
+  if (!firstOpen) {
+    roadmap.week_status = 'done';
+    roadmap.current_tool_code = null;
+    roadmap.completed_count = roadmap.steps.filter((s) => s.status === 'done').length;
+    return;
+  }
+  for (const s of roadmap.steps) {
+    if (s.order > allowed && s.status !== 'done') {
+      s.status = 'locked';
+    }
+  }
+  if (firstOpen.order > allowed) {
+    roadmap.week_status = 'in_progress';
+    roadmap.current_tool_code = null;
+    roadmap.completed_count = roadmap.steps.filter((s) => s.status === 'done').length;
+    return;
+  }
+  firstOpen.status = 'current';
+  roadmap.week_status = 'in_progress';
+  roadmap.current_tool_code = firstOpen.tool_code;
+  roadmap.completed_count = roadmap.steps.filter((s) => s.status === 'done').length;
+}
+
+function localApplyBaselinePath(path, userKey = 'anon') {
+  const roadmap = readLocalRoadmap();
+  const aptitude = roadmap.steps.find((s) => s.tool_code === 'aptitude');
+  if (aptitude?.status !== 'done') {
+    throw new StudentApiError('Complete aptitude before choosing a baseline path.', { status: 409 });
+  }
+
+  if (path === BASELINE_PATHS.FAST_TRACK) {
+    const inferred = Math.max(70, earlyBaselineAverage(roadmap.steps) || 70);
+    const now = new Date().toISOString();
+    for (const code of FAST_TRACK_DAY1_WAIVE_TOOLS) {
+      const step = roadmap.steps.find((s) => s.tool_code === code);
+      if (!step || step.status === 'done') continue;
+      step.status = 'done';
+      step.score = inferred;
+      step.label = 'Fast-track waived';
+      step.completed_at = now;
+      step.strengths = step.strengths?.length ? step.strengths : ['Inferred from early baseline'];
+      step.weaknesses = step.weaknesses || [];
+    }
+  }
+
+  saveBaselinePath(userKey, path);
+  return syncLocalSprint(roadmap, userKey);
+}
+
+/** Map overall readiness → plan template persona for generation. */
+export function planPersonaFromScore(score) {
+  if (score == null || !Number.isFinite(Number(score))) return 'balanced';
+  const n = Number(score);
+  if (n >= 85) return 'interview_ready';
+  if (n < 40) return 'foundation';
+  return 'balanced';
+}
+
 function localComplete(toolCode, body) {
+  const userKey = localUserKey();
+  const sprintStart = ensureSprintStart(userKey);
   const roadmap = readLocalRoadmap();
   const step = roadmap.steps.find((s) => s.tool_code === toolCode);
   if (!step) throw new StudentApiError('Unknown tool', { status: 404 });
   if (step.status === 'locked') {
     throw new StudentApiError('Step is locked. Complete the current step first.', { status: 409 });
   }
+  if (step.status !== 'done' && step.order > allowedMaxOrder(sprintStart)) {
+    throw new StudentApiError(
+      "Today's baseline batch is complete. Next checks unlock tomorrow.",
+      { status: 409 }
+    );
+  }
 
-  const wasCurrent = step.status === 'current';
   step.status = 'done';
   step.score = body?.score ?? null;
   step.label = body?.label ?? null;
@@ -128,19 +239,7 @@ function localComplete(toolCode, body) {
   step.recommendations = body?.recommendations || [];
   step.completed_at = new Date().toISOString();
 
-  if (wasCurrent) {
-    const next = roadmap.steps.find((s) => s.order === step.order + 1);
-    if (next) next.status = 'current';
-    else {
-      roadmap.week_status = 'done';
-    }
-  }
-
-  roadmap.completed_count = roadmap.steps.filter((s) => s.status === 'done').length;
-  roadmap.current_tool_code =
-    roadmap.steps.find((s) => s.status === 'current')?.tool_code || null;
-  writeLocalRoadmap(roadmap);
-  return roadmap;
+  return syncLocalSprint(roadmap, userKey);
 }
 
 function localAnalysis() {
@@ -189,36 +288,80 @@ function localGenerateStub() {
   if (roadmap.week_status !== 'done') {
     throw new StudentApiError('Complete all Week-1 baseline steps first.', { status: 409 });
   }
+  const analysis = localAnalysis();
+  const persona = planPersonaFromScore(analysis.overall_score);
+  const weak = analysis.top_weaknesses.slice(0, 3);
+
+  const prepThemes =
+    persona === 'foundation'
+      ? [
+          'Aptitude foundations — speed without panic',
+          'Verbal & reasoning drills',
+          'Communication basics',
+          'Core skill revision',
+          'Light mock prep',
+          'Bridge to mocks',
+        ]
+      : persona === 'interview_ready'
+        ? [
+            'Quick gap sweep',
+            'Targeted weak-topic polish',
+            'Mock warm-up week',
+            'Company-style drills',
+            'Interview stamina',
+            'Final gap closure',
+          ]
+        : Array.from({ length: 6 }, (_, i) => `Prep week ${i + 1} — close baseline gaps`);
+
+  const prepTasks =
+    persona === 'foundation'
+      ? (day) => [`Aptitude micro-set (day ${day})`, 'Review mistakes aloud']
+      : persona === 'interview_ready'
+        ? (day) => [`Targeted drill (day ${day})`, '1 short mock review']
+        : (day) => [`Practice weak topic (demo day ${day})`, 'Review yesterday mistakes'];
+
+  const prepMinutes = persona === 'interview_ready' ? 45 : persona === 'foundation' ? 60 : 90;
+
   const plan = {
     id: Date.now(),
     status: 'ready',
-    prompt_version: 'local_stub_v1',
+    prompt_version: `local_stub_v2_${persona}`,
     model: null,
     summary:
-      'Demo account: sign in with a campus student account to generate a real OpenAI 90-day plan from your baseline.',
+      persona === 'interview_ready'
+        ? 'Demo: interview-ready track — short gap fix then mock-heavy weeks.'
+        : persona === 'foundation'
+          ? 'Demo: foundation track — aptitude and communication weighted early.'
+          : 'Demo account: sign in with a campus student account to generate a real OpenAI 90-day plan from your baseline.',
     plan: {
-      title: '90-day MNC placement roadmap (demo stub)',
+      title: `90-day placement roadmap (${persona.replace('_', ' ')})`,
       target_role: 'Software Engineer / Graduate hire',
       target_companies: ['TCS', 'Accenture', 'Persistent', 'Microsoft'],
       baseline_summary: 'Demo baseline complete. Connect a real student account for AI personalization.',
-      confidence_goal: 'Use Prep weeks for gaps, then AI mocks only.',
+      confidence_goal:
+        persona === 'interview_ready'
+          ? 'Maintain mock cadence and company-specific polish.'
+          : 'Use Prep weeks for gaps, then AI mocks only.',
       phases: [
         {
           phase_id: 'prep',
-          label: 'Gap-driven prep',
+          label: persona === 'interview_ready' ? 'Short gap fix' : 'Gap-driven prep',
           day_start: 1,
           day_end: 42,
           weeks: Array.from({ length: 6 }, (_, wi) => ({
             prep_week: wi + 1,
-            theme: `Prep week ${wi + 1} — close baseline gaps`,
-            based_on_weaknesses: localAnalysis().top_weaknesses.slice(0, 3),
-            focus_tools: ['aptitude', 'skill_readiness'],
+            theme: prepThemes[wi] || prepThemes[prepThemes.length - 1],
+            based_on_weaknesses: weak,
+            focus_tools:
+              persona === 'foundation' && wi < 3
+                ? ['aptitude', 'hr_mock']
+                : ['aptitude', 'skill_readiness'],
             daily: Array.from({ length: 7 }, (__, di) => {
               const day = wi * 7 + di + 1;
               return {
                 day,
-                tasks: [`Practice weak topic (demo day ${day})`, 'Review yesterday mistakes'],
-                minutes: 90,
+                tasks: prepTasks(day),
+                minutes: prepMinutes,
               };
             }),
           })),
@@ -283,7 +426,9 @@ function localGenerateStub() {
 }
 
 export async function fetchRoadmap() {
-  if (isLocalFallbackSession()) return portalizeRoadmap(readLocalRoadmap());
+  if (isLocalFallbackSession()) {
+    return portalizeRoadmap(syncLocalSprint(readLocalRoadmap()));
+  }
   const data = await studentApi.get('/student/roadmap');
   return portalizeRoadmap(data);
 }
@@ -294,6 +439,13 @@ export async function completeRoadmapStep(toolCode, body) {
     `/student/roadmap/steps/${encodeURIComponent(toolCode)}/complete`,
     body
   );
+  return portalizeRoadmap(data);
+}
+
+export async function applyBaselinePath(path, { userKey = 'anon' } = {}) {
+  if (isLocalFallbackSession()) return portalizeRoadmap(localApplyBaselinePath(path, userKey));
+  const data = await studentApi.post('/student/roadmap/baseline-path', { path });
+  saveBaselinePath(userKey, path);
   return portalizeRoadmap(data);
 }
 

@@ -18,6 +18,8 @@ export default function MomentumRow({
   daysToDrive = null,
   baselineProgress = 0,
   baselineTotal = 8,
+  sprintDay = null,
+  sprintBlocked = false,
 }) {
   const reduce = useReducedMotion();
   const baselinePct = baselineTotal ? Math.round((baselineProgress / baselineTotal) * 100) : 0;
@@ -51,7 +53,7 @@ export default function MomentumRow({
           note:
             daysToDrive != null
               ? 'Keep the daily plan running until drive day.'
-              : 'No drive posted yet — stay on the 90-day plan.',
+              : 'No drive posted yet — stay on your personalized plan.',
           meter: 100,
           tone: 'good',
         }
@@ -61,7 +63,9 @@ export default function MomentumRow({
           title: 'Baseline left',
           value: `${checksLeft}`,
           suffix: checksLeft === 1 ? 'check' : 'checks',
-          note: `${baselinePct}% of Week 1 done — keep going in order.`,
+          note: sprintBlocked
+            ? `Day ${sprintDay} batch done — more checks unlock tomorrow.`
+            : `Day ${sprintDay ?? 1} of 3 · ${baselinePct}% done · ${checksLeft} check${checksLeft === 1 ? '' : 's'} left in the sprint.`,
           meter: Math.max(8, baselinePct),
           tone: baselinePct >= 100 ? 'good' : 'neutral',
         },

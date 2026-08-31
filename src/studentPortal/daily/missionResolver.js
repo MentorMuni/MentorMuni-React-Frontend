@@ -19,8 +19,9 @@
 
 import { clampDay, daysBetween } from './dayKeys';
 import { taskKey, taskTextHash, isRecordFresh } from './taskKeys';
+import { planHorizonFromPlan, PLAN_HORIZON_DAYS } from '../journeyPlan';
 
-export const PLAN_HORIZON_DAYS = 90;
+export { PLAN_HORIZON_DAYS } from '../journeyPlan';
 
 export const DEFAULT_CONFIG = {
   catchUpGrace: 2,      // days behind before the plan compresses
@@ -61,7 +62,7 @@ export function inferToolCode(text) {
  * per-week numbering (1..7 repeated every week). Duplicates anywhere are the
  * tell for the latter.
  */
-export function buildDayIndex(plan) {
+export function buildDayIndex(plan, horizon = planHorizonFromPlan(plan)) {
   const phases = plan?.plan?.phases;
   if (!Array.isArray(phases)) return new Map();
 
@@ -95,7 +96,7 @@ export function buildDayIndex(plan) {
   for (const entry of flat) {
     const absolute = weekRelative
       ? entry.weekOrdinal * 7 + clampDay(entry.rawDay, 1, 7)
-      : clampDay(entry.rawDay, 1, PLAN_HORIZON_DAYS);
+      : clampDay(entry.rawDay, 1, horizon);
     // Last write wins — a genuine collision means the model repeated itself.
     index.set(absolute, { ...entry, day: absolute });
   }
@@ -228,6 +229,33 @@ function baselineTask(step) {
 }
 
 /**
+ * Cap how many open tasks land in today's mission by band + budget.
+ * Weak/busy students should not see a 90-minute mock on a 10-minute day.
+ */
+function maxTodoTasks(budgetMinutes, bandKey = 'building') {
+  if (budgetMinutes <= 10) {
+    return bandKey === 'early' || bandKey === 'building' ? 1 : 2;
+  }
+  if (budgetMinutes <= 25) return bandKey === 'ready' || bandKey === 'approaching' ? 2 : 2;
+  if (budgetMinutes <= 45) return 3;
+  return bandKey === 'ready' ? 4 : 3;
+}
+
+function capFittedTasks(fitted, overflow, budgetMinutes, bandKey) {
+  const cap = maxTodoTasks(budgetMinutes, bandKey);
+  const done = fitted.filter((t) => t.status === 'done');
+  const open = fitted.filter((t) => t.status !== 'done');
+  if (open.length <= cap) return { fitted, overflow };
+
+  const kept = open.slice(0, cap);
+  const dropped = open.slice(cap);
+  return {
+    fitted: [...done, ...kept],
+    overflow: [...overflow, ...dropped],
+  };
+}
+
+/**
  * Select tasks that fit the day's budget.
  *
  * Always returns at least one task — a 10-minute budget facing a 20-minute
@@ -291,11 +319,16 @@ export function resolveMission(input = {}) {
     day0Complete = true,
     pause = null,
     config: overrides,
+    personalization = null,
   } = input;
+
+  const bandKey = personalization?.bandKey || 'building';
+  const baselinePath = personalization?.baselinePath || null;
 
   const config = { ...DEFAULT_CONFIG, ...(overrides || {}) };
   const planReady = Boolean(plan?.plan && (plan.status ? plan.status === 'ready' : true));
-  const index = planReady ? buildDayIndex(plan) : new Map();
+  const horizon = planReady ? planHorizonFromPlan(plan) : PLAN_HORIZON_DAYS;
+  const index = planReady ? buildDayIndex(plan, horizon) : new Map();
 
   const base = {
     mode: 'on_track',
@@ -314,6 +347,7 @@ export function resolveMission(input = {}) {
     planId: plan?.id ?? null,
     anchorDate,
     budgetMinutes,
+    deep_prep_days: horizon,
     drive: driveName(drive) ? { name: driveName(drive), daysUntil: drive.days_until ?? null } : null,
   };
 
@@ -355,6 +389,15 @@ export function resolveMission(input = {}) {
     if (weakTopics.length && (!current || tasks[0].status === 'done')) {
       tasks.push(weaknessTask(weakTopics[0], null));
     }
+    if (baselinePath === 'foundation' && weakTopics.length && tasks.length < 2) {
+      tasks.push({
+        ...weaknessTask(weakTopics[0], null),
+        minutes: Math.min(10, budgetMinutes),
+        title: `Foundation drill: ${weakTopics[0].label}`,
+        required: false,
+        origin: 'foundation',
+      });
+    }
     return finish({ ...base, mode: 'baseline', tasks });
   }
 
@@ -362,17 +405,17 @@ export function resolveMission(input = {}) {
     return finish({
       ...base,
       mode: 'awaiting_plan',
-      tasks: [actionTask('generate_plan', 'Generate your 90-day placement plan', 2)],
+      tasks: [actionTask('generate_plan', 'Generate your personalized placement plan', 2)],
     });
   }
 
   // --- Plan-day maths ---------------------------------------------------
 
   const elapsed = anchorDate ? daysBetween(anchorDate, today) : 0;
-  const calendarDay = clampDay((elapsed ?? 0) + 1, 1, PLAN_HORIZON_DAYS);
-  const cursorDay = firstIncompleteDay(index, ledger, PLAN_HORIZON_DAYS);
+  const calendarDay = clampDay((elapsed ?? 0) + 1, 1, horizon);
+  const cursorDay = firstIncompleteDay(index, ledger, horizon);
 
-  if (cursorDay > PLAN_HORIZON_DAYS && calendarDay >= PLAN_HORIZON_DAYS) {
+  if (cursorDay > horizon && calendarDay >= horizon) {
     const tasks = weakTopics.slice(0, 2).map((t) => weaknessTask(t, null));
     return finish({ ...base, mode: 'complete', calendarDay, cursorDay, tasks });
   }
@@ -395,7 +438,7 @@ export function resolveMission(input = {}) {
 
   if (drift < 0) {
     mode = 'ahead';
-    planDay = Math.min(cursorDay, PLAN_HORIZON_DAYS);
+    planDay = Math.min(cursorDay, horizon);
   } else if (drift === 0) {
     mode = 'on_track';
   } else if (drift <= grace) {
@@ -439,9 +482,12 @@ export function resolveMission(input = {}) {
     ? [...dayTasks].sort((a, b) => Number(b.kind === 'tool') - Number(a.kind === 'tool'))
     : dayTasks;
 
-  const { fitted, overflow } = fitToBudget(
-    [...carryOver, ...retests, ...ordered],
-    budgetMinutes
+  const budgetFit = fitToBudget([...carryOver, ...retests, ...ordered], budgetMinutes);
+  const capped = capFittedTasks(
+    budgetFit.fitted,
+    budgetFit.overflow,
+    budgetMinutes,
+    bandKey
   );
 
   return finish({
@@ -455,8 +501,8 @@ export function resolveMission(input = {}) {
     carryOver,
     droppedTopics,
     droppedTasks,
-    overflow,
-    tasks: fitted,
+    overflow: capped.overflow,
+    tasks: capped.fitted,
     weekTheme: entry?.theme || null,
     phaseId: entry?.phaseId || null,
   });

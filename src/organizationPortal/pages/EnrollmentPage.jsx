@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import { Check, Copy, FileUp, Link2, Pencil, Trash2, UserPlus, X } from 'lucide-react';
 import { getOrgSession } from '../../orgPortal';
 import { isDemoSession } from '../demoAuth';
+import { computeRosterCounts } from '../enrollmentMetrics';
 import { listDepartments, subscribeOrgDb } from '../store';
 import { fetchDepartmentOptions } from '../departmentsApi';
 import {
@@ -19,6 +20,12 @@ import {
   rejectStudentInvite,
   resendStudentSetupLink,
 } from '../studentsApi';
+import {
+  activityStatusLabel,
+  fetchPerformanceScorecards,
+  mergeRosterWithScorecards,
+  readinessTone,
+} from '../performanceApi';
 
 const CSV_TEMPLATE = `email,name,college_id,batch_year
 rahul.sharma@college.edu,Rahul Sharma,CSE2024A01,2025
@@ -68,6 +75,11 @@ export default function EnrollmentPage() {
   const [editBusy, setEditBusy] = useState(false);
   const [addOpen, setAddOpen] = useState(false);
 
+  const rosterSummary = useMemo(
+    () => computeRosterCounts(students, visiblePending.length),
+    [students, visiblePending.length]
+  );
+
   const registerUrl = useMemo(
     () => getRegistrationLink(departmentId || departments[0]?.id || ''),
     [departmentId, departments]
@@ -99,11 +111,33 @@ export default function EnrollmentPage() {
 
   const reload = async (deptFilter = departmentId) => {
     setLoading(true);
-    const [roster, queue] = await Promise.all([
-      fetchStudents({ departmentId: deptFilter || undefined }),
-      fetchStudentInvites({ status: 'pending', departmentId: deptFilter || undefined }),
-    ]);
-    setStudents(roster.students || []);
+    const dept = deptFilter || undefined;
+    const fetches = [
+      fetchStudents({ departmentId: dept }),
+      fetchStudentInvites({ status: 'pending', departmentId: dept }),
+    ];
+    if (!demo) {
+      fetches.push(
+        fetchPerformanceScorecards({ departmentId: dept }).catch(() => ({ items: [] }))
+      );
+    }
+    const results = await Promise.all(fetches);
+    const roster = results[0];
+    const queue = results[1];
+    let list = roster.students || [];
+    if (!demo && results[2]) {
+      list = mergeRosterWithScorecards(list, results[2]);
+    } else if (demo) {
+      list = list.map((s) => ({
+        ...s,
+        readiness: s.readiness != null && s.readiness > 0 ? s.readiness : null,
+        testsDone: s.testsDone ?? Math.min(8, s.activities || 0),
+        testsRemaining: s.testsRemaining ?? Math.max(0, 8 - (s.activities || 0)),
+        activityStatus:
+          s.activityStatus || ((s.activities || 0) >= 3 ? 'active' : 'never'),
+      }));
+    }
+    setStudents(list);
     setPending(queue.invitations || []);
     setDataSource(roster.source || queue.source || '');
     if (!roster.ok && roster.error) setErr(roster.error);
@@ -172,12 +206,33 @@ export default function EnrollmentPage() {
   useEffect(() => {
     let cancelled = false;
     const deptFilter = departmentId || undefined;
-    Promise.all([
+    const fetches = [
       fetchStudents({ departmentId: deptFilter }),
       fetchStudentInvites({ status: 'pending', departmentId: deptFilter }),
-    ]).then(([roster, queue]) => {
+    ];
+    if (!demo) {
+      fetches.push(
+        fetchPerformanceScorecards({ departmentId: deptFilter }).catch(() => ({ items: [] }))
+      );
+    }
+    Promise.all(fetches).then((results) => {
       if (cancelled) return;
-      setStudents(roster.students || []);
+      const roster = results[0];
+      const queue = results[1];
+      let list = roster.students || [];
+      if (!demo && results[2]) {
+        list = mergeRosterWithScorecards(list, results[2]);
+      } else if (demo) {
+        list = list.map((s) => ({
+          ...s,
+          readiness: s.readiness != null && s.readiness > 0 ? s.readiness : null,
+          testsDone: s.testsDone ?? Math.min(8, s.activities || 0),
+          testsRemaining: s.testsRemaining ?? Math.max(0, 8 - (s.activities || 0)),
+          activityStatus:
+            s.activityStatus || ((s.activities || 0) >= 3 ? 'active' : 'never'),
+        }));
+      }
+      setStudents(list);
       setPending(queue.invitations || []);
       setDataSource(roster.source || queue.source || '');
       setLoading(false);
@@ -185,7 +240,7 @@ export default function EnrollmentPage() {
     return () => {
       cancelled = true;
     };
-  }, [departmentId, location.key]);
+  }, [departmentId, demo, location.key]);
 
   const flash = (ok, text, setupUrl = '') => {
     setErr(ok ? '' : text);
@@ -563,6 +618,17 @@ export default function EnrollmentPage() {
         </div>
       ) : null}
 
+      {tab === 'roster' && students.length ? (
+        <div className="mm-org-roster-summary" role="status">
+          <strong>Roster:</strong> {rosterSummary.active} active · {rosterSummary.invited} awaiting
+          password · {rosterSummary.pending} pending approval
+          {rosterSummary.blocked ? ` · ${rosterSummary.blocked} blocked` : ''}
+          <span className="mm-org-roster-summary__note">
+            Readiness columns apply to active students who completed assessment week checks.
+          </span>
+        </div>
+      ) : null}
+
       <section className="mm-org-panel">
         {tab === 'queue' ? (
           visiblePending.length ? (
@@ -666,6 +732,9 @@ export default function EnrollmentPage() {
                 <tr>
                   <th>Student</th>
                   <th>Department</th>
+                  <th>Readiness</th>
+                  <th>Tests</th>
+                  <th>Activity</th>
                   <th>Login</th>
                   <th />
                 </tr>
@@ -686,6 +755,35 @@ export default function EnrollmentPage() {
                         departments.find((d) => String(d.id) === String(s.departmentId || ''))
                           ?.name ||
                         '—'}
+                    </td>
+                    <td>
+                      {s.authStatus === 'ready' && s.readiness != null ? (
+                        <span
+                          className={`mm-org-score-chip mm-org-score-chip--${readinessTone(s.readiness)}`}
+                        >
+                          {Math.round(s.readiness)}%
+                        </span>
+                      ) : (
+                        <span className="mm-org-text-muted" title="Scores appear after student is active and completes assessment week checks">
+                          —
+                        </span>
+                      )}
+                    </td>
+                    <td className="mm-org-text-muted">
+                      {s.authStatus === 'ready' && s.testsDone != null
+                        ? `${s.testsDone}/${(s.testsDone || 0) + (s.testsRemaining || 0) || 8}`
+                        : '—'}
+                    </td>
+                    <td>
+                      {s.authStatus === 'ready' ? (
+                        <span
+                          className={`mm-org-badge mm-org-badge--${s.activityStatus || 'never'}`}
+                        >
+                          {activityStatusLabel(s.activityStatus)}
+                        </span>
+                      ) : (
+                        <span className="mm-org-text-muted">—</span>
+                      )}
                     </td>
                     <td>
                       <span

@@ -292,6 +292,42 @@ export function DeptCompareChart({ departments = [] }) {
   );
 }
 
+export function DeptPillarCompareChart({ departments = [] }) {
+  const data = (departments || [])
+    .filter((d) => d.pillars?.aptitude != null || d.pillars?.skills != null || d.pillars?.interview != null)
+    .slice(0, 12)
+    .map((d) => ({
+      name: d.code || d.name,
+      full: d.name,
+      aptitude: d.pillars?.aptitude ?? null,
+      skills: d.pillars?.skills ?? null,
+      interview: d.pillars?.interview ?? null,
+    }));
+  if (!data.length) {
+    return <Empty text="Branch pillar scores appear after students complete assessment checks." />;
+  }
+
+  return (
+    <div className="mm-org-rechart">
+      <ResponsiveContainer width="100%" height={300}>
+        <BarChart data={data} margin={{ top: 8, right: 8, left: 0, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
+          <XAxis dataKey="name" tick={tickInk} />
+          <YAxis domain={[0, 100]} tick={tickInk} />
+          <Tooltip
+            formatter={(v, key) => [v == null ? '—' : `${Math.round(v)}%`, key]}
+            labelFormatter={(_, p) => p?.[0]?.payload?.full || ''}
+          />
+          <Legend />
+          <Bar dataKey="aptitude" name="Aptitude" fill="#0ea5e9" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="skills" name="Skills" fill="#14b8a6" radius={[4, 4, 0, 0]} />
+          <Bar dataKey="interview" name="Interview" fill="#8b5cf6" radius={[4, 4, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
 export function ActivityArea({ active = 0, idle = 0, inactive = 0, never = 0 }) {
   const data = [
     { name: 'Active 7d', value: active, fill: COLORS.strong },

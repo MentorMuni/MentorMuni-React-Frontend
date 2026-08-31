@@ -39,9 +39,13 @@ export default function PrepSnapshot({
 
   const tiles = [
     {
-      label: 'Enrolled',
-      value: students,
-      hint: scope === 'branch' ? scopeLabel : 'Active students',
+      label: metrics.enrollment ? 'Active (analytics)' : 'Enrolled',
+      value: metrics.enrollment ? metrics.enrollment.active : students,
+      hint: metrics.enrollment
+        ? `${metrics.enrollment.invited} awaiting password · ${metrics.enrollment.pending} pending`
+        : scope === 'branch'
+          ? scopeLabel
+          : 'Active students',
     },
     {
       label: 'Scored',
@@ -51,7 +55,7 @@ export default function PrepSnapshot({
     {
       label: 'Avg readiness',
       value: metrics?.avgReadiness == null ? '—' : `${Math.round(metrics.avgReadiness)}%`,
-      hint: scored ? 'Among scored cohort' : 'Complete Week-1 tools',
+      hint: scored ? 'Among scored cohort' : 'Complete assessment week',
     },
     {
       label: 'Drive-ready',
@@ -89,6 +93,19 @@ export default function PrepSnapshot({
           </p>
           <h2 className="mm-org-prep__title">{copy.title}</h2>
           <p className="mm-org-prep__blurb">{copy.blurb}</p>
+          {metrics.enrollment ? (
+            <p className="mm-org-prep__enrollment">
+              <strong>Roster pipeline:</strong>{' '}
+              {metrics.enrollment.active} active · {metrics.enrollment.invited} awaiting password ·{' '}
+              {metrics.enrollment.pending} pending approval
+              {metrics.enrollment.blocked
+                ? ` · ${metrics.enrollment.blocked} blocked`
+                : ''}
+              <span className="mm-org-prep__enrollment-note">
+                Readiness charts use active students only ({students}).
+              </span>
+            </p>
+          ) : null}
         </div>
         {showPerformanceLink ? (
           <Link to={orgPaths.performance} className="mm-org-btn mm-org-btn--primary mm-org-btn--sm">

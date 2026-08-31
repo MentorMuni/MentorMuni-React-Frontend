@@ -11,12 +11,16 @@ import { StudentShellContext } from './shellContext';
 import StudentSidebar from './components/home/StudentSidebar';
 import StudentTopbar from './components/home/StudentTopbar';
 import StudentPortalBusy from './components/StudentPortalBusy';
+import PlacementOnboarding from './components/PlacementOnboarding';
 import IdleSessionGuard from '../components/IdleSessionGuard';
+import { needsPlacementOnboarding } from './placementProfile';
+import { fetchStudentTarget } from './targetApi';
 import { studentApiBusy, useApiBusy } from '../lib/apiBusy';
 import { useAuthGateRerender } from '../lib/sessionGuards';
 import { whiteboardApi } from './whiteboardApi';
 
 import './styles/portal.css';
+import './styles/placement-onboarding.css';
 
 export default function StudentLayout() {
   useAuthGateRerender();
@@ -38,6 +42,7 @@ export default function StudentLayout() {
     weekDots: getStreakWeekDots(userKey),
   }));
   const [nextDrive, setNextDrive] = useState(null);
+  const [onboardingOpen, setOnboardingOpen] = useState(() => needsPlacementOnboarding(userKey));
   const apiBusy = useApiBusy(studentApiBusy);
 
   useStudentPortalCanvas(theme);
@@ -48,6 +53,24 @@ export default function StudentLayout() {
       weekDots: getStreakWeekDots(userKey),
     });
   }, [userKey]);
+
+  useEffect(() => {
+    if (!authed) return undefined;
+    let cancelled = false;
+    fetchStudentTarget({ userKey })
+      .then((target) => {
+        if (cancelled) return;
+        if (target.onboarding_completed) {
+          setOnboardingOpen(false);
+        } else if (needsPlacementOnboarding(userKey)) {
+          setOnboardingOpen(true);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [authed, userKey]);
 
   // Campus drives are college-only. Skip for individual (PUBLIC) students.
   useEffect(() => {
@@ -148,6 +171,13 @@ export default function StudentLayout() {
         </div>
 
         {apiBusy && !hideGlobalBusy ? <StudentPortalBusy /> : null}
+
+        {onboardingOpen ? (
+          <PlacementOnboarding
+            userKey={userKey}
+            onComplete={() => setOnboardingOpen(false)}
+          />
+        ) : null}
       </div>
     </IdleSessionGuard>
   );

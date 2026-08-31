@@ -1,6 +1,7 @@
 import { ArrowRight, Check, Circle, Flame } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
 import { MOTION, enterProps } from '../../motion';
+import { bandHomeCopy } from '../../placementProfile';
 
 /**
  * Page header: where the student is, and the one thing to do next.
@@ -14,8 +15,8 @@ import { MOTION, enterProps } from '../../motion';
 
 // Only phases we can drive from current plan state (Mocks/Ready need separate signals).
 const PHASES = [
-  { id: 'baseline', label: 'Baseline' },
-  { id: 'plan', label: '90-day plan' },
+  { id: 'baseline', label: 'Assessment week' },
+  { id: 'plan', label: 'Your plan' },
   { id: 'prep', label: 'Daily prep' },
 ];
 
@@ -35,6 +36,10 @@ export default function HomeHeader({
   onStart,
   onGenerate,
   generating = false,
+  readiness = null,
+  readinessBand: band = null,
+  weakest = null,
+  baselineSprintState = null,
 }) {
   const reduce = useReducedMotion();
   const firstName = String(studentName || '').split(' ')[0] || 'there';
@@ -42,26 +47,39 @@ export default function HomeHeader({
   const timeOfDay = hour < 12 ? 'morning' : hour < 17 ? 'afternoon' : 'evening';
   const phaseIdx = activePhaseIndex(weekStatus, planStatus);
   const baselineDone = weekStatus === 'done';
+  const planReady = planStatus === 'ready';
+  const hasScore = readiness != null && Number(readiness) > 0;
 
-  const nextLine = baselineDone
-    ? planStatus === 'ready'
-      ? 'Your plan is ready. Finish today’s tasks and watch your readiness climb.'
-      : planStatus === 'generating'
-        ? 'We’re building your 90-day plan from your baseline scores.'
-        : 'All 8 baseline checks are complete. Generate your plan and begin your 90-day sprint.'
-      : currentStep
-        ? `Next up: ${currentStep.title} — about ${currentStep.minutes} minutes. Finishing it unlocks the step after.`
-        : 'Start with the first baseline check to map your strengths and gaps.';
+  const personalizedLine =
+    band && hasScore
+      ? bandHomeCopy(band.key, { baselineDone, weakest, planReady })
+      : null;
+
+  const nextLine =
+    personalizedLine ||
+    (baselineDone
+      ? planReady
+        ? 'Your plan is ready. Finish today’s tasks and watch your readiness climb.'
+        : planStatus === 'generating'
+          ? 'We’re building your personalized plan from your assessment scores.'
+          : 'All 8 assessment checks are complete. Generate your plan — every student gets a different roadmap from their strengths and gaps.'
+      : baselineSprintState?.blockedUntilTomorrow
+        ? `Day ${baselineSprintState.sprintDay} of 3 is complete. Tomorrow unlocks the next batch.`
+        : currentStep
+          ? `Next up: ${currentStep.title} — Day ${baselineSprintState?.sprintDay ?? 1} of 3.`
+          : 'Start with the first baseline check to map your strengths and gaps.');
 
   const ctaLabel = baselineDone
     ? planStatus === 'ready'
-      ? 'View 90-day plan'
+      ? 'View your plan'
       : generating
         ? 'Generating…'
-        : 'Generate 90-day plan'
-    : currentStep
-      ? `Start ${currentStep.title}`
-      : 'Start baseline';
+        : 'Generate personalized plan'
+    : baselineSprintState?.blockedUntilTomorrow
+      ? 'Back tomorrow'
+      : currentStep
+        ? `Start ${currentStep.title}`
+        : 'Start baseline';
 
   const handleCta = () => {
     if (baselineDone && planStatus !== 'ready' && !generating) {
@@ -93,6 +111,13 @@ export default function HomeHeader({
       >
         Good {timeOfDay}, {firstName}
       </motion.h1>
+
+      {band && hasScore ? (
+        <motion.div className="stu-hero__band-row" {...enterProps(reduce, MOTION.stagger * 1.75)}>
+          <span className={`stu-hero__band is-${band.key}`}>{band.label}</span>
+          <span className="stu-hero__band-score">{Math.round(readiness)}% readiness</span>
+        </motion.div>
+      ) : null}
 
       <motion.p className="stu-hero__lead" {...enterProps(reduce, MOTION.stagger * 2)}>
         {nextLine}
@@ -128,7 +153,7 @@ export default function HomeHeader({
           type="button"
           className="stu-hero__cta"
           onClick={handleCta}
-          disabled={generating}
+          disabled={generating || baselineSprintState?.blockedUntilTomorrow}
           {...enterProps(reduce, MOTION.stagger * 3)}
           whileHover={reduce || generating ? undefined : { y: -1 }}
           whileTap={reduce || generating ? undefined : { scale: 0.985 }}
@@ -140,8 +165,9 @@ export default function HomeHeader({
 
         {!baselineDone ? (
           <p className="stu-hero__note">
-            {completedCount} of {totalCount} baseline checks done · one unlocks at a time · every
-            result sharpens your 90-day plan
+            {baselineSprintState?.blockedUntilTomorrow
+              ? `Day ${baselineSprintState.sprintDay} of 3 done — next batch unlocks tomorrow.`
+              : `Day ${baselineSprintState?.sprintDay ?? 1} of 3 · ${completedCount}/${totalCount} checks · finish today's batch before tomorrow.`}
           </p>
         ) : null}
       </div>

@@ -21,6 +21,10 @@ export async function fetchPerformanceScorecards(params = {}) {
   return orgApi.get(`/organizations/performance/scorecards${q ? `?${q}` : ''}`);
 }
 
+export async function fetchStudentScorecard(studentId) {
+  return orgApi.get(`/organizations/performance/scorecards/${encodeURIComponent(studentId)}`);
+}
+
 export async function fetchCampusInsight(body = {}) {
   return orgApi.post('/organizations/ai/campus-insight', body);
 }
@@ -132,6 +136,17 @@ export function summaryToUiMetrics(summary) {
       coveragePct: d.coverage_pct ?? 0,
       avgReadiness: d.avg_readiness ?? null,
       avgMock: d.avg_mock ?? null,
+      pillars: {
+        aptitude: d.pillars?.aptitude ?? null,
+        skills: d.pillars?.skills ?? null,
+        interview: d.pillars?.interview ?? null,
+        snap: d.pillars?.snap ?? null,
+        communication: d.pillars?.communication ?? null,
+        technical: d.pillars?.technical ?? null,
+        shortlist: d.pillars?.shortlist ?? null,
+      },
+      bestPillar: d.best_pillar ?? null,
+      weakestPillar: d.weakest_pillar ?? null,
       strong: d.strong,
       mid: d.mid,
       weak: d.weak,
@@ -142,6 +157,32 @@ export function summaryToUiMetrics(summary) {
       topGap: d.top_gap,
       hodStatus: d.hod_status,
     })),
+    branchPillarRankings: {
+      aptitude: (summary.branch_pillar_rankings?.aptitude || []).map((r) => ({
+        rank: r.rank,
+        departmentId: r.department_id,
+        departmentName: r.department_name,
+        code: r.code,
+        score: r.score,
+        studentsScored: r.students_scored,
+      })),
+      skills: (summary.branch_pillar_rankings?.skills || []).map((r) => ({
+        rank: r.rank,
+        departmentId: r.department_id,
+        departmentName: r.department_name,
+        code: r.code,
+        score: r.score,
+        studentsScored: r.students_scored,
+      })),
+      interview: (summary.branch_pillar_rankings?.interview || []).map((r) => ({
+        rank: r.rank,
+        departmentId: r.department_id,
+        departmentName: r.department_name,
+        code: r.code,
+        score: r.score,
+        studentsScored: r.students_scored,
+      })),
+    },
     leaders: (summary.leaders || []).map((s) => ({
       id: s.id,
       name: s.name,
@@ -237,6 +278,35 @@ export function scorecardsToUiRows(payload) {
     activityStatus: s.activity_status || 'never',
     bestArea: s.best_area,
   }));
+}
+
+/** Merge live scorecards onto enrollment roster rows (by student id). */
+export function mergeRosterWithScorecards(students = [], scorecardPayload) {
+  const rows = scorecardsToUiRows(scorecardPayload);
+  const byId = new Map(rows.map((s) => [String(s.id), s]));
+
+  return (students || []).map((s) => {
+    const sc = byId.get(String(s.id));
+    if (!sc) {
+      const hasLocalReadiness = s.readiness != null && Number(s.readiness) > 0;
+      return {
+        ...s,
+        readiness: hasLocalReadiness ? Number(s.readiness) : null,
+        testsDone: s.testsDone ?? null,
+        testsRemaining: s.testsRemaining ?? 8,
+        activityStatus: s.activityStatus || 'never',
+      };
+    }
+    return { ...s, ...sc };
+  });
+}
+
+export function activityStatusLabel(status) {
+  const s = String(status || 'never').toLowerCase();
+  if (s === 'active') return 'Active (7d)';
+  if (s === 'idle') return 'Idle (8–14d)';
+  if (s === 'inactive') return 'Inactive (14d+)';
+  return 'Not started';
 }
 
 export function readinessTone(score) {
