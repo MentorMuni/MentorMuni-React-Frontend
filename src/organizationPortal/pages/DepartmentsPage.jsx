@@ -60,6 +60,51 @@ function isMentorUnassigned(dept, slot) {
   return m.status === 'unassigned' || !m.email;
 }
 
+/** Normalize for duplicate checks: trim + case-insensitive. Codes also uppercased. */
+function normalizeDeptName(name) {
+  return String(name || '')
+    .trim()
+    .replace(/\s+/g, ' ')
+    .toLowerCase();
+}
+
+function normalizeDeptCode(code) {
+  return String(code || '')
+    .trim()
+    .toUpperCase();
+}
+
+/**
+ * Exact duplicates only (same name or same code). Variants like CS-1 / CS-2 are allowed.
+ * @returns {{ field: 'name'|'code', existing: object }|null}
+ */
+function findDuplicateDepartment(departments, { id, name, code } = {}) {
+  const nameKey = normalizeDeptName(name);
+  const codeKey = normalizeDeptCode(code);
+  if (!nameKey && !codeKey) return null;
+
+  for (const dept of departments || []) {
+    if (id && String(dept.id) === String(id)) continue;
+    const existingCode = normalizeDeptCode(dept.code);
+    const existingName = normalizeDeptName(dept.name);
+    if (codeKey && existingCode === codeKey) {
+      return { field: 'code', existing: dept };
+    }
+    if (nameKey && existingName === nameKey) {
+      return { field: 'name', existing: dept };
+    }
+  }
+  return null;
+}
+
+function duplicateDepartmentMessage(dup) {
+  if (!dup?.existing) return 'This department is already added.';
+  if (dup.field === 'code') {
+    return `Department code "${normalizeDeptCode(dup.existing.code)}" is already added. Use a different code (e.g. CS-1, CS-2).`;
+  }
+  return `Department "${dup.existing.name}" is already added. Rename it or use a distinct branch (e.g. CS-1, CS-2).`;
+}
+
 function statusBadge(status) {
   if (status === 'active') return 'mm-org-badge--active';
   if (status === 'invited') return 'mm-org-badge--pending';
@@ -213,9 +258,27 @@ export default function DepartmentsPage() {
   const onSaveDept = async (e) => {
     e.preventDefault();
     if (!canEdit) return;
+
+    const name = String(deptForm.name || '').trim();
+    const code = normalizeDeptCode(deptForm.code);
+    if (!name || !code) {
+      flash(false, 'Name and code are required.');
+      return;
+    }
+
+    const dup = findDuplicateDepartment(departments, {
+      id: deptForm.id,
+      name,
+      code,
+    });
+    if (dup) {
+      flash(false, duplicateDepartmentMessage(dup));
+      return;
+    }
+
     setBusy(true);
     flash(true, '');
-    const result = await saveDepartment(deptForm);
+    const result = await saveDepartment({ ...deptForm, name, code });
     setBusy(false);
     if (!result.ok) {
       flash(false, result.error);
@@ -665,6 +728,7 @@ export default function DepartmentsPage() {
           onClose={closePanels}
         >
           <form onSubmit={onSaveDept} autoComplete="off">
+            {err ? <div className="mm-org-alert mm-org-alert--error mb-3">{err}</div> : null}
             <div className="mm-org-form-grid">
               <div>
                 <label className="mm-org-label" htmlFor="dept-name">
@@ -676,7 +740,10 @@ export default function DepartmentsPage() {
                   className="mm-org-input"
                   placeholder="e.g. Computer Science"
                   value={deptForm.name}
-                  onChange={(e) => setDeptForm((f) => ({ ...f, name: e.target.value }))}
+                  onChange={(e) => {
+                    setErr('');
+                    setDeptForm((f) => ({ ...f, name: e.target.value }));
+                  }}
                   required
                   autoFocus
                   autoComplete="off"
@@ -692,12 +759,18 @@ export default function DepartmentsPage() {
                   className="mm-org-input"
                   placeholder="e.g. CSE"
                   value={deptForm.code}
-                  onChange={(e) => setDeptForm((f) => ({ ...f, code: e.target.value }))}
+                  onChange={(e) => {
+                    setErr('');
+                    setDeptForm((f) => ({ ...f, code: e.target.value }));
+                  }}
                   required
                   autoComplete="off"
                 />
               </div>
             </div>
+            <p className="mm-org-panel__meta mt-2 mb-0">
+              Exact name or code matches are blocked. Distinct branches like CS-1 and CS-2 are fine.
+            </p>
             <div className="mm-org-form-actions">
               <button type="submit" className="mm-org-btn mm-org-btn--primary" disabled={busy}>
                 <Plus size={15} /> {deptForm.id ? 'Save department' : 'Create department'}

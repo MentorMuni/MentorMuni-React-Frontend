@@ -222,6 +222,12 @@ function friendlyMutateError(err, action = 'complete this action') {
       'This email is already used for the other mentor slot on this department. Use a different email.'
     );
   }
+  if (code === 'DEPARTMENT_CODE_EXISTS' || /department code .+ already exists/i.test(raw)) {
+    return (
+      err.message ||
+      'This department code is already added. Use a different code (e.g. CS-1, CS-2).'
+    );
+  }
   if (code === 'DEPARTMENT_HAS_STUDENTS') {
     return (
       err.message ||
