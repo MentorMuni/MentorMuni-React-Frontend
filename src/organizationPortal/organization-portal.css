@@ -1002,17 +1002,14 @@ html.mm-new-ui .mm-org-root:not(.mm-org-root--light) .mm-org-profile__campus-bra
 }
 
 .mm-org-topbar__titles {
-  flex: 0 1 auto;
+  flex: 1 1 auto;
   min-width: 0;
-  max-width: min(240px, 26vw);
+  max-width: calc(100% - min(380px, 40vw) - 52px);
 }
 
 @media (max-width: 1280px) {
-  .mm-org-page-sub {
-    display: none;
-  }
   .mm-org-topbar__titles {
-    max-width: min(200px, 24vw);
+    max-width: calc(100% - min(340px, 44vw) - 52px);
   }
 }
 .mm-org-topbar__right {
@@ -1043,8 +1040,20 @@ html.mm-new-ui .mm-org-root:not(.mm-org-root--light) .mm-org-profile__campus-bra
   color: var(--org-ink);
   -webkit-text-fill-color: var(--org-ink);
   background: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-.mm-org-page-sub { margin: 6px 0 0; font-size: 14px; color: var(--org-muted); }
+.mm-org-page-sub {
+  margin: 6px 0 0;
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--org-muted);
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
 .mm-org-content { padding: 28px; }
 
 .mm-org-live {
