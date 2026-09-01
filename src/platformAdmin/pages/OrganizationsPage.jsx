@@ -1018,7 +1018,7 @@ export default function OrganizationsPage() {
             })}
           </tbody>
         </table>
-        {!loading && !filtered.length && <div className="mm-pa-empty">No organizations found.</div>}
+        {!loading && !orgTable.rows.length && <div className="mm-pa-empty">No organizations found.</div>}
       </div>
 
       {/* Create / Edit Organization */}
