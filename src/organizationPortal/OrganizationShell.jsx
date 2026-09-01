@@ -257,7 +257,6 @@ export default function OrganizationShell() {
           </nav>
 
           <div className="mm-org-sidebar__foot">
-            <OrgAccountIdentity session={session} align="left" />
             <div className="mm-org-sidebar__foot-links">
               <NavLink
                 to={orgPaths.profile}
@@ -278,17 +277,6 @@ export default function OrganizationShell() {
                 <span>Change password</span>
               </NavLink>
             </div>
-            <button
-              type="button"
-              className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm mm-org-sidebar__signout"
-              onClick={() => {
-                clearOrgSession();
-                navigate(getOrgLoginPath(), { replace: true });
-              }}
-            >
-              <LogOut size={15} />
-              <span>Sign out</span>
-            </button>
           </div>
         </aside>
 

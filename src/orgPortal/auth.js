@@ -17,6 +17,18 @@ const SESSION_KEY = 'mm-org-session';
 const TOKEN_KEY = 'mm-org-token';
 const authStore = createBrowserSessionStore([SESSION_KEY, TOKEN_KEY]);
 
+function normalizeSessionHodAccess(user) {
+  const raw = user?.hodAccess || user?.hod_access;
+  if (!raw || typeof raw !== 'object') return null;
+  return {
+    canInviteStudents: raw.canInviteStudents ?? raw.can_invite_students ?? true,
+    canViewAllScores: raw.canViewAllScores ?? raw.can_view_all_scores ?? true,
+    canAssignPrograms: raw.canAssignPrograms ?? raw.can_assign_programs ?? true,
+    canNotifyDepartment: raw.canNotifyDepartment ?? raw.can_notify_department ?? true,
+    canRunMocks: raw.canRunMocks ?? raw.can_run_mocks ?? true,
+  };
+}
+
 export function getOrgSession() {
   try {
     const raw = authStore.get(SESSION_KEY);
@@ -61,6 +73,7 @@ export function setOrgSession(user) {
         '',
       department_code: user?.department_code || user?.department?.code || '',
       permissions: Array.isArray(user?.permissions) ? user.permissions : [],
+      hodAccess: normalizeSessionHodAccess(user),
       mustChangePassword: Boolean(
         user?.mustChangePassword ||
           user?.must_change_password ||

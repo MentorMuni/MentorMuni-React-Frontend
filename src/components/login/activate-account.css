@@ -76,8 +76,9 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  padding: clamp(28px, 5vw, 56px);
+  justify-content: flex-start;
+  gap: clamp(18px, 2.5vh, 28px);
+  padding: clamp(24px, 4vw, 40px);
   color: #f7fbfc;
   background:
     radial-gradient(ellipse 90% 70% at 10% 0%, rgba(45, 212, 191, 0.22), transparent 55%),
@@ -124,8 +125,14 @@
   letter-spacing: -0.03em;
 }
 
+.mm-activate__brand-mid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .mm-activate__eyebrow {
-  margin: 0 0 14px;
+  margin: 0;
   font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.14em;
@@ -143,7 +150,7 @@
 }
 
 .mm-activate__college {
-  margin: 0 0 12px;
+  margin: 0;
   max-width: 28ch;
   font-size: clamp(1.05rem, 2vw, 1.25rem);
   font-weight: 700;
@@ -189,7 +196,7 @@
 }
 
 .mm-activate__lede {
-  margin: 18px 0 0;
+  margin: 4px 0 0;
   max-width: 36ch;
   font-size: 1.02rem;
   line-height: 1.55;
@@ -200,7 +207,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 28px;
+  margin: 10px 0 0;
   padding: 0;
   list-style: none;
 }
@@ -247,7 +254,8 @@
 }
 
 .mm-activate__brand-foot {
-  margin-top: 36px;
+  margin-top: auto;
+  padding-top: 20px;
   font-size: 0.8rem;
   color: rgba(186, 214, 220, 0.7);
 }

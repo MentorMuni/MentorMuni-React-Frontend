@@ -60,20 +60,35 @@ export function resolveHodDepartment(session = getOrgSession(), departments) {
   return null;
 }
 
-/** Live API HODs use server permissions; demo uses local Access Settings toggles. */
+/** Live API HODs use org policy from session; demo uses local Access Settings toggles. */
 export function resolveHodAccess(session = getOrgSession()) {
   const local = getHodAccess();
   if (session?.demo) return local;
+
+  const fromServer = session?.hodAccess || session?.hod_access;
+  if (fromServer && typeof fromServer === 'object') {
+    return {
+      canInviteStudents:
+        fromServer.canInviteStudents ?? fromServer.can_invite_students ?? true,
+      canViewAllScores:
+        fromServer.canViewAllScores ?? fromServer.can_view_all_scores ?? true,
+      canAssignPrograms:
+        fromServer.canAssignPrograms ?? fromServer.can_assign_programs ?? true,
+      canNotifyDepartment:
+        fromServer.canNotifyDepartment ?? fromServer.can_notify_department ?? true,
+      canRunMocks: fromServer.canRunMocks ?? fromServer.can_run_mocks ?? true,
+    };
+  }
+
   const perms = Array.isArray(session?.permissions) ? session.permissions : [];
   const has = (code) => perms.includes(code);
-  const denyInvite = perms.some((p) => /deny.*invite|invite.*deny/i.test(String(p)));
-  const denyAssign = perms.some((p) => /deny.*assign|assign.*deny/i.test(String(p)));
   return {
     ...local,
-    canInviteStudents: has('UPLOAD_STUDENTS') || has('APPROVE_STUDENT') ? !denyInvite : local.canInviteStudents,
-    canAssignPrograms: has('ASSIGN_PROGRAM') ? !denyAssign : local.canAssignPrograms,
-    canNotifyDepartment: has('SEND_NOTIFICATION') || local.canNotifyDepartment,
-    canViewAllScores: has('VIEW_REPORTS') || has('VIEW_DEPARTMENT_STUDENTS') || local.canViewAllScores,
+    canInviteStudents: has('UPLOAD_STUDENTS') || has('APPROVE_STUDENT'),
+    canAssignPrograms: has('ASSIGN_PROGRAM'),
+    canNotifyDepartment: has('SEND_NOTIFICATION'),
+    canViewAllScores: has('VIEW_REPORTS') || has('VIEW_DEPARTMENT_STUDENTS'),
+    canRunMocks: has('ASSIGN_ASSESSMENT'),
   };
 }
 

@@ -302,23 +302,282 @@
   justify-content: center;
 }
 
-.mm-org-profile-panel .mm-org-profile-card {
-  padding: 16px 18px;
+.mm-org-profile {
+  max-width: 920px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.mm-org-profile__hero {
+  position: relative;
+  overflow: hidden;
+  padding: 24px 26px;
+  background:
+    radial-gradient(120% 140% at 0% 0%, rgba(56, 189, 248, 0.14), transparent 58%),
+    radial-gradient(90% 120% at 100% 100%, rgba(251, 191, 36, 0.1), transparent 55%),
+    var(--org-panel);
+}
+
+.mm-org-profile__campus {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.mm-org-profile__campus-brand.mm-org-brand {
+  flex: 1 1 280px;
+  min-width: 0;
+}
+
+.mm-org-profile__campus-brand .mm-org-brand__name {
+  color: var(--org-ink);
+}
+
+.mm-org-profile__campus-brand .mm-org-brand__eyebrow {
+  color: var(--org-accent);
+}
+
+.mm-org-profile__campus-brand .mm-org-brand__logo,
+.mm-org-profile__campus-brand .mm-org-brand__fallback {
+  box-shadow:
+    0 10px 28px -18px rgba(15, 23, 42, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.mm-org-root:not(.mm-org-root--light) .mm-org-profile__campus-brand .mm-org-brand__logo {
+  background: #0f172a;
+  border-color: rgba(148, 163, 184, 0.25);
+}
+
+.mm-org-root:not(.mm-org-root--light) .mm-org-profile__campus-brand .mm-org-brand__fallback {
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  border-color: rgba(148, 163, 184, 0.25);
+  color: #94a3b8;
+}
+
+.mm-org-profile__campus-code {
+  margin: 0;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--org-line);
+  background: color-mix(in srgb, var(--org-panel) 82%, transparent);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--org-muted);
+}
+
+.mm-org-profile__campus-code span {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--org-ink);
+}
+
+.mm-org-profile__hero-divider {
+  height: 1px;
+  margin: 20px 0;
+  background: var(--org-line);
+}
+
+.mm-org-profile__hero-main {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.mm-org-profile__avatar {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  font-size: 1.35rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+  color: #0c4a6e;
+  background: linear-gradient(145deg, #e0f2fe, #bae6fd);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+}
+
+.mm-org-root--light .mm-org-profile__avatar {
+  color: #0c4a6e;
+}
+
+.mm-org-profile__hero-copy {
+  min-width: 0;
+}
+
+.mm-org-profile__eyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--org-muted);
+}
+
+.mm-org-profile__name {
+  margin: 6px 0 0;
+  font-size: 1.45rem;
+  font-weight: 850;
+  letter-spacing: -0.03em;
+  color: var(--org-ink);
+  line-height: 1.15;
+}
+
+.mm-org-profile__email {
+  margin: 6px 0 0;
+  font-size: 0.92rem;
+  color: var(--org-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mm-org-profile__badge {
+  display: inline-flex;
+  margin-top: 10px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #0c4a6e;
+  background: rgba(56, 189, 248, 0.16);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+}
+
+.mm-org-root:not(.mm-org-root--light) .mm-org-profile__badge {
+  color: #e0f2fe;
+  background: rgba(56, 189, 248, 0.14);
+  border-color: rgba(56, 189, 248, 0.32);
+}
+
+.mm-org-profile__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.mm-org-profile__rows {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mm-org-profile__rows .mm-org-settings-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.mm-org-profile__mono {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+}
+
+.mm-org-profile__links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.mm-org-profile__link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 14px;
   border-radius: 14px;
   border: 1px solid var(--org-line);
-  background: var(--org-panel);
+  background: color-mix(in srgb, var(--org-panel) 88%, transparent);
+  color: var(--org-ink);
+  text-decoration: none;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
 }
 
-.mm-org-profile-card .mm-org-account__name {
-  font-size: 15px;
+.mm-org-profile__link:hover {
+  border-color: rgba(56, 189, 248, 0.35);
+  background: color-mix(in srgb, var(--org-side-accent) 8%, var(--org-panel));
+  transform: translateY(-1px);
 }
 
-.mm-org-profile-card .mm-org-account__email {
-  font-size: 13px;
+.mm-org-profile__link-icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 11px;
+  color: var(--org-accent);
+  background: rgba(56, 189, 248, 0.12);
 }
 
-.mm-org-profile-card .mm-org-account__role {
-  font-size: 11px;
+.mm-org-profile__link-copy {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.mm-org-profile__link-copy strong {
+  font-size: 0.9rem;
+  font-weight: 750;
+}
+
+.mm-org-profile__link-copy span {
+  font-size: 0.78rem;
+  color: var(--org-muted);
+}
+
+.mm-org-profile__link-arrow {
+  flex: 0 0 auto;
+  color: var(--org-muted);
+}
+
+@media (max-width: 860px) {
+  .mm-org-profile__grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .mm-org-profile__hero {
+    padding: 20px 18px;
+  }
+
+  .mm-org-profile__campus {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .mm-org-profile__hero-main {
+    align-items: flex-start;
+  }
+
+  .mm-org-profile__avatar {
+    width: 60px;
+    height: 60px;
+    font-size: 1.1rem;
+    border-radius: 16px;
+  }
+
+  .mm-org-profile__name {
+    font-size: 1.2rem;
+  }
 }
 .mm-org-user-card {
   margin-bottom: 10px;

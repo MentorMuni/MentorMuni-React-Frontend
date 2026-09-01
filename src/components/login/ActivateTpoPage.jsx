@@ -195,7 +195,7 @@ export default function ActivateTpoPage() {
               Built for Training &amp; Placement leadership
             </li>
           </ul>
-          <p style={{ marginTop: 20 }}>MentorMuni · Placement readiness for engineering colleges</p>
+          <p style={{ marginTop: 12 }}>MentorMuni · Placement readiness for engineering colleges</p>
         </div>
       </aside>
 
