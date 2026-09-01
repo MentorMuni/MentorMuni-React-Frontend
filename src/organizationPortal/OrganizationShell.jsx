@@ -317,35 +317,38 @@ export default function OrganizationShell() {
               </AnimatePresence>
               <p className="mm-org-page-sub">{sub}</p>
             </div>
-            <div className="mm-org-topbar__right">
-              <div className="mm-org-topbar__campus">
-                <span className="mm-org-live mm-org-live--topbar">
-                  <span className="mm-org-live-dot" />
-                  {liveLabel}
-                </span>
-                <OrgShellCollegeBrand college={college} variant="topbar" />
-              </div>
-              <div className="mm-org-account" title="Signed-in account">
-                <OrgAccountIdentity session={session} align="right" />
-                <div className="mm-org-account__actions">
-                  <button
-                    type="button"
-                    className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm mm-org-account__signout"
-                    onClick={() => {
-                      clearOrgSession();
-                      navigate(getOrgLoginPath(), { replace: true });
-                    }}
-                  >
-                    <LogOut size={15} />
-                    <span>Sign out</span>
-                  </button>
-                  <OrgThemeToggle
-                    theme={theme}
-                    onToggle={toggleTheme}
-                    compact
-                    className="mm-org-theme-toggle--in-account"
-                  />
-                </div>
+            <div className="mm-org-topbar__campus mm-org-topbar__campus-strip">
+              <OrgShellCollegeBrand
+                college={college}
+                variant="topbar"
+                belowName={
+                  <span className="mm-org-live mm-org-live--topbar mm-org-live--below-college">
+                    <span className="mm-org-live-dot" />
+                    {liveLabel}
+                  </span>
+                }
+              />
+            </div>
+            <div className="mm-org-account" title="Signed-in account">
+              <OrgAccountIdentity session={session} align="right" />
+              <div className="mm-org-account__actions">
+                <button
+                  type="button"
+                  className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm mm-org-account__signout"
+                  onClick={() => {
+                    clearOrgSession();
+                    navigate(getOrgLoginPath(), { replace: true });
+                  }}
+                >
+                  <LogOut size={15} />
+                  <span>Sign out</span>
+                </button>
+                <OrgThemeToggle
+                  theme={theme}
+                  onToggle={toggleTheme}
+                  compact
+                  className="mm-org-theme-toggle--in-account"
+                />
               </div>
             </div>
           </header>

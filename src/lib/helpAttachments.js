@@ -34,7 +34,8 @@ export function fileToAttachment(file) {
     reader.onerror = () => reject(new Error('Could not read that image. Try another file.'));
     reader.onload = () => {
       const result = String(reader.result || '');
-      const data = result.includes(',') ? result.split(',', 1)[1] : result;
+      const comma = result.indexOf(',');
+      const data = comma >= 0 ? result.slice(comma + 1) : result;
       if (!data || data.length < 8) {
         reject(new Error('That image looks empty. Pick a different file.'));
         return;

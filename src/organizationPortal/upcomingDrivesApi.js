@@ -159,6 +159,11 @@ export async function fetchUpcomingDrives() {
     );
     return withSource({ ok: true, items }, 'api');
   } catch (err) {
+    const raw = String(err?.message || err || '').trim();
+    const network =
+      raw === 'Failed to fetch' ||
+      raw === 'NetworkError when attempting to fetch resource.' ||
+      err?.name === 'TypeError';
     if (err instanceof OrgApiError && (err.status === 403 || err.status === 401)) {
       return {
         ok: false,
@@ -169,9 +174,10 @@ export async function fetchUpcomingDrives() {
     }
     return {
       ok: false,
-      error:
-        err.message ||
-        'Upcoming drives API is unavailable. Deploy backend routes, then retry.',
+      error: network
+        ? 'Could not reach the server. If this keeps happening, ask your TPO to confirm the campus API is up to date.'
+        : raw ||
+          'Upcoming drives API is unavailable. Deploy backend routes, then retry.',
       items: [],
       source: 'unavailable',
     };

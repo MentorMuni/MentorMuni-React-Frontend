@@ -17,7 +17,7 @@ const demoSession = {
   dept_admin_title: '',
   role_label: '',
   organization_id: 'demo-org',
-  organization_name: 'MentorMuni Demo College',
+  organization_name: 'Indore Public School',
   organization_code: 'DEMO',
   department_id: null,
   department_name: '',
@@ -64,7 +64,7 @@ async function capture() {
     const fullPath = path.join(outDir, 'tpo-portal-topbar-layout.png');
     await page.screenshot({ path: fullPath, fullPage: false });
 
-    const topbarRight = await page.$('.mm-org-topbar__right');
+    const topbarRight = await page.$('.mm-org-topbar__campus-strip');
     if (topbarRight) {
       await topbarRight.screenshot({
         path: path.join(outDir, 'tpo-portal-topbar-right-closeup.png'),
