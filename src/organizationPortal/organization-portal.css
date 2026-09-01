@@ -244,47 +244,71 @@
   color: var(--org-side-accent);
 }
 
-/* College identity — compact sidebar lockup */
-.mm-org-side-college {
-  margin: 0 2px 10px;
-  padding: 0 2px 10px;
+/* College identity — topbar (logo + name above live badge) */
+.mm-org-topbar__campus {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  max-width: min(220px, 28vw);
+  flex-shrink: 0;
 }
 
-.mm-org-side-college__brand.mm-org-brand--sm {
-  gap: 8px;
+.mm-org-topbar-college {
+  display: flex;
   align-items: center;
+  max-width: 100%;
 }
 
-.mm-org-side-college__brand .mm-org-brand__name,
-html.mm-new-ui .mm-org-side-college__brand .mm-org-brand__name {
-  color: var(--org-side-ink);
-  font-size: 0.76rem;
-  font-weight: 750;
-  line-height: 1.25;
+.mm-org-topbar-college__brand.mm-org-brand--sm {
+  gap: 8px;
+  min-width: 0;
+  justify-content: flex-end;
+}
+
+.mm-org-topbar-college__brand .mm-org-brand__name,
+html.mm-new-ui .mm-org-topbar-college__brand .mm-org-brand__name {
+  color: var(--org-ink);
+  font-size: 0.78rem;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: right;
   -webkit-line-clamp: 2;
 }
 
-.mm-org-side-college__brand .mm-org-brand__logo,
-.mm-org-side-college__brand .mm-org-brand__fallback,
-html.mm-new-ui .mm-org-side-college__brand .mm-org-brand__logo,
-html.mm-new-ui .mm-org-side-college__brand .mm-org-brand__fallback {
-  width: 28px;
-  height: 28px;
+.mm-org-topbar-college__brand .mm-org-brand__logo,
+.mm-org-topbar-college__brand .mm-org-brand__fallback,
+html.mm-new-ui .mm-org-topbar-college__brand .mm-org-brand__logo,
+html.mm-new-ui .mm-org-topbar-college__brand .mm-org-brand__fallback {
+  width: 30px;
+  height: 30px;
   border-radius: 8px;
   background: #fff;
   border: none;
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--org-side-accent) 22%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--org-accent) 22%, transparent);
 }
 
-.mm-org-root:not(.mm-org-root--light) .mm-org-side-college__brand .mm-org-brand__fallback {
-  background: linear-gradient(145deg, #1e293b, #0f172a);
-  border-color: rgba(148, 163, 184, 0.25);
-  color: #94a3b8;
-}
-
-.mm-org-side-college__brand .mm-org-brand__fallback {
+.mm-org-root--light .mm-org-topbar-college__brand .mm-org-brand__fallback {
   color: #15799f;
   background: linear-gradient(145deg, #e8f6fc, #d4edf8);
+}
+
+.mm-org-live--topbar {
+  padding: 4px 9px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+
+.mm-org-topbar__account-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.mm-org-theme-toggle--below-account {
+  align-self: flex-end;
 }
 
 .mm-org-nav-label {
@@ -878,10 +902,10 @@ html.mm-new-ui .mm-org-root:not(.mm-org-root--light) .mm-org-profile__campus-bra
 }
 .mm-org-topbar__right {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-end;
   flex-wrap: nowrap;
-  gap: 10px;
+  gap: 14px;
   flex-shrink: 0;
   margin-left: auto;
 }
@@ -1454,11 +1478,13 @@ html.mm-new-ui .mm-org-root:not(.mm-org-root--light) .mm-org-profile__campus-bra
   .mm-org-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .mm-org-content { padding: 16px 16px 40px; }
   .mm-org-topbar { padding: 12px 16px; flex-wrap: wrap; align-items: center; }
-  .mm-org-topbar__right { width: auto; margin-left: auto; justify-content: flex-end; flex-wrap: wrap; }
+  .mm-org-topbar__right { width: auto; margin-left: auto; justify-content: flex-end; flex-wrap: wrap; gap: 10px; }
+  .mm-org-topbar__campus { max-width: min(180px, 34vw); }
   .mm-org-account { max-width: 100%; }
 }
 @media (max-width: 640px) {
   .mm-org-stat-grid { grid-template-columns: 1fr; }
+  .mm-org-topbar__campus { display: none; }
   .mm-org-account__role { display: none; }
   .mm-org-workspace__item {
     flex-wrap: wrap;

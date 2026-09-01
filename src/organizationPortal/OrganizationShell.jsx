@@ -193,6 +193,12 @@ export default function OrganizationShell() {
           ? 'Viewer'
           : 'Organization';
 
+  const liveLabel = isViewerRole(session?.role)
+    ? 'Live · View only'
+    : isHodRole(session?.role)
+      ? 'Live · Branch ops'
+      : 'Live · Campus ops';
+
   return (
     <IdleSessionGuard
       isAuthenticated={isOrgAuthenticated}
@@ -231,8 +237,6 @@ export default function OrganizationShell() {
           </div>
 
           <div className="mm-org-sidebar__scroll">
-            <OrgShellCollegeBrand college={college} />
-
             <nav className="mm-org-nav" aria-label="Organization modules">
             {navGroups.map((group) => (
               <div key={group.section}>
@@ -314,28 +318,33 @@ export default function OrganizationShell() {
               <p className="mm-org-page-sub">{sub}</p>
             </div>
             <div className="mm-org-topbar__right">
-              <OrgThemeToggle theme={theme} onToggle={toggleTheme} />
-              <span className="mm-org-live hidden md:inline-flex">
-                <span className="mm-org-live-dot" />
-                {isViewerRole(session?.role)
-                  ? 'Live · View only'
-                  : isHodRole(session?.role)
-                    ? 'Live · Branch ops'
-                    : 'Live · Campus ops'}
-              </span>
-              <div className="mm-org-account" title="Signed-in account">
-                <OrgAccountIdentity session={session} align="right" />
-                <button
-                  type="button"
-                  className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm mm-org-account__signout"
-                  onClick={() => {
-                    clearOrgSession();
-                    navigate(getOrgLoginPath(), { replace: true });
-                  }}
-                >
-                  <LogOut size={15} />
-                  <span>Sign out</span>
-                </button>
+              <div className="mm-org-topbar__campus">
+                <OrgShellCollegeBrand college={college} variant="topbar" />
+                <span className="mm-org-live mm-org-live--topbar">
+                  <span className="mm-org-live-dot" />
+                  {liveLabel}
+                </span>
+              </div>
+              <div className="mm-org-topbar__account-col">
+                <div className="mm-org-account" title="Signed-in account">
+                  <OrgAccountIdentity session={session} align="right" />
+                  <button
+                    type="button"
+                    className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm mm-org-account__signout"
+                    onClick={() => {
+                      clearOrgSession();
+                      navigate(getOrgLoginPath(), { replace: true });
+                    }}
+                  >
+                    <LogOut size={15} />
+                    <span>Sign out</span>
+                  </button>
+                </div>
+                <OrgThemeToggle
+                  theme={theme}
+                  onToggle={toggleTheme}
+                  className="mm-org-theme-toggle--below-account"
+                />
               </div>
             </div>
           </header>
