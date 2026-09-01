@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   Check,
@@ -187,6 +187,34 @@ export default function DepartmentsPage() {
   const [msg, setMsg] = useState('');
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
+  const loadSeq = useRef(0);
+
+  const mergeDepartmentRow = (prev, next) => {
+    if (!next?.id) return prev;
+    const idx = prev.findIndex((d) => String(d.id) === String(next.id));
+    if (idx === -1) return [...prev, next];
+    const copy = [...prev];
+    copy[idx] = { ...copy[idx], ...next };
+    return copy;
+  };
+
+  const loadDepartments = useCallback(async ({ keepMessages = false } = {}) => {
+    const seq = ++loadSeq.current;
+    setLoading(true);
+    const result = await fetchDepartments();
+    if (seq !== loadSeq.current) return result;
+
+    setDepartments((prev) => (result.ok ? result.departments || [] : prev));
+    if (result.ok) {
+      setSource(result.source || 'local');
+      if (!keepMessages) setErr('');
+    } else if (result.error) {
+      setErr(result.error);
+      if (!keepMessages) setMsg('');
+    }
+    setLoading(false);
+    return result;
+  }, []);
 
   const deptTable = useTableQuery(departments, {
     searchKeys: ['name', 'code', 'hodName', 'hodEmail', 'coordinatorName', 'coordinatorEmail'],
@@ -199,43 +227,17 @@ export default function DepartmentsPage() {
     },
   });
 
-  const refresh = async () => {
-    setLoading(true);
-    const result = await fetchDepartments();
-    setDepartments(result.departments || []);
-    setSource(result.source || 'local');
-    if (!result.ok && result.error) {
-      setErr(result.error);
-      setMsg('');
-    }
-    setLoading(false);
-  };
-
   useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    fetchDepartments().then((result) => {
-      if (cancelled) return;
-      setDepartments(result.departments || []);
-      setSource(result.source || 'local');
-      if (!result.ok && result.error) {
-        setErr(result.error);
-      }
-      setLoading(false);
-    });
+    loadDepartments();
     const unsub = subscribeOrgDb(() => {
       if (!session?.demo) return;
-      fetchDepartments().then((result) => {
-        if (cancelled) return;
-        setDepartments(result.departments || []);
-        setSource(result.source || 'local');
-      });
+      loadDepartments({ keepMessages: true });
     });
     return () => {
-      cancelled = true;
+      loadSeq.current += 1;
       unsub();
     };
-  }, [session?.demo, location.key]);
+  }, [session?.demo, location.key, loadDepartments]);
 
   const activeDept = useMemo(
     () => departments.find((d) => d.id === activeId) || null,
@@ -301,6 +303,11 @@ export default function DepartmentsPage() {
       return;
     }
     const wasEdit = Boolean(deptForm.id);
+    if (result.department) {
+      setDepartments((prev) => mergeDepartmentRow(prev, result.department));
+      setSource(result.source || 'api');
+      setErr('');
+    }
     closePanels();
     flash(
       true,
@@ -308,7 +315,7 @@ export default function DepartmentsPage() {
         ? 'Department updated.'
         : 'Department created. Next: invite an HOD (optional Placement Coordinator too).'
     );
-    await refresh();
+    await loadDepartments({ keepMessages: true });
   };
 
   const openInvite = (dept, slot = 'hod') => {
@@ -382,7 +389,11 @@ export default function DepartmentsPage() {
     }
     applyInviteResult(result, hodForm.email, inviteSetters, mentorSlot);
     setPanel(null);
-    await refresh();
+    if (result.department) {
+      setDepartments((prev) => mergeDepartmentRow(prev, result.department));
+      setErr('');
+    }
+    await loadDepartments({ keepMessages: true });
   };
 
   const onReplace = async (e) => {
@@ -400,7 +411,11 @@ export default function DepartmentsPage() {
     }
     applyInviteResult(result, hodForm.email, inviteSetters, mentorSlot);
     setPanel(null);
-    await refresh();
+    if (result.department) {
+      setDepartments((prev) => mergeDepartmentRow(prev, result.department));
+      setErr('');
+    }
+    await loadDepartments({ keepMessages: true });
   };
 
   const onReinvite = async (dept, slot = 'hod') => {
@@ -420,7 +435,11 @@ export default function DepartmentsPage() {
     const m = mentorFields(dept, slot);
     setHodForm({ name: m.name, email: m.email, reason: '' });
     applyInviteResult(result, m.email, inviteSetters, slot);
-    await refresh();
+    if (result.department) {
+      setDepartments((prev) => mergeDepartmentRow(prev, result.department));
+      setErr('');
+    }
+    await loadDepartments({ keepMessages: true });
   };
 
   const onRevoke = async (e) => {
@@ -439,7 +458,11 @@ export default function DepartmentsPage() {
     closePanels();
     setLinkInfo(null);
     flash(true, result.message || `${mentorLabel(mentorSlot)} revoked.`);
-    await refresh();
+    if (result.department) {
+      setDepartments((prev) => mergeDepartmentRow(prev, result.department));
+      setErr('');
+    }
+    await loadDepartments({ keepMessages: true });
   };
 
   const onDelete = async (dept) => {
@@ -453,8 +476,10 @@ export default function DepartmentsPage() {
       return;
     }
     if (activeId === dept.id) closePanels();
+    setDepartments((prev) => prev.filter((d) => String(d.id) !== String(dept.id)));
+    setErr('');
     flash(true, 'Department removed.');
-    await refresh();
+    await loadDepartments({ keepMessages: true });
   };
 
   const copyLink = async () => {

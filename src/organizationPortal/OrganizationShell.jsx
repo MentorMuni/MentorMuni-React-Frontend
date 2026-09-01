@@ -34,6 +34,8 @@ import { orgPaths } from './paths';
 import { useOrgTheme } from './useOrgTheme';
 import OrgThemeToggle from './OrgThemeToggle';
 import OrgAccountIdentity from './components/OrgAccountIdentity';
+import OrgShellCollegeBrand from './components/OrgShellCollegeBrand';
+import { useOrgCollegeBrand } from './useOrgCollegeBrand';
 import IdleSessionGuard from '../components/IdleSessionGuard';
 import '../components/table/table-query.css';
 import './organization-portal.css';
@@ -151,6 +153,7 @@ export default function OrganizationShell() {
   const navigate = useNavigate();
   const location = useLocation();
   const session = getOrgSession();
+  const college = useOrgCollegeBrand(session);
   const { theme, toggleTheme } = useOrgTheme();
   const [navOpen, setNavOpen] = useState(false);
   const portalRole = normalizeOrgRole(session?.role);
@@ -226,6 +229,8 @@ export default function OrganizationShell() {
               <X size={18} />
             </button>
           </div>
+
+          <OrgShellCollegeBrand college={college} />
 
           <nav className="mm-org-nav" aria-label="Organization modules">
             {navGroups.map((group) => (

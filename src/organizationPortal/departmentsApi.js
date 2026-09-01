@@ -286,34 +286,48 @@ export async function fetchDepartments({ include = 'full' } = {}) {
     return withSource({ ok: true, departments: local.listDepartments() }, 'local');
   }
 
-  try {
-    const mode = String(include || 'full').toLowerCase();
-    const qs =
-      mode === 'full' || mode === ''
-        ? ''
-        : `?include=${encodeURIComponent(mode === 'options' ? 'light' : mode)}`;
-    const data = await orgApi.get(`/organizations/departments${qs}`);
+  const mode = String(include || 'full').toLowerCase();
+  const qs =
+    mode === 'full' || mode === ''
+      ? ''
+      : `?include=${encodeURIComponent(mode === 'options' ? 'light' : mode)}`;
+  const path = `/organizations/departments${qs}`;
+
+  const parseList = (data) => {
     const list = Array.isArray(data) ? data : data?.departments || data?.items || [];
-    return withSource(
-      { ok: true, departments: list.map(normalizeDepartment).filter(Boolean) },
-      'api'
-    );
-  } catch (err) {
-    if (!isMissingApi(err)) {
-      return {
-        ok: false,
-        error: err.message || 'Failed to load departments.',
-        departments: [],
-        source: 'error',
-      };
+    return list.map(normalizeDepartment).filter(Boolean);
+  };
+
+  let lastErr = null;
+  for (let attempt = 0; attempt < 2; attempt += 1) {
+    try {
+      const data = await orgApi.get(path);
+      return withSource({ ok: true, departments: parseList(data) }, 'api');
+    } catch (err) {
+      lastErr = err;
+      const retryable =
+        err instanceof OrgApiError &&
+        (err.status === 0 || err.status >= 500 || err.status === 429);
+      if (!retryable || attempt === 1) break;
+      await new Promise((resolve) => window.setTimeout(resolve, 350));
     }
+  }
+
+  const err = lastErr;
+  if (err instanceof OrgApiError && !isMissingApi(err)) {
     return {
       ok: false,
-      error: 'Unable to load departments from the server.',
+      error: err.message || 'Failed to load departments.',
       departments: [],
-      source: 'unavailable',
+      source: 'error',
     };
   }
+  return {
+    ok: false,
+    error: 'Unable to load departments from the server.',
+    departments: [],
+    source: 'unavailable',
+  };
 }
 
 /** Dropdown / filter rows — skips mentors + history on the API. */

@@ -182,6 +182,49 @@
   color: var(--org-side-accent);
 }
 
+/* College identity — sidebar + topbar (their campus) */
+.mm-org-side-college {
+  margin: 0 8px 14px;
+  padding: 11px 12px;
+  border-radius: 14px;
+  border: 1px solid var(--org-side-border);
+  background: color-mix(in srgb, var(--org-side-accent) 9%, transparent);
+}
+
+.mm-org-side-college__brand.mm-org-brand--sm {
+  gap: 10px;
+}
+
+.mm-org-side-college__brand .mm-org-brand__name,
+html.mm-new-ui .mm-org-side-college__brand .mm-org-brand__name {
+  color: var(--org-side-ink);
+  font-size: 0.84rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.mm-org-side-college__brand .mm-org-brand__logo,
+.mm-org-side-college__brand .mm-org-brand__fallback,
+html.mm-new-ui .mm-org-side-college__brand .mm-org-brand__logo,
+html.mm-new-ui .mm-org-side-college__brand .mm-org-brand__fallback {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #fff;
+  border-color: color-mix(in srgb, var(--org-side-accent) 28%, transparent);
+}
+
+.mm-org-root:not(.mm-org-root--light) .mm-org-side-college__brand .mm-org-brand__fallback {
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  border-color: rgba(148, 163, 184, 0.25);
+  color: #94a3b8;
+}
+
+.mm-org-side-college__brand .mm-org-brand__fallback {
+  color: #15799f;
+  background: linear-gradient(145deg, #e8f6fc, #d4edf8);
+}
+
 .mm-org-nav-label {
   margin: 14px 10px 6px;
   font-size: 11px;
@@ -333,12 +376,46 @@
   min-width: 0;
 }
 
-.mm-org-profile__campus-brand .mm-org-brand__name {
-  color: var(--org-ink);
+/* Light portal — override sitewide html.mm-new-ui hub/login brand colors */
+.mm-org-root--light .mm-org-profile__campus-brand .mm-org-brand__name,
+html.mm-new-ui .mm-org-root--light .mm-org-profile__campus-brand .mm-org-brand__name {
+  color: #18181b;
 }
 
-.mm-org-profile__campus-brand .mm-org-brand__eyebrow {
-  color: var(--org-accent);
+.mm-org-root--light .mm-org-profile__campus-brand .mm-org-brand__eyebrow,
+html.mm-new-ui .mm-org-root--light .mm-org-profile__campus-brand .mm-org-brand__eyebrow {
+  color: #0e5e85;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.mm-org-root--light .mm-org-profile__campus-brand .mm-org-brand__logo,
+.mm-org-root--light .mm-org-profile__campus-brand .mm-org-brand__fallback,
+html.mm-new-ui .mm-org-root--light .mm-org-profile__campus-brand .mm-org-brand__logo,
+html.mm-new-ui .mm-org-root--light .mm-org-profile__campus-brand .mm-org-brand__fallback {
+  background: #ffffff;
+  border-color: rgba(26, 143, 196, 0.2);
+  box-shadow:
+    0 10px 28px -18px rgba(15, 23, 42, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+.mm-org-root--light .mm-org-profile__campus-brand .mm-org-brand__fallback,
+html.mm-new-ui .mm-org-root--light .mm-org-profile__campus-brand .mm-org-brand__fallback {
+  color: #15799f;
+  background: linear-gradient(145deg, #e8f6fc, #d4edf8);
+}
+
+/* Dark portal */
+.mm-org-root:not(.mm-org-root--light) .mm-org-profile__campus-brand .mm-org-brand__name,
+html.mm-new-ui .mm-org-root:not(.mm-org-root--light) .mm-org-profile__campus-brand .mm-org-brand__name {
+  color: #f8fafc;
+}
+
+.mm-org-root:not(.mm-org-root--light) .mm-org-profile__campus-brand .mm-org-brand__eyebrow,
+html.mm-new-ui .mm-org-root:not(.mm-org-root--light) .mm-org-profile__campus-brand .mm-org-brand__eyebrow {
+  color: #67e8f9;
+  letter-spacing: 0.1em;
 }
 
 .mm-org-profile__campus-brand .mm-org-brand__logo,
@@ -731,6 +808,12 @@
   position: sticky;
   top: 0;
   z-index: 20;
+  flex-wrap: wrap;
+}
+
+.mm-org-topbar__titles {
+  flex: 1 1 200px;
+  min-width: 0;
 }
 .mm-org-topbar__right {
   display: flex;
@@ -1763,6 +1846,17 @@ html.mm-new-ui .mm-org-root:not(.mm-org-root--light) {
 .mm-org-text { color: var(--org-ink) !important; }
 .mm-org-text-muted { color: var(--org-muted) !important; }
 .mm-org-text-accent { color: var(--org-accent) !important; }
+
+.mm-org-inline-link {
+  color: var(--org-accent);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.mm-org-inline-link:hover {
+  color: var(--org-nav-hover);
+}
 .mm-org-text-amber { color: var(--org-amber) !important; }
 .mm-org-band-label {
   font-weight: 700;

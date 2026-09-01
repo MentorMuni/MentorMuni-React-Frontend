@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { Check, Copy, FileUp, Link2, Pencil, Trash2, UserPlus, X } from 'lucide-react';
 import { getOrgSession } from '../../orgPortal';
 import { isDemoSession } from '../demoAuth';
+import { orgPaths } from '../paths';
 import { computeRosterCounts } from '../enrollmentMetrics';
 import { listDepartments, subscribeOrgDb } from '../store';
 import { fetchDepartmentOptions } from '../departmentsApi';
@@ -123,10 +124,17 @@ export default function EnrollmentPage() {
     [students, visiblePending.length]
   );
 
+  const hasDepartments = departments.length > 0;
+
   const registerUrl = useMemo(
     () => getRegistrationLink(departmentId || departments[0]?.id || ''),
     [departmentId, departments]
   );
+
+  useEffect(() => {
+    if (!hasDepartments || departmentId) return;
+    setDepartmentId(String(departments[0].id));
+  }, [hasDepartments, departments, departmentId]);
 
   const clearFlash = () => {
     setErr('');
@@ -345,6 +353,10 @@ export default function EnrollmentPage() {
 
   const onEmails = async (e) => {
     e.preventDefault();
+    if (!hasDepartments) {
+      flash(false, 'Create at least one department before adding students.');
+      return;
+    }
     if (!departmentId) {
       flash(false, 'Select a department for invites.');
       return;
@@ -374,6 +386,10 @@ export default function EnrollmentPage() {
 
   const onManual = async (e) => {
     e.preventDefault();
+    if (!hasDepartments) {
+      flash(false, 'Create at least one department before adding students.');
+      return;
+    }
     if (!departmentId) {
       flash(false, 'Select a department.');
       return;
@@ -395,6 +411,10 @@ export default function EnrollmentPage() {
 
   const onCsv = async (e) => {
     e.preventDefault();
+    if (!hasDepartments) {
+      flash(false, 'Create at least one department before adding students.');
+      return;
+    }
     if (!departmentId) {
       flash(false, 'Select a department for CSV import.');
       return;
@@ -572,7 +592,17 @@ export default function EnrollmentPage() {
           <button
             type="button"
             className="mm-org-btn mm-org-btn--primary"
+            disabled={!hasDepartments}
+            title={
+              hasDepartments
+                ? 'Invite or add students to a department'
+                : 'Create a department first'
+            }
             onClick={() => {
+              if (!hasDepartments) {
+                flash(false, 'Create at least one department before adding students.');
+                return;
+              }
               clearFlash();
               setAddOpen(true);
             }}
@@ -580,6 +610,16 @@ export default function EnrollmentPage() {
             <UserPlus size={15} /> Add students
           </button>
         </div>
+
+        {!loading && !hasDepartments ? (
+          <div className="mm-org-alert mm-org-alert--error mb-3" role="status">
+            No departments yet.{' '}
+            <Link to={orgPaths.departments} className="mm-org-inline-link">
+              Create a department
+            </Link>{' '}
+            first — every student must be assigned to a branch before enrollment.
+          </div>
+        ) : null}
 
         {err ? <div className="mm-org-alert mm-org-alert--error mb-3">{err}</div> : null}
         {msg ? <div className="mm-org-alert mm-org-alert--success mb-3">{msg}</div> : null}
