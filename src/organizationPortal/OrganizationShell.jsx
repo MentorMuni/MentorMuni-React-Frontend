@@ -318,19 +318,14 @@ export default function OrganizationShell() {
               <p className="mm-org-page-sub">{sub}</p>
             </div>
             <div className="mm-org-topbar__campus mm-org-topbar__campus-strip">
-              <OrgShellCollegeBrand
-                college={college}
-                variant="topbar"
-                belowName={
-                  <span className="mm-org-live mm-org-live--topbar mm-org-live--below-college">
-                    <span className="mm-org-live-dot" />
-                    {liveLabel}
-                  </span>
-                }
-              />
+              <OrgShellCollegeBrand college={college} variant="topbar" />
             </div>
             <div className="mm-org-account" title="Signed-in account">
-              <OrgAccountIdentity session={session} align="right" />
+              <span className="mm-org-live mm-org-live--topbar mm-org-live--in-account">
+                <span className="mm-org-live-dot" />
+                {liveLabel}
+              </span>
+              <OrgAccountIdentity session={session} college={college} />
               <div className="mm-org-account__actions">
                 <button
                   type="button"
