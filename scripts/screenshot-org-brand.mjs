@@ -40,7 +40,8 @@ async function seedDemoSession(page) {
 
 async function waitForShell(page) {
   await page.goto(`${baseUrl}/Organization/dashboard`, { waitUntil: 'networkidle2' });
-  await page.waitForSelector('.mm-org-side-college', { timeout: 30000 });
+  await page.waitForSelector('.mm-org-topbar__campus', { timeout: 30000 });
+  await page.waitForSelector('.mm-org-account__actions', { timeout: 30000 });
   await new Promise((r) => setTimeout(r, 1500));
 }
 
@@ -60,30 +61,20 @@ async function capture() {
     await seedDemoSession(page);
     await waitForShell(page);
 
-    const fullPath = path.join(outDir, 'tpo-portal-college-brand.png');
+    const fullPath = path.join(outDir, 'tpo-portal-topbar-layout.png');
     await page.screenshot({ path: fullPath, fullPage: false });
 
-    const sidebar = await page.$('.mm-org-side-college');
-    if (sidebar) {
-      await sidebar.screenshot({
-        path: path.join(outDir, 'tpo-portal-sidebar-college-brand.png'),
+    const topbarRight = await page.$('.mm-org-topbar__right');
+    if (topbarRight) {
+      await topbarRight.screenshot({
+        path: path.join(outDir, 'tpo-portal-topbar-right-closeup.png'),
       });
     }
 
-    const topbar = await page.$('.mm-org-topbar-college');
+    const topbar = await page.$('.mm-org-topbar');
     if (topbar) {
       await topbar.screenshot({
-        path: path.join(outDir, 'tpo-portal-topbar-college-brand.png'),
-      });
-    }
-
-    const themeToggle = await page.$('.mm-org-theme-toggle');
-    if (themeToggle) {
-      await themeToggle.click();
-      await new Promise((r) => setTimeout(r, 900));
-      await page.screenshot({
-        path: path.join(outDir, 'tpo-portal-college-brand-light.png'),
-        fullPage: false,
+        path: path.join(outDir, 'tpo-portal-topbar-full.png'),
       });
     }
 

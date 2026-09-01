@@ -244,13 +244,13 @@
   color: var(--org-side-accent);
 }
 
-/* College identity — topbar (logo + name above live badge) */
+/* College identity — topbar (live badge left of logo + name) */
 .mm-org-topbar__campus {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-  max-width: min(220px, 28vw);
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
+  max-width: min(280px, 36vw);
   flex-shrink: 0;
 }
 
@@ -297,18 +297,19 @@ html.mm-new-ui .mm-org-topbar-college__brand .mm-org-brand__fallback {
   padding: 4px 9px;
   font-size: 10px;
   white-space: nowrap;
-}
-
-.mm-org-topbar__account-col {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
   flex-shrink: 0;
 }
 
-.mm-org-theme-toggle--below-account {
-  align-self: flex-end;
+.mm-org-account__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+}
+
+.mm-org-theme-toggle--in-account {
+  align-self: center;
 }
 
 .mm-org-nav-label {
@@ -818,6 +819,8 @@ html.mm-new-ui .mm-org-root:not(.mm-org-root--light) .mm-org-profile__campus-bra
 .mm-org-account__signout {
   flex-shrink: 0;
   white-space: nowrap;
+  width: 100%;
+  justify-content: center;
 }
 
 .mm-org-btn {
@@ -1479,7 +1482,7 @@ html.mm-new-ui .mm-org-root:not(.mm-org-root--light) .mm-org-profile__campus-bra
   .mm-org-content { padding: 16px 16px 40px; }
   .mm-org-topbar { padding: 12px 16px; flex-wrap: wrap; align-items: center; }
   .mm-org-topbar__right { width: auto; margin-left: auto; justify-content: flex-end; flex-wrap: wrap; gap: 10px; }
-  .mm-org-topbar__campus { max-width: min(180px, 34vw); }
+  .mm-org-topbar__campus { max-width: min(240px, 42vw); }
   .mm-org-account { max-width: 100%; }
 }
 @media (max-width: 640px) {
@@ -1527,6 +1530,22 @@ html.mm-new-ui .mm-org-root:not(.mm-org-root--light) .mm-org-profile__campus-bra
   transform: translateX(28px);
   color: #fff;
   background: linear-gradient(135deg, #1a8fc4, #0e6f9a);
+}
+
+.mm-org-theme-toggle--compact .mm-org-theme-toggle__track {
+  width: 42px;
+  height: 24px;
+}
+
+.mm-org-theme-toggle--compact .mm-org-theme-toggle__knob {
+  top: 2px;
+  left: 2px;
+  width: 18px;
+  height: 18px;
+}
+
+.mm-org-theme-toggle--compact .mm-org-theme-toggle__track.is-light .mm-org-theme-toggle__knob {
+  transform: translateX(18px);
 }
 
 /* ── Theme-safe utilities (beat Tailwind / site dark tokens) ── */

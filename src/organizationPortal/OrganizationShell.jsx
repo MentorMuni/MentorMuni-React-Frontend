@@ -319,15 +319,15 @@ export default function OrganizationShell() {
             </div>
             <div className="mm-org-topbar__right">
               <div className="mm-org-topbar__campus">
-                <OrgShellCollegeBrand college={college} variant="topbar" />
                 <span className="mm-org-live mm-org-live--topbar">
                   <span className="mm-org-live-dot" />
                   {liveLabel}
                 </span>
+                <OrgShellCollegeBrand college={college} variant="topbar" />
               </div>
-              <div className="mm-org-topbar__account-col">
-                <div className="mm-org-account" title="Signed-in account">
-                  <OrgAccountIdentity session={session} align="right" />
+              <div className="mm-org-account" title="Signed-in account">
+                <OrgAccountIdentity session={session} align="right" />
+                <div className="mm-org-account__actions">
                   <button
                     type="button"
                     className="mm-org-btn mm-org-btn--ghost mm-org-btn--sm mm-org-account__signout"
@@ -339,12 +339,13 @@ export default function OrganizationShell() {
                     <LogOut size={15} />
                     <span>Sign out</span>
                   </button>
+                  <OrgThemeToggle
+                    theme={theme}
+                    onToggle={toggleTheme}
+                    compact
+                    className="mm-org-theme-toggle--in-account"
+                  />
                 </div>
-                <OrgThemeToggle
-                  theme={theme}
-                  onToggle={toggleTheme}
-                  className="mm-org-theme-toggle--below-account"
-                />
               </div>
             </div>
           </header>
