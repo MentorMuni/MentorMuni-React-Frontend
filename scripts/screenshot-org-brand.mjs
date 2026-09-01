@@ -40,7 +40,7 @@ async function seedDemoSession(page) {
 
 async function waitForShell(page) {
   await page.goto(`${baseUrl}/Organization/dashboard`, { waitUntil: 'networkidle2' });
-  await page.waitForSelector('.mm-org-topbar__campus', { timeout: 30000 });
+  await page.waitForSelector('.mm-org-account', { timeout: 30000 });
   await page.waitForSelector('.mm-org-account__actions', { timeout: 30000 });
   await new Promise((r) => setTimeout(r, 1500));
 }
@@ -64,9 +64,9 @@ async function capture() {
     const fullPath = path.join(outDir, 'tpo-portal-topbar-layout.png');
     await page.screenshot({ path: fullPath, fullPage: false });
 
-    const topbarRight = await page.$('.mm-org-topbar__campus-strip');
-    if (topbarRight) {
-      await topbarRight.screenshot({
+    const account = await page.$('.mm-org-account');
+    if (account) {
+      await account.screenshot({
         path: path.join(outDir, 'tpo-portal-topbar-right-closeup.png'),
       });
     }

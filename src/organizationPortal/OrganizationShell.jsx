@@ -34,7 +34,6 @@ import { orgPaths } from './paths';
 import { useOrgTheme } from './useOrgTheme';
 import OrgThemeToggle from './OrgThemeToggle';
 import OrgAccountIdentity from './components/OrgAccountIdentity';
-import OrgShellCollegeBrand from './components/OrgShellCollegeBrand';
 import { useOrgCollegeBrand } from './useOrgCollegeBrand';
 import IdleSessionGuard from '../components/IdleSessionGuard';
 import '../components/table/table-query.css';
@@ -316,9 +315,6 @@ export default function OrganizationShell() {
                 </motion.h1>
               </AnimatePresence>
               <p className="mm-org-page-sub">{sub}</p>
-            </div>
-            <div className="mm-org-topbar__campus mm-org-topbar__campus-strip">
-              <OrgShellCollegeBrand college={college} variant="topbar" />
             </div>
             <div className="mm-org-account" title="Signed-in account">
               <span className="mm-org-live mm-org-live--topbar mm-org-live--in-account">
