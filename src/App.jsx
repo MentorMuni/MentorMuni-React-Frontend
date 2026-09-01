@@ -13,7 +13,6 @@ import SkipToContent from "./components/layout/SkipToContent";
 import HomePage from "./components/homepage";
 import ParticleBackground from "./components/new-ui/ParticleBackground";
 import MuniBot from "./components/MuniBot";
-import WelcomeLaunchOverlay from "./components/WelcomeLaunchOverlay";
 import RouteErrorBoundary from "./components/RouteErrorBoundary";
 import { isCollegeTenantHost } from "./tenant/resolveTenant";
 import PlatformApexOnly from "./platformAdmin/PlatformApexOnly";
@@ -78,7 +77,6 @@ const WidgetsDemoPage = lazy(() => import("./widgets/WidgetsDemoPage"));
 const RoadmapPage = lazy(() => import("./components/RoadmapPage"));
 const BlogList = lazy(() => import("./components/Blog/BlogList"));
 const BlogPost = lazy(() => import("./components/Blog/BlogPost"));
-const GamifiedPlacementPrep = lazy(() => import("./components/GamifiedPlacementPrep"));
 const PlatformAdminApp = lazy(() => import("./platformAdmin/PlatformAdminApp"));
 const StudentPortalApp = lazy(() => import("./studentPortal/StudentPortalApp"));
 const CollegePortalHomePage = lazy(() => import("./tenant/CollegePortalHomePage"));
@@ -328,7 +326,6 @@ function AppChrome({ children }) {
           <Suspense fallback={<PageFallback />}>{children}</Suspense>
         </AnimatedMain>
       </div>
-      <WelcomeLaunchOverlay />
       <MuniBot />
     </div>
   );
@@ -378,7 +375,6 @@ function App() {
               <Route path="/" element={<RootEntry />} />
               <Route path="/how-it-works" element={<StudentJourneyPage />} />
               <Route path="/roadmap" element={<RoadmapPage />} />
-              <Route path="/gamified-placement-prep" element={<GamifiedPlacementPrep />} />
               <Route path="/blog" element={<BlogList />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               {/* SEO landing URLs — same tools, keyword-focused paths for search */}

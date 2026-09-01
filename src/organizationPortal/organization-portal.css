@@ -134,8 +134,8 @@
 .mm-org-sidebar {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 20px 14px;
+  gap: 0;
+  padding: 16px 12px 14px;
   background: var(--org-side);
   border-right: 1px solid var(--org-side-border);
   position: sticky;
@@ -147,24 +147,86 @@
   z-index: 30;
 }
 
+/* Scrollable middle: college lockup + nav (brand + foot stay pinned) */
+.mm-org-sidebar__scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 0 -4px;
+  padding: 2px 4px 6px;
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--org-side-accent) 42%, transparent) transparent;
+}
+
+.mm-org-sidebar__scroll::-webkit-scrollbar {
+  width: 4px;
+}
+
+.mm-org-sidebar__scroll::-webkit-scrollbar-track {
+  background: transparent;
+  margin: 6px 0;
+}
+
+.mm-org-sidebar__scroll::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--org-side-accent) 18%, transparent),
+    color-mix(in srgb, var(--org-side-accent) 52%, transparent)
+  );
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  box-shadow: 0 0 10px color-mix(in srgb, var(--org-side-accent) 22%, transparent);
+}
+
+.mm-org-sidebar__scroll::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--org-side-accent) 32%, transparent),
+    color-mix(in srgb, var(--org-side-accent) 68%, transparent)
+  );
+}
+
+.mm-org-sidebar__scroll::before,
+.mm-org-sidebar__scroll::after {
+  content: '';
+  position: sticky;
+  left: 0;
+  right: 0;
+  display: block;
+  height: 10px;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.mm-org-sidebar__scroll::before {
+  top: 0;
+  margin-bottom: -10px;
+  background: linear-gradient(to bottom, var(--org-side) 35%, transparent);
+}
+
+.mm-org-sidebar__scroll::after {
+  bottom: 0;
+  margin-top: -10px;
+  background: linear-gradient(to top, var(--org-side) 35%, transparent);
+}
+
 .mm-org-nav {
   display: flex;
   flex-direction: column;
   gap: 0.125rem;
-  flex: 1 1 auto;
   min-height: 0;
-  overflow-y: auto;
-  padding-bottom: 8px;
-  scrollbar-width: thin;
+  padding-bottom: 4px;
 }
 
 .mm-org-brand {
   display: flex;
   align-items: center;
   gap: 12px;
-  padding: 10px 12px 18px;
-  border-bottom: 1px solid var(--org-side-border);
-  margin-bottom: 14px;
+  padding: 8px 8px 12px;
+  margin-bottom: 8px;
+  flex-shrink: 0;
 }
 .mm-org-brand img { height: 34px; width: auto; }
 .mm-org-brand__title {
@@ -182,36 +244,36 @@
   color: var(--org-side-accent);
 }
 
-/* College identity — sidebar + topbar (their campus) */
+/* College identity — compact sidebar lockup */
 .mm-org-side-college {
-  margin: 0 8px 14px;
-  padding: 11px 12px;
-  border-radius: 14px;
-  border: 1px solid var(--org-side-border);
-  background: color-mix(in srgb, var(--org-side-accent) 9%, transparent);
+  margin: 0 2px 10px;
+  padding: 0 2px 10px;
 }
 
 .mm-org-side-college__brand.mm-org-brand--sm {
-  gap: 10px;
+  gap: 8px;
+  align-items: center;
 }
 
 .mm-org-side-college__brand .mm-org-brand__name,
 html.mm-new-ui .mm-org-side-college__brand .mm-org-brand__name {
   color: var(--org-side-ink);
-  font-size: 0.84rem;
-  font-weight: 800;
-  line-height: 1.2;
+  font-size: 0.76rem;
+  font-weight: 750;
+  line-height: 1.25;
+  -webkit-line-clamp: 2;
 }
 
 .mm-org-side-college__brand .mm-org-brand__logo,
 .mm-org-side-college__brand .mm-org-brand__fallback,
 html.mm-new-ui .mm-org-side-college__brand .mm-org-brand__logo,
 html.mm-new-ui .mm-org-side-college__brand .mm-org-brand__fallback {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
   background: #fff;
-  border-color: color-mix(in srgb, var(--org-side-accent) 28%, transparent);
+  border: none;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--org-side-accent) 22%, transparent);
 }
 
 .mm-org-root:not(.mm-org-root--light) .mm-org-side-college__brand .mm-org-brand__fallback {
@@ -294,8 +356,7 @@ html.mm-new-ui .mm-org-side-college__brand .mm-org-brand__fallback {
 .mm-org-sidebar__foot {
   flex-shrink: 0;
   margin-top: auto;
-  padding: 14px 10px 6px;
-  border-top: 1px solid var(--org-side-border);
+  padding: 10px 6px 4px;
   display: flex;
   flex-direction: column;
   gap: 10px;

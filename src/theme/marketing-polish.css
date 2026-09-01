@@ -510,48 +510,6 @@ html.mm-new-ui .mm-hero-cta-bridge__dot {
   color: #64748b;
 }
 
-html.mm-new-ui .mm-hero-quest-cta {
-  border-color: rgba(167, 139, 250, 0.42) !important;
-  background: linear-gradient(
-    135deg,
-    rgba(76, 29, 149, 0.45) 0%,
-    rgba(15, 23, 42, 0.9) 42%,
-    rgba(8, 47, 73, 0.45) 100%
-  ) !important;
-  box-shadow: 0 10px 32px -20px rgba(139, 92, 246, 0.5) !important;
-}
-
-html.mm-new-ui .mm-hero-quest-cta:hover {
-  border-color: rgba(192, 132, 252, 0.55) !important;
-  box-shadow: 0 16px 42px -22px rgba(139, 92, 246, 0.65) !important;
-}
-
-html.mm-new-ui .mm-hero-quest-cta__eyebrow {
-  color: #c4b5fd !important;
-}
-
-html.mm-new-ui .mm-hero-quest-cta__badge {
-  border: 1px solid rgba(245, 158, 11, 0.35);
-  background: rgba(245, 158, 11, 0.12) !important;
-  color: #fde68a !important;
-}
-
-html.mm-new-ui .mm-hero-quest-cta__title {
-  color: var(--text-heading) !important;
-}
-
-html.mm-new-ui .mm-hero-quest-cta__meta {
-  color: var(--text-secondary) !important;
-}
-
-html.mm-new-ui .mm-hero-quest-cta__link {
-  color: #a78bfa !important;
-}
-
-html.mm-new-ui .mm-hero-quest-cta:hover .mm-hero-quest-cta__link {
-  color: #c4b5fd !important;
-}
-
 .mm-hero-premium .mm-hero-mesh {
   pointer-events: none;
   position: absolute;

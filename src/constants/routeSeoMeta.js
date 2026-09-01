@@ -37,13 +37,6 @@ export const ROUTE_SEO = {
     keywords:
       'placement roadmap, placement preparation roadmap 2026, 1st year placement prep, final year placement, engineering placement India',
   },
-  '/gamified-placement-prep': {
-    title: 'Game-Style Placement Prep for 3rd & 4th Year Students | MentorMuni',
-    description:
-      'MentorMuni turns placement preparation into short daily practice, prep points, badges, batch rankings, AI mocks, and mentor tips for 3rd and 4th year students.',
-    keywords:
-      'game style placement preparation, placement practice for students, campus placement prep, 3rd year placement prep, 4th year placement prep, MentorMuni practice mode',
-  },
   '/dsa-roadmap': {
     title: 'DSA Roadmap for Placement — Data Structures & Algorithms | MentorMuni',
     description:

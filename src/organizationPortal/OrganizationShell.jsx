@@ -230,9 +230,10 @@ export default function OrganizationShell() {
             </button>
           </div>
 
-          <OrgShellCollegeBrand college={college} />
+          <div className="mm-org-sidebar__scroll">
+            <OrgShellCollegeBrand college={college} />
 
-          <nav className="mm-org-nav" aria-label="Organization modules">
+            <nav className="mm-org-nav" aria-label="Organization modules">
             {navGroups.map((group) => (
               <div key={group.section}>
                 <p className="mm-org-nav-label">{group.section}</p>
@@ -260,6 +261,7 @@ export default function OrganizationShell() {
               </div>
             ))}
           </nav>
+          </div>
 
           <div className="mm-org-sidebar__foot">
             <div className="mm-org-sidebar__foot-links">
