@@ -1,132 +1,148 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
-
-const JOBS = [
-  {
-    title: 'Wall paint job',
-    workers: 4,
-    days: 6,
-    targetDays: 4,
-    tip: 'More workers → fewer days. Work = workers × days.',
-  },
-  {
-    title: 'Road repair',
-    workers: 5,
-    days: 8,
-    targetDays: 5,
-    tip: 'Find total man-days, then divide by target days.',
-  },
-];
+import { Lightbulb } from 'lucide-react';
+import { WORK_JOBS_BANK } from '../../../constants/arcadeQuestionBank';
+import { questionLabel } from '../../../constants/arcadeGameUtils';
+import ArcadeSolutionPanel from '../ArcadeSolutionPanel';
 
 export default function WorkTimeGame({ onComplete, placementMode }) {
   const [idx, setIdx] = useState(0);
-  const job = JOBS[idx % JOBS.length];
+  const job = WORK_JOBS_BANK[idx % WORK_JOBS_BANK.length];
   const totalWork = job.workers * job.days;
   const needed = Math.ceil(totalWork / job.targetDays);
   const [guess, setGuess] = useState('');
   const [crew, setCrew] = useState(job.workers);
+  const [phase, setPhase] = useState('play');
   const [feedback, setFeedback] = useState(null);
+  const [hintText, setHintText] = useState('');
+
+  const locked = phase === 'feedback';
+
+  useEffect(() => {
+    const j = WORK_JOBS_BANK[idx % WORK_JOBS_BANK.length];
+    setCrew(j.workers);
+    setGuess('');
+    setPhase('play');
+    setFeedback(null);
+    setHintText('');
+  }, [idx]);
+
+  const loadNext = useCallback(() => {
+    setIdx((i) => (i + 1) % WORK_JOBS_BANK.length);
+  }, []);
 
   function check() {
+    if (locked) return;
     const val = parseInt(guess, 10);
     if (Number.isNaN(val)) {
-      setFeedback({ ok: false, msg: 'Enter number of workers.' });
+      setPhase('feedback');
+      setFeedback({
+        ok: false,
+        title: 'Enter number of workers',
+        answerLabel: `${needed} workers`,
+        solution: job.solution,
+        rule: job.tip,
+      });
       return;
     }
     const ok = val === needed;
-    setFeedback({
-      ok,
-      msg: ok
-        ? `${val} workers finish in ${job.targetDays} days!`
-        : `Need ${needed} workers (${totalWork} man-days ÷ ${job.targetDays})`,
-      detail: `${job.workers} × ${job.days} = ${totalWork} man-days`,
-    });
+    setPhase('feedback');
     if (ok) {
       onComplete?.({ correct: true, xpBonus: placementMode ? 18 : 8 });
-      setTimeout(() => {
-        const next = (idx + 1) % JOBS.length;
-        setIdx(next);
-        setCrew(JOBS[next].workers);
-        setGuess('');
-        setFeedback(null);
-      }, 1500);
     }
+    setFeedback({
+      ok,
+      title: ok ? 'Crew assigned!' : 'Try the man-days method',
+      answerLabel: `${needed} workers`,
+      solution: job.solution,
+      rule: job.tip,
+    });
+  }
+
+  function showHint() {
+    if (locked) return;
+    setHintText(job.solution);
   }
 
   const projectedDays = crew > 0 ? (totalWork / crew).toFixed(1) : '—';
+  const progress = useMemo(() => questionLabel(idx), [idx]);
 
   return (
-    <div className="space-y-5">
-      <div className="rounded-2xl border border-orange-200/60 bg-gradient-to-br from-orange-50 to-amber-50 p-5 dark:border-orange-900/40 dark:from-orange-950/40 dark:to-amber-950/30">
-        <p className="text-xs font-bold uppercase tracking-wide text-orange-600 dark:text-orange-300">
-          {job.title}
-        </p>
-        <p className="mt-2 text-sm text-slate-700 dark:text-slate-200">
+    <div className={`aa-game${locked ? ' is-locked' : ''}`}>
+      <p className="aa-q-progress">{progress}</p>
+
+      <div className="aa-panel aa-panel--orange">
+        <p className="aa-panel__label aa-panel__label--orange">{job.title}</p>
+        <p className="aa-panel__text">
           Currently <strong>{job.workers} workers</strong> take <strong>{job.days} days</strong>.
           Boss wants it done in <strong>{job.targetDays} days</strong>. How many workers?
         </p>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-2">
+      {hintText && !feedback && <p className="aa-hint-preview">{hintText}</p>}
+
+      <div className="aa-tiles">
         {Array.from({ length: Math.min(crew, 12) }).map((_, i) => (
           <motion.span
             key={i}
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: i * 0.05 }}
-            className="text-2xl"
+            transition={{ delay: i * 0.03 }}
+            style={{ fontSize: '1.5rem' }}
             aria-hidden
           >
             👷
           </motion.span>
         ))}
-        {crew > 12 && <span className="text-sm font-bold text-slate-500">+{crew - 12}</span>}
+        {crew > 12 && <span className="aa-caption">+{crew - 12}</span>}
       </div>
 
-      <label className="block">
-        <span className="text-xs font-bold text-slate-500">Simulate crew size</span>
+      <label>
+        <span className="aa-field-label">Simulate crew size</span>
         <input
           type="range"
           min="1"
           max="20"
           value={crew}
+          disabled={locked}
           onChange={(e) => setCrew(Number(e.target.value))}
-          className="mt-1 w-full accent-[#FF9500]"
+          style={{ width: '100%', accentColor: '#ff9500' }}
         />
-        <p className="text-sm text-slate-600 dark:text-slate-300">
-          At {crew} workers → ~{projectedDays} days
-        </p>
+        <p className="aa-caption">At {crew} workers → ~{projectedDays} days</p>
       </label>
 
-      <div className="flex flex-wrap gap-3">
+      <div className="aa-form-row">
         <input
           type="number"
           min="1"
           value={guess}
+          disabled={locked}
           onChange={(e) => setGuess(e.target.value)}
           placeholder="Workers needed"
-          className="flex-1 rounded-xl border border-slate-200 bg-white px-4 py-3 font-black dark:border-slate-600 dark:bg-slate-800"
+          className="aa-input"
+          style={{ flex: 1 }}
         />
-        <button
-          type="button"
-          onClick={check}
-          className="rounded-2xl bg-[#FF9500] px-6 py-3 text-sm font-black text-white shadow-lg shadow-orange-500/30"
-        >
-          Submit crew
-        </button>
+        {!feedback && (
+          <>
+            <button type="button" onClick={check} className="aa-btn aa-btn--primary" disabled={locked}>
+              Submit crew
+            </button>
+            <button type="button" onClick={showHint} className="aa-btn aa-btn--secondary" disabled={locked}>
+              <Lightbulb size={16} aria-hidden /> Hint
+            </button>
+          </>
+        )}
       </div>
 
-      {feedback && (
-        <div
-          className={`rounded-xl p-4 text-sm ${
-            feedback.ok ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-900'
-          }`}
-        >
-          <p className="font-bold">{feedback.msg}</p>
-          <p className="mt-1 text-xs">{feedback.detail}</p>
-          {!feedback.ok && <p className="mt-1 text-xs opacity-70">{job.tip}</p>}
-        </div>
-      )}
+      <ArcadeSolutionPanel
+        open={!!feedback}
+        ok={feedback?.ok}
+        title={feedback?.title}
+        answerLabel={feedback?.answerLabel}
+        solution={feedback?.solution}
+        rule={feedback?.rule}
+        onContinue={loadNext}
+      />
     </div>
   );
 }

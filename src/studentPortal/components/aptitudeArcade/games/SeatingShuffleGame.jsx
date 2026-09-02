@@ -1,53 +1,46 @@
-import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Check, RotateCcw } from 'lucide-react';
-
-const PUZZLES = [
-  {
-    clues: [
-      'A sits at the left end.',
-      'B sits immediately right of A.',
-      'C sits at the right end.',
-      'D is not next to C.',
-    ],
-    seats: 4,
-    solution: ['A', 'B', 'D', 'C'],
-    facing: 'All face north (left → right order).',
-  },
-  {
-    clues: [
-      '5 people in a row — P at center.',
-      'Q is left of P, not adjacent to R.',
-      'R sits at an end.',
-      'S is between P and T.',
-    ],
-    seats: 5,
-    solution: ['R', 'Q', 'P', 'S', 'T'],
-    facing: 'Linear row, left to right.',
-  },
-];
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { Check, Lightbulb, RotateCcw } from 'lucide-react';
+import { SEATING_PUZZLES_BANK } from '../../../constants/arcadeQuestionBank';
+import { questionLabel, shuffledLetters } from '../../../constants/arcadeGameUtils';
+import ArcadeSolutionPanel from '../ArcadeSolutionPanel';
 
 export default function SeatingShuffleGame({ onComplete, placementMode }) {
   const [puzzleIdx, setPuzzleIdx] = useState(0);
-  const puzzle = PUZZLES[puzzleIdx % PUZZLES.length];
-  const [slots, setSlots] = useState(Array(puzzle.seats).fill(null));
-  const [pool, setPool] = useState(() => {
-    const letters = puzzle.solution.slice().sort(() => Math.random() - 0.5);
-    return letters;
-  });
+  const puzzle = SEATING_PUZZLES_BANK[puzzleIdx % SEATING_PUZZLES_BANK.length];
+  const [slots, setSlots] = useState(() => Array(puzzle.seats).fill(null));
+  const [pool, setPool] = useState(() => shuffledLetters(puzzle.solution, puzzleIdx));
+  const [phase, setPhase] = useState('play');
   const [feedback, setFeedback] = useState(null);
   const [hintsUsed, setHintsUsed] = useState(0);
+  const [hintPreview, setHintPreview] = useState('');
 
-  function resetPuzzle() {
-    const p = PUZZLES[puzzleIdx % PUZZLES.length];
+  const locked = phase === 'feedback';
+
+  useEffect(() => {
+    const p = SEATING_PUZZLES_BANK[puzzleIdx % SEATING_PUZZLES_BANK.length];
     setSlots(Array(p.seats).fill(null));
-    setPool(p.solution.slice().sort(() => Math.random() - 0.5));
+    setPool(shuffledLetters(p.solution, puzzleIdx + 1));
+    setPhase('play');
     setFeedback(null);
     setHintsUsed(0);
+    setHintPreview('');
+  }, [puzzleIdx]);
+
+  const loadNext = useCallback(() => {
+    setPuzzleIdx((i) => (i + 1) % SEATING_PUZZLES_BANK.length);
+  }, []);
+
+  function resetPuzzle() {
+    setSlots(Array(puzzle.seats).fill(null));
+    setPool(shuffledLetters(puzzle.solution, puzzleIdx + 99));
+    setPhase('play');
+    setFeedback(null);
+    setHintsUsed(0);
+    setHintPreview('');
   }
 
   function placeInSlot(slotIdx, letter) {
-    if (slots[slotIdx]) return;
+    if (locked || slots[slotIdx]) return;
     setSlots((prev) => {
       const next = [...prev];
       next[slotIdx] = letter;
@@ -57,6 +50,7 @@ export default function SeatingShuffleGame({ onComplete, placementMode }) {
   }
 
   function removeFromSlot(slotIdx) {
+    if (locked) return;
     const letter = slots[slotIdx];
     if (!letter) return;
     setSlots((prev) => {
@@ -65,134 +59,150 @@ export default function SeatingShuffleGame({ onComplete, placementMode }) {
       return next;
     });
     setPool((prev) => [...prev, letter]);
-    setFeedback(null);
   }
 
   function checkAnswer() {
+    if (locked) return;
     const filled = slots.every(Boolean);
     if (!filled) {
-      setFeedback({ ok: false, msg: 'Fill every seat first.' });
+      setPhase('feedback');
+      setFeedback({
+        ok: false,
+        title: 'Incomplete',
+        answerLabel: puzzle.solution.join(' – '),
+        solution: puzzle.solutionText,
+        rule: 'Read each clue for left/right/end constraints.',
+      });
       return;
     }
     const correct = slots.every((s, i) => s === puzzle.solution[i]);
     if (correct) {
-      setFeedback({ ok: true, msg: 'Perfect arrangement!' });
       const bonus = placementMode ? 15 : 0;
       const penalty = hintsUsed * 5;
       onComplete?.({ correct: true, xpBonus: bonus - penalty });
-      setTimeout(() => {
-        setPuzzleIdx((i) => i + 1);
-        const nextP = PUZZLES[(puzzleIdx + 1) % PUZZLES.length];
-        setSlots(Array(nextP.seats).fill(null));
-        setPool(nextP.solution.slice().sort(() => Math.random() - 0.5));
-        setFeedback(null);
-        setHintsUsed(0);
-      }, 1200);
+      setPhase('feedback');
+      setFeedback({
+        ok: true,
+        title: 'Perfect arrangement!',
+        answerLabel: puzzle.solution.join(' – '),
+        solution: puzzle.solutionText,
+        rule: puzzle.facing,
+      });
     } else {
-      setFeedback({ ok: false, msg: 'Clues don’t match — re-read left/right & ends.' });
+      setPhase('feedback');
+      setFeedback({
+        ok: false,
+        title: 'Not quite — check the clues again',
+        answerLabel: puzzle.solution.join(' – '),
+        solution: puzzle.solutionText,
+        rule: 'Re-read left/right, ends, and “between” clues.',
+      });
     }
   }
 
   function revealHint() {
-    const emptyIdx = slots.findIndex((s) => !s);
-    if (emptyIdx === -1) return;
-    const letter = puzzle.solution[emptyIdx];
+    if (locked) return;
     setHintsUsed((h) => h + 1);
-    setSlots((prev) => {
-      const next = [...prev];
-      next[emptyIdx] = letter;
-      return next;
-    });
-    setPool((prev) => prev.filter((l) => l !== letter));
+    const emptyIdx = slots.findIndex((s) => !s);
+    if (emptyIdx !== -1) {
+      const letter = puzzle.solution[emptyIdx];
+      setHintPreview(`Seat ${emptyIdx + 1} should be **${letter}**. Full order: ${puzzle.solution.join(' – ')}.`);
+      setSlots((prev) => {
+        const next = [...prev];
+        next[emptyIdx] = letter;
+        return next;
+      });
+      setPool((prev) => prev.filter((l) => l !== letter));
+    } else {
+      setHintPreview(`Full solution left→right: ${puzzle.solution.join(' – ')}. ${puzzle.solutionText}`);
+    }
   }
 
+  function showFullSolution() {
+    if (locked) return;
+    setHintsUsed((h) => h + 2);
+    setSlots(puzzle.solution.slice());
+    setPool([]);
+    setHintPreview(`Solution: ${puzzle.solution.join(' – ')}. ${puzzle.solutionText}`);
+  }
+
+  const progress = useMemo(() => questionLabel(puzzleIdx), [puzzleIdx]);
+
   return (
-    <div className="space-y-5">
-      <div className="rounded-2xl border border-violet-200/60 bg-violet-50/80 p-4 dark:border-violet-800/50 dark:bg-violet-950/40">
-        <p className="text-xs font-bold uppercase tracking-wide text-violet-600 dark:text-violet-300">
-          Clues
-        </p>
-        <ul className="mt-2 space-y-1.5">
+    <div className={`aa-game${locked ? ' is-locked' : ''}`}>
+      <p className="aa-q-progress">{progress}</p>
+
+      <div className="aa-panel aa-panel--violet">
+        <p className="aa-panel__label aa-panel__label--violet">Clues</p>
+        <ul>
           {puzzle.clues.map((c) => (
-            <li key={c} className="text-sm text-slate-700 dark:text-slate-200">
-              • {c}
-            </li>
+            <li key={c}>{c}</li>
           ))}
         </ul>
-        <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">{puzzle.facing}</p>
+        <p className="aa-panel__hint">{puzzle.facing}</p>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-3">
+      {hintPreview && !feedback && (
+        <p className="aa-hint-preview">{hintPreview.replace(/\*\*/g, '')}</p>
+      )}
+
+      <div className="aa-tiles">
         {slots.map((letter, i) => (
           <button
-            key={i}
+            key={`seat-${i}`}
             type="button"
             onClick={() => removeFromSlot(i)}
-            className={`flex h-16 w-16 flex-col items-center justify-center rounded-2xl border-2 text-lg font-black transition ${
-              letter
-                ? 'border-violet-400 bg-gradient-to-br from-violet-500 to-purple-600 text-white shadow-lg shadow-violet-500/30'
-                : 'border-dashed border-slate-300 bg-white/80 text-slate-400 dark:border-slate-600 dark:bg-slate-800/80'
-            }`}
+            className={`aa-tile${letter ? ' is-filled' : ''}`}
+            disabled={locked}
           >
             {letter || `Seat ${i + 1}`}
           </button>
         ))}
       </div>
 
-      <div className="flex flex-wrap justify-center gap-2">
+      <div className="aa-actions">
         {pool.map((letter) => (
           <button
-            key={letter}
+            key={`pool-${letter}-${puzzleIdx}`}
             type="button"
+            disabled={locked}
             onClick={() => {
               const emptyIdx = slots.findIndex((s) => !s);
               if (emptyIdx !== -1) placeInSlot(emptyIdx, letter);
             }}
-            className="rounded-xl bg-slate-900 px-5 py-2.5 text-sm font-black text-white shadow-md transition hover:scale-105 dark:bg-white dark:text-slate-900"
+            className="aa-btn aa-btn--chip"
           >
             {letter}
           </button>
         ))}
       </div>
 
-      <AnimatePresence>
-        {feedback && (
-          <motion.p
-            initial={{ opacity: 0, y: 4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            className={`text-center text-sm font-bold ${
-              feedback.ok ? 'text-emerald-600' : 'text-rose-600'
-            }`}
-          >
-            {feedback.msg}
-          </motion.p>
-        )}
-      </AnimatePresence>
+      {!feedback && (
+        <div className="aa-actions">
+          <button type="button" onClick={checkAnswer} className="aa-btn aa-btn--primary" disabled={locked}>
+            <Check size={16} aria-hidden /> Lock seats
+          </button>
+          <button type="button" onClick={revealHint} className="aa-btn aa-btn--secondary" disabled={locked}>
+            <Lightbulb size={16} aria-hidden /> Hint (−5 XP)
+          </button>
+          <button type="button" onClick={showFullSolution} className="aa-btn aa-btn--secondary" disabled={locked}>
+            Show solution
+          </button>
+          <button type="button" onClick={resetPuzzle} className="aa-btn aa-btn--ghost" disabled={locked}>
+            <RotateCcw size={16} aria-hidden /> Reset
+          </button>
+        </div>
+      )}
 
-      <div className="flex flex-wrap justify-center gap-3">
-        <button
-          type="button"
-          onClick={checkAnswer}
-          className="flex items-center gap-2 rounded-2xl bg-[#FF9500] px-6 py-3 text-sm font-black text-white shadow-lg shadow-orange-500/30 transition hover:scale-[1.02]"
-        >
-          <Check className="h-4 w-4" /> Lock seats
-        </button>
-        <button
-          type="button"
-          onClick={revealHint}
-          className="rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200"
-        >
-          Hint (−5 XP)
-        </button>
-        <button
-          type="button"
-          onClick={resetPuzzle}
-          className="flex items-center gap-2 rounded-2xl px-4 py-3 text-sm font-semibold text-slate-500"
-        >
-          <RotateCcw className="h-4 w-4" /> Reset
-        </button>
-      </div>
+      <ArcadeSolutionPanel
+        open={!!feedback}
+        ok={feedback?.ok}
+        title={feedback?.title}
+        answerLabel={feedback?.answerLabel}
+        solution={feedback?.solution}
+        rule={feedback?.rule}
+        onContinue={loadNext}
+      />
     </div>
   );
 }

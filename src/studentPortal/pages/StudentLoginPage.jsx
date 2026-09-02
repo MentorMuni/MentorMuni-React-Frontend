@@ -37,7 +37,6 @@ import {
   saveCollegeCode,
 } from '../../orgPortal';
 import {
-  DEMO_STUDENT,
   clearStudentSession,
   getStudentSession,
   loginStudent,
@@ -51,8 +50,6 @@ import './student-login-career.css';
 
 const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
 const EASE = [0.22, 1, 0.36, 1];
-const SHOW_DEMO =
-  import.meta.env.DEV || String(import.meta.env.VITE_SHOW_DEMO || '') === 'true';
 
 const INDIVIDUAL_LOGIN = {
   id: 'public',
@@ -331,31 +328,6 @@ export default function StudentLoginPage() {
       setColleges(list);
       setCollegesWarning(result.warning || '');
 
-      const wantPrefill =
-        SHOW_DEMO &&
-        /^(1|true|yes|demo)$/i.test(
-          String(searchParams.get('prefill') || searchParams.get('demo') || '').trim()
-        );
-      if (wantPrefill) {
-        const demoCollege =
-          list.find((c) => c.code === DEMO_ORG.code) || {
-            id: DEMO_ORG.id,
-            name: DEMO_ORG.name,
-            code: DEMO_ORG.code,
-            city: DEMO_ORG.city,
-            state: DEMO_ORG.state,
-          };
-        if (!list.some((c) => c.code === DEMO_ORG.code)) setColleges([demoCollege, ...list]);
-        setCollege(demoCollege);
-        saveCollegeCode(DEMO_ORG.code);
-        setUserId(DEMO_STUDENT.email);
-        setPassword(DEMO_STUDENT.password);
-        setListOpen(false);
-        setStep('login');
-        setSuccess('Sample credentials prefilled. Click Login to continue.');
-        return;
-      }
-
       const wantIndividual =
         /^(PUBLIC)$/i.test(
           String(
@@ -459,29 +431,6 @@ export default function StudentLoginPage() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const fillDemo = () => {
-    if (tenantLocked) return;
-    const demoCollege =
-      colleges.find((c) => c.code === DEMO_ORG.code) || {
-        id: DEMO_ORG.id,
-        name: DEMO_ORG.name,
-        code: DEMO_ORG.code,
-        city: DEMO_ORG.city,
-        state: DEMO_ORG.state,
-      };
-    setCollege(demoCollege);
-    setColleges((list) =>
-      list.some((c) => c.code === DEMO_ORG.code) ? list : [demoCollege, ...list]
-    );
-    saveCollegeCode(DEMO_ORG.code);
-    setUserId(DEMO_STUDENT.email);
-    setPassword(DEMO_STUDENT.password);
-    setError('');
-    setListOpen(false);
-    setStep('login');
-    setSuccess('Sample credentials prefilled. Click Login to continue.');
   };
 
   const signOutAndStay = () => {
@@ -599,17 +548,6 @@ export default function StudentLoginPage() {
                 <p className="mm-career-card__sub">
                   Choose your campus so prep, drives, and enrollment stay aligned.
                 </p>
-
-                {SHOW_DEMO && !tenantLocked ? (
-                  <div className="mm-career-demo">
-                    <p>
-                      Sample: <code>{DEMO_STUDENT.email}</code> / <code>{DEMO_STUDENT.password}</code>
-                    </p>
-                    <button type="button" onClick={fillDemo}>
-                      Prefill sample
-                    </button>
-                  </div>
-                ) : null}
 
                 {collegesWarning ? (
                   <div className="mm-career-alert is-error" role="status">
@@ -829,12 +767,6 @@ export default function StudentLoginPage() {
                       Forgot Password?
                     </Link>
                   </label>
-
-                  {SHOW_DEMO && !tenantLocked ? (
-                    <button type="button" className="mm-career-demo-link" onClick={fillDemo}>
-                      Prefill sample student
-                    </button>
-                  ) : null}
 
                   <button
                     type="submit"

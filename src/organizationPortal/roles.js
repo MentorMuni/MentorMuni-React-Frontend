@@ -107,3 +107,9 @@ export function canViewCampusDepartments(role) {
 export function isViewerRole(role) {
   return normalizeOrgRole(role) === ORG_ROLES.VIEWER;
 }
+
+/** Staff-only org portal — blocks student sessions from TPO/HOD UI. */
+export function canAccessOrgPortal(role) {
+  const n = normalizeOrgRole(role);
+  return n === ORG_ROLES.TPO || n === ORG_ROLES.HOD || n === ORG_ROLES.VIEWER;
+}

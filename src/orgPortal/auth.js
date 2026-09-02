@@ -11,7 +11,7 @@ import {
   getSuspendedUx,
   isOrgSuspendedDetail,
 } from './suspended';
-import { normalizeOrgRole } from '../organizationPortal/roles';
+import { ORG_ROLES, canAccessOrgPortal, normalizeOrgRole } from '../organizationPortal/roles';
 
 const SESSION_KEY = 'mm-org-session';
 const TOKEN_KEY = 'mm-org-token';
@@ -119,7 +119,7 @@ export function consumeOrgAuthFlash() {
 
 function buildLoginBody(userId, password, organizationCode = '') {
   const id = String(userId || '').trim();
-  const payload = { password };
+  const payload = { password, portal: 'organization' };
   if (id.includes('@')) {
     payload.email = id.toLowerCase();
   } else {
@@ -130,12 +130,46 @@ function buildLoginBody(userId, password, organizationCode = '') {
   return payload;
 }
 
+function rejectWrongOrgPortalRole(user, { expectedRole } = {}) {
+  const normalized = normalizeOrgRole(user?.role || user?.role_code);
+  if (!canAccessOrgPortal(normalized)) {
+    clearOrgSession();
+    return {
+      ok: false,
+      error: 'Student accounts must use the student portal, not the organization login.',
+      code: 'WRONG_PORTAL',
+      status: 403,
+    };
+  }
+  const tab = String(expectedRole || '').trim().toLowerCase();
+  if (tab === 'tpo' && normalized !== ORG_ROLES.TPO) {
+    clearOrgSession();
+    return {
+      ok: false,
+      error: 'These credentials are not a TPO account. Switch to the HOD tab or use TPO credentials.',
+      code: 'WRONG_ROLE_TAB',
+      status: 403,
+    };
+  }
+  if (tab === 'hod' && normalized !== ORG_ROLES.HOD) {
+    clearOrgSession();
+    return {
+      ok: false,
+      error: 'These credentials are not an HOD account. Switch to the TPO tab or use HOD credentials.',
+      code: 'WRONG_ROLE_TAB',
+      status: 403,
+    };
+  }
+  return null;
+}
+
 /**
  * POST /auth/login
  * - 401 → invalid credentials
  * - 403 + suspended detail → show API detail (not wrong-password UX)
  */
-export async function loginOrgUser(userId, password, organizationCode = '') {
+export async function loginOrgUser(userId, password, organizationCode = '', options = {}) {
+  const { expectedRole } = options;
   // TEMP demo bypass — remove with demoAuth.js when real accounts are live
   const { matchDemoUser, DEMO_ORG } = await import('../organizationPortal/demoAuth');
   const demo = matchDemoUser(userId, password);
@@ -160,6 +194,8 @@ export async function loginOrgUser(userId, password, organizationCode = '') {
       mustChangePassword: false,
       demo: true,
     };
+    const demoGate = rejectWrongOrgPortalRole(user, { expectedRole });
+    if (demoGate) return demoGate;
     setOrgSession(user);
     return { ok: true, user, token_type: 'bearer', source: 'demo' };
   }
@@ -213,6 +249,9 @@ export async function loginOrgUser(userId, password, organizationCode = '') {
       // Token received; me is optional for login UX if route differs.
     }
 
+    const roleGate = rejectWrongOrgPortalRole(user, { expectedRole });
+    if (roleGate) return roleGate;
+
     setOrgSession(user);
     return { ok: true, user: getOrgSession(), token_type: login.token_type || 'bearer' };
   } catch (err) {
@@ -242,6 +281,7 @@ export async function loginOrgUser(userId, password, organizationCode = '') {
       }
       if (err.status === 403) {
         const detail = err.detail && typeof err.detail === 'object' ? err.detail : {};
+        clearOrgSession();
         return {
           ok: false,
           error: err.message,
@@ -249,6 +289,14 @@ export async function loginOrgUser(userId, password, organizationCode = '') {
           status: 403,
           portal_url: detail.portal_url || undefined,
           organization_name: detail.organization_name || undefined,
+        };
+      }
+      if (err.status === 422 && (code === 'PORTAL_REQUIRED' || code === 'INVALID_PORTAL')) {
+        return {
+          ok: false,
+          error: err.message || 'Portal configuration error. Refresh and try again.',
+          code,
+          status: 422,
         };
       }
       return {

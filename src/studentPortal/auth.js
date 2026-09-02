@@ -109,7 +109,7 @@ export async function changeStudentPassword(currentPassword, newPassword) {
 
 function buildLoginBody(userId, password, organizationCode = '') {
   const id = String(userId || '').trim();
-  const payload = { password };
+  const payload = { password, portal: 'student' };
   if (id.includes('@')) payload.email = id.toLowerCase();
   else payload.username = id;
   const code = String(organizationCode || '').trim().toUpperCase();
@@ -235,7 +235,8 @@ export async function loginStudent(userId, password, organizationCode = '') {
       else orgApi.clearToken();
     }
 
-    if (!isStudentRole(user.role)) {
+    if (!isStudentRole(user.role) && !isStudentRole(user.role_code)) {
+      clearStudentSession();
       return {
         ok: false,
         error: 'This portal is for students. Use the Organization login for TPO / HOD.',
@@ -284,6 +285,17 @@ export async function loginStudent(userId, password, organizationCode = '') {
           error: err.message || 'Invalid college ID / email or password.',
           code: 'INVALID_CREDENTIALS',
           status: 401,
+        };
+      }
+      if (code === 'WRONG_PORTAL' || (err.status === 403 && code === 'WRONG_PORTAL')) {
+        clearStudentSession();
+        return {
+          ok: false,
+          error:
+            err.message ||
+            'TPO and HOD accounts must use the organization portal, not the student login.',
+          code: 'WRONG_PORTAL',
+          status: 403,
         };
       }
       return {

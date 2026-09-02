@@ -4,7 +4,7 @@ import { CollegeTenantGate } from '../tenant/UnknownCollegePortalPage';
 import OrganizationLoginPage from '../components/organization/OrganizationLoginPage';
 import OrgForgotPasswordPage from './pages/OrgForgotPasswordPage';
 import OrgResetPasswordPage from './pages/OrgResetPasswordPage';
-import { getOrgSession, isOrgAuthenticated } from '../orgPortal';
+import { getOrgSession, isOrgAuthenticated, clearOrgSession } from '../orgPortal';
 import OrganizationShell from './OrganizationShell';
 import DashboardPage from './pages/DashboardPage';
 import ChangePasswordPage from './pages/ChangePasswordPage';
@@ -24,6 +24,7 @@ import {
   canMutateCampus,
   canViewAnalytics,
   canViewCampusDepartments,
+  canAccessOrgPortal,
   getOrgHomePath,
   getOrgLoginPath,
   isHodRole,
@@ -34,6 +35,11 @@ import { useAuthGateRerender } from '../lib/sessionGuards';
 function RequireOrgAuth({ children }) {
   useAuthGateRerender();
   if (!isOrgAuthenticated()) return <Navigate to={getOrgLoginPath()} replace />;
+  const session = getOrgSession();
+  if (!canAccessOrgPortal(session?.role)) {
+    clearOrgSession();
+    return <Navigate to={getOrgLoginPath()} replace state={{ wrongPortal: true }} />;
+  }
   return children;
 }
 

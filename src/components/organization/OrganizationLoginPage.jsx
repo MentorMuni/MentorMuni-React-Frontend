@@ -34,7 +34,7 @@ import {
 import { useCollegeTenantContext } from '../../tenant/CollegeTenantProvider';
 import { organizationLogoUrl } from '../../tenant/orgLogo';
 import { getOrgHomePath } from '../../organizationPortal/roles';
-import { DEMO_ORG, DEMO_USERS, matchDemoUser } from '../../organizationPortal/demoAuth';
+import { DEMO_ORG, matchDemoUser } from '../../organizationPortal/demoAuth';
 import { useOrgTheme } from '../../organizationPortal/useOrgTheme';
 import OrgThemeToggle from '../../organizationPortal/OrgThemeToggle';
 import './organization-login.css';
@@ -354,9 +354,13 @@ export default function OrganizationLoginPage() {
     setLoading(true);
     try {
       const code = demoMatch ? DEMO_ORG.code : orgCode;
-      const result = await loginOrgUser(userId, password, code);
+      const result = await loginOrgUser(userId, password, code, { expectedRole: roleId });
       if (!result.ok) {
-        if (result.code === 'WRONG_TENANT' || result.code === 'PUBLIC_ON_COLLEGE') {
+        if (result.code === 'WRONG_PORTAL' || result.code === 'WRONG_ROLE_TAB') {
+          setError(result.error);
+          setErrorKind('credentials');
+          setPortalLink('');
+        } else if (result.code === 'WRONG_TENANT' || result.code === 'PUBLIC_ON_COLLEGE') {
           // On a locked college host, wrong-campus credentials should look like a
           // normal login miss — not a redirect to another college.
           if (tenantLocked) {
@@ -498,13 +502,6 @@ export default function OrganizationLoginPage() {
                 {collegesWarning ? (
                   <div className="mm-login-vibe-form__error" role="status" style={{ marginBottom: 12 }}>
                     <p className="mm-login-vibe-form__error-text">{collegesWarning}</p>
-                    {collegesSource === 'offline' ? (
-                      <p className="mm-login-vibe-form__error-cta" style={{ marginTop: 6 }}>
-                        Demo still works — college <strong>DEMO</strong> ·{' '}
-                        <code>tpo@demo.edu</code> / <code>Demo@123</code> (HOD:{' '}
-                        <code>hod@demo.edu</code>)
-                      </p>
-                    ) : null}
                   </div>
                 ) : null}
 
@@ -827,47 +824,6 @@ export default function OrganizationLoginPage() {
                   <div className="mm-org-login__alert mm-org-login__alert--err" role="alert">
                     <p>{tenantError || collegesWarning}</p>
                   </div>
-                ) : null}
-
-                {!tenantLocked ? (
-                <div className="mm-org-login__demo" role="note">
-                  <p className="mm-org-login__demo-title">Temp demo credentials (remove later)</p>
-                  <p className="mm-org-login__demo-line">
-                    College: <strong>DEMO</strong> · MentorMuni Demo College
-                  </p>
-                  <p className="mm-org-login__demo-line">
-                    TPO: <code>tpo@demo.edu</code> / <code>Demo@123</code>
-                  </p>
-                  <p className="mm-org-login__demo-line">
-                    HOD: <code>hod@demo.edu</code> / <code>Demo@123</code>
-                  </p>
-                  <button
-                    type="button"
-                    className="mm-org-login__demo-fill"
-                    onClick={() => {
-                      const demoCollege =
-                        colleges.find((c) => c.code === DEMO_ORG.code) || {
-                          id: DEMO_ORG.id,
-                          name: DEMO_ORG.name,
-                          code: DEMO_ORG.code,
-                          city: DEMO_ORG.city,
-                          state: DEMO_ORG.state,
-                        };
-                      setCollege(demoCollege);
-                      setPickingCollege(false);
-                      saveCollegeCode(DEMO_ORG.code);
-                      const u =
-                        roleId === 'hod'
-                          ? DEMO_USERS.find((x) => x.email.startsWith('hod'))
-                          : DEMO_USERS.find((x) => x.email.startsWith('tpo'));
-                      setUserId(u?.email || '');
-                      setPassword(u?.password || '');
-                      setError('');
-                    }}
-                  >
-                    Fill {roleId === 'hod' ? 'HOD' : 'TPO'} demo
-                  </button>
-                </div>
                 ) : null}
 
                 <form className="mm-org-login__form" onSubmit={handleSubmit} noValidate>

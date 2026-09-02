@@ -15,6 +15,14 @@ const GAME_COMPONENTS = {
   pattern_pulse: NumberPulseGame,
 };
 
+const HEAD_CLASS = {
+  seating_shuffle: 'aa-play-shell__head--violet',
+  family_tree_rush: 'aa-play-shell__head--pink',
+  rail_rush: 'aa-play-shell__head--cyan',
+  factory_floor: 'aa-play-shell__head--orange',
+  pattern_pulse: 'aa-play-shell__head--emerald',
+};
+
 export default function GamePlayShell({ gameId, placementMode, onRoundComplete }) {
   const game = gameById(gameId);
   const GameComponent = GAME_COMPONENTS[gameId] ?? SeatingShuffleGame;
@@ -29,53 +37,42 @@ export default function GamePlayShell({ gameId, placementMode, onRoundComplete }
   }
 
   return (
-    <div className="aa-play-shell overflow-hidden rounded-3xl border border-slate-200/80 bg-white/95 shadow-xl dark:border-slate-700 dark:bg-slate-800/95">
-      {/* Game header */}
-      <div className={`relative overflow-hidden bg-gradient-to-br ${game.gradient} px-5 py-5 sm:px-6 sm:py-6`}>
-        <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-white/10 blur-2xl" />
-        <div className="relative flex flex-wrap items-start justify-between gap-4">
+    <div className="aa-play-shell">
+      <div className={`aa-play-shell__head ${HEAD_CLASS[gameId] || HEAD_CLASS.seating_shuffle}`}>
+        <div className="aa-row-between" style={{ alignItems: 'flex-start' }}>
           <div>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-white/60">
-              {game.topic}
-            </p>
-            <h3 className="mt-1 flex items-center gap-2 text-xl font-black text-white sm:text-2xl">
+            <p className="aa-play-shell__topic">{game.topic}</p>
+            <h3 className="aa-play-shell__title">
               <span aria-hidden>{game.emoji}</span>
               {game.title}
             </h3>
-            <p className="mt-1 text-sm text-white/75">{game.subtitle}</p>
+            <p className="aa-play-shell__subtitle">{game.subtitle}</p>
           </div>
-          <div className="flex gap-2">
-            <span className="rounded-full bg-white/20 px-3 py-1 text-xs font-bold text-white backdrop-blur-sm">
-              +{game.xpPerRound} XP / round
-            </span>
+          <div className="aa-play-shell__badges">
+            <span className="aa-play-shell__badge">+{game.xpPerRound} XP / round</span>
             {placementMode && (
-              <span className="flex items-center gap-1 rounded-full bg-[#FF9500] px-3 py-1 text-xs font-bold text-white">
-                <Target className="h-3 w-3" /> Placement
+              <span className="aa-play-shell__badge aa-play-shell__badge--placement">
+                <Target size={12} aria-hidden /> Placement
               </span>
             )}
           </div>
         </div>
-
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="aa-play-shell__skills">
           {game.skills.map((skill) => (
-            <span
-              key={skill}
-              className="rounded-lg bg-black/20 px-2.5 py-1 text-[10px] font-bold text-white/90"
-            >
+            <span key={skill} className="aa-play-shell__skill">
               {skill}
             </span>
           ))}
         </div>
       </div>
 
-      {/* Mode bar */}
-      <div className="flex items-center justify-between border-b border-slate-100 bg-slate-50/80 px-5 py-2.5 dark:border-slate-700 dark:bg-slate-900/50">
-        <p className="flex items-center gap-1.5 text-xs font-semibold text-slate-500 dark:text-slate-400">
-          <BookOpen className="h-3.5 w-3.5" />
+      <div className="aa-play-shell__bar">
+        <p className="aa-play-shell__bar-text">
+          <BookOpen size={14} aria-hidden />
           Learn-by-playing — formulas unlock after you solve
         </p>
-        <p className="flex items-center gap-1 text-xs font-bold text-[#FF9500]">
-          <Zap className="h-3.5 w-3.5" />
+        <p className="aa-play-shell__bar-accent">
+          <Zap size={14} aria-hidden />
           Quick session ~{game.avgMinutes} min
         </p>
       </div>
@@ -85,7 +82,7 @@ export default function GamePlayShell({ gameId, placementMode, onRoundComplete }
         initial={{ opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.25 }}
-        className="p-5 sm:p-6"
+        className="aa-play-shell__body"
       >
         <GameComponent onComplete={handleComplete} placementMode={placementMode} />
       </motion.div>
