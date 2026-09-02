@@ -8,6 +8,7 @@ export const studentPaths = {
   fearToFearless: '/studentportal/fear-to-fearless',
   knowMe: '/studentportal/know-me', // deprecated: use fearToFearless
   practice: '/studentportal/practice',
+  aptitudeArcade: '/studentportal/aptitude-arcade',
   coding: '/studentportal/coding',
   companyPrep: '/studentportal/company-prep',
   companies: '/studentportal/companies',

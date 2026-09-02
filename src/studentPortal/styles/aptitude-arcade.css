@@ -1,0 +1,187 @@
+/* Aptitude Arcade — inside student portal shell */
+
+.stu-arcade {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.stu-arcade__hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, #1e1b4b 0%, #312e81 45%, #0f172a 100%);
+  color: #fff;
+  border: 1px solid rgba(168, 85, 247, 0.25);
+}
+
+.stu-arcade__eyebrow {
+  margin: 0;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.stu-arcade__title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.35rem 0 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.stu-arcade__sub {
+  margin: 0.5rem 0 0;
+  max-width: 36rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.stu-arcade__modes {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.stu-arcade__mode {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.55rem 1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+
+.stu-arcade__mode:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+.stu-arcade__mode.is-active {
+  background: #fff;
+  color: #1e293b;
+  border-color: #fff;
+}
+
+.stu-arcade__mode--placement.is-active {
+  background: var(--stu-accent, #ff9500);
+  color: #fff;
+  border-color: var(--stu-accent, #ff9500);
+}
+
+.stu-arcade__banner {
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 149, 0, 0.12);
+  border: 1px solid rgba(255, 149, 0, 0.35);
+  color: var(--stu-text, #92400e);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.stu-app[data-theme='dark'] .stu-arcade__banner {
+  color: #fdba74;
+}
+
+.stu-arcade__grid {
+  display: grid;
+  gap: var(--space-5);
+  align-items: start;
+}
+
+@media (min-width: 1024px) {
+  .stu-arcade__grid {
+    grid-template-columns: minmax(280px, 320px) 1fr;
+  }
+
+  .stu-arcade__grid .aa-sidebar {
+    position: sticky;
+    top: 1rem;
+    max-height: calc(100dvh - 7rem);
+  }
+}
+
+.stu-arcade__play {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.stu-arcade__why {
+  padding: var(--space-4);
+  border-radius: var(--radius-xl);
+  border: 1px solid var(--stu-border, #e2e8f0);
+  background: var(--stu-surface, #fff);
+}
+
+.stu-arcade__why h2 {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.stu-arcade__why p {
+  margin: 0.5rem 0 0;
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--stu-text-muted, #64748b);
+}
+
+.stu-arcade__skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.75rem;
+}
+
+.stu-arcade__skills span {
+  padding: 0.25rem 0.55rem;
+  border-radius: 0.5rem;
+  background: var(--stu-surface-muted, #f1f5f9);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: var(--stu-text-muted, #64748b);
+}
+
+.stu-arcade__toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 80;
+  padding: 0.75rem 1.25rem;
+  border-radius: 1rem;
+  background: #0f172a;
+  color: #fff;
+  font-size: 0.875rem;
+  font-weight: 800;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.aa-sidebar {
+  min-height: 420px;
+}
+
+.aa-play-shell {
+  min-height: 380px;
+}

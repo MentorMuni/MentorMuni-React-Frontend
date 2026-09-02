@@ -13,6 +13,7 @@ import {
   Heart,
   LifeBuoy,
   StickyNote,
+  Gamepad2,
 } from 'lucide-react';
 import '../../styles/fear-to-fearless-sidebar.css';
 import '../../styles/whiteboard.css';
@@ -24,6 +25,7 @@ const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
 const NAV_PRIMARY = [
   { icon: Home, label: 'Home', to: '/studentportal/home', end: true },
   { icon: Sparkles, label: 'AI Mentor', to: '/studentportal/mentor' },
+  { icon: Gamepad2, label: 'Aptitude Arcade', to: '/studentportal/aptitude-arcade', accent: true },
   { icon: Code2, label: 'Practice', to: '/studentportal/practice' },
   { icon: Terminal, label: 'Coding Round', to: '/studentportal/coding' },
   { icon: Briefcase, label: 'Companies', to: '/studentportal/companies', collegeOnly: true },

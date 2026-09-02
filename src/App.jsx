@@ -5,8 +5,10 @@ import { motion } from "framer-motion";
 import { getRouteSeo } from "./constants/routeSeoMeta";
 import { SNAP_ANNOUNCEMENT_BAR } from "./constants/snapTestCopy";
 import { sanitizeBrokenSpaUrl } from "./utils/sanitizeBrokenSpaUrl";
+import { redirectLegacySpaEntry } from "./utils/redirectLegacySpaEntry";
 
 sanitizeBrokenSpaUrl();
+redirectLegacySpaEntry();
 
 import Navbar from "./components/navbar";
 import SkipToContent from "./components/layout/SkipToContent";
@@ -372,6 +374,8 @@ function App() {
               <Route path="/organizations" element={<OrganizationTypoRedirect />} />
               <Route path="/studentportal/*" element={<StudentPortalApp />} />
               <Route path="/StudentPortal/*" element={<StudentPortalApp />} />
+              <Route path="/aptitude-arcade" element={<Navigate to="/studentportal/aptitude-arcade" replace />} />
+              <Route path="/student/aptitude-arcade" element={<Navigate to="/studentportal/aptitude-arcade" replace />} />
               <Route path="/" element={<RootEntry />} />
               <Route path="/how-it-works" element={<StudentJourneyPage />} />
               <Route path="/roadmap" element={<RoadmapPage />} />
