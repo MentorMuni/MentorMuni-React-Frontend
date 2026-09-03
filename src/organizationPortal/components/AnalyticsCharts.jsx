@@ -32,13 +32,38 @@ const COLORS = {
   unscored: '#94a3b8',
   accent: '#0ea5e9',
   accent2: '#14b8a6',
-  ink: 'var(--org-ink, #0f172a)',
-  muted: 'var(--org-muted, #64748b)',
-  grid: 'rgba(148,163,184,0.25)',
+  grid: 'rgba(148,163,184,0.28)',
 };
 
-const tickInk = { fontSize: 11, fill: COLORS.ink };
-const tickInkSm = { fontSize: 10, fill: COLORS.ink };
+/** SVG ticks must use currentColor — CSS vars in fill attrs break in some browsers. */
+const tickInk = { fontSize: 11, fill: 'currentColor' };
+const tickInkSm = { fontSize: 10, fill: 'currentColor' };
+
+const TOOLTIP_BOX = {
+  background: 'var(--org-panel-solid, #ffffff)',
+  border: '1px solid var(--org-line, #e2e8f0)',
+  borderRadius: 10,
+  fontSize: 12,
+  lineHeight: 1.4,
+  color: 'var(--org-ink, #0f172a)',
+  boxShadow: '0 10px 28px rgba(15, 23, 42, 0.14)',
+  padding: '8px 12px',
+};
+const TOOLTIP_LABEL = { color: 'var(--org-ink, #0f172a)', fontWeight: 700, marginBottom: 2 };
+const TOOLTIP_ITEM = { color: 'var(--org-ink, #0f172a)', fontWeight: 600 };
+
+function ChartTooltip(props) {
+  const { contentStyle, labelStyle, itemStyle, cursor, ...rest } = props;
+  return (
+    <Tooltip
+      cursor={cursor ?? { fill: 'rgba(148, 163, 184, 0.12)' }}
+      contentStyle={{ ...TOOLTIP_BOX, ...contentStyle }}
+      labelStyle={{ ...TOOLTIP_LABEL, ...labelStyle }}
+      itemStyle={{ ...TOOLTIP_ITEM, ...itemStyle }}
+      {...rest}
+    />
+  );
+}
 
 function ChartCard({ title, meta, children, tall }) {
   return (
@@ -166,34 +191,37 @@ export function ReadinessPie({ bands = {}, avgReadiness, onSliceClick }) {
 
   return (
     <div className="mm-org-rechart mm-org-rechart--pie">
-      <ResponsiveContainer width="100%" height={260}>
-        <PieChart>
-          <Pie
-            data={data}
-            dataKey="value"
-            nameKey="name"
-            innerRadius={62}
-            outerRadius={92}
-            paddingAngle={2}
-            className={onSliceClick ? 'mm-org-pie--clickable' : undefined}
-            onClick={onSliceClick ? (entry) => onSliceClick(entry?.drill, entry) : undefined}
-          >
-            {data.map((d) => (
-              <Cell key={d.name} fill={d.color} />
-            ))}
-          </Pie>
-          <Tooltip
-            formatter={(value, _name, item) => [
-              `${value} students (${item?.payload?.pct ?? 0}% of roster)`,
-              'Students',
-            ]}
-          />
-          <Legend wrapperStyle={{ fontSize: 11 }} />
-        </PieChart>
-      </ResponsiveContainer>
-      <div className="mm-org-pie-center">
-        <strong>{avgReadiness == null ? '—' : `${Math.round(avgReadiness)}%`}</strong>
-        <span>campus average</span>
+      <div className="mm-org-rechart__plot">
+        <ResponsiveContainer width="100%" height={200}>
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              innerRadius={58}
+              outerRadius={86}
+              paddingAngle={2}
+              className={onSliceClick ? 'mm-org-pie--clickable' : undefined}
+              onClick={onSliceClick ? (entry) => onSliceClick(entry?.drill, entry) : undefined}
+            >
+              {data.map((d) => (
+                <Cell key={d.name} fill={d.color} stroke="transparent" />
+              ))}
+            </Pie>
+            <ChartTooltip
+              formatter={(value, _name, item) => [
+                `${value} students (${item?.payload?.pct ?? 0}% of roster)`,
+                'Students',
+              ]}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+        <div className="mm-org-pie-center">
+          <strong>{avgReadiness == null ? '—' : `${Math.round(avgReadiness)}%`}</strong>
+          <span>campus average</span>
+        </div>
       </div>
       <PieLegendList items={data} />
       <ChartInsight>
@@ -235,7 +263,7 @@ export function PillarRadar({ pillars = {} }) {
             fill={COLORS.accent}
             fillOpacity={0.35}
           />
-          <Tooltip />
+          <ChartTooltip />
         </RadarChart>
       </ResponsiveContainer>
     </div>
@@ -259,11 +287,11 @@ export function TestsFunnelChart({ funnel = [] }) {
           <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
           <XAxis dataKey="name" tick={tickInk} />
           <YAxis allowDecimals={false} tick={tickInk} />
-          <Tooltip
+          <ChartTooltip
             formatter={(value, key) => [value, key === 'completed' ? 'Completed' : 'Reached']}
             labelFormatter={(_, payload) => payload?.[0]?.payload?.label || ''}
           />
-          <Legend />
+          <Legend wrapperStyle={{ fontSize: 11 }} />
           <Bar dataKey="reached" name="Reached+" fill={COLORS.accent} radius={[4, 4, 0, 0]} />
           <Bar dataKey="completed" name="Completed" fill={COLORS.accent2} radius={[4, 4, 0, 0]} />
         </BarChart>
@@ -289,8 +317,8 @@ export function ToolCoverageStacked({ tools = [] }) {
           <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
           <XAxis type="number" allowDecimals={false} tick={tickInk} />
           <YAxis type="category" dataKey="name" width={88} tick={tickInkSm} />
-          <Tooltip labelFormatter={(_, p) => p?.[0]?.payload?.full || ''} />
-          <Legend />
+          <ChartTooltip labelFormatter={(_, p) => p?.[0]?.payload?.full || ''} />
+          <Legend wrapperStyle={{ fontSize: 11 }} />
           <Bar dataKey="completed" stackId="a" name="Done" fill={COLORS.strong} />
           <Bar dataKey="inProgress" stackId="a" name="In progress" fill={COLORS.accent} />
           <Bar dataKey="remaining" stackId="a" name="Remaining" fill={COLORS.unscored} />
@@ -318,20 +346,35 @@ export function CoverageDonut({ studentsScored = 0, students = 0, coveragePct })
 
   return (
     <div className="mm-org-rechart mm-org-rechart--pie">
-      <ResponsiveContainer width="100%" height={240}>
-        <PieChart>
-          <Pie data={data} dataKey="value" nameKey="name" innerRadius={56} outerRadius={84} paddingAngle={3}>
-            {data.map((d) => (
-              <Cell key={d.name} fill={d.color} />
-            ))}
-          </Pie>
-          <Tooltip formatter={(v, _, item) => [`${v} students (${item?.payload?.pct ?? 0}% of roster)`, 'Students']} />
-          <Legend wrapperStyle={{ fontSize: 11 }} />
-        </PieChart>
-      </ResponsiveContainer>
-      <div className="mm-org-pie-center mm-org-pie-center--sm">
-        <strong>{pct}%</strong>
-        <span>assessed</span>
+      <div className="mm-org-rechart__plot">
+        <ResponsiveContainer width="100%" height={200}>
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              innerRadius={56}
+              outerRadius={84}
+              paddingAngle={3}
+            >
+              {data.map((d) => (
+                <Cell key={d.name} fill={d.color} stroke="transparent" />
+              ))}
+            </Pie>
+            <ChartTooltip
+              formatter={(v, _, item) => [
+                `${v} students (${item?.payload?.pct ?? 0}% of roster)`,
+                'Students',
+              ]}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+        <div className="mm-org-pie-center mm-org-pie-center--sm">
+          <strong>{pct}%</strong>
+          <span>assessed</span>
+        </div>
       </div>
       <PieLegendList items={data} />
       <ChartInsight>How many enrolled students have completed at least one readiness check.</ChartInsight>
@@ -357,21 +400,32 @@ export function ActivityEngagementPie({ active = 0, idle = 0, inactive = 0, neve
   }
 
   return (
-    <div className="mm-org-rechart">
-      <ResponsiveContainer width="100%" height={240}>
-        <PieChart>
-          <Pie data={data} dataKey="value" nameKey="name" innerRadius={48} outerRadius={82} paddingAngle={2}
-            className={onSliceClick ? 'mm-org-pie--clickable' : undefined}
-            onClick={onSliceClick ? (entry) => onSliceClick(entry?.drill, entry) : undefined}
-          >
-            {data.map((d) => (
-              <Cell key={d.name} fill={d.color} />
-            ))}
-          </Pie>
-          <Tooltip formatter={(v, _, item) => [`${v} students (${item?.payload?.pct ?? 0}%)`, 'Students']} />
-          <Legend wrapperStyle={{ fontSize: 11 }} />
-        </PieChart>
-      </ResponsiveContainer>
+    <div className="mm-org-rechart mm-org-rechart--pie">
+      <div className="mm-org-rechart__plot">
+        <ResponsiveContainer width="100%" height={200}>
+          <PieChart>
+            <Pie
+              data={data}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              innerRadius={48}
+              outerRadius={82}
+              paddingAngle={2}
+              className={onSliceClick ? 'mm-org-pie--clickable' : undefined}
+              onClick={onSliceClick ? (entry) => onSliceClick(entry?.drill, entry) : undefined}
+            >
+              {data.map((d) => (
+                <Cell key={d.name} fill={d.color} stroke="transparent" />
+              ))}
+            </Pie>
+            <ChartTooltip
+              formatter={(v, _, item) => [`${v} students (${item?.payload?.pct ?? 0}%)`, 'Students']}
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
       <PieLegendList items={data} />
       <ChartInsight>Who is actively preparing vs. who needs a nudge to log in and start checks.</ChartInsight>
     </div>
@@ -396,12 +450,18 @@ export function PillarComparisonBars({ pillars = {}, avgMock }) {
           <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} horizontal={false} />
           <XAxis type="number" domain={[0, 100]} tick={tickInkSm} tickFormatter={(v) => `${v}%`} />
           <YAxis type="category" dataKey="name" width={108} tick={tickInkSm} />
-          <Tooltip formatter={(v) => [`${Math.round(v)}%`, 'Average']} />
+          <ChartTooltip formatter={(v) => [`${Math.round(v)}%`, 'Average']} />
           <Bar dataKey="value" radius={[0, 8, 8, 0]} barSize={18}>
             {data.map((d) => (
               <Cell key={d.key} fill={d.fill} />
             ))}
-            <LabelList dataKey="value" position="right" formatter={(v) => `${Math.round(v)}%`} fill={COLORS.ink} fontSize={11} />
+            <LabelList
+              dataKey="value"
+              position="right"
+              formatter={(v) => `${Math.round(v)}%`}
+              fill="currentColor"
+              fontSize={11}
+            />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
@@ -436,7 +496,7 @@ export function PillarRadialChart({ pillars = {}, avgMock }) {
             ))}
           </RadialBar>
           <Legend />
-          <Tooltip formatter={(v) => [`${Math.round(v)}%`, 'Average']} />
+          <ChartTooltip formatter={(v) => [`${Math.round(v)}%`, 'Average']} />
         </RadialBarChart>
       </ResponsiveContainer>
       <p className="mm-org-chart-caption">Same pillar scores — ranked highest to lowest</p>
@@ -481,7 +541,7 @@ export function ReadinessDistributionChart({ students = [], onBarClick }) {
           <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} vertical={false} />
           <XAxis dataKey="name" tick={tickInkSm} />
           <YAxis allowDecimals={false} tick={tickInk} />
-          <Tooltip
+          <ChartTooltip
             formatter={(v, _, item) => {
               const pct = total ? Math.round((v / total) * 100) : 0;
               return [`${v} students (${pct}%)`, 'Count'];
@@ -497,7 +557,7 @@ export function ReadinessDistributionChart({ students = [], onBarClick }) {
             {data.map((d) => (
               <Cell key={d.name} fill={d.color} />
             ))}
-            <LabelList dataKey="count" position="top" fontSize={11} fill={COLORS.ink} />
+            <LabelList dataKey="count" position="top" fontSize={11} fill="currentColor" />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
@@ -529,7 +589,7 @@ export function DeptReadinessRankChart({ departments = [] }) {
           <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} horizontal={false} />
           <XAxis type="number" domain={[0, 100]} tick={tickInkSm} tickFormatter={(v) => `${v}%`} />
           <YAxis type="category" dataKey="name" width={72} tick={tickInkSm} />
-          <Tooltip
+          <ChartTooltip
             formatter={(v) => [`${v}%`, 'Avg readiness']}
             labelFormatter={(_, p) => {
               const row = p?.[0]?.payload;
@@ -540,7 +600,7 @@ export function DeptReadinessRankChart({ departments = [] }) {
             {data.map((d) => (
               <Cell key={d.name} fill={d.fill} />
             ))}
-            <LabelList dataKey="readiness" position="right" formatter={(v) => `${v}%`} fontSize={11} fill={COLORS.ink} />
+            <LabelList dataKey="readiness" position="right" formatter={(v) => `${v}%`} fontSize={11} fill="currentColor" />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
@@ -576,7 +636,7 @@ export function DriveReadyByDeptChart({ departments = [] }) {
           <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} horizontal={false} />
           <XAxis type="number" domain={[0, 100]} tick={tickInkSm} tickFormatter={(v) => `${v}%`} />
           <YAxis type="category" dataKey="name" width={72} tick={tickInkSm} />
-          <Tooltip
+          <ChartTooltip
             formatter={(v, _, item) => [`${v}% (${item?.payload?.strong}/${item?.payload?.scored})`, 'Drive-ready']}
             labelFormatter={(_, p) => p?.[0]?.payload?.full || ''}
           />
@@ -584,7 +644,7 @@ export function DriveReadyByDeptChart({ departments = [] }) {
             {data.map((d) => (
               <Cell key={d.name} fill={d.fill} />
             ))}
-            <LabelList dataKey="pct" position="right" formatter={(v) => `${v}%`} fontSize={11} fill={COLORS.ink} />
+            <LabelList dataKey="pct" position="right" formatter={(v) => `${v}%`} fontSize={11} fill="currentColor" />
           </Bar>
         </BarChart>
       </ResponsiveContainer>
@@ -617,7 +677,7 @@ export function TestsCompletionChart({ tests = {}, studentsScored = 0 }) {
               <Cell key={d.name} fill={d.fill} />
             ))}
           </Pie>
-          <Tooltip formatter={(v, name) => [`${v} of ${toolsTotal} tools`, name]} />
+          <ChartTooltip formatter={(v, name) => [`${v} of ${toolsTotal} tools`, name]} />
           <Legend />
         </PieChart>
       </ResponsiveContainer>
@@ -629,6 +689,37 @@ export function TestsCompletionChart({ tests = {}, studentsScored = 0 }) {
         Each student has {toolsTotal} baseline checks (aptitude, skills, mocks, etc.). This is the average completion
         across scored students.
       </ChartInsight>
+    </div>
+  );
+}
+
+/** Single-column theme frequency bars (gaps or strengths). */
+export function ThemeFrequencyBars({ items = [], tone = 'bad', empty = 'No themes yet.' }) {
+  const fill = tone === 'good' ? COLORS.strong : COLORS.weak;
+  const data = (items || []).slice(0, 6).map((g) => ({
+    name: (g.label || '').length > 18 ? `${g.label.slice(0, 16)}…` : g.label,
+    full: g.label,
+    count: g.count,
+    share: g.sharePct ?? g.share_pct,
+  }));
+  if (!data.length) return <Empty text={empty} />;
+
+  return (
+    <div className="mm-org-rechart">
+      <ResponsiveContainer width="100%" height={220}>
+        <BarChart data={data} layout="vertical" margin={{ left: 4, right: 8 }}>
+          <XAxis type="number" allowDecimals={false} hide />
+          <YAxis type="category" dataKey="name" width={100} tick={tickInkSm} />
+          <ChartTooltip
+            formatter={(v, _, item) => [
+              `${v}${item?.payload?.share != null ? ` (${Math.round(item.payload.share)}% of scored)` : ''}`,
+              'Students',
+            ]}
+            labelFormatter={(_, p) => p?.[0]?.payload?.full || ''}
+          />
+          <Bar dataKey="count" fill={fill} radius={[0, 6, 6, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 }
@@ -660,7 +751,7 @@ export function GapStrengthBars({ gaps = [], strengths = [] }) {
             <BarChart data={gapData} layout="vertical" margin={{ left: 4, right: 8 }}>
               <XAxis type="number" allowDecimals={false} hide />
               <YAxis type="category" dataKey="name" width={100} tick={tickInkSm} />
-              <Tooltip
+              <ChartTooltip
                 formatter={(v, _, item) => [
                   `${v}${item?.payload?.share != null ? ` (${Math.round(item.payload.share)}% of scored)` : ''}`,
                   'Students',
@@ -681,7 +772,7 @@ export function GapStrengthBars({ gaps = [], strengths = [] }) {
             <BarChart data={strData} layout="vertical" margin={{ left: 4, right: 8 }}>
               <XAxis type="number" allowDecimals={false} hide />
               <YAxis type="category" dataKey="name" width={100} tick={tickInkSm} />
-              <Tooltip
+              <ChartTooltip
                 formatter={(v, _, item) => [
                   `${v}${item?.payload?.share != null ? ` (${Math.round(item.payload.share)}% of scored)` : ''}`,
                   'Students',
@@ -720,7 +811,7 @@ export function DeptCompareChart({ departments = [] }) {
           <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
           <XAxis dataKey="name" tick={tickInk} interval={0} angle={data.length > 6 ? -24 : 0} textAnchor={data.length > 6 ? 'end' : 'middle'} height={data.length > 6 ? 52 : 30} />
           <YAxis allowDecimals={false} tick={tickInk} />
-          <Tooltip
+          <ChartTooltip
             formatter={(v, key) => {
               const labels = {
                 strong: 'Drive-ready',
@@ -783,7 +874,7 @@ export function DeptPillarCompareChart({ departments = [], showExecutive = false
           <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
           <XAxis dataKey="name" tick={tickInkSm} interval={0} angle={data.length > 5 ? -22 : 0} textAnchor={data.length > 5 ? 'end' : 'middle'} height={data.length > 5 ? 48 : 30} />
           <YAxis domain={[0, 100]} tick={tickInk} tickFormatter={(v) => `${v}%`} />
-          <Tooltip
+          <ChartTooltip
             formatter={(v, key) => [v == null ? '—' : `${Math.round(v)}%`, PILLAR_LABELS[key] || key]}
             labelFormatter={(_, p) => p?.[0]?.payload?.full || ''}
           />
@@ -866,7 +957,7 @@ export function ExecutivePillarRadar({ pillars = {}, avgMock }) {
             fill={COLORS.accent}
             fillOpacity={0.35}
           />
-          <Tooltip formatter={(v) => [`${Math.round(v)}%`, 'Readiness']} />
+          <ChartTooltip formatter={(v) => [`${Math.round(v)}%`, 'Readiness']} />
         </RadarChart>
       </ResponsiveContainer>
       <ChartInsight>
@@ -917,7 +1008,7 @@ export function GapStrengthPieCharts({ gaps = [], strengths = [], onSliceClick }
                 <Cell key={d.name} fill={d.color} />
               ))}
             </Pie>
-            <Tooltip
+            <ChartTooltip
               formatter={(v, _, item) => {
                 const share =
                   item?.payload?.share ??
@@ -973,7 +1064,7 @@ export function ActivityArea({ active = 0, idle = 0, inactive = 0, never = 0 }) 
           <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
           <XAxis dataKey="name" tick={tickInkSm} />
           <YAxis allowDecimals={false} tick={tickInk} />
-          <Tooltip />
+          <ChartTooltip />
           <Area type="monotone" dataKey="value" stroke={COLORS.accent} fill={COLORS.accent} fillOpacity={0.35} />
         </AreaChart>
       </ResponsiveContainer>
@@ -1002,7 +1093,7 @@ export function PerformanceTrendChart({ points = [] }) {
           <CartesianGrid strokeDasharray="3 3" stroke={COLORS.grid} />
           <XAxis dataKey="date" tick={tickInkSm} />
           <YAxis domain={[0, 100]} tick={tickInk} unit="%" />
-          <Tooltip
+          <ChartTooltip
             labelFormatter={(_, payload) => payload?.[0]?.payload?.fullDate || ''}
             formatter={(v, name) => [`${Math.round(v)}%`, name]}
           />

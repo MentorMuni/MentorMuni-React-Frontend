@@ -1,9 +1,9 @@
 /** Aptitude Arcade — game catalog + progression metadata (client-side v1). */
 
 export const ARCADE_CATEGORIES = [
-  { id: 'logical', label: 'Logical', color: '#a855f7', emoji: '🧩' },
-  { id: 'quant', label: 'Quant', color: '#06b6d4', emoji: '🔢' },
-  { id: 'verbal', label: 'Verbal', color: '#f59e0b', emoji: '📖' },
+  { id: 'logical', label: 'Logical', color: '#0e6fa8', emoji: '' },
+  { id: 'quant', label: 'Quant', color: '#17b6d4', emoji: '' },
+  { id: 'verbal', label: 'Verbal', color: '#ff9500', emoji: '' },
 ];
 
 export const APTITUDE_GAMES = [
@@ -20,7 +20,7 @@ export const APTITUDE_GAMES = [
     placementWeight: 0.18,
     avgMinutes: 4,
     difficulty: ['easy', 'medium', 'hard'],
-    hook: 'Drag & drop seating puzzles — same logic as TCS / Infosys linear arrangement.',
+    hook: 'Linear seating puzzles — same logic as TCS / Infosys arrangement questions.',
     skills: ['Constraint tracking', 'Left-right positioning', 'Facing direction'],
   },
   {
@@ -84,18 +84,18 @@ export const APTITUDE_GAMES = [
     placementWeight: 0.12,
     avgMinutes: 3,
     difficulty: ['easy', 'medium', 'hard'],
-    hook: 'Beat-synced rounds — squares, primes, AP/GP mix like real exam patterns.',
+    hook: 'Squares, primes, AP/GP — the same number-series patterns as placement exams.',
     skills: ['Difference patterns', 'Square & cube series', 'Alternating rules'],
   },
 ];
 
 export const LEVEL_TITLES = [
-  { minXp: 0, title: 'Aptitude Intern', badge: '🌱' },
-  { minXp: 200, title: 'Logic Learner', badge: '🧠' },
-  { minXp: 500, title: 'Quant Grinder', badge: '⚡' },
-  { minXp: 1000, title: 'Placement Prepper', badge: '🎯' },
-  { minXp: 2000, title: 'Offer Hunter', badge: '🏆' },
-  { minXp: 4000, title: 'Aptitude Ace', badge: '👑' },
+  { minXp: 0, title: 'Aptitude Intern', badge: 'L1' },
+  { minXp: 200, title: 'Logic Learner', badge: 'L2' },
+  { minXp: 500, title: 'Quant Grinder', badge: 'L3' },
+  { minXp: 1000, title: 'Placement Prepper', badge: 'L4' },
+  { minXp: 2000, title: 'Offer Hunter', badge: 'L5' },
+  { minXp: 4000, title: 'Aptitude Ace', badge: 'L6' },
 ];
 
 export function levelFromXp(xp) {

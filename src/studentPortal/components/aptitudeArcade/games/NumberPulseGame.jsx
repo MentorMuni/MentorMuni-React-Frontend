@@ -4,20 +4,25 @@ import { NUMBER_SERIES_BANK } from '../../../constants/arcadeQuestionBank';
 import { buildOptions, questionLabel } from '../../../constants/arcadeGameUtils';
 import ArcadeSolutionPanel from '../ArcadeSolutionPanel';
 
-export default function NumberPulseGame({ onComplete, placementMode }) {
+export default function NumberPulseGame({ onComplete, placementMode, bank }) {
+  const seriesBank = Array.isArray(bank) && bank.length ? bank : NUMBER_SERIES_BANK;
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState(null);
   const [phase, setPhase] = useState('play');
   const [feedback, setFeedback] = useState(null);
   const [hintText, setHintText] = useState('');
 
-  const series = NUMBER_SERIES_BANK[idx % NUMBER_SERIES_BANK.length];
+  const series = seriesBank[idx % seriesBank.length];
   const options = useMemo(
     () => buildOptions(series.answer, idx * 17 + 3),
     [series.answer, idx],
   );
 
   const locked = phase === 'feedback';
+
+  useEffect(() => {
+    setIdx(0);
+  }, [seriesBank]);
 
   useEffect(() => {
     setSelected(null);
@@ -27,8 +32,8 @@ export default function NumberPulseGame({ onComplete, placementMode }) {
   }, [idx]);
 
   const loadNext = useCallback(() => {
-    setIdx((i) => (i + 1) % NUMBER_SERIES_BANK.length);
-  }, []);
+    setIdx((i) => (i + 1) % seriesBank.length);
+  }, [seriesBank.length]);
 
   function pick(n) {
     if (locked) return;
@@ -52,7 +57,7 @@ export default function NumberPulseGame({ onComplete, placementMode }) {
     setHintText(`Missing number is ${series.answer}. Rule: ${series.rule}`);
   }
 
-  const progress = useMemo(() => questionLabel(idx), [idx]);
+  const progress = useMemo(() => questionLabel(idx, seriesBank.length), [idx, seriesBank.length]);
 
   return (
     <div className={`aa-game${locked ? ' is-locked' : ''}`}>

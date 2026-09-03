@@ -5,9 +5,10 @@ import { WORK_JOBS_BANK } from '../../../constants/arcadeQuestionBank';
 import { questionLabel } from '../../../constants/arcadeGameUtils';
 import ArcadeSolutionPanel from '../ArcadeSolutionPanel';
 
-export default function WorkTimeGame({ onComplete, placementMode }) {
+export default function WorkTimeGame({ onComplete, placementMode, bank }) {
+  const jobs = Array.isArray(bank) && bank.length ? bank : WORK_JOBS_BANK;
   const [idx, setIdx] = useState(0);
-  const job = WORK_JOBS_BANK[idx % WORK_JOBS_BANK.length];
+  const job = jobs[idx % jobs.length];
   const totalWork = job.workers * job.days;
   const needed = Math.ceil(totalWork / job.targetDays);
   const [guess, setGuess] = useState('');
@@ -19,17 +20,21 @@ export default function WorkTimeGame({ onComplete, placementMode }) {
   const locked = phase === 'feedback';
 
   useEffect(() => {
-    const j = WORK_JOBS_BANK[idx % WORK_JOBS_BANK.length];
+    setIdx(0);
+  }, [jobs]);
+
+  useEffect(() => {
+    const j = jobs[idx % jobs.length];
     setCrew(j.workers);
     setGuess('');
     setPhase('play');
     setFeedback(null);
     setHintText('');
-  }, [idx]);
+  }, [idx, jobs]);
 
   const loadNext = useCallback(() => {
-    setIdx((i) => (i + 1) % WORK_JOBS_BANK.length);
-  }, []);
+    setIdx((i) => (i + 1) % jobs.length);
+  }, [jobs.length]);
 
   function check() {
     if (locked) return;
@@ -65,7 +70,7 @@ export default function WorkTimeGame({ onComplete, placementMode }) {
   }
 
   const projectedDays = crew > 0 ? (totalWork / crew).toFixed(1) : '—';
-  const progress = useMemo(() => questionLabel(idx), [idx]);
+  const progress = useMemo(() => questionLabel(idx, jobs.length), [idx, jobs.length]);
 
   return (
     <div className={`aa-game${locked ? ' is-locked' : ''}`}>

@@ -44,6 +44,7 @@ import ChartDrilldownModal from '../components/ChartDrilldownModal';
 import HodAiResearchPanel from '../components/HodAiResearchPanel';
 import HodAreaBoardsPanel from '../components/HodAreaBoardsPanel';
 import DeptReadinessTable from '../components/DeptReadinessTable';
+import ExecutiveHrBrief from '../components/ExecutiveHrBrief';
 import StudentScorecardDrawer from '../components/StudentScorecardDrawer';
 import { useTableQuery } from '../../hooks/useTableQuery';
 import { TableToolbar } from '../../components/table/TableToolbar';
@@ -431,13 +432,13 @@ export default function PerformancePage() {
   const exportScopeSlug = hod ? hodDept.code || 'branch' : scopeLabel;
 
   return (
-    <div className={`space-y-5 mm-org-perf mm-org-perf--exec${hod ? ' mm-org-perf--hod' : ''}`} id="mm-org-performance-report">
-      <div className="mm-org-toolbar">
+    <div className={`mm-org-perf mm-org-perf--exec${hod ? ' mm-org-perf--hod' : ''}`} id="mm-org-performance-report">
+      <div className="mm-org-toolbar mm-org-toolbar--perf">
         <div>
-          <h1 className="m-0 text-xl font-bold mm-org-text">
+          <h1 className="mm-org-page-title">
             {hod ? 'Branch deep analytics' : 'Performance dashboard'}
           </h1>
-          <p className="m-0 mt-1 text-sm mm-org-text-muted">
+          <p className="mm-org-page-sub">
             {scopeLabel} ·{' '}
             {hod
               ? 'Deep department analysis with drill-down & AI research'
@@ -609,6 +610,14 @@ export default function PerformancePage() {
           </motion.div>
         ))}
       </div>
+
+      {!hod ? (
+        <ExecutiveHrBrief
+          metrics={metrics}
+          scopeLabel={scopeLabel}
+          onSelectDept={(d) => setDeptFilter(String(d.id))}
+        />
+      ) : null}
 
       <section className="mm-org-panel mm-org-panel--exec-pillars">
         <div className="mm-org-panel__head">

@@ -11,7 +11,7 @@ function shuffleFixed(arr, seed) {
   return a;
 }
 
-/* ---- Seating arrangement (28) -------------------------------- */
+/* ---- Seating arrangement ------------------------------------- */
 function makeSeatingPuzzles() {
   const out = [
     {
@@ -76,7 +76,7 @@ function makeSeatingPuzzles() {
   const names5 = ['A', 'B', 'C', 'D', 'E'];
   const names6 = ['A', 'B', 'C', 'D', 'E', 'F'];
 
-  for (let i = 0; i < 8; i += 1) {
+  for (let i = 0; i < 10; i += 1) {
     const order = names4.slice();
     for (let j = 0; j < i % 4; j += 1) order.push(order.shift());
     if (i % 2 === 1) order.reverse();
@@ -94,7 +94,7 @@ function makeSeatingPuzzles() {
     });
   }
 
-  for (let i = 0; i < 6; i += 1) {
+  for (let i = 0; i < 8; i += 1) {
     const perm = names5.slice();
     for (let j = 0; j < i; j += 1) perm.push(perm.shift());
     out.push({
@@ -104,6 +104,7 @@ function makeSeatingPuzzles() {
         `${perm[0]} at left end.`,
         `${perm[4]} at right end.`,
         `${perm[1]} between ${perm[0]} and ${perm[2]}.`,
+        `${perm[3]} between ${perm[2]} and ${perm[4]}.`,
       ],
       seats: 5,
       solution: perm,
@@ -112,7 +113,7 @@ function makeSeatingPuzzles() {
     });
   }
 
-  for (let i = 0; i < 6; i += 1) {
+  for (let i = 0; i < 8; i += 1) {
     const base = names6.slice();
     for (let j = 0; j < i % 6; j += 1) base.push(base.shift());
     out.push({
@@ -129,12 +130,29 @@ function makeSeatingPuzzles() {
     });
   }
 
+  while (out.length < QUESTIONS_PER_GAME) {
+    const n = out.length + 1;
+    const order = shuffleFixed(names4, n);
+    out.push({
+      clues: [
+        `${order[0]} sits at the left end.`,
+        `${order[3]} sits at the right end.`,
+        `${order[1]} sits immediately right of ${order[0]}.`,
+        `${order[2]} sits between ${order[1]} and ${order[3]}.`,
+      ],
+      seats: 4,
+      solution: order,
+      facing: 'Linear row, left → right.',
+      solutionText: order.join(' – '),
+    });
+  }
+
   return out.slice(0, QUESTIONS_PER_GAME);
 }
 
 export const SEATING_PUZZLES_BANK = makeSeatingPuzzles();
 
-/* ---- Blood relations (28) ------------------------------------- */
+/* ---- Blood relations ------------------------------------------ */
 const BLOOD_STATIC = [
   { q: 'A is B\'s father. B is C\'s sister. How is A related to C?', options: ['Father', 'Uncle', 'Brother', 'Grandfather'], answer: 'Father', solution: 'B and C are siblings → A is father to both.' },
   { q: 'P is Q\'s mother. Q is R\'s father. How is P related to R?', options: ['Grandmother', 'Mother', 'Aunt', 'Sister'], answer: 'Grandmother', solution: 'P → Q → R: grandmother.' },
@@ -183,11 +201,11 @@ function makeBloodRounds() {
 
 export const BLOOD_RELATION_ROUNDS = makeBloodRounds();
 
-/* ---- Number series (28) --------------------------------------- */
+/* ---- Number series -------------------------------------------- */
 function makeNumberSeries() {
   const out = [];
 
-  for (let d = 2; d <= 9; d += 1) {
+  for (let d = 2; d <= 12; d += 1) {
     const start = d;
     const seq = [start, start + d, start + 2 * d, start + 3 * d, start + 4 * d];
     out.push({
@@ -198,7 +216,7 @@ function makeNumberSeries() {
     });
   }
 
-  for (let r = 2; r <= 4; r += 1) {
+  for (let r = 2; r <= 5; r += 1) {
     out.push({
       nums: [r, r ** 2, r ** 3, r ** 4, '?'],
       answer: r ** 5,
@@ -207,7 +225,7 @@ function makeNumberSeries() {
     });
   }
 
-  for (let n = 1; n <= 10; n += 1) {
+  for (let n = 1; n <= 14; n += 1) {
     out.push({
       nums: [n ** 2, (n + 1) ** 2, (n + 2) ** 2, (n + 3) ** 2, '?'],
       answer: (n + 4) ** 2,
@@ -216,12 +234,22 @@ function makeNumberSeries() {
     });
   }
 
+  while (out.length < QUESTIONS_PER_GAME) {
+    const k = out.length + 3;
+    out.push({
+      nums: [k, k * 2, k * 3, k * 4, '?'],
+      answer: k * 5,
+      rule: `Multiples of ${k}.`,
+      solution: `${k} × 5 = ${k * 5}.`,
+    });
+  }
+
   return out.slice(0, QUESTIONS_PER_GAME);
 }
 
 export const NUMBER_SERIES_BANK = makeNumberSeries();
 
-/* ---- Train problems (28) -------------------------------------- */
+/* ---- Train problems ------------------------------------------- */
 function makeTrainScenarios() {
   const out = [];
   const meetPairs = [
@@ -285,7 +313,7 @@ function makeTrainScenarios() {
 
 export const TRAIN_SCENARIOS_BANK = makeTrainScenarios();
 
-/* ---- Work & time (28) ----------------------------------------- */
+/* ---- Work & time ---------------------------------------------- */
 function makeWorkJobs() {
   const out = [];
   for (let w = 2; w <= 15; w += 1) {

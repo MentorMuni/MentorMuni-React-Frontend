@@ -1827,6 +1827,20 @@ export function getTpoMetrics(departmentId = null) {
       toolsTotal: 8,
       avgTestsDone,
       avgTestsRemaining: Math.max(0, 8 - avgTestsDone),
+      studentsAllDone: scored.filter(
+        (s) => (s.testsDone ?? Math.min(8, Math.round((s.readiness || 0) / 10))) >= 8
+      ).length,
+      studentsNoneDone: students.filter(
+        (s) => !(s.testsDone ?? Math.min(8, Math.round((s.readiness || 0) / 10)))
+      ).length,
+      totalCompletions: students.reduce(
+        (sum, s) => sum + (s.testsDone ?? Math.min(8, Math.round((s.readiness || 0) / 10))),
+        0
+      ),
+      totalRemaining: students.reduce((sum, s) => {
+        const done = s.testsDone ?? Math.min(8, Math.round((s.readiness || 0) / 10));
+        return sum + Math.max(0, 8 - done);
+      }, 0),
     },
   };
 }
@@ -1922,6 +1936,20 @@ export function getHodMetrics(departmentId) {
       toolsTotal: 8,
       avgTestsDone,
       avgTestsRemaining: Math.max(0, 8 - avgTestsDone),
+      studentsAllDone: scored.filter(
+        (s) => (s.testsDone ?? Math.min(8, Math.round((s.readiness || 0) / 10))) >= 8
+      ).length,
+      studentsNoneDone: students.filter(
+        (s) => !(s.testsDone ?? Math.min(8, Math.round((s.readiness || 0) / 10)))
+      ).length,
+      totalCompletions: students.reduce(
+        (sum, s) => sum + (s.testsDone ?? Math.min(8, Math.round((s.readiness || 0) / 10))),
+        0
+      ),
+      totalRemaining: students.reduce((sum, s) => {
+        const done = s.testsDone ?? Math.min(8, Math.round((s.readiness || 0) / 10));
+        return sum + Math.max(0, 8 - done);
+      }, 0),
     },
   };
 }

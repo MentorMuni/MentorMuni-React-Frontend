@@ -42,19 +42,21 @@ import {
   scorecardsToUiRows,
   summaryToUiMetrics,
 } from '../performanceApi';
+import { ClarityBoard } from '../components/PerformanceCharts';
 import {
-  ActivityMix,
-  BandDonut,
-  ClarityBoard,
-  DeptStackedBands,
-  FrequencyBars,
-  PillarBars,
-  ToolCoverageBars,
-} from '../components/PerformanceCharts';
+  ActivityEngagementPie,
+  DeptCompareChart,
+  GapStrengthBars,
+  PillarComparisonBars,
+  ReadinessPie,
+  ThemeFrequencyBars,
+  ToolCoverageStacked,
+} from '../components/AnalyticsCharts';
 import PrepSnapshot from '../components/PrepSnapshot';
 import DeptReadinessTable from '../components/DeptReadinessTable';
 import BranchInsightsPanel from '../components/BranchInsightsPanel';
 import AtRiskPanel from '../components/AtRiskPanel';
+import ExecutiveHrBrief from '../components/ExecutiveHrBrief';
 
 const EASE = [0.22, 1, 0.36, 1];
 
@@ -445,6 +447,14 @@ export default function DashboardPage() {
           metrics={metrics}
         />
 
+        <ExecutiveHrBrief
+          metrics={metrics}
+          scopeLabel={session?.organization_name || 'Campus'}
+          showPerformanceLink
+          compact
+          onSelectDept={(d) => navigate(`${orgPaths.performance}?dept=${d.id}`)}
+        />
+
         <section className="mm-org-panel">
           <div className="mm-org-panel__head">
             <div>
@@ -485,26 +495,27 @@ export default function DashboardPage() {
             <ClarityBoard clarity={metrics.clarity} insight={insight} />
           </div>
 
-          <div className="mt-4 grid gap-4 lg:grid-cols-3">
+          <div className="mt-4 mm-org-dash-analytics">
+          <div className="grid gap-4 lg:grid-cols-3">
             <div className="mm-org-panel mm-org-panel--nested">
               <p className="mm-org-stat__label mb-2">Readiness mix</p>
-              <BandDonut
-                strong={metrics.bands?.strong || metrics.strong || 0}
-                mid={metrics.bands?.mid || metrics.mid || 0}
-                weak={metrics.bands?.weak || metrics.weak || 0}
-                unscored={metrics.unscored || 0}
-                centerValue={metrics.avgReadiness}
-                centerLabel="avg readiness"
-                size={148}
+              <ReadinessPie
+                bands={{
+                  strong: metrics.bands?.strong || metrics.strong || 0,
+                  mid: metrics.bands?.mid || metrics.mid || 0,
+                  weak: metrics.bands?.weak || metrics.weak || 0,
+                  unscored: metrics.unscored || 0,
+                }}
+                avgReadiness={metrics.avgReadiness}
               />
             </div>
             <div className="mm-org-panel mm-org-panel--nested">
               <p className="mm-org-stat__label mb-2">Pillar averages</p>
-              <PillarBars pillars={metrics.pillars || {}} />
+              <PillarComparisonBars pillars={metrics.pillars || {}} avgMock={metrics.avgMock} />
             </div>
             <div className="mm-org-panel mm-org-panel--nested">
               <p className="mm-org-stat__label mb-2">Activity pulse</p>
-              <ActivityMix
+              <ActivityEngagementPie
                 active={metrics.active7d || 0}
                 idle={metrics.idleCount || 0}
                 inactive={metrics.inactive14d || 0}
@@ -517,30 +528,24 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="mt-4 grid gap-4 lg:grid-cols-2">
-            <div>
-              <p className="mm-org-stat__label mb-2">Top skill gaps</p>
-              <FrequencyBars items={metrics.topGaps || []} tone="bad" empty="Enroll students to surface gap themes." />
-            </div>
-            <div>
-              <p className="mm-org-stat__label mb-2">Campus strengths</p>
-              <FrequencyBars items={metrics.topStrengths || []} tone="good" empty="Strength signals appear after scorecards load." />
-            </div>
+          <div>
+            <GapStrengthBars gaps={metrics.topGaps || []} strengths={metrics.topStrengths || []} />
           </div>
 
           {(metrics.byDept || []).length ? (
-            <div className="mt-4">
+            <div>
               <p className="mm-org-stat__label mb-2">Departments — band mix</p>
-              <DeptStackedBands departments={metrics.byDept || []} />
+              <DeptCompareChart departments={metrics.byDept || []} />
             </div>
           ) : null}
 
           {(metrics.toolCoverage || []).length ? (
-            <div className="mt-4">
+            <div>
               <p className="mm-org-stat__label mb-2">Tool completion</p>
-              <ToolCoverageBars tools={metrics.toolCoverage || []} />
+              <ToolCoverageStacked tools={metrics.toolCoverage || []} />
             </div>
           ) : null}
+          </div>
 
           <div className="mm-org-ai-box">
             <p className="mm-org-ai-box__title">
@@ -554,8 +559,8 @@ export default function DashboardPage() {
             </ul>
             <p className="mm-org-ai-box__meta">
               {insight.source === 'heuristic'
-                ? 'Heuristic brief from live aggregates. OpenAI narrative when API key is configured.'
-                : 'Generated with OpenAI'}
+                ? 'Heuristic brief from live aggregates. Deep OpenAI (gpt-4.1) when API key is configured.'
+                : `Deep analysis · ${insight.model || 'gpt-4.1'}`}
             </p>
           </div>
         </section>
@@ -922,29 +927,30 @@ export default function DashboardPage() {
               <ClarityBoard clarity={hm?.clarity} insight={hodInsight} />
             </div>
 
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <div className="mt-4 mm-org-dash-analytics">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <p className="mm-org-stat__label mb-2">Readiness mix</p>
-                <BandDonut
-                  strong={hm?.bands?.strong || hm?.strong || 0}
-                  mid={hm?.bands?.mid || hm?.mid || 0}
-                  weak={hm?.bands?.weak || hm?.weak || 0}
-                  unscored={hm?.unscored || 0}
-                  centerValue={hm?.avgReadiness}
-                  centerLabel="avg readiness"
-                  size={132}
+                <ReadinessPie
+                  bands={{
+                    strong: hm?.bands?.strong || hm?.strong || 0,
+                    mid: hm?.bands?.mid || hm?.mid || 0,
+                    weak: hm?.bands?.weak || hm?.weak || 0,
+                    unscored: hm?.unscored || 0,
+                  }}
+                  avgReadiness={hm?.avgReadiness}
                 />
               </div>
               <div>
                 <p className="mm-org-stat__label mb-2">Pillar averages</p>
-                <PillarBars pillars={hm?.pillars || {}} />
+                <PillarComparisonBars pillars={hm?.pillars || {}} avgMock={hm?.avgMock} />
               </div>
             </div>
 
-            <div className="mt-4 grid gap-4 sm:grid-cols-2">
+            <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <p className="mm-org-stat__label mb-2">Activity pulse</p>
-                <ActivityMix
+                <ActivityEngagementPie
                   active={hm?.active7d || 0}
                   idle={hm?.idleCount || 0}
                   inactive={hm?.inactive14d || 0}
@@ -953,8 +959,13 @@ export default function DashboardPage() {
               </div>
               <div>
                 <p className="mm-org-stat__label mb-2">Branch gaps</p>
-                <FrequencyBars items={hm?.topGaps || []} tone="bad" empty="Gaps appear after scored attempts." />
+                <ThemeFrequencyBars
+                  items={hm?.topGaps || []}
+                  tone="bad"
+                  empty="Gaps appear after scored attempts."
+                />
               </div>
+            </div>
             </div>
 
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -1043,7 +1054,7 @@ export default function DashboardPage() {
                 </p>
               </div>
             </div>
-            <ToolCoverageBars tools={hm.toolCoverage} />
+            <ToolCoverageStacked tools={hm.toolCoverage} />
           </section>
         ) : null}
 

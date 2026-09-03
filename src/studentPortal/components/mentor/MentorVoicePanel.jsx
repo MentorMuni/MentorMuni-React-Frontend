@@ -137,11 +137,14 @@ export default function MentorVoicePanel({ compact = false }) {
             <span className="stu-mentor-voice__orb" />
           </div>
           <p className="stu-mentor-voice__status">{statusLabel}</p>
+          {!live ? (
+            <p className="stu-mentor-voice__phrase">“Hello mentor”</p>
+          ) : null}
           <p className="stu-mentor-voice__hint">
             {live
-              ? 'Ask about OOP, projects, mocks, coding rounds, or what to practice next.'
+              ? 'Say “Hello mentor”, then ask about any topic, doubt, or what to practice next.'
               : context?.greeting_hint ||
-                'Your mentor knows your scores and plan. Start a voice call anytime.'}
+                'Say “Hello mentor” after you connect — learn any topic or clear doubts anytime.'}
           </p>
         </div>
       ) : live ? (

@@ -7,6 +7,11 @@ import {
   StudentApiError,
 } from '../roadmap/roadmapApi';
 import { ToolIcon } from '../roadmap/toolIcons';
+import {
+  ActivityCompletionPie,
+  ToolScoreBars,
+  VoiceScoreBars,
+} from '../components/ProgressCharts';
 
 import '../styles/progress.css';
 
@@ -152,6 +157,30 @@ export default function StudentProgressPage() {
                 </p>
               </div>
             </header>
+
+            <div className="stu-progress__charts">
+              <div>
+                <p className="stu-progress__chart-label">Completion</p>
+                <ActivityCompletionPie
+                  completed={activity?.completed_count || 0}
+                  total={activity?.total_count || 0}
+                />
+              </div>
+              <div>
+                <p className="stu-progress__chart-label">Scores by check</p>
+                <ToolScoreBars
+                  scoresByTool={analysis?.scores_by_tool || {}}
+                  completedSteps={doneSteps}
+                />
+              </div>
+            </div>
+
+            {analysis?.voice_avg ? (
+              <div className="stu-progress__voice-chart">
+                <p className="stu-progress__chart-label">Voice mock averages</p>
+                <VoiceScoreBars voiceAvg={analysis.voice_avg} />
+              </div>
+            ) : null}
 
             {!doneSteps.length ? (
               <p className="stu-progress__empty">

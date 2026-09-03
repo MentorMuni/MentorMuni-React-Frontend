@@ -4,9 +4,10 @@ import { SEATING_PUZZLES_BANK } from '../../../constants/arcadeQuestionBank';
 import { questionLabel, shuffledLetters } from '../../../constants/arcadeGameUtils';
 import ArcadeSolutionPanel from '../ArcadeSolutionPanel';
 
-export default function SeatingShuffleGame({ onComplete, placementMode }) {
+export default function SeatingShuffleGame({ onComplete, placementMode, bank }) {
+  const puzzles = Array.isArray(bank) && bank.length ? bank : SEATING_PUZZLES_BANK;
   const [puzzleIdx, setPuzzleIdx] = useState(0);
-  const puzzle = SEATING_PUZZLES_BANK[puzzleIdx % SEATING_PUZZLES_BANK.length];
+  const puzzle = puzzles[puzzleIdx % puzzles.length];
   const [slots, setSlots] = useState(() => Array(puzzle.seats).fill(null));
   const [pool, setPool] = useState(() => shuffledLetters(puzzle.solution, puzzleIdx));
   const [phase, setPhase] = useState('play');
@@ -17,18 +18,22 @@ export default function SeatingShuffleGame({ onComplete, placementMode }) {
   const locked = phase === 'feedback';
 
   useEffect(() => {
-    const p = SEATING_PUZZLES_BANK[puzzleIdx % SEATING_PUZZLES_BANK.length];
+    setPuzzleIdx(0);
+  }, [puzzles]);
+
+  useEffect(() => {
+    const p = puzzles[puzzleIdx % puzzles.length];
     setSlots(Array(p.seats).fill(null));
     setPool(shuffledLetters(p.solution, puzzleIdx + 1));
     setPhase('play');
     setFeedback(null);
     setHintsUsed(0);
     setHintPreview('');
-  }, [puzzleIdx]);
+  }, [puzzleIdx, puzzles]);
 
   const loadNext = useCallback(() => {
-    setPuzzleIdx((i) => (i + 1) % SEATING_PUZZLES_BANK.length);
-  }, []);
+    setPuzzleIdx((i) => (i + 1) % puzzles.length);
+  }, [puzzles.length]);
 
   function resetPuzzle() {
     setSlots(Array(puzzle.seats).fill(null));
@@ -126,7 +131,7 @@ export default function SeatingShuffleGame({ onComplete, placementMode }) {
     setHintPreview(`Solution: ${puzzle.solution.join(' – ')}. ${puzzle.solutionText}`);
   }
 
-  const progress = useMemo(() => questionLabel(puzzleIdx), [puzzleIdx]);
+  const progress = useMemo(() => questionLabel(puzzleIdx, puzzles.length), [puzzleIdx, puzzles.length]);
 
   return (
     <div className={`aa-game${locked ? ' is-locked' : ''}`}>

@@ -41,7 +41,9 @@
 
 .stu-app .stu-sidebar .stu-nav a.stu-nav__item.stu-nav__item--wall {
   position: relative;
-  margin: 0 8px 4px;
+  margin: 4px 0;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: 11px 14px !important;
   border-radius: 4px 14px 6px 12px;
   background: linear-gradient(
@@ -53,6 +55,7 @@
   -webkit-text-fill-color: var(--wb-tape-ink) !important;
   font-family: var(--wb-hand, var(--font-sans));
   font-weight: 700;
+  overflow: hidden;
   animation: stu-wb-nav-wobble 4.5s ease-in-out infinite, stu-wb-nav-spark 3.2s ease-in-out infinite;
   transition: transform 0.2s ease, box-shadow 0.2s ease !important;
 }

@@ -54,12 +54,12 @@ export default function StudentAptitudeArcadePage() {
       refreshStreak();
       setXpToast(xp);
       confetti({
-        particleCount: 60,
-        spread: 70,
-        origin: { y: 0.65 },
-        colors: ['#FF9500', '#a855f7', '#06b6d4', '#10b981'],
+        particleCount: 40,
+        spread: 55,
+        origin: { y: 0.7 },
+        colors: ['#0e6fa8', '#17b6d4', '#ff9500', '#16a34a'],
       });
-      setTimeout(() => setXpToast(null), 2000);
+      setTimeout(() => setXpToast(null), 1800);
     },
     [refreshStreak, userKey],
   );
@@ -70,13 +70,13 @@ export default function StudentAptitudeArcadePage() {
     <div className="stu-arcade">
       <header className="stu-arcade__hero">
         <div>
-          <p className="stu-arcade__eyebrow">Free-time grind</p>
+          <p className="stu-arcade__eyebrow">Practice · Aptitude</p>
           <h1 className="stu-arcade__title">
-            <Gamepad2 size={28} strokeWidth={2.2} aria-hidden />
+            <Gamepad2 size={26} strokeWidth={2.2} aria-hidden />
             Aptitude Arcade
           </h1>
           <p className="stu-arcade__sub">
-            Seating puzzles, blood relations, trains, work-time & number series — prep while you play.
+            Seating, blood relations, trains, work-time & number series — prep while you play.
           </p>
         </div>
         <div className="stu-arcade__modes" role="group" aria-label="Game mode">
@@ -85,7 +85,7 @@ export default function StudentAptitudeArcadePage() {
             className={`stu-arcade__mode${!placementMode ? ' is-active' : ''}`}
             onClick={() => setPlacementMode(false)}
           >
-            <Sparkles size={16} aria-hidden />
+            <Sparkles size={15} aria-hidden />
             Chill
           </button>
           <button
@@ -93,7 +93,7 @@ export default function StudentAptitudeArcadePage() {
             className={`stu-arcade__mode stu-arcade__mode--placement${placementMode ? ' is-active' : ''}`}
             onClick={() => setPlacementMode(true)}
           >
-            <Target size={16} aria-hidden />
+            <Target size={15} aria-hidden />
             Placement
           </button>
         </div>
@@ -111,7 +111,6 @@ export default function StudentAptitudeArcadePage() {
           onSelectGame={setActiveGameId}
           xp={progress.xp}
           streak={progress.streak}
-          todayXp={progress.todayXp}
           categoryFilter={categoryFilter}
           onCategoryFilter={setCategoryFilter}
         />
@@ -137,12 +136,12 @@ export default function StudentAptitudeArcadePage() {
 
       {xpToast != null && (
         <motion.div
-          initial={{ opacity: 0, y: 20, scale: 0.9 }}
+          initial={{ opacity: 0, y: 16, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           className="stu-arcade__toast"
           role="status"
         >
-          +{xpToast} XP · Aptitude grinding
+          +{xpToast} XP
         </motion.div>
       )}
     </div>

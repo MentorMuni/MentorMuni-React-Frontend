@@ -1,10 +1,10 @@
 /** Shared timing + helpers for aptitude arcade mini-games. */
 
-export const QUESTIONS_PER_GAME = 28;
+export const QUESTIONS_PER_GAME = 30;
 
-export function questionLabel(index) {
-  const n = (index % QUESTIONS_PER_GAME) + 1;
-  return `Question ${n} / ${QUESTIONS_PER_GAME}`;
+export function questionLabel(index, total = QUESTIONS_PER_GAME) {
+  const n = total > 0 ? (index % total) + 1 : 1;
+  return `Question ${n} / ${total || QUESTIONS_PER_GAME}`;
 }
 
 /** Stable shuffle — same seed => same order (prevents option flicker). */

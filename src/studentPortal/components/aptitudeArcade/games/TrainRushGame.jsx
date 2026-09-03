@@ -5,9 +5,10 @@ import { TRAIN_SCENARIOS_BANK } from '../../../constants/arcadeQuestionBank';
 import { questionLabel } from '../../../constants/arcadeGameUtils';
 import ArcadeSolutionPanel from '../ArcadeSolutionPanel';
 
-export default function TrainRushGame({ onComplete, placementMode }) {
+export default function TrainRushGame({ onComplete, placementMode, bank }) {
+  const scenarios = Array.isArray(bank) && bank.length ? bank : TRAIN_SCENARIOS_BANK;
   const [idx, setIdx] = useState(0);
-  const scenario = TRAIN_SCENARIOS_BANK[idx % TRAIN_SCENARIOS_BANK.length];
+  const scenario = scenarios[idx % scenarios.length];
   const [speedA, setSpeedA] = useState(scenario.speedA);
   const [speedB, setSpeedB] = useState(scenario.speedB);
   const [guess, setGuess] = useState('');
@@ -19,7 +20,11 @@ export default function TrainRushGame({ onComplete, placementMode }) {
   const locked = phase === 'feedback';
 
   useEffect(() => {
-    const s = TRAIN_SCENARIOS_BANK[idx % TRAIN_SCENARIOS_BANK.length];
+    setIdx(0);
+  }, [scenarios]);
+
+  useEffect(() => {
+    const s = scenarios[idx % scenarios.length];
     setSpeedA(s.speedA);
     setSpeedB(s.speedB);
     setGuess('');
@@ -27,11 +32,11 @@ export default function TrainRushGame({ onComplete, placementMode }) {
     setFeedback(null);
     setHintText('');
     setAnimKey((k) => k + 1);
-  }, [idx]);
+  }, [idx, scenarios]);
 
   const loadNext = useCallback(() => {
-    setIdx((i) => (i + 1) % TRAIN_SCENARIOS_BANK.length);
-  }, []);
+    setIdx((i) => (i + 1) % scenarios.length);
+  }, [scenarios.length]);
 
   function check() {
     if (locked) return;
@@ -75,7 +80,7 @@ export default function TrainRushGame({ onComplete, placementMode }) {
 
   const relSpeed = scenario.opposite ? speedA + speedB : Math.max(speedA - speedB, 1);
   const meetTime = scenario.length / relSpeed;
-  const progress = useMemo(() => questionLabel(idx), [idx]);
+  const progress = useMemo(() => questionLabel(idx, scenarios.length), [idx, scenarios.length]);
 
   return (
     <div className={`aa-game${locked ? ' is-locked' : ''}`}>

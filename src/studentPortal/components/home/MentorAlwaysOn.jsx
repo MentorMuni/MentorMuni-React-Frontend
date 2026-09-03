@@ -17,11 +17,13 @@ export default function MentorAlwaysOn() {
               <span className="stu-mentor-stage__orb-core" />
             </span>
             <div className="stu-mentor-stage__copy">
-              <p className="stu-mentor-stage__live">Online · 24/7</p>
+              <p className="stu-mentor-stage__live">Online · 24×7</p>
               <h2 id="stu-mentor-stage-title" className="stu-mentor-stage__title">
                 AI voice mentor
               </h2>
-              <p className="stu-mentor-stage__sub">Talk about concepts, projects, or what to practice next.</p>
+              <p className="stu-mentor-stage__sub">
+                Say “Hello mentor” — learn any topic or clear doubts anytime.
+              </p>
             </div>
           </div>
           <div className="stu-mentor-stage__actions">

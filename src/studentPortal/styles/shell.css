@@ -13,11 +13,14 @@
   position: fixed;
   inset: 0 auto 0 0;
   width: var(--rail);
+  max-width: var(--rail);
   background: var(--surface);
   border-right: 1px solid var(--line);
   display: flex;
   flex-direction: column;
   z-index: 60;
+  overflow-x: hidden;
+  overflow-y: hidden;
 }
 
 .stu-sidebar__head {
@@ -25,6 +28,7 @@
   align-items: center;
   gap: var(--space-2);
   padding: var(--space-5) var(--space-5) var(--space-4);
+  min-width: 0;
 }
 
 .stu-sidebar__brand {
@@ -75,7 +79,11 @@
 
 .stu-nav {
   flex: 1;
+  min-height: 0;
+  min-width: 0;
+  overflow-x: hidden;
   overflow-y: auto;
+  overscroll-behavior-x: none;
   padding: var(--space-1) var(--space-3) var(--space-3);
   display: flex;
   flex-direction: column;
@@ -84,6 +92,12 @@
 
 .stu-nav::-webkit-scrollbar { width: 6px; }
 .stu-nav::-webkit-scrollbar-thumb { background: var(--line-strong); border-radius: 3px; }
+
+.stu-nav__group,
+.stu-nav__list {
+  min-width: 0;
+  max-width: 100%;
+}
 
 .stu-nav__group-label {
   margin: 0 0 6px 10px;
@@ -105,6 +119,8 @@
   align-items: center;
   gap: var(--space-3);
   min-height: 40px;
+  max-width: 100%;
+  box-sizing: border-box;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--space-3);
   text-decoration: none;
@@ -130,7 +146,7 @@
 .stu-nav__item.is-active:not(.stu-nav__item--premium)::before {
   content: '';
   position: absolute;
-  left: calc(var(--space-3) * -1);
+  left: 0;
   top: 50%;
   transform: translateY(-50%);
   width: 3px;
@@ -153,6 +169,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-3);
+  min-width: 0;
+  overflow-x: hidden;
 }
 
 /* ---- Streak widget ----------------------------------------

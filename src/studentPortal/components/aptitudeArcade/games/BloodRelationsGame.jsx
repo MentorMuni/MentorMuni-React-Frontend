@@ -4,7 +4,8 @@ import { BLOOD_RELATION_ROUNDS } from '../../../constants/arcadeQuestionBank';
 import { questionLabel } from '../../../constants/arcadeGameUtils';
 import ArcadeSolutionPanel from '../ArcadeSolutionPanel';
 
-export default function BloodRelationsGame({ onComplete, placementMode }) {
+export default function BloodRelationsGame({ onComplete, placementMode, bank }) {
+  const rounds = Array.isArray(bank) && bank.length ? bank : BLOOD_RELATION_ROUNDS;
   const [round, setRound] = useState(0);
   const [timeLeft, setTimeLeft] = useState(placementMode ? 15 : 22);
   const [streak, setStreak] = useState(0);
@@ -13,8 +14,12 @@ export default function BloodRelationsGame({ onComplete, placementMode }) {
   const [feedback, setFeedback] = useState(null);
   const [hintText, setHintText] = useState('');
 
-  const current = BLOOD_RELATION_ROUNDS[round % BLOOD_RELATION_ROUNDS.length];
+  const current = rounds[round % rounds.length];
   const locked = phase === 'feedback';
+
+  useEffect(() => {
+    setRound(0);
+  }, [rounds]);
 
   useEffect(() => {
     setTimeLeft(placementMode ? 15 : 22);
@@ -43,7 +48,7 @@ export default function BloodRelationsGame({ onComplete, placementMode }) {
   }, [timeLeft, locked, current, placementMode]);
 
   const loadNext = useCallback(() => {
-    setRound((r) => (r + 1) % BLOOD_RELATION_ROUNDS.length);
+    setRound((r) => (r + 1) % rounds.length);
   }, []);
 
   function pick(opt) {
@@ -79,7 +84,7 @@ export default function BloodRelationsGame({ onComplete, placementMode }) {
     setHintText(`Answer: ${current.answer}. ${current.solution}`);
   }
 
-  const progress = useMemo(() => questionLabel(round), [round]);
+  const progress = useMemo(() => questionLabel(round, rounds.length), [round, rounds.length]);
   const totalTime = placementMode ? 15 : 22;
 
   return (

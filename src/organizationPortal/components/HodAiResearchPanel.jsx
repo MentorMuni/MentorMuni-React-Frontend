@@ -108,8 +108,8 @@ export default function HodAiResearchPanel({ metrics, demo, departmentId, scopeL
 
         <p className="mm-org-ai-box__meta">
           {brief.source === 'heuristic'
-            ? 'Heuristic brief from branch aggregates. Configure OpenAI for richer narrative research.'
-            : `Generated with ${brief.model || 'OpenAI'}`}
+            ? 'Heuristic brief from branch aggregates. Live OpenAI (gpt-4.1) research when API key is configured on the server.'
+            : `Deep analysis · ${brief.model || 'gpt-4.1'}`}
         </p>
       </div>
     </section>
