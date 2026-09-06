@@ -1200,7 +1200,7 @@ export default function OrganizationsPage() {
                   disabled={Boolean(editingOrgId && form.is_demo)}
                   onChange={(e) => {
                     const checked = e.target.checked;
-                    // Existing DEMO_TRIAL orgs must use Activate on the list — not uncheck here.
+                    // Existing DEMO_TRIAL orgs convert via Activate — not by unchecking here.
                     if (editingOrgId && form.is_demo && !checked) return;
                     let slug = String(form.portal_slug || form.code || '')
                       .trim()
@@ -1217,14 +1217,15 @@ export default function OrganizationsPage() {
                     });
                   }}
                 />
-                Demo trial
+                Demo trial (optional)
               </label>
               <p className="mm-pa-hint" style={{ marginTop: 4 }}>
                 {editingOrgId && form.is_demo
-                  ? 'Demo trial is locked here. Use Activate on the organizations list to convert to production, or Erase to wipe.'
+                  ? 'Demo trial is locked here. Use Activate on the list to convert to production, or Erase to wipe.'
                   : (
                     <>
-                      Uses {"{slug}-demo.mentormuni.com"}, 8 checks over 7 days, no personalized plan.
+                      Optional. If checked: {"{slug}-demo.mentormuni.com"}, 8 checks / 7 days, no personalized plan.
+                      Leave unchecked to create an Active college directly.
                     </>
                   )}
               </p>
