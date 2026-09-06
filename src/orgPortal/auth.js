@@ -66,6 +66,12 @@ export function setOrgSession(user) {
       organization_id: user?.organization_id ?? user?.org_id,
       organization_name: user?.organization_name || user?.organization?.name || '',
       organization_code: user?.organization_code || user?.organization?.code || '',
+      organization_status: user?.organization_status || user?.organization?.status || 'ACTIVE',
+      is_demo_trial: Boolean(
+        user?.is_demo_trial ||
+          String(user?.organization_status || user?.organization?.status || '').toUpperCase() ===
+            'DEMO_TRIAL'
+      ),
       department_id: user?.department_id ?? user?.department?.id ?? null,
       department_name:
         user?.department_name ||
@@ -85,6 +91,25 @@ export function setOrgSession(user) {
       loggedInAt: new Date().toISOString(),
     })
   );
+}
+
+
+/** Re-fetch /auth/me and merge into session (keeps is_demo_trial fresh after Activate). */
+export async function refreshOrgSessionFromMe() {
+  if (!orgApi.getToken()) return getOrgSession();
+  const current = getOrgSession();
+  if (!current || current.demo) return current;
+  try {
+    const me = await orgApi.get('/auth/me');
+    setOrgSession({
+      ...current,
+      ...me,
+      expires_in_minutes: current.expires_in_minutes,
+    });
+    return getOrgSession();
+  } catch {
+    return current;
+  }
 }
 
 export function clearOrgSession() {

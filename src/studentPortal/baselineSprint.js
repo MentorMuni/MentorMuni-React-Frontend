@@ -27,10 +27,25 @@ export function sprintCalendarDay(sprintStartKey, now = new Date()) {
   return Math.max(1, diff + 1);
 }
 
-export function allowedMaxOrder(sprintStartKey, now = new Date()) {
+export function resolveSprintMap(meta = null) {
+  const days = Number(meta?.sprint_days || meta?.sprintDays || 0);
+  const mapRaw = meta?.sprint_max_order_by_day || meta?.sprintMaxOrderByDay || null;
+  if (mapRaw && typeof mapRaw === 'object') {
+    const map = {};
+    for (const [k, v] of Object.entries(mapRaw)) {
+      map[Number(k)] = Number(v);
+    }
+    const sprintDays = days > 0 ? days : Math.max(...Object.keys(map).map(Number), 3);
+    return { sprintDays, map };
+  }
+  return { sprintDays: BASELINE_SPRINT_DAYS, map: SPRINT_MAX_ORDER_BY_DAY };
+}
+
+export function allowedMaxOrder(sprintStartKey, now = new Date(), meta = null) {
   const day = sprintCalendarDay(sprintStartKey, now);
-  if (day >= BASELINE_SPRINT_DAYS) return SPRINT_MAX_ORDER_BY_DAY[3];
-  return SPRINT_MAX_ORDER_BY_DAY[day] ?? SPRINT_MAX_ORDER_BY_DAY[3];
+  const { sprintDays, map } = resolveSprintMap(meta);
+  if (day >= sprintDays) return map[sprintDays] ?? map[3] ?? 8;
+  return map[day] ?? map[sprintDays] ?? 8;
 }
 
 /**
@@ -39,14 +54,22 @@ export function allowedMaxOrder(sprintStartKey, now = new Date()) {
  * @param {string|null} opts.sprintStartKey  YYYY-MM-DD
  * @param {Date} [opts.now]
  */
-export function resolveBaselineSprint({ steps = [], sprintStartKey = null, now = new Date() } = {}) {
+export function resolveBaselineSprint({
+  steps = [],
+  sprintStartKey = null,
+  now = new Date(),
+  sprintMeta = null,
+} = {}) {
+  const { sprintDays, map } = resolveSprintMap(sprintMeta);
   const calendarDay = sprintCalendarDay(sprintStartKey, now);
-  const sprintDay = Math.min(calendarDay, BASELINE_SPRINT_DAYS);
-  const allowedOrder = allowedMaxOrder(sprintStartKey, now);
+  const sprintDay = Math.min(calendarDay, sprintDays);
+  const allowedOrder = allowedMaxOrder(sprintStartKey, now, sprintMeta);
   const doneCount = steps.filter((s) => s.status === 'done').length;
   const current = steps.find((s) => s.status === 'current') || null;
 
-  const dayPlan = BASELINE_SPRINT_PLAN[sprintDay - 1] || BASELINE_SPRINT_PLAN[2];
+  const dayPlan =
+    BASELINE_SPRINT_PLAN[Math.min(sprintDay, BASELINE_SPRINT_PLAN.length) - 1] ||
+    BASELINE_SPRINT_PLAN[BASELINE_SPRINT_PLAN.length - 1];
   const doneThroughToday = steps.filter((s) => s.status === 'done' && s.order <= allowedOrder).length;
 
   const dayQuotaMet =
@@ -56,13 +79,15 @@ export function resolveBaselineSprint({ steps = [], sprintStartKey = null, now =
       .every((s) => s.status === 'done') &&
     steps.some((s) => s.order > allowedOrder && s.status !== 'done');
 
-  const blockedUntilTomorrow = dayQuotaMet && sprintDay < BASELINE_SPRINT_DAYS;
+  const blockedUntilTomorrow = dayQuotaMet && sprintDay < sprintDays;
 
   const nextBatch = BASELINE_SPRINT_PLAN[sprintDay] || null;
+  const isDemoTrial = Boolean(sprintMeta?.is_demo_trial || sprintMeta?.isDemoTrial);
 
   return {
     sprintStartKey,
     sprintDay,
+    sprintDays,
     allowedOrder,
     dayPlan,
     current,
@@ -70,6 +95,8 @@ export function resolveBaselineSprint({ steps = [], sprintStartKey = null, now =
     nextDayPreview: nextBatch?.label || null,
     doneCount,
     doneThroughToday,
+    isDemoTrial,
+    sprintMaxOrderByDay: map,
   };
 }
 

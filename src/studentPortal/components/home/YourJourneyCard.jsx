@@ -2,16 +2,27 @@ import { Check, ChevronRight, Lock, Sparkles, Target, CalendarDays } from 'lucid
 import { motion, useReducedMotion } from 'framer-motion';
 import { BASELINE_SPRINT_PLAN } from '../../baselineAdaptive';
 import { SPRINT_MAX_ORDER_BY_DAY } from '../../baselineSprint';
-import { ASSESSMENT_WEEK_DAYS } from '../../journeyPlan';
 import { MOTION, enterProps } from '../../motion';
 
-const ASSESSMENT_DAY_RANGES = [
-  { day: 1, from: 1, to: SPRINT_MAX_ORDER_BY_DAY[1] },
-  { day: 2, from: 4, to: SPRINT_MAX_ORDER_BY_DAY[2] },
-  { day: 3, from: 7, to: SPRINT_MAX_ORDER_BY_DAY[3] },
-];
+function dayRangesFromSprintMap(map, sprintDays) {
+  const days = Number(sprintDays) > 0 ? Number(sprintDays) : 3;
+  const orderMap = map && typeof map === 'object' ? map : SPRINT_MAX_ORDER_BY_DAY;
+  const ranges = [];
+  let prev = 0;
+  for (let day = 1; day <= days; day += 1) {
+    const to = Number(orderMap[day] ?? orderMap[String(day)] ?? prev);
+    const from = prev + 1;
+    if (to >= from) ranges.push({ day, from, to });
+    prev = Math.max(prev, to);
+  }
+  return ranges.length ? ranges : [
+    { day: 1, from: 1, to: SPRINT_MAX_ORDER_BY_DAY[1] },
+    { day: 2, from: 4, to: SPRINT_MAX_ORDER_BY_DAY[2] },
+    { day: 3, from: 7, to: SPRINT_MAX_ORDER_BY_DAY[3] },
+  ];
+}
 
-function phaseState(id, { onboardingDone, baselineDone, planReady }) {
+function phaseState(id, { onboardingDone, baselineDone, planReady, isDemoTrial }) {
   if (id === 'onboarding') {
     if (!onboardingDone) return 'current';
     return 'done';
@@ -22,6 +33,7 @@ function phaseState(id, { onboardingDone, baselineDone, planReady }) {
     return 'current';
   }
   if (id === 'plan') {
+    if (isDemoTrial) return baselineDone ? 'done' : 'locked';
     if (!baselineDone) return 'locked';
     if (planReady) return 'done';
     return 'current';
@@ -43,7 +55,6 @@ function timingForDay(dayNum, sprintState) {
       return { key: 'tomorrow', label: 'Tomorrow' };
     }
   }
-  if (dayNum === sprintDay + 2) return { key: 'later', label: 'Day 3' };
   return { key: 'later', label: `Day ${dayNum}` };
 }
 
@@ -58,9 +69,13 @@ export default function YourJourneyCard({
   planReady = false,
   planGenerating = false,
   planHorizonDays = 38,
+  isDemoTrial = false,
 }) {
   const reduce = useReducedMotion();
   const sprintDay = sprintState?.sprintDay ?? 1;
+  const sprintDays = sprintState?.sprintDays || 3;
+  const dayRanges = dayRangesFromSprintMap(sprintState?.sprintMaxOrderByDay, sprintDays);
+  const demo = Boolean(isDemoTrial || sprintState?.isDemoTrial);
 
   const phases = [
     {
@@ -69,31 +84,39 @@ export default function YourJourneyCard({
       title: 'Onboarding',
       sub: onboardingDone ? 'Profile saved' : 'Target companies & time budget',
       meta: '~2 min',
-      state: phaseState('onboarding', { onboardingDone, baselineDone, planReady }),
+      state: phaseState('onboarding', { onboardingDone, baselineDone, planReady, isDemoTrial: demo }),
     },
     {
       id: 'assessment',
       icon: Target,
-      title: 'Assessment week',
+      title: demo ? 'Demo assessment' : 'Assessment week',
       sub: baselineDone
         ? 'All 8 checks complete'
-        : `Day ${Math.min(sprintDay, ASSESSMENT_WEEK_DAYS)} of ${ASSESSMENT_WEEK_DAYS} · calendar sprint`,
-      meta: '3 days · 8 checks',
-      state: phaseState('assessment', { onboardingDone, baselineDone, planReady }),
+        : `Day ${Math.min(sprintDay, sprintDays)} of ${sprintDays} · calendar sprint`,
+      meta: `${sprintDays} days · 8 checks`,
+      state: phaseState('assessment', { onboardingDone, baselineDone, planReady, isDemoTrial: demo }),
     },
     {
       id: 'plan',
       icon: CalendarDays,
-      title: 'Your plan',
-      sub: planReady
-        ? 'Daily tasks from your gaps'
-        : baselineDone
-          ? planGenerating
-            ? 'Building your roadmap…'
-            : 'Generate after assessment'
-          : `Unlocks after assessment · ${planHorizonDays} days`,
-      meta: planReady ? `${planHorizonDays} days` : `${planHorizonDays} days personalized`,
-      state: phaseState('plan', { onboardingDone, baselineDone, planReady }),
+      title: demo ? 'Showcase' : 'Your plan',
+      sub: demo
+        ? baselineDone
+          ? 'Scores ready for campus Demo Showcase'
+          : 'Personalized plan unlocks after college activates'
+        : planReady
+          ? 'Daily tasks from your gaps'
+          : baselineDone
+            ? planGenerating
+              ? 'Building your roadmap…'
+              : 'Generate after assessment'
+            : `Unlocks after assessment · ${planHorizonDays} days`,
+      meta: demo
+        ? 'No plan in demo trial'
+        : planReady
+          ? `${planHorizonDays} days`
+          : `${planHorizonDays} days personalized`,
+      state: phaseState('plan', { onboardingDone, baselineDone, planReady, isDemoTrial: demo }),
     },
   ];
 
@@ -146,10 +169,12 @@ export default function YourJourneyCard({
 
       {showAssessmentDays ? (
         <div className="stu-journey__days">
-          <p className="stu-journey__days-kicker">Assessment week — by calendar day</p>
+          <p className="stu-journey__days-kicker">
+            {demo ? 'Demo assessment' : 'Assessment week'} — by calendar day
+          </p>
           <ul className="stu-journey__day-list">
-            {ASSESSMENT_DAY_RANGES.map(({ day, from, to }) => {
-              const plan = BASELINE_SPRINT_PLAN[day - 1];
+            {dayRanges.map(({ day, from, to }) => {
+              const plan = BASELINE_SPRINT_PLAN[Math.min(day, BASELINE_SPRINT_PLAN.length) - 1];
               const daySteps = steps.filter((s) => s.order >= from && s.order <= to);
               const allDone = daySteps.length > 0 && daySteps.every((s) => s.status === 'done');
               const timing = timingForDay(day, sprintState);
@@ -203,10 +228,17 @@ export default function YourJourneyCard({
         </div>
       ) : null}
 
-      {baselineDone && !planReady ? (
+      {baselineDone && !planReady && !demo ? (
         <p className="stu-journey__foot">
           Assessment complete — generate your <strong>{planHorizonDays}-day</strong> personalized
           plan. Your TPO and HOD already see your scores on their dashboard.
+        </p>
+      ) : null}
+
+      {baselineDone && demo ? (
+        <p className="stu-journey__foot">
+          Demo assessment complete — your TPO and HOD can walk campus through scores on{' '}
+          <strong>Demo Showcase</strong>. Personalized plans unlock after activation.
         </p>
       ) : null}
 

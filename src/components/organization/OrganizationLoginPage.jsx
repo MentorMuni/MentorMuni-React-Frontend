@@ -249,7 +249,7 @@ export default function OrganizationLoginPage() {
         setStep('login');
       } else if (preferredOrg) {
         setError(
-          `College code “${preferredOrg}” was not found in the active list. Confirm the organization is ACTIVE, then refresh.`
+          `College code “${preferredOrg}” was not found in the active list. Confirm the organization is ACTIVE or DEMO_TRIAL, then refresh.`
         );
         setErrorKind('credentials');
         setStep('college');

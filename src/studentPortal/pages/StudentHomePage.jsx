@@ -258,9 +258,22 @@ export default function StudentHomePage() {
     const start =
       sprintStartKey ||
       placementProfile?.baselineSprintStart ||
-      (placementProfile?.completedAt ? ensureSprintStart(userKey) : null);
-    return resolveBaselineSprint({ steps, sprintStartKey: start });
-  }, [steps, sprintStartKey, placementProfile?.baselineSprintStart, placementProfile?.completedAt, userKey]);
+      placementProfile?.completedAt ||
+      null;
+    return resolveBaselineSprint({
+      steps,
+      sprintStartKey: start,
+      sprintMeta: roadmap
+        ? {
+            is_demo_trial: roadmap.is_demo_trial,
+            sprint_days: roadmap.sprint_days,
+            sprint_max_order_by_day: roadmap.sprint_max_order_by_day,
+          }
+        : null,
+    });
+  }, [steps, sprintStartKey, placementProfile?.baselineSprintStart, placementProfile?.completedAt, userKey, roadmap]);
+
+  const isDemoTrial = Boolean(roadmap?.is_demo_trial || baselineSprintState?.isDemoTrial);
 
   const missionPersonalization = useMemo(
     () => ({
@@ -315,6 +328,12 @@ export default function StudentHomePage() {
   );
 
   const handleGenerate = useCallback(async () => {
+    if (isDemoTrial || roadmap?.is_demo_trial) {
+      setGenerateError(
+        'Personalized plans are not available during a demo trial. Finish the 8 assessment checks to showcase readiness.'
+      );
+      return;
+    }
     setGenerateError('');
     setPlan((prev) =>
       prev
@@ -340,7 +359,7 @@ export default function StudentHomePage() {
       setPlan((prev) => (prev ? { ...prev, status: 'failed' } : prev));
       setGenerateError(err?.message || 'Could not start plan generation. Please try again.');
     }
-  }, [refresh, refreshMission]);
+  }, [refresh, refreshMission, isDemoTrial, roadmap?.is_demo_trial]);
 
   const planHorizon =
     planReady || plan?.status === 'ready'
@@ -378,6 +397,7 @@ export default function StudentHomePage() {
         readinessBand={readinessBandInfo}
         weakest={weakest}
         baselineSprintState={baselineSprintState}
+        isDemoTrial={isDemoTrial}
       />
 
       <MentorAlwaysOn />
@@ -390,6 +410,7 @@ export default function StudentHomePage() {
         planReady={planReady}
         planGenerating={generating}
         planHorizonDays={planHorizon}
+        isDemoTrial={isDemoTrial}
       />
 
       <PageSection
@@ -464,8 +485,12 @@ export default function StudentHomePage() {
 
       {baselineDone ? (
         <PageSection
-          title="Placement execution plan"
-          subtitle="Generate once, then follow it day by day."
+          title={isDemoTrial ? 'Demo assessment complete' : 'Placement execution plan'}
+          subtitle={
+            isDemoTrial
+              ? 'Scores are ready for the college Demo Showcase — no personalized plan in trial.'
+              : 'Generate once, then follow it day by day.'
+          }
           id="stu-journey-zone"
         >
           <div className="stu-path-grid">
@@ -476,6 +501,7 @@ export default function StudentHomePage() {
               generating={generating}
               onGenerate={handleGenerate}
               generateError={generateError}
+              isDemoTrial={isDemoTrial}
             />
             {planReady && !individual ? <UpcomingSection nextDrive={nextDrive} /> : null}
           </div>

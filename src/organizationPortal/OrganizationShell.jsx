@@ -16,10 +16,11 @@ import {
   UserPlus,
   Users,
   BarChart3,
+  Presentation,
   X,
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { clearOrgSession, getOrgSession, isOrgAuthenticated } from '../orgPortal';
+import { clearOrgSession, getOrgSession, isOrgAuthenticated, refreshOrgSessionFromMe } from '../orgPortal';
 import {
   canMutateCampus,
   canViewAnalytics,
@@ -41,7 +42,21 @@ import './organization-portal.css';
 
 const LOGO = `${import.meta.env.BASE_URL}mentormuni-logo-header.png`;
 
+function withDemoShowcase(sections) {
+  const session = getOrgSession();
+  if (!session?.is_demo_trial) return sections;
+  return sections.map((sec) => {
+    if (sec.section !== 'Overview' && sec.section !== 'Analytics') return sec;
+    const items = [
+      { to: orgPaths.demoShowcase, label: 'Demo Showcase', icon: Presentation },
+      ...sec.items.filter((i) => i.to !== orgPaths.demoShowcase),
+    ];
+    return { ...sec, items };
+  });
+}
+
 function navForRole(role) {
+
   if (canMutateCampus(role)) {
     return [
       { section: 'Overview', items: [
@@ -125,6 +140,7 @@ const TITLES = {
   drives: ['Notify events', 'Events, workshops, and announcements — all students, selected departments, or HODs.'],
   'upcoming-drives': ['Upcoming drives', 'Company drives — eligibility, date, and remarks for Org Admins.'],
   notify: ['Notify branch', 'Announcements and reminders for your department only.'],
+  'demo-showcase': ['Demo Showcase', 'Batch readiness and per-test scores for campus walkthroughs.'],
   performance: {
     [ORG_ROLES.TPO]: ['Performance dashboard', 'Executive readiness for dean, director & HR — pillars, charts, PDF export.'],
     [ORG_ROLES.HOD]: ['Branch performance', 'Scorecards and gaps for your department students.'],
@@ -152,11 +168,14 @@ export default function OrganizationShell() {
   const navigate = useNavigate();
   const location = useLocation();
   const session = getOrgSession();
-  const college = useOrgCollegeBrand(session);
+  const college = useOrgCollegeBrand(getOrgSession() || session);
   const { theme, toggleTheme } = useOrgTheme();
   const [navOpen, setNavOpen] = useState(false);
-  const portalRole = normalizeOrgRole(session?.role);
-  const navGroups = navForRole(session?.role);
+  const [sessionTick, setSessionTick] = useState(0);
+  const liveSession = getOrgSession() || session;
+  const portalRole = normalizeOrgRole(liveSession?.role);
+  const navGroups = withDemoShowcase(navForRole(liveSession?.role)); // sessionTick={sessionTick}
+  void sessionTick;
   const segment = location.pathname.split('/').filter(Boolean).pop() || 'dashboard';
   let title = 'Organization Portal';
   let sub = 'College placement workspace';
@@ -171,6 +190,24 @@ export default function OrganizationShell() {
   useEffect(() => {
     setNavOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    let cancelled = false;
+    const refresh = async () => {
+      await refreshOrgSessionFromMe();
+      if (!cancelled) setSessionTick((n) => n + 1);
+    };
+    refresh();
+    const onVis = () => {
+      if (document.visibilityState === 'visible') refresh();
+    };
+    document.addEventListener('visibilitychange', onVis);
+    return () => {
+      cancelled = true;
+      document.removeEventListener('visibilitychange', onVis);
+    };
+  }, [location.pathname]);
+
 
   useEffect(() => {
     if (!navOpen) return undefined;

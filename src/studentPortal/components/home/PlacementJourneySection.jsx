@@ -14,6 +14,7 @@ export default function PlacementJourneySection({
   generating,
   onGenerate,
   generateError,
+  isDemoTrial = false,
 }) {
   const [phaseId, setPhaseId] = useState('prep');
   const [weekIdx, setWeekIdx] = useState(0);
@@ -50,9 +51,13 @@ export default function PlacementJourneySection({
           <p className="stu-card__sub">
             {ready
               ? plan.summary || plan.plan?.baseline_summary || 'Personalized from your baseline'
-              : weekStatus === 'done'
-                ? 'Baseline complete — generate your placement plan'
-                : 'Complete Week-1 baseline to unlock the AI 90-day plan'}
+              : isDemoTrial && weekStatus === 'done'
+                ? 'Demo assessment complete — personalized plans unlock after the college activates'
+                : weekStatus === 'done'
+                  ? 'Baseline complete — generate your placement plan'
+                  : isDemoTrial
+                    ? 'Complete the 8 demo assessment checks (no personalized plan in trial)'
+                    : 'Complete Week-1 baseline to unlock the AI 90-day plan'}
           </p>
         </div>
       </header>
@@ -63,7 +68,20 @@ export default function PlacementJourneySection({
         </div>
       ) : null}
 
-      {!ready && weekStatus === 'done' ? (
+      {!ready && weekStatus === 'done' && isDemoTrial ? (
+        <div className="stu-journey__now">
+          <div className="stu-journey__now-head">
+            <span className="stu-chip stu-chip--accent">Demo complete</span>
+          </div>
+          <h3>Assessment showcase ready</h3>
+          <p>
+            Your scores feed the college Demo Showcase for TPO/HOD. Personalized placement plans
+            are not generated during a demo trial — they unlock after MentorMuni activates the college.
+          </p>
+        </div>
+      ) : null}
+
+      {!ready && weekStatus === 'done' && !isDemoTrial ? (
         <div className="stu-journey__now">
           <div className="stu-journey__now-head">
             <span className="stu-chip stu-chip--accent">Ready to personalize</span>

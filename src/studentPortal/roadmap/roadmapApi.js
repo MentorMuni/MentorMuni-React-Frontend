@@ -57,6 +57,7 @@ function isLocalFallbackSession() {
 }
 
 function seedLocalRoadmap() {
+  const meta = localSprintMeta();
   return {
     week_number: 1,
     week_status: 'in_progress',
@@ -65,6 +66,9 @@ function seedLocalRoadmap() {
     current_tool_code: WEEK1_STEPS[0].tool_code,
     plan_available: false,
     plan_status: null,
+    is_demo_trial: Boolean(meta?.is_demo_trial),
+    sprint_days: meta?.sprint_days || 3,
+    sprint_max_order_by_day: meta?.sprint_max_order_by_day || { 1: 3, 2: 6, 3: 8 },
     steps: WEEK1_STEPS.map((s, i) => ({
       ...s,
       status: i === 0 ? 'current' : 'locked',
@@ -122,10 +126,23 @@ function localUserKey() {
   return getStudentSession()?.userKey || 'anon';
 }
 
+/** Offline/demo JWT sessions: honor is_demo_trial on session when present. */
+function localSprintMeta() {
+  const session = getStudentSession();
+  if (session?.is_demo_trial) {
+    return {
+      is_demo_trial: true,
+      sprint_days: 7,
+      sprint_max_order_by_day: { 1: 2, 2: 3, 3: 4, 4: 5, 5: 6, 6: 7, 7: 8 },
+    };
+  }
+  return null;
+}
+
 function applyDeferredFastTrack(roadmap, userKey, sprintStartKey) {
   const profile = getPlacementProfile(userKey);
   if (profile?.baselinePath !== BASELINE_PATHS.FAST_TRACK) return;
-  const allowed = allowedMaxOrder(sprintStartKey);
+  const allowed = allowedMaxOrder(sprintStartKey, new Date(), localSprintMeta());
   const inferred = Math.max(70, earlyBaselineAverage(roadmap.steps) || 70);
   const now = new Date().toISOString();
   for (const code of FAST_TRACK_DEFER_WAIVE_TOOLS) {
@@ -153,7 +170,7 @@ function recomputeLocalWeek(roadmap, sprintStartKey) {
   for (const s of roadmap.steps) {
     if (s.status === 'current') s.status = 'locked';
   }
-  const allowed = allowedMaxOrder(sprintStartKey);
+  const allowed = allowedMaxOrder(sprintStartKey, new Date(), localSprintMeta());
   const firstOpen = roadmap.steps.find((s) => s.status !== 'done');
   if (!firstOpen) {
     roadmap.week_status = 'done';
@@ -222,7 +239,7 @@ function localComplete(toolCode, body) {
   if (step.status === 'locked') {
     throw new StudentApiError('Step is locked. Complete the current step first.', { status: 409 });
   }
-  if (step.status !== 'done' && step.order > allowedMaxOrder(sprintStart)) {
+  if (step.status !== 'done' && step.order > allowedMaxOrder(sprintStart, new Date(), localSprintMeta())) {
     throw new StudentApiError(
       "Today's baseline batch is complete. Next checks unlock tomorrow.",
       { status: 409 }

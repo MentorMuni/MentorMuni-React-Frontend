@@ -14,6 +14,8 @@ import {
   createOrganization,
   updateOrganization,
   deleteOrganization,
+  activateDemoOrganization,
+  purgeDemoOrganization,
   uploadOrganizationLogo,
   deleteOrganizationLogo,
   assignSubscription,
@@ -32,6 +34,7 @@ import {
   getSubscriptionPlans,
   statusLabel,
   isActiveStatus,
+  isDemoTrialStatus,
   orgAdminTitleLabel,
   liveOrgAdmins,
   availableOrgAdminTitles,
@@ -98,6 +101,7 @@ const emptyOrg = {
   portal_slug: '',
   organization_type: 'College',
   status: 'Active',
+  is_demo: false,
   contact_person: '',
   contact_email: '',
   contact_phone: '',
@@ -109,12 +113,14 @@ const emptyOrg = {
 
 function orgToForm(org) {
   if (!org) return emptyOrg;
+  const demo = isDemoTrialStatus(org.status) || Boolean(org.is_demo_trial);
   return {
     name: org.name || '',
     code: org.code || '',
     portal_slug: org.portal_slug || '',
     organization_type: org.organization_type || 'College',
-    status: isActiveStatus(org.status) ? 'Active' : 'Inactive',
+    status: demo ? 'Demo Trial' : isActiveStatus(org.status) ? 'Active' : 'Inactive',
+    is_demo: demo,
     contact_person: org.contact_person || '',
     contact_email: org.contact_email || '',
     contact_phone: org.contact_phone || '',
@@ -149,6 +155,13 @@ export default function OrganizationsPage() {
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [deleteBusy, setDeleteBusy] = useState(false);
+  const [activateConfirmOpen, setActivateConfirmOpen] = useState(false);
+  const [activateTarget, setActivateTarget] = useState(null);
+  const [activateBusy, setActivateBusy] = useState(false);
+  const [purgeConfirmOpen, setPurgeConfirmOpen] = useState(false);
+  const [purgeTarget, setPurgeTarget] = useState(null);
+  const [purgeBusy, setPurgeBusy] = useState(false);
+  const [purgeConfirmText, setPurgeConfirmText] = useState('');
   const [subForm, setSubForm] = useState({
     plan_id: '',
     plan_code: '',
@@ -439,6 +452,8 @@ export default function OrganizationsPage() {
           ...form,
           country: 'India',
           portal_slug: slug || form.portal_slug,
+          is_demo: Boolean(form.is_demo),
+          status: form.is_demo ? 'Demo Trial' : form.status,
         });
         setCreateOpen(false);
         setEditingOrgId(null);
@@ -452,6 +467,8 @@ export default function OrganizationsPage() {
         ...form,
         country: 'India',
         portal_slug: slug || undefined,
+        is_demo: Boolean(form.is_demo),
+        status: form.is_demo ? 'Demo Trial' : form.status,
       });
 
       // Close immediately, then finish logo + list refresh in the background.
@@ -563,6 +580,45 @@ export default function OrganizationsPage() {
     }
     setDeleteTarget(org);
     setDeleteConfirmOpen(true);
+  };
+
+  const confirmActivateDemo = async () => {
+    if (!activateTarget) return;
+    setActivateBusy(true);
+    setError('');
+    try {
+      const row = await activateDemoOrganization(activateTarget.id);
+      setActivateConfirmOpen(false);
+      setActivateTarget(null);
+      setSuccess(`${row.name} activated to production (ACTIVE).`);
+      await refresh();
+    } catch (err) {
+      setError(err?.message || 'Failed to activate demo organization.');
+    } finally {
+      setActivateBusy(false);
+    }
+  };
+
+  const confirmPurgeDemo = async () => {
+    if (!purgeTarget) return;
+    if (purgeConfirmText.trim().toUpperCase() !== String(purgeTarget.code || '').toUpperCase()) {
+      setError('Type the organization code exactly to confirm erase.');
+      return;
+    }
+    setPurgeBusy(true);
+    setError('');
+    try {
+      await purgeDemoOrganization(purgeTarget.id);
+      setPurgeConfirmOpen(false);
+      setPurgeTarget(null);
+      setPurgeConfirmText('');
+      setSuccess('Demo organization permanently erased.');
+      await refresh();
+    } catch (err) {
+      setError(err?.message || 'Failed to erase demo organization.');
+    } finally {
+      setPurgeBusy(false);
+    }
   };
 
   const confirmDeleteOrg = async () => {
@@ -972,9 +1028,28 @@ export default function OrganizationsPage() {
                     {[org.city, org.state].filter(Boolean).join(', ') || '—'}
                   </td>
                   <td>
-                    <button type="button" onClick={() => openStatusConfirm(org)} title="Change organization status">
-                      <span className={`mm-pa-badge ${isActiveStatus(org.status) ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'}`}>
-                        {statusLabel(org.status)}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (isDemoTrialStatus(org.status)) return;
+                        openStatusConfirm(org);
+                      }}
+                      title={
+                        isDemoTrialStatus(org.status)
+                          ? 'Demo Trial — use Activate or Erase'
+                          : 'Change organization status'
+                      }
+                    >
+                      <span
+                        className={`mm-pa-badge ${
+                          isDemoTrialStatus(org.status)
+                            ? 'mm-pa-badge--neutral'
+                            : isActiveStatus(org.status)
+                              ? 'mm-pa-badge--active'
+                              : 'mm-pa-badge--suspended'
+                        }`}
+                      >
+                        {statusLabel(org.status) === 'DEMO_TRIAL' ? 'DEMO TRIAL' : statusLabel(org.status)}
                       </span>
                     </button>
                   </td>
@@ -1003,6 +1078,33 @@ export default function OrganizationsPage() {
                         {hasAdmins ? <UserCheck size={13} /> : <UserPlus size={13} />}
                         {hasAdmins ? 'View Org Admins' : 'Add Org Admin'}
                       </button>
+                      {isDemoTrialStatus(org.status) ? (
+                        <>
+                          <button
+                            type="button"
+                            className="mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs"
+                            onClick={() => {
+                              setActivateTarget(org);
+                              setActivateConfirmOpen(true);
+                            }}
+                            title="Convert demo trial to ACTIVE production"
+                          >
+                            Activate
+                          </button>
+                          <button
+                            type="button"
+                            className="mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs"
+                            onClick={() => {
+                              setPurgeTarget(org);
+                              setPurgeConfirmText('');
+                              setPurgeConfirmOpen(true);
+                            }}
+                            title="Hard-erase demo org and all data"
+                          >
+                            Erase
+                          </button>
+                        </>
+                      ) : null}
                       <button
                         type="button"
                         className="mm-pa-btn mm-pa-btn--ghost !px-2.5 !py-1.5 text-xs"
@@ -1075,8 +1177,13 @@ export default function OrganizationsPage() {
               />
               <p className="mm-pa-hint" style={{ marginTop: 4 }}>
                 College portal:{' '}
-                {collegePortalPublicHint(form.portal_slug || form.code)}
+                {collegePortalPublicHint(
+                  form.is_demo && form.portal_slug && !String(form.portal_slug).endsWith('-demo')
+                    ? `${form.portal_slug}-demo`
+                    : form.portal_slug || form.code
+                )}
                 {!form.portal_slug && form.code ? ' (default from code)' : ''}
+                {form.is_demo ? ' · demo trial' : ''}
               </p>
             </div>
             <div>
@@ -1086,8 +1193,50 @@ export default function OrganizationsPage() {
               </select>
             </div>
             <div>
+              <label className="mm-pa-label" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <input
+                  type="checkbox"
+                  checked={Boolean(form.is_demo)}
+                  disabled={Boolean(editingOrgId && form.is_demo)}
+                  onChange={(e) => {
+                    const checked = e.target.checked;
+                    // Existing DEMO_TRIAL orgs must use Activate on the list — not uncheck here.
+                    if (editingOrgId && form.is_demo && !checked) return;
+                    let slug = String(form.portal_slug || form.code || '')
+                      .trim()
+                      .toLowerCase()
+                      .replace(/[^a-z0-9-]/g, '');
+                    if (checked && slug && !slug.endsWith('-demo')) {
+                      slug = `${slug}-demo`;
+                    }
+                    setForm({
+                      ...form,
+                      is_demo: checked,
+                      status: checked ? 'Demo Trial' : 'Active',
+                      portal_slug: slug,
+                    });
+                  }}
+                />
+                Demo trial
+              </label>
+              <p className="mm-pa-hint" style={{ marginTop: 4 }}>
+                {editingOrgId && form.is_demo
+                  ? 'Demo trial is locked here. Use Activate on the organizations list to convert to production, or Erase to wipe.'
+                  : (
+                    <>
+                      Uses {"{slug}-demo.mentormuni.com"}, 8 checks over 7 days, no personalized plan.
+                    </>
+                  )}
+              </p>
+            </div>
+            <div>
               <label className="mm-pa-label">Status</label>
-              <select className="mm-pa-select" value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
+              <select
+                className="mm-pa-select"
+                value={form.is_demo ? 'Demo Trial' : form.status === 'Demo Trial' ? 'Active' : form.status}
+                disabled={Boolean(form.is_demo)}
+                onChange={(e) => setForm({ ...form, status: e.target.value, is_demo: false })}
+              >
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
               </select>
@@ -1761,6 +1910,96 @@ export default function OrganizationsPage() {
                 onClick={confirmDeleteOrg}
               >
                 {deleteBusy ? 'Deleting…' : 'Yes, soft-delete'}
+              </button>
+            </div>
+          </div>
+        ) : null}
+      </Modal>
+      <Modal
+        open={activateConfirmOpen}
+        onClose={() => {
+          if (activateBusy) return;
+          setActivateConfirmOpen(false);
+          setActivateTarget(null);
+        }}
+        title="Activate demo to production?"
+        sub={activateTarget ? activateTarget.name : ''}
+      >
+        {activateTarget ? (
+          <div className="space-y-4">
+            <div className="mm-pa-callout mm-pa-callout--amber">
+              Status becomes <strong>ACTIVE</strong>. Student data is kept. Personalized plans unlock.
+              Portal slug stays as-is (may still end with <code>-demo</code>).
+            </div>
+            <div className="flex flex-wrap justify-end gap-2">
+              <button
+                type="button"
+                className="mm-pa-btn mm-pa-btn--ghost"
+                disabled={activateBusy}
+                onClick={() => {
+                  setActivateConfirmOpen(false);
+                  setActivateTarget(null);
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="mm-pa-btn mm-pa-btn--primary"
+                disabled={activateBusy}
+                onClick={confirmActivateDemo}
+              >
+                {activateBusy ? 'Activating…' : 'Yes, activate'}
+              </button>
+            </div>
+          </div>
+        ) : null}
+      </Modal>
+
+      <Modal
+        open={purgeConfirmOpen}
+        onClose={() => {
+          if (purgeBusy) return;
+          setPurgeConfirmOpen(false);
+          setPurgeTarget(null);
+          setPurgeConfirmText('');
+        }}
+        title="Erase demo organization?"
+        sub={purgeTarget ? purgeTarget.name : ''}
+      >
+        {purgeTarget ? (
+          <div className="space-y-4">
+            <div className="mm-pa-callout mm-pa-callout--amber">
+              <strong>Permanent hard wipe</strong> of this DEMO_TRIAL org and its users/data.
+              Type the org code <strong>{purgeTarget.code}</strong> to confirm.
+            </div>
+            <input
+              className="mm-pa-input uppercase"
+              value={purgeConfirmText}
+              onChange={(e) => setPurgeConfirmText(e.target.value)}
+              placeholder={purgeTarget.code}
+              autoComplete="off"
+            />
+            <div className="flex flex-wrap justify-end gap-2">
+              <button
+                type="button"
+                className="mm-pa-btn mm-pa-btn--ghost"
+                disabled={purgeBusy}
+                onClick={() => {
+                  setPurgeConfirmOpen(false);
+                  setPurgeTarget(null);
+                  setPurgeConfirmText('');
+                }}
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                className="mm-pa-btn mm-pa-btn--danger"
+                disabled={purgeBusy}
+                onClick={confirmPurgeDemo}
+              >
+                {purgeBusy ? 'Erasing…' : 'Yes, erase forever'}
               </button>
             </div>
           </div>

@@ -40,6 +40,7 @@ export default function HomeHeader({
   readinessBand: band = null,
   weakest = null,
   baselineSprintState = null,
+  isDemoTrial = false,
 }) {
   const reduce = useReducedMotion();
   const firstName = String(studentName || '').split(' ')[0] || 'there';
@@ -55,26 +56,33 @@ export default function HomeHeader({
       ? bandHomeCopy(band.key, { baselineDone, weakest, planReady })
       : null;
 
+  const sprintDays = baselineSprintState?.sprintDays || 3;
   const nextLine =
     personalizedLine ||
     (baselineDone
-      ? planReady
-        ? 'Your plan is ready. Finish today’s tasks and watch your readiness climb.'
-        : planStatus === 'generating'
-          ? 'We’re building your personalized plan from your assessment scores.'
-          : 'All 8 assessment checks are complete. Generate your plan — every student gets a different roadmap from their strengths and gaps.'
+      ? isDemoTrial
+        ? 'Demo assessment complete — your scores power the college Demo Showcase. Personalized placement plans unlock after the college activates.'
+        : planReady
+          ? 'Your plan is ready. Finish today’s tasks and watch your readiness climb.'
+          : planStatus === 'generating'
+            ? 'We’re building your personalized plan from your assessment scores.'
+            : 'All 8 assessment checks are complete. Generate your plan — every student gets a different roadmap from their strengths and gaps.'
       : baselineSprintState?.blockedUntilTomorrow
-        ? `Day ${baselineSprintState.sprintDay} of 3 is complete. Tomorrow unlocks the next batch.`
+        ? `Day ${baselineSprintState.sprintDay} of ${sprintDays} is complete. Tomorrow unlocks the next batch.`
         : currentStep
-          ? `Next up: ${currentStep.title} — Day ${baselineSprintState?.sprintDay ?? 1} of 3.`
-          : 'Start with the first baseline check to map your strengths and gaps.');
+          ? `Next up: ${currentStep.title} — Day ${baselineSprintState?.sprintDay ?? 1} of ${sprintDays}.`
+          : isDemoTrial
+            ? 'Demo trial: complete 8 assessment checks over 7 days (no personalized plan).'
+            : 'Start with the first baseline check to map your strengths and gaps.');
 
   const ctaLabel = baselineDone
-    ? planStatus === 'ready'
-      ? 'View your plan'
-      : generating
-        ? 'Generating…'
-        : 'Generate personalized plan'
+    ? isDemoTrial
+      ? 'View your journey'
+      : planStatus === 'ready'
+        ? 'View your plan'
+        : generating
+          ? 'Generating…'
+          : 'Generate personalized plan'
     : baselineSprintState?.blockedUntilTomorrow
       ? 'Back tomorrow'
       : currentStep
@@ -82,6 +90,12 @@ export default function HomeHeader({
         : 'Start baseline';
 
   const handleCta = () => {
+    if (baselineDone && isDemoTrial) {
+      document
+        .getElementById('stu-journey-zone')
+        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      return;
+    }
     if (baselineDone && planStatus !== 'ready' && !generating) {
       onGenerate?.();
       return;
@@ -166,8 +180,8 @@ export default function HomeHeader({
         {!baselineDone ? (
           <p className="stu-hero__note">
             {baselineSprintState?.blockedUntilTomorrow
-              ? `Day ${baselineSprintState.sprintDay} of 3 done — next batch unlocks tomorrow.`
-              : `Day ${baselineSprintState?.sprintDay ?? 1} of 3 · ${completedCount}/${totalCount} checks · finish today's batch before tomorrow.`}
+              ? `Day ${baselineSprintState.sprintDay} of ${sprintDays} done — next batch unlocks tomorrow.`
+              : `Day ${baselineSprintState?.sprintDay ?? 1} of ${sprintDays} · ${completedCount}/${totalCount} checks · finish today's batch before tomorrow.`}
           </p>
         ) : null}
       </div>

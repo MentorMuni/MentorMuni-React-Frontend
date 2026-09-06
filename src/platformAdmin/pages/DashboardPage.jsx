@@ -11,7 +11,7 @@ import {
   Sparkles,
   Rocket,
 } from 'lucide-react';
-import { getDashboardMetrics, statusLabel, isActiveStatus } from '../store';
+import { getDashboardMetrics, statusLabel, isActiveStatus, isDemoTrialStatus } from '../store';
 import { platformAdminPaths } from '../paths';
 
 const EASE = [0.22, 1, 0.36, 1];
@@ -256,10 +256,18 @@ export default function DashboardPage() {
                   </div>
                   <span
                     className={`mm-pa-badge ${
-                      isActiveStatus(org.status) ? 'mm-pa-badge--active' : 'mm-pa-badge--suspended'
+                      isDemoTrialStatus(org.status)
+                        ? 'mm-pa-badge--neutral'
+                        : isActiveStatus(org.status)
+                          ? 'mm-pa-badge--active'
+                          : 'mm-pa-badge--suspended'
                     }`}
                   >
-                    {loading ? '...' : statusLabel(org.status)}
+                    {loading
+                      ? '...'
+                      : statusLabel(org.status) === 'DEMO_TRIAL'
+                        ? 'DEMO TRIAL'
+                        : statusLabel(org.status)}
                   </span>
                 </motion.li>
               ))

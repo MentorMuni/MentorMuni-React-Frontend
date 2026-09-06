@@ -57,6 +57,11 @@ export function setStudentSession(user) {
       organization_id: user?.organization_id,
       organization_name: user?.organization_name || '',
       organization_code: user?.organization_code || '',
+      organization_status: user?.organization_status || 'ACTIVE',
+      is_demo_trial: Boolean(
+        user?.is_demo_trial ||
+          String(user?.organization_status || '').toUpperCase() === 'DEMO_TRIAL'
+      ),
       organization_type: orgType || (isIndividual ? 'PUBLIC' : 'COLLEGE'),
       is_individual: isIndividual,
       department_name: user?.department_name || user?.department?.name || '',

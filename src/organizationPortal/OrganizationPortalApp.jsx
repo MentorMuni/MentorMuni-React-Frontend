@@ -15,6 +15,7 @@ import ProgramsPage from './pages/ProgramsPage';
 import DrivesPage from './pages/DrivesPage';
 import UpcomingDrivesPage from './pages/UpcomingDrivesPage';
 import PerformancePage from './pages/PerformancePage';
+import DemoShowcasePage from './pages/DemoShowcasePage';
 import AccessSettingsPage from './pages/AccessSettingsPage';
 import MyWorkspacePage from './pages/MyWorkspacePage';
 import HodStudentsPage from './pages/HodStudentsPage';
@@ -235,6 +236,7 @@ export default function OrganizationPortalApp() {
         />
         <Route path="departments" element={<DepartmentsGate><DepartmentsPage /></DepartmentsGate>} />
         <Route path="performance" element={<AnalyticsPage><PerformancePage /></AnalyticsPage>} />
+        <Route path="demo-showcase" element={<AnalyticsPage><DemoShowcasePage /></AnalyticsPage>} />
         <Route path="enrollment" element={<TpoPage><EnrollmentPage /></TpoPage>} />
         <Route path="programs" element={<ProgramsGate><ProgramsPage /></ProgramsGate>} />
         <Route path="drives" element={<NotifyPage><DrivesPage /></NotifyPage>} />

@@ -13,6 +13,7 @@ export const orgPaths = {
   upcomingDrives: '/Organization/upcoming-drives',
   notify: '/Organization/notify',
   performance: '/Organization/performance',
+  demoShowcase: '/Organization/demo-showcase',
   access: '/Organization/access',
   profile: '/Organization/profile',
   settings: '/Organization/profile',

@@ -4,6 +4,7 @@ export {
   logoutOrgUser,
   getOrgSession,
   setOrgSession,
+  refreshOrgSessionFromMe,
   clearOrgSession,
   isOrgAuthenticated,
   consumeOrgAuthFlash,

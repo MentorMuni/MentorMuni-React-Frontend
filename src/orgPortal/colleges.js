@@ -53,8 +53,8 @@ function toSortedList(rows) {
   return rows
     .map(normalizeCollege)
     .filter((c) => c?.code)
-    // ACTIVE COLLEGE tenants only (contract: no plan/features required)
-    .filter((c) => !c.status || c.status === 'ACTIVE')
+    // Operational COLLEGE tenants (ACTIVE + DEMO_TRIAL); exclude SUSPENDED
+    .filter((c) => !c.status || c.status === 'ACTIVE' || c.status === 'DEMO_TRIAL')
     .filter((c) => {
       const t = c.organization_type;
       return !t || t === 'COLLEGE' || t === 'DEMO' || c.code === 'DEMO';

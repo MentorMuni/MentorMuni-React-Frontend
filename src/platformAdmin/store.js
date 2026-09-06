@@ -32,25 +32,54 @@ function apiOrgType(value) {
 
 function uiStatus(value) {
   const v = String(value || '').toUpperCase();
-  return v === 'SUSPENDED' || v === 'INACTIVE' ? 'Inactive' : 'Active';
+  if (v === 'DEMO_TRIAL' || value === 'Demo Trial') return 'Demo Trial';
+  if (v === 'SUSPENDED' || v === 'INACTIVE' || value === 'Suspended' || value === 'Inactive') {
+    return 'Inactive';
+  }
+  return 'Active';
 }
 
 function apiStatus(value) {
   const v = String(value || '').toUpperCase();
-  return v === 'SUSPENDED' || v === 'INACTIVE' || value === 'Suspended' || value === 'Inactive'
-    ? 'SUSPENDED'
-    : 'ACTIVE';
+  if (v === 'DEMO_TRIAL' || value === 'Demo Trial') return 'DEMO_TRIAL';
+  if (
+    v === 'SUSPENDED' ||
+    v === 'INACTIVE' ||
+    value === 'Suspended' ||
+    value === 'Inactive'
+  ) {
+    return 'SUSPENDED';
+  }
+  return 'ACTIVE';
 }
 
 export function statusLabel(value) {
   const v = String(value || '').toUpperCase();
-  return v === 'SUSPENDED' || v === 'INACTIVE' || value === 'Inactive' || value === 'Suspended'
-    ? 'INACTIVE'
-    : 'ACTIVE';
+  if (v === 'DEMO_TRIAL' || value === 'Demo Trial') return 'DEMO_TRIAL';
+  if (
+    v === 'SUSPENDED' ||
+    v === 'INACTIVE' ||
+    value === 'Inactive' ||
+    value === 'Suspended'
+  ) {
+    return 'INACTIVE';
+  }
+  return 'ACTIVE';
 }
 
+/** Production Active only (not Demo Trial). Use for Activate/Inactive toggles. */
 export function isActiveStatus(value) {
   return statusLabel(value) === 'ACTIVE';
+}
+
+/** ACTIVE or DEMO_TRIAL — portals and enrollments work. */
+export function isOperationalStatus(value) {
+  const label = statusLabel(value);
+  return label === 'ACTIVE' || label === 'DEMO_TRIAL';
+}
+
+export function isDemoTrialStatus(value) {
+  return statusLabel(value) === 'DEMO_TRIAL';
 }
 
 function normalizeOrganization(row) {
@@ -80,14 +109,18 @@ export async function getOrganizationById(id) {
 
 export async function createOrganization(payload) {
   const slug = String(payload.portal_slug || '').trim().toLowerCase();
-  const row = await platformApi.post('/platform/organizations', {
+  const isDemo = Boolean(payload.is_demo) || apiStatus(payload.status) === 'DEMO_TRIAL';
+  const body = {
     ...payload,
     code: String(payload.code || '').toUpperCase(),
     portal_slug: slug || undefined,
     // Organizations tab never creates PUBLIC — individuals use /platform/individuals.
     organization_type: 'COLLEGE',
-    status: apiStatus(payload.status),
-  });
+    status: isDemo ? 'DEMO_TRIAL' : apiStatus(payload.status),
+  };
+  if (isDemo) body.is_demo = true;
+  else delete body.is_demo;
+  const row = await platformApi.post('/platform/organizations', body);
   emitUpdate();
   return normalizeOrganization(row);
 }
@@ -104,6 +137,11 @@ export async function updateOrganization(id, patch) {
         : {}),
     ...(patch.organization_type ? { organization_type: apiOrgType(patch.organization_type) } : {}),
     ...(patch.status ? { status: apiStatus(patch.status) } : {}),
+    ...(patch.is_demo === true
+      ? { is_demo: true, status: 'DEMO_TRIAL' }
+      : patch.is_demo === false
+        ? { is_demo: false }
+        : {}),
   };
   // Avoid sending blank portal_slug that previously became null and no-oped.
   if (Object.prototype.hasOwnProperty.call(body, 'portal_slug') && !body.portal_slug) {
@@ -112,6 +150,17 @@ export async function updateOrganization(id, patch) {
   const row = await platformApi.put(`/platform/organizations/${id}`, body);
   emitUpdate();
   return normalizeOrganization(row);
+}
+
+export async function activateDemoOrganization(id) {
+  const row = await platformApi.post(`/platform/organizations/${id}/activate-demo`, {});
+  emitUpdate();
+  return normalizeOrganization(row);
+}
+
+export async function purgeDemoOrganization(id) {
+  await platformApi.post(`/platform/organizations/${id}/purge-demo`, {});
+  emitUpdate();
 }
 
 export async function uploadOrganizationLogo(id, file) {
