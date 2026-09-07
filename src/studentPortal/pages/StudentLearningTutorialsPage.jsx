@@ -26,12 +26,13 @@ function TutorialsIndex() {
         <ArrowLeft size={16} aria-hidden /> Learning
       </Link>
       <header className="stu-learning__hero">
+        <p className="stu-learning__badge">Tutorials</p>
         <div className="stu-learning__title-row">
           <BookOpen size={22} aria-hidden />
           <h1 className="stu-learning__title">Free Tutorials</h1>
         </div>
         <p className="stu-learning__sub">
-          Self-paced modules from mentormuni.com/free-tutorials — grouped for systematic learning.
+          Self-paced modules grouped for campus placement — programming, AI, and career tracks.
         </p>
       </header>
 

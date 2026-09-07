@@ -7,11 +7,10 @@ export default function StudentLearningPage() {
   return (
     <main className="stu-main stu-learning">
       <header className="stu-learning__hero">
-        <p className="stu-learning__eyebrow">Learning</p>
-        <h1 className="stu-learning__title">Learn systematically</h1>
+        <p className="stu-learning__badge">Learning</p>
+        <h1 className="stu-learning__title">Build skills that stick</h1>
         <p className="stu-learning__sub">
-          Free tutorials and AI tools — the same content as mentormuni.com, organized for
-          placement prep inside your portal.
+          Tutorials and AI knowledge — organized for campus placement prep, inside your portal.
         </p>
       </header>
 
@@ -22,8 +21,8 @@ export default function StudentLearningPage() {
           </span>
           <h2>Free Tutorials</h2>
           <p>
-            Programming foundations, AI &amp; emerging tech, and career tracks — self-paced
-            beginner modules.
+            Programming foundations, AI &amp; emerging tech, and career tracks — self-paced modules
+            you can finish around class hours.
           </p>
           <span className="stu-learning__card-cta">
             Browse tutorials <ArrowRight size={16} aria-hidden />
@@ -36,8 +35,7 @@ export default function StudentLearningPage() {
           </span>
           <h2>AI Tools</h2>
           <p>
-            Major LLMs, coding assistants, MentorMuni placement tools, and FAQ — what interviewers
-            expect you to know.
+            Major LLMs, coding assistants, and FAQ — the AI basics interviewers expect you to know.
           </p>
           <span className="stu-learning__card-cta">
             Open knowledge base <ArrowRight size={16} aria-hidden />

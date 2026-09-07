@@ -1,47 +1,91 @@
-/* Learning pages inside student portal shell */
+/* ============================================================
+   Learning — student portal hub + embeds
 
-.stu-learning__hero {
-  margin-bottom: var(--space-6, 1.5rem);
+   Uses `.stu-app` tokens only (--ink, --surface, --interactive…).
+   Light and dark both flip via StudentThemeProvider; no raw hex.
+   ============================================================ */
+
+.stu-learning {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-6);
 }
 
-.stu-learning__eyebrow {
+/* ---- Hub hero (matches Home rhythm) ------------------------- */
+
+.stu-learning__hero {
+  position: relative;
+  overflow: hidden;
   margin: 0;
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  padding: var(--space-6);
+  background:
+    radial-gradient(100% 80% at 100% 0%, color-mix(in srgb, var(--accent) 12%, transparent), transparent 58%),
+    var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  box-shadow: var(--sh-1);
+}
+
+.stu-learning__eyebrow,
+.stu-learning__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 var(--space-3);
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: var(--text-micro);
+  font-weight: 680;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: #ff9500;
+  color: var(--interactive);
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--line));
 }
 
 .stu-learning__title {
-  margin: 0.35rem 0 0;
-  font-size: 1.5rem;
-  font-weight: 800;
-  color: var(--stu-fg, #0f172a);
+  margin: 0;
+  font-size: var(--text-display);
+  font-weight: 720;
+  letter-spacing: var(--tracking-display);
+  line-height: var(--leading-tight);
+  color: var(--ink);
 }
 
 .stu-learning__title-row {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: var(--space-2);
+  color: var(--ink);
+}
+
+.stu-learning__title-row svg {
+  color: var(--interactive);
+  flex-shrink: 0;
 }
 
 .stu-learning__sub {
-  margin: 0.5rem 0 0;
-  max-width: 40rem;
-  font-size: 0.9rem;
-  line-height: 1.5;
-  color: var(--stu-muted, #64748b);
+  margin: var(--space-2) 0 0;
+  max-width: 58ch;
+  font-size: var(--text-body);
+  font-weight: 450;
+  line-height: var(--leading-body);
+  color: var(--ink-2);
 }
 
 .stu-learning__sub--bar {
-  margin: 0 0 0.75rem;
-  padding: 0 var(--space-1, 0.25rem);
+  margin: 0;
+  padding: 0;
+  max-width: 62ch;
+  font-size: var(--text-body-sm, 0.875rem);
+  color: var(--ink-3);
 }
+
+/* ---- Cards / grid ------------------------------------------- */
 
 .stu-learning__grid {
   display: grid;
-  gap: 1rem;
+  gap: var(--space-4);
   grid-template-columns: 1fr;
 }
 
@@ -55,157 +99,322 @@
   }
 }
 
+@media (min-width: 1100px) {
+  .stu-learning__grid--tight {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
 .stu-learning__card {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-  padding: 1.15rem 1.2rem;
-  border-radius: 1rem;
-  border: 1px solid var(--stu-border, #e2e8f0);
-  background: var(--stu-card, #fff);
+  gap: var(--space-2);
+  padding: var(--space-5);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  background: var(--surface);
   color: inherit;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: var(--sh-1);
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
 }
 
 .stu-learning__card:hover {
-  border-color: rgba(255, 149, 0, 0.45);
-  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+  border-color: color-mix(in srgb, var(--interactive) 35%, var(--line));
+  box-shadow: var(--sh-2);
+  transform: translateY(-1px);
 }
 
 .stu-learning__card h2,
 .stu-learning__card h3 {
   margin: 0;
-  font-size: 1.05rem;
+  font-size: var(--text-title-sm, 1.05rem);
   font-weight: 700;
-  color: var(--stu-fg, #0f172a);
+  letter-spacing: -0.01em;
+  line-height: var(--leading-tight);
+  color: var(--ink);
 }
 
 .stu-learning__card p {
   margin: 0;
   flex: 1;
-  font-size: 0.875rem;
-  line-height: 1.45;
-  color: var(--stu-muted, #64748b);
+  font-size: var(--text-body-sm, 0.875rem);
+  line-height: var(--leading-body);
+  color: var(--ink-3);
 }
 
 .stu-learning__card-icon {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: 0.75rem;
-  background: rgba(255, 149, 0, 0.14);
-  color: #cc7000;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--r-md);
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  color: var(--interactive);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
 }
 
 .stu-learning__card-icon--spark {
-  background: rgba(124, 58, 237, 0.12);
-  color: #6d28d9;
+  background: color-mix(in srgb, var(--amber) 16%, var(--surface));
+  color: var(--amber-ink);
+  border-color: color-mix(in srgb, var(--amber) 28%, var(--line));
 }
 
 .stu-learning__card-cta {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  margin-top: 0.35rem;
-  font-size: 0.85rem;
+  margin-top: var(--space-2);
+  font-size: var(--text-caption, 0.85rem);
   font-weight: 700;
-  color: #cc7000;
+  color: var(--interactive);
 }
 
 .stu-learning__tag {
   align-self: flex-start;
   border-radius: 999px;
-  padding: 0.15rem 0.55rem;
-  font-size: 0.65rem;
+  padding: 0.2rem 0.6rem;
+  font-size: var(--text-micro);
   font-weight: 700;
-  background: rgba(255, 149, 0, 0.12);
-  color: #cc7000;
+  letter-spacing: var(--tracking-label);
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--interactive);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
 }
+
+/* ---- Sections (tutorials index) ----------------------------- */
 
 .stu-learning__sections {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: var(--space-8);
 }
 
 .stu-learning__section-title {
   margin: 0;
-  font-size: 0.75rem;
+  font-size: var(--text-micro);
   font-weight: 700;
-  letter-spacing: 0.06em;
+  letter-spacing: var(--tracking-label);
   text-transform: uppercase;
-  color: var(--stu-muted, #64748b);
+  color: var(--ink-3);
 }
 
 .stu-learning__section-sub {
-  margin: 0.35rem 0 0.85rem;
-  font-size: 0.85rem;
-  color: var(--stu-muted, #64748b);
+  margin: var(--space-1) 0 var(--space-4);
+  font-size: var(--text-body-sm, 0.875rem);
+  line-height: var(--leading-body);
+  color: var(--ink-2);
+  max-width: 52ch;
 }
+
+/* ---- Embed chrome (AI tools / tutorials) -------------------- */
 
 .stu-learning__back {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  margin-bottom: 0.75rem;
-  font-size: 0.85rem;
+  gap: 0.4rem;
+  margin: 0;
+  padding: 0.45rem 0.85rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-size: var(--text-caption, 0.85rem);
   font-weight: 600;
-  color: var(--stu-muted, #64748b);
+  color: var(--ink-2);
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
 }
 
 .stu-learning__back:hover {
-  color: var(--stu-fg, #0f172a);
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--interactive) 30%, var(--line));
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface));
 }
 
 .stu-learning__embed-bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.75rem 1.25rem;
-  margin-bottom: 0.75rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--stu-border, #e2e8f0);
+  gap: var(--space-3) var(--space-5);
+  margin: 0;
+  padding: 0 0 var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.stu-learning__embed-bar .stu-learning__back {
+  margin-bottom: 0;
+}
+
+.stu-learning__embed-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.stu-learning__embed-meta strong {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: var(--text-title-sm, 1.1rem);
+  font-weight: 720;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.stu-learning__embed-meta strong svg {
+  color: var(--interactive);
 }
 
 .stu-learning__chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
-  margin-bottom: 1rem;
+  gap: 0.45rem;
 }
 
 .stu-learning__chip {
   border-radius: 999px;
-  border: 1px solid var(--stu-border, #e2e8f0);
-  background: var(--stu-card, #fff);
-  padding: 0.3rem 0.75rem;
-  font-size: 0.75rem;
-  font-weight: 700;
-  color: var(--stu-fg, #0f172a);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: 0.4rem 0.85rem;
+  font-size: var(--text-caption, 0.8rem);
+  font-weight: 650;
+  color: var(--ink-2);
   cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
 }
 
-.stu-learning__chip:hover {
-  border-color: rgba(255, 149, 0, 0.45);
-  color: #cc7000;
+.stu-learning__chip:hover,
+.stu-learning__chip.is-on {
+  border-color: color-mix(in srgb, var(--interactive) 40%, var(--line));
+  color: var(--interactive);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface));
 }
 
 .stu-learning__loading {
-  padding: 2rem 0;
+  padding: var(--space-8) 0;
   text-align: center;
-  color: var(--stu-muted, #64748b);
+  color: var(--ink-3);
+  font-size: var(--text-body);
 }
 
-.stu-learning--embed {
+/* ---- Marketing embed host ----------------------------------- */
+
+.stu-learning--embed,
+.stu-main.stu-learning--embed {
   max-width: none;
+  gap: var(--space-4);
 }
 
-/* Anchor targets inside AI tools embed */
+.stu-learning--embed .mm-site-theme {
+  min-height: 0 !important;
+  background: transparent;
+  color: var(--ink);
+}
+
+.stu-learning--embed .mm-site-theme .min-h-screen,
+.stu-learning--embed .mm-site-theme.min-h-screen {
+  min-height: 0 !important;
+}
+
+.stu-learning--embed .mm-marketing-hero-backdrop {
+  display: none;
+}
+
+.stu-learning--embed .mm-container {
+  max-width: none;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.stu-learning--embed section {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.stu-learning--embed section.py-14 {
+  padding-top: var(--space-7) !important;
+  padding-bottom: var(--space-7) !important;
+}
+
+.stu-learning--embed section.py-16 {
+  padding-top: var(--space-6) !important;
+  padding-bottom: var(--space-6) !important;
+}
+
+.stu-learning--embed .border-b {
+  border-color: var(--line) !important;
+}
+
+.stu-learning--embed .text-foreground {
+  color: var(--ink) !important;
+}
+
+.stu-learning--embed .text-muted-foreground {
+  color: var(--ink-3) !important;
+}
+
+.stu-learning--embed .border-border {
+  border-color: var(--line) !important;
+}
+
+.stu-learning--embed .bg-secondary,
+.stu-learning--embed .bg-secondary\/80,
+.stu-learning--embed .bg-secondary\/60 {
+  background: var(--surface-2) !important;
+}
+
+.stu-learning--embed [class*='bg-white'] {
+  background: var(--surface) !important;
+  color: var(--ink);
+}
+
+.stu-learning--embed [class*='bg-white'] .text-foreground {
+  color: var(--ink) !important;
+}
+
+.stu-learning--embed [class*='bg-white'] .text-muted-foreground {
+  color: var(--ink-3) !important;
+}
+
+.stu-learning--embed h2.text-2xl,
+.stu-learning--embed h2.text-3xl,
+.stu-learning--embed .font-black.leading-tight {
+  font-weight: 720 !important;
+  letter-spacing: var(--tracking-display);
+  color: var(--ink);
+}
+
+.stu-learning--embed .text-\[\#FF9500\],
+.stu-learning--embed .text-\[\#CC7000\],
+.stu-learning--embed .text-amber-400 {
+  color: var(--interactive) !important;
+}
+
+.stu-learning--embed .bg-\[\#FF9500\]\/10,
+.stu-learning--embed .bg-\[\#FFB347\]\/10,
+.stu-learning--embed .hover\:border-\[\#FF9500\]\/30:hover {
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface)) !important;
+  border-color: color-mix(in srgb, var(--interactive) 28%, var(--line)) !important;
+}
+
+.stu-learning--embed .bg-green-500\/10,
+.stu-learning--embed .bg-amber-500\/10,
+.stu-learning--embed .bg-pink-500\/10,
+.stu-learning--embed .bg-cyan-500\/10 {
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface)) !important;
+}
+
+.stu-learning--embed .text-green-400,
+.stu-learning--embed .text-pink-400,
+.stu-learning--embed .text-cyan-400 {
+  color: var(--interactive) !important;
+}
+
 .stu-learning--embed #llms,
 .stu-learning--embed #coding-tools,
-.stu-learning--embed #mentormuni-tools,
 .stu-learning--embed #faq {
-  scroll-margin-top: 5rem;
+  scroll-margin-top: 5.5rem;
 }

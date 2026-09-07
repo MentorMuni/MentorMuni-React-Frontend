@@ -158,8 +158,12 @@ function FaqItem({ q, a }) {
 }
 
 /* ─── MAIN PAGE ──────────────────────────────────────────────── */
-export default function AIToolsKnowledgeBase() {
+export default function AIToolsKnowledgeBase({
+  hideMentorMuniPromo = false,
+  portalEmbed = false,
+} = {}) {
   const [search, setSearch] = useState('');
+  const compact = hideMentorMuniPromo || portalEmbed;
 
   const filteredCoding = CODING_TOOLS.filter(t =>
     !search ||
@@ -168,9 +172,10 @@ export default function AIToolsKnowledgeBase() {
   );
 
   return (
-    <div className="mm-site-theme min-h-screen">
+    <div className={`mm-site-theme${compact ? '' : ' min-h-screen'}`}>
 
-      {/* ── Hero ── */}
+      {/* ── Hero (public /ai-tools only) ── */}
+      {!compact ? (
       <section className="mm-marketing-hero-backdrop border-b border-border">
         <div className="mm-container relative z-10 pb-12 pt-20">
           <div className="flex items-center gap-2 mb-5">
@@ -197,6 +202,7 @@ export default function AIToolsKnowledgeBase() {
           </div>
         </div>
       </section>
+      ) : null}
 
       {/* ── What is an LLM ── */}
       <section className="py-14 px-6 border-b border-border">
@@ -292,48 +298,50 @@ export default function AIToolsKnowledgeBase() {
         </div>
       </section>
 
-      {/* ── MentorMuni Interview Tools ── */}
-      <section id="mentormuni-tools" className="py-14 px-6 border-b border-border scroll-mt-24">
-        <div className="mm-container">
-          <div className="flex items-center gap-2 mb-2">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-            <span className="text-xs font-bold text-green-400 uppercase tracking-widest">MentorMuni · Free</span>
-          </div>
-          <h2 className="text-2xl md:text-3xl font-black mb-2 leading-tight">Interview & Career Tools</h2>
-          <p className="text-muted-foreground text-sm mb-8 max-w-xl">
-            Purpose-built AI tools for engineering students preparing for campus placements. All free, no signup required.
-          </p>
-          <div className="grid md:grid-cols-3 gap-5">
-            {MM_TOOLS.map((tool) => {
-              const Icon = tool.icon;
-              return (
-                <Link
-                  key={tool.title}
-                  to={tool.href}
-                  className={`group flex flex-col gap-4 p-5 rounded-2xl border ${tool.border} ${tool.hover} bg-secondary/60 transition-all`}
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${tool.bg}`}>
-                      <Icon size={20} className={tool.color} />
-                    </span>
-                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${tool.badgeCls}`}>{tool.badge}</span>
-                  </div>
-                  <div>
-                    <h3 className="text-base font-black text-foreground mb-1.5 group-hover:text-[#CC7000] transition-colors">{tool.title}</h3>
-                    <p className="text-xs text-muted-foreground leading-relaxed">{tool.desc}</p>
-                  </div>
-                  <div className="mt-auto">
-                    <div className="text-[11px] text-muted-foreground mb-3">{tool.highlight}</div>
-                    <div className={`inline-flex items-center gap-1.5 text-xs font-bold ${tool.color} group-hover:gap-2.5 transition-all`}>
-                      {tool.cta} <ChevronRight size={13} />
+      {/* ── MentorMuni Interview Tools (public /ai-tools only) ── */}
+      {!hideMentorMuniPromo ? (
+        <section id="mentormuni-tools" className="py-14 px-6 border-b border-border scroll-mt-24">
+          <div className="mm-container">
+            <div className="flex items-center gap-2 mb-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+              <span className="text-xs font-bold text-green-400 uppercase tracking-widest">MentorMuni · Free</span>
+            </div>
+            <h2 className="text-2xl md:text-3xl font-black mb-2 leading-tight">Interview & Career Tools</h2>
+            <p className="text-muted-foreground text-sm mb-8 max-w-xl">
+              Purpose-built AI tools for engineering students preparing for campus placements. All free, no signup required.
+            </p>
+            <div className="grid md:grid-cols-3 gap-5">
+              {MM_TOOLS.map((tool) => {
+                const Icon = tool.icon;
+                return (
+                  <Link
+                    key={tool.title}
+                    to={tool.href}
+                    className={`group flex flex-col gap-4 p-5 rounded-2xl border ${tool.border} ${tool.hover} bg-secondary/60 transition-all`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <span className={`flex h-10 w-10 items-center justify-center rounded-xl ${tool.bg}`}>
+                        <Icon size={20} className={tool.color} />
+                      </span>
+                      <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${tool.badgeCls}`}>{tool.badge}</span>
                     </div>
-                  </div>
-                </Link>
-              );
-            })}
+                    <div>
+                      <h3 className="text-base font-black text-foreground mb-1.5 group-hover:text-[#CC7000] transition-colors">{tool.title}</h3>
+                      <p className="text-xs text-muted-foreground leading-relaxed">{tool.desc}</p>
+                    </div>
+                    <div className="mt-auto">
+                      <div className="text-[11px] text-muted-foreground mb-3">{tool.highlight}</div>
+                      <div className={`inline-flex items-center gap-1.5 text-xs font-bold ${tool.color} group-hover:gap-2.5 transition-all`}>
+                        {tool.cta} <ChevronRight size={13} />
+                      </div>
+                    </div>
+                  </Link>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
       {/* ── Coding Tools ── */}
       <section id="coding-tools" className="py-14 px-6 border-b border-border scroll-mt-24">
@@ -465,32 +473,34 @@ export default function AIToolsKnowledgeBase() {
         </div>
       </section>
 
-      {/* ── CTA ── */}
-      <section className="py-16 px-6">
-        <div className="mm-container mm-container--prose text-center">
-          <h2 className="text-2xl md:text-3xl font-black mb-3">Ready to put AI to work for your placement?</h2>
-          <p className="text-muted-foreground text-sm mb-8 leading-relaxed">
-            Check your interview readiness score in 5 minutes — free. Get a personalised gap analysis and a study plan built specifically around your strengths and timeline.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-3 justify-center">
-            <Link
-              to="/start-assessment"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-cta px-7 py-3.5 font-bold text-white shadow-lg shadow-button transition-all hover:bg-cta-hover"
-            >
-              {PRIMARY_CTA_LABEL}
-              <ChevronRight size={16} />
-            </Link>
-            <Link
-              to="/mock-interviews"
-              className="inline-flex items-center justify-center gap-2 border border-[#FF9500]/45 text-[#FF9500] hover:text-[#CC7000] hover:border-[#FFB347]/60 font-semibold px-7 py-3.5 rounded-xl transition-all"
-            >
-              Try AI Mock Interview
-            </Link>
+      {/* ── CTA (public /ai-tools only) ── */}
+      {!hideMentorMuniPromo ? (
+        <section className="py-16 px-6">
+          <div className="mm-container mm-container--prose text-center">
+            <h2 className="text-2xl md:text-3xl font-black mb-3">Ready to put AI to work for your placement?</h2>
+            <p className="text-muted-foreground text-sm mb-8 leading-relaxed">
+              Check your interview readiness score in 5 minutes — free. Get a personalised gap analysis and a study plan built specifically around your strengths and timeline.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Link
+                to="/start-assessment"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-cta px-7 py-3.5 font-bold text-white shadow-lg shadow-button transition-all hover:bg-cta-hover"
+              >
+                {PRIMARY_CTA_LABEL}
+                <ChevronRight size={16} />
+              </Link>
+              <Link
+                to="/mock-interviews"
+                className="inline-flex items-center justify-center gap-2 border border-[#FF9500]/45 text-[#FF9500] hover:text-[#CC7000] hover:border-[#FFB347]/60 font-semibold px-7 py-3.5 rounded-xl transition-all"
+              >
+                Try AI Mock Interview
+              </Link>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      ) : null}
 
-      <AIToolsChatbot />
+      {!compact ? <AIToolsChatbot /> : null}
     </div>
   );
 }

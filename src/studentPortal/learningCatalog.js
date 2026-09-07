@@ -83,7 +83,6 @@ export const LEARNING_TUTORIAL_GROUPS = [
 export const LEARNING_AI_SECTIONS = [
   { id: 'llms', label: 'Major LLMs' },
   { id: 'coding-tools', label: 'Coding AI tools' },
-  { id: 'mentormuni-tools', label: 'MentorMuni tools' },
   { id: 'faq', label: 'FAQ' },
 ];
 
