@@ -13,6 +13,7 @@ redirectLegacySpaEntry();
 import Navbar from "./components/navbar";
 import SkipToContent from "./components/layout/SkipToContent";
 import HomePage from "./components/homepage";
+import ParticleBackground from "./components/new-ui/ParticleBackground";
 import MuniBot from "./components/MuniBot";
 import RouteErrorBoundary from "./components/RouteErrorBoundary";
 import { isCollegeTenantHost } from "./tenant/resolveTenant";
@@ -237,12 +238,12 @@ function AnnouncementBar() {
     <div
       role="banner"
       aria-label="5-Sec Test announcement"
-      className="mm-announcement-bar relative flex flex-wrap items-center justify-center gap-x-2 gap-y-1 bg-[var(--accent)] px-11 py-1.5 text-center text-[10px] font-semibold leading-snug text-white sm:gap-2 sm:px-12 sm:text-[11px]"
+      className="mm-announcement-bar relative flex flex-wrap items-center justify-center gap-x-2 gap-y-1 bg-gradient-to-r from-[#15799F] via-[#1A8FC4] to-[#2AAA8A] px-11 py-2 text-center text-[10px] font-semibold leading-snug text-white sm:gap-2 sm:px-12 sm:text-[11px] md:text-xs"
     >
       <span className="mm-announcement-bar__text min-w-0">{SNAP_ANNOUNCEMENT_BAR}</span>
       <Link
         to="/snap-test"
-        className="shrink-0 rounded-md bg-white/20 px-2.5 py-0.5 text-[10px] font-bold transition hover:bg-white/30 sm:text-[11px]"
+        className="shrink-0 rounded-full bg-white/25 px-2.5 py-0.5 text-[10px] font-bold transition hover:bg-white/35 sm:text-[11px] md:text-xs"
       >
         5-Sec Test →
       </Link>
@@ -317,7 +318,8 @@ function AppChrome({ children }) {
   }
 
   return (
-    <div className="mm-app-shell mm-site-theme mm-marketing-v2 relative text-foreground">
+    <div className="mm-app-shell mm-site-theme relative text-foreground">
+      <ParticleBackground />
       <AnnouncementBar />
       <SkipToContent />
       <div className="mm-app-body">

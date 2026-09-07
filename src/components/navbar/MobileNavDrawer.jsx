@@ -4,7 +4,8 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ChevronDown, ArrowRight, GraduationCap, Building2 } from 'lucide-react';
 import { goToStartAssessment } from '../../utils/startAssessmentNavigation';
-import { PRIMARY_CTA_LABEL } from '../../constants/brandCopy';
+import { PRIMARY_CTA_LABEL, READINESS_TEST_COUPON_BADGE } from '../../constants/brandCopy';
+import LimitedRewardLabel from '../LimitedRewardLabel';
 
 const panelMotion = {
   initial: { opacity: 0, y: -10 },
@@ -163,43 +164,45 @@ export default function MobileNavDrawer({
                           </Link>
                         );
                       })}
-                      <button
-                        type="button"
-                        onClick={() => {
-                          handleNav();
-                          goToStartAssessment();
-                        }}
-                        className="mm-mobile-nav-promo__action mt-2"
-                      >
-                        Start free check →
-                      </button>
+                      <div className="mm-mobile-nav-promo">
+                        <LimitedRewardLabel className="text-[8px] px-2 py-0.5 [&_svg]:h-2.5 [&_svg]:w-2.5" />
+                        <p className="mm-mobile-nav-promo__text">{READINESS_TEST_COUPON_BADGE}</p>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            handleNav();
+                            goToStartAssessment();
+                          }}
+                          className="mm-mobile-nav-promo__action"
+                        >
+                          Start free check →
+                        </button>
+                      </div>
                     </div>
                   )}
                 </div>
               </div>
 
-              {moreLinks?.length ? (
-                <div className="mm-mobile-nav-section">
-                  <p className="mm-mobile-nav-section__label">Company</p>
-                  {moreLinks.map(({ label, path, exact, Icon }) => {
-                    const active = isActive(path, exact);
-                    return (
-                      <Link
-                        key={path}
-                        to={path}
-                        onClick={handleNav}
-                        className={`mm-mobile-nav-company${active ? ' mm-mobile-nav-company--active' : ''}`}
-                        aria-current={active ? 'page' : undefined}
-                      >
-                        <span className="mm-mobile-nav-company__icon">
-                          <Icon size={16} strokeWidth={2} aria-hidden />
-                        </span>
-                        {label}
-                      </Link>
-                    );
-                  })}
-                </div>
-              ) : null}
+              <div className="mm-mobile-nav-section">
+                <p className="mm-mobile-nav-section__label">Company</p>
+                {moreLinks.map(({ label, path, exact, Icon }) => {
+                  const active = isActive(path, exact);
+                  return (
+                    <Link
+                      key={path}
+                      to={path}
+                      onClick={handleNav}
+                      className={`mm-mobile-nav-company${active ? ' mm-mobile-nav-company--active' : ''}`}
+                      aria-current={active ? 'page' : undefined}
+                    >
+                      <span className="mm-mobile-nav-company__icon">
+                        <Icon size={16} strokeWidth={2} aria-hidden />
+                      </span>
+                      {label}
+                    </Link>
+                  );
+                })}
+              </div>
             </div>
 
             <div className="mm-mobile-nav-panel__footer">
@@ -213,8 +216,8 @@ export default function MobileNavDrawer({
                   Organization login
                 </Link>
               </div>
-              <Link to="/pricing" onClick={handleNav} className="mm-mobile-nav-cta-waitlist">
-                Pricing
+              <Link to="/waitlist" onClick={handleNav} className="mm-mobile-nav-cta-waitlist">
+                Join waitlist
               </Link>
               <button
                 type="button"

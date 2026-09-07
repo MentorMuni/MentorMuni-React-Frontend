@@ -208,7 +208,7 @@ export default function StudentWhiteboardPage() {
   return (
     <main className={`stu-main wb-page${sheetOpen ? ' is-sheet' : ''}`}>
       <motion.header className="wb-hero" {...enterProps(reduce)}>
-        <p className="wb-hero__kicker">your wall · not a ticket</p>
+        <p className="wb-hero__kicker">notes → tomorrow’s plan</p>
         <h1 className="wb-hero__title">White Board</h1>
         <svg className="wb-hero__scribble" viewBox="0 0 280 14" aria-hidden>
           <path
@@ -219,7 +219,7 @@ export default function StudentWhiteboardPage() {
             strokeLinecap="round"
           />
         </svg>
-        <p className="wb-hero__sub">Write your issues, problems and what you want here</p>
+        <p className="wb-hero__sub">Write what’s stuck. Get a clear plan next morning.</p>
       </motion.header>
 
       {error ? <p className="wb-alert">{error}</p> : null}
@@ -248,9 +248,9 @@ export default function StudentWhiteboardPage() {
 
           <section ref={wallRef} className="wb-wall-wrap">
             <div className="wb-wall-head">
-              <h2>The wall</h2>
+              <h2>Your notes</h2>
               <p>
-                {openNotes.length} open · yesterday {board.yesterday_note_count || 0} notes feed tomorrow’s drop
+                {openNotes.length} open · notes from yesterday become tomorrow’s plan
               </p>
             </div>
 
@@ -259,8 +259,8 @@ export default function StudentWhiteboardPage() {
               <div className="wb-wall__grain" aria-hidden />
               {!openNotes.length ? (
                 <div className="wb-wall__empty">
-                  <h3>This wall wants your actual mess.</h3>
-                  <p>Slap the thing you are stuck on. Tomorrow morning I will tell you the exact move that peels it.</p>
+                  <h3>No open notes yet</h3>
+                  <p>Add what you’re stuck on. Tomorrow you’ll get a short plan for it.</p>
                 </div>
               ) : (
                 <AnimatePresence>
@@ -287,7 +287,7 @@ export default function StudentWhiteboardPage() {
           {solvedNotes.length ? (
             <div className="wb-solved">
               <button type="button" className="wb-solved__toggle" onClick={() => setShowSolved((v) => !v)}>
-                {showSolved ? 'Hide' : 'Show'} peeled notes ({solvedNotes.length})
+                {showSolved ? 'Hide' : 'Show'} done notes ({solvedNotes.length})
               </button>
               {showSolved ? (
                 <div className="wb-solved__list">
@@ -295,7 +295,7 @@ export default function StudentWhiteboardPage() {
                     <div key={note.id} className="wb-solved__chip">
                       <span>{note.body}</span>
                       <button type="button" onClick={() => handleReopen(note)}>
-                        Unpeel
+                        Reopen
                       </button>
                     </div>
                   ))}
@@ -312,7 +312,7 @@ export default function StudentWhiteboardPage() {
             onClick={() => setComposerOpen(true)}
           >
             <Plus size={18} strokeWidth={2.6} aria-hidden />
-            Slap a note
+            Add a note
           </button>
         </>
       ) : null}
@@ -357,7 +357,7 @@ export default function StudentWhiteboardPage() {
                     if (ok) setEditing(null);
                   }}
                 >
-                  Peel — it’s done
+                  Mark done
                 </button>
                 <button type="button" className="wb-editor__save" onClick={saveEdit}>
                   Save

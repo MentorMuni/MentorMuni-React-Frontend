@@ -69,7 +69,7 @@ export default function StickyNote({
         <span className="wb-note__meta">{formatNoteDate(note.board_date)}</span>
       </button>
       <button type="button" className="wb-note__peel" onClick={() => onPeel(note)}>
-        Peel
+        Done
       </button>
     </motion.article>
   );

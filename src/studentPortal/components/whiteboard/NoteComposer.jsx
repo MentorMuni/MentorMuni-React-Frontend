@@ -67,12 +67,12 @@ export default function NoteComposer({ open, reduce, onClose, onSubmit }) {
             onSubmit={submit}
           >
             <div className="wb-composer__head">
-              <h3 id={titleId}>Slap a note</h3>
+              <h3 id={titleId}>Add a note</h3>
               <button type="button" className="wb-composer__close" onClick={onClose} aria-label="Close">
                 <X size={18} strokeWidth={2.4} aria-hidden />
               </button>
             </div>
-            <p>The actual problem. What “fixed” looks like tonight. No essays.</p>
+            <p>One sentence: what’s stuck + what “done” looks like.</p>
             <textarea
               ref={fieldRef}
               className={`wb-note--${color}`}
@@ -96,7 +96,7 @@ export default function NoteComposer({ open, reduce, onClose, onSubmit }) {
             <div className="wb-composer__row">
               <span className="wb-composer__count">{body.length}/600</span>
               <button type="submit" className="wb-btn" disabled={!body.trim() || busy}>
-                {busy ? 'Sticking…' : 'Stick it'}
+                {busy ? 'Saving…' : 'Save note'}
               </button>
             </div>
           </motion.form>
