@@ -29,6 +29,9 @@ const StudentHelpCenterPage = lazy(() => import('./pages/StudentHelpCenterPage')
 const StudentWhiteboardPage = lazy(() => import('./pages/StudentWhiteboardPage'));
 const StudentChangePasswordPage = lazy(() => import('./pages/StudentChangePasswordPage'));
 const StudentAptitudeArcadePage = lazy(() => import('./pages/StudentAptitudeArcadePage'));
+const StudentLearningPage = lazy(() => import('./pages/StudentLearningPage'));
+const StudentLearningTutorialsPage = lazy(() => import('./pages/StudentLearningTutorialsPage'));
+const StudentLearningAiToolsPage = lazy(() => import('./pages/StudentLearningAiToolsPage'));
 
 function PortalFallback() {
   return (
@@ -103,6 +106,38 @@ export default function StudentPortalApp() {
                 element={
                   <Suspense fallback={<PortalFallback />}>
                     <StudentAptitudeArcadePage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="learning"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentLearningPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="learning/tutorials"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentLearningTutorialsPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="learning/tutorials/:tutorialId"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentLearningTutorialsPage />
+                  </Suspense>
+                }
+              />
+              <Route
+                path="learning/ai-tools"
+                element={
+                  <Suspense fallback={<PortalFallback />}>
+                    <StudentLearningAiToolsPage />
                   </Suspense>
                 }
               />

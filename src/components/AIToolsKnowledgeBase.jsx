@@ -239,7 +239,7 @@ export default function AIToolsKnowledgeBase() {
       </section>
 
       {/* ── LLM Comparison ── */}
-      <section className="py-14 px-6 border-b border-border">
+      <section id="llms" className="py-14 px-6 border-b border-border scroll-mt-24">
         <div className="mm-container">
           <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest block mb-3">AI tools landscape</span>
           <h2 className="text-2xl md:text-3xl font-black mb-2 leading-tight">Major LLMs compared</h2>
@@ -293,7 +293,7 @@ export default function AIToolsKnowledgeBase() {
       </section>
 
       {/* ── MentorMuni Interview Tools ── */}
-      <section className="py-14 px-6 border-b border-border">
+      <section id="mentormuni-tools" className="py-14 px-6 border-b border-border scroll-mt-24">
         <div className="mm-container">
           <div className="flex items-center gap-2 mb-2">
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
@@ -336,7 +336,7 @@ export default function AIToolsKnowledgeBase() {
       </section>
 
       {/* ── Coding Tools ── */}
-      <section className="py-14 px-6 border-b border-border">
+      <section id="coding-tools" className="py-14 px-6 border-b border-border scroll-mt-24">
         <div className="mm-container">
           <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest block mb-3">For Developers</span>
           <h2 className="text-2xl font-black mb-2 leading-tight">Coding & Development AI Tools</h2>
@@ -455,7 +455,7 @@ export default function AIToolsKnowledgeBase() {
       </section>
 
       {/* ── FAQs ── */}
-      <section className="py-14 px-6 border-b border-border">
+      <section id="faq" className="py-14 px-6 border-b border-border scroll-mt-24">
         <div className="mm-container mm-container--narrow">
           <span className="text-xs font-bold text-[#FF9500] uppercase tracking-widest block mb-3">Common Questions</span>
           <h2 className="text-2xl font-black mb-8">Frequently asked</h2>

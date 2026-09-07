@@ -9,6 +9,9 @@ export const studentPaths = {
   knowMe: '/studentportal/know-me', // deprecated: use fearToFearless
   practice: '/studentportal/practice',
   aptitudeArcade: '/studentportal/aptitude-arcade',
+  learning: '/studentportal/learning',
+  learningTutorials: '/studentportal/learning/tutorials',
+  learningAiTools: '/studentportal/learning/ai-tools',
   coding: '/studentportal/coding',
   companyPrep: '/studentportal/company-prep',
   companies: '/studentportal/companies',

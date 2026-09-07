@@ -1,0 +1,211 @@
+/* Learning pages inside student portal shell */
+
+.stu-learning__hero {
+  margin-bottom: var(--space-6, 1.5rem);
+}
+
+.stu-learning__eyebrow {
+  margin: 0;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ff9500;
+}
+
+.stu-learning__title {
+  margin: 0.35rem 0 0;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--stu-fg, #0f172a);
+}
+
+.stu-learning__title-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stu-learning__sub {
+  margin: 0.5rem 0 0;
+  max-width: 40rem;
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--stu-muted, #64748b);
+}
+
+.stu-learning__sub--bar {
+  margin: 0 0 0.75rem;
+  padding: 0 var(--space-1, 0.25rem);
+}
+
+.stu-learning__grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr;
+}
+
+@media (min-width: 720px) {
+  .stu-learning__grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .stu-learning__grid--tight {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.stu-learning__card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.15rem 1.2rem;
+  border-radius: 1rem;
+  border: 1px solid var(--stu-border, #e2e8f0);
+  background: var(--stu-card, #fff);
+  color: inherit;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.stu-learning__card:hover {
+  border-color: rgba(255, 149, 0, 0.45);
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06);
+}
+
+.stu-learning__card h2,
+.stu-learning__card h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--stu-fg, #0f172a);
+}
+
+.stu-learning__card p {
+  margin: 0;
+  flex: 1;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--stu-muted, #64748b);
+}
+
+.stu-learning__card-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.75rem;
+  background: rgba(255, 149, 0, 0.14);
+  color: #cc7000;
+}
+
+.stu-learning__card-icon--spark {
+  background: rgba(124, 58, 237, 0.12);
+  color: #6d28d9;
+}
+
+.stu-learning__card-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-top: 0.35rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #cc7000;
+}
+
+.stu-learning__tag {
+  align-self: flex-start;
+  border-radius: 999px;
+  padding: 0.15rem 0.55rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  background: rgba(255, 149, 0, 0.12);
+  color: #cc7000;
+}
+
+.stu-learning__sections {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.stu-learning__section-title {
+  margin: 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--stu-muted, #64748b);
+}
+
+.stu-learning__section-sub {
+  margin: 0.35rem 0 0.85rem;
+  font-size: 0.85rem;
+  color: var(--stu-muted, #64748b);
+}
+
+.stu-learning__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--stu-muted, #64748b);
+}
+
+.stu-learning__back:hover {
+  color: var(--stu-fg, #0f172a);
+}
+
+.stu-learning__embed-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--stu-border, #e2e8f0);
+}
+
+.stu-learning__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+
+.stu-learning__chip {
+  border-radius: 999px;
+  border: 1px solid var(--stu-border, #e2e8f0);
+  background: var(--stu-card, #fff);
+  padding: 0.3rem 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--stu-fg, #0f172a);
+  cursor: pointer;
+}
+
+.stu-learning__chip:hover {
+  border-color: rgba(255, 149, 0, 0.45);
+  color: #cc7000;
+}
+
+.stu-learning__loading {
+  padding: 2rem 0;
+  text-align: center;
+  color: var(--stu-muted, #64748b);
+}
+
+.stu-learning--embed {
+  max-width: none;
+}
+
+/* Anchor targets inside AI tools embed */
+.stu-learning--embed #llms,
+.stu-learning--embed #coding-tools,
+.stu-learning--embed #mentormuni-tools,
+.stu-learning--embed #faq {
+  scroll-margin-top: 5rem;
+}

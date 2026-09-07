@@ -14,6 +14,7 @@ import {
   LifeBuoy,
   StickyNote,
   Gamepad2,
+  BookOpen,
 } from 'lucide-react';
 import '../../styles/fear-to-fearless-sidebar.css';
 import '../../styles/whiteboard.css';
@@ -26,6 +27,7 @@ const NAV_PRIMARY = [
   { icon: Home, label: 'Home', to: '/studentportal/home', end: true },
   { icon: Sparkles, label: 'AI Mentor', to: '/studentportal/mentor' },
   { icon: Gamepad2, label: 'Aptitude Arcade', to: '/studentportal/aptitude-arcade', accent: true },
+  { icon: BookOpen, label: 'Learning', to: '/studentportal/learning' },
   { icon: Code2, label: 'Practice', to: '/studentportal/practice' },
   { icon: Terminal, label: 'Coding Round', to: '/studentportal/coding' },
   { icon: Briefcase, label: 'Companies', to: '/studentportal/companies', collegeOnly: true },
